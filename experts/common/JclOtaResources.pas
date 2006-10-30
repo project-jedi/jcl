@@ -43,6 +43,7 @@ resourcestring
   RsENoWizardServices = 'Unable to get Borland Wizard Services';
   RsENoPackageServices = 'Unable to get Borland Package Services';
   RsENoPersonalityServices = 'Unable to get Borland Personality Services';
+  RsENoMessageServices = 'Unable to get Borland Message Services';
   RsENoGalleryCategoryManager = 'Unable to get Borland Gallery Category Manager';
   RsENoModule = 'Unable to get Module';
   RsBadModuleHInstance = 'Unable to get module HInstance';
@@ -218,7 +219,12 @@ resourcestring
   RsInsertDataCaption = 'Insert JCL Debug data';
   RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
   RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
-    'JCL debug data can''t be added to the project.';
+    'JCL debug data can''t be added to the binary.';
+  RsEMapFileNotFound = 'Map file "%s" for project "%s" not found.' +
+    'No conversions of debug information were made';
+  RsConvertedMapToJdbg = 'Converted MAP file "%s" (%d bytes) to .jdbg (%d bytes)';
+  RsInsertedJdbg = 'Converted MAP file "%s" (%d bytes) and inserted debug information (%d bytes) into the binary';
+  RsEMapConversion = 'Failed to convert MAP file "%s"';
   RsENoActiveProject = 'No active project';
   RsENoProjectMenuItem = 'Project menu item not found';
   RsENoBuildMenuItem = 'Build menu item not found';
@@ -227,6 +233,13 @@ resourcestring
   RsENoBuildAction = 'Build action not found';
   RsENoBuildAllAction = 'Build All action not found';
   RsENoProjectGroup = 'No project group';
+  RsDebugConfigPageCaption = 'Debug info converter';
+
+//=== JclDebugIdeConfigFrame.pas =============================================
+resourcestring
+  RsDebugEnableExpert = 'Enable debug expert';
+  RsDebugGenerateJdbg = 'Generate .jdbg files';
+  RsDebugInsertJdbg = 'Insert data into the binary';
 
 //=== JclSIMDView.pas ========================================================
 resourcestring

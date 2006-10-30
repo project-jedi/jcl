@@ -126,6 +126,7 @@ type
     {$IFDEF BDS}
     FOTAPersonalityServices: IOTAPersonalityServices;
     {$ENDIF BDS}
+    FOTAMessageServices: IOTAMessageServices;
     function GetModuleHInstance: Cardinal;
     function GetActiveProject: IOTAProject;
     function GetProjectGroup: IOTAProjectGroup;
@@ -178,6 +179,7 @@ type
     {$IFDEF BDS}
     property OTAPersonalityServices: IOTAPersonalityServices read FOTAPersonalityServices;
     {$ENDIF BDS}
+    property OTAMessageServices: IOTAMessageServices read FOTAMessageServices;
 
     property ActivePersonality: TJclBorPersonality read GetActivePersonality;
     property Designer: string read GetDesigner;
@@ -218,9 +220,6 @@ uses
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF KYLIX}
-  JclBorlandTools,
-  {$ENDIF KYLIX}
   JclFileUtils, JclStrings, JclSysInfo,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
   JclOtaActionConfigureSheet, JclOtaWizardForm, JclOtaWizardFrame;
@@ -585,6 +584,10 @@ begin
   if not Assigned(FOTAModuleServices) then
     raise EJclExpertException.CreateTrace(RsENoModuleServices);
 
+  Supports(BorlandIDEServices, IOTAMessageServices, FOTAMessageServices);
+  if not Assigned(FOTAMessageServices) then
+    raise EJclExpertException.CreateTrace(RsENoMessageServices);
+
   FEnvVariables := TStringList.Create;
   FSettings := TJclOTASettings.Create(AName);
 end;
@@ -666,7 +669,7 @@ begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
     
-  Result := ChangeFileExt(Project.FileName, DRCExtension);
+  Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
 function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): string;
@@ -688,7 +691,7 @@ begin
   LibSuffix := '';
   {$ENDIF ~RTL140_UP}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
-    PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + MAPExtension;
+    PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + CompilerExtensionMAP;
 end;
 
 function TJclOTAExpertBase.GetModuleHInstance: Cardinal;
@@ -839,7 +842,7 @@ begin
 
       for I := 0 to APackageServices.PackageCount - 1 do
       begin
-        PackageFileName := ChangeFileExt(APackageServices.PackageNames[I], BPLExtension);
+        PackageFileName := ChangeFileExt(APackageServices.PackageNames[I], BinaryExtensionPackage);
         PackageFileName := GetModulePath(GetModuleHandle(PChar(PackageFileName)));
         if AnsiSameText(ChangeFileExt(PackageFileName, ''), ExecutableNameNoExt) then
         begin
@@ -863,7 +866,7 @@ begin
   FileName := Project.FileName;
   FileExtension := ExtractFileExt(FileName);
 
-  if AnsiSameText(FileExtension, BDSPROJExtension) and FileExists(FileName) then
+  if AnsiSameText(FileExtension, SourceExtensionBDSProject) and FileExists(FileName) then
   begin
     ProjectFile := TStringList.Create;
     try
@@ -873,13 +876,13 @@ begin
       for Index := SourceNodePosition-1 downto 1 do
         if ProjectContent[Index] = '.' then
           Break;
-      Result := AnsiSameText(Copy(ProjectContent, Index, SourceNodePosition-Index), DPKExtension);
+      Result := AnsiSameText(Copy(ProjectContent, Index, SourceNodePosition-Index), SourceExtensionDelphiPackage);
     finally
       ProjectFile.Free;
     end;
   end
   else
-    Result := AnsiSameText(FileExtension, DPKExtension);
+    Result := AnsiSameText(FileExtension, SourceExtensionDelphiPackage);
 end;
 
 procedure TJclOTAExpertBase.ReadEnvVariables;

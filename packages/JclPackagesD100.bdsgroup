@@ -1,16 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <PersonalityInfo>
-    <Option>
-      <Option Name="Personality">Default.Personality</Option>
-      <Option Name="ProjectType"></Option>
-      <Option Name="Version">1.0</Option>
-      <Option Name="GUID">{E7B4DBC9-B036-40B2-88E6-984F5D7843B1}</Option>
-    </Option>
-  </PersonalityInfo>
-  <Default.Personality>
-    
-    <Projects>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{E7B4DBC9-B036-40B2-88E6-984F5D7843B1}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
       <Projects Name="Jcl100.bpl">d10\Jcl.bdsproj</Projects>
       <Projects Name="JclVcl100.bpl">d10\JclVcl.bdsproj</Projects>
       <Projects Name="JclBaseExpert100.bpl">d10\JclBaseExpert.bdsproj</Projects>

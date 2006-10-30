@@ -42,12 +42,6 @@ const
   {$IFDEF COMPILER6_UP}
   EnvironmentVarsKey    = 'Environment Variables';
   {$ENDIF COMPÏLER6_UP}
-  BPLExtension          = '.bpl';
-  DPKExtension          = '.dpk';
-  MAPExtension          = '.map';
-  DRCExtension          = '.drc';
-  DPRExtention          = '.dpr';
-  BDSPROJExtension      = '.bdsproj';
 
   //=== Various constants shared by different experts ========================
   JclLeft   = 'Left';
@@ -71,16 +65,19 @@ const
   JclConfigureActionName = 'ActionJCLConfigure';
 
   //=== Debug Expert =========================================================
-  JclDebugExpertRegKey    = 'JclDebugExpert';
-  JclDebugEnabledRegValue = 'JclDebugEnabled';
-  MapFileOptionName       = 'MapFile';
-  OutputDirOptionName     = 'OutputDir';
-  RuntimeOnlyOptionName   = 'RuntimeOnly';
-  PkgDllDirOptionName     = 'PkgDllDir';
-  BPLOutputDirOptionName  = 'PackageDPLOutput';
-  LIBPREFIXOptionName     = 'SOPrefix';
-  LIBSUFFIXOptionName     = 'SOSuffix';
-  ColumnRegName           = 'Column%d';
+  JclDebugExpertRegKey         = 'JclDebugExpert';
+  JclDebugEnabledRegValue      = 'JclDebugEnabled';
+  JclDebugGenerateJdbgRegValue = 'JclDebugGenerateJdbg';
+  JclDebugInsertJdbgRegValue   = 'JclDebugInsertJdbg';
+  MapFileOptionName            = 'MapFile';
+  OutputDirOptionName          = 'OutputDir';
+  RuntimeOnlyOptionName        = 'RuntimeOnly';
+  PkgDllDirOptionName          = 'PkgDllDir';
+  BPLOutputDirOptionName       = 'PackageDPLOutput';
+  LIBPREFIXOptionName          = 'SOPrefix';
+  LIBSUFFIXOptionName          = 'SOSuffix';
+  ColumnRegName                = 'Column%d';
+  JclDebugMessagePrefix        = 'Jcl Debug Expert';
 
   //=== Favorite Folders Expert ==============================================
   JclFavoritesExpertName     = 'JclFavoriteFoldersExpert';

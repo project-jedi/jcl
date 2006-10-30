@@ -26,19 +26,11 @@ unit JclDebugIdeImpl;
 
 {$I jcl.inc}
                               
-{$UNDEF OldStyleExpert}
-
-// Delphi 5 can use both kind of the expert
-// Delphi 6 and + can use New expert style only
-
-// BCB 5 can use both kind of the expert
-// BCB 6 and + can use New expert style only
-
 interface
 
 uses
   Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
-  JclOtaUtils;
+  JclOtaUtils, JclDebugIdeConfigFrame;
 
 type
   TJclDebugDataInfo = record
@@ -56,7 +48,6 @@ type
     FStoreResults: Boolean;
     FImageIndex: Integer;
     FBuildError: Boolean;
-    {$IFNDEF OldStyleExpert}
     FInsertDataItem: TMenuItem;
     FInsertDataAction: TAction;
     FDisabledImageIndex: Integer;
@@ -68,38 +59,32 @@ type
     FNotifierIndex: Integer;
     FOptionsModifiedState: Boolean;
     FSaveMapFile: Integer;
-    procedure ExpertActive(Active: Boolean);
-    procedure HookBuildActions(Enable: Boolean);
+    FConfigFrame: TJclDebugIdeConfigFrame;
+    FGenerateJdbg: Boolean;
+    FInsertJdbg: Boolean;
+    FEnableExpert: Boolean;
     procedure InsertDataExecute(Sender: TObject);
     procedure LoadExpertValues;
     procedure SaveExpertValues;
     procedure BuildAllProjects(Sender: TObject);       // (New) Build All Projects command hook
     procedure BuildProject(Sender: TObject);           // (New) Build Project command hook
-    {$ELSE OldStyleExpert}
-    FBuildAllMenuItem: TMenuItem;
-    FBuildAllAction: TAction;
-    FBuildMenuItem: TMenuItem;
-    FBuildAction: TAction;
-    procedure BuildActionExecute(Sender: TObject);     // (Old) Build JCL Debug command
-    procedure BuildActionUpdate(Sender: TObject);
-    procedure BuildAllActionExecute(Sender: TObject);  // (Old) Build JCL Debug All Projects command
-    procedure BuildAllActionUpdate(Sender: TObject);
-    function InsertDataToProject(const ActiveProject: IOTAProject): Boolean;
-    {$ENDIF OldStyleExpert}
     procedure BeginStoreResults;
     procedure DisplayResults;
     procedure EndStoreResults;
+    procedure SetEnableExpert(const Value: Boolean);
   public
     constructor Create; reintroduce;
-    {$IFNDEF OldStyleExpert}
     procedure AfterCompile(Succeeded: Boolean);
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-    {$ENDIF OldStyleExpert}
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
+    procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
+    property GenerateJdbg: Boolean read FGenerateJdbg write FGenerateJdbg;
+    property InsertJdbg: Boolean read FInsertJdbg write FInsertJdbg;
+    property EnableExpert: Boolean read FEnableExpert write SetEnableExpert;
   end;
 
-  {$IFNDEF OldStyleExpert}
   TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
   private
     FDebugExtension: TJclDebugExtension;
@@ -112,7 +97,6 @@ type
   public
     constructor Create(ADebugExtension: TJclDebugExtension);
   end;
-  {$ENDIF OldStyleExpert}
 
 // design package entry point
 procedure Register;
@@ -127,7 +111,7 @@ implementation
 {$R JclDebugIdeIcon.res}
 
 uses
-  JclDebug, JclDebugIdeResult,
+  JclBorlandTools, JclDebug, JclDebugIdeResult,
   JclOtaConsts, JclOtaResources;
 
 procedure Register;
@@ -194,18 +178,45 @@ end;
 
 //=== { TJclDebugExtension } =================================================
 
+procedure TJclDebugExtension.ConfigurationClosed(AControl: TControl;
+  SaveChanges: Boolean);
+begin
+  if Assigned(AControl) and (AControl = FConfigFrame) then
+  begin
+    if SaveChanges then
+    begin
+      EnableExpert := FConfigFrame.EnableExpert;
+      GenerateJdbg := FConfigFrame.GenerateJdbg;
+      InsertJdbg := FConfigFrame.InsertJdbg;
+    end;
+    FreeAndNil(FConfigFrame);
+  end
+  else
+    inherited ConfigurationClosed(AControl, SaveChanges);
+end;
+
 constructor TJclDebugExtension.Create;
 begin
   inherited Create(JclDebugExpertRegKey);
 end;
 
-{$IFNDEF OldStyleExpert}
+procedure TJclDebugExtension.AddConfigurationPages(
+  AddPageFunc: TJclOTAAddPageFunc);
+begin
+  inherited AddConfigurationPages(AddPageFunc);
+  FConfigFrame := TJclDebugIdeConfigFrame.Create(nil);
+  FConfigFrame.EnableExpert := EnableExpert;
+  FConfigFrame.GenerateJdbg := GenerateJdbg;
+  FConfigFrame.InsertJdbg := InsertJdbg;
+  AddPageFunc(FConfigFrame, RsDebugConfigPageCaption, Self);
+end;
+
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
 var
-  ProjectFileName, MapFileName, ExecutableFileName: string;
+  ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: string;
   OutputDirectory, LinkerBugUnit: string;
   ProjOptions: IOTAProjectOptions;
-  ExecutableNotFound, Succ: Boolean;
+  Succ: Boolean;
   MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
 
   procedure DeleteMapAndDrcFile;
@@ -213,45 +224,76 @@ var
     if FSaveMapFile <> MapFileOptionDetailed then
     begin // delete MAP and DRC file
       DeleteFile(MapFileName);
-      DeleteFile(ChangeFileExt(ProjectFileName, DrcFileExtension));
+      DeleteFile(DrcFileName);
     end;
   end;
 
-begin
-  if FInsertDataAction.Checked and Assigned(FCurrentProject) then
+  procedure OutputToolMessage(const Msg: string);
   begin
-  ProjOptions := FCurrentProject.ProjectOptions;
-{    if FSaveMapFile <> MapFileOptionDetailed then
+    if Assigned(FCurrentProject) then
+      OTAMessageServices.AddToolMessage(FCurrentProject.FileName, Msg,
+        JclDebugMessagePrefix, 1, 1)
+    else
+      OTAMessageServices.AddToolMessage('', Msg, JclDebugMessagePrefix, 1, 1);
+  end;
+
+begin
+  if EnableExpert and Assigned(FCurrentProject) then
+  begin
+    ProjOptions := FCurrentProject.ProjectOptions;
+    if FSaveMapFile <> MapFileOptionDetailed then
     begin
       ProjOptions.Values[MapFileOptionName] := FSaveMapFile;
       ProjOptions.ModifiedState := FOptionsModifiedState;
-    end;}
-{ TODO -oPV : Temporarily removed due Delphi 6 IDE problems }
+    end;
     ProjectFileName := FCurrentProject.FileName;
     OutputDirectory := GetOutputDirectory(FCurrentProject);
     MapFileName := GetMapFileName(FCurrentProject);
+    DrcFileName := GetDrcFileName(FCurrentProject);
+    JdbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
+
     if Succeeded then
     begin
-      ExecutableNotFound := False;
-      LinkerBugUnit := '';
-      LineNumberErrors := 0;
-      Succ := FileExists(MapFileName);
-      if Succ then
-      begin
-        Screen.Cursor := crHourGlass;
-        try
-          if FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName) then
+      Screen.Cursor := crHourGlass;
+      try
+        LinkerBugUnit := '';
+        LineNumberErrors := 0;
+
+        Succ := FileExists(MapFileName);
+        if not Succ then
+          OutputToolMessage(Format(RsEMapFileNotFound, [MapFileName, ProjectFileName]));
+
+        // creation of .jdbg
+        if Succ and GenerateJdbg then
+        begin
+          Succ := ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit, LineNumberErrors,
+            MapFileSize, JclDebugDataSize);
+          if Succ then
+            OutputToolMessage(Format(RsConvertedMapToJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+          else
+            OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
+        end;
+
+        // insertion of Jedi Debug Information into the binary
+        if Succ and InsertJdbg then
+        begin
+          Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+          if Succ then
           begin
             Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
               LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
+            if Succ then
+              OutputToolMessage(Format(RsInsertedJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+            else
+              OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
           end
           else
-            ExecutableNotFound := True;
-          Screen.Cursor := crDefault;
-        except
-          Screen.Cursor := crDefault;
-          raise;
+            OutputToolMessage(Format(RsEExecutableNotFound, [ProjectFileName]));
         end;
+        Screen.Cursor := crDefault;
+      except
+        Screen.Cursor := crDefault;
+        raise;
       end;
 
       DeleteMapAndDrcFile;
@@ -268,16 +310,13 @@ begin
         FResultInfo[C].LineNumberErrors := LineNumberErrors;
         FResultInfo[C].Success := Succ;
       end;
-                                                       
-      if ExecutableNotFound then
-        raise EJclExpertException.CreateTrace(Format(RsEExecutableNotFound, [ProjectFileName]));
     end
     else
     begin
       FBuildError := True;
       DeleteMapAndDrcFile;
     end;
-    Pointer(FCurrentProject) := nil;
+    FCurrentProject := nil;
   end;
 end;
 
@@ -285,12 +324,12 @@ procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cance
 var
   ProjOptions: IOTAProjectOptions;
 begin
-  if FInsertDataAction.Checked then
+  if EnableExpert then
   begin
     if IsInstalledPackage(Project) then
     begin
       if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
-        ExpertActive(False)
+        EnableExpert := False
       else
       begin
         Cancel := True;
@@ -312,8 +351,6 @@ begin
   end;
 end;
 
-{$ENDIF OldStyleExpert}
-
 procedure TJclDebugExtension.BeginStoreResults;
 begin
   FBuildError := False;
@@ -321,110 +358,13 @@ begin
   FResultInfo := nil;
 end;
 
-{$IFDEF OldStyleExpert}
-
-procedure TJclDebugExtension.BuildActionExecute(Sender: TObject);
-begin
-  try
-    BeginStoreResults;
-    try
-      if InsertDataToProject(ActiveProject) then
-        DisplayResults;
-    finally
-      EndStoreResults;
-    end;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;
-
-procedure TJclDebugExtension.BuildActionUpdate(Sender: TObject);
-var
-  TempActiveProject: IOTAProject;
-  ProjectName: string;
-begin
-  try
-    TempActiveProject := ActiveProject;
-    FBuildAction.Enabled := Assigned(TempActiveProject);
-    if Assigned(ActiveProject) then
-      ProjectName := ExtractFileName(TempActiveProject.FileName)
-    else
-      ProjectName := RsProjectNone;
-    FBuildAction.Caption := Format(RsBuildActionCaption, [ProjectName]);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;
-
-procedure TJclDebugExtension.BuildAllActionExecute(Sender: TObject);
-var
-  I: Integer;
-  TempActiveProject: IOTAProject;
-  TempProjectGroup: IOTAProjectGroup;
-  Error: Boolean;
-begin
-  try
-    TempProjectGroup := ProjectGroup;
-    if not Assigned(TempProjectGroup) then
-      raise EJclExpertException.CreateTrace(RsENoProjectGroup);
-      
-    Error := False;
-    BeginStoreResults;
-    try
-      for I := 0 to TempProjectGroup.ProjectCount - 1 do
-      begin
-        TempActiveProject := TempProjectGroup.Projects[I];
-        TempProjectGroup.ActiveProject := TempActiveProject;
-        Error := not InsertDataToProject(TempActiveProject);
-        if Error then
-          Break;
-      end;
-      if not Error then
-        DisplayResults;
-    finally
-      EndStoreResults;
-    end;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;
-
-procedure TJclDebugExtension.BuildAllActionUpdate(Sender: TObject);
-begin
-  try
-    FBuildAllAction.Enabled := ProjectGroup <> nil;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;
-
-{$ENDIF OldStyleExpert}
-
-{$IFNDEF OldStyleExpert}
-
 procedure TJclDebugExtension.BuildAllProjects(Sender: TObject);
 begin
   BeginStoreResults;
   try
     try
       FSaveBuildAllProjectsExecute(Sender);
-      if FInsertDataAction.Checked then
+      if EnableExpert then
         DisplayResults;
     except
       on ExceptionObj: TObject do
@@ -442,7 +382,7 @@ begin
   try
     try
       FSaveBuildProjectExecute(Sender);
-      if FInsertDataAction.Checked then
+      if EnableExpert then
         DisplayResults;
     except
       on ExceptionObj: TObject do
@@ -453,8 +393,6 @@ begin
     EndStoreResults;
   end;
 end;
-
-{$ENDIF OldStyleExpert}
 
 procedure TJclDebugExtension.DisplayResults;
 var
@@ -504,40 +442,10 @@ begin
   FResultInfo := nil;
 end;
 
-{$IFNDEF OldStyleExpert}
-
-procedure TJclDebugExtension.ExpertActive(Active: Boolean);
-begin
-  if (Active) then
-    FInsertDataAction.ImageIndex := FImageIndex
-  else
-    FInsertDataAction.ImageIndex := FDisabledImageIndex;
-  FInsertDataAction.Checked := Active;
-  HookBuildActions(Active);
-end;
-
-procedure TJclDebugExtension.HookBuildActions(Enable: Boolean);
-begin
-  if Enable then
-  begin
-    if Assigned(FSaveBuildProject) then
-      FSaveBuildProject.OnExecute := BuildProject;
-    if Assigned(FSaveBuildAllProjects) then
-      FSaveBuildAllProjects.OnExecute := BuildAllProjects;
-  end
-  else
-  begin
-    if Assigned(FSaveBuildProject) then
-      FSaveBuildProject.OnExecute := FSaveBuildProjectExecute;
-    if Assigned(FSaveBuildAllProjects) then
-      FSaveBuildAllProjects.OnExecute := FSaveBuildAllProjectsExecute;
-  end;
-end;
-
 procedure TJclDebugExtension.InsertDataExecute(Sender: TObject);
 begin
   try
-    ExpertActive(not FInsertDataAction.Checked);
+    EnableExpert := not FInsertDataAction.Checked;
     SaveExpertValues;
   except
     on ExceptionObj: TObject do
@@ -550,87 +458,39 @@ end;
 
 procedure TJclDebugExtension.LoadExpertValues;
 begin
-  ExpertActive(Settings.LoadBool(JclDebugEnabledRegValue, False));
+  EnableExpert := Settings.LoadBool(JclDebugEnabledRegValue, False);
+  GenerateJdbg := Settings.LoadBool(JclDebugGenerateJdbgRegValue, False);
+  InsertJdbg := Settings.LoadBool(JclDebugInsertJdbgRegValue, True);
 end;
 
 procedure TJclDebugExtension.SaveExpertValues;
 begin
-  Settings.SaveBool(JclDebugEnabledRegValue, FInsertDataAction.Checked);
+  Settings.SaveBool(JclDebugEnabledRegValue, EnableExpert);
+  Settings.SaveBool(JclDebugGenerateJdbgRegValue, GenerateJdbg);
+  Settings.SaveBool(JclDebugInsertJdbgRegValue, InsertJdbg);
 end;
 
-{$ENDIF OldStyleExpert}
-
-{$IFDEF OldStyleExpert}
-
-function TJclDebugExtension.InsertDataToProject(const ActiveProject: IOTAProject): Boolean;
-var
-  BuildOk, Succ: Boolean;
-  ProjOptions: IOTAProjectOptions;
-  SaveMapFile: Variant;
-  ProjectFileName, MapFileName, ExecutableFileName: string;
-  OutputDirectory, LinkerBugUnit: string;
-  MapFileSize, JclDebugDataSize, LineNumberErrors, C: Integer;
-  ExecutableNotFound: Boolean;
-  OptionsModifiedState: Boolean;
+procedure TJclDebugExtension.SetEnableExpert(const Value: Boolean);
 begin
-  if not Assigned(ActiveProject) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
-
-  ProjectFileName := ActiveProject.FileName;
-  ProjOptions := ActiveProject.ProjectOptions;
-  // read output directory
-  OutputDirectory := GetOutputDirectory(ActiveProject);
-  MapFileName := GetMapFileName(ActiveProject);
-
-  OptionsModifiedState := ProjOptions.ModifiedState;
-  SaveMapFile := ProjOptions.Values[MapFileOptionName];
-  ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
-  BuildOk := ActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
-  ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-  ProjOptions.ModifiedState := OptionsModifiedState;
-
-  ExecutableNotFound := False;
-  LinkerBugUnit := '';
-  LineNumberErrors := 0;
-  if BuildOk then
+  FEnableExpert := Value;
+  FInsertDataAction.Checked := Value;
+  if (Value) then
   begin
-    Succ := FileExists(MapFileName);
-    if Succ then
-    begin
-      if FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName) then
-      begin
-        Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
-          LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
-      end
-      else
-      begin
-        ExecutableNotFound := True;
-        Succ := False;
-      end;
-    end;
+    FInsertDataAction.ImageIndex := FImageIndex;
+    if Assigned(FSaveBuildProject) then
+      FSaveBuildProject.OnExecute := BuildProject;
+    if Assigned(FSaveBuildAllProjects) then
+      FSaveBuildAllProjects.OnExecute := BuildAllProjects;
   end
   else
-    Succ := False;
-  if SaveMapFile <> MapFileOptionDetailed then
   begin
-    DeleteFile(MapFileName);
-    DeleteFile(ChangeFileExt(ProjectFileName, DrcFileExtension));
+    FInsertDataAction.ImageIndex := FDisabledImageIndex;
+    if Assigned(FSaveBuildProject) then
+      FSaveBuildProject.OnExecute := FSaveBuildProjectExecute;
+    if Assigned(FSaveBuildAllProjects) then
+      FSaveBuildAllProjects.OnExecute := FSaveBuildAllProjectsExecute;
   end;
-  Result := BuildOk and not ExecutableNotFound;
-  C := Length(FResultInfo);
-  SetLength(FResultInfo, C + 1);
-  FResultInfo[C].ProjectName := ExtractFileName(ProjectFileName);
-  FResultInfo[C].ExecutableFileName := ExecutableFileName;
-  FResultInfo[C].MapFileSize := MapFileSize;
-  FResultInfo[C].JclDebugDataSize := JclDebugDataSize;
-  FResultInfo[C].LinkerBugUnit := LinkerBugUnit;
-  FResultInfo[C].LineNumberErrors := LineNumberErrors;
-  FResultInfo[C].Success := Succ;
-  if ExecutableNotFound then
-    raise EJclExpertException.CreateTrace(Format(RsEExecutableNotFound, [ProjectFileName]));
 end;
-
-{$ENDIF OldStyleExpert}
 
 procedure TJclDebugExtension.RegisterCommands;
 var
@@ -647,30 +507,6 @@ begin
   try
     ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');
     FImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    {$IFDEF OldStyleExpert}
-    FBuildAction := TAction.Create(nil);
-    FBuildAction.Caption := Format(RsBuildActionCaption, [RsProjectNone]);
-    FBuildAction.ImageIndex := FImageIndex;
-    FBuildAction.Visible := True;
-    FBuildAction.OnExecute := BuildActionExecute;
-    FBuildAction.OnUpdate := BuildActionUpdate;
-    FBuildAction.Name := RsBuildActionName;
-    FBuildAction.ActionList := IDEActionList;
-    RegisterAction(FBuildAction);
-    FBuildMenuItem := TMenuItem.Create(nil);
-    FBuildMenuItem.Action := FBuildAction;
-    FBuildAllAction := TAction.Create(nil);
-    FBuildAllAction.Caption := RsBuildAllCaption;
-    FBuildAllAction.ImageIndex := FImageIndex;
-    FBuildAllAction.Visible := True;
-    FBuildAllAction.OnExecute := BuildAllActionExecute;
-    FBuildAllAction.OnUpdate := BuildAllActionUpdate;
-    FBuildAllAction.Name := RsBuildAllActionName;
-    FBuildAllAction.ActionList := IDEActionList;
-    RegisterAction(FBuildAllAction);
-    FBuildAllMenuItem := TMenuItem.Create(nil);
-    FBuildAllMenuItem.Action := FBuildAllAction;
-    {$ELSE OldStyleExpert}
     ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODEBUG');
     FDisabledImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     FInsertDataAction := TAction.Create(nil);
@@ -682,15 +518,12 @@ begin
     RegisterAction(FInsertDataAction);
     FInsertDataItem := TMenuItem.Create(nil);
     FInsertDataItem.Action := FInsertDataAction;
-    {$ENDIF OldStyleExpert}
   finally
     ImageBmp.Free;
   end;
 
-  {$IFNDEF OldStyleExpert}
   FNotifierIndex := Services.AddNotifier(TIdeNotifier.Create(Self));
   LoadExpertValues;
-  {$ENDIF OldStyleExpert}
 
   IDEProjectItem := nil;
   with IDEMainMenu do
@@ -703,32 +536,6 @@ begin
   if not Assigned(IDEProjectItem) then
     raise EJclExpertException.CreateTrace(RsENoProjectMenuItem);
 
-  {$IFDEF OldStyleExpert}
-  with IDEProjectItem do
-    for I := 0 to Count - 1 do
-      if Items[I].Name = 'ProjectBuildItem' then
-      begin
-        if Assigned(Items[I].Action) then
-          FBuildAction.Category := TContainedAction(Items[I].Action).Category;
-        IDEProjectItem.Insert(I + 1, FBuildMenuItem);
-        System.Break;
-      end;
-  if not Assigned(FBuildMenuItem) then
-    raise EJclExpertException.CreateTrace(RsENoBuildMenuItem);
-
-  with IDEProjectItem do
-    for I := 0 to Count - 1 do
-      if Items[I].Name = 'ProjectBuildAllItem' then
-      begin
-        if Assigned(Items[I].Action) then
-          FBuildAllAction.Category := TContainedAction(Items[I].Action).Category;
-        IDEProjectItem.Insert(I + 1, FBuildAllMenuItem);
-        System.Break;
-      end;
-   if not Assigned(FBuildMenuItem.Parent) then
-     raise EJclExpertException.CreateTrace(RsEBuildMenuItemNotInserted);
-
-  {$ELSE OldStyleExpert}
   with IDEProjectItem do
     for I := 0 to Count - 1 do
       if Items[I].Name = 'ProjectOptionsItem' then
@@ -764,33 +571,21 @@ begin
       end;
   if not Assigned(FSaveBuildProject) then
      raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
-  {$ENDIF OldStyleExpert}
 end;
 
 procedure TJclDebugExtension.UnregisterCommands;
 begin
   inherited UnregisterCommands;
-  {$IFNDEF OldStyleExpert}
   if FNotifierIndex <> -1 then
     Services.RemoveNotifier(FNotifierIndex);
   SaveExpertValues;
-  HookBuildActions(False);
+  EnableExpert := False;
   UnregisterAction(FInsertDataAction);
   FreeAndNil(FInsertDataItem);
   FreeAndNil(FInsertDataAction);
-  {$ELSE OldStyleExpert}
-  UnregisterAction(FBuildAction);
-  UnregisterAction(FBuildAllAction);
-  FreeAndNil(FBuildMenuItem);
-  FreeAndNil(FBuildAction);
-  FreeAndNil(FBuildAllMenuItem);
-  FreeAndNil(FBuildAllAction);
-  {$ENDIF OldStyleExpert}
 end;
 
 //=== { TIdeNotifier } =======================================================
-
-{$IFNDEF OldStyleExpert}
 
 constructor TIdeNotifier.Create(ADebugExtension: TJclDebugExtension);
 begin
@@ -838,7 +633,5 @@ procedure TIdeNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
 begin
 end;
-
-{$ENDIF ~OldStyleExpert}
 
 end.

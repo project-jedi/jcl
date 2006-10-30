@@ -298,6 +298,8 @@ type
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overload;
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
   var LineNumberErrors: Integer): Boolean; overload;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
+  var LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean; overload;
 
 // do not change this function, it is used by the JVCL installer using dynamic
 // linking (to avoid dependencies in the installer), the signature and name are
@@ -1688,13 +1690,22 @@ end;
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
 var
   Dummy1: string;
-  Dummy2: Integer;
+  Dummy2, Dummy3, Dummy4: Integer;
 begin
-  Result := ConvertMapFileToJdbgFile(MapFileName, Dummy1, Dummy2);
+  Result := ConvertMapFileToJdbgFile(MapFileName, Dummy1, Dummy2, Dummy3, Dummy4);
 end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
   var LineNumberErrors: Integer): Boolean;
+var
+  Dummy1, Dummy2: Integer;
+begin
+  Result := ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit, LineNumberErrors,
+    Dummy1, Dummy2);
+end;
+
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
+  var LineNumberErrors, MapFileSize, JdbgFileSize: Integer): Boolean;
 var
   JDbgFileName: TFileName;
   Generator: TJclBinDebugGenerator;
@@ -1702,6 +1713,8 @@ begin
   JDbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
   Generator := TJclBinDebugGenerator.Create(MapFileName);
   try
+    MapFileSize := Generator.Stream.Size;
+    JdbgFileSize := Generator.DataStream.Size;
     Result := (Generator.DataStream.Size > 0) and Generator.CalculateCheckSum;
     if Result then
       Generator.DataStream.SaveToFile(JDbgFileName);
