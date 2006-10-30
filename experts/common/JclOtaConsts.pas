@@ -101,9 +101,8 @@ const
   SRegWizardActive    = 'Uses Wizard Active';
   SRegWizardConfirm   = 'Uses Wizard Confirm';
   SRegWizardIniFile   = 'Configuration File';
-
-  SJCLUsesWizardID    = 'JEDI.JCLUsesWizard'; // wizard ID
-  SJCLUsesWizardName  = 'JCL Uses Wizard'; // wizard name
+  JclRootDirValueName = 'RootDir';
+  JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================
   AnalyzerViewName = 'AnalyzerView';

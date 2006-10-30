@@ -329,7 +329,7 @@ begin
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
-  FBaseKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey);
+  FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
   
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
@@ -647,12 +647,17 @@ end;
 function TJclOTAExpertBase.GetActiveProject: IOTAProject;
 var
   TempProjectGroup: IOTAProjectGroup;
+  Index: Integer;
 begin
+  Result := nil;
   TempProjectGroup := ProjectGroup;
+
   if Assigned(TempProjectGroup) then
     Result := TempProjectGroup.ActiveProject
   else
-    Result := nil;
+    for Index := 0 to OTAModuleServices.ModuleCount - 1 do
+      if Supports(OTAModuleServices.Modules[Index], IOTAProject, Result) then
+        Exit;
 end;
 
 function TJclOTAExpertBase.GetDesigner: string;
