@@ -22,7 +22,8 @@
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\debug\JclDebugIdeResult.pas" Targets="Windows" Formname="JclDebugResultForm" Condition=""/>
-    <File Name="..\..\experts\debug\JclDebugIdeImpl.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="Windows" Formname="JclDebugResultForm" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeImpl.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas" Targets="Windows" Formname="JclDebugIdeConfigFrame: TFrame" Condition=""/>
   </Contains>
 </Package>

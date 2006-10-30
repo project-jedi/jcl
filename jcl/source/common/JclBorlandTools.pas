@@ -115,6 +115,7 @@ const
   SourceExtensionBCBPackage    = '.bpk';
   SourceExtensionDelphiProject = '.dpr';
   SourceExtensionBCBProject    = '.bpr';
+  SourceExtensionBDSProject    = '.bdsproj';
   BinaryExtensionPackage       = '.bpl';
   BinaryExtensionLibrary       = '.dll';
   BinaryExtensionExecutable    = '.exe';
@@ -123,6 +124,7 @@ const
   CompilerExtensionLIB         = '.lib';
   CompilerExtensionTDS         = '.tds';
   CompilerExtensionMAP         = '.map';
+  CompilerExtensionDRC         = '.drc';
   CompilerExtensionDEF         = '.def';
   SourceExtensionCPP           = '.cpp';
   SourceExtensionH             = '.h';
