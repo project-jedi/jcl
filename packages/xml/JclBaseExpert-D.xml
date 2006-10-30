@@ -26,8 +26,8 @@
     <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="Windows,Bds" Formname="" Condition=""/>
     <File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="Windows,Bds" Formname="JclExpertExceptionForm" Condition=""/>
     <File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="Windows,Bds" Formname="JclOtaOptionsForm" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="Windows,Bds" Formname="JclOtaActionConfigureFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="Windows,Bds" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
     <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="Windows,Bds" Formname="JclWizardForm" Condition=""/>
-    <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="Windows,Bds" Formname="JclWizardFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="Windows,Bds" Formname="JclWizardFrame: TFrame" Condition=""/>
   </Contains>
 </Package>
