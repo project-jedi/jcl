@@ -261,7 +261,7 @@ type
     procedure WriteExtended(const Value: Extended);
     procedure WriteInt64(Value: Int64); overload;
     procedure WriteInteger(Value: Integer); overload;
-    procedure WriteStringDlimitedByNull(const Value: string);
+    procedure WriteStringDelimitedByNull(const Value: string);
     procedure WriteShortString(const Value: ShortString);
     procedure WriteSingle(const Value: Single);
     procedure WriteSizedString(const Value: string);
@@ -1178,7 +1178,7 @@ begin
   WriteBuffer(Value, SizeOf(Value));
 end;
 
-procedure TJclEasyStream.WriteStringDlimitedByNull(const Value: string);
+procedure TJclEasyStream.WriteStringDelimitedByNull(const Value: string);
 begin
   WriteBuffer(PChar(Value)^, Length(Value) + 1);
 end;
