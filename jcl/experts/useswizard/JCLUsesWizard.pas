@@ -775,7 +775,7 @@ begin
               end;
 
             // attempt to recompile
-            Project := GetActiveProject;
+            Project := ActiveProject;
             if Assigned(Project) and Assigned(Project.ProjectBuilder) then
               Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
@@ -821,7 +821,7 @@ begin
               end;
 
             // attempt to recompile
-            Project := GetActiveProject;
+            Project := ActiveProject;
             if Assigned(Project) and Assigned(Project.ProjectBuilder) then
               Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
@@ -900,7 +900,7 @@ begin
               end;
 
             // attempt to recompile
-            Project := GetActiveProject;
+            Project := ActiveProject;
             if Assigned(Project) and Assigned(Project.ProjectBuilder) then
               Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
