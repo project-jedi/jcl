@@ -58,7 +58,6 @@ type
     FIniFile: string;
     FNotifierIndex: Integer;
     FFrameJclOptions: TFrameJclOptions;
-    procedure SetIniFile(const Value: string);
     procedure AppIdle(Sender: TObject; var Done: Boolean);
     procedure ClearErrors;
     function DoConfirmChanges(ChangeList: TStrings): TModalResult;
@@ -67,17 +66,19 @@ type
     procedure ProcessUses;
     procedure ResolveUsesName(Error: PErrorInfo);
     procedure SetActive(Value: Boolean);
-    procedure SetConfirmChanges(Value: Boolean);
   public
     Value: Integer;
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function LoadFromRegistry: Boolean;
+    procedure RegisterCommands; override;
+    procedure UnregisterCommands; override;
+    procedure LoadSettings;
+    procedure SaveSettings;
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
     procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
     property Active: Boolean read FActive write SetActive;
-    property ConfirmChanges: Boolean read FConfirmChanges write SetConfirmChanges;
-    property IniFile: string read FIniFile write SetIniFile;
+    property ConfirmChanges: Boolean read FConfirmChanges write FConfirmChanges;
+    property IniFile: string read FIniFile write FIniFile;
   end;
 
   TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
@@ -108,61 +109,70 @@ implementation
 
 uses
   IniFiles,
-  JclFileUtils, JclParseUses, JclRegistry, JclUsesDialog,
+  JclFileUtils, JclParseUses, JclRegistry, JclStrings,
+  JclUsesDialog,
   JclOtaConsts, JclOtaResources;
 
-function FindClassForm(const AClassName: string): TForm;
-var
-  I: Integer;
+// create and register wizard instance
+
+procedure Register;
 begin
-  Result := nil;
-  with Screen do
-    for I := 0 to FormCount - 1 do
-      if Forms[I].ClassNameIs(AClassName) then
-      begin
-        Result := Forms[I];
-        Break;
-      end;
-end;
-
-function GetActiveProject: IOTAProject;
-var
-  ProjectGroup: IOTAProjectGroup;
-  I: Integer;
-begin
-  Result := nil;
-
-  with BorlandIDEServices as IOTAModuleServices do
-  begin
-    ProjectGroup := nil;
-    for I := 0 to ModuleCount - 1 do
-      if Supports(Modules[I], IOTAProjectGroup, ProjectGroup) then
-        Break;
-
-    if Assigned(ProjectGroup) then
-      Result := ProjectGroup.ActiveProject
-    else
-      for I := 0 to ModuleCount - 1 do
-        if Supports(Modules[I], IOTAProject, Result) then
-          Break;
+  try
+    RegisterPackageWizard(TJCLUsesWizard.Create);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
 end;
 
-function GetLineNumber(S1, S2: PChar): Integer;
 var
-  P: PChar;
-begin
-  if S2 < S1 then
-    Result := 0
-  else
-  begin
-    Result := 1;
-    P := StrPos(S1, #13#10);
-    while (P <> nil) and (P <= S2) do
-    begin
-      Inc(Result);
+  JCLWizardIndex: Integer = -1;
 
-      P := StrPos(P + 2, #13#10);
+procedure JclWizardTerminate;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    if JCLWizardIndex <> -1 then
+    begin
+      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+      if not Assigned(OTAWizardServices) then
+        raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+      OTAWizardServices.RemoveWizard(JCLWizardIndex);
+    end;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+    end;
+  end;
+end;
+
+function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+var
+  OTAWizardServices: IOTAWizardServices;
+begin
+  try
+    TerminateProc := JclWizardTerminate;
+
+    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
+    if not Assigned(OTAWizardServices) then
+      raise EJclExpertException.CreateTrace(RsENoWizardServices);
+
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJCLUsesWizard.Create);
+
+    Result := True;
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      Result := False;
     end;
   end;
 end;
@@ -193,6 +203,38 @@ end;
 function TLine.GetLineText: string;
 begin
   Result := '';
+end;
+
+function FindClassForm(const AClassName: string): TForm;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[I].ClassNameIs(AClassName) then
+    begin
+      Result := Screen.Forms[I];
+      Break;
+    end;
+end;
+
+function GetLineNumber(S1, S2: PChar): Integer;
+var
+  P: PChar;
+begin
+  if S2 < S1 then
+    Result := 0
+  else
+  begin
+    Result := 1;
+    P := StrPos(S1, #13#10);
+    while (P <> nil) and (P <= S2) do
+    begin
+      Inc(Result);
+
+      P := StrPos(P + 2, #13#10);
+    end;
+  end;
 end;
 
 // the message treeview is custom drawn; hence this hack
@@ -272,34 +314,7 @@ begin
   end;
 end;
 
-function ReadString(S: PChar; Len: Integer): string;
-begin
-  SetString(Result, S, Len);
-end;
-
 //=== { TJCLUsesWizardNotifier } =============================================
-
-// TJCLUsesWizardNotifier private: IOTAIDENotifier
-
-procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded: Boolean);
-begin
-  // do nothing
-end;
-
-procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
-begin
-  // do nothing
-end;
-
-procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode: TOTAFileNotification;
-  const FileName: string; var Cancel: Boolean);
-begin
-  // do nothing
-end;
-
-//=== { TJCLUsesWizardNotifier } =============================================
-
-// TJCLUsesWizardNotifier private: IOTAIDENotifier50
 
 procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
 var
@@ -326,8 +341,18 @@ begin
   end;
 end;
 
+procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded: Boolean);
+begin
+  // do nothing
+end;
+
 procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject;
   IsCodeInsight: Boolean; var Cancel: Boolean);
+begin
+  // do nothing
+end;
+
+procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
 begin
   // do nothing
 end;
@@ -339,9 +364,13 @@ begin
   FWizard := AWizard;
 end;
 
-//=== { TJCLUsesWizard } =====================================================
+procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode: TOTAFileNotification;
+  const FileName: string; var Cancel: Boolean);
+begin
+  // do nothing
+end;
 
-// private
+//=== { TJCLUsesWizard } =====================================================
 
 procedure TJCLUsesWizard.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
 begin
@@ -394,6 +423,27 @@ begin
   FErrors.Clear;
 end;
 
+constructor TJCLUsesWizard.Create;
+begin
+  inherited Create(JclUsesExpertName);
+  
+  FIdentifierLists := TStringList.Create;
+  FErrors := TList.Create;
+  FActive := False;
+  FConfirmChanges := False;
+  FNotifierIndex := -1;
+end;
+
+destructor TJCLUsesWizard.Destroy;
+begin
+  SetActive(False);
+  ClearErrors;
+  FErrors.Free;
+  FIdentifierLists.Free;
+  
+  inherited Destroy;
+end;
+
 function TJCLUsesWizard.DoConfirmChanges(ChangeList: TStrings): TModalResult;
 var
   Dialog: TFormUsesConfirm;
@@ -440,6 +490,20 @@ begin
   finally
     IniFile.Free;
   end;
+end;
+
+procedure TJCLUsesWizard.LoadSettings;
+var
+  DefaultIniFile, DefaultRegKey: string;
+begin
+  DefaultRegKey := StrEnsureSuffix(AnsiBackslash, Services.GetBaseRegistryKey) + RegJclKey;
+  DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey, JclRootDirValueName, '');
+  if DefaultIniFile <> '' then
+    DefaultIniFile := PathAddSeparator(DefaultIniFile) + JclIniFileLocation;
+
+  ConfirmChanges := Settings.LoadBool(SRegWizardConfirm, True);
+  IniFile := Settings.LoadString(SRegWizardIniFile, DefaultIniFile);
+  Active := Settings.LoadBool(SRegWizardActive, False);
 end;
 
 // load localized strings for the undeclared identifier error
@@ -849,6 +913,11 @@ begin
   end;
 end;
 
+procedure TJCLUsesWizard.RegisterCommands;
+begin
+  LoadSettings;
+end;
+
 procedure TJCLUsesWizard.ResolveUsesName(Error: PErrorInfo);
 var
   I: Integer;
@@ -879,6 +948,13 @@ begin
   end;
 end;
 
+procedure TJCLUsesWizard.SaveSettings;
+begin
+  Settings.SaveBool(SRegWizardConfirm, ConfirmChanges);
+  Settings.SaveString(SRegWizardIniFile, IniFile);
+  Settings.SaveBool(SRegWizardActive, Active);
+end;
+
 procedure TJCLUsesWizard.SetActive(Value: Boolean);
 begin
   if Value <> FActive then
@@ -902,124 +978,9 @@ begin
   end;
 end;
 
-procedure TJCLUsesWizard.SetConfirmChanges(Value: Boolean);
+procedure TJCLUsesWizard.UnregisterCommands;
 begin
-  if Value <> FConfirmChanges then
-  begin
-    FConfirmChanges := Value;
-  end;
-end;
-
-procedure TJCLUsesWizard.SetIniFile(const Value: string);
-begin
-  FIniFile := Value;
-end;
-
-//=== { TJCLUsesWizard } =====================================================
-
-// public
-
-constructor TJCLUsesWizard.Create;
-begin
-  inherited Create(JclUsesExpertName);
-  FIdentifierLists := TStringList.Create;
-  FErrors := TList.Create;
-  FActive := False;
-  FConfirmChanges := False;
-  FNotifierIndex := -1;
-
-  LoadFromRegistry;
-end;
-
-destructor TJCLUsesWizard.Destroy;
-begin
-  SetActive(False);
-  ClearErrors;
-  FErrors.Free;
-  FIdentifierLists.Free;
-  inherited Destroy;
-end;
-
-function TJCLUsesWizard.LoadFromRegistry: Boolean;
-var
-  S: string;
-  Root: DelphiHKEY;
-begin
-  S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey + '\' + RegJclIDEKey + JclUsesExpertName;
-  Root := HKEY_CURRENT_USER;
-  Result := RegKeyExists(Root, S);
-  if not Result then
-  begin
-    Root := HKEY_LOCAL_MACHINE;
-    Result := RegKeyExists(Root, S);
-  end;
-  SetActive(RegReadBoolDef(Root, S, SRegWizardActive, False));
-  FConfirmChanges := RegReadBoolDef(Root, S, SRegWizardConfirm, True);
-  FIniFile := RegReadStringDef(Root, S, SRegWizardIniFile, '');
-end;
-
-// create and register wizard instance
-
-procedure Register;
-begin
-  try
-    RegisterPackageWizard(TJCLUsesWizard.Create);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
-  end;
-end;
-
-var
-  JCLWizardIndex: Integer = -1;
-
-procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
-begin
-  try
-    if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-    end;
-  end;
-end;
-
-function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
-begin
-  try
-    TerminateProc := JclWizardTerminate;
-
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJCLUsesWizard.Create);
-
-    Result := True;
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      Result := False;
-    end;
-  end;
+  SaveSettings;
 end;
 
 end.
