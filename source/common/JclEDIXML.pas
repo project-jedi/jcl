@@ -2371,7 +2371,7 @@ begin
     EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
       SetLength(FData, EDIFileStream.Size);
-      EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
+      EDIFileStream.Read(FData[1], EDIFileStream.Size);
     finally
       EDIFileStream.Free;
     end;
