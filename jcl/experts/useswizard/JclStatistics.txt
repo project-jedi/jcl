@@ -1,9 +1,13 @@
-BinomialCoeff
-Combinations
 EJclStatisticsError
+Combinations
+HeronianMean
+StdError
+StdError
+SumOfSquares
+ArithmeticMean
+BinomialCoeff
 GeometricMean
 HarmonicMean
-HeronianMean
 IsPositiveFloatArray
 MaxFloatArray
 MaxFloatArrayIndex
@@ -16,9 +20,7 @@ PopulationVariance
 PopulationVarianceAndMean
 SampleVariance
 SampleVarianceAndMean
-StdError
 SumFloatArray
-SumOfSquares
-SumPairProductFloatArray
 SumSquareDiffFloatArray
 SumSquareFloatArray
+SumPairProductFloatArray

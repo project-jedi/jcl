@@ -1,4 +1,5 @@
 IJclWinMidiOut
+GetMidiOutputs
 MidiInCheck
 MidiOut
 MidiOutCheck

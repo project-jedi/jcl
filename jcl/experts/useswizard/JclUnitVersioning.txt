@@ -1,7 +1,10 @@
-RegisterUnitVersion
 TCustomUnitVersioningProvider
 TUnitVersion
-TUnitVersionInfo
 TUnitVersioning
 TUnitVersioningModule
+GetUnitVersioning
+RegisterUnitVersion
 UnregisterUnitVersion
+TUnitVersionInfo
+PUnitVersionInfo
+TUnitVersioningProviderClass

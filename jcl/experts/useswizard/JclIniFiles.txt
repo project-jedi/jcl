@@ -1,7 +1,8 @@
-IniReadInteger
-IniReadString
 IniReadStrings
+IniWriteStrings
 IniWriteBool
 IniWriteInteger
 IniWriteString
-IniWriteStrings
+IniReadBool
+IniReadInteger
+IniReadString
