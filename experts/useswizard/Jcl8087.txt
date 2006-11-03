@@ -1,10 +1,7 @@
-ClearPending8087Exceptions
 Get8087ControlWord
 Get8087Infinity
 Get8087Precision
 Get8087Rounding
-Get8087StatusWord
-GetMasked8087Exceptions
 GetPending8087Exceptions
 Mask8087Exceptions
 Set8087ControlWord
@@ -12,9 +9,12 @@ Set8087Infinity
 Set8087Precision
 Set8087Rounding
 SetMasked8087Exceptions
+Unmask8087Exceptions
 T8087Exception
-T8087Exceptions
-T8087Infinity
+All8087Exceptions
+ClearPending8087Exceptions
+GetMasked8087Exceptions
 T8087Precision
 T8087Rounding
-Unmask8087Exceptions
+T8087Infinity
+Get8087StatusWord

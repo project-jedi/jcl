@@ -10,3 +10,4 @@ TJclTARCompressionStream
 TJclTARDecompressionStream
 TJclZLibCompressStream
 TJclZLibDecompressStream
+TJclCompressionLevel

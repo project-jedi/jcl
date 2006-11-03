@@ -3,8 +3,9 @@ EJclCliInstructionStreamInvalid
 TJclBinaryInstruction
 TJclClrILGenerator
 TJclInstruction
+TJclUnaryInstruction
 TJclInstructionDumpILOption
-TJclInstructionDumpILOptions
 TJclInstructionParamType
 TJclOpCode
-TJclUnaryInstruction
+TJclInstructionDumpILOptions
+InstructionDumpILAllOption
