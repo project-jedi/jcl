@@ -41,6 +41,8 @@
 
 unit JclCompression;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -58,7 +60,8 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   JclBase,
-  zlibh;
+  zlibh,
+  JclStreams;
 
 {**************************************************************************************************}
 {
@@ -158,21 +161,113 @@ type
   end;
 
   // GZIP Support
+
+//=== { GZIP helpers } =======================================================
+
+type
+  TJclGZIPHeader = packed record
+    ID1: Byte;
+    ID2: Byte;
+    CompressionMethod: Byte;
+    Flags: Byte;
+    ModifiedTime: Cardinal;
+    ExtraFlags: Byte;
+    OS: Byte;
+  end;
+
+  TJclGZIPFooter = packed record
+    DataCRC32: Cardinal;
+    DataSize: Cardinal;
+  end;
+
+const
+  // ID1 and ID2 fields
+  JCL_GZIP_ID1          = $1F; // value for the ID1 field
+  JCL_GZIP_ID2          = $8B; // value for the ID2 field
+
+  // Compression Model field
+  JCL_GZIP_CM_DEFLATE   = 8;   // Zlib classic
+
+  // Flags field : extra fields for the header
+  JCL_GZIP_FLAG_TEXT    = $01; // file is probably ASCII text
+  JCL_GZIP_FLAG_CRC     = $02; // a CRC16 for the header is present
+  JCL_GZIP_FLAG_EXTRA   = $04; // extra fields present
+  JCL_GZIP_FLAG_NAME    = $08; // original file name is present
+  JCL_GZIP_FLAG_COMMENT = $10; // comment is present
+
+  // ExtraFlags field : compression level
+  JCL_GZIP_EFLAG_MAX    = 2;   // compressor used maximum compression
+  JCL_GZIP_EFLAG_FAST   = 4;   // compressor used fastest compression
+
+  // OS field : file system
+  JCL_GZIP_OS_FAT       = 0;   // FAT filesystem (MS-DOS, OS/2, NT/Win32)
+  JCL_GZIP_OS_AMIGA     = 1;   // Amiga
+  JCL_GZIP_OS_VMS       = 2;   // VMS (or OpenVMS)
+  JCL_GZIP_OS_UNIX      = 3;   // Unix
+  JCL_GZIP_OS_VM        = 4;   // VM/CMS
+  JCL_GZIP_OS_ATARI     = 5;   // Atari TOS
+  JCL_GZIP_OS_HPFS      = 6;   // HPFS filesystem (OS/2, NT)
+  JCL_GZIP_OS_MAC       = 7;   // Macintosh
+  JCL_GZIP_OS_Z         = 8;   // Z-System
+  JCL_GZIP_OS_CPM       = 9;   // CP/M
+  JCL_GZIP_OS_TOPS      = 10;  // TOPS-20
+  JCL_GZIP_OS_NTFS      = 11;  // NTFS filesystem (NT)
+  JCL_GZIP_OS_QDOS      = 12;  // QDOS
+  JCL_GZIP_OS_ACORN     = 13;  // Acorn RISCOS
+  JCL_GZIP_OS_UNKNOWN   = 255; // unknown
+
+type
+  TJclGZIPSubFieldHeader = packed record
+    SI1: Byte;
+    SI2: Byte;
+    Len: Word;
+  end;
+// constants to identify sub fields in the extra field
+// source: http://www.gzip.org/format.txt
+const
+  JCL_GZIP_X_AC1 = $41; // AC Acorn RISC OS/BBC MOS file type information
+  JCL_GZIP_X_AC2 = $43;
+  JCL_GZIP_X_Ap1 = $41; // Ap Apollo file type information
+  JCL_GZIP_X_Ap2 = $70;
+  JCL_GZIP_X_cp1 = $63; // cp file compressed by cpio
+  JCL_GZIP_X_cp2 = $70;
+  JCL_GZIP_X_GS1 = $1D; // GS gzsig
+  JCL_GZIP_X_GS2 = $53;
+  JCL_GZIP_X_KN1 = $4B; // KN KeyNote assertion (RFC 2704)
+  JCL_GZIP_X_KN2 = $4E;
+  JCL_GZIP_X_Mc1 = $4D; // Mc Macintosh info (Type and Creator values)
+  JCL_GZIP_X_Mc2 = $63;
+  JCL_GZIP_X_RO1 = $52; // RO Acorn Risc OS file type information
+  JCL_GZIP_X_RO2 = $4F;
+
+type
+  TJclGZIPFlag = (gfDataIsText, gfHeaderCRC16, gfExtraField, gfOriginalFileName,
+    gfComment);
+  TJclGZIPFlags = set of TJclGZIPFlag;
+  TJclGZIPFatSystem = (gfsFat, gfsAmiga, gfsVMS, gfsUnix, gfsVM, gfsAtari, gfsHPFS,
+    gfsMac, gfsZ, gfsCPM, gfsTOPS, gfsNTFS, gfsQDOS, gfsAcorn, gfsOther, gfsUnknown);
+  
   // Format is described in RFC 1952, http://www.faqs.org/rfcs/rfc1952.html
   TJclGZIPCompressionStream = class(TJclCompressStream)
   private
-    FComment: string;
-    FOriginalDateTime: TDateTime;
-    FOriginalFileName: string;
-    FHeaderWritten: Boolean;
-    FZlStream: TJclZlibCompressStream;
-
-    FOriginalSize: Cardinal;
-    FCRC32: Cardinal;
+    FFlags: TJclGZIPFlags;
+    FUnixTime: Cardinal;
+    FAutoSetTime: Boolean;
     FCompressionLevel: TJclCompressionLevel;
-
+    FFatSystem: TJclGZIPFatSystem;
+    FExtraField: string;
+    FOriginalFileName: string;
+    FComment: string;
+    FZLibStream: TJclZlibCompressStream;
+    FOriginalSize: Cardinal;
+    FDataCRC32: Cardinal;
+    FHeaderWritten: Boolean;
     procedure WriteHeader;
-    procedure ZlStreamProgress(Sender: TObject);
+    function GetDosTime: TDateTime;
+    function GetUnixTime: Cardinal;
+    procedure SetDosTime(const Value: TDateTime);
+    procedure SetUnixTime(Value: Cardinal);
+    procedure ZLibStreamProgress(Sender: TObject);
   public
     constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
     destructor Destroy; override;
@@ -183,42 +278,66 @@ type
     // the last call to Write.
     function Flush: Integer; override;
 
+    property Flags: TJclGZIPFlags read FFlags write FFlags;
+    property DosTime: TDateTime read GetDosTime write SetDosTime;
+    property UnixTime: Cardinal read GetUnixTime write SetUnixTime;
+    property AutoSetTime: Boolean read FAutoSetTime write FAutoSetTime;
+    property FatSystem: TJclGZIPFatSystem read FFatSystem write FFatSystem;
+    property ExtraField: string read FExtraField write FExtraField;
     // Note: In order for most decompressors to work, the original file name
     // must be given or they would display an empty file name in their list.
     // This does not affect the decompression stream below as it simply reads
     // the value and does not work with it
     property OriginalFileName: string read FOriginalFileName write FOriginalFileName;
-    property OriginalDateTime: TDateTime read FOriginalDateTime write FOriginalDateTime;
     property Comment: string read FComment write FComment;
   end;
 
   TJclGZIPDecompressionStream = class(TJclDecompressStream)
   private
-    FZlStream: TJclZLibDecompressStream;
-    FMemStream: TMemoryStream;
-    
-    FHeaderRead: Boolean;
+    FHeader: TJclGZIPHeader;
+    FFooter: TJclGZIPFooter;
+    FCompressedDataStream: TJclDelegatedStream;
+    FZLibStream: TJclZLibDecompressStream;
     FOriginalFileName: string;
     FComment: string;
-    FOriginalDateTime: TDateTime;
-    FCRC16: Word;
+    FExtraField: string;
+    FComputedHeaderCRC16: Word;
+    FStoredHeaderCRC16: Word;
+    FComputedDataCRC32: Cardinal;
     FCompressedDataSize: Int64;
-    FCRC32: Cardinal;
-    FOriginalSize: Cardinal;
-
-    function ReadHeader: Boolean;
-    procedure ZlStreamProgress(Sender: TObject);
+    FDataSize: Int64;
+    FDataStarted: Boolean;
+    FDataEnded: Boolean;
+    FAutoCheckDataCRC32: Boolean;
+    function GetCompressedDataSize: Int64;
+    function GetComputedDataCRC32: Cardinal;
+    function GetDosTime: TDateTime;
+    function GetFatSystem: TJclGZIPFatSystem;
+    function GetFlags: TJclGZIPFlags;
+    function GetOriginalDataSize: Cardinal;
+    function GetStoredDataCRC32: Cardinal;
+    function ReadCompressedData(Sender: TObject; var Buffer; Count: Longint): Longint;
+    procedure ZLibStreamProgress(Sender: TObject);
   public
+    constructor Create(Source: TStream; CheckHeaderCRC: Boolean = True);
     destructor Destroy; override;
-    
     function Read(var Buffer; Count: Longint): Longint; override;
 
+    property ComputedHeaderCRC16: Word read FComputedHeaderCRC16;
+    property StoredHeaderCRC16: Word read FStoredHeaderCRC16;
+    property ExtraField: string read FExtraField;
     property OriginalFileName: string read FOriginalFileName;
-    property OriginalSize: Cardinal read FOriginalSize;
-    property OriginalDateTime: TDateTime read FOriginalDateTime;
     property Comment: string read FComment;
-    property CRC16: Word read FCRC16;
-    property CRC32: Cardinal read FCRC32;
+    property Flags: TJclGZIPFlags read GetFlags;
+    property CompressionLevel: Byte read FHeader.ExtraFlags;
+    property FatSystem: TJclGZIPFatSystem read GetFatSystem;
+    property UnixTime: Cardinal read FHeader.ModifiedTime;
+    property DosTime: TDateTime read GetDosTime;
+    property ComputedDataCRC32: Cardinal read GetComputedDataCRC32;
+    property StoredDataCRC32: Cardinal read GetStoredDataCRC32;
+    property AutoCheckDataCRC32: Boolean read FAutoCheckDataCRC32 write FAutoCheckDataCRC32;
+    property CompressedDataSize: Int64 read GetCompressedDataSize;
+    property OriginalDataSize: Cardinal read GetOriginalDataSize;
   end;
 
   // RAR Support
@@ -627,39 +746,71 @@ constructor TJclGZIPCompressionStream.Create(Destination: TStream;
   CompressionLevel: TJclCompressionLevel);
 begin
   inherited Create(Destination);
-  
+
+  FAutoSetTime := True;
+  FFatSystem := gfsUnknown;
   FCompressionLevel := CompressionLevel;
-  FCRC32 := crc32(0, nil, 0);
+  FDataCRC32 := crc32(0, nil, 0);
 end;
 
 destructor TJclGZIPCompressionStream.Destroy;
 begin
-  FZlStream.Free;
+  FZLibStream.Free;
 
   inherited Destroy;
 end;
 
 function TJclGZIPCompressionStream.Flush: Integer;
+var
+  AFooter: TJclGZIPFooter;
 begin
-  if Assigned(FZlStream) then
-    Result := FZlStream.Flush
+  if Assigned(FZLibStream) then
+    Result := FZLibStream.Flush
   else
     Result := 0;
 
-  // Write trailer, CRC32 followed by ISIZE
-  FStream.Write(FCRC32, SizeOf(FCRC32));
-  FStream.Write(FOriginalSize, SizeOf(FOriginalSize));
+  // Write footer, CRC32 followed by ISIZE
+  AFooter.DataCRC32 := FDataCRC32;
+  AFooter.DataSize := FOriginalSize;
 
-  Inc(Result, SizeOf(FCRC32) + SizeOf(FOriginalSize));
+  Inc(Result, FStream.Write(AFooter, SizeOf(AFooter)));
+end;
+
+function TJclGZIPCompressionStream.GetDosTime: TDateTime;
+begin
+  if AutoSetTime then
+    Result := Now
+  else
+    Result := UnixTimeToDateTime(FUnixTime);
+end;
+
+function TJclGZIPCompressionStream.GetUnixTime: Cardinal;
+begin
+  if AutoSetTime then
+    Result := DateTimeToUnixTime(Now)
+  else
+    Result := FUnixTime;
 end;
 
 procedure TJclGZIPCompressionStream.Reset;
 begin
-  if Assigned(FZlStream) then
-    FZlStream.Reset;
+  if Assigned(FZLibStream) then
+    FZLibStream.Reset;
 
-  FCRC32 := crc32(0, nil, 0);
+  FDataCRC32 := crc32(0, nil, 0);
   FOriginalSize := 0;
+end;
+
+procedure TJclGZIPCompressionStream.SetDosTime(const Value: TDateTime);
+begin
+  AutoSetTime := False;
+  FUnixTime := DateTimeToUnixTime(Value);
+end;
+
+procedure TJclGZIPCompressionStream.SetUnixTime(Value: Cardinal);
+begin
+  AutoSetTime := False;
+  FUnixTime := Value;
 end;
 
 function TJclGZIPCompressionStream.Write(const Buffer; Count: Integer): Longint;
@@ -670,215 +821,356 @@ begin
     FHeaderWritten := True;
   end;
 
-  if not Assigned(FZlStream) then
+  if not Assigned(FZLibStream) then
   begin
-    FZlStream := TJclZlibCompressStream.Create(FStream, FCompressionLevel);
-    FZlStream.WindowBits := -DEF_WBITS;    // negative value for raw mode
-    FZlStream.OnProgress := ZlStreamProgress;
+    FZLibStream := TJclZlibCompressStream.Create(FStream, FCompressionLevel);
+    FZLibStream.WindowBits := -DEF_WBITS;    // negative value for raw mode
+    FZLibStream.OnProgress := ZLibStreamProgress;
   end;
 
-  Result := FZlStream.Write(Buffer, Count);
-  FCRC32 := crc32(FCRC32, PBytef(@Buffer), Result);
+  Result := FZLibStream.Write(Buffer, Count);
+  FDataCRC32 := crc32(FDataCRC32, PBytef(@Buffer), Result);
   Inc(FOriginalSize, Result);
 end;
 
 procedure TJclGZIPCompressionStream.WriteHeader;
 var
-  Dummy: Byte;
-  UnixTimeStamp: Cardinal;
-  Flags: Byte;
+  HeaderCRC: Cardinal;
+  procedure StreamWriteBuffer(const Buffer; Count: Longint);
+  begin
+    FStream.WriteBuffer(Buffer, Count);
+    if gfHeaderCRC16 in Flags then
+      HeaderCRC := crc32(HeaderCRC, @Byte(Buffer), Count);
+  end;
+  function CheckCString(const Buffer: string): Boolean;
+  var
+    Index: Integer;
+  begin
+    Result := False;
+    for Index := 0 to Length(Buffer) do
+      if Buffer[Index] = #0 then
+        Exit;
+    Result := True;
+  end;
+const
+  FatSystemToByte: array [TJclGZIPFatSystem] of Byte =
+    ( JCL_GZIP_OS_FAT, JCL_GZIP_OS_AMIGA, JCL_GZIP_OS_VMS, JCL_GZIP_OS_UNIX,
+      JCL_GZIP_OS_VM, JCL_GZIP_OS_ATARI, JCL_GZIP_OS_HPFS, JCL_GZIP_OS_MAC,
+      JCL_GZIP_OS_Z, JCL_GZIP_OS_CPM, JCL_GZIP_OS_TOPS, JCL_GZIP_OS_NTFS,
+      JCL_GZIP_OS_QDOS, JCL_GZIP_OS_ACORN, JCL_GZIP_OS_UNKNOWN, JCL_GZIP_OS_UNKNOWN );
+var
+  AHeader: TJclGZIPHeader;
+  ExtraFieldLength: Word;
 begin
-  // ID1
-  Dummy := $1F;
-  FStream.Write(Dummy, 1);
-  // ID2
-  Dummy := $8B;
-  FStream.Write(Dummy, 1);
+  if gfHeaderCRC16 in Flags then
+    HeaderCRC := crc32(0, nil, 0);
 
-  // Compression Method, always deflate
-  Dummy := 8;
-  FStream.Write(Dummy, 1);
+  AHeader.ID1 := JCL_GZIP_ID1;
+  AHeader.ID2 := JCL_GZIP_ID2;
+  AHeader.CompressionMethod := JCL_GZIP_CM_DEFLATE;
+  AHeader.Flags := 0;
+  if gfDataIsText in Flags then
+    AHeader.Flags := AHeader.Flags or JCL_GZIP_FLAG_TEXT;
+  if gfHeaderCRC16 in Flags then
+    AHeader.Flags := AHeader.Flags or JCL_GZIP_FLAG_CRC;
+  if (gfExtraField in Flags) and (ExtraField <> '') then
+    AHeader.Flags := AHeader.Flags or JCL_GZIP_FLAG_EXTRA;
+  if (gfOriginalFileName in Flags) and (OriginalFileName <> '') then
+    AHeader.Flags := AHeader.Flags or JCL_GZIP_FLAG_NAME;
+  if (gfComment in Flags) and (Comment <> '') then
+    AHeader.Flags := AHeader.Flags or JCL_GZIP_FLAG_COMMENT;
 
-  // Flags
-  Flags := $00;
-  if Length(FOriginalFileName) > 0 then
-    Flags := Flags or $08;
-  if Length(FComment) > 0 then
-    Flags := Flags or $10;
-  FStream.Write(Flags, 1);
+  if AutoSetTime then
+    AHeader.ModifiedTime := DateTimeToUnixTime(Now)
+  else
+    AHeader.ModifiedTime := FUnixTime;
 
-  // MTIME
-  UnixTimeStamp := DateTimeToUnixTime(OriginalDateTime);
-  FStream.Write(UnixTimeStamp, SizeOf(UnixTimeStamp));
-
-  // No extras
-  Dummy := $0;
-  FStream.Write(Dummy, 1);
-
-  // Unknown OS
-  Dummy := $FF;
-  FStream.Write(Dummy, 1);
-
-  // FileName, if any
-  if Length(FOriginalFileName) > 0 then
-  begin
-    FStream.Write(FOriginalFileName[1], Length(FOriginalFileName));
-    Dummy := $0;
-    FStream.Write(Dummy, 1);
+  case FCompressionLevel of
+    Z_BEST_COMPRESSION :
+      AHeader.ExtraFlags := JCL_GZIP_EFLAG_MAX;
+    Z_BEST_SPEED :
+      AHeader.ExtraFlags := JCL_GZIP_EFLAG_FAST;
+  else
+    AHeader.ExtraFlags := 0;
   end;
 
-  // Comment, if any
-  if Length(FComment) > 0 then
+  AHeader.OS := FatSystemToByte[FatSystem];
+
+  StreamWriteBuffer(AHeader, SizeOf(AHeader));
+
+  if (gfExtraField in Flags) and (ExtraField <> '') then
   begin
-    FStream.Write(FComment[1], Length(FComment));
-    Dummy := $0;
-    FStream.Write(Dummy, 1);
+    if Length(ExtraField) > High(Word) then
+      raise EJclCompressionError.CreateRes(@RsCompilationGZIPExtraFieldTooLong);
+    ExtraFieldLength := Length(ExtraField);
+    StreamWriteBuffer(ExtraFieldLength, SizeOf(ExtraFieldLength));
+    StreamWriteBuffer(ExtraField[1], Length(ExtraField));
   end;
+
+  if (gfOriginalFileName in Flags) and (OriginalFileName <> '') then
+  begin
+    if not CheckCString(OriginalFileName) then
+      raise EJclCompressionError.CreateRes(@RsCompilationGZIPBadString);
+    StreamWriteBuffer(OriginalFileName[1], Length(OriginalFileName) + 1);
+  end;
+
+  if (gfComment in Flags) and (Comment <> '') then
+  begin
+    if not CheckCString(Comment) then
+      raise EJclCompressionError.CreateRes(@RsCompilationGZIPBadString);
+    StreamWriteBuffer(Comment[1], Length(Comment) + 1);
+  end;
+
+  if (gfHeaderCRC16 in Flags) then
+    FStream.WriteBuffer(HeaderCRC, SizeOf(HeaderCRC));
 end;
 
-procedure TJclGZIPCompressionStream.ZlStreamProgress(Sender: TObject);
+procedure TJclGZIPCompressionStream.ZLibStreamProgress(Sender: TObject);
 begin
   Progress(Self);
 end;
 
 //=== { TJclGZIPDecompressionStream } ========================================
 
+constructor TJclGZIPDecompressionStream.Create(Source: TStream; CheckHeaderCRC: Boolean);
+var
+  HeaderCRC: Cardinal;
+  ComputeHeaderCRC: Boolean;
+  procedure ReadBuffer(var Buffer; SizeOfBuffer: Longint);
+  begin
+    Source.ReadBuffer(Buffer, SizeOfBuffer);
+    if ComputeHeaderCRC then
+      HeaderCRC := crc32(HeaderCRC, @Byte(Buffer), SizeOfBuffer);
+  end;
+
+  function ReadCString: string;
+  var
+    Dummy: Char;
+  begin
+    repeat
+      Source.ReadBuffer(Dummy, SizeOf(Dummy));
+      FOriginalFileName := FOriginalFileName + Dummy;
+    until Dummy = #0;
+    SetLength(FOriginalFileName, Length(FOriginalFileName) - 1);
+  end;
+var
+  ExtraFieldLength: Word;
+begin
+  inherited Create(Source);
+
+  FAutoCheckDataCRC32 := True;
+  FComputedDataCRC32 := crc32(0, nil, 0);
+  HeaderCRC := crc32(0, nil, 0);
+
+  ComputeHeaderCRC := CheckHeaderCRC;
+  ReadBuffer(FHeader, SizeOf(FHeader));
+  if (FHeader.ID1 <> JCL_GZIP_ID1) or (FHeader.ID2 <> JCL_GZIP_ID2) then
+    raise EJclCompressionError.CreateResFmt(@RsCompressionGZipInvalidID, [FHeader.ID1, FHeader.ID2]);
+  if (FHeader.CompressionMethod <> JCL_GZIP_CM_DEFLATE) then
+    raise EJclCompressionError.CreateResFmt(@RsCompressionGZipUnsupportedCM, [FHeader.CompressionMethod]);
+
+  if (FHeader.Flags and JCL_GZIP_FLAG_EXTRA) <> 0 then
+  begin
+    ReadBuffer(ExtraFieldLength, SizeOf(ExtraFieldLength));
+    SetLength(FExtraField, ExtraFieldLength);
+    ReadBuffer(FExtraField[1], ExtraFieldLength);
+  end;
+
+  if (FHeader.Flags and JCL_GZIP_FLAG_NAME) <> 0 then
+    FOriginalFileName := ReadCString;
+  if (FHeader.Flags and JCL_GZIP_FLAG_COMMENT) <> 0 then
+    FComment := ReadCString;
+
+  if CheckHeaderCRC then
+  begin
+    ComputeHeaderCRC := False;
+    FComputedHeaderCRC16 := HeaderCRC and $FFFF;
+  end;
+
+  if (FHeader.Flags and JCL_GZIP_FLAG_CRC) <> 0 then
+  begin
+    Source.ReadBuffer(FStoredHeaderCRC16, SizeOf(FStoredHeaderCRC16));
+    if CheckHeaderCRC and (FComputedHeaderCRC16 <> FStoredHeaderCRC16) then
+      raise EJclCompressionError.CreateRes(@RsCompressionGZipHeaderCRC);
+  end;
+end;
+
 destructor TJclGZIPDecompressionStream.Destroy;
 begin
-  FZlStream.Free;
-  FMemStream.Free;
-
+  FZLibStream.Free;
+  FCompressedDataStream.Free;
   inherited Destroy;
 end;
 
-function TJclGZIPDecompressionStream.Read(var Buffer; Count: Integer): Longint;
+function TJclGZIPDecompressionStream.GetCompressedDataSize: Int64;
 begin
-  if not FHeaderRead then
-  begin
-    if not ReadHeader then
-    begin
-      Result := 0;
-      Exit;
-    end;
-    FHeaderRead := True;
-  end;
-
-  if not Assigned(FZlStream) then
-  begin
-    FMemStream := TMemoryStream.Create;
-    FMemStream.CopyFrom(FStream, FCompressedDataSize);
-    FMemStream.Position := 0;
-    FZlStream := TJclZLibDecompressStream.Create(FMemStream, -DEF_WBITS);    // negative value for raw mode
-    FZlStream.OnProgress := ZlStreamProgress;
-
-    // we are now positionned right in front of CRC32 and ISIZE and we can
-    // thus read them
-    FStream.Read(FCRC32, SizeOf(FCRC32));
-    FStream.Read(FOriginalSize, SizeOf(FOriginalSize));
-  end;
-
-  Result := FZlStream.Read(Buffer, Count);
+  if not FDataStarted then
+    Result := FStream.Size - FStream.Position - SizeOf(FFooter)
+  else
+  if FDataEnded then
+    Result := FCompressedDataSize
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionGZipDecompressing);
 end;
 
-function TJclGZIPDecompressionStream.ReadHeader: Boolean;
+function TJclGZIPDecompressionStream.GetComputedDataCRC32: Cardinal;
+begin
+  if FDataEnded then
+    Result := FComputedDataCRC32
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionGZipNotDecompressed);
+end;
+
+function TJclGZIPDecompressionStream.GetDosTime: TDateTime;
+begin
+  Result := UnixTimeToDateTime(FHeader.ModifiedTime);
+end;
+
+function TJclGZIPDecompressionStream.GetFatSystem: TJclGZIPFatSystem;
+const
+  ByteToFatSystem: array [JCL_GZIP_OS_FAT..JCL_GZIP_OS_ACORN] of TJclGZIPFatSystem =
+   ( gfsFat, gfsAmiga, gfsVMS, gfsUnix, gfsVM, gfsAtari, gfsHPFS, gfsMac, gfsZ,
+     gfsCPM, gfsTOPS, gfsNTFS, gfsQDOS, gfsAcorn );
+begin
+  case FHeader.OS of
+    JCL_GZIP_OS_FAT..JCL_GZIP_OS_ACORN :
+      Result := ByteToFatSystem[FHeader.OS];
+    JCL_GZIP_OS_UNKNOWN :
+      Result := gfsUnknown;
+  else
+    Result := gfsOther;
+  end;
+end;
+
+function TJclGZIPDecompressionStream.GetFlags: TJclGZIPFlags;
+begin
+  Result := [];
+  if (FHeader.Flags and JCL_GZIP_FLAG_TEXT) <> 0 then
+    Result := Result + [gfDataIsText];
+  if (FHeader.Flags and JCL_GZIP_FLAG_CRC) <> 0 then
+    Result := Result + [gfHeaderCRC16];
+  if (FHeader.Flags and JCL_GZIP_FLAG_EXTRA) <> 0 then
+    Result := Result + [gfExtraField];
+  if (FHeader.Flags and JCL_GZIP_FLAG_NAME) <> 0 then
+    Result := Result + [gfOriginalFileName];
+  if (FHeader.Flags and JCL_GZIP_FLAG_COMMENT) <> 0 then
+    Result := Result + [gfComment];
+end;
+
+function TJclGZIPDecompressionStream.GetOriginalDataSize: Cardinal;
 var
-  ID1: Byte;
-  ID2: Byte;
-  CM: Byte;
-  Flags: Byte;
-  HasHeaderCRC16: Boolean;
-  HasExtra: Boolean;
-  HasName: Boolean;
-  HasComment: Boolean;
-  Dummy: Byte;
-  OriginalTimeStamp: Cardinal;
-  ExtraLength: Word;
-  I: Integer;
+  StartPos: {$IFDEF COMPILER5}Longint;{$ELSE ~COMPILER5}Int64;{$ENDIF ~COMPILER5}
+  AFooter: TJclGZIPFooter;
 begin
-  Result := False;
-
-  // ID
-  FStream.Read(ID1, 1);
-  FStream.Read(ID2, 1);
-  if (ID1 <> $1F) or (ID2 <> $8B) then
+  if not FDataStarted then
   begin
-    // Invalid ID
-    Exit;
-  end;
-
-  // Compression method
-  FStream.Read(CM, 1);
-  if CM <> 8 then
-  begin
-    // Invalid compression method, only deflate is known
-    Exit;
-  end;
-
-  // Flags
-  FStream.Read(Flags, 1);
-  if Flags and $E0 <> $00 then
-  begin
-    // Extra flags, don't know what to do with them
-    Exit;
-  end;
-
-  HasHeaderCRC16 := Flags and $02 = $02;
-  HasExtra := Flags and $04 = $04;
-  HasName := Flags and $08 = $08;
-  HasComment := Flags and $10 = $10;
-
-  // Original modification time
-  FStream.Read(OriginalTimeStamp, SizeOf(OriginalTimeStamp));
-  FOriginalDateTime := UnixTimeToDateTime(OriginalTimeStamp);
-
-  // Extra flags and OS are ignored
-  FStream.Read(Dummy, 1);
-  FStream.Read(Dummy, 1);
-
-  // If file has extra, ignore it
-  if HasExtra then
-  begin
-    FStream.Read(ExtraLength, SizeOf(ExtraLength));
-
-    for I := 0 to ExtraLength - 1 do
-      FStream.Read(Dummy, 1);
-  end;
-
-  // Read name, if present
-  FOriginalFileName := '';
-  if HasName then
-  begin
-    FStream.Read(Dummy, 1);
-    while Dummy <> 0 do
-    begin
-      FOriginalFileName := FOriginalFileName + Chr(Dummy);
-      FStream.Read(Dummy, 1);
+    StartPos := FStream.Position;
+    try
+      FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      FStream.ReadBuffer(AFooter, SizeOf(AFooter));
+      Result := AFooter.DataSize;
+    finally
+      FStream.Seek(StartPos, {$IFDEF COMPILER5}soFromBeginning{$ELSE ~COMPILER5}soBeginning{$ENDIF ~COMPILER5});
     end;
-  end;
-
-  // Read comment, if present
-  FComment := '';
-  if HasComment then
-  begin
-    FStream.Read(Dummy, 1);
-    while Dummy <> 0 do
-    begin
-      FComment := FComment + Chr(Dummy);
-      FStream.Read(Dummy, 1);
-    end;
-  end;
-
-  // Read CRC16, if present
-  FCRC16 := 0;
-  if HasHeaderCRC16 then
-    FStream.Read(FCRC16, SizeOf(FCRC16));
-
-  FCompressedDataSize := FStream.Size - FStream.Position - 2 * SizeOf(Cardinal);
-
-  Result := True;
+  end
+  else
+  if FDataEnded then
+    Result := FFooter.DataSize
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionGZipDecompressing);
 end;
 
-procedure TJclGZIPDecompressionStream.ZlStreamProgress(Sender: TObject);
+function TJclGZIPDecompressionStream.GetStoredDataCRC32: Cardinal;
+var
+  StartPos: {$IFDEF COMPILER5}Longint;{$ELSE ~COMPILER5}Int64;{$ENDIF ~COMPILER5}
+  AFooter: TJclGZIPFooter;
+begin
+  if not FDataStarted then
+  begin
+    StartPos := FStream.Position;
+    try
+      FStream.Seek(-SizeOf(AFooter), soFromEnd);
+      FStream.ReadBuffer(AFooter, SizeOf(AFooter));
+      Result := AFooter.DataCRC32;
+    finally
+      FStream.Seek(StartPos, {$IFDEF COMPILER5}soFromBeginning{$ELSE ~COMPILER5}soBeginning{$ENDIF ~COMPILER5});
+    end;
+  end
+  else
+  if FDataEnded then
+    Result := FFooter.DataCRC32
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionGZipDecompressing);
+end;
+
+function TJclGZIPDecompressionStream.Read(var Buffer; Count: Longint): Longint;
+begin
+  if not Assigned(FZLibStream) then
+  begin
+    FCompressedDataStream := TJclDelegatedStream.Create;
+    FCompressedDataStream.OnRead := ReadCompressedData;
+    FZLibStream := TJclZLibDecompressStream.Create(FCompressedDataStream, -DEF_WBITS);
+    FZLibStream.OnProgress := ZLibStreamProgress;
+  end;
+  Result := FZLibStream.Read(Buffer, Count);
+  Inc(FDataSize, Result);
+  FComputedDataCRC32 := crc32(FComputedDataCRC32, @Byte(Buffer), Result);
+  if Result < Count then
+  begin
+    if not FDataEnded then
+      // the decompressed stream is stopping before the compressed stream
+      raise EJclCompressionError(RsCompressionGZipInternalError);
+    if AutoCheckDataCRC32 and (FComputedDataCRC32 <> FFooter.DataCRC32) then
+      raise EJclCompressionError(RsCompressionGZipDataCRCFailed);
+  end;
+end;
+
+function TJclGZIPDecompressionStream.ReadCompressedData(Sender: TObject; var Buffer;
+  Count: Longint): Longint;
+var
+  BufferAddr: PChar;
+  FooterAddr: PChar;
+begin
+  if (Count = 0) or FDataEnded then
+  begin
+    Result := 0;
+    Exit;
+  end
+  else
+  if not FDataStarted then
+  begin
+    FDataStarted := True;
+    // prolog
+    if FStream.Read(FFooter, SizeOf(FFooter)) < SizeOf(FFooter) then
+      raise EJclCompressionError.CreateRes(@RsCompressionGZipDataTruncated);
+  end;
+
+  BufferAddr := @Char(Buffer);
+  Move(FFooter, Buffer, SizeOf(FFooter));
+  Result := FStream.Read(BufferAddr[SizeOf(FFooter)], Count - SizeOf(FFooter))
+    + FStream.Read(FFooter, SizeOf(FFooter));
+
+  if Result < Count then
+  begin
+    FDataEnded := True;
+    // epilog
+    FooterAddr := @FFooter;
+    if (Count - Result) < SizeOf(FFooter) then
+    begin
+      // the "real" footer is splitted in the data and the footer
+      // shift the valid bytes of the footer to their place
+      Move(FFooter, FooterAddr[Count - Result], SizeOf(FFooter) - Count + Result);
+      // the missing bytes of the footer are located after the data
+      Move(BufferAddr[Result], FFooter, Count - Result);
+    end
+    else
+      // the "real" footer is located in the data
+      Move(BufferAddr[Result], FFooter, SizeOf(FFooter));
+  end;
+  Inc(FCompressedDataSize, Result);
+end;
+
+procedure TJclGZIPDecompressionStream.ZLibStreamProgress(Sender: TObject);
 begin
   Progress(Self);
 end;

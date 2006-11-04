@@ -777,6 +777,16 @@ resourcestring
   RsCompressionZLibZBufError         = 'zlib returned: buffer error';
   RsCompressionZLibZVersionError     = 'zlib returned: Version error';
   RsCompressionZLibError             = 'ZLib error';
+  RsCompressionGZIPInvalidID         = 'GZip: Invalid ID (ID1=%.2x; ID2=%.2x)';
+  RsCompressionGZIPUnsupportedCM     = 'GZip: unsupported compression method (%d)';
+  RsCompressionGZIPHeaderCRC         = 'GZip: CRC failed, header is damaged';
+  RsCompressionGZIPDecompressing     = 'GZip: this property is not readable when the data are being decompressed';
+  RsCompressionGZIPNotDecompressed   = 'GZip: this property is not readable until the data are fully decompressed';
+  RsCompressionGZIPDataTruncated     = 'GZip: data are truncated';
+  RsCompressionGZIPInternalError     = 'GZip: internal error';
+  RsCompressionGZIPDataCRCFailed     = 'GZip: CRC failed, data are damaged';
+  RsCompilationGZIPExtraFieldTooLong = 'GZip: extra field is too long';
+  RsCompilationGZIPBadString         = 'GZip: the string contains null chars';
 
 //=== JclConsole =============================================================
 resourcestring
