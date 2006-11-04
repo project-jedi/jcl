@@ -747,6 +747,7 @@ constructor TJclGZIPCompressionStream.Create(Destination: TStream;
 begin
   inherited Create(Destination);
 
+  FFlags := [gfHeaderCRC16, gfExtraField, gfOriginalFileName, gfComment];
   FAutoSetTime := True;
   FFatSystem := gfsUnknown;
   FCompressionLevel := CompressionLevel;
@@ -860,7 +861,7 @@ const
       JCL_GZIP_OS_QDOS, JCL_GZIP_OS_ACORN, JCL_GZIP_OS_UNKNOWN, JCL_GZIP_OS_UNKNOWN );
 var
   AHeader: TJclGZIPHeader;
-  ExtraFieldLength: Word;
+  ExtraFieldLength, HeaderCRC16: Word;
 begin
   if gfHeaderCRC16 in Flags then
     HeaderCRC := crc32(0, nil, 0);
@@ -922,7 +923,10 @@ begin
   end;
 
   if (gfHeaderCRC16 in Flags) then
-    FStream.WriteBuffer(HeaderCRC, SizeOf(HeaderCRC));
+  begin
+    HeaderCRC16 := HeaderCRC and $FFFF;
+    FStream.WriteBuffer(HeaderCRC16, SizeOf(HeaderCRC16));
+  end;
 end;
 
 procedure TJclGZIPCompressionStream.ZLibStreamProgress(Sender: TObject);
