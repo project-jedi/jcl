@@ -267,6 +267,55 @@ type
     procedure WriteSizedString(const Value: string);
   end;
 
+  TJclScopedStream = class(TJclStream)
+  private
+    FParentStream: TStream;
+    FStartPos: Int64;
+    FCurrentPos: Int64;
+    FMaxSize: Int64;
+  public
+    // scopedstream starting at the current position of the ParentStream
+    //   if MaxSize is positive or null, read and write operations cannot overrun this size or the ParentStream limitation
+    //   if MaxSize is negative, read and write operations are unlimited (up to the ParentStream limitation)
+    constructor Create(AParentStream: TStream; AMaxSize: Int64 = -1); reintroduce;
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
+
+    property ParentStream: TStream read FParentStream;
+    property StartPos: Int64 read FStartPos;
+    property MaxSize: Int64 read FMaxSize write FMaxSize;
+  end;
+
+  TJclStreamSeekEvent = function(Sender: TObject; const Offset: Int64;
+    Origin: TSeekOrigin): Int64 of object;
+  TJclStreamReadEvent = function(Sender: TObject; var Buffer; Count: Longint): Longint of object;
+  TJclStreamWriteEvent = function(Sender: TObject; const Buffer; Count: Longint): Longint of object;
+  TJclStreamSizeEvent = procedure(Sender: TObject; const NewSize: Int64) of object;
+
+  TJclDelegatedStream = class(TJclStream)
+  private
+    FOnSeek: TJclStreamSeekEvent;
+    FOnRead: TJclStreamReadEvent;
+    FOnWrite: TJclStreamWriteEvent;
+    FOnSize: TJclStreamSizeEvent;
+  protected
+    procedure SetSize(const NewSize: Int64); override;
+  public
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
+    property OnSeek: TJclStreamSeekEvent read FOnSeek write FOnSeek;
+    property OnRead: TJclStreamReadEvent read FOnRead write FOnRead;
+    property OnWrite: TJclStreamWriteEvent read FOnWrite write FOnWrite;
+    property OnSize: TJclStreamSizeEvent read FOnSize write FOnSize;
+  end;
+
+// call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
+// otherwize call TStream.Seek(LongInt,Word) with range checking
+function StreamSeek(Stream: TStream; const Offset: Int64;
+  const Origin: TSeekOrigin): Int64;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -281,6 +330,27 @@ implementation
 
 uses
   JclBase, JclResources;
+
+function StreamSeek(Stream: TStream; const Offset: Int64;
+  const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+begin
+  if Assigned(Stream) then
+  begin
+    {$IFDEF COMPILER5}
+    if Stream is TJclStream then
+      Result := TJclStream(Stream).Seek(Offset, Origin)
+    else
+    if (Offset <= MaxLongint) or (Offset > -MaxLongint) then
+      Result := Stream.Seek(Longint(Offset), Ord(Origin))
+    else
+      Result := -1;
+    {$ELSE}
+    Result := Stream.Seek(Offset, Origin);
+    {$ENDIF COMPILER5}
+  end
+  else
+    Result := -1;
+end;
 
 //=== { TJclStream } =========================================================
 
@@ -739,22 +809,7 @@ end;
 
 function TJclStreamDecorator.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  if Assigned(FStream) then
-  begin
-    {$IFDEF COMPILER5}
-    if Stream is TJclStream then
-      Result := TJclStream(Stream).Seek(Offset, Origin)
-    else
-    if (Offset <= MaxLongint) or (Offset > -MaxLongint) then
-      Result := Stream.Seek(Longint(Offset), Ord(Origin))
-    else
-      Result := -1;
-    {$ELSE}
-    Result := Stream.Seek(Offset, Origin);
-    {$ENDIF COMPILER5}
-  end
-  else
-    Result := -1;
+  Result := StreamSeek(Stream, Offset, Origin);
 end;
 
 function TJclStreamDecorator.Seek(Offset: Longint; Origin: Word): Longint;
@@ -1200,6 +1255,124 @@ begin
   StrSize := Length(Value);
   WriteInteger(StrSize);
   WriteBuffer(Pointer(Value)^, StrSize);
+end;
+
+//=== { TJclScopedStream } ===================================================
+
+constructor TJclScopedStream.Create(AParentStream: TStream; AMaxSize: Int64);
+begin
+  inherited Create;
+
+  FParentStream := AParentStream;
+  FStartPos := ParentStream.Position;
+  FCurrentPos := 0;
+  FMaxSize := AMaxSize;
+end;
+
+function TJclScopedStream.Read(var Buffer; Count: Longint): Longint;
+begin
+  if (MaxSize >= 0) and ((FCurrentPos + Count) > MaxSize) then
+    Count := MaxSize - FCurrentPos;
+
+  if (Count > 0) and Assigned(ParentStream) then
+  begin
+    Result := ParentStream.Read(Buffer, Count);
+    Inc(FCurrentPos, Result);
+  end
+  else
+    Result := 0;
+end;
+
+function TJclScopedStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+  case Origin of
+    soBeginning:
+      begin
+        if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
+          Result := -1            // low and high bound check
+        else
+          Result := StreamSeek(ParentStream, StartPos + Offset, soBeginning) - StartPos;
+      end;
+    soCurrent:
+      begin
+        if Offset = 0 then
+          Result := FCurrentPos   // speeding the Position property up
+        else if ((FCurrentPos + Offset) < 0) or ((MaxSize >= 0)
+          and ((FCurrentPos + Offset) > MaxSize)) then
+          Result := -1            // low and high bound check
+        else
+          Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
+      end;
+    soEnd:
+      begin
+        if (MaxSize >= 0) then
+        begin
+          if (Offset > 0) or (MaxSize < -Offset) then // low and high bound check
+            Result := -1
+          else
+            Result := StreamSeek(ParentStream, StartPos + MaxSize + Offset, soBeginning) - StartPos;
+        end
+        else
+        begin
+          Result := StreamSeek(ParentStream, Offset, soEnd);
+          if (Result <> -1) and (Result < StartPos) then // low bound check
+          begin
+            Result := -1;
+            StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
+          end;
+        end;
+      end;
+    else
+      Result := -1;
+  end;
+  if Result <> -1 then
+    FCurrentPos := Result;
+end;
+
+function TJclScopedStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  if (MaxSize >= 0) and ((FCurrentPos + Count) > MaxSize) then
+    Count := MaxSize - FCurrentPos;
+
+  if (Count > 0) and Assigned(ParentStream) then
+  begin
+    Result := ParentStream.Write(Buffer, Count);
+    Inc(FCurrentPos, Result);
+  end
+  else
+    Result := 0;
+end;
+
+//=== { TJclDelegateStream } =================================================
+
+procedure TJclDelegatedStream.SetSize(const NewSize: Int64);
+begin
+  if Assigned(FOnSize) then
+    FOnSize(Self, NewSize);
+end;
+
+function TJclDelegatedStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+  if Assigned(FOnSeek) then
+    Result := FOnSeek(Self, Offset, Origin)
+  else
+    Result := -1;
+end;
+
+function TJclDelegatedStream.Read(var Buffer; Count: Longint): Longint;
+begin
+  if Assigned(FOnRead) then
+    Result := FOnRead(Self, Buffer, Count)
+  else
+    Result := -1;
+end;
+
+function TJclDelegatedStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  if Assigned(FOnWrite) then
+    Result := FOnWrite(Self, Buffer, Count)
+  else
+    Result := -1;
 end;
 
 {$IFDEF UNITVERSIONING}
