@@ -83,7 +83,7 @@ uses
 {**************************************************************************************************}
 
 type
-  TJclCompressionStream = class(TStream)
+  TJclCompressionStream = class(TJclStream)
   private
     FOnProgress: TNotifyEvent;
     FBuffer: Pointer;
@@ -98,7 +98,7 @@ type
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     procedure Reset; virtual;
   end;
 
@@ -136,7 +136,7 @@ type
     destructor Destroy; override;
     function Flush: Integer; override;
     procedure Reset; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     property WindowBits: Integer read FWindowBits write SetWindowBits;
     property MemLevel: Integer read FMemLevel write SetMemLevel;
@@ -156,7 +156,7 @@ type
     constructor Create(Source: TStream; WindowBits: Integer = DEF_WBITS);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     property WindowBits: Integer read FWindowBits write SetWindowBits;
   end;
 
@@ -364,7 +364,7 @@ type
     BZLibRecord: TBZStream;
   public
     function Flush: Integer; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function Write(const Buffer; Count: Longint): Longint; override;
 
     constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
@@ -380,7 +380,7 @@ type
 
   public
     function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
 
     constructor Create(Source: TStream); overload;
     destructor Destroy; override;
@@ -432,7 +432,7 @@ begin
   raise EJclCompressionError.CreateRes(@RsCompressionWriteNotSupported);
 end;
 
-function TJclCompressionStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclCompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
   raise EJclCompressionError.CreateRes(@RsCompressionSeekNotSupported);
 end;
@@ -606,12 +606,12 @@ begin
   end;
 end;
 
-function TJclZLibCompressStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclZLibCompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  if (Offset = 0) and (Origin = soFromCurrent) then
+  if (Offset = 0) and (Origin = soCurrent) then
    Result := ZLibRecord.total_in
   else
-  if (Offset = 0) and (Origin = soFromBeginning) and (ZLibRecord.total_in = 0) then
+  if (Offset = 0) and (Origin = soBeginning) and (ZLibRecord.total_in = 0) then
     Result := 0
   else
     Result := inherited Seek(Offset, Origin);
@@ -727,9 +727,9 @@ begin
   Result := Count;
 end;
 
-function TJclZLibDecompressStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclZLibDecompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-   if (Offset = 0) and (Origin = soFromCurrent) then
+   if (Offset = 0) and (Origin = soCurrent) then
     Result := ZLibRecord.total_out
    else
      Result := inherited Seek(Offset, Origin);
@@ -1290,7 +1290,7 @@ begin
     end;
 end;
 
-function TJclBZIP2CompressStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclBZIP2CompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
     Result := BZLibRecord.total_in_lo32
@@ -1374,7 +1374,7 @@ begin
   Result := Count;
 end;
 
-function TJclBZIP2DecompressStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclBZIP2DecompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
     Result := BZLibRecord.total_out_lo32
