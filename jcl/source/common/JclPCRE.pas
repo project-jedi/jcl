@@ -87,11 +87,11 @@ type
 
   TJclAnsiRegEx = class(TObject)
   private
-    FOwner: TObject;
     FCode: Pointer;
     FExtra: Pointer;
     FOptions: TJclAnsiRegExOptions;
     FPattern: AnsiString;
+    FDfaMode: Boolean;
     FSubject: AnsiString;
 
     FErrorCode: Integer;
@@ -104,7 +104,6 @@ type
 
     FOnCallout: TJclAnsiRegExCallout;
 
-    function GetCaptureCount: Integer;
     function GetCapture(Index: Integer): AnsiString;
     function GetCaptureRange(Index: Integer): TJclAnsiCaptureRange;
     function GetNamedCapture(const Name: AnsiString): AnsiString;
@@ -114,18 +113,17 @@ type
     function CalloutHandler(var CalloutBlock: pcre_callout_block): Integer;
 
   public
-    constructor Create(Owner: TObject = nil);
     destructor Destroy; override;
-    property Owner: TObject read FOwner write FOwner;
 
     property Options: TJclAnsiRegExOptions read FOptions write FOptions;
     function Compile(const Pattern: AnsiString; Study: Boolean;
       UserLocale: Boolean = False): Boolean;
     property Pattern: AnsiString read FPattern;
+    property DfaMode: Boolean read FDfaMode write FDfaMode;
     function Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
     property Subject: AnsiString read FSubject;
 
-    property CaptureCount: Integer read GetCaptureCount;
+    property CaptureCount: Integer read FCaptureCount write FCaptureCount;
     property Captures[Index: Integer]: AnsiString read GetCapture;
     property CaptureRanges[Index: Integer]: TJclAnsiCaptureRange read GetCaptureRange;
 
@@ -242,12 +240,6 @@ end;
 
 //=== { TJclAnsiRegEx } ======================================================
 
-constructor TJclAnsiRegEx.Create(Owner: TObject = nil);
-begin
-  inherited Create;
-  FOwner := Owner;
-end;
-
 destructor TJclAnsiRegEx.Destroy;
 begin
   if Assigned(FCode) then
@@ -298,11 +290,16 @@ begin
       end;
     end;
 
-    PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @FCaptureCount));
-    if FCaptureCount > 0 then
-      FVectorSize := (FCaptureCount + 1) * 3
+    if FDfaMode then
+      FVectorSize := FCaptureCount
     else
-      FVectorSize := 0;
+    begin
+      PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @FCaptureCount));
+      if FCaptureCount > 0 then
+        FVectorSize := (FCaptureCount + 1) * 3
+      else
+        FVectorSize := 0;
+    end;
     ReAllocMem(FVector, FVectorSize * SizeOf(Integer));
   end;
 end;
@@ -339,11 +336,6 @@ begin
       if I in Options then
         Result := Result or cDesignOptions[I];
   end;
-end;
-
-function TJclAnsiRegEx.GetCaptureCount: Integer;
-begin
-  Result := FCaptureCount;
 end;
 
 function TJclAnsiRegEx.GetCapture(Index: Integer): AnsiString;
@@ -426,6 +418,7 @@ function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 
 var
   LocalExtra: real_pcre_extra;
   Extra: Pointer;
+  WorkSpace: array [0 .. 19] of Integer;
   ExecRslt: Integer;
 begin
   if Assigned(FOnCallout) then
@@ -439,17 +432,25 @@ begin
       LocalExtra.flags := PCRE_EXTRA_CALLOUT_DATA;
     LocalExtra.callout_data := Self;
     Extra := @LocalExtra;
-    pcre_callout^ := JclPCRECallout;
+    SetPCRECalloutCallback(JclPCRECallout);
   end
   else
   begin
     Extra := FExtra;
-    pcre_callout^ := nil;
+    SetPCRECalloutCallback(nil);
   end;
 
   FSubject := Subject;
-  ExecRslt := pcre_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
-    StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize);
+  if FDfaMode then
+  begin
+    ExecRslt := pcre_dfa_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
+      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize, @Workspace, 20);
+  end
+  else
+  begin
+    ExecRslt := pcre_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
+      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize);
+  end;
   Result := ExecRslt >= 0;
   if Result then
   begin
