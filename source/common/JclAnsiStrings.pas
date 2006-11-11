@@ -2717,6 +2717,9 @@ begin
   if Result or (S = '') then
     Exit;
 
+  if (Index <= 0) or (Index > Length(S)) then
+    raise EJclStringError.CreateRes(@RsArgumentOutOfRange);
+
   StringPtr := PAnsiChar(@S[Index]);
   PatternPtr := PAnsiChar(SubStr);
   StringRes := nil;
