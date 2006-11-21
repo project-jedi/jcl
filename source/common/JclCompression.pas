@@ -848,7 +848,7 @@ var
     Index: Integer;
   begin
     Result := False;
-    for Index := 0 to Length(Buffer) do
+    for Index := 1 to Length(Buffer) do
       if Buffer[Index] = #0 then
         Exit;
     Result := True;
