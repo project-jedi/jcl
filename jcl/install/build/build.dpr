@@ -91,6 +91,8 @@ const // keep in sync with JVCL Installer's DelphiData.pas
   );
 
 type
+  TEditionTyp = (Delphi, BCB, BDS);
+
   TEdition = class(TObject)
   private
     FMainName: string;      // d7
@@ -106,7 +108,7 @@ type
     function GetBDSProjectsDir: string;
     procedure ReadRegistryData;
   public
-    Typ: (Delphi, BCB, BDS);
+    Typ: TEditionTyp;
     VersionStr: string;     // '9' for BDS 3.0
     Version: Integer;       // 9 for BDS 3.0
     IDEVersionStr: string;  // '3' for BDS 3.0
@@ -1046,7 +1048,7 @@ begin
   else
   begin
     FoundU := False;
-    FoundLU := (Edition.Typ <> BCB) and (Edition.Version = 5);
+    FoundLU := (Edition.Typ <> BCB) or (Edition.Version <> 5);
     Reset(f);
     while not EOF(f) and not (FoundU and FoundLU) do
     begin
