@@ -1305,7 +1305,8 @@ end;
 
 function TJclSimpleXMLElem.GetFloatValue: Extended;
 begin
-  Result := StrToFloatDef(Value, 0.0);
+  if not TryStrToFloat(Value, Result) then
+    Result := 0.0;
 end;
 
 function TJclSimpleXMLElem.GetIntValue: Int64;
@@ -2273,7 +2274,8 @@ end;
 
 function TJclSimpleXMLProp.GetFloatValue: Extended;
 begin
-  Result := StrToFloatDef(Value, 0.0);
+  if not TryStrToFloat(Value, Result) then
+    Result := 0.0;
 end;
 
 function TJclSimpleXMLProp.FullName: string;
