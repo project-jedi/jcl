@@ -169,7 +169,7 @@ var
   TApplicationHandleExceptionAddr, SysUtilsShowExceptionAddr: Pointer;
   CALLInstruction: TCALLInstruction;
   CallAddress: Pointer;
-  OldProtect, Dummy: DWORD;
+  WrittenBytes: Cardinal;
 
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
@@ -186,7 +186,7 @@ var
       end;
     except
       Result := False;
-    end;    
+    end;
   end;
 
 begin
@@ -195,16 +195,8 @@ begin
   Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
   if Result then
   begin
-    Result := VirtualProtect(CallAddress, sizeof(CallInstruction), PAGE_EXECUTE_READWRITE, OldProtect);
-    if Result then
-    try
-      CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
-      PCALLInstruction(CallAddress)^ := CALLInstruction;
-      if Result then
-        FlushInstructionCache(GetCurrentProcess, CallAddress, SizeOf(CALLInstruction));
-    finally
-      VirtualProtect(CallAddress, sizeof(CallInstruction), OldProtect, Dummy);
-    end;
+    CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
+    Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
   end;
 end;
 

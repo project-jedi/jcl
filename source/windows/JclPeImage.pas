@@ -5050,7 +5050,7 @@ var
   CurrName: PChar;
   ImportEntry: PImageThunkData;
   FoundProc: Boolean;
-  LastProtect, Dummy: Cardinal;
+  WrittenBytes: Cardinal;
 begin
   Result := False;
   FromProcDebugThunk := PWin9xDebugThunk(FromProc);
@@ -5078,18 +5078,7 @@ begin
         else
           FoundProc := Pointer(ImportEntry^.Function_) = FromProc;
         if FoundProc then
-        begin
-          if VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc), PAGE_EXECUTE_READWRITE, @LastProtect) then
-          try
-            ImportEntry^.Function_ := Cardinal(ToProc);
-            FlushInstructionCache(GetCurrentProcess, @ImportEntry^.Function_, SizeOf(ToProc));
-          finally
-            // According to Platform SDK documentation, the last parameter
-            // has to be (point to) a valid variable
-            VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc), LastProtect, Dummy);
-            Result := True;
-          end;
-        end;
+          Result := WriteProtectedMemory(@ImportEntry^.Function_, @ToProc, SizeOf(ToProc), WrittenBytes);
         Inc(ImportEntry);
       end;
     end;
