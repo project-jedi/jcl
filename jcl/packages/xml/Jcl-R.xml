@@ -53,6 +53,7 @@
     <File Name="..\..\source\common\JclQueues.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclResources.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSimpleXml.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSchedule.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev" Formname="" Condition=""/>
