@@ -647,17 +647,22 @@ function WriteProtectedMemory(BaseAddress, Buffer: Pointer;
 var
   OldProtect, Dummy: Cardinal;
 begin
-  // (outchy) VirtualProtect for DEP issues
-  // Result := WriteProcessMemory(GetCurrentProcess, BaseAddress, Buffer, Size, WrittenBytes);
-  Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
-  if Result then
-  try
-    Move(Buffer^, BaseAddress^, Size);
-    WrittenBytes := Size;
-    FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
-  finally
-    VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+  WrittenBytes := 0;
+  if Size > 0 then
+  begin
+    // (outchy) VirtualProtect for DEP issues
+    Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
+    if Result then
+    try
+      Move(Buffer^, BaseAddress^, Size);
+      WrittenBytes := Size;
+      if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
+        FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
+    finally
+      VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+    end;
   end;
+  Result := WrittenBytes = Size;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
@@ -1599,8 +1604,6 @@ var
   PatchAddress: PPointer;
 begin
   PatchAddress := Pointer(Integer(AClass) + Offset);
-  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
-  // better VirtualProtect, direct patch, VirtualProtect
   if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
 
@@ -1608,7 +1611,8 @@ begin
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
 
   // make sure that everything keeps working in a dual processor setting
-  FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
+  // (outchy) done by WriteProtectedMemory
+  // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
 {$IFNDEF FPC}
@@ -1756,14 +1760,13 @@ var
   PatchAddress: Pointer;
 begin
   PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
-  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
-  // better VirtualProtect, direct patch, VirtualProtect
   if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
   if WrittenBytes <> SizeOf(Pointer) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
   // make sure that everything keeps working in a dual processor setting
-  FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
+  // (outchy) done by WriteProtectedMemory
+  // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
 end;
 
 function GetClassParent(AClass: TClass): TClass; assembler;
