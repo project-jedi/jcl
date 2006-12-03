@@ -197,6 +197,7 @@ type
 
   //  EDI Element
   TEDIXMLElement = class(TEDIXMLDataObject)
+  private
     FCData: Boolean;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce;
