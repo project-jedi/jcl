@@ -472,6 +472,7 @@ type
     L3LinesPerSector: Byte;
     LogicalCore: Byte;
     PhysicalCore: Byte;
+    HyperThreadingTechnology: Boolean;
     // todo: TLB
     case CpuType: Byte of
       CPU_TYPE_INTEL: (IntelSpecific: TIntelSpecific;);
@@ -4058,6 +4059,8 @@ function CPUID: TCpuInfo;
         CPUInfo.IntelSpecific.FlushLineSize := (AdditionalInfo and $0000FF00) shr 8;
         CPUInfo.IntelSpecific.APICID := (AdditionalInfo and $FF000000) shr 24;
         CPUInfo.LogicalCore := (AdditionalInfo and $00FF0000) shr 16;
+        CPUInfo.HyperThreadingTechnology := (CPUInfo.Features and INTEL_HTT) <> 0;
+
         if HiVal >= 2 then
         begin
           CPUInfo.HasCacheInfo := True;
@@ -4263,7 +4266,7 @@ function CPUID: TCpuInfo;
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
     CPUInfo.DepCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EDB) <> 0);
   end;
-  
+
   procedure ProcessAMD(var CPUInfo: TCpuInfo; HiVal: Cardinal);
   var
     ExHiVal, Unused, VersionInfo, AdditionalInfo: Cardinal;
@@ -4279,7 +4282,8 @@ function CPUID: TCpuInfo;
       CPUInfo.AMDSpecific.BrandID := VersionInfo and $000000FF;
       CPUInfo.AMDSpecific.FlushLineSize := (VersionInfo and $0000FF00) shr 8;
       CPUInfo.AMDSpecific.APICID := (VersionInfo and $FF000000) shr 24;
-      if (CPUInfo.Features and AMD_HTT) <> 0 then
+      CPUInfo.HyperThreadingTechnology := (CPUInfo.Features and AMD_HTT) <> 0;
+      if CPUInfo.HyperThreadingTechnology then
         CPUInfo.LogicalCore := (AdditionalInfo and $00FF0000) shr 16;
     end;
 
