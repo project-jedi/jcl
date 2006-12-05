@@ -80,6 +80,7 @@ type
     FDirectories: TList;
     FCheckedCount: Integer;
     FInstallCount: Integer;
+    FInstalling: Boolean;
     {$IFDEF VCL}
     FFormCompile: TFormCompile;
     function GetFormCompile: TFormCompile;
@@ -428,6 +429,7 @@ begin
   with TTreeView(Sender) do
     case Key of
       #32:
+        if not FInstalling then
         begin
           ToggleNodeChecked(Selected);
           Key := #0;
@@ -468,7 +470,8 @@ procedure TInstallFrame.TreeViewMouseDown(Sender: TObject;
 var
   Node: TTreeNode;
 begin
-  with TTreeView(Sender) do
+  if not FInstalling then
+    with TTreeView(Sender) do
   begin
     Node := GetNodeAt(X, Y);
     if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
@@ -678,6 +681,8 @@ begin
       Inc(FCheckedCount);
     ANode := ANode.GetNext;
   end;
+
+  FInstalling := True;
 end;
 
 procedure TInstallFrame.MarkOptionBegin(Id: Integer);
@@ -729,6 +734,8 @@ procedure TInstallFrame.EndInstall;
 var
   ANode: TTreeNode;
 begin
+  FInstalling := False;
+
   MarkOptionEnd(-1, True);
   ANode := TreeView.Items.GetFirstNode;
   while Assigned(ANode) do
