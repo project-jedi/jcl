@@ -554,6 +554,7 @@ type
     function GetGlobals: TStrings;
     function GetIdeExeBuildNumber: string;
     function GetIdePackages: TJclBorRADToolIdePackages;
+    function GetIsTurboExplorer: Boolean;
     function GetLatestUpdatePack: Integer;
     function GetLibrarySearchPath: TJclBorRADToolPath;
     function GetPalette: TJclBorRADToolPalette;
@@ -709,6 +710,7 @@ type
     {$ENDIF KEEP_DEPRECATED}
     property SupportsLibSuffix: Boolean read GetSupportsLibSuffix;
     property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
+    property IsTurboExplorer: Boolean read GetIsTurboExplorer;
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
@@ -791,7 +793,7 @@ type
     function GetDefaultProjectsDir: string; override;
     {class }function RadToolName: string; override;
 
-    function AddToCppSearchPath(const Path: string): Boolean; 
+    function AddToCppSearchPath(const Path: string): Boolean;
     function AddToCppBrowsingPath(const Path: string): Boolean;
     function RemoveFromCppSearchPath(const Path: string): Boolean;
     function RemoveFromCppBrowsingPath(const Path: string): Boolean;
@@ -3220,6 +3222,11 @@ begin
   if not Assigned(FIdePackages) then
     FIdePackages := TJclBorRADToolIdePackages.Create(Self);
   Result := FIdePackages;
+end;
+
+function TJclBorRADToolInstallation.GetIsTurboExplorer: Boolean;
+begin
+  Result := (RadToolKind = brBorlandDevStudio) and (VersionNumber = 4) and not (clDcc32 in CommandLineTools);
 end;
 
 function TJclBorRADToolInstallation.GetLatestUpdatePack: Integer;
