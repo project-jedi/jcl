@@ -830,7 +830,8 @@ procedure TJclInstallation.Init;
   begin
     AddOption(joEnvLibPath, [goChecked], Parent);
     AddOption(joEnvBrowsingPath, [goChecked], Parent);
-    AddOption(joEnvDebugDCUPath, [goChecked], Parent);
+    if not Target.IsTurboExplorer then
+      AddOption(joEnvDebugDCUPath, [goChecked], Parent);
   end;
 
   procedure AddMakeOptions(Parent: TJclOption);
@@ -1012,25 +1013,28 @@ procedure TJclInstallation.Init;
       GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
     end;
 
-    ADemoList := GetDemoList;
-    if AConfiguration.SectionExists(FDemoSectionName) then
-      for Index := 0 to ADemoList.Count - 1 do
+    if not Target.IsTurboExplorer then
     begin
-      Id := Integer(ADemoList.Objects[Index]);
-      GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
-    end;
+      ADemoList := GetDemoList;
+      if AConfiguration.SectionExists(FDemoSectionName) then
+        for Index := 0 to ADemoList.Count - 1 do
+      begin
+        Id := Integer(ADemoList.Objects[Index]);
+        GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
+      end;
 
-    StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath];
-    if StoredValue = '' then
-      StoredValue := Target.BPLOutputPath;
-    GUIPage.Directories[FGUIBPLPathIndex] := StoredValue;
-    if Target.RadToolKind = brCppBuilder then
-      StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath]
-    else
-      StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath];
-    if StoredValue = '' then
-      StoredValue := FJclDcpPath;
-    GUIPage.Directories[FGUIDCPPathIndex] := StoredValue;
+      StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath];
+      if StoredValue = '' then
+        StoredValue := Target.BPLOutputPath;
+      GUIPage.Directories[FGUIBPLPathIndex] := StoredValue;
+      if Target.RadToolKind = brCppBuilder then
+        StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath]
+      else
+        StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath];
+      if StoredValue = '' then
+        StoredValue := FJclDcpPath;
+      GUIPage.Directories[FGUIDCPPathIndex] := StoredValue;
+    end;
   end;
 
 var
@@ -1060,8 +1064,11 @@ begin
       AddEnvOptions(joEnvironment);
     end;
 
-    AddOption(joMake, [goExpandable, goChecked], OptionData[joLibrary].Id);
-    AddMakeOptions(joMake);
+    if not Target.IsTurboExplorer then
+    begin
+      AddOption(joMake, [goExpandable, goChecked], OptionData[joLibrary].Id);
+      AddMakeOptions(joMake);
+    end;
 
     if CLRVersion = '' then
     begin
@@ -1069,31 +1076,37 @@ begin
       AddRepositoryOptions(joLibrary);
     end;
   end;
-  
-  AddOption(joPackages, [goStandAloneParent, goExpandable, goChecked], joLibrary);
-  AddPackageOptions(joPackages, RuntimeInstallation);
-  
-  if CLRVersion = '' then
+
+  if not Target.IsTurboExplorer then
   begin
-    {$IFDEF MSWINDOWS}
-    AddExpertOptions(joPackages, RunTimeInstallation);
-    {$ENDIF MSWINDOWS}
-    if RunTimeInstallation then
-      AddDemoNodes;
+    AddOption(joPackages, [goStandAloneParent, goExpandable, goChecked], joLibrary);
+    AddPackageOptions(joPackages, RuntimeInstallation);
+
+    if CLRVersion = '' then
+    begin
+      {$IFDEF MSWINDOWS}
+      AddExpertOptions(joPackages, RunTimeInstallation);
+      {$ENDIF MSWINDOWS}
+      if RunTimeInstallation then
+        AddDemoNodes;
+    end;
   end;
 
   GUIPage.InitDisplay;
 
-  if CLRVersion = '' then
+  if not Target.IsTurboExplorer then
   begin
-    FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionBPLPath);
-    if Target.RadToolKind = brCppBuilder then
-      FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionBPIPath)
+    if (CLRVersion = '') then
+    begin
+      FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionBPLPath);
+      if Target.RadToolKind = brCppBuilder then
+        FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionBPIPath)
+      else
+        FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionDCPPath);
+    end
     else
-      FGUIDCPPathIndex := GUIPage.AddDirectory(RsCaptionDCPPath);
-  end
-  else
-    FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionOutputPath);
+      FGUIBPLPathIndex := GUIPage.AddDirectory(RsCaptionOutputPath);
+  end;
 
   LoadValues;
 end;
@@ -1162,7 +1175,7 @@ function TJclInstallation.Install: Boolean;
       end;
       {$ENDIF MSWINDOWS}
     end
-    else if Assigned(GUI) and (CLRVersion = '') then
+    else if Assigned(GUI) and (CLRVersion = '') and not Target.IsTurboExplorer then
       Result := GUI.Dialog(RsWarningPackageNodeNotSelected, dtConfirmation, [drYes, drNo]) = drYes;
   end;
 
@@ -1312,6 +1325,14 @@ function TJclInstallation.Install: Boolean;
               WriteLog('Failed to add cpp search paths.');
           end;
           {$ENDIF MSWINDOWS}
+          if Target.IsTurboExplorer then
+          begin
+            Result := Target.AddToLibrarySearchPath(Distribution.JclSourcePath);
+            if Result then
+              WriteLog(Format('Added "%s" to library search path.', [Distribution.JclSourcePath]))
+            else
+              WriteLog('Failed to add library search paths.');
+          end;
         end
         else
           WriteLog('Failed to add library search paths.');
@@ -2024,9 +2045,11 @@ begin
 
     RemoveEnvironment;
     RemoveMake;
-    UninstallPackages;
+    if not Target.IsTurboExplorer then
+      UninstallPackages;
     {$IFDEF MSWINDOWS}
-    UninstallExperts;
+    if not Target.IsTurboExplorer then
+      UninstallExperts;
     UninstallHelp;
     {$ENDIF MSWINDOWS}
     // TODO: ioJclCopyPackagesHppFiles
@@ -2108,22 +2131,25 @@ procedure TJclInstallation.Close;
       AConfiguration.OptionAsBool[TargetName, Id] := GUIPage.OptionChecked[Id];
     end;
 
-    ADemoList := GetDemoList;
-    for Index := 0 to ADemoList.Count - 1 do
+    if not Target.IsTurboExplorer then
     begin
-      Id := Integer(ADemoList.Objects[Index]);
-      AConfiguration.OptionAsBool[FDemoSectionName, Id] := GUIPage.OptionChecked[Id];
-    end;
+      ADemoList := GetDemoList;
+      for Index := 0 to ADemoList.Count - 1 do
+      begin
+        Id := Integer(ADemoList.Objects[Index]);
+        AConfiguration.OptionAsBool[FDemoSectionName, Id] := GUIPage.OptionChecked[Id];
+      end;
 
-    AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath] := GUIPage.Directories[FGUIBPLPathIndex];
-    if Target.RadToolKind = brCppBuilder then
-      AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath] := GUIPage.Directories[FGUIDCPPathIndex]
-    else
-      AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath] := GUIPage.Directories[FGUIDCPPathIndex];
+      AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath] := GUIPage.Directories[FGUIBPLPathIndex];
+      if Target.RadToolKind = brCppBuilder then
+        AConfiguration.OptionAsStringByName[TargetName, RsNameBPIPath] := GUIPage.Directories[FGUIDCPPathIndex]
+      else
+        AConfiguration.OptionAsStringByName[TargetName, RsNameDCPPath] := GUIPage.Directories[FGUIDCPPathIndex];
+    end;
   end;
 begin
   SaveOptions;
-  
+
   FGUIPage := nil;
   FGUI := nil;
 end;
@@ -2853,7 +2879,7 @@ begin
     FTargetInstalls.Add(Inst);
     {$IFDEF MSWINDOWS}
     // .net "virtual" targets
-    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) then
+    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) and not Target.IsTurboExplorer then
     begin
       for Index := 0 to FCLRVersions.Count - 1 do
       begin
@@ -3098,7 +3124,6 @@ begin
 end;
 
 initialization
-
-JediInstall.InstallCore.AddProduct(TJclDistribution.Create);
+  JediInstall.InstallCore.AddProduct(TJclDistribution.Create);
 
 end.
