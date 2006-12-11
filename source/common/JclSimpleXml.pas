@@ -1259,20 +1259,51 @@ end;
 procedure TJclSimpleXMLElem.GetBinaryValue(const Stream: TStream);
 var
   I, J: Integer;
-  St: string;
   Buf: array [0..cBufferSize - 1] of Byte;
+  N1, N2: Byte;
+
+  function NibbleStrToNibble(const AChar: Char): Byte;
+  begin
+    case AChar of
+      '0': Result := 0;
+      '1': Result := 1;
+      '2': Result := 2;
+      '3': Result := 3;
+      '4': Result := 4;
+      '5': Result := 5;
+      '6': Result := 6;
+      '7': Result := 7;
+      '8': Result := 8;
+      '9': Result := 9;
+      'A': Result := 10;
+      'B': Result := 11;
+      'C': Result := 12;
+      'D': Result := 13;
+      'E': Result := 14;
+      'F': Result := 15;
+      else
+        Result := 16;
+    end;
+  end;
+
 begin
   I := 1;
   J := 0;
+  Stream.Size := Stream.Size + Length(Value) div 2;
   while I < Length(Value) do
   begin
-    St := '$' + Value[I] + Value[I + 1];
     if J = cBufferSize - 1 then //Buffered write to speed up the process a little
     begin
       Stream.Write(Buf, J);
       J := 0;
     end;
-    Buf[J] := StrToIntDef(St, 0);
+    //faster replacement for St := '$' + Value[I] + Value[I + 1]; Buf[J] := StrToIntDef(St, 0);
+    N1 := NibbleStrToNibble(Value[I]);
+    N2 := NibbleStrToNibble(Value[I + 1]);
+    if (N1 > 15) or (N2 > 15) then
+      Buf[J] := 0
+    else
+      Buf[J] := N1 shr 4 + N2;
     Inc(J);
     Inc(I, 2);
   end;
@@ -2713,14 +2744,17 @@ var
   I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
+  StLength: Integer;
 begin
   lStreamPos := Stream.Position;
   St := '';
+  StLength := 0;
 
   repeat
     Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
     if AParent <> nil then
       AParent.DoLoadProgress(Stream.Position, Stream.Size);
+    SetLength(St, StLength + Count);
     for I := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -2736,11 +2770,13 @@ begin
           end;
       else
         begin
-          St := St + lBuf[I];
+          Inc(StLength);
+          St[StLength] := lBuf[I];
         end;
       end;
     end;
   until Count = 0;
+  SetLength(St, StLength);
   if GetSimpleXML <> nil then
     GetSimpleXML.DoDecodeValue(St);
   Value := St;
