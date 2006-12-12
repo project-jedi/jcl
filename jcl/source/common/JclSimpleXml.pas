@@ -1303,7 +1303,7 @@ begin
     if (N1 > 15) or (N2 > 15) then
       Buf[J] := 0
     else
-      Buf[J] := N1 shr 4 + N2;
+      Buf[J] := N1 shl 4 + N2;
     Inc(J);
     Inc(I, 2);
   end;
