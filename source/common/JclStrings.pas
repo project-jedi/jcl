@@ -67,7 +67,7 @@ uses
   {$ELSE}
   JclWideStrings,
   {$ENDIF CLR}
-  JclBase;
+  JclBase, JclSysUtils;
 
 // Character constants and sets
 
@@ -400,7 +400,7 @@ type
     FChars: TCharDynArray;
     FLength: Integer;
     FMaxCapacity: Integer;
-    FLock: TRTLCriticalSection;
+    FLock: TJclIntfCriticalSection;
 
     function GetCapacity: Integer;
     procedure SetCapacity(const Value: Integer);
@@ -4591,14 +4591,14 @@ end;
 constructor TStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
 begin
   inherited Create;
-  InitializeCriticalSection(FLock);
+  FLock := TJclIntfCriticalSection.Create;
   SetLength(FChars, Capacity);
   FMaxCapacity := MaxCapacity;
 end;
 
 destructor TStringBuilder.Destroy;
 begin
-  DeleteCriticalSection(FLock);
+  FLock.Free;
   inherited Destroy;
 end;
 
@@ -4664,31 +4664,26 @@ function TStringBuilder.AppendPChar(Value: PChar; Count: Integer; RepeatCount: I
 var
   Capacity: Integer;
   IsMultiThreaded: Boolean;
+  LockInterface: IInterface;
 begin
   if (Count > 0) and (RepeatCount > 0) then
   begin
     IsMultiThreaded := IsMultiThread;
     if IsMultiThreaded then
-      EnterCriticalSection(FLock);
-    try
-      repeat
-        Capacity := System.Length(FChars);
-        if Capacity + Count > MaxCapacity then
-          raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
-        if Capacity < FLength + Count then
-          SetLength(FChars, Capacity * 5 div 3 + Count);
-        if Count = 1 then
-          FChars[FLength] := Value[0]
-        else
-          MoveChar(Value[0], FChars[FLength], Count);
-        Inc(FLength, Count);
-
-        Dec(RepeatCount);
-      until RepeatCount <= 0;
-    finally
-      if IsMultiThreaded then
-        LeaveCriticalSection(FLock);
-    end;
+      LockInterface := FLock; // automatically freed
+    repeat
+      Capacity := System.Length(FChars);
+      if Capacity + Count > MaxCapacity then
+        raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+      if Capacity < FLength + Count then
+        SetLength(FChars, Capacity * 5 div 3 + Count);
+      if Count = 1 then
+        FChars[FLength] := Value[0]
+      else
+        MoveChar(Value[0], FChars[FLength], Count);
+      Inc(FLength, Count);
+      Dec(RepeatCount);
+    until RepeatCount <= 0;
   end;
   Result := Self;
 end;
@@ -4698,6 +4693,7 @@ function TStringBuilder.InsertPChar(Index: Integer; Value: PChar; Count,
 var
   Capacity: Integer;
   IsMultiThreaded: Boolean;
+  LockInterface: IInterface;
 begin
   if (Index < 0) or (Index > FLength) then
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
@@ -4711,29 +4707,24 @@ begin
   begin
     IsMultiThreaded := IsMultiThread;
     if IsMultiThreaded then
-      EnterCriticalSection(FLock);
-    try
-      repeat
-        Capacity := System.Length(FChars);
-        if Capacity + Count > MaxCapacity then
-          raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
-        if Capacity < FLength + Count then
-          SetLength(FChars, Capacity * 5 div 3 + Count);
-        MoveChar(FChars[Index], FChars[Index + Count], FLength - Index);
-        if Count = 1 then
-          FChars[Index] := Value[0]
-        else
-          MoveChar(Value[0], FChars[Index], Count);
-        Inc(FLength, Count);
+      LockInterface := FLock; // automatically freed
+    repeat
+      Capacity := System.Length(FChars);
+      if Capacity + Count > MaxCapacity then
+        raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
+      if Capacity < FLength + Count then
+        SetLength(FChars, Capacity * 5 div 3 + Count);
+      MoveChar(FChars[Index], FChars[Index + Count], FLength - Index);
+      if Count = 1 then
+        FChars[Index] := Value[0]
+      else
+        MoveChar(Value[0], FChars[Index], Count);
+      Inc(FLength, Count);
 
-        Dec(RepeatCount);
+      Dec(RepeatCount);
 
-        Inc(Index, Count); // little optimization
-      until RepeatCount <= 0;
-    finally
-      if IsMultiThreaded then
-        LeaveCriticalSection(FLock);
-    end;
+      Inc(Index, Count); // little optimization
+    until RepeatCount <= 0;
   end;
   Result := Self;
 end;

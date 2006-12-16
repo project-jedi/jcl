@@ -59,7 +59,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
-  SysUtils, Classes, TypInfo,
+  SysUtils, Classes, TypInfo, SyncObjs,
   JclBase;
 
 {$IFNDEF CLR}
@@ -489,7 +489,7 @@ type
   TJclIntfCriticalSection = class(TObject, IInterface)
   {$IFNDEF CLR}
   private
-    FCriticalSection: TRTLCriticalSection;
+    FCriticalSection: TCriticalSection;
   protected
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
@@ -501,6 +501,7 @@ type
   end;
 
 {$IFNDEF CLR}
+{$IFDEF MSWINDOWS}
 type
   TJclSimpleLog = class (TObject)
   private
@@ -521,6 +522,7 @@ type
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
+{$ENDIF MSWINDOWS}
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
@@ -2986,24 +2988,24 @@ end;
 constructor TJclIntfCriticalSection.Create;
 begin
   inherited Create;
-  InitializeCriticalSection(FCriticalSection);
+  FCriticalSection := TCriticalSection.Create;
 end;
 
 destructor TJclIntfCriticalSection.Destroy;
 begin
-  DeleteCriticalSection(FCriticalSection);
+  FCriticalSection.Free;
   inherited Destroy;
 end;
 
 function TJclIntfCriticalSection._AddRef: Integer;
 begin
-  EnterCriticalSection(FCriticalSection);
+  FCriticalSection.Acquire;
   Result := 0;
 end;
 
 function TJclIntfCriticalSection._Release: Integer;
 begin
-  LeaveCriticalSection(FCriticalSection);
+  FCriticalSection.Release;
   Result := 0;
 end;
 
@@ -3016,6 +3018,8 @@ begin
 end;
 
 //=== { TJclSimpleLog } ======================================================
+
+{$IFDEF MSWINDOWS}
 
 procedure TJclSimpleLog.CloseLog;
 begin
@@ -3108,14 +3112,17 @@ begin
   Write(StrRepeat('=', SeparatorLen));
 end;
 
+{$ENDIF MSWINDOWS}
 {$ENDIF ~CLR}
 
 initialization
   {$IFNDEF CLR}
-    {$IFDEF THREADSAFE}
-    if not Assigned(GlobalMMFHandleListCS) then
-      GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
-    {$ENDIF THREADSAFE}
+  {$IFDEF MSWINDOWS}
+  {$IFDEF THREADSAFE}
+  if not Assigned(GlobalMMFHandleListCS) then
+    GlobalMMFHandleListCS := TJclIntfCriticalSection.Create;
+  {$ENDIF THREADSAFE}
+  {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -3126,9 +3133,11 @@ finalization
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
   {$IFNDEF CLR}
+  {$IFDEF MSWINDOWS}
   FinalizeMMFHandleList;
   {$IFDEF THREADSAFE}
   GlobalMMFHandleListCS.Free;
   {$ENDIF THREADSAFE}
+  {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
 end.

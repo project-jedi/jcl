@@ -284,9 +284,9 @@ uses
   JclRegistry,
   JclDebug,
   JclDotNet,
+  JediRegInfo,
   {$ENDIF MSWINDOWS}
-  JclFileUtils, JclStrings,
-  JediRegInfo;
+  JclFileUtils, JclStrings;
 
 resourcestring
 // Names
@@ -583,7 +583,7 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   BCBObjectPath  = BCBIncludePath;
-  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVisClx);
+  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirUnix, JclSrcDirVisClx);
   {$ENDIF UNIX}
 
   ExceptDlgPath = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
@@ -711,7 +711,7 @@ begin
     FLibObjDir := MakePath(Distribution.FLibObjDirMask);
   FDemoSectionName := Target.Name + ' demos';
   FLogLines := TStringList.Create;
-  FLogFileName := Format('%s%s.log', [PathAddSeparator(ExtractFilePath(ParamStr(0))), TargetName]);
+  FLogFileName := Format('%sbin%s%s.log', [Distribution.JclPath, DirDelimiter, TargetName]);
 end;
 
 destructor TJclInstallation.Destroy;
@@ -815,12 +815,14 @@ procedure TJclInstallation.Init;
     AddOption(joDefMathExtremeValues, [goChecked], Parent);
     if CLRVersion = '' then   // these units are not CLR compliant
     begin
+      {$IFDEF MSWINDOWS}
       AddOption(joDefHookDllExceptions, [goNoAutoCheck], Parent);
       AddOption(joDefDebugNoBinary, [goNoAutoCheck], Parent);
       AddOption(joDefDebugNoTD32, [goNoAutoCheck], Parent);
       AddOption(joDefDebugNoMap, [goNoAutoCheck], Parent);
       AddOption(joDefDebugNoExports, [goNoAutoCheck], Parent);
       AddOption(joDefDebugNoSymbols, [goNoAutoCheck], Parent);
+      {$ENDIF MSWINDOWS}
       AddOption(joDefEDIWeakPackageUnits, [goNoAutoCheck], Parent);
       AddOption(joDefUnitVersioning, [goChecked], Parent);
     end;
@@ -937,12 +939,15 @@ procedure TJclInstallation.Init;
   end;
 
   procedure AddExpertOptions(Parent: TJclOption; RuntimeInstallation: Boolean);
+  {$IFDEF MSWINDOWS}
   var
     ExpertOptions: TJediInstallGUIOptions;
+  {$ENDIF MSWINDOWS}
   begin
     // TODO :
     //  It has been reported that IDE experts don't work under Win98.
     //  Leave these options unchecked for Win9x/WinME until that has been examined.
+    {$IFDEF MSWINDOWS}
     if IsWinNT then
       ExpertOptions := [goChecked]
     else
@@ -975,6 +980,7 @@ procedure TJclInstallation.Init;
     AddOption(joExpertVersionControl, [goNoAutoCheck], joExperts);
     if (Target.RadToolKind <> brBorlandDevStudio) and (Target.VersionNumber <= 6) then
       AddOption(joExpertThreadNames, ExpertOptions, joExperts);
+    {$ENDIF MSWINDOWS}
   end;
 
   procedure AddDemoNodes;
@@ -1129,8 +1135,10 @@ function TJclInstallation.Install: Boolean;
   end;
 
   function CheckDirectories: Boolean;
+  {$IFDEF MSWINDOWS}
   var
     PathEnvVar: string;
+  {$ENDIF MSWINDOWS}
   begin
     Result := not OptionChecked[joPackages];
     if not Result then
@@ -1271,6 +1279,7 @@ function TJclInstallation.Install: Boolean;
       MarkOptionBegin(joMapCreate);
       Target.MapCreate := OptionChecked[joMapCreate];
       MarkOptionEnd(joMapCreate, True);
+      {$IFDEF MSWINDOWS}
       MarkOptionBegin(joJdbgCreate);
       Target.JdbgCreate := OptionChecked[joJdbgCreate];
       MarkOptionEnd(joJdbgCreate, True);
@@ -1280,7 +1289,6 @@ function TJclInstallation.Install: Boolean;
       MarkOptionBegin(joMapDelete);
       Target.MapDelete := OptionChecked[joMapDelete];
       MarkOptionEnd(joMapDelete, True);
-      {$IFDEF MSWINDOWS}
       if Target is TJclBDSInstallation then
       begin
         MarkOptionBegin(joDualPackages);
@@ -2338,7 +2346,7 @@ begin
           MarkOptionEnd(joCopyHppFiles, Result);
         end;
         {$IFDEF KYLIX}
-        Options.Add('-P');   // generate position independent code (PIC)
+        Compiler.Options.Add('-P');   // generate position independent code (PIC)
         WriteLog('');
         WriteLog('Compiling dpu files...');
         Result := Result and CompileUnits;
@@ -2405,9 +2413,9 @@ begin
     ConfigureBpr2Mak(PackageFileName);
     {$IFDEF KYLIX}
     if InstallPackage then
-      Result := Target.InstallPackage(PackageFileName, BplPath, DcpPath)
+      Result := Target.InstallPackage(PackageFileName, GetBplPath, GetDcpPath)
     else
-      Result := Target.CompilePackage(PackageFileName, BplPath, DcpPath);
+      Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
     {$ELSE ~KYLIX}
 
     if Target.RadToolKind = brBorlandDevStudio then
@@ -2870,8 +2878,10 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
   end;
 var
   Inst: TJclInstallation;
+  {$IFDEF MSWINDOWS}
   Index: Integer;
   CLRVersion: string;
+  {$ENDIF MSWINDOWS}
 begin
   if Supported then
   try
@@ -3033,6 +3043,7 @@ begin
       Exit;
     end;
 
+    {$IFDEF MSWINDOWS}
     if Assigned(GUI) then
     begin
       GUI.Status := 'Initializing JCL installation process';
@@ -3048,6 +3059,7 @@ begin
         end;
       end;
     end;
+    {$ENDIF MSWINDOWS}
 
     FNbEnabled := 0;
     FNbInstalled := 0;

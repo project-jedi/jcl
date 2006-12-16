@@ -75,8 +75,10 @@ implementation
 {$R *.xfm}
 {$ENDIF ~VCL}
 
+{$IFDEF MSWINDOWS}
 uses
   JclShell;
+{$ENDIF MSWINDOWS}
 
 function TReadmeFrame.GetCaption: string;
 begin
@@ -90,7 +92,10 @@ end;
 
 procedure TReadmeFrame.ReadmePaneDblClick(Sender: TObject);
 begin
+  { TODO: implement for Unix }
+  {$IFDEF MSWINDOWS}
   ShellExecEx(ReadmeFileName);
+  {$ENDIF MSWINDOWS}
 end;
 
 procedure TReadmeFrame.SetCaption(const Value: string);

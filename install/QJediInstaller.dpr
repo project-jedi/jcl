@@ -5,11 +5,11 @@ uses
   JediInstall in 'JediInstall.pas',
   JclInstall in 'JclInstall.pas',
   JediInstallConfigIni in 'JediInstallConfigIni.pas',
-  JclBorlandTools in '..\source\common\JclBorlandTools.pas',
-  JclResources in '..\source\common\JclResources.pas',
-  QJediGUIReadme in 'ClxGui\QJediGUIReadme.pas' {ReadmeFrame: TFrame},
-  QJediGUIInstall in 'ClxGui\QJediGUIInstall.pas' {InstallFrame: TFrame},
-  QJediGUIMain in 'ClxGui\QJediGUIMain.pas' {MainForm};
+  JclResources in '../source/common/JclResources.pas',
+  JclBorlandTools in '../source/common/JclBorlandTools.pas',
+  QJediGUIReadme in 'ClxGui/QJediGUIReadme.pas' {ReadmeFrame: TFrame},
+  QJediGUIInstall in 'ClxGui/QJediGUIInstall.pas' {InstallFrame: TFrame},
+  QJediGUIMain in 'ClxGui/QJediGUIMain.pas' {MainForm};
 
 {$R *.res}
 
