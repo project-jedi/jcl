@@ -331,6 +331,11 @@ implementation
 uses
   JclBase, JclResources;
 
+{$IFDEF KYLIX}
+function __open(PathName: PChar; Flags: Integer; Mode: Integer): Integer; cdecl;
+  external 'libc.so.6' name 'open';
+{$ENDIF KYLIX}
+
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
 begin
@@ -445,8 +450,10 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+const
+  SeekOrigins: array [TSeekOrigin] of Cardinal = ( SEEK_SET {soBeginning}, SEEK_CUR {soCurrent}, SEEK_END {soEnd} );
 begin
-  Result := __lseek(Handle, Offset, Origin);
+  Result := __lseek(Handle, Offset, SeekOrigins[Origin]);
 end;
 {$ENDIF LINUX}
 
@@ -473,12 +480,21 @@ end;
 constructor TJclFileStream.Create(const FileName: string; Mode: Word; Rights: Cardinal);
 var
   H: THandle;
+{$IFDEF KYLIX}
+const
+  INVALID_HANDLE_VALUE = 0;
+{$ENDIF KYLIX}
 begin
   if Mode = fmCreate then
   begin
+    {$IFDEF KYLIX}
+    H := __open(PChar(FileName), O_CREAT or O_RDWR, FileAccessRights);
+    inherited Create(H);
+    {$ELSE ~KYLIX}
     H := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
     inherited Create(H);
+    {$ENDIF ~KYLIX}
     if Handle = INVALID_HANDLE_VALUE then
       {$IFDEF CLR}
       raise EJclStreamError.CreateFmt(RsStreamsCreateError, [FileName]);

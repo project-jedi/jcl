@@ -62,10 +62,17 @@ ALERT_jedi_inc_incompatible
     {----------------------------}
     { Kylix                      }
     {----------------------------}
-    {$IFDEF KYLIX3}
-      {$I jclk3.inc}
+    // KYLIX3 is not defined (version numbers comparisons are wrong)
+    // won't fix because of possible bug with floating point comparisons
+    // at compile time
+    {$IFDEF KYLIX}
+      {$IFDEF BCB}
+        {$I jclkc3.inc}
+      {$ELSE ~BCB}
+        {$I jclkd3.inc}
+      {$ENDIF ~BCB}
       {$DEFINE JCL_CONFIGURED}
-    {$ENDIF KYLIX3}
+    {$ENDIF KYLIX}
     {----------------------------}
     { C++Builder                 }
     {----------------------------}

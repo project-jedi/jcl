@@ -1006,6 +1006,7 @@ const
   PaletteKeyName             = 'Palette';
   PaletteHiddenTag           = '.Hidden';
 
+  ConfigurationExtension     = '.cfg';
   {$IFDEF MSWINDOWS}
   AsmExeName                 = 'tasm32.exe';
   BCC32ExeName               = 'bcc32.exe';
@@ -1014,7 +1015,6 @@ const
   Bpr2MakExeName             = 'bpr2mak.exe';
   MakeExeName                = 'make.exe';
   DelphiOptionsFileExtension = '.dof';
-  ConfigurationExtension     = '.cfg';
   {$IFDEF BCB}
   BorRADToolRepositoryFileName = 'bcb.dro';
   {$ELSE BCB}
@@ -2770,15 +2770,17 @@ begin
   FJdbgCreate := False;
   FJdbgInsert := False;
   FMapDelete := False;
-  {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + AsmExeName) then
     Include(FCommandLineTools, clAsm);
+  {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + BCC32ExeName) then
     Include(FCommandLineTools, clBcc32);
   if FileExists(BinFolderName + DCC32ExeName) then
     Include(FCommandLineTools, clDcc32);
+  {$IFDEF MSWINDOWS}
   if FileExists(BinFolderName + DCCILExeName) then
     Include(FCommandLineTools, clDccIL);
+  {$ENDIF ~MSWINDOWS}
   if FileExists(BinFolderName + MakeExeName) then
     Include(FCommandLineTools, clMake);
   if FileExists(BinFolderName + Bpr2MakExeName) then
@@ -3489,9 +3491,11 @@ begin
 end;
 
 function TJclBorRADToolInstallation.ProcessMapFile(const BinaryFileName: string): Boolean;
+{$IFDEF MSWINDOWS}
 var
   MAPFileName, LinkerBugUnit: string;
   MAPFileSize, JclDebugDataSize: Integer;
+{$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
   if JdbgCreate then
@@ -3595,6 +3599,19 @@ begin
   Key := ConfigData.FileName;
   {$IFDEF KYLIX}
   ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
+  if Length(Key) >= 3 then
+  begin
+    case Key[Length(Key)-2] of
+      '0' :
+        FVersionNumber := 1;
+      '5' :
+        FVersionNumber := 2;
+      '9' :
+        FVersionNumber := 3;
+    else
+      FVersionNumber := 0;
+    end;
+  end;
   {$ELSE ~KYLIX}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
 
@@ -3608,10 +3625,17 @@ begin
   {$ENDIF ~KYLIX}
 
   case RadToolKind of
+    {$IFDEF KYLIX}
+    brDelphi:
+      FVersionNumberStr := Format('kd%d', [VersionNumber]);
+    brCppBuilder:
+      FVersionNumberStr := Format('kc%d', [VersionNumber]);
+    {$ELSE ~KYLIX}
     brDelphi:
       FVersionNumberStr := Format('d%d', [VersionNumber]);
     brCppBuilder:
       FVersionNumberStr := Format('c%d', [VersionNumber]);
+    {$ENDIF ~KYLIX}
     brBorlandDevStudio:
       if VersionNumber = 1 then
         FVersionNumberStr := 'cs1'
