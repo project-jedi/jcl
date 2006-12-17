@@ -53,7 +53,9 @@ type
   {$ENDIF COMPILER5}
   TJclSimpleXML = class;
   EJclSimpleXMLError = class(Exception);
+  {$M+} // generate RTTI for published properties
   TJclSimpleXMLElem = class;
+  {$M-}
   TJclSimpleXMLElems = class;
   TJclSimpleXMLProps = class;
   TJclSimpleXMLElemComment = class;
@@ -271,6 +273,7 @@ type
     property Count: Integer read GetCount;
   end;
 
+  {$M+}
   TJclSimpleXMLElem = class(TObject)
   private
     FName: string;
@@ -325,6 +328,7 @@ type
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
   end;
+  {$M-}
   TJclSimpleXMLElemClass = class of TJclSimpleXMLElem;
 
   TJclSimpleXMLElemComment = class(TJclSimpleXMLElem)
