@@ -41,8 +41,6 @@ USEUNIT("..\..\Source\Windows\JclLANMan.pas");
 USEUNIT("..\..\source\Windows\JclLocales.pas");
 USEUNIT("..\..\source\Windows\JclMapi.pas");
 USEUNIT("..\..\source\Windows\JclMiscel.pas");
-USEUNIT("..\..\Source\Windows\JclMsdosSys.pas");
-USEUNIT("..\..\Source\Windows\JvMsdosSys.pas");
 USEUNIT("..\..\source\Windows\JclMultimedia.pas");
 USEUNIT("..\..\source\Windows\JclNTFS.pas");
 USEUNIT("..\..\source\Windows\JclPeImage.pas");
