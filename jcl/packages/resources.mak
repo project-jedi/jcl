@@ -146,7 +146,9 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclThreadNameExpert.res               \
            d9\JclVcl.res                            \
            d9\JclVersionControlExpert.res           \
-           d9\JclVersionControlExpertDLL.res
+           d9\JclVersionControlExpertDLL.res        \
+           k3\Jcl.res                               \
+           k3\JclVClx.res
 # ---------------------------------------------------------------------------
 !if !$d(BRCC32)
 BRCC32 = brcc32
