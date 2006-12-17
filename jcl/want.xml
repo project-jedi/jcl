@@ -111,8 +111,8 @@
 
   <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
     <echo message="compile the source files..." />
-    <brcc file="${src.dir}/Windows/JclUnicode.rc" output="${src.dir}/Windows/JclUnicode.res" />
-    <dcc basedir="${pack.ver.dir}" source="${pack.ver.dir}/*.dpk" >
+    <brcc file="${src.dir}/windows/JclUnicode.rc" output="${src.dir}/windows/JclUnicode.res" />
+    <dcc basedir="${pack.ver.dir}" source="Jcl*.dpk" >
       <dcuoutput path="${lib.dir}" />
       <exeoutput path="${bin.dir}" />
       <bploutput path="${bpl.dir}" />
@@ -122,10 +122,10 @@
 
       <unitpath refid="unit.dirs" />        
       <includepath>
-        <include    name="${src.dir}/Common" />
+        <include    name="${src.dir}/common" />
       </includepath>
       <resourcepath>
-        <include    name="${src.dir}/Common" />
+        <include    name="${src.dir}/common" />
       </resourcepath>
     </dcc>
 
@@ -162,8 +162,8 @@
       <exclude name="${help.dir}/*.txt" />
       <exclude name="${basedir}/packages/*.dev/**" />
       <exclude name="${basedir}/packages/JclDevPackages*.bpg" />
-      <exclude name="${src.dir}/Prototypes/**" />
-      <exclude name="${src.dir}/Unix/ProcessInfo.pas" />
+      <exclude name="${src.dir}/prototypes/**" />
+      <exclude name="${src.dir}/unix/ProcessInfo.pas" />
 
       <include name="${doc.dir}/**" />
       <include name="**/*.pas" />
@@ -194,7 +194,7 @@
       <include name="**/*.html" />
       <include name="**/*.xml" />
       <include name="**/*.bat" />
-      <include name="${src.dir}/Prototypes/jpp.exe" />
+      <include name="${src.dir}/prototypes/jpp.exe" />
       <include name="want.exe" />
     </zip>
   </target>
