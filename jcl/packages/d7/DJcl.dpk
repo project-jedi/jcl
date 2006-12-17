@@ -67,8 +67,6 @@ contains
   JclLocales in '..\..\Source\Windows\JclLocales.pas',
   JclMapi in '..\..\Source\Windows\JclMapi.pas',
   JclMiscel in '..\..\Source\Windows\JclMiscel.pas',
-  JclMsdosSys in '..\..\Source\Windows\JclMsdosSys.pas',
-  JvMsdosSys in '..\..\Source\Windows\JvMsdosSys.pas',
   JclMultimedia in '..\..\Source\Windows\JclMultimedia.pas',
   JclNTFS in '..\..\Source\Windows\JclNTFS.pas',
   JclPeImage in '..\..\Source\Windows\JclPeImage.pas',

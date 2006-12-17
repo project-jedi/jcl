@@ -1,0 +1,1 @@
+This directory is inteded as a common place for compiled files of BCB 5 packages.

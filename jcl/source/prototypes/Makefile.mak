@@ -5,7 +5,7 @@
 #
 
 jpp		= jpp.exe
-VClxOptions	= -c -dVisualCLX -dCOMPILER6_UP -uDevelop -uBitmap32 -uVCL -x1:..\VisCLX\JclQ
+VClxOptions	= -c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uBitmap32 -uVCL -x1:..\VisCLX\JclQ
 VclOptions	= -c -dVCL -dVCL -dBitmap32 -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -x1:..\VCL\Jcl
 
 

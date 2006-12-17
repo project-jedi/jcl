@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJclVClx60.bpl"/>
-    <OBJFILES value="..\..\lib\C6\CJclVClx.obj ..\..\lib\C6\JclQGraphics.obj
-      ..\..\lib\C6\JclQGraphUtils.obj"/>
+    <PROJECT value="bplCJclVClxK3.so"/>
+    <OBJFILES value="../../lib/K3/CJclVClx.obj ../../lib/K3/JclQGraphics.obj
+      ../../lib/K3/JclQGraphUtils.obj"/>
     <RESFILES value="CJclVClx.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -16,29 +16,29 @@
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi visualclx.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\source\Common;..\..\source\Windows;..\..\source\VisCLX"/>
+    <PATHPAS value=".;../../source/Common;../../source/Windows;../../source/VisCLX"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
-    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
-    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
+    <RELEASELIBPATH value="$(BCB)/lib/release"/>
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJclVClx.cpp"/>
-    <INCLUDEPATH value="..\..\source\Common;..\..\source\Windows;..\..\source\VisCLX;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\source\Common;..\..\source\Windows;..\..\source\VisCLX;..\..\lib\C6;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="../../source/Common;../../source/Windows;../../source/VisCLX;$(BCB)/include;$(BCB)/include/vcl"/>
+    <LIBPATH value="../../source/Common;../../source/Windows;../../source/VisCLX;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source\Common;..\..\source\Windows;..\..\source\VisCLX -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG
+    <IDLCFLAGS value="-I../../source/Common;../../source/Windows;../../source/VisCLX -I$(BCB)/include -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG
       -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
+    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\lib\C6 -N0..\..\lib\C6 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2../../lib/K3 -N0../../lib/K3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\C6 -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I../../lib/K3 -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -52,8 +52,8 @@
       <FILE FILENAME="CJclVClx.cpp" FORMNAME="" UNITNAME="CJclVClx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\source\VisCLX\JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\source\VisCLX\JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/VisCLX/JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/VisCLX/JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -87,7 +87,7 @@ ProductVersion=1.0.0.0
 Comments=
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=$(BCB)/source/vcl
 
 [Parameters]
 RunParams=
@@ -118,7 +118,7 @@ RootDir=
 
 [Linker]
 LibPrefix=
-LibSuffix=60
+LibSuffix=K3
 LibVersion=
   </IDEOPTIONS>
 </PROJECT>

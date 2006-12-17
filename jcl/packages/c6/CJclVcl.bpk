@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJclVcl.bpl"/>
+    <PROJECT value="CJclVcl60.bpl"/>
     <OBJFILES value="..\..\lib\C6\CJclVcl.obj ..\..\lib\C6\JclGraphics.obj
       ..\..\lib\C6\JclGraphUtils.obj ..\..\lib\C6\JclPrint.obj"/>
     <RESFILES value="CJclVcl.res"/>
