@@ -1305,7 +1305,7 @@ end;
 //=== { TJclFileMapping } ====================================================
 
 constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
-  const Name: string; Protect: Cardinal; const MaximumSize: Int64; 
+  const Name: string; Protect: Cardinal; const MaximumSize: Int64;
   SecAttr: PSecurityAttributes);
 begin
   FFileHandle := INVALID_HANDLE_VALUE;
@@ -1485,15 +1485,31 @@ begin
   LastLineStart := P;
   while P < FEnd do
   begin
-    if P^ = AnsiLineFeed then
+    // CRLF, CR, LF and LFCR are seen as valid sets of chars for EOL marker
+    if P^ in [AnsiLineFeed, AnsiCarriageReturn] then
     begin
       if I and $FFFF = 0 then
         ReallocMem(FIndex, (I + $10000) * SizeOf(Pointer));
       FIndex[I] := LastLineStart;
       Inc(I);
-      LastLineStart := P + 1;
-    end;
-    Inc(P);
+
+      if P^ = AnsiLineFeed then
+      begin
+        Inc(P);
+        if (P < FEnd) and (P^ = AnsiCarriageReturn) then
+          Inc(P);
+      end
+      else
+      if P^ = AnsiCarriageReturn then
+      begin
+        Inc(P);
+        if (P < FEnd) and (P^ = AnsiLineFeed) then
+          Inc(P);
+      end;
+      LastLineStart := P;
+    end
+    else
+      Inc(P);
   end;
   if P > LastLineStart then
   begin
@@ -1527,39 +1543,41 @@ begin
 end;
 
 function TJclMappedTextReader.GetLineCount: Integer;
-
-  function CountLines(P: PChar; Len: Integer): Integer;
-  {$IFDEF PUREPASCAL}
-  var
-    I: Integer;
-  begin
-    Result := 0;
-    for I := 0 to Len-1 do
-    begin
-      if P^ = AnsiLineFeed then
-        Inc(Result);
-      Inc(P);
-    end;
-  end;
-  {$ELSE ~PUREPASCAL}
-  asm
-       PUSH    EDI
-       MOV     EDI, EAX
-       MOV     ECX, EDX
-       MOV     EAX, AnsiLineFeed
-       XOR     EDX, EDX
-  @@1: REPNZ   SCASB
-       INC     EDX
-       OR      ECX, ECX
-       JNZ     @@1
-       MOV     EAX, EDX
-       POP     EDI
-  end;
-  {$ENDIF ~PUREPASCAL}
-
+var
+  P: PChar;
 begin
   if FLineCount = -1 then
-    FLineCount := CountLines(FContent, FSize);
+  begin
+    FLineCount := 0;
+    if FContent < FEnd then
+    begin
+      P := FContent;
+      while P < FEnd do
+      begin
+        case P^ of
+          AnsiLineFeed :
+            begin
+              Inc(FLineCount);
+              Inc(P);
+              if (P < FEnd) and (P^ = AnsiCarriageReturn) then
+                Inc(P);
+            end;
+          AnsiCarriageReturn :
+            begin
+              Inc(FLineCount);
+              Inc(P);
+              if (P < FEnd) and (P^ = AnsiLineFeed) then
+                Inc(P);
+            end;
+        else
+          Inc(P);
+        end;
+      end;
+      if (P = FEnd) and (P > FContent) and not ((P-1)^ in [AnsiCarriageReturn, AnsiLineFeed]) then
+        Inc(FLineCount);
+    end;
+  end;
+
   Result := FLineCount;
 end;
 
@@ -1646,22 +1664,54 @@ begin
       Result := FLastPosition;
       while (Result < FEnd) and (LineOffset > 0) do
       begin
-        if Result^ = AnsiLineFeed then
-          Dec(LineOffset);
-        Inc(Result);
+        case Result^ of
+          AnsiLineFeed :
+            begin
+              Dec(LineOffset);
+              Inc(Result);
+              if (Result < FEnd) and (Result^ = AnsiCarriageReturn) then
+                Inc(Result);
+            end;
+          AnsiCarriageReturn :
+            begin
+              Dec(LineOffset);
+              Inc(Result);
+              if (Result < FEnd) and (Result^ = AnsiLineFeed) then
+                Inc(Result);
+            end;
+        else
+          Inc(Result);  
+        end;
       end;
     end
     else
     if LineOffset < 0 then
     begin
       Result := FLastPosition;
-      while (Result >= FContent) and (LineOffset < 1) do
+      while (Result > FContent) and (LineOffset < 1) do
       begin
-        if Result^ = AnsiLineFeed then
-          Inc(LineOffset);
         Dec(Result);
+        case Result^ of
+          AnsiLineFeed :
+            begin
+              Inc(LineOffset);
+              if LineOffset >= 1 then
+                Inc(Result)
+              else
+              if (Result > FContent) and ((Result-1)^ = AnsiCarriageReturn) then
+                Dec(Result);
+            end;
+          AnsiCarriageReturn :
+            begin
+              Inc(LineOffset);
+              if LineOffset >= 1 then
+                Inc(Result)
+              else
+              if (Result > FContent) and ((Result-1)^ = AnsiLineFeed) then
+                Dec(Result);
+            end;
+        end;
       end;
-      Inc(Result, 2);
     end;
     FLastLineNumber := LineNumber;
     FLastPosition := Result;
@@ -1691,21 +1741,34 @@ end;
 
 function TJclMappedTextReader.StringFromPosition(var StartPos: PChar): string;
 var
-  P, StringEnd: PChar;
+  P: PChar;
 begin
   if (StartPos = nil) or (StartPos >= FEnd) then
     Result := ''
   else
   begin
     P := StartPos;
-    while (P < FEnd) and (P^ <> AnsiLineFeed) do
+    while (P < FEnd) and (not (P^ in [AnsiLineFeed, AnsiCarriageReturn])) do
       Inc(P);
-    if (P > FContent) and ((P - 1)^ = AnsiCarriageReturn) then
-      StringEnd := P - 1
-    else
-      StringEnd := P;
-    SetString(Result, StartPos, StringEnd - StartPos);
-    StartPos := P + 1;
+    SetString(Result, StartPos, P - StartPos);
+    if P < FEnd then
+    begin
+      case P^ of
+        AnsiLineFeed :
+          begin
+            Inc(P);
+            if (P < FEnd) and (P^ = AnsiCarriageReturn) then
+              Inc(P);
+          end;
+        AnsiCarriageReturn :
+          begin
+            Inc(P);
+            if (P < FEnd) and (P^ = AnsiLineFeed) then
+              Inc(P);
+          end;   
+      end;
+    end;
+    StartPos := P;
   end;
 end;
 
