@@ -1,4 +1,3 @@
-
 {**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL) extension                                                        }
@@ -621,6 +620,16 @@ const
   ReadmeFileName = 'Readme.txt';
   {$ENDIF}
 
+  DailyRevisionFileName = 'daily_revision.log';
+  EntriesFileName1      = '.svn' + DirDelimiter + 'entries';
+  EntriesFileName2      = '_svn' + DirDelimiter + 'entries';
+
+  RsJclVersionMask     = 'JCL %d.%d %s %s %d';
+  RsJclVersionBuild    = 'Build';
+  RsJclVersionRevision = 'Revision';
+  RsJclVersionTesting  = 'Testing';
+  RsJclVersionRelease  = 'Release';
+
   {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = 'packages\BCB.bmk';
   {$ENDIF MSWINDOWS}
@@ -1123,6 +1132,8 @@ function TJclInstallation.Install: Boolean;
   var
     Personality: TJclBorPersonality;
   begin
+    WriteLog(Distribution.Version);
+    WriteLog('');
     WriteLog(StrPadRight(TargetName, 44, '='));
     WriteLog('');
     WriteLog('Installed personalities :');
@@ -1775,6 +1786,9 @@ begin
       GUIPage.Show;
       GUIPage.BeginInstall;
     end;
+
+    FLogLines.Clear;
+
     WriteIntroduction;
     Result := CheckDirectories and SetStaticOptions and SetEnvironment
       and MakeUnits and CompilePackages
@@ -2937,8 +2951,68 @@ begin
 end;
 
 function TJclDistribution.GetVersion: string;
+var
+  DailyFileName, SvnEntriesFileName, RevisionText, StableText, Source: string;
+  TextFile: TJclMappedTextReader;
+  Revision, Index: Integer;
 begin
-  Result := Format('JCL %d.%d Build %d', [JclVersionMajor, JclVersionMinor, JclVersionBuild]);
+  Revision := 0;
+
+  if JclVersionRelease = 0 then
+  begin
+    DailyFileName := FJclPath + DailyRevisionFileName;
+    if FileExists(DailyFileName) then
+    begin
+      // directory from a daily zip
+      TextFile := TJclMappedTextReader.Create(DailyFileName);
+      try
+        RevisionText := TextFile.ReadLn;
+        if RevisionText <> '' then
+        begin
+          Index := Length(RevisionText) - 1; // skip the '.'
+          while (Index > 1) and (RevisionText[Index] in AnsiDecDigits) do
+            Dec(Index);
+          Revision := StrToIntDef(Copy(RevisionText, Index + 1, Length(RevisionText) - Index - 1), 0);
+        end;
+      finally
+        TextFile.Free;
+      end;
+    end;
+
+    if Revision = 0 then
+    begin
+      SvnEntriesFileName := FJclPath + EntriesFileName1;
+      if not FileExists(SvnEntriesFileName) then
+        SvnEntriesFileName := FJclPath + EntriesFileName2;
+      if FileExists(SvnEntriesFileName) then
+      begin
+        // directory from subversion
+        TextFile := TJclMappedTextReader.Create(SvnEntriesFileName);
+        try
+          TextFile.ReadLn;
+          TextFile.ReadLn;
+          TextFile.ReadLn;
+          RevisionText := TextFile.ReadLn;
+          Revision := StrToIntDef(RevisionText, 0);
+        finally
+          TextFile.Free;
+        end;
+      end;
+    end;
+    StableText := RsJclVersionTesting;
+  end
+  else
+    StableText := RsJclVersionRelease;
+
+  if Revision = 0 then
+  begin
+    Source := RsJclVersionBuild;
+    Revision := JclVersionBuild;
+  end
+  else
+    Source := RsJclVersionRevision;
+
+  Result := Format(RsJclVersionMask, [JclVersionMajor, JclVersionMinor, StableText, Source, Revision])
 end;
 
 procedure TJclDistribution.Init;

@@ -672,6 +672,8 @@ var
 begin
   ProgressBar.Visible := True;
 
+  InfoDisplay.Lines.Clear;
+
   FCheckedCount := 0;
   FInstallCount := 0;
   ANode := TreeView.Items.GetFirstNode;
