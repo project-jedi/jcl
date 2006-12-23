@@ -470,8 +470,11 @@ type
   private
     FThreadID: DWORD;
     FTimeStamp: TDateTime;
+  protected
+    FOnDestroy: TNotifyEvent;
   public
     constructor Create;
+    destructor Destroy; override;
     property ThreadID: DWORD read FThreadID;
     property TimeStamp: TDateTime read FTimeStamp;
   end;
@@ -3289,6 +3292,13 @@ begin
   FTimeStamp := Now;
 end;
 
+destructor TJclStackBaseList.Destroy;
+begin
+  if Assigned(FOnDestroy) then
+    FOnDestroy(Self);
+  inherited Destroy;
+end;
+
 //=== { TJclGlobalStackList } ================================================
 
 type
@@ -3300,6 +3310,7 @@ type
     FTIDLocked: Boolean;
     function GetExceptStackInfo: TJclStackInfoList;
     function GetLastExceptFrameList: TJclExceptFrameList;
+    procedure ItemDestroyed(Sender: TObject);
   public
     destructor Destroy; override;
     procedure AddObject(AObject: TJclStackBaseList);
@@ -3314,13 +3325,11 @@ var
   GlobalStackList: TJclGlobalStackList;
 
 destructor TJclGlobalStackList.Destroy;
-var
-  I: Integer;
 begin
   with LockList do
   try
-    for I := 0 to Count - 1 do
-      TObject(Items[I]).Free;
+    while Count > 0 do
+      TObject(Items[0]).Free;
   finally
     UnlockList;
   end;
@@ -3331,6 +3340,7 @@ procedure TJclGlobalStackList.AddObject(AObject: TJclStackBaseList);
 var
   ReplacedObj: TObject;
 begin
+  AObject.FOnDestroy := ItemDestroyed;
   with LockList do
   try
     ReplacedObj := FindObject(AObject.ThreadID, TJclStackBaseListClass(AObject.ClassType));
@@ -3377,6 +3387,16 @@ end;
 function TJclGlobalStackList.GetLastExceptFrameList: TJclExceptFrameList;
 begin
   Result := TJclExceptFrameList(FindObject(GetCurrentThreadId, TJclExceptFrameList));
+end;
+
+procedure TJclGlobalStackList.ItemDestroyed(Sender: TObject);
+begin
+  with LockList do
+  try
+    Remove(Sender);
+  finally
+    UnlockList;
+  end;
 end;
 
 procedure TJclGlobalStackList.LockThreadID(TID: DWORD);
