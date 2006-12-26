@@ -2536,12 +2536,12 @@ begin
     {$IFNDEF DEBUG_NO_MAP}
     InfoSourceClassList.Add(Pointer(TJclDebugInfoMap));
     {$ENDIF !DEBUG_NO_MAP}
-    {$IFNDEF DEBUG_NO_EXPORTS}
-    InfoSourceClassList.Add(Pointer(TJclDebugInfoExports));
-    {$ENDIF !DEBUG_NO_EXPORTS}
     {$IFNDEF DEBUG_NO_SYMBOLS}
     InfoSourceClassList.Add(Pointer(TJclDebugInfoSymbols));
     {$ENDIF !DEBUG_NO_SYMBOLS}
+    {$IFNDEF DEBUG_NO_EXPORTS}
+    InfoSourceClassList.Add(Pointer(TJclDebugInfoExports));
+    {$ENDIF !DEBUG_NO_EXPORTS}
   end;
 end;
 
@@ -2951,7 +2951,7 @@ begin
       Result := Result and SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo);
     end;
 
-    Result := Result and (ModuleInfo.SymType <> SymNone);
+    Result := Result and not (ModuleInfo.SymType in [SymNone, SymExport]);
   end;
 end;
 
