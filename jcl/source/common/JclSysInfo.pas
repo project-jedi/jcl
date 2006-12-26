@@ -2462,6 +2462,7 @@ var
   HasModules: Boolean;
 begin
   Result := True;
+  HasModules := False;
   Processes := Process.GetProcesses;
   for I := 0 to High(Processes) do
   begin

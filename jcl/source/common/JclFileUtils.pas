@@ -380,7 +380,7 @@ type
   TJclFileAttributeMask = class(TJclCustomFileAttrMask)
   private
     procedure ReadVolumeID(Reader: TReader);
-  public
+  protected
     procedure DefineProperties(Filer: TFiler); override;
   published
     property ReadOnly;
@@ -983,7 +983,11 @@ uses
   {$ENDIF ~FPC}
   JclSysInfo, JclWin32, JclSecurity,
   {$ENDIF Win32API}
-  JclSysUtils, JclDateTime, JclResources, JclStrings;
+  JclSysUtils, JclDateTime, JclResources,
+  {$IFDEF CLR}
+  JclAnsiStrings,
+  {$ENDIF CLR}
+  JclStrings;
 
 { Some general notes:
 
@@ -1931,7 +1935,7 @@ begin
     while (S1[Index1] = S2[Index2]) and (Index1 <= LenS1) do
     begin
       Inc(Result);
-      if S1[Index1] in [DirDelimiter, ':'] then
+      if (S1[Index1] = DirDelimiter) or (S1[Index1] = ':') then
         LastSeparator := Result;
       Inc(Index1);
       Inc(Index2);
@@ -2241,7 +2245,7 @@ var
   end;
   {$ENDIF ~MSWINDOWS}
 
-  function Equal(const Path1, Path2: string): Boolean;
+  function Equal(const Path1, Path2: AnsiString): Boolean;
   begin
     {$IFDEF MSWINDOWS}  // case insensitive
     Result := AnsiSameText(Path1, Path2);
@@ -4151,7 +4155,11 @@ begin
           FillByteArray(ContentPtr, BUFSIZE, EVEN_FILL)
         else
           FillByteArray(ContentPtr, BUFSIZE, ODD_FILL);
+        {$IFDEF COMPILER6_UP}
+        Fs.Seek(0, soBeginning);
+        {$ELSE ~COMPILER6_UP}
         Fs.Seek(0, soFromBeginning);
+        {$ENDIF ~COMPILER6_UP}
         N := Size div BUFSIZE;
         while N > 0 do
         begin
@@ -6047,7 +6055,11 @@ end;
 function SamePath(const Path1, Path2: string): Boolean;
 begin
   {$IFDEF MSWINDOWS}
+  {$IFDEF CLR}
+  Result := WideSameText(PathGetLongName(Path1), PathGetLongName(Path2));
+  {$ELSE ~CLR}
   Result := AnsiSameText(PathGetLongName(Path1), PathGetLongName(Path2));
+  {$ENDIF ~CLR}
   {$ELSE}
   Result := Path1 = Path2;
   {$ENDIF}

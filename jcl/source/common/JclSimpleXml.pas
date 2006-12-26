@@ -602,35 +602,35 @@ begin
   begin
     if Result[I] = '&' then
     begin
-      if AnsiSameText(Copy(Result, I, 5), '&amp;') then
+      if AnsiSameText(AnsiString(Copy(Result, I, 5)), AnsiString('&amp;')) then
       begin
         Result[J] := '&';
         Inc(J);
         Inc(I, 4);
       end
       else
-      if AnsiSameText(Copy(Result, I, 4), '&lt;') then
+      if AnsiSameText(AnsiString(Copy(Result, I, 4)), AnsiString('&lt;')) then
       begin
         Result[J] := '<';
         Inc(J);
         Inc(I, 3);
       end
       else
-      if AnsiSameText(Copy(Result, I, 4), '&gt;') then
+      if AnsiSameText(AnsiString(Copy(Result, I, 4)), AnsiString('&gt;')) then
       begin
         Result[J] := '>';
         Inc(J);
         Inc(I, 3);
       end
       else
-      if AnsiSameText(Copy(Result, I, 6), '&apos;') then
+      if AnsiSameText(AnsiString(Copy(Result, I, 6)), AnsiString('&apos;')) then
       begin
         Result[J] := #39;
         Inc(J);
         Inc(I, 5);
       end
       else
-      if AnsiSameText(Copy(Result, I, 6), '&quot;') then
+      if AnsiSameText(AnsiString(Copy(Result, I, 6)), AnsiString('&quot;')) then
       begin
         Result[J] := '"';
         Inc(J);
@@ -694,18 +694,6 @@ begin
     FalseBoolStrs[0] := DefaultFalseBoolStr;
   end;
 end;
-
-function TryStrToFloat(const S: string; out Value: Extended): Boolean;
-begin
-  Result := TextToFloat(PChar(S), Value, fvExtended);
-end;
-
-(*  make Delphi 5 compiler happy // andreas
-procedure ConvertErrorFmt(ResString: PResStringRec; const Args: array of const);
-begin
-  raise EConvertError.CreateResFmt(ResString, Args);
-end;
-*)
 
 function TryStrToBool(const S: string; out Value: Boolean): Boolean;
 var
@@ -775,6 +763,19 @@ end;
 
 {$ENDIF COMPILER5}
 
+{$IFDEF CLR}
+function TryStrToFloat(const S: string; out Value: Extended): Boolean;
+var
+  Temp: Double;
+begin
+  Result := SysUtils.TryStrToFloat(S, Temp);
+  if Result then
+    Value := Temp
+  else
+    Value := 0;
+end;
+{$ENDIF CLR}
+
 function SimpleXMLEncode(const S: string): string;
 const
   NoConversion = [#0..#127] - ['"', '&', #39, '<', '>'];
@@ -786,7 +787,7 @@ begin
   J := 1;
   for I := 1 to Length(S) do
   begin
-    if S[I] in NoConversion then
+    if AnsiChar(S[I]) in NoConversion then
       Result[J] := S[I]
     else
     begin
@@ -833,7 +834,7 @@ var
     IsHex: Boolean;
   begin
     Inc(ReadIndex, 2);
-    IsHex := (ReadIndex <= StringLength) and (S[ReadIndex] in ['x', 'X']);
+    IsHex := (ReadIndex <= StringLength) and (AnsiChar(S[ReadIndex]) in ['x', 'X']);
     Inc(ReadIndex, Ord(IsHex));
     I := ReadIndex;
     while ReadIndex <= StringLength do
@@ -890,35 +891,35 @@ begin
         Inc(WriteIndex);
       end
       else
-      if AnsiSameText(Copy(S, ReadIndex, 5), '&amp;') then
+      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 5)), AnsiString('&amp;')) then
       begin
         S[WriteIndex] := '&';
         Inc(WriteIndex);
         Inc(ReadIndex, 4);
       end
       else
-      if AnsiSameText(Copy(S, ReadIndex, 4), '&lt;') then
+      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 4)), AnsiString('&lt;')) then
       begin
         S[WriteIndex] := '<';
         Inc(WriteIndex);
         Inc(ReadIndex, 3);
       end
       else
-      if AnsiSameText(Copy(S, ReadIndex, 4), '&gt;') then
+      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 4)), AnsiString('&gt;')) then
       begin
         S[WriteIndex] := '>';
         Inc(WriteIndex);
         Inc(ReadIndex, 3);
       end
       else
-      if AnsiSameText(Copy(S, ReadIndex, 6), '&apos;') then
+      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 6)), AnsiString('&apos;')) then
       begin
         S[WriteIndex] := #39;
         Inc(WriteIndex);
         Inc(ReadIndex, 5);
       end
       else
-      if AnsiSameText(Copy(S, ReadIndex, 6), '&quot;') then
+      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 6)), AnsiString('&quot;')) then
       begin
         S[WriteIndex] := '"';
         Inc(WriteIndex);
@@ -1069,7 +1070,7 @@ begin
       AOutStream := TMemoryStream.Create;
       DoFree := True;
       FOnDecodeStream(Self, Stream, AOutStream);
-      AOutStream.Seek(0, soFromBeginning);
+      AOutStream.Seek(0, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
     end
     else
       AOutStream := Stream;
@@ -1109,7 +1110,7 @@ procedure TJclSimpleXML.SaveToFile(FileName: TFileName);
 var
   Stream: TFileStream;
 begin
-  if FileExists(FileName) then
+  if SysUtils.FileExists(FileName) then
   begin
     Stream := TFileStream.Create(FileName, fmOpenWrite);
     Stream.Size := 0;
@@ -1159,7 +1160,7 @@ begin
     end;
     if Assigned(FOnEncodeStream) then
     begin
-      AOutStream.Seek(0, soFromBeginning);
+      AOutStream.Seek(0, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
       FOnEncodeStream(Self, AOutStream, Stream);
     end;
   finally
@@ -1740,9 +1741,9 @@ begin
                   //This is a text
                 lElem := TJclSimpleXMLElemText.Create(Parent);
                 if lTrimWhiteSpace then
-                  Stream.Seek(lStreamPos - 1, soFromBeginning)
+                  Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
                 else
-                  Stream.Seek(lStartOfContentPos, soFromBeginning);
+                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
                 lElem.LoadFromStream(Stream, AParent);
                 lStreamPos := Stream.Position;
                 CreateElems;
@@ -1775,7 +1776,7 @@ begin
                 end;
             else
               begin
-                if (St <> '<![CDATA') or not (Ch in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+                if (St <> '<![CDATA') or not (Ansichar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
                   St := St + Ch;
                 if St = '<![CDATA[' then
                   lElem := TJclSimpleXMLElemCData.Create(Parent)
@@ -1789,7 +1790,7 @@ begin
             if lElem <> nil then
             begin
               CreateElems;
-              Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
+              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
               lElem.LoadFromStream(Stream, AParent);
               lStreamPos := Stream.Position;
               FElems.AddObject(lElem.Name, lElem);
@@ -1822,11 +1823,11 @@ begin
                 begin
                   lTempStreamPos := Stream.Position;
                   lElem := TJclSimpleXMLElemText.Create(Parent);
-                  Stream.Seek(lStartOfContentPos, soFromBeginning);
+                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
                   lElem.LoadFromStream(Stream, AParent);
                   CreateElems;
                   FElems.AddObject(lElem.Name, lElem);
-                  Stream.Seek(lTempStreamPos, soFromBeginning);
+                  Stream.Seek(lTempStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
                 end;
 
                 Break;
@@ -1843,7 +1844,7 @@ begin
     end;
   until Count = 0;
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElems.Notify(Value: TJclSimpleXMLElem;
@@ -2273,7 +2274,7 @@ begin
     end;
   until Count = 0;
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLProps.SaveToStream(const Stream: TStream);
@@ -2424,11 +2425,11 @@ begin
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [Ch]);
       else
         begin
-          if Ch in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
+          if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
           begin
             if lPos = 2 then
               Error(RsEInvalidXMLElementMalformedTagFoundn);
-            Stream.Seek(lStreamPos, soFromBeginning);
+            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
             Break; //Re read buffer
@@ -2440,15 +2441,15 @@ begin
                 begin
                   lName := St;
                   //Load elements
-                  Stream.Seek(lStreamPos, soFromBeginning);
+                  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
                   St := Items.LoadFromStream(Stream, AParent);
                   if lNameSpace <> '' then
                   begin
-                    if not AnsiSameText(lNameSpace + ':' + lName, St) then
+                    if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
                       FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   end
                   else
-                    if not AnsiSameText(lName, St) then
+                    if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
                       FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   lStreamPos := Stream.Position;
 
@@ -2497,7 +2498,7 @@ begin
     AParent.DoValueParsed(lName, lValue);
   end;
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
@@ -2636,7 +2637,7 @@ begin
   if AParent <> nil then
     AParent.DoValueParsed('', St);
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemComment.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
@@ -2724,7 +2725,7 @@ begin
   if AParent <> nil then
     AParent.DoValueParsed('', St);
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemCData.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
@@ -2789,7 +2790,7 @@ begin
   if AParent <> nil then
     AParent.DoValueParsed('', St);
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemText.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
@@ -2861,7 +2862,7 @@ begin
         5: //L
           if lBuf[I] = CS_START_HEADER[lPos] then
           begin
-            Stream.Seek(lStreamPos, soFromBeginning);
+            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
             Inc(lPos);
@@ -2899,7 +2900,7 @@ begin
 
   Name := '';
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemHeader.SaveToStream(const Stream: TStream;
@@ -2995,7 +2996,7 @@ begin
   if AParent <> nil then
     AParent.DoValueParsed('', St);
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemDocType.SaveToStream(const Stream: TStream;
@@ -3044,7 +3045,7 @@ begin
         16: //L
           if lBuf[I] = CS_START_PI[lPos] then
           begin
-            Stream.Seek(lStreamPos, soFromBeginning);
+            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
             Inc(lPos);
@@ -3075,7 +3076,7 @@ begin
 
   Name := '';
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemSheet.SaveToStream(const Stream: TStream;
@@ -3183,7 +3184,7 @@ begin
             lElem := nil;
             lEnd := False;
 
-            if (St <> '<![CDATA') or not (lBuf[i] in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+            if (St <> '<![CDATA') or not (AnsiChar(lBuf[i]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
               St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
@@ -3200,7 +3201,7 @@ begin
             if St = '<!DOCTYPE' then
               lElem := TJclSimpleXMLElemDocType.Create(nil)
             else
-            if (Length(St) > 1) and not (St[2] in ['!', '?']) then
+            if (Length(St) > 1) and not (AnsiChar(St[2]) in ['!', '?']) then
               lEnd := True;
 
             if lEnd then
@@ -3212,7 +3213,7 @@ begin
             else
             if lElem <> nil then
             begin
-              Stream.Seek(lStreamPos - (Length(St)), soFromBeginning);
+              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
               lElem.LoadFromStream(Stream, AParent);
               lStreamPos := Stream.Position;
               FElems.AddObject(lElem.Name, lElem);
@@ -3225,7 +3226,7 @@ begin
     end;
   until Count = 0;
 
-  Stream.Seek(lStreamPos, soFromBeginning);
+  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
 procedure TJclSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; AParent: TJclSimpleXML);
@@ -3468,7 +3469,7 @@ var
 begin
   // test if the new value is only made of spaces or tabs
   for I := 1 to Length(Value) do
-    if not (Value[I] in [AnsiTab, ' ']) then
+    if not (AnsiChar(Value[I]) in [AnsiTab, ' ']) then
       Exit;
   FIndentString := Value;
 end;

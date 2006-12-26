@@ -98,7 +98,6 @@ type
     procedure Grow; virtual;
     { IJclCloneable }
     function Clone: TObject;
-  public
     { IJclStrCollection }
     function Add(const AString: string): Boolean; overload; override;
     function AddAll(ACollection: IJclStrCollection): Boolean; overload; override;
@@ -122,7 +121,7 @@ type
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IJclStrList;
-
+  public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     {$IFNDEF CLR}
@@ -143,7 +142,6 @@ type
   protected
     procedure Grow; virtual;
     procedure FreeObject(var AObject: TObject);
-  public
     { IJclCollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: IJclCollection): Boolean; overload;
@@ -169,7 +167,7 @@ type
     function SubList(First, Count: Integer): IJclList;
     { IJclCloneable }
     function Clone: TObject;
-
+  public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     {$IFNDEF CLR}
