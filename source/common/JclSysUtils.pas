@@ -1919,12 +1919,20 @@ end;
 function TJclNumericFormat.GetDigitValue(Digit: Char): Integer;
 begin
   Result := -1;
+  {$IFDEF CLR}
+  if System.Char.IsDigit(Digit) then
+  {$ELSE ~CLR}
   if Digit in AnsiDecDigits then
+  {$ENDIF ~CLR}
     Result := Ord(Digit) - Ord('0')
   else
   begin
     Digit := UpCase(Digit);
+    {$IFDEF CLR}
+    if (Digit >= 'A') and (Digit <= 'Z') then
+    {$ELSE ~CLR}
     if Digit in AnsiUppercaseLetters then
+    {$ENDIF ~CLR}
       Result := Ord(Digit) - Ord('A') + 10;
   end;
   if Result >= Base then
@@ -2274,17 +2282,30 @@ begin
   Result := 0;
   N := 0;
   I := 1;
-  if Value[I] in AnsiSigns then
+  if (Length(Value) >= I)
+  {$IFDEF CLR}
+    and ((Value[I] = '+') or (Value[I] = '-')) then
+  {$ELSE ~CLR}
+    and (Value[I] in AnsiSigns) then
+  {$ENDIF ~CLR}
     Inc(I);
   for I := I to Length(Value) do
   begin
     C := Value[I];
+    {$IFDEF CLR}
+    if System.Char.IsDigit(C) then
+    {$ELSE ~CLR}
     if C in AnsiDecDigits then
+    {$ENDIF ~CLR}
       N := Ord(C) - Ord('0')
     else
     begin
       C := UpCase(C);
+      {$IFDEF CLR}
+      if (C >= 'A') and (C <= 'Z') then
+      {$ELSE ~CLR}
       if C in AnsiUppercaseLetters then
+      {$ENDIF ~CLR}
       begin
         N := Ord(C) - Ord('A') + 10;
         if N >= Base then

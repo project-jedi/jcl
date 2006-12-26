@@ -409,7 +409,7 @@ function TJediInstallCore.ProcessLogLine(const Line: string;
   begin
     Result := True;
     Text := AnsiLowerCase(Text);
-    for i := 0 to High(Values) do
+    for i := Low(Values) to High(Values) do
       if Pos(Values[i], Text) > 0 then
         Exit;
     Result := False;
@@ -462,17 +462,29 @@ begin
     LineType:= clFileProgress;
     Result := '';
   end
-  else if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
+  else if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ', 'conseil: ']) then // do not localize
   begin
-    LineType := clHint;
-    if Assigned(Page) then
-      Page.AddHint(Line);
+    // hide hint about getter/setter names
+    if (Pos(' H2369 ', Line) = 0) then
+    begin
+      LineType := clHint;
+      if Assigned(Page) then
+        Page.AddHint(Line);
+    end
+    else
+      Result := '';
   end
   else if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
   begin
-    LineType := clWarning;
-    if Assigned(Page) then
-      Page.AddWarning(Line);
+    // hide platform warnings
+    if (Pos(' W1002 ', Line) = 0) then
+    begin
+      LineType := clWarning;
+      if Assigned(Page) then
+        Page.AddWarning(Line);
+    end
+    else
+      Result := '';
   end
   else if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
   begin

@@ -237,10 +237,10 @@ function StrCompare(const S1, S2: AnsiString): Integer;
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
 function StrFillChar(const C: AnsiChar; Count: Integer): AnsiString; overload;
 {$IFDEF CLR}
-function StrFillChar(const C: Char; Count: Integer): string; overload;
+function StrFillChar(const C: Char; Count: Integer): AnsiString; overload;
 {$ENDIF CLR}
 function StrFind(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
-function StrHasPrefix(const S: AnsiString; const Prefixes: array of string): Boolean;
+function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
 function StrIndex(const S: AnsiString; const List: array of AnsiString): Integer;
 function StrILastPos(const SubStr, S: AnsiString): Integer;
 function StrIPos(const SubStr, S: AnsiString): Integer;
@@ -252,7 +252,7 @@ function StrMatches(const Substr, S: AnsiString; const Index: Integer = 1): Bool
 {$ENDIF ~CLR}
 function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
 function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
-function StrPrefixIndex(const S: AnsiString; const Prefixes: array of string): Integer;
+function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): Integer;
 function StrSearch(const Substr, S: AnsiString; const Index: Integer = 1): Integer;
 
 // String Extraction
@@ -332,7 +332,7 @@ function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEm
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True);
-function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
+function AddStringToStrings(const S: AnsiString; Strings: TStrings; const Unique: Boolean): Boolean;
 
 // Miscellaneous
 {$IFDEF KEEP_DEPRECATED}
@@ -2266,7 +2266,7 @@ begin
 end;
 
 {$IFDEF CLR}
-function StrFillChar(const C: Char; Count: Integer): string;
+function StrFillChar(const C: Char; Count: Integer): AnsiString;
 var
   SB: System.Text.StringBuilder;
 begin
@@ -2459,7 +2459,7 @@ asm
 end;
 {$ENDIF CLR}
 
-function StrHasPrefix(const S: AnsiString; const Prefixes: array of string): Boolean;
+function StrHasPrefix(const S: AnsiString; const Prefixes: array of AnsiString): Boolean;
 begin
   Result := StrPrefixIndex(S, Prefixes) > -1;
 end;
@@ -2867,10 +2867,10 @@ begin
   end;
 end;
 
-function StrPrefixIndex(const S: AnsiString; const Prefixes: array of string): Integer;
+function StrPrefixIndex(const S: AnsiString; const Prefixes: array of AnsiString): Integer;
 var
   I: Integer;
-  Test: string;
+  Test: AnsiString;
 begin
   Result := -1;
   for I := Low(Prefixes) to High(Prefixes) do
@@ -3597,7 +3597,7 @@ end;
 procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
-  LowerCaseStr: string;
+  LowerCaseStr: AnsiString;
   Left: AnsiString;
 begin
   Assert(List <> nil);
@@ -3701,7 +3701,7 @@ begin
   end;
 end;
 
-function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Boolean): Boolean;
+function AddStringToStrings(const S: AnsiString; Strings: TStrings; const Unique: Boolean): Boolean;
 begin
   Assert(Strings <> nil);
   Result := Unique and (Strings.IndexOf(S) <> -1);

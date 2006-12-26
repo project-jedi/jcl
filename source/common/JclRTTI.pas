@@ -119,13 +119,13 @@ type
   IJclTypeInfo = interface(IJclBaseInfo)
     ['{7DAD5220-46EA-11D5-B0C0-4854E825F345}']
     function GetName: string;
-    function GetTypeData: PTypeData;
-    function GetTypeInfo: PTypeInfo;
+    function GetTypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR};
+    function GetTypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
     function GetTypeKind: TTypeKind;
 
     property Name: string read GetName;
-    property TypeData: PTypeData read GetTypeData;
-    property TypeInfo: PTypeInfo read GetTypeInfo;
+    property TypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR} read GetTypeData;
+    property TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR} read GetTypeInfo;
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
@@ -334,7 +334,7 @@ type
 
   EJclRTTIError = class(EJclError);
 
-function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
+function JclTypeInfo(ATypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): IJclTypeInfo;
 
 // Enumeration types
 const
@@ -343,7 +343,8 @@ const
 
   MaxPrefixCut = 250;
 
-function JclEnumValueToIdent(TypeInfo: PTypeInfo; const Value): string;
+function JclEnumValueToIdent(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value): string;
 {$IFNDEF CLR}
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
@@ -354,17 +355,20 @@ function JclGenerateSubRange(BaseType: PTypeInfo; const TypeName: string;
 {$ENDIF ~CLR}
 
 // Integer types
-function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
-function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
+function JclStrToTypedInt(Value: string; TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): Integer;
+function JclTypedIntToStr(Value: Integer; TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): string;
 
 // Sets
-function JclSetToList(TypeInfo: PTypeInfo; const Value; const WantBrackets: Boolean;
-  const WantRanges: Boolean; const Strings: TStrings): string;
-function JclSetToStr(TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean = False; const WantRanges: Boolean = False): string;
-procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar; const Value: string);
-procedure JclIntToSet(TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
-function JclSetToInt(TypeInfo: PTypeInfo; const SetVar): Integer;
+function JclSetToList(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value; const WantBrackets: Boolean; const WantRanges: Boolean; const Strings: TStrings): string;
+function JclSetToStr(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value; const WantBrackets: Boolean = False; const WantRanges: Boolean = False): string;
+procedure JclStrToSet(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  var SetVar; const Value: string);
+procedure JclIntToSet(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  var SetVar; const Value: Integer);
+function JclSetToInt(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const SetVar): Integer;
 {$IFNDEF CLR}
 function JclGenerateSetType(BaseType: PTypeInfo; const TypeName: ShortString): PTypeInfo;
 {$ENDIF ~CLR}
@@ -529,24 +533,24 @@ end;
 type
   TJclTypeInfo = class(TInterfacedObject, IJclTypeInfo)
   private
-    FTypeData: PTypeData;
-    FTypeInfo: PTypeInfo;
+    FTypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR};
+    FTypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
   protected
     function GetName: string;
-    function GetTypeData: PTypeData;
-    function GetTypeInfo: PTypeInfo;
+    function GetTypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR};
+    function GetTypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
     function GetTypeKind: TTypeKind;
     procedure WriteTo(const Dest: IJclInfoWriter); virtual;
     procedure DeclarationTo(const Dest: IJclInfoWriter); virtual;
   public
-    constructor Create(ATypeInfo: PTypeInfo);
+    constructor Create(ATypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR});
     property Name: string read GetName;
-    property TypeData: PTypeData read GetTypeData;
-    property TypeInfo: PTypeInfo read GetTypeInfo;
+    property TypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR} read GetTypeData;
+    property TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR} read GetTypeInfo;
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
-constructor TJclTypeInfo.Create(ATypeInfo: PTypeInfo);
+constructor TJclTypeInfo.Create(ATypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR});
 begin
   inherited Create;
   FTypeInfo := ATypeInfo;
@@ -558,19 +562,19 @@ begin
   Result := TypeInfo.Name;
 end;
 
-function TJclTypeInfo.GetTypeData: PTypeData;
+function TJclTypeInfo.GetTypeData: {$IFDEF CLR}TTypeData{$ELSE ~CLR}PTypeData{$ENDIF ~CLR};
 begin
   Result := FTypeData;
 end;
 
-function TJclTypeInfo.GetTypeInfo: PTypeInfo;
+function TJclTypeInfo.GetTypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
 begin
   Result := FTypeInfo;
 end;
 
 function TJclTypeInfo.GetTypeKind: TTypeKind;
 begin
-  Result := TypeInfo.Kind
+  Result := {$IFDEF CLR}TypeInfo.TypeKind{$ELSE ~CLR}TypeInfo.Kind{$ENDIF ~CLR};
 end;
 
 procedure TJclTypeInfo.WriteTo(const Dest: IJclInfoWriter);
@@ -578,7 +582,7 @@ begin
   {$IFDEF CLR}
   Dest.Writeln(RsRTTIName + Name);
   Dest.Writeln(RsRTTITypeKind + JclEnumValueToIdent(Borland.Delphi.System.TypeInfo(TTypeKind),
-    TypeInfo.Kind));
+    TypeInfo.TypeKind));
   Dest.Writeln(Format(RsRTTITypeInfoAt, [TypeInfo]));
   {$ELSE}
   Dest.Writeln(LoadResString(@RsRTTIName) + Name);
@@ -672,7 +676,11 @@ const
   cRange = '..';
 begin
   Dest.Write(Name + ' = ');
+  {$IFDEF CLR}
+  if TypeInfo.TypeKind in [tkChar, tkWChar] then
+  {$ELSE ~CLR}
   if TypeInfo.Kind in [tkChar, tkWChar] then
+  {$ENDIF ~CLR}
   begin
     if (MinValue < Ord(' ')) or (MinValue > Ord('~')) then
       Dest.Write('#' + IntToStr(MinValue) + cRange)
@@ -1165,9 +1173,9 @@ end;
 type
   TJclPropInfo = class(TInterfacedObject, IJclPropInfo)
   private
-    FPropInfo: PPropInfo;
+    FPropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR};
   protected
-    function GetPropInfo: PPropInfo;
+    function GetPropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR};
     function GetPropType: IJclTypeInfo;
     function GetReader: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF};
     function GetWriter: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF};
@@ -1188,12 +1196,12 @@ type
     function GetWriterValue: Integer;
     function GetStoredValue: Integer;
   public
-    constructor Create(const APropInfo: PPropInfo);
+    constructor Create(const APropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR});
     function IsStored(const AInstance: TObject): Boolean;
     function HasDefault: Boolean;
     function HasIndex: Boolean;
 
-    property PropInfo: PPropInfo read GetPropInfo;
+    property PropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR} read GetPropInfo;
     property PropType: IJclTypeInfo read GetPropType;
     property Reader: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF} read GetReader;
     property Writer: {$IFDEF CLR}MethodInfo{$ELSE}Pointer{$ENDIF} read GetWriter;
@@ -1210,13 +1218,13 @@ type
     property Name: string read GetName;
   end;
 
-constructor TJclPropInfo.Create(const APropInfo: PPropInfo);
+constructor TJclPropInfo.Create(const APropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR});
 begin
   inherited Create;
   FPropInfo := APropInfo;
 end;
 
-function TJclPropInfo.GetPropInfo: PPropInfo;
+function TJclPropInfo.GetPropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR};
 begin
   Result := FPropInfo;
 end;
@@ -1224,7 +1232,7 @@ end;
 function TJclPropInfo.GetPropType: IJclTypeInfo;
 begin
   {$IFDEF CLR}
-  Result := JclTypeInfo(PropInfo.PropType);
+  Result := JclTypeInfo(PropInfo.TypeInfo);
   {$ELSE}
   Result := JclTypeInfo(PropInfo.PropType^);
   {$ENDIF CLR}
@@ -1547,7 +1555,7 @@ end;
 
 function TJclClassTypeInfo.GetPropNames(const Name: string): IJclPropInfo;
 var
-  PropInfo: PPropInfo;
+  PropInfo: {$IFDEF CLR}TPropInfo{$ELSE ~CLR}PPropInfo{$ENDIF ~CLR};
 begin
   PropInfo := GetPropInfo(TypeInfo, Name);
   if PropInfo <> nil then
@@ -2062,7 +2070,7 @@ begin
       {$IFDEF CLR}
       if pfArray in Param.Flags then
         Dest.Write(RsRTTIArrayOf);
-      if AnsiSameText(Param.TypeName, 'TVarRec') and (pfArray in Param.Flags) then
+      if WideSameText(Param.TypeName, 'TVarRec') and (pfArray in Param.Flags) then
         Dest.Write(TrimRight(RsRTTIConst))
       {$ELSE}
       if pfArray in Param.Flags then
@@ -2196,9 +2204,15 @@ begin
     Dest.Write('dispinterface')
   else
     Dest.Write('interface');
+  {$IFDEF CLR}
+  if (Parent <> nil) and not (ifDispInterface in Flags) and not
+      WideSameText(Parent.Name, 'IUnknown') then
+    Dest.Write('(' + Parent.Name + ')');
+  {$ELSE ~CLR}
   if (Parent <> nil) and not (ifDispInterface in Flags) and not
       AnsiSameText(Parent.Name, 'IUnknown') then
     Dest.Write('(' + Parent.Name + ')');
+  {$ENDIF ~CLR}
   Dest.Writeln(' // unit ' + UnitName);
   Dest.Indent;
   try
@@ -2371,9 +2385,13 @@ end;
 
 //=== Typeinfo retrieval =====================================================
 
-function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
+function JclTypeInfo(ATypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): IJclTypeInfo;
 begin
+  {$IFDEF CLR}
+  case ATypeInfo.TypeKind of
+  {$ELSE ~CLR}
   case ATypeInfo.Kind of
+  {$ENDIF ~CLR}
     tkInteger, tkChar, tkWChar:
       Result := TJclOrdinalRangeTypeInfo.Create(ATypeInfo);
     tkEnumeration:
@@ -2523,7 +2541,8 @@ end;
 
 //=== Enumerations ===========================================================
 
-function JclEnumValueToIdent(TypeInfo: PTypeInfo; const Value): string;
+function JclEnumValueToIdent(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value): string;
 var
   MinEnum: Integer;
   MaxEnum: Integer;
@@ -2701,7 +2720,7 @@ end;
 
 //=== Integers ===============================================================
 
-function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
+function JclStrToTypedInt(Value: string; TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): Integer;
 var
   Conv: TIdentToInt;
   HaveConversion: Boolean;
@@ -2740,7 +2759,7 @@ begin
   end;
 end;
 
-function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
+function JclTypedIntToStr(Value: Integer; TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR}): string;
 var
   Conv: TIntToIdent;
   HaveConversion: Boolean;
@@ -2761,8 +2780,8 @@ end;
 
 //=== Sets ===================================================================
 
-function JclSetToList(TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean; const WantRanges: Boolean;
+function JclSetToList(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value; const WantBrackets: Boolean; const WantRanges: Boolean;
   const Strings: TStrings): string;
 var
   SetType: IJclSetTypeInfo;
@@ -2783,8 +2802,8 @@ begin
     Result := '[' + Result + ']';
 end;
 
-function JclSetToStr(TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean; const WantRanges: Boolean): string;
+function JclSetToStr(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const Value; const WantBrackets: Boolean; const WantRanges: Boolean): string;
 var
   Dummy: TStringList;
 begin
@@ -2796,7 +2815,8 @@ begin
   end;
 end;
 
-procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar; const Value: string);
+procedure JclStrToSet(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  var SetVar; const Value: string);
 var
   SetInfo: IJclSetTypeInfo;
   S: TStringList;
@@ -2820,36 +2840,42 @@ begin
   end;
 end;
 
-procedure JclIntToSet(TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
+procedure JclIntToSet(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  var SetVar; const Value: Integer);
 var
   BitShift: Integer;
   TmpInt64: Int64;
   EnumMin: Integer;
+  {$IFDEF CLR}
+  CompType: TTypeInfo;
+  {$ELSE ~CLR}
   EnumMax: Integer;
   ResBytes: Integer;
   CompType: PTypeInfo;
+  {$ENDIF ~CLR}
 begin
   CompType := GetTypeData(TypeInfo).CompType{$IFNDEF CLR}^{$ENDIF};
   EnumMin := GetTypeData(CompType).MinValue;
-  EnumMax := GetTypeData(CompType).MaxValue;
-  ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   BitShift := EnumMin mod 8;
   TmpInt64 := Longword(Value) shl BitShift;
   {$IFDEF CLR}
   SetVar := BitConverter.GetBytes(TmpInt64);
   {$ELSE}
+  EnumMax := GetTypeData(CompType).MaxValue;
+  ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   Move(TmpInt64, SetVar, ResBytes);
   {$ENDIF CLR}
 end;
 
-function JclSetToInt(TypeInfo: PTypeInfo; const SetVar): Integer;
+function JclSetToInt(TypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
+  const SetVar): Integer;
 var
   BitShift: Integer;
   TmpInt64: Int64;
   EnumMin: Integer;
   EnumMax: Integer;
   ResBytes: Integer;
-  CompType: PTypeInfo;
+  CompType: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDIF ~CLR};
 begin
   CompType := GetTypeData(TypeInfo).CompType{$IFNDEF CLR}^{$ENDIF};
   EnumMin := GetTypeData(CompType).MinValue;

@@ -159,10 +159,14 @@ const
 function StrIsAlpha(const S: string): Boolean;
 function StrIsAlphaNum(const S: string): Boolean;
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
+{$IFNDEF CLR}
 function StrContainsChars(const S: string; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
+{$ENDIF ~CLR}
 function StrConsistsOfNumberChars(const S: string): Boolean;
 function StrIsDigit(const S: string): Boolean;
+{$IFNDEF CLR}
 function StrIsSubset(const S: string; const ValidChars: TSysCharSet): Boolean;
+{$ENDIF ~CLR}
 function StrSame(const S1, S2: string): Boolean;
 
 // String Transformation Routines
@@ -205,9 +209,13 @@ function StrStringToEscaped(const S: string): string;
 function StrStripNonNumberChars(const S: string): string;
 function StrToHex(const Source: string): string;
 function StrTrimCharLeft(const S: string; C: Char): string;
+{$IFNDEF CLR}
 function StrTrimCharsLeft(const S: string; const Chars: TSysCharSet): string;
+{$ENDIF ~CLR}
 function StrTrimCharRight(const S: string; C: Char): string;
+{$IFNDEF CLR}
 function StrTrimCharsRight(const S: string; const Chars: TSysCharSet): string;
+{$ENDIF ~CLR}
 function StrTrimQuotes(const S: string): string;
 function StrUpper(const S: string): string;
 procedure StrUpperInPlace(var S: string);
@@ -235,7 +243,9 @@ procedure StrResetLength(S: StringBuilder); overload;
 
 // String Search and Replace Routines
 function StrCharCount(const S: string; C: Char): Integer;
+{$IFNDEF CLR}
 function StrCharsCount(const S: string; Chars: TSysCharSet): Integer;
+{$ENDIF ~CLR}
 function StrStrCount(const S, SubS: string): Integer;
 function StrCompare(const S1, S2: string): Integer;
 function StrCompareRange(const S1, S2: string; const Index, Count: Integer): Integer;
@@ -848,6 +858,7 @@ begin
  end;
 end;
 
+{$IFNDEF CLR}
 function StrContainsChars(const S: string; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
 var
   I: Integer;
@@ -881,6 +892,7 @@ begin
     end;
   end;
 end;
+{$ENDIF ~CLR}
 
 function StrIsAlphaNumUnderscore(const S: string): Boolean;
 var
@@ -916,6 +928,7 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
 function StrIsSubset(const S: string; const ValidChars: TSysCharSet): Boolean;
 var
   I: Integer;
@@ -931,6 +944,7 @@ begin
 
   Result := True and (Length(S) > 0);
 end;
+{$ENDIF ~CLR}
 
 function StrSame(const S1, S2: string): Boolean;
 begin
@@ -1834,6 +1848,7 @@ begin
   Result := Copy(S, I, L - I + 1);
 end;
 
+{$IFNDEF CLR}
 function StrTrimCharsLeft(const S: string; const Chars: TSysCharSet): string;
 var
   I, L: Integer;
@@ -1852,6 +1867,7 @@ begin
   while (I >= 1) and (S[I] in Chars) do Dec(I);
   Result := Copy(S, 1, I);
 end;
+{$ENDIF ~CLR}
 
 function StrTrimCharRight(const S: string; C: Char): string;
 var
@@ -2078,6 +2094,7 @@ begin
       Inc(Result);
 end;
 
+{$IFNDEF CLR}
 function StrCharsCount(const S: string; Chars: TSysCharSet): Integer;
 var
   I: Integer;
@@ -2087,6 +2104,7 @@ begin
     if S[I] in Chars then
       Inc(Result);
 end;
+{$ENDIF ~CLR}
 
 function StrStrCount(const S, SubS: string): Integer;
 var
@@ -3323,11 +3341,10 @@ end;
 function CharIsNumberChar(const C: Char): Boolean;
 begin
   {$IFDEF CLR}
-  Result := System.Char.IsDigit(C) or
+  Result := System.Char.IsDigit(C) or (C = '+') or (C = '-') or (C = DecimalSeparator);
   {$ELSE}
-  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or
+  Result := ((AnsiCharTypes[C] and C1_DIGIT) <> 0) or (C in AnsiSigns) or (C = DecimalSeparator);
   {$ENDIF CLR}
-    (C in AnsiSigns) or (C = DecimalSeparator);
 end;
 
 function CharIsPrintable(const C: Char): Boolean;
@@ -3465,11 +3482,19 @@ end;
 function CharHex(const C: Char): Byte;
 begin
   Result := $FF;
+  {$IFDEF CLR}
+  if System.Char.IsDigit(C) then
+  {$ELSE ~CLR}
   if C in AnsiDecDigits then
+  {$ENDIF ~CLR}
     Result := Ord(CharUpper(C)) - Ord('0')
   else
   begin
+    {$IFDEF CLR}
+    if (C >= 'A') and (C <= 'F') then
+    {$ELSE ~CLR}
     if C in AnsiHexDigits then
+    {$ENDIF ~CLR}
       Result := Ord(CharUpper(C)) - (Ord('A')) + 10;
   end;
 end;
@@ -4014,6 +4039,7 @@ end;
 function StrWord(const S: string; var Index: Integer; out Word: string): Boolean;
 var
   Start: Integer;
+  C: Char;
 begin
   Word := '';
   if (S = nil) or (S = '') then
@@ -4041,8 +4067,15 @@ begin
             Exit;
           end
           else
-            while (S[Index] in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn]) do
+          begin
+            C := S[Index];
+            while (C = AnsiSpace) or (C = AnsiLineFeed) or (C = AnsiCarriageReturn) do
+            begin
               Inc(Index);
+              C := S[Index];
+            end;
+          end;
+
         end;
     else
       if Start = 0 then
@@ -4147,8 +4180,7 @@ var
   Temp: string;
   I, J, K: Integer;
   SwapSeparators, IsNegative: Boolean;
-  DecSep: Char;
-  ThouSep: Char;
+  DecSep, ThouSep, C: Char;
   {$IFDEF CLR}
   sb: StringBuilder;
   {$ENDIF CLR}
@@ -4167,10 +4199,11 @@ begin
   J := 0;
   for I := 1 to Length(Temp) do
   begin
-    if Temp[I] = '-' then
+    C := Temp[I];
+    if C = '-' then
       IsNegative := not IsNegative
     else
-      if not (Temp[I] in [' ', '(', '+']) then
+      if (C <> ' ') and (C <> '(') and (C <> '+') then
       begin
         // if it appears prior to any digit, it has to be a decimal separator
         SwapSeparators := Temp[I] = ThouSep;

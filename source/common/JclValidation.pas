@@ -33,7 +33,7 @@ uses
 {$ENDIF UNITVERSIONING}
 
 // ISBN: International Standard Book Number
-function IsValidISBN(const ISBN: string): Boolean;
+function IsValidISBN(const ISBN: AnsiString): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -48,7 +48,7 @@ const
 implementation
 
 { TODO -cDoc : Donator: Ivo Bauer }
-function IsValidISBN(const ISBN: string): Boolean;
+function IsValidISBN(const ISBN: AnsiString): Boolean;
 //
 // References:
 // ===========
