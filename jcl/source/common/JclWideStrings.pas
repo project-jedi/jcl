@@ -18,6 +18,8 @@ All Rights Reserved.
 Contributors:
   Robert Marquardt (marquardt)
   Robert Rossmair (rrossmair)
+  ZENsan
+  Florent Ouchet (outchy)
 
 You may retrieve the latest version of this file at the Project JEDI's JCL home page,
 located at http://jcl.sourceforge.net
@@ -280,6 +282,8 @@ function WideLowerCase(const S: WideString): WideString;
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
+function WideReverse(const AText: Widestring): Widestring;
+procedure WideReverseInPlace(var S: WideString);
 
 function TrimLeftLengthW(const S: WideString): Integer;
 function TrimRightLengthW(const S: WideString): Integer;
@@ -934,6 +938,33 @@ begin
   Result := Copy(S, 1, I);
 end;
 {$ENDIF ~RTL150_UP}
+
+function WideReverse(const AText: Widestring): Widestring;
+begin
+  Result := AText;
+  WideReverseInPlace(Result);
+end;
+
+procedure WideReverseInPlace(var S: WideString);
+var
+  P1, P2: PWideChar;
+  C: WideChar;
+begin
+  // WideString are ref counted starting from COMPILER6_UP (Linux only)
+  {$IFDEF COMPILER6_UP}
+  UniqueString(S);
+  {$ENDIF COMPILER6_UP}
+  P1 := PWideChar(S);
+  P2 := PWideChar(S) + Length(S) - 1;
+  while P1 < P2 do
+  begin
+    C := P1^;
+    P1^ := P2^;
+    P2^ := C;
+    Inc(P1);
+    Dec(P2);
+  end;
+end;
 
 // functions missing in Delphi 5 / FPC
 {$IFNDEF RTL140_UP}
