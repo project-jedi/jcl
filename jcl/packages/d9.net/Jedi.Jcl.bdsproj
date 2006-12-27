@@ -122,8 +122,8 @@
       <Directories Name="OutputDir">..\..\bin</Directories>
       <Directories Name="UnitOutputDir">..\..\lib\d9.net</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
-      <Directories Name="PackageDCPOutputDir"></Directories>
-      <Directories Name="SearchPath"></Directories>
+      <Directories Name="PackageDCPOutputDir">..\..\lib\d9.net</Directories>
+      <Directories Name="SearchPath">..\..\lib\d9.net;..\..\source</Directories>
       <Directories Name="Packages"></Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>
@@ -167,7 +167,7 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.96.1.2070</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.97.1.2172</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>

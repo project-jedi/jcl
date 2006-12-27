@@ -890,7 +890,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo;
+  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSimpleXml;
 
 // Internal
 
@@ -2215,44 +2215,136 @@ end;
 
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
-  SearchPath, DynamicPackages, SearchDcpPath, ConfigurationFileName, OptionsFileName, Conditionals: string;
+  ConfigurationFileName, OptionsFileName, BDSProjFileName: string;
+  PersonalityName, UnitOutputDir, SearchPath, DynamicPackages, SearchDcpPath, Conditionals: string;
   OptionsFile: TIniFile;
+  OptionsXmlFile: TJclSimpleXML;
+  PersonalityInfoNode, OptionNode, ChildNode, PersonalityNode, DirectoriesNode: TJclSimpleXMLElem;
+  NameProperty: TJclSimpleXMLProp;
+  FoundOptions, UsePackages: Boolean;
+  NodeIndex: Integer;
+const
+  BDSProjPersonalityInfoNodeName = 'PersonalityInfo';
+  BDSProjOptionNodeName = 'Option';
+  BDSProjNameProperty = 'Name';
+  BDSProjPersonalityValue = 'Personality';
+  BDSProjUnitOutputDirValue = 'UnitOutputDir';
+  BDSProjSearchPathValue = 'SearchPath';
+  BDSProjPackagesValue = 'Packages';
+  BDSProjConditionalsValue = 'Conditionals';
+  BDSProjUsePackagesValue = 'UsePackages';
+  BDSProjDirectoriesNodeName = 'Directories';
 begin
   ConfigurationFileName := ChangeFileExt(ProjectFileName, ConfigurationExtension);
   if FileExists(ConfigurationFileName) then
     FileDelete(ConfigurationFileName);
 
-  OptionsFileName := ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension);
+  FoundOptions := False;
+  UsePackages := False;
+  UnitOutputDir := '';
+  SearchPath := '';
+  DynamicPackages := '';
+  SearchDcpPath := '';
+  Conditionals := '';
 
-  if FileExists(OptionsFileName) then
+  BDSProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionBDSProject);
+  if FileExists(BDSProjFileName) then
+  begin
+    OptionsXmlFile := TJclSimpleXML.Create;
+    try
+      OptionsXmlFile.LoadFromFile(BDSProjFileName);
+      OptionsXmlFile.Options := OptionsXmlFile.Options - [sxoAutoCreate];
+      PersonalityInfoNode := OptionsXmlFile.Root.Items.ItemNamed[BDSProjPersonalityInfoNodeName];
+      PersonalityName := '';
+      if Assigned(PersonalityInfoNode) then
+      begin
+        OptionNode := PersonalityInfoNode.Items.ItemNamed[BDSProjOptionNodeName];
+        if Assigned(OptionNode) then
+          for NodeIndex := 0 to OptionNode.Items.Count - 1 do
+        begin
+          ChildNode := OptionNode.Items.Item[NodeIndex];
+          if SameText(ChildNode.Name, BDSProjOptionNodeName) then
+          begin
+            NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
+            if Assigned(NameProperty) and SameText(NameProperty.Value, BDSProjPersonalityValue) then
+            begin
+              PersonalityName := ChildNode.Value;
+              Break;
+            end;
+          end;
+        end;
+      end;
+      if PersonalityName <> '' then
+      begin
+        PersonalityNode := OptionsXmlFile.Root.Items.ItemNamed[PersonalityName];
+        if Assigned(PersonalityNode) then
+        begin
+          DirectoriesNode := PersonalityNode.Items.ItemNamed[BDSProjDirectoriesNodeName];
+          if Assigned(DirectoriesNode) then
+            for NodeIndex := 0 to DirectoriesNode.Items.Count - 1 do
+          begin
+            ChildNode := DirectoriesNode.Items.Item[NodeIndex];
+            if SameText(ChildNode.Name, BDSProjDirectoriesNodeName) then
+            begin
+              NameProperty := ChildNode.Properties.ItemNamed[BDSProjNameProperty];
+              if Assigned(NameProperty) then
+              begin
+                if SameText(NameProperty.Value, BDSProjUnitOutputDirValue) then
+                  UnitOutputDir := ChildNode.Value
+                else
+                if SameText(NameProperty.Value, BDSProjSearchPathValue) then
+                  SearchPath := ChildNode.Value
+                else
+                if SameText(NameProperty.Value, BDSProjPackagesValue) then
+                  DynamicPackages := ChildNode.Value
+                else
+                if SameText(NameProperty.Value, BDSProjConditionalsValue) then
+                  Conditionals := ChildNode.Value
+                else
+                if SameText(NameProperty.Value, BDSProjUsePackagesValue) then
+                  UsePackages := StrToBoolean(ChildNode.Value);
+              end;
+            end;
+          end;
+        end;
+      end;
+    finally
+      OptionsXmlFile.Free;
+    end;
+    FoundOptions := True;
+  end;
+
+  OptionsFileName := ChangeFileExt(ProjectFileName, DelphiOptionsFileExtension);
+  if FileExists(OptionsFileName) and not FoundOptions then
   begin
     OptionsFile := TIniFile.Create(OptionsFileName);
     try
       SearchPath := OptionsFile.ReadString(DOFDirectoriesSection, DOFSearchPathName, '');
-      AddPathOption('N', OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, ''));
-      AddPathOption('I', SearchPath);
-      AddPathOption('R', SearchPath);
-
+      UnitOutputDir := OptionsFile.ReadString(DOFDirectoriesSection, DOFUnitOutputDirKey, '');
       Conditionals := OptionsFile.ReadString(DOFDirectoriesSection, DOFConditionals, '');
-      if Conditionals <> '' then
-        Options.Add(Format('-D%s', [Conditionals]));
-
-      if SamePath(DCPPath, Installation.DCPOutputPath) then
-        SearchDcpPath := DCPPath
-      else
-        SearchDcpPath := StrEnsureSuffix(PathSep, DCPPath) + Installation.DCPOutputPath;
-      AddPathOption('U', StrEnsureSuffix(PathSep, SearchDcpPath) + SearchPath);
-      
-      if OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1' then
-      begin
-        DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
-        if DynamicPackages <> '' then
-          Options.Add(Format('-LU"%s"',[DynamicPackages]));
-      end;
+      UsePackages := OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1';
+      DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
     finally
       OptionsFile.Free;
     end;
   end;
+
+  if UnitOutputDir <> '' then
+    AddPathOption('N', UnitOutputDir);
+  if SearchPath <> '' then
+  begin
+    AddPathOption('I', SearchPath);
+    AddPathOption('R', SearchPath);
+  end;
+  if Conditionals <> '' then
+    Options.Add(Format('-D%s', [Conditionals]));
+  if SamePath(DCPPath, Installation.DCPOutputPath) then
+    SearchDcpPath := DCPPath
+  else
+    SearchDcpPath := StrEnsureSuffix(PathSep, DCPPath) + Installation.DCPOutputPath;
+  AddPathOption('U', StrEnsureSuffix(PathSep, SearchDcpPath) + SearchPath);
+  if UsePackages and (DynamicPackages <> '') then
+    Options.Add(Format('-LU"%s"',[DynamicPackages]));
 end;
 
 function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
@@ -2486,6 +2578,7 @@ begin
   try
     Options.Clear;
     SetDefaultOptions;
+    AddProjectOptions(ProjectName, '');
     AddPathOption('E', OutputDir);
     Options.Add(ExtraOptions);
     Result := Compile(ProjectName);

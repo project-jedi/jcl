@@ -1,8 +1,0 @@
-[Directories]
-UnitOutputDir=..\..\lib\d10
-SearchPath=..\..\source
-[Compiler]
-PackageNoLink=1
-[Linker]
-Packages=rtl;vcl;designide;Jcl;JclBaseExpert
-

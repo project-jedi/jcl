@@ -1,7 +1,0 @@
-[Directories]
-UnitOutputDir=..\..\lib\cs1
-SearchPath=..\..\source;..\..\experts\common
-[Compiler]
-PackageNoLink=1
-[Linker]
-Packages=rtl
