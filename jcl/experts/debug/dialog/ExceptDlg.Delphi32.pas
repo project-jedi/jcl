@@ -326,7 +326,7 @@ begin
         ProcessorDetails := ProcessorDetails + ' 3DNow!';
       if Is64Bits then
         ProcessorDetails := ProcessorDetails + ' 64 bits';
-      if DEPEnabled then
+      if DEPCapable then
         ProcessorDetails := ProcessorDetails + ' DEP';
     end;
     DetailsMemo.Lines.Add(ProcessorDetails);
@@ -506,14 +506,11 @@ end;
 
 procedure T%FORMNAME%.ReportToLog;
 begin
-  if JclExcDlgReportToLog then
-  begin
-    FSimpleLog.WriteStamp(ReportMaxColumns);
-    try
-      FSimpleLog.Write(ReportAsText);
-    finally
-      FSimpleLog.CloseLog;
-    end;
+  FSimpleLog.WriteStamp(ReportMaxColumns);
+  try
+    FSimpleLog.Write(ReportAsText);
+  finally
+    FSimpleLog.CloseLog;
   end;
 end;
 %endif
