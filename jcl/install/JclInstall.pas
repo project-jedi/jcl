@@ -865,7 +865,9 @@ procedure TJclInstallation.Init;
       end;
 
       if bpBCBuilder32 in Target.Personalities then
-        AddOption(joCopyHppFiles, [goChecked], joMake);
+        AddOption(joCopyHppFiles, [goChecked], OptionData[joMake].Id,
+          Format(OptionData[joCopyHppFiles].Caption, [Target.VclIncludeDir]),
+          OptionData[joCopyHppFiles].Hint);
     end;
   end;
 
@@ -920,11 +922,15 @@ procedure TJclInstallation.Init;
     begin
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
       begin
-        AddOption(joDualPackages, [goStandAloneParent, goChecked], Parent);
+        AddOption(joDualPackages, [goStandAloneParent, goChecked], OptionData[Parent].Id,
+          Format(OptionData[joCopyPackagesHppFiles].Caption, [Target.VclIncludeDir]),
+          OptionData[joCopyPackagesHppFiles].Hint);
         AddOption(joCopyPackagesHppFiles, [goChecked], joDualPackages);
       end
       else
-        AddOption(joCopyPackagesHppFiles, [goChecked], Parent);
+        AddOption(joCopyPackagesHppFiles, [goChecked], OptionData[Parent].Id,
+          Format(OptionData[joCopyPackagesHppFiles].Caption, [Target.VclIncludeDir]),
+          OptionData[joCopyPackagesHppFiles].Hint);
     end;
 
     if CLRVersion = '' then
