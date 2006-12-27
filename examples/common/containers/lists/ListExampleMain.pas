@@ -293,7 +293,7 @@ end;
 
 procedure TMainForm.btnVectorClick(Sender: TObject);
 var
-  List: TJclVector;
+  List: IJclList;
   MyObject: TMyObject;
   It: IJclIterator;
   I: Integer;
@@ -328,7 +328,7 @@ begin
     List.Clear;
   finally
     It := nil; // Force release Iterator before free list !
-    List.Free; // No ref count
+    List := nil;
   end;
 end;
 
@@ -438,7 +438,7 @@ end;
 
 procedure TMainForm.btnStrVectorClick(Sender: TObject);
 var
-  List: TJclStrVector;
+  List: IJclStrList;
   S: string;
   It: IJclStrIterator;
   I: Integer;
@@ -467,7 +467,7 @@ begin
     List.Clear;
   finally
     It := nil; // Force release Iterator before free list !
-    List.Free; // No Ref Count
+    List := nil;
   end;
 end;
 
