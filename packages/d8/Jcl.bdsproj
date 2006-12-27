@@ -121,11 +121,11 @@
       <Directories Name="UnitOutputDir">..\..\lib\d8</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d8</Directories>
-      <Directories Name="SearchPath">..\..\common</Directories>
-      <Directories Name="Packages"></Directories>
+      <Directories Name="SearchPath">..\..\lib\d8;..\..\source</Directories>
+      <Directories Name="Packages">rtl</Directories>
       <Directories Name="Conditionals"></Directories>
       <Directories Name="DebugSourceDirs"></Directories>
-      <Directories Name="UsePackages">False</Directories>
+      <Directories Name="UsePackages">True</Directories>
     </Directories>
     <Parameters>
       <Parameters Name="RunParams"></Parameters>
