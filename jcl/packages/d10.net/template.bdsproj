@@ -171,7 +171,7 @@
       <VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">%NAME%110%BINEXTENSION%</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">%NAME%100%BINEXTENSION%</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
       <VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
