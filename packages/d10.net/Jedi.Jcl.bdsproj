@@ -171,7 +171,7 @@
       <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl110.dll</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl100.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
       <VersionInfoKeys Name="ProductVersion">1.97 Build 2172</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
