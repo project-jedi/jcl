@@ -59,6 +59,7 @@ resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';
   RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
+  RsCantConvertAddr64  = 'The address %s%.16x cannot be converted to 32 bit';
   {$IFDEF CLR}
   RsEGetBytesExFmt     = 'GetBytesEx(): Unsupported value type: %s';
   RsESetBytesExFmt     = 'SetBytesEx(): Unsupported value type: %s';
