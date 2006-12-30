@@ -987,7 +987,8 @@ procedure TJclInstallation.Init;
     begin
       AddOption(joExpertDebug, ExpertOptions, joExperts);
       AddOption(joExpertAnalyzer, ExpertOptions, joExperts);
-      AddOption(joExpertUses, ExpertOptions, joExperts);
+      if Target.RadToolKind <> brBorlandDevStudio then
+        AddOption(joExpertUses, ExpertOptions, joExperts);
       AddOption(joExpertSimdView, ExpertOptions, joExperts);
       AddOption(joExpertRepository, ExpertOptions, joExperts);
     end;

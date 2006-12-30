@@ -22,9 +22,9 @@
     <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\useswizard\JCLUsesWizard.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\useswizard\JCLOptionsFrame.pas" Targets="Windows" Formname="FrameJclOptions: TFrame" Condition=""/>
-    <File Name="..\..\experts\useswizard\JclUsesDialog.pas" Targets="Windows" Formname="FormUsesConfirm" Condition=""/>
-    <File Name="..\..\experts\useswizard\JclParseUses.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\useswizard\JCLUsesWizard.pas" Targets="c5,d5,c6,d6,d7" Formname="" Condition=""/>
+    <File Name="..\..\experts\useswizard\JCLOptionsFrame.pas" Targets="c5,d5,c6,d6,d7" Formname="FrameJclOptions: TFrame" Condition=""/>
+    <File Name="..\..\experts\useswizard\JclUsesDialog.pas" Targets="c5,d5,c6,d6,d7" Formname="FormUsesConfirm" Condition=""/>
+    <File Name="..\..\experts\useswizard\JclParseUses.pas" Targets="c5,d5,c6,d6,d7" Formname="" Condition=""/>
   </Contains>
 </Package>
