@@ -45,13 +45,13 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  Classes, SysUtils;
+  Classes, SysUtils, JclBase;
 
 const
   JCL_PCRE_ERROR_STUDYFAILED = -999;
 
 type
-  EPCREError = class(Exception)
+  EPCREError = class(EJclError)
   private
     FErrorCode: Integer;
   public

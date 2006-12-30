@@ -40,14 +40,15 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JclBase;
 
 type
   {$IFDEF COMPILER5}
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
   {$ENDIF COMPILER5}
 
-  EJclStreamError = class(Exception);
+  EJclStreamError = class(EJclError);
   
   // abstraction layer to support Delphi 5 and C++Builder 5 streams
   // 64 bit version of overloaded functions are introduced
@@ -329,7 +330,7 @@ const
 implementation
 
 uses
-  JclBase, JclResources;
+  JclResources;
 
 {$IFDEF KYLIX}
 function __open(PathName: PChar; Flags: Integer; Mode: Integer): Integer; cdecl;

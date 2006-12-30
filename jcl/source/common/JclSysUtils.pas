@@ -109,7 +109,7 @@ function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 
 // Functions for the shared memory owner
 type
-  ESharedMemError = class(Exception);
+  ESharedMemError = class(EJclError);
 
 {$IFDEF MSWINDOWS}
 

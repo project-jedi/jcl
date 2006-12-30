@@ -389,10 +389,10 @@ function DotNetFormat(const Fmt: string; const Arg0, Arg1, Arg2: System.Object):
 {$ELSE}
 
 type
-  FormatException = class(Exception);
-  ArgumentException = class(Exception);
-  ArgumentNullException = class(Exception);
-  ArgumentOutOfRangeException = class(Exception);
+  FormatException = class(EJclError);
+  ArgumentException = class(EJclError);
+  ArgumentNullException = class(EJclError);
+  ArgumentOutOfRangeException = class(EJclError);
 
   IToString = interface
     ['{C4ABABB4-1029-46E7-B5FA-99800F130C05}']

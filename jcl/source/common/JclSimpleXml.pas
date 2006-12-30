@@ -44,7 +44,8 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  IniFiles;
+  IniFiles,
+  JclBase;
 
 type
   {$IFDEF COMPILER5}
@@ -52,7 +53,7 @@ type
   THandle = Longword;
   {$ENDIF COMPILER5}
   TJclSimpleXML = class;
-  EJclSimpleXMLError = class(Exception);
+  EJclSimpleXMLError = class(EJclError);
   {$M+} // generate RTTI for published properties
   TJclSimpleXMLElem = class;
   {$M-}
