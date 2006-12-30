@@ -2075,7 +2075,14 @@ function GetIPAddress(const HostName: string): string;
 var
   Host: IPHostEntry;
 begin
+  // TODO: CLR detection:
+  //   Resolve was deprecated in Framework 2.0
+  //   GetHostEntry was introduced in Framework 2.0
+  {$IFDEF BDS5_UP}
+  Host := System.Net.Dns.GetHostEntry(HostName);
+  {$ELSE ~BDS5_UP}
   Host := System.Net.Dns.Resolve(HostName);
+  {$ENDIF ~BDS5_UP}
   if (Host <> nil) and (Length(Host.AddressList) > 0) then
     Result := Host.AddressList[0].ToString()
   else
