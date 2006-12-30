@@ -43,7 +43,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            cs1\JclBaseExpert.res                    \
            cs1\JclFavoriteFoldersExpertDLL.res      \
            cs1\JclVersionControlExpertDLL.res       \
-           d10\JclUsesExpert.res                    \
            d10\Jcl.res                              \
            d10\JclBaseExpert.res                    \
            d10\JclDebugExpert.res                   \
@@ -55,7 +54,6 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d10\JclRepositoryExpert.res              \
            d10\JclRepositoryExpertDLL.res           \
            d10\JclSIMDViewExpert.res                \
-           d10\JclUsesExpertDLL.res                 \
            d10\JclSIMDViewExpertDLL.res             \
            d10\JclVcl.res                           \
            d10\JclThreadNameExpert.res              \
@@ -140,9 +138,7 @@ RESFILES = c5\JclBaseExpertC50.res                  \
            d9\JclRepositoryExpert.res               \
            d9\JclRepositoryExpertDLL.res            \
            d9\JclSIMDViewExpert.res                 \
-           d9\JclUsesExpert.res                     \
            d9\JclSIMDViewExpertDLL.res              \
-           d9\JclUsesExpertDLL.res                  \
            d9\JclThreadNameExpert.res               \
            d9\JclVcl.res                            \
            d9\JclVersionControlExpert.res           \
