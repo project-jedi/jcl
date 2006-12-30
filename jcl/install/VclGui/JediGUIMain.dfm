@@ -324,6 +324,7 @@ object MainForm: TMainForm
     Width = 775
     Height = 465
     Anchors = [akLeft, akTop, akRight, akBottom]
+    Images = ImageList
     MultiLine = True
     TabOrder = 4
   end
