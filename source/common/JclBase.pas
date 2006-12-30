@@ -219,6 +219,15 @@ const
   AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
   AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 
+  AnsiHexPrefixPascal = AnsiString('$');
+  AnsiHexPrefixC      = AnsiString('0x');
+
+  {$IFDEF BCB}
+  AnsiHexPrefix = AnsiHexPrefixC;
+  {$ELSE ~BCB}
+  AnsiHexPrefix = AnsiHexPrefixPascal;
+  {$ENDIF ~BCB}
+
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
@@ -238,6 +247,21 @@ function ByteArrayStringLen(Data: TBytes): Integer;
 function StringToByteArray(const S: string): TBytes;
 function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 {$ENDIF CLR}
+
+type
+  TJclAddr64 = Int64;
+  TJclAddr32 = DWORD;
+
+  {$IFDEF 64BIT}
+  TJclAddr = TJclAddr64;
+  {$ELSE ~64BIT}
+  TJclAddr = TJclAddr32;
+  {$ENDIF}
+  
+  EJclAddr64Exception = class(EJclError);
+
+function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
+function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -508,6 +532,29 @@ begin
   RaiseLastWin32Error;
 end;
 {$ENDIF ~XPLATFORM_RTL}
+
+{$OVERFLOWCHECKS OFF}
+
+function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
+begin
+  if (Value shr 32) = 0 then
+    Result := Value
+  else
+    {$IFDEF CLR}
+    raise EJclAddr64Exception.CreateFmt(RsCantConvertAddr64, [AnsiHexPrefix, Value]);
+    {$ELSE ~CLR}
+    raise EJclAddr64Exception.CreateResFmt(@RsCantConvertAddr64, [AnsiHexPrefix, Value]);
+    {$ENDIF ~CLR}
+end;
+
+function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
+begin
+  Result := Value;
+end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 {$IFDEF UNITVERSIONING}
 initialization
