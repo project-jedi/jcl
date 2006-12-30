@@ -94,7 +94,7 @@ const
 
 type
   { Exception classes }
-  EUnitConversionError = class(Exception);
+  EUnitConversionError = class(EJclError);
 
   ETemperatureConversionError = class(EUnitConversionError);
 

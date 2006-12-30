@@ -73,7 +73,7 @@ uses
 
 // Various definitions
 type
-  EJclBorRADException = class(Exception);
+  EJclBorRADException = class(EJclError);
 
   TJclBorRADToolKind = (brDelphi, brCppBuilder, brBorlandDevStudio);
   {$IFDEF KYLIX}
