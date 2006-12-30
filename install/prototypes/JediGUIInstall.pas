@@ -48,6 +48,8 @@ uses
   JclBorlandTools, JediInstall;
 
 type
+  TSetIconEvent = procedure(Sender: TObject; const FileName: string) of object;
+
   TInstallFrame = class(TFrame, IJediInstallPage, IJediPage)
     ComponentsTreePanel: TPanel;
     Label1: TLabel;
@@ -81,6 +83,7 @@ type
     FCheckedCount: Integer;
     FInstallCount: Integer;
     FInstalling: Boolean;
+    FOnSetIcon: TSetIconEvent;
     {$IFDEF VCL}
     FFormCompile: TFormCompile;
     function GetFormCompile: TFormCompile;
@@ -129,6 +132,8 @@ type
     procedure AddFatal(const Line: string);
     procedure AddText(const Line: string);
     procedure CompilationProgress(const FileName: string; LineNumber: Integer);
+    procedure SetIcon(const FileName: string);
+    property OnSetIcon: TSetIconEvent read FOnSetIcon write FOnSetIcon;
   end;
 
 implementation
@@ -242,6 +247,12 @@ end;
 function TInstallFrame.IsExpandable(Node: TTreeNode): Boolean;
 begin
   Result := goExpandable in PNodeRec(Node.Data)^.Options;
+end;
+
+procedure TInstallFrame.SetIcon(const FileName: string);
+begin
+  if Assigned(FOnSetIcon) then
+    FOnSetIcon(Self, FileName);
 end;
 
 procedure TInstallFrame.UpdateNode(N: TTreeNode; C: Boolean);

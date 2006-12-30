@@ -93,6 +93,7 @@ type
     procedure AddFatal(const Line: string);
     procedure AddText(const Line: string);
     procedure CompilationProgress(const FileName: string; LineNumber: Integer);
+    procedure SetIcon(const FileName: string);
 
     property OptionChecked[Id: Integer]: Boolean read GetOptionChecked write SetOptionChecked;
     property DirectoryCount: Integer read GetDirectoryCount;

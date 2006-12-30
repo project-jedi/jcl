@@ -1068,6 +1068,7 @@ begin
 
   FGUIPage := GUI.CreateInstallPage;
   GUIPage.Caption := TargetName;
+  GUIPage.SetIcon(Target.IdeExeFileName);
 
   RunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
     or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));

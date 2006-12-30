@@ -39,7 +39,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, Messages,
+  Windows, Messages, CommCtrl,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VisualCLX}
@@ -73,6 +73,7 @@ type
   protected
     FPages: IJclIntfList;
     procedure HandleException(Sender: TObject; E: Exception);
+    procedure SetFrameIcon(Sender: TObject; const FileName: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -191,6 +192,42 @@ begin
   CanShow := HintStr <> '';
 end;
 
+procedure TMainForm.SetFrameIcon(Sender: TObject; const FileName: string);
+{$IFDEF MSWINDOWS}
+var
+  IconHandle: HICON;
+  ModuleHandle: THandle;
+  ATabSheet: TTabSheet;
+{$ENDIF MSWINDOWS}
+begin
+  {$IFDEF MSWINDOWS}
+  ATabSheet := (Sender as TInstallFrame).Parent as TTabSheet;
+
+  IconHandle := 0;
+
+  if SameText(ExtractFileName(FileName), '.ico') then
+    IconHandle := LoadImage(0, PChar(FileName), IMAGE_ICON, ImageList.Width, ImageList.Height,
+      LR_LOADFROMFILE or LR_LOADTRANSPARENT)
+  else
+  begin
+    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, DONT_RESOLVE_DLL_REFERENCES);
+    if ModuleHandle <> 0 then
+    try
+      IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
+        LR_LOADTRANSPARENT);
+    finally
+      FreeLibrary(ModuleHandle);
+    end;
+  end;
+  if IconHandle <> 0 then
+  try
+    ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
+  finally
+    DestroyIcon(IconHandle);
+  end;
+  {$ENDIF MSWINDOWS}
+end;
+
 procedure TMainForm.QuitBtnClick(Sender: TObject);
 begin
   Close;
@@ -258,6 +295,7 @@ var
 begin
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
+  ATabSheet.ImageIndex := -1;
 
   AReadmeFrame := TReadmeFrame.Create(Self);
   AReadmeFrame.Parent := ATabSheet;
@@ -275,12 +313,14 @@ var
 begin
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
+  ATabSheet.ImageIndex := -1;
 
   AInstallFrame := TInstallFrame.Create(Self);
   AInstallFrame.Parent := ATabSheet;
   AInstallFrame.Align := alClient;
   AInstallFrame.TreeView.Images := ImageList;
   AInstallFrame.Name := '';
+  AInstallFrame.OnSetIcon := SetFrameIcon;
 
   Result := AInstallFrame;
   FPages.Add(Result);
