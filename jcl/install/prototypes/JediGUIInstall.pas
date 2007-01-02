@@ -581,6 +581,9 @@ begin
       ANode.Expand(False);
     ANode := ANode.GetNext;
   end;
+  ANode := TreeView.Items.GetFirstNode;
+  if Assigned(ANode) then
+    TreeView.TopItem := ANode;
 end;
 
 function TInstallFrame.GetOptionChecked(Id: Integer): Boolean;
