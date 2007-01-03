@@ -283,6 +283,7 @@ uses
   JclRegistry,
   JclDebug,
   JclDotNet,
+  JclSecurity,
   JediRegInfo,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings;
@@ -639,7 +640,7 @@ const
 
   PathEnvironmentVar = 'PATH';
   RegHKCUEnvironmentVar = 'Environment';
-  RegHKLMEnvironmentVar = 'SYSTEM\ControlSet001\Control\Session Manager\Environment';
+  RegHKLMEnvironmentVar = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
 resourcestring
   RsInstallMessage                   = 'Installing %s...';
@@ -881,7 +882,10 @@ procedure TJclInstallation.Init;
       begin
         AddOption(joHelp, [goChecked], Parent);
         AddOption(johelpHxS, [goStandaloneParent,goChecked], joHelp);
-        AddOption(joHelpHxSPlugin, [goChecked], joHelpHxS);
+        if IsAdministrator then
+          AddOption(joHelpHxSPlugin, [goChecked], joHelpHxS)
+        else
+          AddOption(joHelpHxSPlugin, [], joHelpHxS);
       end;
     end
     else
