@@ -112,35 +112,29 @@
         <target name="c5"/>
         <target name="c6"/>
         <target name="d5"/>
-        <target name="d5.dev"/>
         <target name="d6"/>
-        <target name="d6.dev"/>
         <target name="d7"/>
-        <target name="d7.dev"/>
         <target name="d8" IsBds="1"/>
         <target name="cs1" IsBds="1"/>
         <target name="d9" IsBds="1"/>
         <target name="d10" IsBds="1"/>
         <target name="k3" PathSep="/"/>
-        <target name="k3.dev" PathSep="/"/>
         <target name="d9.net" IsDotNet="1"/>
         <target name="d10.net" IsDotNet="1"/>
       </targets>
       <aliases>
         <alias name="Delphi" value="d5,d6,d7,d9,d10"/>
         <alias name="Bcb" value="c5,c6,d10"/>
-        <alias name="Kylix" value="k2,k3,k3p"/>
+        <alias name="Kylix" value="k3"/>
         <alias name="Windows" value="c5,c6,d5,d6,d7,d9,d10"/>
-        <alias name="Linux" value="k2,k3,k3p"/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,d5.dev,cs1"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,d5.dev,cs1"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10,d5.dev"/>
-        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,d5.dev,d6.dev,d7.dev,cs1"/>
-        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,d5.dev,d6.dev,d7.dev,k3.dev,cs1"/>
+        <alias name="Linux" value="k3"/>
+        <alias name="WinDev" value="c5,c6,d5,d6,d7,d8,d9,d10,cs1"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d8,d9,d10,k3,cs1"/>
+        <alias name="DelphiDev" value="d5,d6,d7,d8,d9,d10"/>
+        <alias name="WinLibSuffix" value="c6,d6,d7,d8,d9,d10,cs1"/>
+        <alias name="allLibSuffix" value="c6,d6,d7,d8,d9,d10,k3,cs1"/>
         <alias name="Clx" value="c6,d6,d7,k3"/>
-        <alias name="ClxDev" value="c6.dev,d7.dev,k3.dev"/>
         <alias name="Vcl" value="c6,d6,d7,d9,d10"/>
-        <alias name="VclDev" value="c6.dev,d6.dev,d7.dev"/>
         <alias name="Bds" value="cs1,d8,d9,d10"/>
         <alias name="JclDotNet" value="d9.net,d10.net"/>
       </aliases>
