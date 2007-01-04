@@ -1456,17 +1456,17 @@ const
 implementation
 
 
-{$LINK obj\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
-{$LINK obj\compress.obj}
-{$LINK obj\crc32.obj}
-{$LINK obj\deflate.obj}
-{$LINK obj\infback.obj}
-{$LINK obj\inffast.obj}
-{$LINK obj\inflate.obj}
-{$LINK obj\inftrees.obj}
-{$LINK obj\trees.obj}
-{$LINK obj\uncompr.obj}
-{$LINK obj\zutil.obj}
+{$LINK obj\zlib\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
+{$LINK obj\zlib\compress.obj}
+{$LINK obj\zlib\crc32.obj}
+{$LINK obj\zlib\deflate.obj}
+{$LINK obj\zlib\infback.obj}
+{$LINK obj\zlib\inffast.obj}
+{$LINK obj\zlib\inflate.obj}
+{$LINK obj\zlib\inftrees.obj}
+{$LINK obj\zlib\trees.obj}
+{$LINK obj\zlib\uncompr.obj}
+{$LINK obj\zlib\zutil.obj}
 
   {$IFDEF LINK_LIBC}
     {$DEFINE LINKTO_MSVCRT_DLL}

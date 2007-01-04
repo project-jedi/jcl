@@ -32,8 +32,6 @@
   (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
 }
 
-{$I jedi.inc}
-
 {* Set this DEFINE to allow this unit to be linked against a .SO/.DLL
  * The name "DLL" was used because e.g. the wxWidgets projects also uses
  * this name to refer to dynamic libraries (even on *nix systems).
@@ -55,6 +53,8 @@
 {$HPPEMIT '#include <zutil.h>'}
 
 unit zlibh;
+
+{$I jedi.inc}
 
 interface
 

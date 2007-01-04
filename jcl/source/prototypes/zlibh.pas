@@ -28,8 +28,6 @@
   (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
 }
 
-{$I jedi.inc}
-
 {* Set this DEFINE to allow this unit to be linked against a .SO/.DLL
  * The name "DLL" was used because e.g. the wxWidgets projects also uses
  * this name to refer to dynamic libraries (even on *nix systems).
@@ -61,6 +59,8 @@
 {$HPPEMIT '#include <zutil.h>'}
 
 unit zlibh;
+
+{$I jedi.inc}
 
 interface
 
@@ -1523,19 +1523,19 @@ end;
 
 {$ELSE ~ZLIB_DLL}
 
-{$LINK obj\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
-{$LINK obj\compress.obj}
-{$LINK obj\crc32.obj}
-{$LINK obj\deflate.obj}
-{$LINK obj\infback.obj}
-{$LINK obj\inffast.obj}
-{$LINK obj\inflate.obj}
-{$LINK obj\inftrees.obj}
-{$LINK obj\trees.obj}
-{$LINK obj\uncompr.obj}
-{$LINK obj\zutil.obj}
+{$LINK obj\zlib\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
+{$LINK obj\zlib\compress.obj}
+{$LINK obj\zlib\crc32.obj}
+{$LINK obj\zlib\deflate.obj}
+{$LINK obj\zlib\infback.obj}
+{$LINK obj\zlib\inffast.obj}
+{$LINK obj\zlib\inflate.obj}
+{$LINK obj\zlib\inftrees.obj}
+{$LINK obj\zlib\trees.obj}
+{$LINK obj\zlib\uncompr.obj}
+{$LINK obj\zlib\zutil.obj}
 {$IFDEF STATIC_GZIO}
-{$LINK obj\gzio.obj}
+{$LINK obj\zlib\gzio.obj}
 {$DEFINE LINK_LIBC}
 {$ENDIF STATIC_GZIO}
 
