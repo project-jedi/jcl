@@ -533,6 +533,9 @@ var
   FalseBoolStrs: array of string;
   {$ENDIF COMPILER5}
 
+  PreparedNibbleCharMapping: Boolean = False;
+  NibbleCharMapping: array [Low(Char)..High(Char)] of Byte;
+
 function GSorts: TList;
 begin
   if not Assigned(GlobalSorts) then
@@ -1264,11 +1267,11 @@ end;
 
 procedure TJclSimpleXMLElem.GetBinaryValue(const Stream: TStream);
 var
-  I, J: Integer;
+  I, J, ValueLength, RequiredStreamSize: Integer;
   Buf: array [0..cBufferSize - 1] of Byte;
   N1, N2: Byte;
 
-  function NibbleStrToNibble(const AChar: Char): Byte;
+  function NibbleCharToNibble(const AChar: Char): Byte;
   begin
     case AChar of
       '0': Result := 0;
@@ -1281,22 +1284,38 @@ var
       '7': Result := 7;
       '8': Result := 8;
       '9': Result := 9;
-      'A': Result := 10;
-      'B': Result := 11;
-      'C': Result := 12;
-      'D': Result := 13;
-      'E': Result := 14;
-      'F': Result := 15;
+      'a', 'A': Result := 10;
+      'b', 'B': Result := 11;
+      'c', 'C': Result := 12;
+      'd', 'D': Result := 13;
+      'e', 'E': Result := 14;
+      'f', 'F': Result := 15;
       else
         Result := 16;
     end;
   end;
 
+  procedure PrepareNibbleCharMapping;
+  var
+    C: Char;
+  begin
+    if not PreparedNibbleCharMapping then
+    begin
+      for C := Low(Char) to High(Char) do
+        NibbleCharMapping[C] := NibbleCharToNibble(C);
+      PreparedNibbleCharMapping := True;
+    end;
+  end;
+
 begin
+  PrepareNibbleCharMapping;
   I := 1;
   J := 0;
-  Stream.Size := Stream.Size + Length(Value) div 2;
-  while I < Length(Value) do
+  ValueLength := Length(Value);
+  RequiredStreamSize := Stream.Position + ValueLength div 2;
+  if Stream.Size < RequiredStreamSize then
+    Stream.Size := RequiredStreamSize;
+  while I < ValueLength do
   begin
     if J = cBufferSize - 1 then //Buffered write to speed up the process a little
     begin
@@ -1304,8 +1323,8 @@ begin
       J := 0;
     end;
     //faster replacement for St := '$' + Value[I] + Value[I + 1]; Buf[J] := StrToIntDef(St, 0);
-    N1 := NibbleStrToNibble(Value[I]);
-    N2 := NibbleStrToNibble(Value[I + 1]);
+    N1 := NibbleCharMapping[Value[I]];
+    N2 := NibbleCharMapping[Value[I + 1]];
     if (N1 > 15) or (N2 > 15) then
       Buf[J] := 0
     else
@@ -1777,7 +1796,7 @@ begin
                 end;
             else
               begin
-                if (St <> '<![CDATA') or not (Ansichar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+                if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
                   St := St + Ch;
                 if St = '<![CDATA[' then
                   lElem := TJclSimpleXMLElemCData.Create(Parent)
@@ -2817,7 +2836,7 @@ begin
   inherited Assign(Value);
   if Value is TJclSimpleXMLElemHeader then
   begin
-    FStandAlone := TJclSimpleXMLElemHeader(Value).FStandalone;
+    FStandalone := TJclSimpleXMLElemHeader(Value).FStandalone;
     FEncoding := TJclSimpleXMLElemHeader(Value).FEncoding;
     FVersion := TJclSimpleXMLElemHeader(Value).FVersion;
   end;
@@ -3185,7 +3204,7 @@ begin
             lElem := nil;
             lEnd := False;
 
-            if (St <> '<![CDATA') or not (AnsiChar(lBuf[i]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+            if (St <> '<![CDATA') or not (AnsiChar(lBuf[I]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
               St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
