@@ -232,7 +232,7 @@ var
   PeSectionStream: TJclPeSectionStream;
 begin
   Result := False;
-  if PeMapImgFindSection(PeMapImgNtHeaders(Pointer(AModule)), JclUnitVersioningDataResName) <> nil then
+  if PeMapImgFindSectionFromModule(Pointer(AModule), JclUnitVersioningDataResName) <> nil then
   begin
     PeSectionStream := TJclPeSectionStream.Create(AModule, JclUnitVersioningDataResName);
     try

@@ -3140,6 +3140,12 @@ function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase
   var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage}
 
+function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
+  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+{$EXTERNALSYM ReBaseImage64}
+
 // line 199
 
 //
@@ -6656,51 +6662,13 @@ function SetSuspendState(Hibernate, ForceCritical, DisableWakeEvent: BOOL): BOOL
 {$IFNDEF CLR}
 
 type
-  { TODO : Source unknown }
-  {$EXTERNALSYM ImgDelayDescr}
-  ImgDelayDescr = packed record
-    grAttrs: DWORD;                 // attributes
-    szName: DWORD;                  // pointer to dll name
-    phmod: PDWORD;                  // address of module handle
-    { TODO : probably wrong declaration }
-    pIAT: TImageThunkData;          // address of the IAT
-    { TODO : probably wrong declaration }
-    pINT: TImageThunkData;          // address of the INT
-    { TODO : probably wrong declaration }
-    pBoundIAT: TImageThunkData;     // address of the optional bound IAT
-    { TODO : probably wrong declaration }
-    pUnloadIAT: TImageThunkData;    // address of optional copy of original IAT
-    dwTimeStamp: DWORD;             // 0 if not bound,
-                                    // O.W. date/time stamp of DLL bound to (Old BIND)
-  end;
-  TImgDelayDescr = ImgDelayDescr;
-  PImgDelayDescr = ^ImgDelayDescr;
-
-(*
-  // DelayImp.h, Borland BCC 5.5
-  {$EXTERNALSYM ImgDelayDescr}
-  ImgDelayDescr = packed record
-    grAttrs: DWORD;                 // attributes
-    szName: LPCSTR;                 // pointer to dll name
-    { TODO : probably wrong declaration }
-    hmod: HMODULE;                  // address of module handle
-    pIAT: PIMAGE_THUNK_DATA;        // address of the IAT
-    pINT: PIMAGE_THUNK_DATA;        // address of the INT
-    pBoundIAT: PIMAGE_THUNK_DATA;   // address of the optional bound IAT
-    pUnloadIAT: PIMAGE_THUNK_DATA;  // address of optional copy of original IAT
-    dwTimeStamp: DWORD;             // 0 if not bound,
-                                    // O.W. date/time stamp of DLL bound to (Old BIND)
-  end;
-  TImgDelayDescr = ImgDelayDescr;
-  PImgDelayDescr = ^ImgDelayDescr;
-
-
   // Microsoft version (64 bit SDK)
   {$EXTERNALSYM RVA}
   RVA = DWORD;
 
-  {$EXTERNALSYM ImgDelayDescr}
-  ImgDelayDescr = packed record
+  // 64-bit PE
+  {$EXTERNALSYM ImgDelayDescrV2}
+  ImgDelayDescrV2 = packed record
     grAttrs: DWORD;      // attributes
     rvaDLLName: RVA;     // RVA to dll name
     rvaHmod: RVA;        // RVA of module handle
@@ -6711,10 +6679,35 @@ type
     dwTimeStamp: DWORD;  // 0 if not bound,
                          // O.W. date/time stamp of DLL bound to (Old BIND)
   end;
-  {$EXTERNALSYM PImgDelayDescr}
-  PImgDelayDescr = ImgDelayDescr;
-  TImgDelayDescr = ImgDelayDescr;
-*)
+  {$EXTERNALSYM TImgDelayDescrV2}
+  TImgDelayDescrV2 = ImgDelayDescrV2;
+  {$EXTERNALSYM PImgDelayDescrV2}
+  PImgDelayDescrV2 = ^ImgDelayDescrV2;
+
+  {$EXTERNALSYM PHMODULE}
+  PHMODULE = ^HMODULE;
+
+  // 32-bit PE
+  {$EXTERNALSYM ImgDelayDescrV1}
+  ImgDelayDescrV1 = packed record
+    grAttrs: DWORD;                // attributes
+    szName: LPCSTR;                // pointer to dll name
+    phmod: PHMODULE;               // address of module handle
+    pIAT: PImageThunkData32;       // address of the IAT
+    pINT: PImageThunkData32;       // address of the INT
+    pBoundIAT: PImageThunkData32;  // address of the optional bound IAT
+    pUnloadIAT: PImageThunkData32; // address of optional copy of original IAT
+    dwTimeStamp: DWORD;            // 0 if not bound,
+                                   // O.W. date/time stamp of DLL bound to (Old BIND)
+  end;
+  {$EXTERNALSYM TImgDelayDescrV1}
+  TImgDelayDescrV1 = ImgDelayDescrV1;
+  {$EXTERNALSYM PImgDelayDescrV1}
+  PImgDelayDescrV1 = ^ImgDelayDescrV1;
+
+  //{$EXTERNALSYM PImgDelayDescr}
+  //PImgDelayDescr = ImgDelayDescr;
+  //TImgDelayDescr = ImgDelayDescr;
 
 {$ENDIF ~CLR}
 
@@ -6864,6 +6857,19 @@ begin
     mov esp, ebp
     pop ebp
     jmp [_ReBaseImage]
+  end;
+end;
+
+var
+  _ReBaseImage64: Pointer;
+
+function ReBaseImage64;
+begin
+  GetProcedureAddress(_ReBaseImage64, ImageHlpLib, 'ReBaseImage64');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_ReBaseImage64]
   end;
 end;
 

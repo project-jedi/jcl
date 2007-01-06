@@ -36,6 +36,12 @@ function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase
   var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL; stdcall;
 {$EXTERNALSYM ReBaseImage}
 
+function ReBaseImage64(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: TJclAddr64; var NewImageSize: ULONG;
+  var NewImageBase: TJclAddr64; TimeStamp: ULONG): BOOL; stdcall;
+{$EXTERNALSYM ReBaseImage64}
+
 // line 199
 
 //
