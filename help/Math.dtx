@@ -1846,3 +1846,275 @@ Description:
   Several JCL functions and procedures are using PrecisionTolerance. For example,
   IsFloatZero uses this variable to determine if a value is zero or near by zero.
 --------------------------------------------------------------------------------
+
+@@TJclASet
+Ancestor class for different implementations of bit fields.
+
+
+
+Do not use this class directly, it doesn't implement anything
+but exposes abstract functions to manage the field of bits.
+
+
+
+Depending on your data, you should use TJclFlatSet or
+TJclSparseFlatSet.
+
+
+See Also
+TJclFlatSet
+
+TJclSparseFlatSet
+
+@@TJclASet.Clear
+Clear the field of bits. After a call to this function, the
+number of stored bits is set to 0.
+Parameters
+This function has no parameter.
+Returns
+This function returns nothing.
+
+@@TJclASet.GetBit@Integer
+This function returns the state for the indexed bit. To set
+the value of this bit, use TJclASet.SetBit.
+Parameters
+Idx :  Index of the bit
+Returns
+The return value is the value of the indexed bit.
+See Also
+TJclASet.SetBit
+
+@@TJclASet.GetRange@Integer@Integer@Boolean
+This function returns true if all bits in the specified range
+are equal to the Value.
+
+
+
+To set a range of bits to a predefined value, use
+TJclASet.SetRange.
+Parameters
+Low :    Lower bound of the range
+High :   Higher bound of the range
+Value :  Value for reference
+Returns
+This function returns true if all bits are equals to the
+reference value, false otherwise.
+See Also
+TJclASet.SetRange
+
+@@TJclASet.Invert
+This function invert the value of all bits in the stored
+field.
+
+To set the value of one bit, use the TJclASet.SetBit
+function.To set a range of bits to a predefined value, use
+the TJclASet.SetRange function.
+Returns
+This function returns nothing.
+See Also
+TJclASet.SetBit
+
+TJclASet.SetRange
+Parameters
+
+@@TJclASet.SetBit@Integer@Boolean
+This function sets the value for the indexed bit.
+
+To set a range a bits to a predefined value, use the
+TJclASet.SetRange function.
+
+To get the value of a bit, use the TJclASet.GetBit function.
+Parameters
+Idx :    Index of the bit
+Value :  New value for this bit
+
+Returns
+This function returns nothing.
+See Also
+TJclASet.SetRange
+
+TJclASet.GetBit
+
+@@TJclASet.SetRange@Integer@Integer@Boolean
+This function sets a range of bits to a predefined value.
+
+To set a value to a single bit, use the TJclASet.SetBit
+function.
+
+To test the value of a range of bits, use the
+TJclASet.GetRange function.
+Parameters
+Low :    Lower bound of the range
+High :   Higher bound of the range
+Value :  New value for all bits in the range
+
+Returns
+This function returns nothing.
+See Also
+TJclASet.SetBit
+
+TJclASet.GetRange
+
+@@TJclFlatSet
+This class implements functions to handle a field of
+contiguous bits. It inherits from TJclASet and implements all
+the abstract functions defined in its ancestor.
+
+the TJclSparseFlatSet class is preferred to handle a field of
+sparse bits (not contiguous).
+
+
+See Also
+TJclASet
+
+TJclSparseFlatSet
+
+@@TJclFlatSet.Create
+Create an empty field of contiguous bits.
+
+@@TJclFlatSet.Destroy
+Destroy the array of contiguous bits.
+
+@@TJclSparseFlatSet
+This class implements functions to handle a field of
+discontinuous bits. It inherits from TJclASet and implements
+all the abstract functions defined in its ancestor.
+
+A sparse field lowers the memory usage when some ranges of
+bits are not needed.
+
+The TJclFlatSet class is preferred to handle a field of
+contiguous bits.
+See Also
+TJclASet
+
+TJclFlatSet
+
+@@TJclSparseFlatSet.Destroy
+Destroy the field of bits.
+
+@@TJclRational
+This class handles operations for rational numbers.
+
+A rational number is represented as a fraction
+numerator/denominator where both numerator and denominator
+are signed integers.
+
+This format can be used to represent integer number as well
+as floating point numbers (which are approximated as a
+fraction).
+
+All basic operations (addition, subtraction, multiplication,
+division, power, square root) are exposed as functions as
+well as equality test.
+
+@@TJclRational.AsFloat
+This property converts the rational number from/to a floating
+point representation.
+
+Some rational numbers cannot be exactly represented as
+floating point numbers (such as 1/3), they are represented as
+the nearest floating point value.
+
+To have a string representation of the rational number, use
+the TJclRational.AsString property.
+See Also
+TJclRational.AsString
+
+@@TJclRational.AsString
+This property converts the rational number from/to a string
+representation.
+
+On read, the string format is always 'Numerator/Denominator',
+\on write this property accepts a floating point
+representation of a number as well as the
+'Numerator/Denominator' representation.
+
+To have a floating point representation of the rational
+number, use the TJclRational.AsFloat property.
+See Also
+TJclRational.AsFloat
+
+@@TJclRational.Denominator
+This property is a read-only access to the denominator of the
+rational number.
+
+
+See Also
+TJclRational.Numerator
+
+@@TJclRational.Numerator
+This property is a read-only access to the numerator of the
+rational number.
+
+
+See Also
+TJclRational.Denominator
+
+@@TJclRational.Abs
+This function replaces the rational number by its absolute
+value: a positive number is not changed, a negative number is
+changed to its opposite value.
+
+To get the sign of the number, use the Sgn property. To
+change the sign of the number, use the Negate method.
+Parameters
+This function has no parameter.
+Returns
+This function returns nothing.
+See Also
+TJclRational.Sgn
+
+TJclRational.Negate
+
+@@TJclRational.Add@Float
+Add the specified floating point number to this number.
+
+The current value is converted to a float, then added to the
+argument. The result of this addition is converted back to a
+rational number.
+
+
+Parameters
+V :  Floating point number to be added
+
+Returns
+This function returns nothing.
+See Also
+TJclRational.Subtract
+
+@@TJclRational.Add@Integer
+Add the specified integer number to this rational number.
+Parameters
+V :  Integer number to be added
+Returns
+This function returns nothing.
+See Also
+TJclRational.Subtract
+
+@@TJclRational.Add@TJclRational
+Add the rational number to this number.
+Parameters
+V :  Rational number to be added
+Returns
+This function returns nothing.
+See Also
+TJclRational.Subtract
+
+@@!!OVERLOADED_Add_TJclRational
+These overloaded functions add a number to this number.
+
+This operation is implemented with three different versions
+depending on the type of the number to added:
+
+\- to add a floating point number: <link TJclRational.Add@Float, TJclRational.Add Method (Float)>
+
+\- to add an integer number: <link TJclRational.Add@Integer, TJclRational.Add Method (Integer)>
+
+\- to add a rational number: <link TJclRational.Add@TJclRational, TJclRational.Add Method (TJclRational)>
+See Also
+<link TJclRational.Add@Float>
+
+<link TJclRational.Add@Integer>
+
+<link TJclRational.Add@TJclRational>
