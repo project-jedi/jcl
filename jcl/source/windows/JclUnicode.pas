@@ -1297,6 +1297,7 @@ var
   Size: Cardinal;
   First,
   Second: Byte;
+  Dummy: UCS4;
 begin
   if not CaseDataLoaded then
   begin
@@ -1315,40 +1316,72 @@ begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
 
-          Assert(Code < $10000, LoadResString(@RsCasedUnicodeChar));
+          // (outchy) TODO: cleanly handle this case
+          //Assert(Code < $10000, LoadResString(@RsCasedUnicodeChar));
           // if there is no high byte entry in the first stage table then create one
-          First := (Code shr 8) and $FF;
-          Second := Code and $FF;
-          if CaseMapping[First] = nil then
-            SetLength(CaseMapping[First], 256);
 
-          // b) read fold case array
-          Stream.ReadBuffer(Size, 4);
-          if Size > 0 then
+          if Code < $10000 then
           begin
-            SetLength(CaseMapping[First, Second, 0], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, 0, 0], Size * SizeOf(UCS4));
-          end;
-          // c) read lower case array
-          Stream.ReadBuffer(Size, 4);
-          if Size > 0 then
+            First := (Code shr 8) and $FF;
+            Second := Code and $FF;
+            if CaseMapping[First] = nil then
+              SetLength(CaseMapping[First], 256);
+  
+            // b) read fold case array
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(CaseMapping[First, Second, 0], Size);
+              Stream.ReadBuffer(CaseMapping[First, Second, 0, 0], Size * SizeOf(UCS4));
+            end;
+            // c) read lower case array
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(CaseMapping[First, Second, 1], Size);
+              Stream.ReadBuffer(CaseMapping[First, Second, 1, 0], Size * SizeOf(UCS4));
+            end;
+            // d) read title case array
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(CaseMapping[First, Second, 2], Size);
+              Stream.ReadBuffer(CaseMapping[First, Second, 2, 0], Size * SizeOf(UCS4));
+            end;
+            // e) read upper case array
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(CaseMapping[First, Second, 3], Size);
+              Stream.ReadBuffer(CaseMapping[First, Second, 3, 0], Size * SizeOf(UCS4));
+            end;
+          end
+          else
           begin
-            SetLength(CaseMapping[First, Second, 1], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, 1, 0], Size * SizeOf(UCS4));
-          end;
-          // d) read title case array
-          Stream.ReadBuffer(Size, 4);
-          if Size > 0 then
-          begin
-            SetLength(CaseMapping[First, Second, 2], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, 2, 0], Size * SizeOf(UCS4));
-          end;
-          // e) read upper case array
-          Stream.ReadBuffer(Size, 4);
-          if Size > 0 then
-          begin
-            SetLength(CaseMapping[First, Second, 3], Size);
-            Stream.ReadBuffer(CaseMapping[First, Second, 3, 0], Size * SizeOf(UCS4));
+            Stream.ReadBuffer(Size, 4);
+            while Size > 0 do
+            begin
+              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
+              Dec(Size);
+            end;
+            Stream.ReadBuffer(Size, 4);
+            while Size > 0 do
+            begin
+              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
+              Dec(Size);
+            end;
+            Stream.ReadBuffer(Size, 4);
+            while Size > 0 do
+            begin
+              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
+              Dec(Size);
+            end;
+            Stream.ReadBuffer(Size, 4);
+            while Size > 0 do
+            begin
+              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
+              Dec(Size);
+            end;
           end;
         end;
 
@@ -1459,37 +1492,46 @@ begin
         begin
           Stream.ReadBuffer(Code, 4);
 
-          Assert((Code and not $40000000) < $10000, LoadResString(@RsDecomposedUnicodeChar));
+          // (outchy) TODO: handle in a cleaner way
+          //Assert((Code and not $40000000) < $10000, LoadResString(@RsDecomposedUnicodeChar));
 
-          // if there is no high byte entry in the first stage table then create one
-          First := (Code shr 8) and $FF;
-          Second := Code and $FF;
-
-          // insert into the correct table depending on bit 30
-          // (if set then it is a compatibility decomposition)
-          if Code and $40000000 <> 0 then
+          if (Code and not $40000000) < $10000 then
           begin
-            if CompatibleDecompositions[First] = nil then
-              SetLength(CompatibleDecompositions[First], 256);
+            // if there is no high byte entry in the first stage table then create one
+            First := (Code shr 8) and $FF;
+            Second := Code and $FF;
 
-            Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
+            // insert into the correct table depending on bit 30
+            // (if set then it is a compatibility decomposition)
+            if Code and $40000000 <> 0 then
             begin
-              SetLength(CompatibleDecompositions[First, Second], Size);
-              Stream.ReadBuffer(CompatibleDecompositions[First, Second, 0], Size * SizeOf(UCS4));
+              if CompatibleDecompositions[First] = nil then
+                SetLength(CompatibleDecompositions[First], 256);
+  
+              Stream.ReadBuffer(Size, 4);
+              if Size > 0 then
+              begin
+                SetLength(CompatibleDecompositions[First, Second], Size);
+                Stream.ReadBuffer(CompatibleDecompositions[First, Second, 0], Size * SizeOf(UCS4));
+              end;
+            end
+            else
+            begin
+              if CanonicalDecompositions[First] = nil then
+                SetLength(CanonicalDecompositions[First], 256);
+  
+              Stream.ReadBuffer(Size, 4);
+              if Size > 0 then
+              begin
+                SetLength(CanonicalDecompositions[First, Second], Size);
+                Stream.ReadBuffer(CanonicalDecompositions[First, Second, 0], Size * SizeOf(UCS4));
+              end;
             end;
           end
           else
           begin
-            if CanonicalDecompositions[First] = nil then
-              SetLength(CanonicalDecompositions[First], 256);
-
             Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
-            begin
-              SetLength(CanonicalDecompositions[First, Second], Size);
-              Stream.ReadBuffer(CanonicalDecompositions[First, Second, 0], Size * SizeOf(UCS4));
-            end;
+            Stream.Seek(soFromCurrent, Size*SizeOf(UCS4));
           end;
         end;
       finally
@@ -1605,14 +1647,17 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
-                Assert(K < $10000, LoadResString(@RsCombiningClassUnicodeChar));
-                
-                First := (K shr 8) and $FF;
-                Second := K and $FF;
-                // add second step array if not yet done
-                if CCCs[First] = nil then
-                  SetLength(CCCs[First], 256);
-                CCCs[First, Second] := I;
+                // (outchy) TODO: handle in a cleaner way
+                //Assert(K < $10000, LoadResString(@RsCombiningClassUnicodeChar));
+                if K < $10000 then
+                begin
+                  First := (K shr 8) and $FF;
+                  Second := K and $FF;
+                  // add second step array if not yet done
+                  if CCCs[First] = nil then
+                    SetLength(CCCs[First], 256);
+                  CCCs[First, Second] := I;
+                end;
               end;
           end;
         end;
