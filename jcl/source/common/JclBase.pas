@@ -250,7 +250,7 @@ function ByteArrayToString(const Data: TBytes; Count: Integer): string;
 
 type
   TJclAddr64 = Int64;
-  TJclAddr32 = DWORD;
+  TJclAddr32 = Cardinal;
 
   {$IFDEF 64BIT}
   TJclAddr = TJclAddr64;

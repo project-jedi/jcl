@@ -824,6 +824,8 @@ type
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
+{$ENDIF Win32API}
+
   TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
 
   {$IFNDEF FPC}
@@ -878,8 +880,6 @@ type
     property Position: Integer read GetPosition write SetPosition;
     property Size: Integer read FSize;
   end;
-
-{$ENDIF Win32API}
 
 { TODO : UNTESTED/UNDOCUMENTED }
 
@@ -1431,6 +1431,8 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //=== { TJclMappedTextReader } ===============================================
 
 constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean;
@@ -1447,7 +1449,12 @@ constructor TJclMappedTextReader.Create(const FileName: string;
   const AIndexOption: TJclMappedTextReaderIndex);
 begin
   inherited Create;
+  {$IFDEF MSWINDOWS}
   FMemoryStream := TJclFileMappingStream.Create(FileName);
+  {$ELSE ~ MSWINDOWS}
+  FMemoryStream := TMemoryStream.Create;
+  TMemoryStream(FMemoryStream).LoadFromFile(FileName);
+  {$ENDIF ~ MSWINDOWS}
   FFreeStream := True;
   FIndexOption := AIndexOption;
   Init;
@@ -1776,8 +1783,7 @@ begin
   end;
 end;
 
-{$ENDIF ~CLR}
-{$ENDIF MSWINDOWS}
+{$ENDIF ~ CLR}
 
 //=== Path manipulation ======================================================
 
