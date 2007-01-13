@@ -324,7 +324,7 @@ resourcestring
   RsCaptionPdbCreate  = 'Create PDB debug information';
   RsCaptionMapCreate  = 'Create MAP files';
   RsCaptionJdbgCreate = 'Create Jedi Debug Informations';
-  RsCaptionJdbgInsert = 'Insert Jedi Debug Informations in the librairies';
+  RsCaptionJdbgInsert = 'Insert Jedi Debug Informations in the libraries';
   RsCaptionMapDelete  = 'Do not keep MAP files';
 
   // environment
@@ -347,7 +347,7 @@ resourcestring
   RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
   // exception dialogs
-  RsCaptionExceptDlg       = 'Sample Exception Dialogs in the Object Reporitory';
+  RsCaptionExceptDlg       = 'Sample Exception Dialogs in the Object Repository';
   RsCaptionExceptDlgVCL    = 'VCL Exception Dialog';
   RsCaptionExceptDlgVCLSnd = 'VCL Exception Dialog with Send button';
   RsCaptionExceptDlgCLX    = 'CLX Exception Dialog';
@@ -387,7 +387,7 @@ resourcestring
   RsHintDefMathPrecDouble      = 'type Float = Double';
   RsHintDefMathPrecExtended    = 'type Float = Extended';
   RsHintDefMathExtremeValues   = 'Exp en Power functions accept and return infinite and NaN';
-  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each jcl unit (see also JclUnitVersioning.pas)';
+  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
   RsHintDefHookDllExceptions   = 'Hook exceptions raised in DLL compiled with the JCL';
   RsHintDefDebugNoBinary       = 'Disable support for JDBG files';
   RsHintDefDebugNoMap          = 'Disable support for MAP files';
@@ -397,8 +397,8 @@ resourcestring
   RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
 
   // post compilation
-  RsHintPdbCreate  = 'Create detailled debug information for libraries';
-  RsHintMapCreate  = 'Create detailled MAP files for each libraries';
+  RsHintPdbCreate  = 'Create detailed debug information for libraries';
+  RsHintMapCreate  = 'Create detailed MAP files for each libraries';
   RsHintJdbgCreate = 'Create Jedi Debug Informations from the MAP files';
   RsHintJdbgInsert = 'Insert Jedi Debug Informations into the libraries (only the BPL has to be redistributed)';
   RsHintMapDelete  = 'The original MAP file is not kept once Jedi Debug Informations are generated';
@@ -3140,7 +3140,7 @@ begin
         AInstallation := TargetInstalls[I];
         if AInstallation.Enabled and (AInstallation.CLRVersion = '') then
         begin
-          KeepSettings := GUI.Dialog('Do you want to keep JCL expert settings ?',
+          KeepSettings := GUI.Dialog('Do you want to keep JCL expert settings?',
             dtConfirmation, [drYes, drNo]) = drYes;
           Break;
         end;
