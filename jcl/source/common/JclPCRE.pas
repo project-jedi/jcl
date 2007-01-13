@@ -444,12 +444,12 @@ begin
   if FDfaMode then
   begin
     ExecRslt := pcre_dfa_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
-      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize, @Workspace, 20);
+      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize, @Workspace, 20);
   end
   else
   begin
     ExecRslt := pcre_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
-      StartOffset - 1, GetAPIOptions(True), PInteger(FVector), FVectorSize);
+      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize);
   end;
   Result := ExecRslt >= 0;
   if Result then

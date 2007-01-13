@@ -219,8 +219,12 @@ const
 
 type
   (* Types *)
+  PPChar = ^PChar;
+  {$EXTERNALSYM PPChar}
   PPPChar = ^PPChar;
   {$EXTERNALSYM PPPChar}
+  PInteger = ^Integer;
+  {$EXTERNALSYM PInteger}
 
   real_pcre = record
     {magic_number: Longword;
