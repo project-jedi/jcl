@@ -826,6 +826,8 @@ type
 
 {$ENDIF Win32API}
 
+{$IFNDEF CLR}
+
   TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
 
   {$IFNDEF FPC}
@@ -880,6 +882,8 @@ type
     property Position: Integer read GetPosition write SetPosition;
     property Size: Integer read FSize;
   end;
+
+{$ENDIF ~CLR}
 
 { TODO : UNTESTED/UNDOCUMENTED }
 
@@ -1783,7 +1787,7 @@ begin
   end;
 end;
 
-{$ENDIF ~ CLR}
+{$ENDIF ~CLR}
 
 //=== Path manipulation ======================================================
 
