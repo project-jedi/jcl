@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,97,1,2172
-PRODUCTVERSION 1,97,1,2172
+FILEVERSION 1,98,0,2509
+PRODUCTVERSION 1,98,0,2509
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JEDI Code Library RTL package\0"
-              VALUE "FileVersion", "1.97.1.2172\0"
+              VALUE "FileVersion", "1.98.0.2509\0"
               VALUE "InternalName", "JclD50\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2005 Project JEDI\0"
               VALUE "OriginalFilename", "JclD50D50.bpl\0"
               VALUE "ProductName", "Jedi Code Library\0"
-              VALUE "ProductVersion", "1.97 Build 2172\0"
+              VALUE "ProductVersion", "1.98 Build 2509\0"
          END
     END
     BLOCK "VarFileInfo"

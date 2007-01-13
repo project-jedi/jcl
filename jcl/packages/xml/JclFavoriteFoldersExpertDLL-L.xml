@@ -8,9 +8,9 @@
   <C6Libs/>
   <ImageBase>58040000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
-  <VersionMinorNumber>97</VersionMinorNumber>
-  <ReleaseNumber>1</ReleaseNumber>
-  <BuildNumber>2172</BuildNumber>
+  <VersionMinorNumber>98</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2509</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>
