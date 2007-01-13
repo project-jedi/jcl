@@ -42134,18 +42134,18 @@ ID8=.dpr;.dpk
 ID9=.dsp
 
 [General]
-Author=
-AuthorEmail=
+Author=JCL Team
+AuthorEmail=JEDI-JCL@yahoogroups.com
 CategorizeTypeDefStructsAsStructs=1
 Copyright=Project JEDI
 FoldersThreshold=0
 Keywords=
-Summary=
+Summary=Documentation of the JEDI Code Library
 Symbol Hierarchy Folders=131
 Title=JEDI Code Library
 TypeDefStructsAsStructs=1
 VersionMajor=1
-VersionMinor=97
+VersionMinor=98
 
 [Generic Sources]
 Count=0
