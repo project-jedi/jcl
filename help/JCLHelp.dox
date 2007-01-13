@@ -42095,8 +42095,59 @@ UseInheritedTopics=1
 UseInheritedUseUsing=0
 
 [External Topic Properties]
-Count=1
+Count=52
 ID0=!!SYMREF
+ID1=Algorithms
+ID10=Internationalisation
+ID11=InternetandE-mail
+ID12=jclcs1.inc
+ID13=jcld10.inc
+ID14=jcld10.net.inc
+ID15=jcld5.inc
+ID16=jcld6.inc
+ID17=jcld7.inc
+ID18=jcld8.inc
+ID19=jcld9.inc
+ID2=BaseServices
+ID20=jcld9.net.inc
+ID21=JclPCRE
+ID22=JclPCRE_Intro
+ID23=JclPCRE_Using
+ID24=LibrariesProcessesandThreads
+ID25=MathRoutines
+ID26=MemoryClassesandObjects
+ID27=MIME
+ID28=Miscellaneous
+ID29=MultiMedia
+ID3=Containers
+ID30=OrdinalMathandLogic
+ID31=pcre
+ID32=RegistryandInifiles
+ID33=Regular Expressions
+ID34=RuntimeTypeInformation
+ID35=Source files
+ID36=Stringmanipulation
+ID37=SystemInformationRoutines
+ID38=TJclAnsiCaptureOffset
+ID39=TJclAnsiCaptureOffset.FirstPos
+ID4=DateandTime
+ID40=TJclAnsiCaptureOffset.LastPos
+ID41=TJclAnsiRegEx.CaptureOffset
+ID42=TJclAnsiRegEx.Create
+ID43=Unicode
+ID44=UnitConversions
+ID45=Windows.ComponentObjectModel
+ID46=Windows.LANManager
+ID47=Windows.Security
+ID48=Windows.ServiceControl
+ID49=Windows.Shell
+ID5=Debugging
+ID50=Windows.Win32API
+ID51=Windows_Specific
+ID6=EDI
+ID7=ExprEval
+ID8=FilesandIO
+ID9=Graphics
 
 [External Topic Properties\!!SYMREF]
 Count=3
@@ -42105,6 +42156,313 @@ ETPCommand1=3
 ETPCommand2=15
 ETPGroup1=' !'
 ETPTopicOrder0=0
+
+[External Topic Properties\Algorithms]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=0
+
+[External Topic Properties\BaseServices]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=1
+
+[External Topic Properties\Containers]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=2
+
+[External Topic Properties\DateandTime]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=3
+
+[External Topic Properties\Debugging]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=4
+
+[External Topic Properties\EDI]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=5
+
+[External Topic Properties\ExprEval]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=6
+
+[External Topic Properties\FilesandIO]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=7
+
+[External Topic Properties\Graphics]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=8
+
+[External Topic Properties\Internationalisation]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=9
+
+[External Topic Properties\InternetandE-mail]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=10
+
+[External Topic Properties\jclcs1.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=1
+
+[External Topic Properties\jcld10.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=0
+
+[External Topic Properties\jcld10.net.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=8
+
+[External Topic Properties\jcld5.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=2
+
+[External Topic Properties\jcld6.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=3
+
+[External Topic Properties\jcld7.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=4
+
+[External Topic Properties\jcld8.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=5
+
+[External Topic Properties\jcld9.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=6
+
+[External Topic Properties\jcld9.net.inc]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Source files
+ETPTopicOrder0=7
+
+[External Topic Properties\JclPCRE]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=0
+
+[External Topic Properties\JclPCRE_Intro]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=6
+
+[External Topic Properties\JclPCRE_Using]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=7
+
+[External Topic Properties\LibrariesProcessesandThreads]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=11
+
+[External Topic Properties\MathRoutines]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=12
+
+[External Topic Properties\MemoryClassesandObjects]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=13
+
+[External Topic Properties\MIME]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=14
+
+[External Topic Properties\Miscellaneous]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=15
+
+[External Topic Properties\MultiMedia]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=16
+
+[External Topic Properties\OrdinalMathandLogic]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=17
+
+[External Topic Properties\pcre]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=Regular Expressions
+ETPTopicOrder0=25
+
+[External Topic Properties\RegistryandInifiles]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=18
+
+[External Topic Properties\Regular Expressions]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=25
+
+[External Topic Properties\RuntimeTypeInformation]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=19
+
+[External Topic Properties\Source files]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=26
+
+[External Topic Properties\Stringmanipulation]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=20
+
+[External Topic Properties\SystemInformationRoutines]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=21
+
+[External Topic Properties\TJclAnsiCaptureOffset]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=3
+
+[External Topic Properties\TJclAnsiCaptureOffset.FirstPos]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=4
+
+[External Topic Properties\TJclAnsiCaptureOffset.LastPos]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=5
+
+[External Topic Properties\TJclAnsiRegEx.CaptureOffset]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=2
+
+[External Topic Properties\TJclAnsiRegEx.Create]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=pcre
+ETPTopicOrder0=1
+
+[External Topic Properties\Unicode]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=22
+
+[External Topic Properties\UnitConversions]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=23
+
+[External Topic Properties\Windows.ComponentObjectModel]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=28
+
+[External Topic Properties\Windows.LANManager]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=29
+
+[External Topic Properties\Windows.Security]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=30
+
+[External Topic Properties\Windows.ServiceControl]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=32
+
+[External Topic Properties\Windows.Shell]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=31
+
+[External Topic Properties\Windows.Win32API]
+Count=2
+ETPCommand0=2
+ETPCommand1=3
+ETPGroup1=JCL
+ETPTopicOrder0=27
+
+[External Topic Properties\Windows_Specific]
+Count=1
+ETPCommand0=2
+ETPTopicOrder0=24
 
 [File Extensions]
 ID1=.cs
@@ -42827,137 +43185,140 @@ ID9=9
 SavedValues=1
 
 [Source Files]
-Count=130
+Count=133
 File0=8087.dtx
 File1=AppInst.dtx
 File10=ExprEval.dtx
-File100=..\jcl\source\windows\JclAppInst.pas
-File101=..\jcl\source\windows\JclCIL.pas
-File102=..\jcl\source\windows\JclCLR.pas
-File103=..\jcl\source\windows\JclCOM.pas
-File104=..\jcl\source\windows\JclConsole.pas
-File105=..\jcl\source\windows\JclDebug.pas
-File106=..\jcl\source\windows\JclDotNet.pas
-File107=..\jcl\source\windows\JclHookExcept.pas
-File108=..\jcl\source\windows\JclLANMan.pas
-File109=..\jcl\source\windows\JclLocales.pas
+File100=..\jcl\source\visclx\JclQGraphics.pas
+File101=..\jcl\source\visclx\JclQGraphUtils.pas
+File102=..\jcl\source\windows\Hardlinks.pas
+File103=..\jcl\source\windows\JclAppInst.pas
+File104=..\jcl\source\windows\JclCIL.pas
+File105=..\jcl\source\windows\JclCLR.pas
+File106=..\jcl\source\windows\JclCOM.pas
+File107=..\jcl\source\windows\JclConsole.pas
+File108=..\jcl\source\windows\JclDebug.pas
+File109=..\jcl\source\windows\JclDotNet.pas
 File11=FileUtils.dtx
-File110=..\jcl\source\windows\JclMapi.pas
-File111=..\jcl\source\windows\JclMetadata.pas
-File112=..\jcl\source\windows\JclMiscel.pas
-File113=..\jcl\source\windows\JclMsdosSys.pas
-File114=..\jcl\source\windows\JclMultimedia.pas
-File115=..\jcl\source\windows\JclNTFS.pas
-File116=..\jcl\source\windows\JclPeImage.pas
-File117=..\jcl\source\windows\JclRegistry.pas
-File118=..\jcl\source\windows\JclSecurity.pas
-File119=..\jcl\source\windows\JclShell.pas
+File110=..\jcl\source\windows\JclHookExcept.pas
+File111=..\jcl\source\windows\JclLANMan.pas
+File112=..\jcl\source\windows\JclLocales.pas
+File113=..\jcl\source\windows\JclMapi.pas
+File114=..\jcl\source\windows\JclMetadata.pas
+File115=..\jcl\source\windows\JclMiscel.pas
+File116=..\jcl\source\windows\JclMsdosSys.pas
+File117=..\jcl\source\windows\JclMultimedia.pas
+File118=..\jcl\source\windows\JclNTFS.pas
+File119=..\jcl\source\windows\JclPeImage.pas
 File12=Graphics.dtx
-File120=..\jcl\source\windows\JclStructStorage.pas
-File121=..\jcl\source\windows\JclSvcCtrl.pas
-File122=..\jcl\source\windows\JclSynch.pas
-File123=..\jcl\source\windows\JclTask.pas
-File124=..\jcl\source\windows\JclTD32.pas
-File125=..\jcl\source\windows\JclUnicode.pas
-File126=..\jcl\source\windows\JclWideFormat.pas
-File127=..\jcl\source\windows\JclWin32.pas
-File128=..\jcl\source\windows\JclWin32Ex.pas
-File129=..\jcl\source\windows\JclWinMIDI.pas
-File13=hlpgrps.dtx
-File14=IniFiles.dtx
-File15=LANMan.dtx
-File16=Locales.dtx
-File17=Logic.dtx
-File18=Mapi.dtx
-File19=Math.dtx
+File120=..\jcl\source\windows\JclRegistry.pas
+File121=..\jcl\source\windows\JclSecurity.pas
+File122=..\jcl\source\windows\JclShell.pas
+File123=..\jcl\source\windows\JclStructStorage.pas
+File124=..\jcl\source\windows\JclSvcCtrl.pas
+File125=..\jcl\source\windows\JclSynch.pas
+File126=..\jcl\source\windows\JclTask.pas
+File127=..\jcl\source\windows\JclTD32.pas
+File128=..\jcl\source\windows\JclUnicode.pas
+File129=..\jcl\source\windows\JclWideFormat.pas
+File13=Hardlinks.dtx
+File130=..\jcl\source\windows\JclWin32.pas
+File131=..\jcl\source\windows\JclWin32Ex.pas
+File132=..\jcl\source\windows\JclWinMIDI.pas
+File14=hlpgrps.dtx
+File15=IncludedFiles.dtx
+File16=IniFiles.dtx
+File17=LANMan.dtx
+File18=Locales.dtx
+File19=Logic.dtx
 File2=Base.dtx
-File20=Midi.dtx
-File21=Mime.dtx
-File22=Miscel.dtx
-File23=Multimedia.dtx
-File24=NTFS.dtx
-File25=PE.dtx
-File26=Regions.dtx
-File27=Registry.dtx
-File28=RTTI.dtx
-File29=Schedule.dtx
+File20=Mapi.dtx
+File21=Math.dtx
+File22=Midi.dtx
+File23=Mime.dtx
+File24=Miscel.dtx
+File25=Multimedia.dtx
+File26=NTFS.dtx
+File27=pcre.dtx
+File28=PE.dtx
+File29=Regions.dtx
 File3=Bitmap32.dtx
-File30=Security.dtx
-File31=Shell.dtx
-File32=Statistics.dtx
-File33=StrHashMap.dtx
-File34=Strings.dtx
-File35=SvcCtrl.dtx
-File36=Synch.dtx
-File37=SysInfo.dtx
-File38=SysUtils.dtx
-File39=Unicode.dtx
+File30=Registry.dtx
+File31=RTTI.dtx
+File32=Schedule.dtx
+File33=Security.dtx
+File34=Shell.dtx
+File35=Statistics.dtx
+File36=StrHashMap.dtx
+File37=Strings.dtx
+File38=SvcCtrl.dtx
+File39=Synch.dtx
 File4=Com.dtx
-File40=UnitConv.dtx
-File41=WideStrings.dtx
-File42=Win32.dtx
-File43=..\jcl\source\common\Jcl8087.pas
-File44=..\jcl\source\common\JclAbstractContainers.pas
-File45=..\jcl\source\common\JclAlgorithms.pas
-File46=..\jcl\source\common\JclAnsiStrings.pas
-File47=..\jcl\source\common\JclArrayLists.pas
-File48=..\jcl\source\common\JclArraySets.pas
-File49=..\jcl\source\common\JclBase.pas
+File40=SysInfo.dtx
+File41=SysUtils.dtx
+File42=Unicode.dtx
+File43=UnitConv.dtx
+File44=WideStrings.dtx
+File45=Win32.dtx
+File46=..\jcl\source\common\Jcl8087.pas
+File47=..\jcl\source\common\JclAbstractContainers.pas
+File48=..\jcl\source\common\JclAlgorithms.pas
+File49=..\jcl\source\common\JclAnsiStrings.pas
 File5=Complex.dtx
-File50=..\jcl\source\common\JclBinaryTrees.pas
-File51=..\jcl\source\common\JclBorlandTools.pas
-File52=..\jcl\source\common\JclComplex.pas
-File53=..\jcl\source\common\JclCompression.pas
-File54=..\jcl\source\common\JclContainerIntf.pas
-File55=..\jcl\source\common\JclCounter.pas
-File56=..\jcl\source\common\JclDateTime.pas
-File57=..\jcl\source\common\JclEDI.pas
-File58=..\jcl\source\common\JclEDI_ANSIX12.pas
-File59=..\jcl\source\common\JclEDI_ANSIX12_Ext.pas
+File50=..\jcl\source\common\JclArrayLists.pas
+File51=..\jcl\source\common\JclArraySets.pas
+File52=..\jcl\source\common\JclBase.pas
+File53=..\jcl\source\common\JclBinaryTrees.pas
+File54=..\jcl\source\common\JclBorlandTools.pas
+File55=..\jcl\source\common\JclComplex.pas
+File56=..\jcl\source\common\JclCompression.pas
+File57=..\jcl\source\common\JclContainerIntf.pas
+File58=..\jcl\source\common\JclCounter.pas
+File59=..\jcl\source\common\JclDateTime.pas
 File6=Containers.dtx
-File60=..\jcl\source\common\JclEDI_UNEDIFACT.pas
-File61=..\jcl\source\common\JclEDI_UNEDIFACT_Ext.pas
-File62=..\jcl\source\common\JclEDISEF.pas
-File63=..\jcl\source\common\JclEDITranslators.pas
-File64=..\jcl\source\common\JclEDIXML.pas
-File65=..\jcl\source\common\JclExprEval.pas
-File66=..\jcl\source\common\JclFileUtils.pas
-File67=..\jcl\source\common\JclHashMaps.pas
-File68=..\jcl\source\common\JclHashSets.pas
-File69=..\jcl\source\common\JclIniFiles.pas
+File60=..\jcl\source\common\JclEDI.pas
+File61=..\jcl\source\common\JclEDI_ANSIX12.pas
+File62=..\jcl\source\common\JclEDI_ANSIX12_Ext.pas
+File63=..\jcl\source\common\JclEDI_UNEDIFACT.pas
+File64=..\jcl\source\common\JclEDI_UNEDIFACT_Ext.pas
+File65=..\jcl\source\common\JclEDISEF.pas
+File66=..\jcl\source\common\JclEDITranslators.pas
+File67=..\jcl\source\common\JclEDIXML.pas
+File68=..\jcl\source\common\JclExprEval.pas
+File69=..\jcl\source\common\JclFileUtils.pas
 File7=Counter.dtx
-File70=..\jcl\source\common\JclLinkedLists.pas
-File71=..\jcl\source\common\JclLogic.pas
-File72=..\jcl\source\common\JclMath.pas
-File73=..\jcl\source\common\JclMIDI.pas
-File74=..\jcl\source\common\JclMime.pas
-File75=..\jcl\source\common\JclPCRE.pas
-File76=..\jcl\source\common\JclQueues.pas
-File77=..\jcl\source\common\JclResources.pas
-File78=..\jcl\source\common\JclRTTI.pas
-File79=..\jcl\source\common\JclSchedule.pas
+File70=..\jcl\source\common\JclHashMaps.pas
+File71=..\jcl\source\common\JclHashSets.pas
+File72=..\jcl\source\common\JclIniFiles.pas
+File73=..\jcl\source\common\JclLinkedLists.pas
+File74=..\jcl\source\common\JclLogic.pas
+File75=..\jcl\source\common\JclMath.pas
+File76=..\jcl\source\common\JclMIDI.pas
+File77=..\jcl\source\common\JclMime.pas
+File78=..\jcl\source\common\JclPCRE.pas
+File79=..\jcl\source\common\JclQueues.pas
 File8=DateTime.dtx
-File80=..\jcl\source\common\JclStacks.pas
-File81=..\jcl\source\common\JclStatistics.pas
-File82=..\jcl\source\common\JclStreams.pas
-File83=..\jcl\source\common\JclStrHashMap.pas
-File84=..\jcl\source\common\JclStrings.pas
-File85=..\jcl\source\common\JclSysInfo.pas
-File86=..\jcl\source\common\JclSysUtils.pas
-File87=..\jcl\source\common\JclUnitConv.pas
-File88=..\jcl\source\common\JclUnitVersioning.pas
-File89=..\jcl\source\common\JclUnitVersioningProviders.pas
+File80=..\jcl\source\common\JclResources.pas
+File81=..\jcl\source\common\JclRTTI.pas
+File82=..\jcl\source\common\JclSchedule.pas
+File83=..\jcl\source\common\JclStacks.pas
+File84=..\jcl\source\common\JclStatistics.pas
+File85=..\jcl\source\common\JclStreams.pas
+File86=..\jcl\source\common\JclStrHashMap.pas
+File87=..\jcl\source\common\JclStrings.pas
+File88=..\jcl\source\common\JclSysInfo.pas
+File89=..\jcl\source\common\JclSysUtils.pas
 File9=Debug.dtx
-File90=..\jcl\source\common\JclValidation.pas
-File91=..\jcl\source\common\JclVectors.pas
-File92=..\jcl\source\common\JclWideStrings.pas
-File93=..\jcl\source\common\pcre.pas
-File94=..\jcl\source\vcl\JclGraphics.pas
-File95=..\jcl\source\vcl\JclGraphUtils.pas
-File96=..\jcl\source\vcl\JclPrint.pas
-File97=..\jcl\source\visclx\JclQGraphics.pas
-File98=..\jcl\source\visclx\JclQGraphUtils.pas
-File99=..\jcl\source\windows\Hardlinks.pas
+File90=..\jcl\source\common\JclUnitConv.pas
+File91=..\jcl\source\common\JclUnitVersioning.pas
+File92=..\jcl\source\common\JclUnitVersioningProviders.pas
+File93=..\jcl\source\common\JclValidation.pas
+File94=..\jcl\source\common\JclVectors.pas
+File95=..\jcl\source\common\JclWideStrings.pas
+File96=..\jcl\source\common\pcre.pas
+File97=..\jcl\source\vcl\JclGraphics.pas
+File98=..\jcl\source\vcl\JclGraphUtils.pas
+File99=..\jcl\source\vcl\JclPrint.pas
 
 [Source Include Directories]
 Count=1
