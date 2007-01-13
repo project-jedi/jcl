@@ -28,12 +28,24 @@ Build 2509<br>
 </ul>
 <hr><br>
 <h3><a name="about">About this release</a></h3>
-<p>JCL release 1.98 provide an updated support for all targets (including Borland 
+<p>JCL release 1.98 provide an updated support for all targets (including Borland
 Developer Studio 2006 and Turbo Delphi) and an installation of some experts in C#Builder 1 and Delphi 8.</p>
-<p>As always, multiple bugs have been fixed; for detailed change logs, 
+<p>As always, multiple bugs have been fixed; for detailed change logs,
 use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 <a href="http://sourceforge.net/projects/jcl/">http://sourceforge.net/projects/jcl/</a>
 , see below.</p>
+<p><span style="FONT-WEIGHT: bold">Head changes:</span>
+</p>
+<ul>
+  <li>Integration of the JCL help into the help system of Delphi 2005, BDS 2006 and Turbo Delphi.</li>
+  <li>Collection of stream classes to make basic operations easier (getting random data, multiplexing several streams,
+  buffering an other stream, being notifyed on changes, reading common data types, scoping a stream, delegating read/write/seek operations.</li>
+  <li>Speed-up of the stack analysis of JclDebug: exception driven execution will not be slowed by activating JclDebug in the application.</li>
+  <li>ZLIB (http://www.zlib.net/) updated to 1.2.3 (fixes a major issue while deflating corrupted data).</li>
+  <li>PCRE (http://www.pcre.org/) updated to version 6.7.</li>
+  <li>Unicode support updated to 4.1.0.</li>
+  <li>New IDE expert to have subversion (http://subversion.tigris.org/) and cvs (http://www.cvsnt.org/) commands integrated in all support IDE.</li>
+</ul>
 <p><span style="FONT-WEIGHT: bold">Important:</span>
 </p>
 <ul>

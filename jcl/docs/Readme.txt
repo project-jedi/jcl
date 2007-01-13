@@ -30,18 +30,34 @@ As always, multiple bugs have been fixed; for detailed change logs, use the
 facilities of our Subversion repository at Sourceforge.net
 http://sourceforge.net/projects/jcl/ , see below.
 
-Important:
-Note that the package naming has changed: the same package name is used by all
-versions of the compiler supporting suffixes (C++Builder 6, Delphi 6, Delphi 7,
-C#Builder 1, Delphi 8, Delphi 2005 and BDS 2006); a different suffix is added
-for each target to the BPL file name (for BDS 2006, the library file is named
-jcl100.bpl). The installer tries to remove old packages. 3rd party packages
-requiring old DJcl* resp. CJcl* packages need to be changed to accomodate the
-new naming scheme or they will cause conflicts in the IDE at load time.
+Head changes:
+ - Integration of the JCL help into the help system of Delphi 2005, BDS 2006
+   and Turbo Delphi.
+ - Collection of stream classes to make basic operations easier (getting random
+   data, multiplexing several streams, buffering an other stream, being notifyed
+   on changes, reading common data types, scoping a stream,
+   delegating read/write/seek operations.
+ - Speed-up of the stack analysis of JclDebug: exception driven execution will
+   not be slowed by activating JclDebug in the application.
+ - ZLIB (http://www.zlib.net/) updated to 1.2.3 (fixes a major issue while
+   deflating corrupted data).
+ - PCRE (http://www.pcre.org/) updated to version 6.7.
+ - Unicode support updated to 4.1.0.
+ - New IDE expert to have subversion (http://subversion.tigris.org/) and
+   cvs (http://www.cvsnt.org/) commands integrated in all support IDE.
 
-DCP files are now created in the lib\target subdirectory of the JCL
-installation. 3rd party packages requiring JCL packages need to have this path
-in their "browse path" option to compile.
+Important:
+ - Note that the package naming has changed: the same package name is used by all
+   versions of the compiler supporting suffixes (C++Builder 6, Delphi 6, Delphi 7,
+   C#Builder 1, Delphi 8, Delphi 2005 and BDS 2006); a different suffix is added
+   for each target to the BPL file name (for BDS 2006, the library file is named
+   jcl100.bpl). The installer tries to remove old packages. 3rd party packages
+   requiring old DJcl* resp. CJcl* packages need to be changed to accomodate the
+   new naming scheme or they will cause conflicts in the IDE at load time.
+
+ - DCP files are now created in the lib\target subdirectory of the JCL
+   installation. 3rd party packages requiring JCL packages need to have this path
+   in their "browse path" option to compile.
 
 (Windows only) Installation options:
 Packages compiled by the JCL installer don't contain any debug informations to
