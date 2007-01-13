@@ -9,7 +9,7 @@
   <ImageBase>48000000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>98</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
+  <ReleaseNumber>1</ReleaseNumber>
   <BuildNumber>2509</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>

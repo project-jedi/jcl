@@ -1,4 +1,4 @@
-JEDI Code Library v 1.96 Installation
+JEDI Code Library v 1.98 Installation
 
 Supported development tools versions:
 

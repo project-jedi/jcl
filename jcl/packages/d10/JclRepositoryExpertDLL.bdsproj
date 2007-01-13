@@ -138,7 +138,7 @@
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
       <VersionInfo Name="MinorVer">98</VersionInfo>
-      <VersionInfo Name="Release">0</VersionInfo>
+      <VersionInfo Name="Release">1</VersionInfo>
       <VersionInfo Name="Build">2509</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
@@ -151,7 +151,7 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.98.0.2509</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.98.1.2509</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclRepositoryExpertDLL</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
