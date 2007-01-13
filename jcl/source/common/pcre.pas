@@ -219,14 +219,8 @@ const
 
 type
   (* Types *)
-  PPChar = ^PChar;
-  {$EXTERNALSYM PPChar}
   PPPChar = ^PPChar;
   {$EXTERNALSYM PPPChar}
-  PInteger = ^Integer;
-  {$EXTERNALSYM PInteger}
-  PPointer = ^Pointer;
-  {$EXTERNALSYM PPointer}
 
   real_pcre = record
     {magic_number: Longword;
@@ -288,7 +282,7 @@ type
   {$EXTERNALSYM pcre_stack_malloc_callback}
   pcre_stack_free_callback = procedure(P: Pointer); cdecl;
   {$EXTERNALSYM pcre_stack_free_callback}
-  pcre_callout_callback = procedure(var callout_block: pcre_callout_block); cdecl;
+  pcre_callout_callback = function(var callout_block: pcre_callout_block): Integer; cdecl;
   {$EXTERNALSYM pcre_callout_callback}
 
 var
