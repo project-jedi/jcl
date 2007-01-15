@@ -542,9 +542,9 @@ type
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
     constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-      AFirstCaller: Pointer); overload;
+      AFirstCaller: Pointer; ABaseOfStack: Pointer = nil); overload;
     constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-      AFirstCaller: Pointer; ADelayedTrace: Boolean); overload;
+      AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer = nil); overload;
     destructor Destroy; override;
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -558,7 +558,7 @@ type
   end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
-  DelayedTrace: Boolean = False): TJclStackInfoList;
+  DelayedTrace: Boolean = False; BaseOfStack: Pointer = nil): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -3026,7 +3026,7 @@ begin
       end;
     end
     else
-    with TJclStackInfoList.Create(False, 1, nil, False) do
+    with TJclStackInfoList.Create(False, 1, nil, False, nil) do
     try
       if Level < Count then
         Result := Items[Level].CallerAdr;
@@ -3555,7 +3555,8 @@ end;
 
 {$STACKFRAMES ON}
 
-procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
+  BaseOfStack: Pointer);
 var
   IgnoreLevels: DWORD;
   FirstCaller: Pointer;
@@ -3564,10 +3565,15 @@ var
 begin
   RawMode := stRawMode in JclStackTrackingOptions;
   Delayed := stDelayedTrace in JclStackTrackingOptions;
-  if RawMode then
-    IgnoreLevels := 9
+  if BaseOfStack = nil then
+  begin
+    if RawMode then
+      IgnoreLevels := 9
+    else
+      IgnoreLevels := 5;
+  end
   else
-    IgnoreLevels := 5;
+    IgnoreLevels := Cardinal(-1); // because of the "IgnoreLevels + 1" in TJclStackInfoList.StoreToList()
   if OSException then
   begin
     Inc(IgnoreLevels); // => HandleAnyException
@@ -3575,8 +3581,7 @@ begin
   end
   else
     FirstCaller := nil;
-//  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller), OSException);
-  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller, Delayed).CorrectOnAccess(OSException);
+  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller, Delayed, BaseOfStack).CorrectOnAccess(OSException);
 end;
 
 function JclLastExceptStackList: TJclStackInfoList;
@@ -3597,9 +3602,9 @@ begin
 end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
-  DelayedTrace: Boolean): TJclStackInfoList;
+  DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace);
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack);
   GlobalStackList.AddObject(Result);
 end;
 
@@ -3617,7 +3622,7 @@ end;
 //=== { TJclStackInfoList } ==================================================
 
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-  AFirstCaller: Pointer; ADelayedTrace: Boolean);
+  AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer);
 var
   Item: TJclStackInfoItem;
 begin
@@ -3625,11 +3630,12 @@ begin
   FIgnoreLevels := AIgnoreLevels;
   FDelayedTrace := ADelayedTrace;
   FRaw := ARaw;
+  BaseOfStack := Cardinal(ABaseOfStack);
   FStackOffset := 0;
-  FFrameEBP := nil;
+  FFrameEBP := ABaseOfStack;
 
   TopOfStack := GetStackTop;
-  
+
   FModuleInfoList := GlobalModulesList.CreateModulesList;
   if AFirstCaller <> nil then
   begin
@@ -3647,9 +3653,9 @@ begin
 end;
 
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-  AFirstCaller: Pointer);
+  AFirstCaller: Pointer; ABaseOfStack: Pointer);
 begin
-  Create(ARaw, AIgnoreLevels, AFirstCaller, False);
+  Create(ARaw, AIgnoreLevels, AFirstCaller, False, ABaseOfStack);
 end;
 
 destructor TJclStackInfoList.Destroy;
@@ -3822,7 +3828,8 @@ begin
   else
   begin
     // We define the bottom of the valid stack to be the current ESP pointer
-    BaseOfStack := DWORD(GetESP);
+    if BaseOfStack = 0 then
+      BaseOfStack := DWORD(GetESP);
     // Get a pointer to the current bottom of the stack
     StackPtr := PDWORD(BaseOfStack);
   end;
@@ -3870,7 +3877,11 @@ begin
     FStackData := nil;
   end;
   // We define the bottom of the valid stack to be the current ESP pointer
-  BaseOfStack := DWORD(GetESP);
+  if BaseOfStack = 0 then
+  begin
+    BaseOfStack := DWORD(GetESP);
+    FFrameEBP := GetEBP;
+  end;
 
   // Get a pointer to the current bottom of the stack
   StackPtr := PDWORD(BaseOfStack);
@@ -3882,7 +3893,6 @@ begin
     //CopyMemory(FStackData, StackPtr, StackDataSize);
   end;
 
-  FFrameEBP := GetEBP;
   FStackOffset := DWORD(FStackData) - DWORD(StackPtr);
   FFrameEBP := Pointer(Cardinal(FFrameEBP) + FStackOffset);
   TopOfStack := TopOfStack + FStackOffset;
@@ -4136,12 +4146,13 @@ end;
 var
   TrackingActive: Boolean;
 
-procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
+  BaseOfStack: Pointer);
 begin
   if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) then
   begin
     if stStack in JclStackTrackingOptions then
-      DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
+      DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException, BaseOfStack);
     if stExceptFrame in JclStackTrackingOptions then
       DoExceptFrameTrace;
   end;
