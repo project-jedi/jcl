@@ -542,9 +542,11 @@ type
     procedure CorrectOnAccess(ASkipFirstItem: Boolean);
   public
     constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-      AFirstCaller: Pointer; ABaseOfStack: Pointer = nil); overload;
+      AFirstCaller: Pointer); overload;
     constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-      AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer = nil); overload;
+      AFirstCaller: Pointer; ADelayedTrace: Boolean); overload;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+      AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer); overload;
     destructor Destroy; override;
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -557,8 +559,11 @@ type
     property Raw: Boolean read FRaw;
   end;
 
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList; overload;
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
-  DelayedTrace: Boolean = False; BaseOfStack: Pointer = nil): TJclStackInfoList;
+  DelayedTrace: Boolean): TJclStackInfoList; overload;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList; overload;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -3601,6 +3606,19 @@ begin
       IncludeVAdress);
 end;
 
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
+begin
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, False, nil);
+  GlobalStackList.AddObject(Result);
+end;
+
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean): TJclStackInfoList;
+begin
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, nil);
+  GlobalStackList.AddObject(Result);
+end;
+
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList;
 begin
@@ -3620,6 +3638,18 @@ begin
 end;
 
 //=== { TJclStackInfoList } ==================================================
+
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+  AFirstCaller: Pointer);
+begin
+  Create(ARaw, AIgnoreLevels, AFirstCaller, False, nil);
+end;
+
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+  AFirstCaller: Pointer; ADelayedTrace: Boolean);
+begin
+  Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, nil);
+end;
 
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
   AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer);
@@ -3650,12 +3680,6 @@ begin
     TraceStackRaw
   else
     TraceStackFrames;
-end;
-
-constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
-  AFirstCaller: Pointer; ABaseOfStack: Pointer);
-begin
-  Create(ARaw, AIgnoreLevels, AFirstCaller, False, ABaseOfStack);
 end;
 
 destructor TJclStackInfoList.Destroy;
