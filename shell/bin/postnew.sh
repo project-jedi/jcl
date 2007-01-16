@@ -12,6 +12,20 @@ cd $FILEHOME
 # (outchy) get the revision number
 svn export -rHEAD --native-eol CRLF https://svn.sourceforge.net:443/svnroot/jcl/trunk/jcl jcl | grep "Exported revision" > $FILEHOME/daily_revision.log
 mv $FILEHOME/daily_revision.log $FILEHOME/jcl/daily_revision.log
+# (outchy) copying template files
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclc5.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclc6.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclkc3.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclkd3.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld5.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld6.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld7.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclcs1.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld8.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld9.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld9.net.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld10.inc
+cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jcld10.net.inc
 # (outchy) display the revision string
 cat $FILEHOME/jcl/daily_revision.log
 # (outchy) end modif
