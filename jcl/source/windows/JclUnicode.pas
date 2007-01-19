@@ -1531,7 +1531,7 @@ begin
           else
           begin
             Stream.ReadBuffer(Size, 4);
-            Stream.Seek(soFromCurrent, Size*SizeOf(UCS4));
+            Stream.Seek(Size*SizeOf(UCS4), soFromCurrent);
           end;
         end;
       finally
