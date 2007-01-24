@@ -1194,7 +1194,7 @@ type
   end;
 
   TRangeArray = array of TRange;
-  TCategoriesArray = array of TCharacterCategories;
+  TCategoriesArray = array of array of TCharacterCategories;
 
 var
   // character categories, stored in the system's swap file and mapped on demand
@@ -1209,8 +1209,7 @@ var
   Stream: TResourceStream;
   Category: TCharacterCategory;
   Buffer: TRangeArray;
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
   J, K: Integer;
 begin
   // Data already loaded?
@@ -1237,15 +1236,17 @@ begin
             for J := 0 to Size - 1 do
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
-                if K > $FFFF then
-                  Break;
+                Assert(K < $1000000, LoadResString(@RsCategoryUnicodeChar));
 
-                First := (K shr 8) and $FF;
-                Second := K and $FF;
+                First := (K shr 16) and $FF;
+                Second := (K shr 8) and $FF;
+                Third := K and $FF;
                 // add second step array if not yet done
                 if Categories[First] = nil then
                   SetLength(Categories[First], 256);
-                Include(Categories[First, Second], Category);
+                if Categories[First, Second] = nil then
+                  SetLength(Categories[First, Second], 256);
+                Include(Categories[First, Second, Third], Category);
               end;
           end;
         end;
@@ -1261,17 +1262,19 @@ end;
 function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; overload;
 // determines whether the Code is in the given category
 var
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
+  Assert(Code < $1000000, LoadResString(@RsCategoryUnicodeChar));
+
   // load property data if not already done
   if not CategoriesLoaded then
     LoadCharacterCategories;
 
-  First := (Code shr 8) and $FF;
-  Second := Code and $FF;
-  if Categories[First] <> nil then
-    Result := Categories[First, Second] * Cats <> []
+  First := (Code shr 16) and $FF;
+  Second := (Code shr 8) and $FF;
+  Third := Code and $FF;
+  if (Categories[First] <> nil) and (Categories[First, Second] <> nil) then
+    Result := Categories[First, Second, Third] * Cats <> []
   else
     Result := False;
 end;
@@ -1280,7 +1283,7 @@ end;
 
 type
   TCase = array [0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
-  TCaseArray = array of TCase;
+  TCaseArray = array of array of TCase;
 
 var
   // An array for all case mappings (including 1 to many casing if saved by the extraction program).
@@ -1295,9 +1298,7 @@ var
   Stream: TResourceStream;
   I, Code,
   Size: Cardinal;
-  First,
-  Second: Byte;
-  Dummy: UCS4;
+  First, Second, Third: Byte;
 begin
   if not CaseDataLoaded then
   begin
@@ -1316,72 +1317,44 @@ begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
 
-          // (outchy) TODO: cleanly handle this case
-          //Assert(Code < $10000, LoadResString(@RsCasedUnicodeChar));
+          Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
           // if there is no high byte entry in the first stage table then create one
 
-          if Code < $10000 then
+          First := (Code shr 16) and $FF;
+          Second := (Code shr 8) and $FF;
+          Third := Code and $FF;
+          if CaseMapping[First] = nil then
+            SetLength(CaseMapping[First], 256);
+          if CaseMapping[First, Second] = nil then
+            SetLength(CaseMapping[First, Second], 256);
+
+          // b) read fold case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
           begin
-            First := (Code shr 8) and $FF;
-            Second := Code and $FF;
-            if CaseMapping[First] = nil then
-              SetLength(CaseMapping[First], 256);
-  
-            // b) read fold case array
-            Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
-            begin
-              SetLength(CaseMapping[First, Second, 0], Size);
-              Stream.ReadBuffer(CaseMapping[First, Second, 0, 0], Size * SizeOf(UCS4));
-            end;
-            // c) read lower case array
-            Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
-            begin
-              SetLength(CaseMapping[First, Second, 1], Size);
-              Stream.ReadBuffer(CaseMapping[First, Second, 1, 0], Size * SizeOf(UCS4));
-            end;
-            // d) read title case array
-            Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
-            begin
-              SetLength(CaseMapping[First, Second, 2], Size);
-              Stream.ReadBuffer(CaseMapping[First, Second, 2, 0], Size * SizeOf(UCS4));
-            end;
-            // e) read upper case array
-            Stream.ReadBuffer(Size, 4);
-            if Size > 0 then
-            begin
-              SetLength(CaseMapping[First, Second, 3], Size);
-              Stream.ReadBuffer(CaseMapping[First, Second, 3, 0], Size * SizeOf(UCS4));
-            end;
-          end
-          else
+            SetLength(CaseMapping[First, Second, Third, 0], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, 0, 0], Size * SizeOf(UCS4));
+          end;
+          // c) read lower case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
           begin
-            Stream.ReadBuffer(Size, 4);
-            while Size > 0 do
-            begin
-              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
-              Dec(Size);
-            end;
-            Stream.ReadBuffer(Size, 4);
-            while Size > 0 do
-            begin
-              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
-              Dec(Size);
-            end;
-            Stream.ReadBuffer(Size, 4);
-            while Size > 0 do
-            begin
-              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
-              Dec(Size);
-            end;
-            Stream.ReadBuffer(Size, 4);
-            while Size > 0 do
-            begin
-              Stream.ReadBuffer(Dummy, SizeOf(Dummy));
-              Dec(Size);
-            end;
+            SetLength(CaseMapping[First, Second, Third, 1], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, 1, 0], Size * SizeOf(UCS4));
+          end;
+          // d) read title case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, Third, 2], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, 2, 0], Size * SizeOf(UCS4));
+          end;
+          // e) read upper case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, Third, 3], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, Third, 3, 0], Size * SizeOf(UCS4));
           end;
         end;
 
@@ -1400,24 +1373,27 @@ function CaseLookup(Code: Cardinal; CaseType: Cardinal): TUCS4Array;
 // If Code could not be found (or there is no case mapping) then the result is a mapping of length 1 with the
 // code itself. Otherwise an array of code points is returned which represent the mapping.
 var
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
+  Assert(Code < $1000000, LoadResString(@RsCasedUnicodeChar));
+
   // load case mapping data if not already done
   if not CaseDataLoaded then
     LoadCaseMappingData;
 
-  First := (Code shr 8) and $FF;
-  Second := Code and $FF;
+  First := (Code shr 16) and $FF;
+  Second := (Code shr 8) and $FF;
+  Third := Code and $FF;
   // Check first stage table whether there is a mapping for a particular block and
   // (if so) then whether there is a mapping or not.
-  if (CaseMapping[First] = nil) or (CaseMapping[First, Second, CaseType] = nil) then
+  if (CaseMapping[First] = nil) or (CaseMapping[First, Second] = nil)
+    or (CaseMapping[First, Second, Third, CaseType] = nil) then
   begin
     SingletonMapping[0] := Code;
     Result := SingletonMapping;
   end
   else
-    Result := CaseMapping[First, Second, CaseType];
+    Result := CaseMapping[First, Second, Third, CaseType];
 end;
 
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
@@ -1458,7 +1434,7 @@ const
   SCount = LCount * NCount;   // 11172
 
 type
-  TDecompositions = array of TUCS4Array;
+  TDecompositions = array of array of TUCS4Array;
   TDecompositionsArray = array [Byte] of TDecompositions;
   
 var
@@ -1474,8 +1450,7 @@ var
   Stream: TResourceStream;
   I, Code,
   Size: Cardinal;
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
   if not DecompositionsLoaded then
   begin
@@ -1492,46 +1467,42 @@ begin
         begin
           Stream.ReadBuffer(Code, 4);
 
-          // (outchy) TODO: handle in a cleaner way
-          //Assert((Code and not $40000000) < $10000, LoadResString(@RsDecomposedUnicodeChar));
+          Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
 
-          if (Code and not $40000000) < $10000 then
+          // if there is no high byte entry in the first stage table then create one
+          First := (Code shr 16) and $FF;
+          Second := (Code shr 8) and $FF;
+          Third := Code and $FF;
+
+          // insert into the correct table depending on bit 30
+          // (if set then it is a compatibility decomposition)
+          if Code and $40000000 <> 0 then
           begin
-            // if there is no high byte entry in the first stage table then create one
-            First := (Code shr 8) and $FF;
-            Second := Code and $FF;
+            if CompatibleDecompositions[First] = nil then
+              SetLength(CompatibleDecompositions[First], 256);
+            if CompatibleDecompositions[First, Second] = nil then
+              SetLength(CompatibleDecompositions[First, Second], 256);
 
-            // insert into the correct table depending on bit 30
-            // (if set then it is a compatibility decomposition)
-            if Code and $40000000 <> 0 then
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
             begin
-              if CompatibleDecompositions[First] = nil then
-                SetLength(CompatibleDecompositions[First], 256);
-  
-              Stream.ReadBuffer(Size, 4);
-              if Size > 0 then
-              begin
-                SetLength(CompatibleDecompositions[First, Second], Size);
-                Stream.ReadBuffer(CompatibleDecompositions[First, Second, 0], Size * SizeOf(UCS4));
-              end;
-            end
-            else
-            begin
-              if CanonicalDecompositions[First] = nil then
-                SetLength(CanonicalDecompositions[First], 256);
-  
-              Stream.ReadBuffer(Size, 4);
-              if Size > 0 then
-              begin
-                SetLength(CanonicalDecompositions[First, Second], Size);
-                Stream.ReadBuffer(CanonicalDecompositions[First, Second, 0], Size * SizeOf(UCS4));
-              end;
+              SetLength(CompatibleDecompositions[First, Second, Third], Size);
+              Stream.ReadBuffer(CompatibleDecompositions[First, Second, Third, 0], Size * SizeOf(UCS4));
             end;
           end
           else
           begin
+            if CanonicalDecompositions[First] = nil then
+              SetLength(CanonicalDecompositions[First], 256);
+            if CanonicalDecompositions[First, Second] = nil then
+              SetLength(CanonicalDecompositions[First, Second], 256);
+
             Stream.ReadBuffer(Size, 4);
-            Stream.Seek(Size*SizeOf(UCS4), soFromCurrent);
+            if Size > 0 then
+            begin
+              SetLength(CanonicalDecompositions[First, Second, Third], Size);
+              Stream.ReadBuffer(CanonicalDecompositions[First, Second, Third, 0], Size * SizeOf(UCS4));
+            end;
           end;
         end;
       finally
@@ -1562,9 +1533,10 @@ end;
 
 function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 var
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
+  Assert((Code and not $40000000) < $1000000, LoadResString(@RsDecomposedUnicodeChar));
+
   // load decomposition data if not already done
   if not DecompositionsLoaded then
     LoadDecompositionData;
@@ -1576,29 +1548,33 @@ begin
     Result := UnicodeDecomposeHangul(Code)
   else
   begin
-    First := (Code shr 8) and $FF;
-    Second := Code and $FF;
+    First := (Code shr 16) and $FF;
+    Second := (Code shr 8) and $FF;
+    Third := Code and $FF;
     if Compatible then
     begin
       // Check first stage table whether there is a particular block and
       // (if so) then whether there is a decomposition or not.
-      if (CompatibleDecompositions[First] = nil) or (CompatibleDecompositions[First, Second] = nil) then
+      if (CompatibleDecompositions[First] = nil) or (CompatibleDecompositions[First, Second] = nil)
+        or (CompatibleDecompositions[First, Second, Third] = nil) then
       begin
         // if there is no compatibility decompositions try canonical
-        if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil) then
+        if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
+          or (CanonicalDecompositions[First, Second, Third] = nil) then
           Result := nil
         else
-          Result := CanonicalDecompositions[First, Second];
+          Result := CanonicalDecompositions[First, Second, Third];
       end
       else
-        Result := CompatibleDecompositions[First, Second];
+        Result := CompatibleDecompositions[First, Second, Third];
     end
     else
     begin
-      if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil) then
+      if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil)
+        or (CanonicalDecompositions[First, Second, Third] = nil) then
         Result := nil
       else
-        Result := CanonicalDecompositions[First, Second];
+        Result := CanonicalDecompositions[First, Second, Third];
     end;
   end;
 end;
@@ -1606,7 +1582,7 @@ end;
 //----------------- support for combining classes --------------------------------------------------
 
 type
-  TClassArray = array of Byte;
+  TClassArray = array of array of Byte;
 
 var
   // canonical combining classes, again as two stage matrix
@@ -1619,8 +1595,7 @@ var
   I, J, K,
   Size: Cardinal;
   Buffer: TRangeArray;
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -1648,16 +1623,16 @@ begin
               for K := Buffer[J].Start to Buffer[J].Stop do
               begin
                 // (outchy) TODO: handle in a cleaner way
-                //Assert(K < $10000, LoadResString(@RsCombiningClassUnicodeChar));
-                if K < $10000 then
-                begin
-                  First := (K shr 8) and $FF;
-                  Second := K and $FF;
-                  // add second step array if not yet done
-                  if CCCs[First] = nil then
-                    SetLength(CCCs[First], 256);
-                  CCCs[First, Second] := I;
-                end;
+                Assert(K < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
+                First := (K shr 16) and $FF;
+                Second := (K shr 8) and $FF;
+                Third := K and $FF;
+                // add second step array if not yet done
+                if CCCs[First] = nil then
+                  SetLength(CCCs[First], 256);
+                if CCCs[First, Second] = nil then
+                  SetLength(CCCs[First, Second], 256);
+                CCCs[First, Second, Third] := I;
               end;
           end;
         end;
@@ -1672,17 +1647,19 @@ end;
 
 function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 var
-  First,
-  Second: Byte;
+  First, Second, Third: Byte;
 begin
+  Assert(Code < $1000000, LoadResString(@RsCombiningClassUnicodeChar));
+
   // load combining class data if not already done
   if not CCCsLoaded then
     LoadCombiningClassData;
 
-  First := (Code shr 8) and $FF;
-  Second := Code and $FF;
-  if CCCs[First] <> nil then
-    Result := CCCs[First, Second]
+  First := (Code shr 16) and $FF;
+  Second := (Code shr 8) and $FF;
+  Third := Code and $FF;
+  if (CCCs[First] <> nil) and (CCCs[First, Second] <> nil) then
+    Result := CCCs[First, Second, Third]
   else
     Result := 0;
 end;

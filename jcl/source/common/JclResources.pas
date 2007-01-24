@@ -1779,9 +1779,10 @@ resourcestring
   RsUREInvalidRepeatRange     = 'Invalid repetition range.';
   RsURERepeatRangeOpen        = 'Repetition range not closed, ''}'' is missing.';
   RsUREExpressionEmpty        = 'Expression is empty.';
-  RsCasedUnicodeChar          = 'cased Unicode character > $FFFF found';
-  RsDecomposedUnicodeChar     = 'decomposed Unicode character > $FFFF found';
-  RsCombiningClassUnicodeChar = 'combining class for Unicode character > $FFFF found';
+  RsCategoryUnicodeChar       = 'category Unicode character > $FFFFFF found';
+  RsCasedUnicodeChar          = 'cased Unicode character > $FFFFFF found';
+  RsDecomposedUnicodeChar     = 'decomposed Unicode character > $FFFFFF found';
+  RsCombiningClassUnicodeChar = 'combining class for Unicode character > $FFFFFF found';
 
 //=== JclUnitConv ============================================================
 resourcestring
