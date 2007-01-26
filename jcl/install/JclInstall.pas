@@ -3161,7 +3161,7 @@ begin
       AInstallation := TargetInstalls[I];
       if AInstallation.Enabled then
       begin
-        if not KeepSettings then
+        if (AInstallation.CLRVersion = '') and not KeepSettings then
           AInstallation.RemoveSettings;
         AInstallation.Uninstall;
         Success := AInstallation.Install;
