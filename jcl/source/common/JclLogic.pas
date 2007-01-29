@@ -1148,37 +1148,37 @@ end;
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerByte - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerByte - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerShortint - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerShortint - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Smallint; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerSmallint - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerSmallint - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Word; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerWord - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerWord - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerCardinal - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerCardinal - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerInteger - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerInteger - 1))) and 1 <> 0;
 end;
 
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean;
 begin
-  Result := (Value shr (Bit and (BitsPerInt64 - 1))) <> 0;
+  Result := (Value shr (Bit and (BitsPerInt64 - 1))) and 1 <> 0;
 end;
 
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean;
