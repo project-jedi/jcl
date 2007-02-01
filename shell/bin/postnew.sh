@@ -10,7 +10,7 @@ cd $FILEHOME
 # get the latest sources from SVN
 # svn export -rHEAD --native-eol CRLF https://svn.sourceforge.net:443/svnroot/jcl/trunk/jcl jcl
 # (outchy) get the revision number
-svn export -rHEAD --native-eol CRLF https://svn.sourceforge.net:443/svnroot/jcl/trunk/jcl jcl | grep "Exported revision" > $FILEHOME/daily_revision.log
+svn export -rHEAD --native-eol CRLF https://jcl.svn.sourceforge.net:443/svnroot/jcl/trunk/jcl jcl | grep "Exported revision" > $FILEHOME/daily_revision.log
 mv $FILEHOME/daily_revision.log $FILEHOME/jcl/daily_revision.log
 # (outchy) copying template files
 cp $FILEHOME/jcl/source/jcl.template.inc $FILEHOME/jcl/source/jclc5.inc
@@ -41,7 +41,7 @@ cd $FILEHOME/jcl
 #         *.cfg *.template *.iss *.txt *.bat *.rc *.py *.dof)
 
 # allow null globbing
-shopt -s nullglob
+# shopt -s nullglob
 
 #echo "converting to dos format (CRLF)"
 #handled by svn export --native-eol CRLF
