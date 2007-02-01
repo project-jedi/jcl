@@ -70,7 +70,7 @@ cp jcl.zip $DAILYDIR/jcl-$DATESTRING.zip
 rm -f jcl.zip
 
 # create a 7zip with all files and copy to daily
-/home/groups/j/jc/jcl/bin/7zip a -bd -r jcl.7z .
+/home/groups/j/jc/jcl/bin/7zip a -bd -r jcl.7z . > /dev/null
 cp jcl.7z $DAILYDIR/jcl-$DATESTRING.7z
 rm -f jcl.7z
 
