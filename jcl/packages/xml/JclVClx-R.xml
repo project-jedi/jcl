@@ -10,7 +10,7 @@
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>98</VersionMinorNumber>
   <ReleaseNumber>1</ReleaseNumber>
-  <BuildNumber>2509</BuildNumber>
+  <BuildNumber>2530</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="visualclx" Targets="all" Condition=""/>

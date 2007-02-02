@@ -2,8 +2,8 @@
 
 Jedi Code Library
 Release 1.98
-Build 2509
-13-January-2007
+Build 2530
+03-February-2007
 
 --------------------------------------------------------------------------------
 
@@ -22,6 +22,9 @@ Content of this file
 --------------------------------------------------------------------------------
 
 About this release
+
+JCL 1.98 Build 2530 fixes some major issues in JclUnicode and JclLogic that were
+introduced in JCL 1.98 Build 2509.
 
 JCL release 1.98 provide an updated support for all targets (including Borland
 Developer Studio 2006 and Turbo Delphi) and an installation of some experts in

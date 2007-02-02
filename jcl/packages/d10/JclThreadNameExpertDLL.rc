@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,98,1,2509
-PRODUCTVERSION 1,98,1,2509
+FILEVERSION 1,98,1,2530
+PRODUCTVERSION 1,98,1,2530
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Thread Name IDE expert\0"
-              VALUE "FileVersion", "1.98.1.2509\0"
+              VALUE "FileVersion", "1.98.1.2530\0"
               VALUE "InternalName", "JclThreadNameExpertDLL\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2005 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2007 Project JEDI\0"
               VALUE "OriginalFilename", "JclThreadNameExpertDLL100.dll\0"
               VALUE "ProductName", "Jedi Code Library\0"
-              VALUE "ProductVersion", "1.98 Build 2509\0"
+              VALUE "ProductVersion", "1.98 Build 2530\0"
          END
     END
     BLOCK "VarFileInfo"
