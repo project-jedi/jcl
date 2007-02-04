@@ -502,16 +502,33 @@ const
 var
   Percent: Single;
 begin
-  with Item, FPeImage.OptionalHeader do
+  if FPeImage.Target = taWin64 then
   begin
-    Percent := DataDirectory[Index].Size * 100 / SizeOfImage;
-    Caption := FPeImage.DirectoryNames(Index);
-    Data := Pointer(DataDirectory[Index].Size);
-    if Integer(Data) <> 0 then ImageIndex := DirectoryIcons[Index];
-    SubItems.Add(Format('%.8x', [DataDirectory[Index].VirtualAddress]));
-    SubItems.Add(Format('%.8x', [DataDirectory[Index].Size]));
-    SubItems.Add(Format('%3.1f%%', [Percent]));
-    SubItems.Add(FPeImage.ImageSectionNameFromRva[DataDirectory[Index].VirtualAddress]);
+    with Item, FPeImage.OptionalHeader64 do
+    begin
+      Percent := DataDirectory[Index].Size * 100 / SizeOfImage;
+      Caption := FPeImage.DirectoryNames(Index);
+      Data := Pointer(DataDirectory[Index].Size);
+      if Integer(Data) <> 0 then ImageIndex := DirectoryIcons[Index];
+      SubItems.Add(Format('%.8x', [DataDirectory[Index].VirtualAddress]));
+      SubItems.Add(Format('%.8x', [DataDirectory[Index].Size]));
+      SubItems.Add(Format('%3.1f%%', [Percent]));
+      SubItems.Add(FPeImage.ImageSectionNameFromRva[DataDirectory[Index].VirtualAddress]);
+    end;
+  end
+  else
+  begin
+    with Item, FPeImage.OptionalHeader32 do
+    begin
+      Percent := DataDirectory[Index].Size * 100 / SizeOfImage;
+      Caption := FPeImage.DirectoryNames(Index);
+      Data := Pointer(DataDirectory[Index].Size);
+      if Integer(Data) <> 0 then ImageIndex := DirectoryIcons[Index];
+      SubItems.Add(Format('%.8x', [DataDirectory[Index].VirtualAddress]));
+      SubItems.Add(Format('%.8x', [DataDirectory[Index].Size]));
+      SubItems.Add(Format('%3.1f%%', [Percent]));
+      SubItems.Add(FPeImage.ImageSectionNameFromRva[DataDirectory[Index].VirtualAddress]);
+    end;
   end;
 end;
 
@@ -644,7 +661,10 @@ begin
     Caption := ImageSectionNames[Item.Index];
     with ImageSectionHeaders[Item.Index] do
     begin
-      Percent := SizeOfRawData * 100 / OptionalHeader.SizeOfImage;
+      if FPeImage.Target = taWin64 then
+        Percent := SizeOfRawData * 100 / OptionalHeader64.SizeOfImage
+      else
+        Percent := SizeOfRawData * 100 / OptionalHeader32.SizeOfImage;
       SubItems.Add(Format('%.8x', [Misc.VirtualSize]));
       SubItems.Add(Format('%.8x', [VirtualAddress]));
       SubItems.Add(Format('%.8x', [SizeOfRawData]));

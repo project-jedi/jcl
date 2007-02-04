@@ -1506,9 +1506,22 @@ function TJclPeMetadata.DumpIL: string;
 begin
   with TStringList.Create do
   try
-    Add(Format('.imagebase 0x%.8x', [Image.OptionalHeader.ImageBase]));
-    Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader.SubSystem]));
-    Add(Format('.file alignment %d', [Image.OptionalHeader.FileAlignment]));
+    case Image.Target of
+      taWin32:
+        begin
+          Add(Format('.imagebase 0x%.8x', [Image.OptionalHeader32.ImageBase]));
+          Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader32.SubSystem]));
+          Add(Format('.file alignment %d', [Image.OptionalHeader32.FileAlignment]));
+        end;
+      taWin64:
+        begin
+          Add(Format('.imagebase 0x%.16x', [Image.OptionalHeader64.ImageBase]));
+          Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader64.SubSystem]));
+          Add(Format('.file alignment %d', [Image.OptionalHeader64.FileAlignment]));
+        end;
+    //taUnknown: ;
+    end;
+
     if Assigned(FTableStream) then
     begin
       FTableStream.Update;

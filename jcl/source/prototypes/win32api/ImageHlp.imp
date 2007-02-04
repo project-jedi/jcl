@@ -18,6 +18,19 @@ begin
 end;
 
 var
+  _ReBaseImage64: Pointer;
+
+function ReBaseImage64;
+begin
+  GetProcedureAddress(_ReBaseImage64, ImageHlpLib, 'ReBaseImage64');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_ReBaseImage64]
+  end;
+end;
+
+var
   _CheckSumMappedFile: Pointer;
 
 function CheckSumMappedFile;

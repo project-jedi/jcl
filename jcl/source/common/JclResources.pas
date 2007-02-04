@@ -1311,6 +1311,7 @@ resourcestring
   // TJclPeImage
   RsPeCantOpen                = 'Cannot open file "%s"';
   RsPeNotPE                   = 'This is not a PE format';
+  RsPeUnknownTarget           = 'Unknown PE target'; 
   RsPeNotResDir               = 'Not a resource directory';
   RsPeNotAvailableForAttached = 'Feature is not available for attached images';
   RsPeSectionNotFound         = 'Section "%s" not found';
@@ -1385,13 +1386,34 @@ resourcestring
   RsPeEditList                      = 'EditList';
 
   // Machine names
-  RsPeMACHINE_UNKNOWN = 'Unknown';
-  RsPeMACHINE_I386    = 'Intel 386';
-  RsPeMACHINE_R3000   = 'MIPS little-endian R3000';
-  RsPeMACHINE_R4000   = 'MIPS little-endian R4000';
-  RsPeMACHINE_R10000  = 'MIPS little-endian R10000';
-  RsPeMACHINE_ALPHA   = 'Alpha_AXP';
-  RsPeMACHINE_POWERPC = 'IBM PowerPC Little-Endian';
+  RsPeMACHINE_UNKNOWN   = 'Unknown';
+  RsPeMACHINE_I386      = 'Intel 386';
+  RsPeMACHINE_R3000     = 'MIPS little-endian R3000';
+  RsPeMACHINE_R4000     = 'MIPS little-endian R4000';
+  RsPeMACHINE_R10000    = 'MIPS little-endian R10000';
+  RsPeMACHINE_WCEMIPSV2 = 'MIPS little-endian WCE v2';
+  RsPeMACHINE_ALPHA     = 'Alpha_AXP';
+  RsPeMACHINE_SH3       = 'SH3 little-endian';
+  RsPeMACHINE_SH3DSP    = 'SH3 DSP';
+  RsPeMACHINE_SH3E      = 'SH3E little-endian';
+  RsPeMACHINE_SH4       = 'SH4 little-endian';
+  RsPeMACHINE_SH5       = 'SH5';
+  RsPeMACHINE_ARM       = 'ARM Little-Endian';
+  RsPeMACHINE_THUMB     = 'THUMB';
+  RsPeMACHINE_AM33      = 'AM33';
+  RsPeMACHINE_POWERPC   = 'IBM PowerPC Little-Endian';
+  RsPeMACHINE_POWERPCFP = 'IBM PowerPC FP';
+  RsPeMACHINE_IA64      = 'Intel 64';
+  RsPeMACHINE_MIPS16    = 'MIPS16';
+  RsPeMACHINE_AMPHA64   = 'ALPHA64';
+  RsPeMACHINE_MIPSFPU   = 'MIPSFPU';
+  RsPeMACHINE_MIPSFPU16 = 'MIPSFPU16';
+  RsPeMACHINE_TRICORE   = 'Infineon';
+  RsPeMACHINE_CEF       = 'CEF';
+  RsPeMACHINE_EBC       = 'EFI Byte Code';
+  RsPeMACHINE_AMD64     = 'AMD64 (K8)';
+  RsPeMACHINE_M32R      = 'M32R little-endian';
+  RsPeMACHINE_CEE       = 'CEE';
 
   // Subsystem names
   RsPeSUBSYSTEM_UNKNOWN     = 'Unknown';
@@ -1690,9 +1712,9 @@ resourcestring
   RsIntelCacheDescr66 = '1st-level data cache: 8 KBytes, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr67 = '1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr68 = '1st-level data cache: 32 KBytes, 4-way set associative, 64 byte line size';
-  RsIntelCacheDescr70 = 'Trace cache: 12 K-µOps, 8-way set associative';
-  RsIntelCacheDescr71 = 'Trace cache: 16 K-µOps, 8-way set associative';
-  RsIntelCacheDescr72 = 'Trace cache: 32 K-µOps, 8-way set associative';
+  RsIntelCacheDescr70 = 'Trace cache: 12 K-Ops, 8-way set associative';
+  RsIntelCacheDescr71 = 'Trace cache: 16 K-Ops, 8-way set associative';
+  RsIntelCacheDescr72 = 'Trace cache: 32 K-Ops, 8-way set associative';
   RsIntelCacheDescr78 = '2nd-level cache: 1 MBytes, 4-way set associative, 64 bytes line size';
   RsIntelCacheDescr79 = '2nd-level cache: 128 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
   RsIntelCacheDescr7A = '2nd-level cache: 256 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';

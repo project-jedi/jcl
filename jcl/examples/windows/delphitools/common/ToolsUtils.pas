@@ -78,7 +78,7 @@ procedure D4FixCoolBarResizePaint(CoolBar: TObject);
 implementation
 
 uses
-  About, CommCtrl, JclPeImage;
+  About, CommCtrl, JclPeImage, JclWin32;
 
 resourcestring
   RsJCLLink = 'Jedi Code Library;http://delphi-jedi.org/Jedi:CODELIBJCL';
@@ -119,10 +119,23 @@ end;
 
 function GetImageBase(const FileName: TFileName): DWORD;
 var
-  NtHeaders: TImageNtHeaders;
+  NtHeaders32: TImageNtHeaders32;
+  NtHeaders64: TImageNtHeaders64;
+  ImageStream: TMemoryStream;
+  PETarget: TJclPeTarget;
 begin
-  if PeGetNtHeaders(FileName, NtHeaders) then
-    Result := NtHeaders.OptionalHeader.ImageBase
+  ImageStream := TMemoryStream.Create;
+  try
+    ImageStream.LoadFromFile(FileName);
+    PETarget := PeMapImgTarget(ImageStream.Memory);
+  finally
+    ImageStream.Free;
+  end;
+  if (PETarget = taWin32) and PeGetNtHeaders32(FileName, NtHeaders32) then
+    Result := NtHeaders32.OptionalHeader.ImageBase
+  else
+  if (PETarget = taWin64) and PeGetNtHeaders64(FileName, NtHeaders64) then
+    Result := NtHeaders64.OptionalHeader.ImageBase
   else
     Result := 0;
 end;
