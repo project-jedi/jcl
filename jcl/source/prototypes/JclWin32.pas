@@ -98,8 +98,12 @@ uses
 {$HPPEMIT '#include "WinIoCtl.h"'}
 {$HPPEMIT '#include "WinUser.h"'}
 {$HPPEMIT '#include "Powrprof.h"}
-
 {$HPPEMIT '#include <delayimp.h>'}
+{$HPPEMIT '#include "propidl.h"'}
+{$HPPEMIT '#include "msidefs.h"'}
+{$HPPEMIT '#include "shlguid.h"'}
+{$HPPEMIT '#include "imgguids.h"}
+{$HPPEMIT '#include "objbase.h"}
 {$HPPEMIT ''}
 
 {$IFDEF CLR}
@@ -138,8 +142,12 @@ type
 {$I win32api\WinNLS.int}
 {$I win32api\WinUser.int}
 {$I win32api\PowrProf.int}
-
 {$I win32api\DelayImp.int}
+{$I win32api\PropIdl.int}
+{$I win32api\MsiDefs.int}
+{$I win32api\ShlGuid.int}
+{$I win32api\imgguids.int}
+{$I win32api\ObjBase.int}
 
 {$IFDEF MSWINDOWS}
 
@@ -263,6 +271,7 @@ end;
 {$I win32api\WinNLS.imp}
 {$I win32api\WinNT.imp}
 {$I win32api\PowrProf.imp}
+{$I win32api\ObjBase.imp}
 
 {$IFDEF UNITVERSIONING}
 initialization

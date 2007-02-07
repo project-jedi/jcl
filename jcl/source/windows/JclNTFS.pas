@@ -21,6 +21,8 @@
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
 {   Oliver Schneider (assarbad)                                                                    }
+{   ZENsan                                                                                         }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -50,7 +52,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes,
+  Windows, SysUtils, Classes, ActiveX,
   JclBase, JclWin32;
 
 // NTFS Exception
@@ -161,6 +163,397 @@ function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo
 function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 function NtfsDeleteHardLinks(const FileName: string): Boolean;
 
+// NTFS File summary
+type
+  EJclFileSummaryError = class(EJclError);
+
+  TJclFileSummaryAccess = (fsaRead, fsaWrite, fsaReadWrite);
+  TJclFileSummaryShare = (fssDenyNone, fssDenyRead, fssDenyWrite, fssDenyAll);
+  TJclFileSummaryPropSetCallback = function(const FMTID: TGUID): Boolean of object;
+  TJclFileSummaryPropCallback = function(const Name: WideString; ID: TPropID;
+    Vt: TVarType): Boolean of object;
+
+  TJclFileSummary = class;
+
+  TJclFilePropertySet = class
+  private
+    FPropertyStorage: IPropertyStorage;
+  public
+    constructor Create(APropertyStorage: IPropertyStorage);
+    destructor Destroy; override;
+
+    class function GetFMTID: TGUID; virtual;
+    function GetProperty(ID: TPropID): TPropVariant; overload;
+    function GetProperty(const Name: WideString): TPropVariant; overload;
+    procedure SetProperty(ID: TPropID; const Value: TPropVariant); overload;
+    procedure SetProperty(const Name: WideString; const Value: TPropVariant;
+      AllocationBase: TPropID = PID_FIRST_USABLE); overload;
+    procedure DeleteProperty(ID: TPropID); overload;
+    procedure DeleteProperty(const Name: WideString); overload;
+    function EnumProperties(Proc: TJclFileSummaryPropCallback): Boolean;
+
+    // casted properties
+    // Type of ID changed to Integer to be compatible with indexed properties
+    // VT_LPWSTR
+    function GetWideStringProperty(const ID: Integer): WideString;
+    procedure SetWideStringProperty(const ID: Integer; const Value: WideString);
+    // VT_LPSTR
+    function GetAnsiStringProperty(const ID: Integer): AnsiString;
+    procedure SetAnsiStringProperty(const ID: Integer; const Value: AnsiString);
+    // VT_I4
+    function GetIntegerProperty(const ID: Integer): Integer;
+    procedure SetIntegerProperty(const ID: Integer; const Value: Integer);
+    // VT_UI4
+    function GetCardinalProperty(const ID: Integer): Cardinal;
+    procedure SetCardinalProperty(const ID: Integer; const Value: Cardinal);
+    // VT_FILETIME
+    function GetFileTimeProperty(const ID: Integer): TFileTime;
+    procedure SetFileTimeProperty(const ID: Integer; const Value: TFileTime);
+    // VT_CF
+    function GetClipDataProperty(const ID: Integer): PClipData;
+    procedure SetClipDataProperty(const ID: Integer; const Value: PClipData);
+    // VT_BOOL
+    function GetBooleanProperty(const ID: Integer): Boolean;
+    procedure SetBooleanProperty(const ID: Integer; const Value: Boolean);
+    // VT_VARIANT | VT_VECTOR
+    function GetTCAPROPVARIANTProperty(const ID: Integer): TCAPROPVARIANT;
+    procedure SetTCAPROPVARIANTProperty(const ID: Integer; const Value: TCAPROPVARIANT);
+    // // VT_LPSTR | VT_VECTOR
+    function GetTCALPSTRProperty(const ID: Integer): TCALPSTR;
+    procedure SetTCALPSTRProperty(const ID: Integer; const Value: TCALPSTR);
+    // VT_UI2
+    function GetWordProperty(const ID: Integer): Word;
+    procedure SetWordProperty(const ID: Integer; const Value: Word);
+    // VT_BSTR
+    function GetBSTRProperty(const ID: Integer): WideString;
+    procedure SetBSTRProperty(const ID: Integer; const Value: WideString);
+
+    // property names
+    function GetPropertyName(ID: TPropID): WideString;
+    procedure SetPropertyName(ID: TPropID; const Name: WideString);
+    procedure DeletePropertyName(ID: TPropID);
+  end;
+
+  TJclFilePropertySetClass = class of TJclFilePropertySet;
+
+  TJclFileSummary = class
+  private
+    FFileName: WideString;
+    FAccessMode: TJclFileSummaryAccess;
+    FShareMode: TJclFileSummaryShare;
+    FStorage: IPropertySetStorage;
+  public
+    constructor Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
+      AShareMode: TJclFileSummaryShare; AsDocument: Boolean = False;
+      ACreate: Boolean = False);
+    destructor Destroy; override;
+
+    function CreatePropertySet(AClass: TJclFilePropertySetClass; ResetExisting: Boolean): TJclFilePropertySet;
+    procedure GetPropertySet(AClass: TJclFilePropertySetClass; out Instance); overload;
+    procedure GetPropertySet(const FMTID: TGUID; out Instance); overload;
+    function GetPropertySet(const FMTID: TGUID): IPropertyStorage; overload;
+    procedure DeletePropertySet(const FMTID: TGUID); overload;
+    procedure DeletePropertySet(AClass: TJclFilePropertySetClass); overload;
+    function EnumPropertySet(Proc: TJclFileSummaryPropSetCallback): Boolean;
+
+    property FileName: WideString read FFileName;
+    property AccessMode: TJclFileSummaryAccess read FAccessMode;
+    property ShareMode: TJclFileSummaryShare read FShareMode;
+  end;
+
+  TJclFileSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property Title: AnsiString index PIDSI_TITLE read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Subject: AnsiString index PIDSI_SUBJECT read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Author: AnsiString index PIDSI_AUTHOR read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property KeyWords: AnsiString index PIDSI_KEYWORDS read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Comments: AnsiString index PIDSI_COMMENTS read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Template: AnsiString index PIDSI_TEMPLATE read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property LastAuthor: AnsiString index PIDSI_LASTAUTHOR read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property RevNumber: AnsiString index PIDSI_REVNUMBER read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property EditTime: TFileTime index PIDSI_EDITTIME read GetFileTimeProperty
+      write SetFileTimeProperty;
+    property LastPrintedTime: TFileTime index PIDSI_LASTPRINTED read GetFileTimeProperty
+      write SetFileTimeProperty;
+    property CreationTime: TFileTime index PIDSI_CREATE_DTM read GetFileTimeProperty
+      write SetFileTimeProperty;
+    property LastSaveTime: TFileTime index PIDSI_LASTSAVE_DTM read GetFileTimeProperty
+      write SetFileTimeProperty;
+    property PageCount: Integer index PIDSI_PAGECOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property WordCount: Integer index PIDSI_WORDCOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property CharCount: Integer index PIDSI_CHARCOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property Thumnail: PClipData index PIDSI_THUMBNAIL read GetClipDataProperty
+      write SetClipDataProperty;
+    property AppName: AnsiString index PIDSI_APPNAME read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Security: Integer index PIDSI_DOC_SECURITY read GetIntegerProperty
+      write SetIntegerProperty;
+  end;
+
+  TJclDocSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property Category: AnsiString index PIDDSI_CATEGORY read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property PresFormat: AnsiString index PIDDSI_PRESFORMAT read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property ByteCount: Integer index PIDDSI_BYTECOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property LineCount: Integer index PIDDSI_LINECOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property ParCount: Integer index PIDDSI_PARCOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property SlideCount: Integer index PIDDSI_SLIDECOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property NoteCount: Integer index PIDDSI_NOTECOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property HiddenCount: Integer index PIDDSI_HIDDENCOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property MMClipCount: Integer index PIDDSI_MMCLIPCOUNT read GetIntegerProperty
+      write SetIntegerProperty;
+    property Scale: Boolean index PIDDSI_SCALE read GetBooleanProperty
+      write SetBooleanProperty;
+    property HeadingPair: TCAPROPVARIANT index PIDDSI_HEADINGPAIR read GetTCAPROPVARIANTProperty
+      write SetTCAPROPVARIANTProperty;
+    property DocParts: TCALPSTR index PIDDSI_DOCPARTS read GetTCALPSTRProperty
+      write SetTCALPSTRProperty;
+    property Manager: AnsiString index PIDDSI_MANAGER read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property Company: AnsiString index PIDDSI_COMPANY read GetAnsiStringProperty
+      write SetAnsiStringProperty;
+    property LinksDirty: Boolean index PIDDSI_LINKSDIRTY read GetBooleanProperty
+      write SetBooleanProperty;
+  end;
+
+  TJclMediaFileSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property Editor: WideString index PIDMSI_EDITOR read GetWideStringProperty
+      write SetWideStringProperty;
+    property Supplier: WideString index PIDMSI_SUPPLIER read GetWideStringProperty
+      write SetWideStringProperty;
+    property Source: WideString index PIDMSI_SOURCE read GetWideStringProperty
+      write SetWideStringProperty;
+    property SequenceNo: WideString index PIDMSI_SEQUENCE_NO read GetWideStringProperty
+      write SetWideStringProperty;
+    property Project: WideString index PIDMSI_PROJECT read GetWideStringProperty
+      write SetWideStringProperty;
+    property Status: Cardinal index PIDMSI_STATUS read GetCardinalProperty
+      write SetCardinalProperty;
+    property Owner: WideString index PIDMSI_OWNER read GetWideStringProperty
+      write SetWideStringProperty;
+    property Rating: WideString index PIDMSI_RATING read GetWideStringProperty
+      write SetWideStringProperty;
+    property Production: TFileTime index PIDMSI_PRODUCTION read GetFileTimeProperty
+      write SetFileTimeProperty;
+    property Copyright: WideString index PIDMSI_COPYRIGHT read GetWideStringProperty
+      write SetWideStringProperty;
+  end;
+
+  TJclMSISummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property Version: Integer index PID_MSIVERSION read GetIntegerProperty
+      write SetIntegerProperty; // integer, Installer version number (major*100+minor)
+    property Source: Integer index PID_MSISOURCE read GetIntegerProperty
+      write SetIntegerProperty; // integer, type of file image, short/long, media/tree
+    property Restrict: Integer index PID_MSIRESTRICT read GetIntegerProperty
+      write SetIntegerProperty; // integer, transform restrictions
+  end;
+
+  TJclShellSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+  {PID_FINDDATA        = 0;
+  PID_NETRESOURCE     = 1;
+  PID_DESCRIPTIONID   = 2;
+  PID_WHICHFOLDER     = 3;
+  PID_NETWORKLOCATION = 4;
+  PID_COMPUTERNAME    = 5;}
+  end;
+
+  TJclStorageSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  end;
+
+  TJclImageSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  end;
+
+  TJclDisplacedSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+  {PID_FINDDATA        = 0;
+  PID_NETRESOURCE     = 1;
+  PID_DESCRIPTIONID   = 2;
+  PID_WHICHFOLDER     = 3;
+  PID_NETWORKLOCATION = 4;
+  PID_COMPUTERNAME    = 5;}
+  end;
+
+  TJclBriefCaseSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+  {PID_SYNC_COPY_IN = 2;}
+  end;
+
+  TJclMiscSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+  {PID_MISC_STATUS      = 2;
+  PID_MISC_ACCESSCOUNT = 3;
+  PID_MISC_OWNER       = 4;
+  PID_HTMLINFOTIPFILE  = 5;
+  PID_MISC_PICS        = 6;}
+  end;
+
+  TJclWebViewSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+  {PID_DISPLAY_PROPERTIES = 0;
+  PID_INTROTEXT          = 1;}
+  end;
+
+  TJclMusicSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PIDSI_ARTIST    = 2;
+  PIDSI_SONGTITLE = 3;
+  PIDSI_ALBUM     = 4;
+  PIDSI_YEAR      = 5;
+  PIDSI_COMMENT   = 6;
+  PIDSI_TRACK     = 7;
+  PIDSI_GENRE     = 11;
+  PIDSI_LYRICS    = 12;}
+  end;
+
+  TJclDRMSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PIDDRSI_PROTECTED   = 2;
+  PIDDRSI_DESCRIPTION = 3;
+  PIDDRSI_PLAYCOUNT   = 4;
+  PIDDRSI_PLAYSTARTS  = 5;
+  PIDDRSI_PLAYEXPIRES = 6;}
+  end;
+
+  TJclVideoSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property StreamName: WideString index PIDVSI_STREAM_NAME read GetWideStringProperty
+      write SetWideStringProperty; // "StreamName", VT_LPWSTR
+    property Width: Cardinal index PIDVSI_FRAME_WIDTH read GetCardinalProperty
+      write SetCardinalProperty; // "FrameWidth", VT_UI4
+    property Height: Cardinal index PIDVSI_FRAME_HEIGHT read GetCardinalProperty
+      write SetCardinalProperty; // "FrameHeight", VT_UI4
+    property TimeLength: Cardinal index PIDVSI_TIMELENGTH read GetCardinalProperty
+      write SetCardinalProperty; // "TimeLength", VT_UI4, milliseconds
+    property FrameCount: Cardinal index PIDVSI_FRAME_COUNT read GetCardinalProperty
+      write SetCardinalProperty; // "FrameCount". VT_UI4
+    property FrameRate: Cardinal index PIDVSI_FRAME_RATE read GetCardinalProperty
+      write SetCardinalProperty; // "FrameRate", VT_UI4, frames/millisecond
+    property DataRate: Cardinal index PIDVSI_DATA_RATE read GetCardinalProperty
+      write SetCardinalProperty; // "DataRate", VT_UI4, bytes/second
+    property SampleSize: Cardinal index PIDVSI_SAMPLE_SIZE read GetCardinalProperty
+      write SetCardinalProperty; // "SampleSize", VT_UI4
+    property Compression: WideString index PIDVSI_COMPRESSION read GetWideStringProperty
+      write SetWideStringProperty; // "Compression", VT_LPWSTR
+    property StreamNumber: Word index PIDVSI_STREAM_NUMBER read GetWordProperty
+      write SetWordProperty; // "StreamNumber", VT_UI2}
+  end;
+
+  TJclAudioSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+
+    property Format: WideString index PIDASI_FORMAT read GetBSTRProperty
+      write SetBSTRProperty; // VT_BSTR
+    property TimeLength: Cardinal index PIDASI_TIMELENGTH read GetCardinalProperty
+      write SetCardinalProperty; // VT_UI4, milliseconds
+    property AverageDataRate: Cardinal index PIDASI_AVG_DATA_RATE read GetCardinalProperty
+      write SetCardinalProperty; // VT_UI4,  Hz
+    property SampleRate: Cardinal index PIDASI_SAMPLE_RATE read GetCardinalProperty
+      write SetCardinalProperty; // VT_UI4,  bits
+    property SampleSize: Cardinal index PIDASI_SAMPLE_SIZE read GetCardinalProperty
+      write SetCardinalProperty; // VT_UI4,  bits
+    property ChannelCount: Cardinal index PIDASI_CHANNEL_COUNT read GetCardinalProperty
+      write SetCardinalProperty; // VT_UI4
+    property StreamNumber: Word index PIDASI_STREAM_NUMBER read GetWordProperty
+      write SetWordProperty; // VT_UI2
+    property StreamName: WideString index PIDASI_STREAM_NAME read GetWideStringProperty
+      write SetWideStringProperty; // VT_LPWSTR
+    property Compression: WideString index PIDASI_COMPRESSION read GetWideStringProperty
+      write SetWideStringProperty; // VT_LPWSTR}
+  end;
+
+  TJclControlPanelSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PID_CONTROLPANEL_CATEGORY = 2;}
+  end;
+
+  TJclVolumeSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PID_VOLUME_FREE       = 2;
+  PID_VOLUME_CAPACITY   = 3;
+  PID_VOLUME_FILESYSTEM = 4;}
+  end;
+
+  TJclShareSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PID_SHARE_CSC_STATUS = 2;}
+  end;
+
+  TJclLinkSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PID_LINK_TARGET = 2;}
+  end;
+
+  TJclQuerySummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {PID_QUERY_RANK = 2;}
+  end;
+
+  TJclImageInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {FMTID_ImageInformation}
+  end;
+
+  TJclJpegSummaryInformation = class(TJclFilePropertySet)
+  public
+    class function GetFMTID: TGUID; override;
+  {FMTID_JpegAppHeaders}
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -177,7 +570,7 @@ uses
   {$IFDEF FPC}
   WinSysUt,
   {$ENDIF FPC}
-  SysUtils, Hardlinks,
+  ComObj, Hardlinks,
   JclFileUtils, JclSysInfo, JclResources, JclSecurity;
 
 //=== NTFS - Compression =====================================================
@@ -1162,6 +1555,745 @@ begin
       Files.Free;
     end;
   end;
+end;
+
+//=== { TJclFileSummary } ====================================================
+
+const
+  AccessModes: array [TJclFileSummaryAccess] of DWORD =
+    ( STGM_READ, STGM_WRITE, STGM_READWRITE );
+  ShareModes: array [TJclFileSummaryShare] of DWORD =
+    ( STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
+      STGM_SHARE_EXCLUSIVE );
+      
+constructor TJclFileSummary.Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
+  AShareMode: TJclFileSummaryShare; AsDocument: Boolean; ACreate: Boolean);
+var
+  Format: DWORD;
+  IntfGUID: TGUID;
+  AIntf: IInterface;
+begin
+  inherited Create;
+  FAccessMode := AAccessMode;
+  FShareMode := AShareMode;
+  FFileName := AFileName;
+
+  if AsDocument then
+    Format := STGFMT_DOCFILE
+  else
+  if ACreate then
+    Format := STGFMT_FILE
+  else
+    Format := STGFMT_ANY;
+  IntfGUID := IPropertySetStorage;
+
+  if ACreate then
+    OleCheck(StgCreateStorageEx(PWideChar(AFileName),
+      STGM_DIRECT or AccessModes[AAccessMode] or ShareModes[AShareMode], Format, 0,
+      nil, nil, @IntfGUID, AIntf))
+  else
+    OleCheck(StgOpenStorageEx(PWideChar(AFileName),
+      STGM_DIRECT or AccessModes[AAccessMode] or ShareModes[AShareMode], Format, 0,
+      nil, nil, @IntfGUID, AIntf));
+
+  FStorage := AIntf as IPropertySetStorage;
+end;
+
+function TJclFileSummary.CreatePropertySet(AClass: TJclFilePropertySetClass;
+  ResetExisting: Boolean): TJclFilePropertySet;
+var
+  PropertyStorage: IPropertyStorage;
+begin
+  OleCheck(FStorage.Create(AClass.GetFMTID, AClass.GetFMTID, PROPSETFLAG_DEFAULT,
+    STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
+    PropertyStorage));
+  if Assigned(PropertyStorage) then
+    Result := AClass.Create(PropertyStorage)
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEUnableToCreatePropertyStorage);
+end;
+
+procedure TJclFileSummary.DeletePropertySet(AClass: TJclFilePropertySetClass);
+begin
+  DeletePropertySet(AClass.GetFMTID);
+end;
+
+procedure TJclFileSummary.DeletePropertySet(const FMTID: TGUID);
+begin
+  OleCheck(FStorage.Delete(FMTID));
+end;
+
+destructor TJclFileSummary.Destroy;
+begin
+  FStorage := nil;
+  inherited Destroy;
+end;
+
+function TJclFileSummary.EnumPropertySet(
+  Proc: TJclFileSummaryPropSetCallback): Boolean;
+var
+  Enum: IEnumSTATPROPSETSTG;
+  PropSet: STATPROPSETSTG;
+  Returned: ULONG;
+  Status: HRESULT;
+begin
+  OleCheck(FStorage.Enum(Enum));
+  ZeroMemory(@PropSet, SizeOf(PropSet));
+
+  OleCheck(Enum.Reset);
+  Status := Enum.Next(1, PropSet, @Returned);
+  Result := True;
+
+  while Result and (Status = S_OK) and (Returned = 1) do
+  begin
+    Result := Proc(PropSet.fmtid);
+    if Result then
+      Status := Enum.Next(1, PropSet, @Returned);
+  end;
+end;
+
+procedure TJclFileSummary.GetPropertySet(AClass: TJclFilePropertySetClass;
+  out Instance);
+var
+  PropertyStorage: IPropertyStorage;
+begin
+  TJclFilePropertySet(Instance) := nil;
+  PropertyStorage := GetPropertySet(AClass.GetFMTID);
+  if Assigned(PropertyStorage) then
+    TJclFilePropertySet(Instance) := AClass.Create(PropertyStorage);
+end;
+
+procedure TJclFileSummary.GetPropertySet(const FMTID: TGUID; out Instance);
+var
+  PropertyStorage: IPropertyStorage;
+begin
+  TJclFilePropertySet(Instance) := nil;
+  PropertyStorage := GetPropertySet(FMTID);
+  if Assigned(PropertyStorage) then
+    TJclFilePropertySet(Instance) := TJclFilePropertySet.Create(PropertyStorage);
+end;
+
+function TJclFileSummary.GetPropertySet(const FMTID: TGUID): IPropertyStorage;
+var
+  Status: HRESULT;
+begin
+  Status := FStorage.Open(FMTID,
+    STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
+    Result);
+  if (Status = STG_E_FILENOTFOUND) then
+  begin
+    if AccessMode = fsaRead then
+      Result := nil
+    else
+      OleCheck(FStorage.Create(FMTID, FMTID, PROPSETFLAG_DEFAULT,
+        STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
+        Result))
+  end
+  else
+    OleCheck(Status);
+end;
+
+//=== { TJclFilePropertySet } ================================================
+
+constructor TJclFilePropertySet.Create(APropertyStorage: IPropertyStorage);
+begin
+  inherited Create;
+  FPropertyStorage := APropertyStorage;
+end;
+
+procedure TJclFilePropertySet.DeleteProperty(const Name: WideString);
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_LPWSTR;
+  Prop.lpwstr := PWideChar(Name);
+  OleCheck(FPropertyStorage.DeleteMultiple(1, @Prop));
+end;
+
+procedure TJclFilePropertySet.DeletePropertyName(ID: TPropID);
+begin
+  OleCheck(FPropertyStorage.DeletePropertyNames(1, @ID));
+end;
+
+procedure TJclFilePropertySet.DeleteProperty(ID: TPropID);
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_PROPID;
+  Prop.propid := ID;
+  OleCheck(FPropertyStorage.DeleteMultiple(1, @Prop));
+end;
+
+destructor TJclFilePropertySet.Destroy;
+begin
+  FPropertyStorage := nil;
+  inherited Destroy;
+end;
+
+function TJclFilePropertySet.EnumProperties(
+  Proc: TJclFileSummaryPropCallback): Boolean;
+var
+  Enum: IEnumSTATPROPSTG;
+  Status: HRESULT;
+  Returned: ULONG;
+  Prop: STATPROPSTG;
+begin
+  OleCheck(FPropertyStorage.Enum(Enum));
+
+  ZeroMemory(@Prop, SizeOf(Prop));
+  OleCheck(Enum.Reset);
+  Status := Enum.Next(1, Prop, @Returned);
+  Result := True;
+
+  while Result and (Status = S_OK) and (Returned = 1) do
+  begin
+    try
+      Result := Proc(Prop.lpwstrName, Prop.propid, Prop.vt);
+    finally
+      if Assigned(Prop.lpwstrName) then
+        CoTaskMemFree(Prop.lpwstrName);
+    end;
+
+    if Result then
+      Status := Enum.Next(1, Prop, @Returned);
+  end;
+end;
+
+function TJclFilePropertySet.GetAnsiStringProperty(
+  const ID: Integer): AnsiString;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := '';
+    VT_LPSTR:
+      Result := PropValue.pszVal;
+    VT_LPWSTR:
+      Result := PropValue.pwszVal;
+    VT_BSTR:
+      Result := PropValue.bstrVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetBooleanProperty(const ID: Integer): Boolean;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := False;
+    VT_BOOL:
+      Result := PropValue.bool;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetBSTRProperty(const ID: Integer): WideString;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := '';
+    VT_LPSTR:
+      Result := PropValue.pszVal;
+    VT_LPWSTR:
+      Result := PropValue.pwszVal;
+    VT_BSTR:
+      Result := PropValue.bstrVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetCardinalProperty(const ID: Integer): Cardinal;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := 0;
+    VT_I2:
+      Result := PropValue.iVal;
+    VT_I4, VT_INT:
+      Result := PropValue.lVal;
+    VT_I1:
+      Result := PropValue.bVal; // no ShortInt? (cVal)
+    VT_UI1:
+      Result := PropValue.bVal;
+    VT_UI2:
+      Result := PropValue.uiVal;
+    VT_UI4, VT_UINT:
+      Result := PropValue.ulVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetClipDataProperty(const ID: Integer): PClipData;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := nil;
+    VT_CF:
+      Result := PropValue.pclipdata
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetFileTimeProperty(const ID: Integer): TFileTime;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      ZeroMemory(@Result, SizeOf(Result));
+    VT_FILETIME:
+      Result := PropValue.filetime;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+class function TJclFilePropertySet.GetFMTID: TGUID;
+begin
+  Result := GUID_NULL;
+end;
+
+function TJclFilePropertySet.GetIntegerProperty(const ID: Integer): Integer;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := 0;
+    VT_I2:
+      Result := PropValue.iVal;
+    VT_I4, VT_INT:
+      Result := PropValue.lVal;
+    VT_I1:
+      Result := PropValue.bVal; // no ShortInt? (cVal)
+    VT_UI1:
+      Result := PropValue.bVal;
+    VT_UI2:
+      Result := PropValue.uiVal;
+    VT_UI4, VT_UINT:
+      Result := PropValue.ulVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetProperty(const Name: WideString): TPropVariant;
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_LPWSTR;
+  Prop.lpwstr := PWideChar(Name);
+
+  OleCheck(FPropertyStorage.ReadMultiple(1, @Prop, @Result));
+end;
+
+function TJclFilePropertySet.GetProperty(ID: TPropID): TPropVariant;
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_PROPID;
+  Prop.propid := ID;
+
+  OleCheck(FPropertyStorage.ReadMultiple(1, @Prop, @Result));
+end;
+
+function TJclFilePropertySet.GetPropertyName(ID: TPropID): WideString;
+var
+  AName: PWideChar;
+begin
+  AName := nil;
+  try
+    OleCheck(FPropertyStorage.ReadPropertyNames(1, @ID, @AName));
+    Result := AName;
+  finally
+    if Assigned(AName) then
+      CoTaskMemFree(AName);
+  end;
+end;
+
+function TJclFilePropertySet.GetTCALPSTRProperty(const ID: Integer): TCALPSTR;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      ZeroMemory(@Result, SizeOf(Result));
+    VT_LPSTR or VT_VECTOR:
+      Result := PropValue.calpstr;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetTCAPROPVARIANTProperty(
+  const ID: Integer): TCAPROPVARIANT;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      ZeroMemory(@Result, SizeOf(Result));
+    VT_VARIANT or VT_VECTOR:
+      Result := PropValue.capropvar;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetWideStringProperty(
+  const ID: Integer): WideString;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := '';
+    VT_LPSTR:
+      Result := PropValue.pszVal;
+    VT_LPWSTR:
+      Result := PropValue.pwszVal;
+    VT_BSTR:
+      Result := PropValue.bstrVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+function TJclFilePropertySet.GetWordProperty(const ID: Integer): Word;
+var
+  PropValue: TPropVariant;
+begin
+  PropValue := GetProperty(ID);
+  case PropValue.vt of
+    VT_EMPTY, VT_NULL:
+      Result := 0;
+    VT_I2:
+      Result := PropValue.iVal;
+    VT_I1:
+      Result := PropValue.bVal; // no ShortInt? (cVal)
+    VT_UI1:
+      Result := PropValue.bVal;
+    VT_UI2:
+      Result := PropValue.uiVal;
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  end;
+end;
+
+procedure TJclFilePropertySet.SetAnsiStringProperty(const ID: Integer;
+  const Value: AnsiString);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_LPSTR;
+  PropValue.pszVal := PAnsiChar(Value);
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetBooleanProperty(const ID: Integer;
+  const Value: Boolean);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_BOOL;
+  PropValue.bool := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetBSTRProperty(const ID: Integer;
+  const Value: WideString);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_BSTR;
+  PropValue.bstrVal := PWideChar(Value);
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetCardinalProperty(const ID: Integer;
+  const Value: Cardinal);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_UI4;
+  PropValue.ulVal := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetClipDataProperty(const ID: Integer;
+  const Value: PClipData);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_CF;
+  PropValue.pclipdata := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetFileTimeProperty(const ID: Integer;
+  const Value: TFileTime);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_FILETIME;
+  PropValue.filetime := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetIntegerProperty(const ID, Value: Integer);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_I4;
+  PropValue.lVal := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetProperty(const Name: WideString;
+  const Value: TPropVariant; AllocationBase: TPropID);
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_LPWSTR;
+  Prop.lpwstr := PWideChar(Name);
+
+  OleCheck(FPropertyStorage.WriteMultiple(1, @Prop, @Value, AllocationBase));
+end;
+
+procedure TJclFilePropertySet.SetPropertyName(ID: TPropID;
+  const Name: WideString);
+var
+  AName: PWideChar;
+begin
+  OleCheck(FPropertyStorage.WritePropertyNames(1, @ID, @AName));
+end;
+
+procedure TJclFilePropertySet.SetTCALPSTRProperty(const ID: Integer;
+  const Value: TCALPSTR);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_LPSTR or VT_VECTOR;
+  PropValue.calpstr := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetTCAPROPVARIANTProperty(const ID: Integer;
+  const Value: TCAPROPVARIANT);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_VARIANT or VT_VECTOR;
+  PropValue.capropvar := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetWideStringProperty(const ID: Integer;
+  const Value: WideString);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_LPWSTR;
+  PropValue.pwszVal := PWideChar(Value);
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetWordProperty(const ID: Integer;
+  const Value: Word);
+var
+  PropValue: TPropVariant;
+begin
+  PropValue.vt := VT_UI2;
+  PropValue.uiVal := Value;
+  SetProperty(ID, PropValue);
+end;
+
+procedure TJclFilePropertySet.SetProperty(ID: TPropID; const Value: TPropVariant);
+var
+  Prop: TPropSpec;
+begin
+  Prop.ulKind := PRSPEC_PROPID;
+  Prop.propid := ID;
+
+  OleCheck(FPropertyStorage.WriteMultiple(1, @Prop, @Value, PID_FIRST_USABLE));
+end;
+
+//=== { TJclFileSummaryInformation } =========================================
+
+class function TJclFileSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_SummaryInformation;
+end;
+
+//=== { TJclDocSummaryInformation } ==========================================
+
+class function TJclDocSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_DocumentSummaryInformation;
+end;
+
+//=== { TJclMediaSummaryInformation } ========================================
+
+class function TJclMediaFileSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_MediaFileSummaryInformation
+end;
+
+//=== { TJclMSISummaryInformation } ==========================================
+
+class function TJclMSISummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_SummaryInformation;
+end;
+
+//=== { TJclShellSummaryInformation } ========================================
+
+class function TJclShellSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_ShellDetails;
+end;
+
+//=== { TJclStorageSummaryInformation } ======================================
+
+class function TJclStorageSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Storage;
+end;
+
+//=== { TJclImageSummaryInformation } ========================================
+
+class function TJclImageSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_ImageSummaryInformation;
+end;
+
+//=== { TJclDisplacedSummaryInformation } ====================================
+
+class function TJclDisplacedSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Displaced;
+end;
+
+//=== { TJclBriefCaseSummaryInformation }
+
+class function TJclBriefCaseSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Briefcase;
+end;
+
+//=== { TJclMiscSummaryInformation } =========================================
+
+class function TJclMiscSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Misc;
+end;
+
+//=== { TJclWebViewSummaryInformation } ======================================
+
+class function TJclWebViewSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_WebView;
+end;
+
+//=== { TJclMusicSummaryInformation } ========================================
+
+class function TJclMusicSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_MUSIC;
+end;
+
+//=== { TJclDRMSummaryInformation } ==========================================
+
+class function TJclDRMSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_DRM;
+end;
+
+//=== { TJclVideoSummaryInformation } ========================================
+
+class function TJclVideoSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Video;
+end;
+
+//=== { TJclAudioSummaryInformation } ========================================
+
+class function TJclAudioSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Audio;
+end;
+
+//=== { TJclControlPanelSummaryInformation } =================================
+
+class function TJclControlPanelSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_ControlPanel;
+end;
+
+//=== { TJclVolumeSummaryInformation } =======================================
+
+class function TJclVolumeSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Volume; 
+end;
+
+//=== { TJclShareSummaryInformation } ========================================
+
+class function TJclShareSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Share;
+end;
+
+//=== { TJclLinkSummaryInformation } =========================================
+
+class function TJclLinkSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Link;
+end;
+
+//=== { TJclQuerySummaryInformation } ========================================
+
+class function TJclQuerySummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_Query;
+end;
+
+//=== { TJclImageInformation } ===============================================
+
+class function TJclImageInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_ImageInformation;
+end;
+
+//=== { TJclJpegSummaryInformation } =========================================
+
+class function TJclJpegSummaryInformation.GetFMTID: TGUID;
+begin
+  Result := FMTID_JpegAppHeaders;
 end;
 
 {$IFDEF UNITVERSIONING}

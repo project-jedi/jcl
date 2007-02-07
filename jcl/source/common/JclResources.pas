@@ -1274,6 +1274,8 @@ resourcestring
 resourcestring
   RsInvalidArgument = '%s: Invalid argument <%s>';
   RsNtfsUnableToDeleteSymbolicLink = 'Unable to delete temporary symbolic link';
+  RsEUnableToCreatePropertyStorage = 'Unable to create property storage';
+  RsEIncomatibleDataFormat = 'Incompatible data format';
 
 //=== JclPCRE ================================================================
 resourcestring
