@@ -118,7 +118,7 @@ implementation
 
 uses
   ClipBrd, Math,
-  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings, JclSysInfo, JclSysUtils;
+  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
 
 resourcestring
   RsAppError = '%s - application error';
@@ -406,10 +406,12 @@ var
   ModuleName: TFileName;
   CpuInfo: TCpuInfo;
   C: TWinControl;
-  NtHeaders: PImageNtHeaders;
+  NtHeaders32: PImageNtHeaders32;
+  NtHeaders64: PImageNtHeaders64;
   ModuleBase: Cardinal;
   ImageBaseStr: string;
   StackList: TJclStackInfoList;
+  PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
   try
@@ -447,9 +449,19 @@ begin
         ModuleName := SL[I];
         ModuleBase := Cardinal(SL.Objects[I]);
         DetailsMemo.Lines.Add(Format('[%.8x] %s', [ModuleBase, ModuleName]));
-        NtHeaders := PeMapImgNtHeaders(Pointer(ModuleBase));
-        if (NtHeaders <> nil) and (NtHeaders^.OptionalHeader.ImageBase <> ModuleBase) then
-          ImageBaseStr := Format('<%.8x> ', [NtHeaders^.OptionalHeader.ImageBase])
+        PETarget := PeMapImgTarget(Pointer(ModuleBase));
+        NtHeaders32 := nil;
+        NtHeaders64 := nil;
+        if PETarget = taWin32 then
+          NtHeaders32 := PeMapImgNtHeaders32(Pointer(ModuleBase))
+        else
+        if PETarget = taWin64 then
+          NtHeaders64 := PeMapImgNtHeaders64(Pointer(ModuleBase));
+        if (NtHeaders32 <> nil) and (NtHeaders32^.OptionalHeader.ImageBase <> ModuleBase) then
+          ImageBaseStr := Format('<%.8x> ', [NtHeaders32^.OptionalHeader.ImageBase])
+        else
+        if (NtHeaders64 <> nil) and (NtHeaders64^.OptionalHeader.ImageBase <> ModuleBase) then
+          ImageBaseStr := Format('<%.8x> ', [NtHeaders64^.OptionalHeader.ImageBase])
         else
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
