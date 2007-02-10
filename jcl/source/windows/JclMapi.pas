@@ -31,7 +31,7 @@
 
 // Last modified: $Date$
 
-unit JclMapi;     
+unit JclMapi;
 
 {$I jcl.inc}
 
@@ -213,7 +213,9 @@ type
     FSessionHandle: THandle;
     FSubject: string;
     FTaskWindowList: TJclTaskWindowsList;
+    FAttachmentFiles: TStringList;
     function GetAttachments: TStrings;
+    function GetAttachmentFiles: TStrings;
     function GetParentWnd: THandle;
     function GetUserLogged: Boolean;
     procedure SetBody(const Value: string);
@@ -242,6 +244,7 @@ type
     function Send(ShowDialog: Boolean = True): Boolean;
     procedure SortAttachments;
     property Attachments: TStrings read GetAttachments;
+    property AttachmentFiles: TStrings read GetAttachmentFiles;
     property Body: string read FBody write SetBody;
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
@@ -778,6 +781,7 @@ constructor TJclEmail.Create;
 begin
   inherited Create;
   FAttachments := TStringList.Create;
+  FAttachmentFiles := TStringList.Create;
   FLogonOptions := [loLogonUI];
   FFindOptions := [foFifo];
   FRecipients := TJclEmailRecips.Create(True);
@@ -786,6 +790,7 @@ end;
 
 destructor TJclEmail.Destroy;
 begin
+  FreeAndNil(FAttachmentFiles);
   FreeAndNil(FAttachments);
   FreeAndNil(FRecipients);
   inherited Destroy;
@@ -821,6 +826,7 @@ end;
 procedure TJclEmail.Clear;
 begin
   Attachments.Clear;
+  AttachmentFiles.Clear;
   Body := '';
   FSubject := '';
   Recipients.Clear;
@@ -911,6 +917,11 @@ begin
   Result := FAttachments;
 end;
 
+function TJclEmail.GetAttachmentFiles: TStrings;
+begin
+  Result := FAttachmentFiles;
+end;
+
 function TJclEmail.GetParentWnd: THandle;
 begin
   if FParentWndValid then
@@ -936,7 +947,7 @@ var
   Flags, Res: DWORD;
   I: Integer;
   MsgID: array [0..512] of AnsiChar;
-  HtmlBodyFileName: string;
+  AttachmentFileName, HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
@@ -947,6 +958,7 @@ begin
     begin
       HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
       Attachments.Insert(0, HtmlBodyFileName);
+      AttachmentFiles.Insert(0, '');
       StringToFile(HtmlBodyFileName, Body);
     end;
     // Create attachments
@@ -955,13 +967,21 @@ begin
       SetLength(AttachArray, Attachments.Count);
       for I := 0 to Attachments.Count - 1 do
       begin
-        if not FileExists(Attachments[I]) then
-          MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
-        Attachments[I] := ExpandFileName(Attachments[I]);
         FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
         AttachArray[I].nPosition := DWORD(-1);
-        AttachArray[I].lpszFileName := nil;
-        AttachArray[I].lpszPathName := PChar(Attachments[I]);
+        if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
+        begin
+          AttachmentFileName := ExpandFileName(AttachmentFiles[I]);
+          AttachArray[I].lpszFileName := PChar(Attachments[I]);
+        end
+        else
+        begin
+          AttachmentFileName := ExpandFileName(Attachments[I]);
+          AttachArray[I].lpszFileName := nil;
+        end;
+        AttachArray[I].lpszPathName := PChar(AttachmentFileName);
+        if not FileExists(AttachmentFileName) then
+          MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
       end;
     end
     else
@@ -1240,8 +1260,37 @@ begin
 end;
 
 procedure TJclEmail.SortAttachments;
+var
+  S, T, U: TStringList;
+  I, Nr: Integer;
 begin
-  FAttachments.Sort;
+  // This is confusing, quick and very dirty.
+  S := TStringList.Create;
+  try
+    S.Capacity := FAttachments.Count;
+    for I := 0 to Pred(FAttachments.Count) do
+      S.AddObject(FAttachments[I], Pointer(I));
+    S.Sort;
+    T := TStringList.Create;
+    U := TStringList.Create;
+    try
+      T.Capacity := S.Count;
+      U.Capacity := S.Count;
+      for I := 0 to Pred(S.Count) do
+      begin
+        Nr := Integer(S.Objects[I]);
+        T.AddObject(FAttachments[Nr], FAttachments.Objects[Nr]);
+        U.AddObject(FAttachmentFiles[Nr], FAttachmentFiles.Objects[Nr]);
+      end;
+      FAttachments.Assign(T);
+      FAttachmentFiles.Assign(U);
+    finally
+      U.Free;
+      T.Free;
+    end;
+  finally
+    S.Free;
+  end;
 end;
 
 //=== Simple email send function =============================================
