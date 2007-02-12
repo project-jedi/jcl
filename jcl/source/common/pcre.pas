@@ -52,7 +52,16 @@ interface
 // NOTE: if you enable static linking of DLL, this means that the pcre.dll *must*
 // be in the users path or an AV will occur at startup
 
+// IMPORTANT: The static link works only for Delphi 2005 and earlier
+//            (an internal error is raised on other compilers)
+// The following combinations of defines are valid
+//   static link: PCRE_STATICLINK
+//   static import: (nothing)
+//   dynamic import: PCRE_LINKONREQUEST
+
+//{$DEFINE PCRE_STATICLINK}
 {$DEFINE PCRE_LINKONREQUEST}
+
 (*$HPPEMIT '#include "pcre.h"'*)
 
 const
@@ -502,6 +511,7 @@ procedure UnloadPCRE;
 implementation
 
 uses
+  SysUtils,
   {$IFDEF MSWINDOWS}
   Windows;
   {$ENDIF MSWINDOWS}
@@ -515,6 +525,29 @@ uses
   dl;
   {$ENDIF ~HAS_UNIT_LIBC}
   {$ENDIF UNIX}
+
+{$IFDEF PCRE_STATICLINK}
+{$LINK ..\windows\obj\pcre\pcre_compile.obj}
+{$LINK ..\windows\obj\pcre\pcre_config.obj}
+{$LINK ..\windows\obj\pcre\pcre_dfa_exec.obj}
+{$LINK ..\windows\obj\pcre\pcre_exec.obj}
+{$LINK ..\windows\obj\pcre\pcre_fullinfo.obj}
+{$LINK ..\windows\obj\pcre\pcre_get.obj}
+{$LINK ..\windows\obj\pcre\pcre_globals.obj}
+{$LINK ..\windows\obj\pcre\pcre_info.obj}
+{$LINK ..\windows\obj\pcre\pcre_maketables.obj}
+{$LINK ..\windows\obj\pcre\pcre_newline.obj}
+{$LINK ..\windows\obj\pcre\pcre_ord2utf8.obj}
+{$LINK ..\windows\obj\pcre\pcre_refcount.obj}
+{$LINK ..\windows\obj\pcre\pcre_study.obj}
+{$LINK ..\windows\obj\pcre\pcre_tables.obj}
+{$LINK ..\windows\obj\pcre\pcre_try_flipped.obj}
+{$LINK ..\windows\obj\pcre\pcre_ucp_searchfuncs.obj}
+{$LINK ..\windows\obj\pcre\pcre_valid_utf8.obj}
+{$LINK ..\windows\obj\pcre\pcre_version.obj}
+{$LINK ..\windows\obj\pcre\pcre_xclass.obj}
+{$LINK ..\windows\obj\pcre\pcre_default_tables.obj}
+{$ENDIF PCRE_STATICLINK}
 
 type
   {$IFDEF MSWINDOWS}
@@ -799,6 +832,72 @@ begin
   InitPCREFuncPtrs(@LibNotLoadedHandler);
 end;
 
+{$IFDEF PCRE_STATICLINK}
+function pcre_compile; external;
+function pcre_compile2; external;
+function pcre_config; external;
+function pcre_copy_named_substring; external;
+function pcre_copy_substring; external;
+function pcre_dfa_exec; external;
+function pcre_exec; external;
+procedure pcre_free_substring; external;
+procedure pcre_free_substring_list; external;
+function pcre_fullinfo; external;
+function pcre_get_named_substring; external;
+function pcre_get_stringnumber; external;
+function pcre_get_stringtable_entries; external;
+function pcre_get_substring; external;
+function pcre_get_substring_list; external;
+function pcre_info; external;
+function pcre_maketables; external;
+function pcre_refcount; external;
+function pcre_study; external;
+function pcre_version; external;
+
+type
+  size_t = Longint;
+
+const
+  szMSVCRT = 'MSVCRT.DLL';
+
+function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
+{begin
+  Move(src^, dest^, count);
+  Result := dest;
+end;}
+function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
+{begin
+  FillChar(dest^, count, val);
+  Result := dest;
+end;}
+function _malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
+{begin
+  GetMem(Result, size);
+end;}
+procedure _free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
+{begin
+  FreeMem(pBlock);
+end;}
+function _strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; cdecl; external szMSVCRT name 'strncmp';
+function _memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; cdecl; external szMSVCRT name 'memcmp';
+function _strlen(s: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
+function __ltolower(__ch: Integer): Integer; cdecl; external szMSVCRT name '_tolower';
+function __ltoupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'toupper';
+function _isalnum(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalnum';
+function _isalpha(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalpha';
+function _iscntrl(__ch: Integer): Integer; cdecl; external szMSVCRT name 'iscntrl';
+function _isdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isdigit';
+function _isgraph(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isgraph';
+function _islower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'islower';
+function _isprint(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isprint';
+function _ispunct(__ch: Integer): Integer; cdecl; external szMSVCRT name 'ispunct';
+function _isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspace';
+function _isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
+function _isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
+//int _RTLENTRY _EXPFUNC isascii (int __c);
+function _strchr(__s: PChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
+
+{$ELSE ~PCRE_STATICLINK}
 {$IFNDEF PCRE_LINKONREQUEST}
 function pcre_compile; external libpcremodulename name PCRECompileExportName;
 function pcre_compile2; external libpcremodulename name PCRECompile2ExportName;
@@ -821,6 +920,7 @@ function pcre_refcount; external libpcremodulename name PCRERefCountExportName;
 function pcre_study; external libpcremodulename name PCREStudyExportName;
 function pcre_version; external libpcremodulename name PCREVersionExportName;
 {$ENDIF ~PCRE_LINKONREQUEST}
+{$ENDIF ~PCRE_STATICLINK}
 
 end.
 
