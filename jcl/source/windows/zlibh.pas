@@ -1576,14 +1576,16 @@ procedure _clearerr(stream: Pointer); cdecl; external szMSVCRT name 'clearerr';
 {$ENDIF LINK_TO_MSVCRT}
 {$IFNDEF LINK_LIBC}
 
-procedure _memcpy(dest, src: Pointer; count: size_t); cdecl;
+function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl;
 begin
   Move(src^, dest^, count);
+  Result := dest;
 end;
 
-procedure _memset(dest: Pointer; val: Integer; count: size_t); cdecl;
+function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl;
 begin
   FillChar(dest^, count, val);
+  Result := dest;
 end;
 
 function _malloc(size: size_t): Pointer; cdecl;
