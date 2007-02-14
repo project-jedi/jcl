@@ -16,7 +16,6 @@
       <Projects Name="JclFavoriteFoldersExpert100.bpl">d10\JclFavoriteFoldersExpert.bdsproj</Projects>
       <Projects Name="JclProjectAnalysisExpert100.bpl">d10\JclProjectAnalysisExpert.bdsproj</Projects>
       <Projects Name="JclRepositoryExpert100.bpl">d10\JclRepositoryExpert.bdsproj</Projects>
-      <Projects Name="JclUsesExpert100.bpl">d10\JclUsesExpert.bdsproj</Projects>
       <Projects Name="JclVersionControlExpert100.bpl">d10\JclVersionControlExpert.bdsproj</Projects>
       <Projects Name="Targets">Jcl100.bpl JclVcl100.bpl JclBaseExpert100.bpl JclDebugExpert100.bpl JclFavoriteFoldersExpert100.bpl JclProjectAnalysisExpert100.bpl JclRepositoryExpert100.bpl JclUsesExpert100.bpl JclVersionControlExpert100.bpl</Projects>
     </Projects>
