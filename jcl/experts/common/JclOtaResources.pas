@@ -138,6 +138,7 @@ resourcestring
   RsModuleList = 'Module list';
   RsOSInfo = 'Operating system informations';
   RsActiveControls = 'List of active controls';
+  RsMainThreadOnly = 'Catch only exceptions of main thread';
 
 //=== JclOtaExcDlgTraceFrame.pas =============================================
 resourcestring

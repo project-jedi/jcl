@@ -281,18 +281,18 @@ end;
 
 procedure T%FORMNAME%.CreateReport;
 var
-%if ModuleList  SL: TStringList;
-  I: Integer;
+  SL: TStringList;
+%if ModuleList  I: Integer;
   ModuleName: TFileName;
   NtHeaders32: PImageNtHeaders32;
   NtHeaders64: PImageNtHeaders64;
   ModuleBase: Cardinal;
-  ImageBaseStr: string;%endif
+  ImageBaseStr: string;
+  PETarget: TJclPeTarget;%endif
 %if ActiveControls  C: TWinControl;%endif
 %if OSInfo  CpuInfo: TCpuInfo;
   ProcessorDetails: string;%endif
 %if StackList  StackList: TJclStackInfoList;%endif
-  PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
   try
@@ -614,6 +614,7 @@ begin
 %if RawData  JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];%endif
 %if HookDll  JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
 %if DelayedTrace  JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
+%if MainThreadOnly  JclStackTrackingOptions := JclStackTrackingOptions + [stMainThreadOnly];%endif
   JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
   JclStartExceptionTracking;
 %if HookDll  if HookTApplicationHandleException then

@@ -67,6 +67,7 @@ type
     FActiveControls: Boolean;
     FStackList: Boolean;
     FAutoScrollBars: Boolean;
+    FMainThreadOnly: Boolean;
   public
     constructor Create; reintroduce;
   published
@@ -93,6 +94,7 @@ type
     property OSInfo: Boolean read FOSInfo write FOSInfo;
     property ModuleList: Boolean read FModuleList write FModuleList;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
+    property MainThreadOnly: Boolean read FMainThreadOnly write FMainThreadOnly;
     // trace options
     property StackList: Boolean read FStackList write FStackList;
     property RawData: Boolean read FRawData write FRawData;
