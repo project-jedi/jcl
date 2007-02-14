@@ -667,7 +667,7 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 type
   TJclStackTrackingOption =
     (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace, stTraceEAbort);
+     stDelayedTrace, stTraceEAbort, stMainThreadOnly);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 var
@@ -3616,15 +3616,17 @@ procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoL
 var
   IsMultiThreaded: Boolean;
 begin
-  IsMultiThreaded := IsMultiThread;
-  if IsMultiThreaded then
-    FLock.Enter;
-  try
-    if FModulesList <> ModulesList then
-      FreeAndNil(ModulesList);
-  finally
+  if FModulesList <> ModulesList then
+  begin
+    IsMultiThreaded := IsMultiThread;
     if IsMultiThreaded then
-      FLock.Leave;
+      FLock.Enter;
+    try
+      FreeAndNil(ModulesList);
+    finally
+      if IsMultiThreaded then
+        FLock.Leave;
+    end;
   end;
 end;
 
@@ -4293,7 +4295,8 @@ var
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
   BaseOfStack: Pointer);
 begin
-  if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) then
+  if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) and
+     (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
   begin
     if stStack in JclStackTrackingOptions then
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException, BaseOfStack);
