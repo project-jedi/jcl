@@ -3933,8 +3933,7 @@ var
   StackFrame: PStackFrame;
   StackInfo: TStackInfo;
 begin
-  Clear;
-  Capacity := 16; // reduce ReallocMem calls
+  Capacity := 32; // reduce ReallocMem calls, must be > 1 because the caller's EIP register is already in the list
 
   // Start at level 0
   StackInfo.Level := 0;
