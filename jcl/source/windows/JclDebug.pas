@@ -3203,13 +3203,17 @@ function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddre
   IncludeStartProcLineOffset: Boolean; IncludeVAdress: Boolean): string;
 var
   Info, StartProcInfo: TJclLocationInfo;
-  OffsetStr, StartProcOffsetStr: string;
+  OffsetStr, StartProcOffsetStr, FixedProcedureName: string;
   Module : HMODULE;
 begin
   OffsetStr := '';
   if GetLocationInfo(Addr, Info) then
   with Info do
   begin
+    FixedProcedureName := ProcedureName;
+    if Pos(UnitName + '.', FixedProcedureName) = 1 then
+      FixedProcedureName := Copy(FixedProcedureName, Length(UnitName) + 2, Length(FixedProcedureName) - Length(UnitName) - 1);
+
     if LineNumber > 0 then
     begin
       if IncludeStartProcLineOffset and GetLocationInfo(Pointer(Cardinal(Info.Address) -
@@ -3224,7 +3228,7 @@ begin
         else
           OffsetStr := Format(' - $%x', [-OffsetFromLineNumber])
       end;
-      Result := Format('[%p] %s.%s (Line %u, "%s"%s)%s', [Addr, UnitName, ProcedureName, LineNumber,
+      Result := Format('[%p] %s.%s (Line %u, "%s"%s)%s', [Addr, UnitName, FixedProcedureName, LineNumber,
         SourceName, StartProcOffsetStr, OffsetStr]);
     end
     else
@@ -3232,9 +3236,9 @@ begin
       if IncludeAddressOffset then
         OffsetStr := Format(' + $%x', [OffsetFromProcName]);
       if UnitName <> '' then
-        Result := Format('[%p] %s.%s%s', [Addr, UnitName, ProcedureName, OffsetStr])
+        Result := Format('[%p] %s.%s%s', [Addr, UnitName, FixedProcedureName, OffsetStr])
       else
-        Result := Format('[%p] %s%s', [Addr, ProcedureName, OffsetStr]);
+        Result := Format('[%p] %s%s', [Addr, FixedProcedureName, OffsetStr]);
     end;
   end
   else
