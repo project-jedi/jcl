@@ -1084,7 +1084,7 @@ const
 implementation
 
 uses
-  JclLogic, JclResources, JclSysUtils, JclBorlandTools;
+  JclLogic, JclResources, JclSysUtils;
 
 const
   MANIFESTExtension = '.manifest';
@@ -1096,6 +1096,10 @@ const
 
   DebugSectionName    = '.debug';
   ReadOnlySectionName = '.rdata';
+
+  BinaryExtensionPackage = '.bpl';
+  BinaryExtensionLibrary = '.dll';
+  CompilerExtensionDCP   = '.dcp';
 
 // Helper routines
 function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Integer): Boolean;
