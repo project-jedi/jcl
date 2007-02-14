@@ -3251,10 +3251,12 @@ begin
   begin
     Module := ModuleFromAddr(Addr);
     if IncludeVAdress then
+    begin
       OffsetStr :=  Format('(%p) ', [Pointer(DWORD(Addr) - Module - ModuleCodeOffset)]);
+      Result := OffsetStr + Result;
+    end;
     if IncludeModuleName then
       Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(Module))]), Result, 11);
-    Result := OffsetStr + Result;
   end;
 end;
 
