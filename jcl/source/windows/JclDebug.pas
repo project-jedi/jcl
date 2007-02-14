@@ -2592,6 +2592,7 @@ var
 begin
   NeedInfoSourceClassList;
 
+  Result := nil;
   for I := 0 to InfoSourceClassList.Count - 1 do
   begin
     Result := TJclDebugInfoSourceClass(InfoSourceClassList.Items[I]).Create(Module);
@@ -3665,7 +3666,7 @@ end;
 
 procedure CorrectExceptStackListTop(List: TJclStackInfoList; SkipFirstItem: Boolean);
 var
-  TopItem,I, FoundPos: Integer;
+  TopItem, I, FoundPos: Integer;
 begin
   FoundPos := -1;
   if SkipFirstItem then
@@ -3948,7 +3949,13 @@ begin
     // Get the current stack frame from the EBP register
     StackFrame := FFrameEBP
   else
-    StackFrame := GetEBP;
+  begin
+    // We define the bottom of the valid stack to be the current ESP pointer
+    if BaseOfStack = 0 then
+      BaseOfStack := DWORD(GetEBP);
+    // Get a pointer to the current bottom of the stack
+    StackFrame := PStackFrame(BaseOfStack);
+  end;
 
   // We define the bottom of the valid stack to be the current EBP Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
@@ -4063,7 +4070,7 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
+  Result := (CodeAddr > 8) and not IsBadReadPtr(C8P, 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList);
 
   // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
