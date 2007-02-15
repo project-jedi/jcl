@@ -119,6 +119,7 @@ type
     FStream: TJclFileMappingStream;
     function GetLinkerBugUnitName: string;
   protected
+    FModule: HMODULE;
     FLastUnitName: PJclMapString;
     FLastUnitFileName: PJclMapString;
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); virtual; abstract;
@@ -128,13 +129,14 @@ type
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); virtual; abstract;
     procedure LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress); virtual; abstract;
   public
-    constructor Create(const MapFileName: TFileName); virtual;
+    constructor Create(const MapFileName: TFileName; Module: HMODULE); overload; virtual;
+    constructor Create(const MapFileName: TFileName); overload;
     destructor Destroy; override;
     procedure Parse;
     class function MapStringToStr(MapString: PJclMapString; IgnoreSpaces: Boolean = False): string;
     class function MapStringToFileName(MapString: PJclMapString): string;
     property LinkerBug: Boolean read FLinkerBug;
-    property LinkerBugUnitName: string read GetLinkerBugUnitName; 
+    property LinkerBugUnitName: string read GetLinkerBugUnitName;
     property Stream: TJclFileMappingStream read FStream;
   end;
 
@@ -224,7 +226,7 @@ type
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); override;
     procedure Scan;
   public
-    constructor Create(const MapFileName: TFileName); override;
+    constructor Create(const MapFileName: TFileName; Module: HMODULE); override;
     // Addr are virtual addresses relative to (module base address + $10000)
     function LineNumberFromAddr(Addr: DWORD): Integer; overload;
     function LineNumberFromAddr(Addr: DWORD; var Offset: Integer): Integer; overload;
@@ -269,7 +271,7 @@ type
   protected
     procedure CreateData;
   public
-    constructor Create(const MapFileName: TFileName); override;
+    constructor Create(const MapFileName: TFileName; Module: HMODULE); override;
     destructor Destroy; override;
     function CalculateCheckSum: Boolean;
     property DataStream: TMemoryStream read FDataStream;
@@ -987,10 +989,17 @@ end;
 
 //=== { TJclAbstractMapParser } ==============================================
 
-constructor TJclAbstractMapParser.Create(const MapFileName: TFileName);
+constructor TJclAbstractMapParser.Create(const MapFileName: TFileName; Module: HMODULE);
 begin
+  inherited Create;
+  FModule := Module;
   if FileExists(MapFileName) then
     FStream := TJclFileMappingStream.Create(MapFileName, fmOpenRead or fmShareDenyWrite);
+end;
+
+constructor TJclAbstractMapParser.Create(const MapFileName: TFileName);
+begin
+  Create(MapFileName, 0);
 end;
 
 destructor TJclAbstractMapParser.Destroy;
@@ -1372,9 +1381,9 @@ end;
 
 //=== { TJclMapScanner } =====================================================
 
-constructor TJclMapScanner.Create(const MapFileName: TFileName);
+constructor TJclMapScanner.Create(const MapFileName: TFileName; Module: HMODULE);
 begin
-  inherited Create(MapFileName);
+  inherited Create(MapFileName, Module);
   Scan;
 end;
 
@@ -1398,6 +1407,7 @@ procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress; Len: Inte
   SectionName, GroupName: PJclMapString);
 var
   C: Integer;
+  SectionHeader: PImageSectionHeader;
 begin
   C := Length(FSegmentClasses);
   SetLength(FSegmentClasses, C + 1);
@@ -1407,6 +1417,21 @@ begin
   FSegmentClasses[C].Len := Len;
   FSegmentClasses[C].SectionName := SectionName;
   FSegmentClasses[C].GroupName := GroupName;
+
+  if FModule <> 0 then
+  begin                                                         
+    { Fix the section addresses }
+    SectionHeader := PeMapImgFindSectionFromModule(Pointer(FModule), MapStringToStr(SectionName));
+    if SectionHeader = nil then
+      { before Delphi 2005 the class names where used for the section names }
+      SectionHeader := PeMapImgFindSectionFromModule(Pointer(FModule), MapStringToStr(GroupName));
+
+    if SectionHeader <> nil then
+    begin
+      FSegmentClasses[C].Addr := Cardinal(FModule) + SectionHeader.VirtualAddress;
+      FSegmentClasses[C].VA := SectionHeader.VirtualAddress;
+    end;
+  end;
 end;
 
 function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
@@ -1449,6 +1474,13 @@ begin
       and (DWORD(Address.Offset) < FSegmentClasses[SegIndex].Len) then
   begin
     VA := AddrToVA(DWORD(Address.Offset) + FSegmentClasses[SegIndex].Addr);
+    { Starting with Delphi 2005, "empty" units are listes with the last line and
+      the VA 0001:00000000. When we would accept 0 VAs here, System.pas functions
+      could be mapped to other units and line numbers. Discaring such items should
+      have no impact on the correct information, because there can't be a function
+      that starts at VA 0. }
+    if VA = 0 then
+      Continue;
     if FLineNumbersCnt mod 256 = 0 then
       SetLength(FLineNumbers, FLineNumbersCnt + 256);
     FLineNumbers[FLineNumbersCnt].Segment := FSegmentClasses[SegIndex].Segment;
@@ -1805,7 +1837,7 @@ var
   Generator: TJclBinDebugGenerator;
 begin
   JDbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
-  Generator := TJclBinDebugGenerator.Create(MapFileName);
+  Generator := TJclBinDebugGenerator.Create(MapFileName, 0);
   try
     MapFileSize := Generator.Stream.Size;
     JdbgFileSize := Generator.DataStream.Size;
@@ -1846,7 +1878,7 @@ function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName
 var
   BinDebug: TJclBinDebugGenerator;
 begin
-  BinDebug := TJclBinDebugGenerator.Create(MapFileName);
+  BinDebug := TJclBinDebugGenerator.Create(MapFileName, 0);
   try
     Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, BinDebug,
       LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
@@ -1977,9 +2009,9 @@ end;
 
 //=== { TJclBinDebugGenerator } ==============================================
 
-constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
+constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName; Module: HMODULE);
 begin
-  inherited Create(MapFileName);
+  inherited Create(MapFileName, Module);
   FDataStream := TMemoryStream.Create;
   FMapFileName := MapFileName;
   if FStream <> nil then
@@ -2195,6 +2227,7 @@ end;
 
 constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
 begin
+  inherited Create;
   FCacheData := CacheData;
   FStream := AStream;
   CheckFormat;
@@ -2712,7 +2745,7 @@ begin
   with FScanner do
   begin
     Info.UnitName := ModuleNameFromAddr(VA);
-    Result := (Info.UnitName <> '');
+    Result := Info.UnitName <> '';
     if Result then
     begin
       Info.Address := Addr;
@@ -2732,7 +2765,7 @@ begin
   MapFileName := ChangeFileExt(FileName, MapFileExtension);
   Result := FileExists(MapFileName);
   if Result then
-    FScanner := TJclMapScanner.Create(MapFileName);
+    FScanner := TJclMapScanner.Create(MapFileName, Module);
 end;
 
 //=== { TJclDebugInfoBinary } ================================================
@@ -2752,7 +2785,7 @@ begin
   with FScanner do
   begin
     Info.UnitName := ModuleNameFromAddr(VA);
-    Result := (Info.UnitName) <> '';
+    Result := Info.UnitName <> '';
     if Result then
     begin
       Info.Address := Addr;
@@ -2880,7 +2913,7 @@ var
 begin
   VA := VAFromAddr(Addr);
   Info.UnitName := FImage.TD32Scanner.ModuleNameFromAddr(VA);
-  Result := (Info.UnitName) <> '';
+  Result := Info.UnitName <> '';
   if Result then
     with Info do
     begin
@@ -3207,7 +3240,7 @@ var
   Module : HMODULE;
 begin
   OffsetStr := '';
-  if GetLocationInfo(Addr, Info) then
+  if GetLocationInfo(Addr, Info) then 
   with Info do
   begin
     FixedProcedureName := ProcedureName;
@@ -3702,10 +3735,8 @@ begin
   Delayed := stDelayedTrace in JclStackTrackingOptions;
   if BaseOfStack = nil then
   begin
-    if RawMode then
-      IgnoreLevels := 9
-    else
-      IgnoreLevels := 5;
+    BaseOfStack := GetEBP;
+    IgnoreLevels := 1;
   end
   else
     IgnoreLevels := Cardinal(-1); // because of the "IgnoreLevels + 1" in TJclStackInfoList.StoreToList()
@@ -4310,7 +4341,7 @@ begin
   if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) and
      (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
   begin
-    if stStack in JclStackTrackingOptions then
+    if stStack in JclStackTrackingOptions then    
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException, BaseOfStack);
     if stExceptFrame in JclStackTrackingOptions then
       DoExceptFrameTrace;
