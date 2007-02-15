@@ -2943,7 +2943,7 @@ const
   SymGetSymFromAddrFuncName = 'SymGetSymFromAddr';    // do not localize
   SymGetModuleInfoFuncName = 'SymGetModuleInfo';      // do not localize
   SymLoadModuleFuncName = 'SymLoadModule';            // do not localize
-  SymGetLineFromAddrName = 'SymGetLineFromAddr';      // do not localize 
+  SymGetLineFromAddrName = 'SymGetLineFromAddr';      // do not localize
 
 class function TJclDebugInfoSymbols.InitializeDebugSymbols: Boolean;
 var
@@ -3067,12 +3067,11 @@ begin
     ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
     ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
 
-    if Result
-      and ((not SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo))
-           or (ModuleInfo.BaseOfImage = 0)) then
+    if ((not SymGetModuleInfoFunc(ProcessHandle, Module, ModuleInfo))
+        or (ModuleInfo.BaseOfImage = 0)) then
     begin
       ModuleFileName := GetModulePath(Module);
-      Result := (DWORD(SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, 0, 0)) <> 0);
+      Result := (DWORD(SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, HInstance, 0)) <> 0);
 
       ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
       ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
