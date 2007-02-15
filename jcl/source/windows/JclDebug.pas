@@ -2842,39 +2842,32 @@ end;
 function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: Cardinal): Boolean;
 begin
   Dec(Cardinal(Addr), 6);
-  while Cardinal(Addr) > FunctionStartAddr do
+  Result := False;
+
+  while (Cardinal(Addr) > FunctionStartAddr) do
   begin
+    if IsBadReadPtr(Addr, 6) then
+      Exit;
+
     if (Addr[0] = $C2) and // ret $xxxx
          (((Addr[3] = $90) and (Addr[4] = $90) and (Addr[5] = $90)) or // nop
           ((Addr[3] = $CC) and (Addr[4] = $CC) and (Addr[5] = $CC))) then // int 3
-    begin
-      Result := False;
       Exit;
-    end
-    else
+
     if (Addr[0] = $C3) and // ret
          (((Addr[1] = $90) and (Addr[2] = $90) and (Addr[3] = $90)) or // nop
           ((Addr[1] = $CC) and (Addr[2] = $CC) and (Addr[3] = $CC))) then // int 3
-    begin
-      Result := False;
       Exit;
-    end
-    else
+
     if (Addr[0] = $E9) and // jmp rel-far
          (((Addr[5] = $90) and (Addr[6] = $90) and (Addr[7] = $90)) or // nop
           ((Addr[5] = $CC) and (Addr[6] = $CC) and (Addr[7] = $CC))) then // int 3
-    begin
-      Result := False;
       Exit;
-    end
-    else
+
     if (Addr[0] = $EB) and // jmp rel-near
          (((Addr[2] = $90) and (Addr[3] = $90) and (Addr[4] = $90)) or // nop
           ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
-    begin
-      Result := False;
       Exit;
-    end;
 
     Dec(Cardinal(Addr));
   end;
