@@ -2931,7 +2931,7 @@ begin
           { Check if we have a valid address in an exported function. }
           if not IsAddressInThisExportedFunction(Addr, FModule + Items[I].Address) then
           begin
-            Info.UnitName := '[' + AnsiLowerCase(ExtractFileName(GetModulePath(FModule))) + ']';
+            //Info.UnitName := '[' + AnsiLowerCase(ExtractFileName(GetModulePath(FModule))) + ']'
             Info.ProcedureName := Format(RsUnknownFunctionAt, [Info.ProcedureName]);
           end;
 
