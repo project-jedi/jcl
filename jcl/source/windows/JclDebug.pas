@@ -675,6 +675,10 @@ type
 var
   JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
 
+  { JclDebugInfoSymbolPaths specifies a list of paths, separated by ';', in
+    which the DebugInfoSymbol scanner should look for symbol information. }
+  JclDebugInfoSymbolPaths: string = '';
+
 function JclStartExceptionTracking: Boolean;
 function JclStopExceptionTracking: Boolean;
 function JclExceptionTrackingActive: Boolean;
@@ -2950,7 +2954,7 @@ type
   TSymGetModuleInfoFunc = function (hProcess: THandle; dwAddr: DWORD;
     var ModuleInfo: TImagehlpModule): Bool; stdcall;
   TSymLoadModuleFunc = function (hProcess: THandle; hFile: THandle; ImageName,
-    ModuleName: LPSTR; BaseOfDll, SizeOfDll: DWORD): Bool; stdcall;
+    ModuleName: LPSTR; BaseOfDll, SizeOfDll: DWORD): DWORD; stdcall;
   TSymGetLineFromAddrFunc = function (hProcess: THandle; dwAddr: DWORD;
     pdwDisplacement: PDWORD; var Line: TImageHlpLine): Bool; stdcall;
 
@@ -2978,6 +2982,23 @@ const
   SymLoadModuleFuncName = 'SymLoadModule';            // do not localize
   SymGetLineFromAddrName = 'SymGetLineFromAddr';      // do not localize
 
+function StrRemoveEmptyPaths(const Paths: string): string;
+var
+  List: TStrings;
+  I: Integer;
+begin
+  List := TStringList.Create;
+  try
+    StrToStrings(Paths, DirSeparator, List, False);
+    for I := 0 to List.Count - 1 do
+      if Trim(List[I]) = '' then
+        List[I] := '';
+    Result := StringsToStr(List, DirSeparator, False);
+  finally
+    List.Free;
+  end;
+end;
+
 class function TJclDebugInfoSymbols.InitializeDebugSymbols: Boolean;
 var
   EnvironmentVarValue, SearchPath: string;
@@ -2994,16 +3015,26 @@ begin
 
     if Result then
     begin
-      SearchPath := StrEnsureSuffix(DirSeparator, ExtractFilePath(GetModulePath(GetCurrentProcess)) + GetCurrentFolder);
-      if GetEnvironmentVar(EnvironmentVarNtSymbolPath, EnvironmentVarValue) then
-        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath;
-      if GetEnvironmentVar(EnvironmentVarAlternateNtSymbolPath, EnvironmentVarValue) then
-        SearchPath := StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath;
+      SearchPath := ''; // use default paths
+      if JclDebugInfoSymbolPaths <> '' then
+      begin
+        SearchPath := StrEnsureSuffix(DirSeparator, JclDebugInfoSymbolPaths);
+        SearchPath := StrEnsureNoSuffix(DirSeparator, SearchPath + GetCurrentFolder);
+
+        if GetEnvironmentVar(EnvironmentVarNtSymbolPath, EnvironmentVarValue) and (EnvironmentVarValue <> '') then
+          SearchPath := StrEnsureNoSuffix(DirSeparator, StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath);
+        if GetEnvironmentVar(EnvironmentVarAlternateNtSymbolPath, EnvironmentVarValue) and (EnvironmentVarValue <> '') then
+          SearchPath := StrEnsureNoSuffix(DirSeparator, StrEnsureSuffix(DirSeparator, EnvironmentVarValue) + SearchPath);
+
+        { DbgHelp.dll crashes when an empty path is specified. This also means
+          that the SearchPath must not end with a DirSeparator. }
+        SearchPath := StrRemoveEmptyPaths(SearchPath);
+      end;
 
       if IsWinNT then
-        Result := SymInitializeFunc(GetCurrentProcess, PChar(SearchPath), False)
+        Result := SymInitializeFunc(GetCurrentProcess, Pointer(SearchPath), False)
       else
-        Result := SymInitializeFunc(GetCurrentProcessId, PChar(SearchPath), False);
+        Result := SymInitializeFunc(GetCurrentProcessId, Pointer(SearchPath), False);
       if Result then
       begin
         SymOptions := SymGetOptionsFunc or SYMOPT_DEFERRED_LOADS
@@ -3104,7 +3135,7 @@ begin
         or (ModuleInfo.BaseOfImage = 0)) then
     begin
       ModuleFileName := GetModulePath(Module);
-      Result := (DWORD(SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, HInstance, 0)) <> 0);
+      Result := SymLoadModuleFunc(ProcessHandle, 0, PChar(ModuleFileName), nil, 0, 0) <> 0;
 
       ZeroMemory(@ModuleInfo, SizeOf(ModuleInfo));
       ModuleInfo.SizeOfStruct := SizeOf(ModuleInfo);
