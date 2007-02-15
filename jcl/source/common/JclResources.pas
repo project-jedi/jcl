@@ -821,9 +821,11 @@ resourcestring
   RsDebugAssertValidString  = 'Invalid string passed to AssertValid';
 
   // TMapFiles
-  RsDebugMapFileExtension = '.map'; // do not localize
   RsDebugNoProcessInfo    = 'Unable to obtain process information';
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
+
+  // JclDebugInfoExport
+  RsUnknownFunctionAt     = 'Unknown function at %s';
 
 //=== JclDotNet ==============================================================
 resourcestring

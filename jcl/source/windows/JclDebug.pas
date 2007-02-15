@@ -238,17 +238,6 @@ type
     property LineNumberErrors: Integer read FLineNumberErrors;
   end;
 
-// JCL binary debug data generator and scanner
-const
-  JclDbgDataSignature = $4742444A; // JDBG
-  JclDbgDataResName   = 'JCLDEBUG';
-  JclDbgFileExtension = '.jdbg';
-
-  JclDbgHeaderVersion = 1; // JCL 1.11 and 1.20
-
-  MapFileExtension    = '.map';
-  DrcFileExtension    = '.drc';
-
 type
   PJclDbgHeader = ^TJclDbgHeader;
   TJclDbgHeader = packed record
@@ -416,6 +405,7 @@ type
   TJclDebugInfoExports = class(TJclDebugInfoSource)
   private
     FBorImage: TJclPeBorImage;
+    function IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: Cardinal): Boolean;
   public
     destructor Destroy; override;
     function InitializeSource: Boolean; override;
@@ -665,20 +655,6 @@ type
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 function JclLastExceptFrameList: TJclExceptFrameList;
 
-// Global exceptional stack tracker enable routines and variables
-type
-  TJclStackTrackingOption =
-    (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace, stTraceEAbort, stMainThreadOnly);
-  TJclStackTrackingOptions = set of TJclStackTrackingOption;
-
-var
-  JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
-
-  { JclDebugInfoSymbolPaths specifies a list of paths, separated by ';', in
-    which the DebugInfoSymbol scanner should look for symbol information. }
-  JclDebugInfoSymbolPaths: string = '';
-
 function JclStartExceptionTracking: Boolean;
 function JclStopExceptionTracking: Boolean;
 function JclExceptionTrackingActive: Boolean;
@@ -770,6 +746,31 @@ const
   EnvironmentVarAlternateNtSymbolPath = '_NT_ALTERNATE_SYMBOL_PATH'; // do not localize
   MaxStackTraceItems = 4096;
 
+// JCL binary debug data generator and scanner
+const
+  JclDbgDataSignature = $4742444A; // JDBG
+  JclDbgDataResName   = 'JCLDEBUG'; // do not localize
+  JclDbgHeaderVersion = 1; // JCL 1.11 and 1.20
+
+  JclDbgFileExtension = '.jdbg'; // do not localize
+  JclMapFileExtension = '.map';  // do not localize
+  DrcFileExtension = '.drc';  // do not localize
+
+// Global exceptional stack tracker enable routines and variables
+type
+  TJclStackTrackingOption =
+    (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
+     stDelayedTrace, stTraceEAbort, stMainThreadOnly);
+  TJclStackTrackingOptions = set of TJclStackTrackingOption;
+
+var
+  JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
+
+  { JclDebugInfoSymbolPaths specifies a list of paths, separated by ';', in
+    which the DebugInfoSymbol scanner should look for symbol information. }
+  JclDebugInfoSymbolPaths: string = '';
+
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -787,7 +788,8 @@ uses
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
+  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils, JclWin32,
+  JclResources;
 
 //=== Helper assembler routines ==============================================
 
@@ -2766,7 +2768,7 @@ function TJclDebugInfoMap.InitializeSource: Boolean;
 var
   MapFileName: TFileName;
 begin
-  MapFileName := ChangeFileExt(FileName, MapFileExtension);
+  MapFileName := ChangeFileExt(FileName, JclMapFileExtension);
   Result := FileExists(MapFileName);
   if Result then
     FScanner := TJclMapScanner.Create(MapFileName, Module);
@@ -2837,6 +2839,48 @@ begin
   inherited Destroy;
 end;
 
+function TJclDebugInfoExports.IsAddressInThisExportedFunction(Addr: PByteArray; FunctionStartAddr: Cardinal): Boolean;
+begin
+  Dec(Cardinal(Addr), 6);
+  while Cardinal(Addr) > FunctionStartAddr do
+  begin
+    if (Addr[0] = $C2) and // ret $xxxx
+         (((Addr[3] = $90) and (Addr[4] = $90) and (Addr[5] = $90)) or // nop
+          ((Addr[3] = $CC) and (Addr[4] = $CC) and (Addr[5] = $CC))) then // int 3
+    begin
+      Result := False;
+      Exit;
+    end
+    else
+    if (Addr[0] = $C3) and // ret
+         (((Addr[1] = $90) and (Addr[2] = $90) and (Addr[3] = $90)) or // nop
+          ((Addr[1] = $CC) and (Addr[2] = $CC) and (Addr[3] = $CC))) then // int 3
+    begin
+      Result := False;
+      Exit;
+    end
+    else
+    if (Addr[0] = $E9) and // jmp rel-far
+         (((Addr[5] = $90) and (Addr[6] = $90) and (Addr[7] = $90)) or // nop
+          ((Addr[5] = $CC) and (Addr[6] = $CC) and (Addr[7] = $CC))) then // int 3
+    begin
+      Result := False;
+      Exit;
+    end
+    else
+    if (Addr[0] = $EB) and // jmp rel-near
+         (((Addr[2] = $90) and (Addr[3] = $90) and (Addr[4] = $90)) or // nop
+          ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
+    begin
+      Result := False;
+      Exit;
+    end;
+
+    Dec(Cardinal(Addr));
+  end;
+  Result := True;
+end;
+
 function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
   I, BasePos: Integer;
@@ -2890,6 +2934,14 @@ begin
         begin
           Info.Address := Addr;
           Info.DebugInfo := Self;
+
+          { Check if we have a valid address in an exported function. }
+          if not IsAddressInThisExportedFunction(Addr, FModule + Items[I].Address) then
+          begin
+            Info.UnitName := '[' + AnsiLowerCase(ExtractFileName(GetModulePath(FModule))) + ']';
+            Info.ProcedureName := Format(RsUnknownFunctionAt, [Info.ProcedureName]);
+          end;
+
           Break;
         end;
       end;
