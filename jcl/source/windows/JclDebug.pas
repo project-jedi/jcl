@@ -4178,7 +4178,7 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and not IsBadReadPtr(C8P, 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList);
+  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and not IsBadReadPtr(C8P, 8);
 
   // Now check to see if the instruction preceding the return address
   // could be a valid CALL instruction
