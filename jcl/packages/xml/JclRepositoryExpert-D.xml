@@ -31,5 +31,6 @@
     <File Name="..\..\experts\debug\dialog\JclOtaExcDlgSystemFrame.pas" Targets="Windows" Formname="JclOtaExcDlgSystemPage: TFrame" Condition=""/>
     <File Name="..\..\experts\debug\dialog\JclOtaExcDlgTraceFrame.pas" Targets="Windows" Formname="JclOtaExcDlgTracePage: TFrame" Condition=""/>
     <File Name="..\..\experts\debug\dialog\JclOtaTemplates.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgIgnoreFrame.pas" Targets="Windows" Formname="JclOtaExcDlgIgnoredPage: TFrame" Condition=""/>
   </Contains>
 </Package>

@@ -33,7 +33,7 @@ interface
 {$I jcl.inc}
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   ToolsAPI,
   JclBorlandTools,
   JclOtaUtils, JclOtaTemplates, JclOtaRepositoryUtils;
@@ -68,8 +68,13 @@ type
     FStackList: Boolean;
     FAutoScrollBars: Boolean;
     FMainThreadOnly: Boolean;
+    FTraceEAbort: Boolean;
+    FIgnoredExceptions: TStrings;
+    FTraceAllExceptions: Boolean;
+    function GetIgnoredExceptionsCount: Integer;
   public
     constructor Create; reintroduce;
+    destructor Destroy; override; 
   published
     // file options
     property Languages: TJclBorPersonalities read FLanguages write FLanguages;
@@ -95,6 +100,12 @@ type
     property ModuleList: Boolean read FModuleList write FModuleList;
     property ActiveControls: Boolean read FActiveControls write FActiveControls;
     property MainThreadOnly: Boolean read FMainThreadOnly write FMainThreadOnly;
+    // ignored exceptions
+    property TraceAllExceptions: Boolean read FTraceAllExceptions
+      write FTraceAllExceptions;
+    property TraceEAbort: Boolean read FTraceEAbort write FTraceEAbort;
+    property IgnoredExceptions: TStrings read FIgnoredExceptions write FIgnoredExceptions;
+    property IgnoredExceptionsCount: Integer read GetIgnoredExceptionsCount;
     // trace options
     property StackList: Boolean read FStackList write FStackList;
     property RawData: Boolean read FRawData write FRawData;
@@ -133,7 +144,7 @@ implementation
 {$R JclOtaExcDlgIcons.res}
 
 uses
-  Windows, Classes, Forms,
+  Windows, Forms,
   JclStrings, JclFileUtils, JclSysInfo, JclResources, JclRegistry,
   JclOtaConsts, JclOtaResources, JclOtaExcDlgWizard;
 
@@ -142,7 +153,7 @@ uses
 constructor TJclOtaExcDlgParams.Create;
 begin
   inherited Create;
-  
+
   FHookDll := True;
   FLanguage := bpUnknown;
   FLanguages := [bpUnknown];
@@ -170,6 +181,21 @@ begin
   FActiveControls := True;
   FStackList := True;
   FAutoScrollBars := True;
+  FMainThreadOnly := False;
+  FTraceEAbort := False;
+  FTraceAllExceptions := False;
+  FIgnoredExceptions := TStringList.Create;
+end;
+
+destructor TJclOtaExcDlgParams.Destroy;
+begin
+  FIgnoredExceptions.Free;
+  inherited Destroy;
+end;
+
+function TJclOtaExcDlgParams.GetIgnoredExceptionsCount: Integer;
+begin
+  Result := FIgnoredExceptions.Count;
 end;
 
 //=== { TJclExcDlgExpert } ===================================================

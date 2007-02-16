@@ -7,6 +7,7 @@ USEUNIT("..\..\experts\debug\dialog\JclOtaExcDlgFormFrame.pas");
 USEUNIT("..\..\experts\debug\dialog\JclOtaExcDlgSystemFrame.pas");
 USEUNIT("..\..\experts\debug\dialog\JclOtaExcDlgTraceFrame.pas");
 USEUNIT("..\..\experts\debug\dialog\JclOtaTemplates.pas");
+USEUNIT("..\..\experts\debug\dialog\JclOtaExcDlgIgnoreFrame.pas");
 USEDEF("JclRepositoryExpertDLLC50.def");
 Project file
 DllEntryPoint

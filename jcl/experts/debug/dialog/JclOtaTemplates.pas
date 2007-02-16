@@ -44,6 +44,7 @@ type
     function IsDefined(const Name: string): Boolean; virtual;
     function GetStrValue(const Name: string): string; virtual;
     function GetIntValue(const Name: string): Integer; virtual;
+    function GetStringsValue(const Name: string): TStrings; virtual;
 
     property Language: TJclBorPersonality read FLanguage write FLanguage;
   end;
@@ -101,8 +102,9 @@ function ApplyTemplate(const Template: string;
   end;
 var
   IndexInput, IndexOutput, TokenPos, CharCountIn, CharCountOut,
-  IfCount: Integer;
-  Identifier, Symbol, StrValue: string;
+  IfCount, StrIndex, RepeatCount: Integer;
+  Identifier, Symbol, StrValue, RepeatPattern, RepeatValue: string;
+  StrList: TStrings;
 begin
   CharCountIn := Length(Template);
   CharCountOut := 2*CharCountIn;
@@ -197,6 +199,41 @@ begin
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
         end;
       end
+      else if Identifier = '%REPEATLINE' then
+      begin
+        TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
+        Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
+        if IfCount = 0 then
+        begin
+          RepeatCount := Params.GetIntValue(Symbol);
+          StrIndex := TokenPos;
+          while (StrIndex <= CharCountIn) and not (Template[StrIndex] in [AnsiLineFeed, AnsiCarriageReturn]) do
+            Inc(StrIndex);
+          RepeatPattern := Copy(Template, TokenPos, StrIndex - TokenPos);
+          TokenPos := StrIndex;
+
+          while RepeatCount > 0 do
+          begin
+            StrValue := RepeatPattern;
+            StrIndex := Pos('%', StrValue);
+            while StrIndex > 0 do
+            begin
+              Inc(StrIndex);
+              Symbol := GetIdentifier(StrValue, StrIndex, Length(StrValue));
+              StrList := Params.GetStringsValue(Symbol);
+              if Assigned(StrList) then
+                RepeatValue := StrList.Strings[RepeatCount - 1]
+              else
+                RepeatValue := '';
+              StrReplace(StrValue, '%' + Symbol, RepeatValue, [rfReplaceAll, rfIgnoreCase]);
+              StrIndex := Pos('%', StrValue);
+            end;
+            CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
+            CopyStr(Result, IndexOutput, CharCountOut, AnsiLineBreak, 1, Length(AnsiLineBreak));
+            Dec(RepeatCount);
+          end;
+        end;
+      end
       else if IfCount = 0 then
         CopyStr(Result, IndexOutput, CharCountOut, Identifier, 1, Length(Identifier));
         
@@ -221,6 +258,17 @@ var
 begin
   VariantValue := GetPropValue(Self, Name);
   Result := Integer(VariantValue);
+end;
+
+function TJclOtaTemplateParams.GetStringsValue(const Name: string): TStrings;
+var
+  AInstance: TObject;
+begin
+  AInstance := TObject(GetOrdProp(Self, Name));
+  if Assigned(Result) and (Result is TStrings) then
+    Result := TStrings(AInstance)
+  else
+    Result := nil;
 end;
 
 function TJclOtaTemplateParams.GetStrValue(const Name: string): string;

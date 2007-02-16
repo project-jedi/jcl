@@ -57,7 +57,7 @@ implementation
 uses
   JclOtaResources, 
   JclOtaExcDlgFileFrame, JclOtaExcDlgFormFrame,
-  JclOtaExcDlgSystemFrame, JclOtaExcDlgTraceFrame;
+  JclOtaExcDlgSystemFrame, JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
 
 function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
 var
@@ -66,7 +66,7 @@ var
 begin
   Result := False;
   OwnsParams := False;
-  
+
   if not Assigned(AParams) then
   begin
     OwnsParams := True;
@@ -98,10 +98,11 @@ procedure TJclOtaExcDlgForm.FormCreate(Sender: TObject);
 begin
   inherited FormCreate(Sender);
   Caption := RsExceptionDialogConfigure;
-  
+
   AddPage(TJclOtaExcDlgFilePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgFormPage.Create(Self, Params));
   AddPage(TJclOtaExcDlgSystemPage.Create(Self, Params));
+  AddPage(TJclOtaExcDlgIgnorePage.Create(Self, Params));
   AddPage(TJclOtaExcDlgTracePage.Create(Self, Params));
 end;
 

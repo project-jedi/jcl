@@ -611,6 +611,9 @@ end;
 
 procedure InitializeHandler;
 begin
+%repeatline IgnoredExceptionsCount  AddIgnoredException(%IgnoredExceptions);
+%if TraceEAbort  RemoveIgnoredException(EAbort);%endif
+%if TraceAllExceptions  JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];%endif
 %if RawData  JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];%endif
 %if HookDll  JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
 %if DelayedTrace  JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif

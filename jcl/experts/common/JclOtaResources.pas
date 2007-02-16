@@ -113,44 +113,51 @@ resourcestring
 //=== JclOtaExcDlgFileFrame.pas ==============================================
 resourcestring
   RsExcDlgFileOptions = 'file options';
-  RsLanguage = 'Language:';
-  RsFileName = 'File name:';
-  RsFormName = 'Form name:';
-  RsFormAncestor = 'Form ancestor:';
-  RsFileNameDialog = 'Save new file as...';
+  RsLanguage = '&Language:';
+  RsFileName = '&File name:';
+  RsFormName = 'Form &name:';
+  RsFormAncestor = 'Form &ancestor:';
+  RsFileNameDialog = '&Save new file as...';
 
 //=== JclOtaExcDlgFormFrame.pas ==============================================
 resourcestring
   RsExcDlgFormOptions = 'form options';
-  RsDialogWithMailButton = 'Button to send stack trace by mail';
-  RsEMail = 'EMail:';
-  RsSubject = 'Subject:';
-  RsModalDialog = 'Modal dialog';
-  RsSizeableDialog = 'Sizeable dialog';
-  RsAutoScrollBars = 'Automatic scroll bars';
+  RsDialogWithMailButton = '&Button to send stack trace by mail';
+  RsEMail = '&EMail:';
+  RsSubject = '&Subject:';
+  RsModalDialog = '&Modal dialog';
+  RsSizeableDialog = 'S&izeable dialog';
+  RsAutoScrollBars = '&Automatic scroll bars';
 
 //=== JclOtaExcDlgSystemFrame.pas ============================================
 resourcestring
   RsExcDlgSystemOptions = 'system options';
-  RsDelayedStackTrace = 'Delayed stack traces (faster)';
-  RsLogTrace = 'Add crash data to log file';
-  RsHookDll = 'Hook DLL';
-  RsModuleList = 'Module list';
-  RsOSInfo = 'Operating system informations';
-  RsActiveControls = 'List of active controls';
-  RsMainThreadOnly = 'Catch only exceptions of main thread';
+  RsDelayedStackTrace = '&Delayed stack traces (faster)';
+  RsLogTrace = '&Add crash data to log file';
+  RsHookDll = '&Hook DLL';
+  RsModuleList = '&Module list';
+  RsOSInfo = '&Operating system informations';
+  RsActiveControls = '&List of active controls';
+  RsMainThreadOnly = '&Catch only exceptions of main thread';
 
 //=== JclOtaExcDlgTraceFrame.pas =============================================
 resourcestring
   RsExcDlgTraceOptions = 'trace options';
-  RsStackList = 'Stack list';
-  RsRawData = 'Raw analysis of the stack';
-  RsModuleName = 'Module name';
+  RsStackList = '&Stack list';
+  RsRawData = '&Raw analysis of the stack';
+  RsModuleName = '&Module name';
   //RsAddressOffset = 'Address offset';
-  RsCodeDetails = 'Code details';
-  RsVirtualAddress = 'Virtual address';
-  RsModuleOffset = 'Module offset';
-  RsPreview = 'Preview:';
+  RsCodeDetails = '&Code details';
+  RsVirtualAddress = '&Virtual address';
+  RsModuleOffset = 'Module &offset';
+  RsPreview = '&Preview:';
+
+//=== JclOtaExcDlgIgnoreFrame.pas ============================================
+resourcestring
+  RsExcDlgIgnoreOptions = 'ignored exceptions';
+  RsTraceAllExceptions = '&Trace all exceptions';
+  RsTraceEAbort = 'Trace &EAbort and its descendants';
+  RsIgnoredExceptions = '&Ancestor exception classes to ignore (one per line)';
 
 //=== OpenDlgFavAdapter.pas ==================================================
 resourcestring
