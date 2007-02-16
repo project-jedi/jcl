@@ -4030,6 +4030,8 @@ begin
         StackInfo.CallerAdr := StackFrameCallerAdr;
       StackInfo.DumpSize := StackFrameCallersEBP - DWORD(StackFrame);
       StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
+      if PStackFrame(StackFrame^.CallersEBP) = StackFrame then
+        Break;
       // Step to the next stack frame by following the EBP pointer
       StackFrame := PStackFrame(StackFrameCallersEBP + FStackOffset);
       Result := True;
