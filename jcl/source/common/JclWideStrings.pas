@@ -288,6 +288,9 @@ procedure WideReverseInPlace(var S: WideString);
 function TrimLeftLengthW(const S: WideString): Integer;
 function TrimRightLengthW(const S: WideString): Integer;
 
+function WideStartsText(const SubStr, S: WideString): Boolean;
+function WideStartsStr(const SubStr, S: WideString): Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1040,6 +1043,23 @@ begin
   while (Result > 0) and (S[Result] <= #32) do
     Dec(Result);
 end;
+
+function WideStartsText(const SubStr, S: WideString): Boolean;
+var
+  Len: Integer;
+begin
+  Len := Length(SubStr);
+  Result := (Len <= Length(S)) and (StrLICompW(PWideChar(SubStr), PWideChar(S), Len) = 0);
+end;
+
+function WideStartsStr(const SubStr, S: WideString): Boolean;
+var
+  Len: Integer;
+begin
+  Len := Length(SubStr);
+  Result := (Len <= Length(S)) and (StrLCompW(PWideChar(SubStr), PWideChar(S), Len) = 0);
+end;
+
 
 //=== { TWStrings } ==========================================================
 
