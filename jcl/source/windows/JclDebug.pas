@@ -760,8 +760,14 @@ const
 type
   TJclStackTrackingOption =
     (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList,
-     stDelayedTrace, stTraceEAbort, stMainThreadOnly);
+     stDelayedTrace, stTraceAllExceptions, stMainThreadOnly);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
+
+{$IFDEF KEEP_DEPRECATED}
+const
+  // replaced by RemoveIgnoredException(EAbort)
+  stTraceEAbort = stTraceAllExceptions;
+{$ENDIF KEEP_DEPRECATED}
 
 var
   JclStackTrackingOptions: TJclStackTrackingOptions = [stStack];
@@ -770,6 +776,10 @@ var
     which the DebugInfoSymbol scanner should look for symbol information. }
   JclDebugInfoSymbolPaths: string = '';
 
+// functions to add/remove exception classes to be ignored if StTraceAllExceptions is not set
+procedure AddIgnoredException(const ExceptionClass: TClass);
+procedure RemoveIgnoredException(const ExceptionClass: TClass);
+function IsIgnoredException(const ExceptionClass: TClass): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -4410,14 +4420,63 @@ end;
 
 var
   TrackingActive: Boolean;
+  IgnoredExceptions: TThreadList = nil;
+
+procedure AddIgnoredException(const ExceptionClass: TClass);
+begin
+  if Assigned(ExceptionClass) then
+  begin
+    if not Assigned(IgnoredExceptions) then
+      IgnoredExceptions := TThreadList.Create;
+
+    IgnoredExceptions.Add(ExceptionClass);
+  end;
+end;
+
+procedure RemoveIgnoredException(const ExceptionClass: TClass);
+var
+  ClassList: TList;
+begin
+  if Assigned(ExceptionClass) and Assigned(IgnoredExceptions) then
+  begin
+    ClassList := IgnoredExceptions.LockList;
+    try
+      ClassList.Remove(ExceptionClass);
+    finally
+      IgnoredExceptions.UnlockList;
+    end;
+  end;
+end;
+
+function IsIgnoredException(const ExceptionClass: TClass): Boolean;
+var
+  ClassList: TList;
+  Index: Integer;
+begin
+  Result := False;
+  if Assigned(IgnoredExceptions) and not (stTraceAllExceptions in JclStackTrackingOptions) then
+  begin
+    ClassList := IgnoredExceptions.LockList;
+    try
+      for Index := 0 to ClassList.Count - 1 do
+        if ExceptionClass.InheritsFrom(TClass(ClassList.Items[Index])) then
+      begin
+        Result := True;
+        Break;
+      end;
+    finally
+      IgnoredExceptions.UnlockList;
+    end;
+  end;
+end;
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean;
   BaseOfStack: Pointer);
 begin
-  if TrackingActive and ((stTraceEAbort in JclStackTrackingOptions) or not (ExceptObj is EAbort)) and
+  if TrackingActive and Assigned(ExceptObj) and (not IsIgnoredException(ExceptObj.ClassType)) and
      (not (stMainThreadOnly in JclStackTrackingOptions) or (GetCurrentThreadId = MainThreadID)) then
   begin
-    if stStack in JclStackTrackingOptions then    
+    if stStack in JclStackTrackingOptions then
       DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException, BaseOfStack);
     if stExceptFrame in JclStackTrackingOptions then
       DoExceptFrameTrace;
@@ -4521,7 +4580,7 @@ procedure TJclDebugThread.HandleException;
 begin
   FSyncException := Exception(ExceptObject);
   try
-    if not (FSyncException is EAbort) then
+    if Assigned(FSyncException) and not IsIgnoredException(FSyncException.ClassType) then
       Synchronize(DoHandleException);
   finally
     FSyncException := nil;
@@ -4774,6 +4833,7 @@ initialization
   DebugInfoCritSect := TJclCriticalSection.Create;
   GlobalModulesList := TJclGlobalModulesList.Create;
   GlobalStackList := TJclGlobalStackList.Create;
+  AddIgnoredException(EAbort);
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
@@ -4794,6 +4854,7 @@ finalization
   FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
   FreeAndNil(InfoSourceClassList);
+  FreeAndNil(IgnoredExceptions);
 
   TJclDebugInfoSymbols.CleanupDebugSymbols;
 
