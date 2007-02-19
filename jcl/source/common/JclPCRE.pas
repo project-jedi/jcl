@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Class wrapper for PCRE (PERL Compatible Regular Expression)                                      }
 {                                                                                                  }
-{ Unit owner: Peter Thörnqvist                                                                     }
+{ Unit owner: Peter Thï¿½nqvist                                                                     }
 { Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -73,7 +73,7 @@ type
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
-    roNewLineCR, roNewLineLF);
+    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny);
   TJclAnsiRegExOptions = set of TJclAnsiRegExOption;
   TJclAnsiCaptureRange = record
     FirstPos: Integer;
@@ -295,10 +295,7 @@ begin
     else
     begin
       PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @FCaptureCount));
-      if FCaptureCount > 0 then
-        FVectorSize := (FCaptureCount + 1) * 3
-      else
-        FVectorSize := 0;
+      FVectorSize := (FCaptureCount + 1) * 3;
     end;
     ReAllocMem(FVector, FVectorSize * SizeOf(Integer));
   end;
@@ -310,7 +307,7 @@ const
     roAnchored, roDollarEndOnly, roExtra, roNotBOL, roNotEOL, roUnGreedy,
     roNotEmpty, roUTF8, roNoAutoCapture, roNoUTF8Check, roAutoCallout,
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
-    roNewLineCR, roNewLineLF }
+    roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny }
   cDesignOptions: array [TJclAnsiRegExOption] of Integer =
    (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
@@ -319,7 +316,7 @@ const
   cRunOptions: array [TJclAnsiRegExOption] of Integer =
    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
-   PCRE_NEWLINE_LF);
+   PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
 var
   I: TJclAnsiRegExOption;
 begin
