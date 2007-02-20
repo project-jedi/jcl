@@ -549,7 +549,8 @@ var
 
 begin
   I := FindOrAddCaseEntry(Code);
-  CaseMapping[I].Fold := Copy(FoldMapping, 0, Length(FoldMapping));
+  if Length(CaseMapping[I].Fold) = 0 then
+    CaseMapping[I].Fold := Copy(FoldMapping, 0, Length(FoldMapping))
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -561,7 +562,8 @@ var
 
 begin
   I := FindOrAddCaseEntry(Code);
-  CaseMapping[I].Lower := Copy(Lower, 0, Length(Lower));
+  if Length(CaseMapping[I].Lower) = 0 then
+    CaseMapping[I].Lower := Copy(Lower, 0, Length(Lower))
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -573,7 +575,8 @@ var
 
 begin
   I := FindOrAddCaseEntry(Code);
-  CaseMapping[I].Upper := Copy(Upper, 0, Length(Upper));
+  if Length(CaseMapping[I].Upper) = 0 then
+    CaseMapping[I].Upper := Copy(Upper, 0, Length(Upper))
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -585,7 +588,8 @@ var
 
 begin
   I := FindOrAddCaseEntry(Code);
-  CaseMapping[I].Title := Copy(Title, 0, Length(Title));
+  if Length(CaseMapping[I].Title) = 0 then
+    CaseMapping[I].Title := Copy(Title, 0, Length(Title))
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
