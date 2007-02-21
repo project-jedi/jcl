@@ -4646,10 +4646,11 @@ end;
 
 function TJclBDSInstallation.GetName: string;
 begin
-  if VersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := Format('%s %s', [RadToolName, BDSVersions[VersionNumber].VersionStr])
+  // The name comes from the IDEVersionNumber
+  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    Result := Format('%s %s', [RadToolName, BDSVersions[IDEVersionNumber].VersionStr])
   else
-    Result := Format('%s ***%s***', [RadToolName, VersionNumber]);
+    Result := Format('%s ***%s***', [RadToolName, IDEVersionNumber]);
 end;
 
 function TJclBDSInstallation.GetVclIncludeDir: string;
@@ -4676,8 +4677,9 @@ end;
 
 function TJclBDSInstallation.RadToolName: string;
 begin
-  if VersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := BDSVersions[VersionNumber].Name
+  // The name comes from IDEVersionNumber
+  if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
+    Result := BDSVersions[IDEVersionNumber].Name
   else
     Result := RsBDSName;
 end;
