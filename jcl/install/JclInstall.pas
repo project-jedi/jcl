@@ -113,7 +113,7 @@ type
     FLibObjDir: string;
     FJclDcpPath: string;
     FDemoList: TStringList;
-    FLogLines: TStringList;
+    FLogLines: TJclSimpleLog;
     FDemoSectionName: string;
     FLogFileName: string;
     procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
@@ -165,7 +165,6 @@ type
     property Enabled: Boolean read GetEnabled;
     property OptionCheckedById[Id: Integer]: Boolean read GetOptionCheckedById;
     property OptionChecked[Option: TJclOption]: Boolean read GetOptionChecked;
-    property LogLines: TStringList read FLogLines;
     property LogFileName: string read FLogFileName;
   end;
 
@@ -720,8 +719,8 @@ begin
   if InstallTarget is TJclBCBInstallation then
     FLibObjDir := MakePath(Distribution.FLibObjDirMask);
   FDemoSectionName := Target.Name + ' demos';
-  FLogLines := TStringList.Create;
   FLogFileName := Format('%sbin%s%s.log', [Distribution.JclPath, DirDelimiter, TargetName]);
+  FLogLines := TJclSimpleLog.Create(FLogFileName);
 end;
 
 destructor TJclInstallation.Destroy;
@@ -1800,7 +1799,7 @@ begin
       GUIPage.BeginInstall;
     end;
 
-    FLogLines.Clear;
+    FLogLines.ClearLog;
 
     WriteIntroduction;
     Result := CheckDirectories and SetStaticOptions and SetEnvironment
@@ -1809,6 +1808,8 @@ begin
       and InstallRepository and MakeDemos;
     if not Result then
       Uninstall;
+
+    FLogLines.CloseLog;
   finally
     Target.OutputCallback := nil;
     WriteLog('');
@@ -2104,10 +2105,7 @@ var
 begin
   Line := InstallCore.ProcessLogLine(Msg, LineType, GUIPage);
   if Line <> '' then
-  begin
-    LogLines.Add(Line);
-    LogLines.SaveToFile(LogFileName);
-  end;
+    FLogLines.Write(Line);
 end;
 
 function TJclInstallation.GetBplPath: string;

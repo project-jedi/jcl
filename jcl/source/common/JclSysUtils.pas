@@ -501,11 +501,10 @@ type
   end;
 
 {$IFNDEF CLR}
-{$IFDEF MSWINDOWS}
 type
   TJclSimpleLog = class (TObject)
   private
-    FLogFileHandle: THandle;
+    FLogFileHandle: Integer;
     FLogFileName: string;
     FLogWasEmpty: Boolean;
     function GetLogOpen: Boolean;
@@ -514,6 +513,7 @@ type
   public
     constructor Create(const ALogFileName: string = '');
     destructor Destroy; override;
+    procedure ClearLog;
     procedure CloseLog;
     procedure OpenLog;
     procedure Write(const Text: string; Indent: Integer = 0); overload;
@@ -522,7 +522,6 @@ type
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
-{$ENDIF MSWINDOWS}
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
@@ -3042,12 +3041,19 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+procedure TJclSimpleLog.ClearLog;
+begin
+  CloseLog;
+  FLogFileHandle := FileCreate(FLogFileName);
+  FLogWasEmpty := True;
+end;
+
 procedure TJclSimpleLog.CloseLog;
 begin
   if LogOpen then
   begin
-    CloseHandle(FLogFileHandle);
-    FLogFileHandle := INVALID_HANDLE_VALUE;
+    FileClose(FLogFileHandle);
+    FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
     FLogWasEmpty := False;
   end;
 end;
@@ -3058,7 +3064,7 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  FLogFileHandle := INVALID_HANDLE_VALUE;
+  FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
 end;
 
 function TJclSimpleLog.CreateDefaultFileName: string;
@@ -3075,15 +3081,16 @@ end;
 
 function TJclSimpleLog.GetLogOpen: Boolean;
 begin
-  Result := FLogFileHandle <> INVALID_HANDLE_VALUE;
+  Result := (FLogFileHandle <> 0) and (FLogFileHandle <> Integer(INVALID_HANDLE_VALUE));
 end;
 
 procedure TJclSimpleLog.OpenLog;
 begin
   if not LogOpen then
   begin
-    FLogFileHandle := CreateFile(PChar(FLogFileName), GENERIC_WRITE,
-      FILE_SHARE_READ, nil, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    FLogFileHandle := FileOpen(FLogFileName, fmShareDenyWrite or fmOpenReadWrite);
+    if not LogOpen then
+      FLogFileHandle := FileCreate(FLogFileName);
     if LogOpen then
       FLogWasEmpty := SetFilePointer(FLogFileHandle, 0, nil, FILE_END) = 0;
   end
@@ -3105,7 +3112,7 @@ begin
       for I := 0 to SL.Count - 1 do
       begin
         S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
-        FileWrite(Integer(FLogFileHandle), Pointer(S)^, Length(S));
+        FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally
       SL.Free;
