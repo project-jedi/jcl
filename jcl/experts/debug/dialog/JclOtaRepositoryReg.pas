@@ -45,7 +45,34 @@ interface
 {$ENDIF COMPILER10_UP}
 
 uses
-  ToolsAPI;
+  SysUtils, Classes,
+  ToolsAPI,
+  JclBorlandTools,
+  JclOtaUtils, JclOtaRepositoryUtils, JclOtaExcDlgRepository;
+
+type
+  TJclExcDlgExpert = class(TJclOtaRepositoryExpert)
+  public
+    procedure CreateExceptionDialog(const Params: TJclOtaExcDlgParams);
+  end;
+
+  TJclExcDlgDelphiExpert = class(TJclExcDlgExpert)
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    procedure DoExecute(const Personality: TJclBorPersonality); override;
+    function IsVisible(const Personality: TJclBorPersonality): Boolean; override;
+  end;
+
+  TJclExcDlgCBuilderExpert = class(TJclExcDlgExpert)
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    procedure DoExecute(const Personality: TJclBorPersonality); override;
+    function IsVisible(const Personality: TJclBorPersonality): Boolean; override;
+  end;
 
 // design package entry point
 procedure Register;
@@ -58,9 +85,9 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 uses
-  SysUtils,
-  JclOtaUtils, JclOtaResources, JclOtaConsts,
-  JclOtaExcDlgRepository;
+  Windows,
+  JclStrings, JclFileUtils, JclRegistry,
+  JclOtaResources, JclOtaConsts, JclOtaTemplates, JclOtaExcDlgWizard;
 
 
 function IsPersonalityLoaded(const BorlandIDEServices: IBorlandIDEServices;
@@ -173,6 +200,174 @@ begin
       Result := False;
     end;
   end;
+end;
+
+//=== { TJclExcDlgExpert } ===================================================
+
+procedure TJclExcDlgExpert.CreateExceptionDialog(
+  const Params: TJclOtaExcDlgParams);
+  function LoadTemplate(const FileName: string): string;
+  var
+    AFileStream: TFileStream;
+    StreamLength: Int64;
+  begin
+    Result := '';
+    if FileName <> '' then
+    begin
+      AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+      try
+        StreamLength := AFileStream.Size;
+        SetLength(Result, StreamLength);
+        AFileStream.ReadBuffer(Result[1], StreamLength);
+      finally
+        AFileStream.Free;
+      end;
+    end;
+  end;
+const
+  TemplateSubDir = 'experts\debug\dialog\';
+  DelphiTemplate = 'ExceptDlg.Delphi32';
+  BCBTemplate = 'ExceptDlg.CBuilder32';
+var
+  JclSettingsKeyName, TemplatePath,
+  FormExtension, FormTemplate, FormContent, FormFileName,
+  HeaderExtension, HeaderTemplate, HeaderContent, HeaderFileName,
+  SourceExtension, SourceTemplate, SourceContent, SourceFileName: string;
+  OTAServices: IOTAServices;
+begin
+  Supports(BorlandIDEServices,IOTAServices,OTAServices);
+  if not Assigned(OTAServices) then
+    raise EJclExpertException.CreateTrace(RsENoIDEServices);
+
+  JclSettingsKeyName := StrEnsureSuffix('\', OTAServices.GetBaseRegistryKey) + RegJclKey;
+  TemplatePath := PathAddSeparator(RegReadString(HKCU, JclSettingsKeyName, 'RootDir')) + TemplateSubDir;
+
+  case Params.Language of
+    bpDelphi32:
+      begin
+        FormExtension := JclBorDesignerFormExtension[Params.Designer];
+        FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
+        HeaderExtension := '';
+        HeaderTemplate := '';
+        SourceExtension := SourceExtensionPAS;
+        SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
+      end;
+    bpBCBuilder32:
+      begin
+        FormExtension := JclBorDesignerFormExtension[Params.Designer];
+        FormTemplate := TemplatePath + BCBTemplate + FormExtension;
+        HeaderExtension := SourceExtensionH;
+        HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
+        SourceExtension := SourceExtensionCPP;
+        SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
+      end;
+  else
+      begin
+        FormExtension := '';
+        FormTemplate := '';
+        HeaderExtension := '';
+        HeaderTemplate := '';
+        SourceExtension := '';
+        SourceTemplate := '';
+      end;
+  end;
+
+  FormTemplate := LoadTemplate(FormTemplate);
+  HeaderTemplate := LoadTemplate(HeaderTemplate);
+  SourceTemplate := LoadTemplate(SourceTemplate);
+
+  FormContent := ApplyTemplate(FormTemplate, Params);
+  HeaderContent := ApplyTemplate(HeaderTemplate, Params);
+  SourceContent := ApplyTemplate(SourceTemplate, Params);
+
+  if Params.FileName <> '' then
+  begin
+    FormFileName := ChangeFileExt(Params.FileName, FormExtension);
+    HeaderFileName := ChangeFileExt(Params.FileName, HeaderExtension);
+    SourceFileName := ChangeFileExt(Params.FileName, SourceExtension);
+  end
+  else
+  begin
+    FormFileName := '';
+    HeaderFileName := '';
+    SourceFileName := '';
+  end;
+
+  CreateForm(Params.FormAncestor, Params.FormName, FormFileName, FormContent, SourceFileName,
+    SourceContent, HeaderFileName, HeaderContent);
+end;
+
+//=== { TJclRepositoryExpert } ===============================================
+
+constructor TJclExcDlgDelphiExpert.Create;
+begin
+  inherited Create(RsRepositoryExcDlgDelphiName, RsRepositoryExcDlgDelphiDescription,
+    RsAboutDialogTitle, RsRepositoryExcDlgPage, JclRepositoryCategoryDelphiFiles,
+    JclDesignerVcl, JclDelphiPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlg'), ritForm);
+end;
+
+destructor TJclExcDlgDelphiExpert.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJclExcDlgDelphiExpert.DoExecute(const Personality: TJclBorPersonality);
+var
+  AParams: TJclOtaExcDlgParams;
+begin
+  AParams := TJclOtaExcDlgParams.Create;
+  try
+    AParams.Languages := [bpDelphi32];
+    AParams.Language := bpDelphi32;
+    AParams.ActivePersonality := bpDelphi32;
+    if ExcDlgWizard(AParams) and (AParams.Language <> bpUnknown) then
+      CreateExceptionDialog(AParams);
+  finally
+    AParams.Free;
+  end;
+end;
+
+function TJclExcDlgDelphiExpert.IsVisible(
+  const Personality: TJclBorPersonality): Boolean;
+begin
+  Result := Personality = bpDelphi32;
+end;
+
+//=== { TJclExcDlgCBuilderExpert } ===========================================
+
+constructor TJclExcDlgCBuilderExpert.Create;
+begin
+  inherited Create(RsRepositoryExcDlgCBuilderName, RsRepositoryExcDlgCBuilderDescription,
+    RsAboutDialogTitle, RsRepositoryExcDlgPage, JclRepositoryCategoryCBuilderFiles,
+    JclDesignerVcl, JclCBuilderPersonality, LoadIcon(FindResourceHInstance(HInstance), 'JclExcDlgCPP'), ritForm);
+end;
+
+destructor TJclExcDlgCBuilderExpert.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJclExcDlgCBuilderExpert.DoExecute(
+  const Personality: TJclBorPersonality);
+var
+  AParams: TJclOtaExcDlgParams;
+begin
+  AParams := TJclOtaExcDlgParams.Create;
+  try
+    AParams.Languages := [bpDelphi32];
+    AParams.Language := bpDelphi32;
+    AParams.ActivePersonality := bpBCBuilder32;
+    if ExcDlgWizard(AParams) and (AParams.Language <> bpUnknown) then
+      CreateExceptionDialog(AParams);
+  finally
+    AParams.Free;
+  end;
+end;
+
+function TJclExcDlgCBuilderExpert.IsVisible(
+  const Personality: TJclBorPersonality): Boolean;
+begin
+  Result := Personality = bpBCBuilder32;
 end;
 
 end.

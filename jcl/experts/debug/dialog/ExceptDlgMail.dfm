@@ -1,9 +1,9 @@
-object ExceptionDialogMail: TExceptionDialogMail
+object ExceptionDialog: TExceptionDialog
   Left = 310
   Top = 255
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
-  Caption = 'ExceptionDialogMail'
+
+  Caption = 'ExceptionDialog'
   ClientHeight = 255
   ClientWidth = 432
   Color = clBtnFace
@@ -25,7 +25,7 @@ object ExceptionDialogMail: TExceptionDialogMail
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
+  object BevelDetails: TBevel
     Left = 3
     Top = 91
     Width = 422
@@ -33,6 +33,7 @@ object ExceptionDialogMail: TExceptionDialogMail
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
+
   object SendBtn: TButton
     Left = 351
     Top = 32

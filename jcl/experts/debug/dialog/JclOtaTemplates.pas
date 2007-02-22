@@ -49,9 +49,20 @@ type
     property Language: TJclBorPersonality read FLanguage write FLanguage;
   end;
 
+const
+  ModulePattern = '%MODULENAME%';
+  FormPattern = '%FORMNAME%';
+  AncestorPattern = '%ANCESTORNAME%';
+
+function GetFinalFormContent(const Content, FormIdent,
+  AncestorIdent: string): string;
+function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
+  AncestorIdent: string): string;
+function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
+  AncestorIdent: string): string;
+
 function ApplyTemplate(const Template: string;
   const Params: TJclOtaTemplateParams): string;
-
 
 implementation
 
@@ -62,6 +73,29 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,
   JclStrings, JclSysUtils;
+
+function GetFinalFormContent(const Content, FormIdent,
+  AncestorIdent: string): string;
+begin
+  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
+end;
+
+function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
+  AncestorIdent: string): string;
+begin
+  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
+end;
+
+function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
+  AncestorIdent: string): string;
+begin
+  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
+end;
 
 function ApplyTemplate(const Template: string;
   const Params: TJclOtaTemplateParams): string;
@@ -103,7 +137,7 @@ function ApplyTemplate(const Template: string;
 var
   IndexInput, IndexOutput, TokenPos, CharCountIn, CharCountOut,
   IfCount, StrIndex, RepeatCount: Integer;
-  Identifier, Symbol, StrValue, RepeatPattern, RepeatValue: string;
+  Identifier, Command, Symbol, StrValue, RepeatPattern, RepeatValue: string;
   StrList: TStrings;
 begin
   CharCountIn := Length(Template);
@@ -127,9 +161,10 @@ begin
       if IfCount = 0 then
         CopyStr(Result, IndexOutput, CharCountOut, Template, IndexInput, TokenPos - IndexInput);
 
-      Identifier := StrUpper(GetIdentifier(Template, TokenPos, CharCountIn));
+      Identifier := GetIdentifier(Template, TokenPos, CharCountIn);
+      Command := StrUpper(Identifier);
 
-      if Identifier = '%IF' then
+      if Command = '%IF' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -138,26 +173,26 @@ begin
           Inc(IfCount);
         end;
       end
-      else if Identifier = '%IFNOT' then
+      else if Command = '%IFNOT' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
         if (IfCount > 0) or Params.IsDefined(Symbol) then
           Inc(IfCount);
       end
-      else if Identifier = '%ELSE' then
+      else if Command = '%ELSE' then
       begin
         if IfCount = 1 then
           IfCount := 0
         else if IfCount = 0 then
           IfCount := 1;
       end
-      else if Identifier = '%ENDIF' then
+      else if Command = '%ENDIF' then
       begin
         if IfCount > 0 then
           Dec(IfCount);
       end
-      else if Identifier = '%STRVALUE' then
+      else if Command = '%STRVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -179,7 +214,7 @@ begin
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
         end;
       end
-      else if Identifier = '%INTVALUE' then
+      else if Command = '%INTVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -189,7 +224,7 @@ begin
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
         end;
       end
-      else if Identifier = '%BOOLVALUE' then
+      else if Command = '%BOOLVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -199,7 +234,7 @@ begin
           CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
         end;
       end
-      else if Identifier = '%REPEATLINE' then
+      else if Command = '%REPEATLINE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);

@@ -1,9 +1,8 @@
 object ExceptionDialog: TExceptionDialog
-  Left = 363
-  Top = 284
-  ActiveControl = OkBtn
-  AutoScroll = False
+  Left = 310
+  Top = 255
   BorderIcons = [biSystemMenu]
+
   Caption = 'ExceptionDialog'
   ClientHeight = 255
   ClientWidth = 432
@@ -26,56 +25,15 @@ object ExceptionDialog: TExceptionDialog
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Bevel1: TBevel
+  object BevelDetails: TBevel
     Left = 3
     Top = 91
-    Width = 428
+    Width = 422
     Height = 9
     Anchors = [akLeft, akTop, akRight]
     Shape = bsTopLine
   end
-  object OkBtn: TButton
-    Left = 352
-    Top = 4
-    Width = 75
-    Height = 25
-    Anchors = [akTop, akRight]
-    Caption = '&OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
-  end
-  object DetailsMemo: TMemo
-    Left = 4
-    Top = 101
-    Width = 424
-    Height = 150
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Courier New'
-    Font.Style = []
-    ParentColor = True
-    ParentFont = False
-    ReadOnly = True
-    ScrollBars = ssBoth
-    TabOrder = 3
-    WantReturns = False
-    WordWrap = False
-  end
-  object DetailsBtn: TButton
-    Left = 352
-    Top = 60
-    Width = 75
-    Height = 25
-    Hint = 'Show or hide additional information|'
-    Anchors = [akTop, akRight]
-    Caption = '&Details'
-    Enabled = False
-    TabOrder = 2
-    OnClick = DetailsBtnClick
-  end
+
   object TextLabel: TMemo
     Left = 56
     Top = 8
@@ -90,7 +48,49 @@ object ExceptionDialog: TExceptionDialog
     ParentColor = True
     ParentCtl3D = False
     ReadOnly = True
-    TabOrder = 0
+    TabOrder = 1
     WantReturns = False
+  end
+  object OkBtn: TButton
+    Left = 352
+    Top = 4
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object DetailsBtn: TButton
+    Left = 352
+    Top = 60
+    Width = 75
+    Height = 25
+    Hint = 'Show or hide additional information|'
+    Anchors = [akTop, akRight]
+    Caption = '&Details'
+    Enabled = False
+    TabOrder = 3
+    OnClick = DetailsBtnClick
+  end
+  object DetailsMemo: TMemo
+    Left = 4
+    Top = 101
+    Width = 421
+    Height = 147
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Courier New'
+    Font.Style = []
+    ParentColor = True
+    ParentFont = False
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 4
+    WantReturns = False
+    WordWrap = False
   end
 end

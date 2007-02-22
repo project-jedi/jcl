@@ -172,46 +172,11 @@ type
     function GetAge: TDateTime;
   end;
 
-const
-  ModulePattern = '%MODULENAME%';
-  FormPattern = '%FORMNAME%';
-  AncestorPattern = '%ANCESTORNAME%';
-
-function GetFinalFormContent(const Content, FormIdent,
-  AncestorIdent: string): string;
-function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
-  AncestorIdent: string): string;
-function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
-  AncestorIdent: string): string;
-
 implementation
 
 uses
   SysUtils, Classes, ActiveX,
-  JclDateTime, JclFileUtils, JclOtaResources;
-
-function GetFinalFormContent(const Content, FormIdent,
-  AncestorIdent: string): string;
-begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
-end;
-
-function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
-  AncestorIdent: string): string;
-begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
-end;
-
-function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
-  AncestorIdent: string): string;
-begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
-end;
+  JclDateTime, JclFileUtils, JclOtaResources, JclOtaTemplates;
 
 //=== { TJclOTARepositoryExpert } ============================================
 
