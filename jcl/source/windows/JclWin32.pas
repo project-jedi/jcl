@@ -326,7 +326,7 @@ const
   MAX_NATURAL_ALIGNMENT = SizeOf(ULONG);
   {$EXTERNALSYM MAX_NATURAL_ALIGNMENT}
 
-// line 72
+// line² 72
 
 const
   VER_SERVER_NT                      = DWORD($80000000);
@@ -853,6 +853,48 @@ const
   SE_CREATE_GLOBAL_NAME       = 'SeCreateGlobalPrivilege';
   {$EXTERNALSYM SE_CREATE_GLOBAL_NAME}
 
+//
+// Thread Information Block (TIB)
+//
+
+type
+  NT_TIB32 = packed record
+    ExceptionList: DWORD;
+    StackBase: DWORD;
+    StackLimit: DWORD;
+    SubSystemTib: DWORD;
+    case Integer of
+      0 : (
+        FiberData: DWORD;
+        ArbitraryUserPointer: DWORD;
+        Self: DWORD;
+      );
+      1 : (
+        Version: DWORD;
+      );
+  end;
+  {$EXTERNALSYM NT_TIB32}
+  PNT_TIB32 = ^NT_TIB32;
+  {$EXTERNALSYM PNT_TIB32}
+
+  NT_TIB64 = packed record
+    ExceptionList: TJclAddr64;
+    StackBase: TJclAddr64;
+    StackLimit: TJclAddr64;
+    SubSystemTib: TJclAddr64;
+    case Integer of
+      0 : (
+        FiberData: TJclAddr64;
+        ArbitraryUserPointer: TJclAddr64;
+        Self: TJclAddr64;
+      );
+      1 : (
+        Version: DWORD;
+      );
+  end;
+  {$EXTERNALSYM NT_TIB64}
+  PNT_TIB64 = ^NT_TIB64;
+  {$EXTERNALSYM PNT_TIB64}
 
 // line 2686
 

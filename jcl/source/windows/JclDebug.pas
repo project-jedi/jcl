@@ -24,6 +24,7 @@
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Petr Vones (pvones)                                                                            }
+{   Soeren Muehlbauer                                                                              }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -554,6 +555,8 @@ type
       AFirstCaller: Pointer; ADelayedTrace: Boolean); overload;
     constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
       AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer); overload;
+    constructor Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+      AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack, ATopOfStack: Pointer); overload;
     destructor Destroy; override;
     procedure ForceStackTracing;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -571,6 +574,10 @@ function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Poi
   DelayedTrace: Boolean): TJclStackInfoList; overload;
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList; overload;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean; BaseOfStack, TopOfStack: Pointer): TJclStackInfoList; overload;
+
+function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
@@ -829,7 +836,8 @@ end;
 
 function GetStackTop: DWORD;
 asm
-        MOV     EAX, FS:[4]
+  // TODO: 64 bit version
+        MOV     EAX, FS:[0].NT_TIB32.StackBase
 end;
 
 {$IFDEF STACKFRAMES_ON}
@@ -3272,7 +3280,7 @@ begin
       end;
     end
     else
-    with TJclStackInfoList.Create(False, 1, nil, False, nil) do
+    with TJclStackInfoList.Create(False, 1, nil, False, nil, nil) do
     try
       if Level < Count then
         Result := Items[Level].CallerAdr;
@@ -3855,25 +3863,57 @@ end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, False, nil);
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, False, nil, nil);
   GlobalStackList.AddObject(Result);
 end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
   DelayedTrace: Boolean): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, nil);
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, nil, nil);
   GlobalStackList.AddObject(Result);
 end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
   DelayedTrace: Boolean; BaseOfStack: Pointer): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack);
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack, nil);
   GlobalStackList.AddObject(Result);
 end;
 
-//=== { TJclStackInfoItem 0 ==================================================
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer;
+  DelayedTrace: Boolean; BaseOfStack, TopOfStack: Pointer): TJclStackInfoList;
+begin
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller, DelayedTrace, BaseOfStack, TopOfStack);
+  GlobalStackList.AddObject(Result);
+end;
+
+function GetThreadFs(const Context: TContext; const Entry: TLDTEntry): DWORD;
+// TODO: 64 bit version
+var
+  FsBase: PNT_TIB32;
+begin
+  FsBase := PNT_TIB32((DWord(Entry.BaseHi) shl 24) or (DWord(Entry.BaseMid) shl 16) or DWord(Entry.BaseLow));
+  Result := FsBase^.StackBase;
+end;
+
+function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
+var
+  C    : CONTEXT;
+  Entry: TLDTEntry;
+begin
+  Result := nil;
+  FillChar(C, SizeOf(C), 0);
+  FillChar(Entry, SizeOf(Entry), #0);
+  C.ContextFlags := CONTEXT_FULL;
+  if GetThreadContext(ThreadHandle, C)
+    and GetThreadSelectorEntry(ThreadHandle, C.SegFs, Entry) then
+    Result := JclCreateStackList(True, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
+                Pointer(GetThreadFs(C, Entry)));
+end;
+
+//=== { TJclStackInfoItem } ==================================================
+
 function TJclStackInfoItem.GetCallerAdr: Pointer;
 begin
   Result := Pointer(FStackInfo.CallerAdr);
@@ -3889,17 +3929,23 @@ end;
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
   AFirstCaller: Pointer);
 begin
-  Create(ARaw, AIgnoreLevels, AFirstCaller, False, nil);
+  Create(ARaw, AIgnoreLevels, AFirstCaller, False, nil, nil);
 end;
 
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
   AFirstCaller: Pointer; ADelayedTrace: Boolean);
 begin
-  Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, nil);
+  Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, nil, nil);
 end;
 
 constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
   AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack: Pointer);
+begin
+  Create(ARaw, AIgnoreLevels, AFirstCaller, ADelayedTrace, ABaseOfStack, nil);
+end;
+
+constructor TJclStackInfoList.Create(ARaw: Boolean; AIgnoreLevels: DWORD;
+  AFirstCaller: Pointer; ADelayedTrace: Boolean; ABaseOfStack, ATopOfStack: Pointer);
 var
   Item: TJclStackInfoItem;
 begin
@@ -3911,7 +3957,10 @@ begin
   FStackOffset := 0;
   FFrameEBP := ABaseOfStack;
 
-  TopOfStack := GetStackTop;
+  if ATopOfStack = nil then
+    TopOfStack := GetStackTop
+  else
+    TopOfStack := Cardinal(ATopOfStack);
 
   FModuleInfoList := GlobalModulesList.CreateModulesList;
   if AFirstCaller <> nil then
