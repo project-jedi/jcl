@@ -578,11 +578,17 @@ function JclCreateStackList(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Poi
   DelayedTrace: Boolean; BaseOfStack, TopOfStack: Pointer): TJclStackInfoList; overload;
 
 function JclCreateThreadStackTrace(Raw: Boolean; const ThreadHandle: THandle): TJclStackInfoList;
+function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
   IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
   IncludeVAdress: Boolean = False): Boolean;
+
+function JclGetExceptStackList(ThreadID: DWORD): TJclStackInfoList;
+function JclGetExceptStackListToStrings(ThreadID: DWORD; Strings: TStrings;
+  IncludeModuleName: Boolean = False; IncludeAddressOffset: Boolean = False;
+  IncludeStartProcLineOffset: Boolean = False; IncludeVAdress: Boolean = False): Boolean;
 
 // Exception frame info routines
 type
@@ -661,6 +667,7 @@ type
 
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
 function JclLastExceptFrameList: TJclExceptFrameList;
+function JclGetExceptFrameList(ThreadID: DWORD): TJclExceptFrameList;
 
 function JclStartExceptionTracking: Boolean;
 function JclStopExceptionTracking: Boolean;
@@ -672,18 +679,18 @@ function JclTrackExceptionsFromLibraries: Boolean;
 type
   TJclDebugThread = class(TThread)
   private
-    FSyncException: Exception;
+    FSyncException: TObject;
     FThreadName: string;
     procedure DoHandleException;
     function GetThreadInfo: string;
   protected
     procedure DoNotify;
     procedure DoSyncHandleException; dynamic;
-    procedure HandleException;
+    procedure HandleException(Sender: TObject = nil);
   public
     constructor Create(Suspended: Boolean; const AThreadName: string = '');
     destructor Destroy; override;
-    property SyncException: Exception read FSyncException;
+    property SyncException: TObject read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
     property ThreadName: string read FThreadName;
   end;
@@ -706,9 +713,11 @@ type
     function GetThreadNames(ThreadID: DWORD): string;
     procedure DoSyncThreadRegistered;
     procedure DoSyncThreadUnregistered;
-    function GetThreadIDs(Index: Integer): DWORD;
+    function GetThreadHandle(Index: Integer): THandle;
+    function GetThreadID(Index: Integer): DWORD;
     function GetThreadIDCount: Integer;
     function GetThreadValues(ThreadID: DWORD; Index: Integer): string;
+    function IndexOfThreadID(ThreadID: DWORD): Integer;
   protected
     procedure DoSyncException(Thread: TJclDebugThread);
     procedure DoThreadRegistered(Thread: TThread);
@@ -723,7 +732,8 @@ type
     property Lock: TJclCriticalSection read FLock;
     //property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadValues;
     property ThreadClassNames[ThreadID: DWORD]: string read GetThreadClassNames;
-    property ThreadIDs[Index: Integer]: DWORD read GetThreadIDs;
+    property ThreadHandles[Index: Integer]: DWORD read GetThreadHandle;
+    property ThreadIDs[Index: Integer]: DWORD read GetThreadID;
     property ThreadIDCount: Integer read GetThreadIDCount;
     //property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadValues;
     property ThreadInfos[ThreadID: DWORD]: string read GetThreadInfos;
@@ -3568,8 +3578,8 @@ type
   private
     FLockedTID: DWORD;
     FTIDLocked: Boolean;
-    function GetExceptStackInfo: TJclStackInfoList;
-    function GetLastExceptFrameList: TJclExceptFrameList;
+    function GetExceptStackInfo(TID: DWORD): TJclStackInfoList;
+    function GetLastExceptFrameList(TID: DWORD): TJclExceptFrameList;
     procedure ItemDestroyed(Sender: TObject);
   public
     destructor Destroy; override;
@@ -3577,8 +3587,8 @@ type
     procedure LockThreadID(TID: DWORD);
     procedure UnlockThreadID;
     function FindObject(TID: DWORD; AClass: TJclStackBaseListClass): TJclStackBaseList;
-    property ExceptStackInfo: TJclStackInfoList read GetExceptStackInfo;
-    property LastExceptFrameList: TJclExceptFrameList read GetLastExceptFrameList;
+    property ExceptStackInfo[TID: DWORD]: TJclStackInfoList read GetExceptStackInfo;
+    property LastExceptFrameList[TID: DWORD]: TJclExceptFrameList read GetLastExceptFrameList;
   end;
 
 var
@@ -3639,14 +3649,14 @@ begin
   end;
 end;
 
-function TJclGlobalStackList.GetExceptStackInfo: TJclStackInfoList;
+function TJclGlobalStackList.GetExceptStackInfo(TID: DWORD): TJclStackInfoList;
 begin
-  Result := TJclStackInfoList(FindObject(GetCurrentThreadId, TJclStackInfoList));
+  Result := TJclStackInfoList(FindObject(TID, TJclStackInfoList));
 end;
 
-function TJclGlobalStackList.GetLastExceptFrameList: TJclExceptFrameList;
+function TJclGlobalStackList.GetLastExceptFrameList(TID: DWORD): TJclExceptFrameList;
 begin
-  Result := TJclExceptFrameList(FindObject(GetCurrentThreadId, TJclExceptFrameList));
+  Result := TJclExceptFrameList(FindObject(TID, TJclExceptFrameList));
 end;
 
 procedure TJclGlobalStackList.ItemDestroyed(Sender: TObject);
@@ -3846,7 +3856,7 @@ end;
 
 function JclLastExceptStackList: TJclStackInfoList;
 begin
-  Result := GlobalStackList.ExceptStackInfo;
+  Result := GlobalStackList.ExceptStackInfo[GetCurrentThreadID];
 end;
 
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
@@ -3855,6 +3865,24 @@ var
   List: TJclStackInfoList;
 begin
   List := JclLastExceptStackList;
+  Result := Assigned(List);
+  if Result then
+    List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
+      IncludeVAdress);
+end;
+
+function JclGetExceptStackList(ThreadID: DWORD): TJclStackInfoList;
+begin
+  Result := GlobalStackList.ExceptStackInfo[ThreadID];
+end;
+
+function JclGetExceptStackListToStrings(ThreadID: DWORD; Strings: TStrings;
+  IncludeModuleName: Boolean = False; IncludeAddressOffset: Boolean = False;
+  IncludeStartProcLineOffset: Boolean = False; IncludeVAdress: Boolean = False): Boolean;
+var
+  List: TJclStackInfoList;
+begin
+  List := JclGetExceptStackList(ThreadID);
   Result := Assigned(List);
   if Result then
     List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
@@ -3908,8 +3936,37 @@ begin
   C.ContextFlags := CONTEXT_FULL;
   if GetThreadContext(ThreadHandle, C)
     and GetThreadSelectorEntry(ThreadHandle, C.SegFs, Entry) then
-    Result := JclCreateStackList(True, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
+    Result := JclCreateStackList(Raw, DWORD(-1), Pointer(C.Eip), False, Pointer(C.Ebp),
                 Pointer(GetThreadFs(C, Entry)));
+end;
+
+function JclCreateThreadStackTraceFromID(Raw: Boolean; ThreadID: DWORD): TJclStackInfoList;
+type
+  TOpenThreadFunc = function(DesiredAccess: DWORD; InheritHandle: BOOL; ThreadID: DWORD): THandle; stdcall;
+const
+  THREAD_GET_CONTEXT       = $0008;
+  THREAD_QUERY_INFORMATION = $0040;
+var
+  Kernel32Lib, ThreadHandle: THandle;
+  OpenThreadFunc: TOpenThreadFunc;
+begin
+  Result := nil;
+  Kernel32Lib := GetModuleHandle(kernel32);
+  if Kernel32Lib <> 0 then
+  begin
+    // OpenThread only exists since Windows ME
+    OpenThreadFunc := GetProcAddress(Kernel32Lib, 'OpenThread');
+    if Assigned(OpenThreadFunc) then
+    begin
+      ThreadHandle := OpenThreadFunc(THREAD_GET_CONTEXT or THREAD_QUERY_INFORMATION, False, ThreadID);
+      if ThreadHandle <> 0 then
+      try
+        Result := JclCreateThreadStackTrace(Raw, ThreadHandle);
+      finally
+        CloseHandle(ThreadHandle);
+      end;
+    end;
+  end;
 end;
 
 //=== { TJclStackInfoItem } ==================================================
@@ -4299,7 +4356,12 @@ end;
 
 function JclLastExceptFrameList: TJclExceptFrameList;
 begin
-  Result := GlobalStackList.LastExceptFrameList;
+  Result := GlobalStackList.LastExceptFrameList[GetCurrentThreadID];
+end;
+
+function JclGetExceptFrameList(ThreadID: DWORD): TJclExceptFrameList;
+begin
+  Result := GlobalStackList.LastExceptFrameList[ThreadID];
 end;
 
 procedure DoExceptFrameTrace;
@@ -4627,10 +4689,12 @@ begin
   Result := JclDebugThreadList.ThreadInfos[ThreadID];
 end;
 
-procedure TJclDebugThread.HandleException;
+procedure TJclDebugThread.HandleException(Sender: TObject);
 begin
-  FSyncException := Exception(ExceptObject);
+  FSyncException := Sender;
   try
+    if not Assigned(FSyncException) then
+      FSyncException := Exception(ExceptObject);
     if Assigned(FSyncException) and not IsIgnoredException(FSyncException.ClassType) then
       Synchronize(DoHandleException);
   finally
@@ -4643,6 +4707,12 @@ end;
 type
   TThreadAccess = class(TThread);
 
+  TThreadListRec = record
+    ThreadID: DWORD;
+    ThreadHandle: THandle;
+  end;
+  PThreadListRec = ^TThreadListRec;
+
 constructor TJclDebugThreadList.Create;
 begin
   FLock := TJclCriticalSection.Create;
@@ -4651,7 +4721,18 @@ begin
 end;
 
 destructor TJclDebugThreadList.Destroy;
+var
+  I: Integer;
+  ThreadRec: PThreadListRec;
 begin
+  if Assigned(FList) then
+  begin
+    for I := FList.Count - 1 downto 0 do
+    begin
+      ThreadRec := PThreadListRec(FList.Objects[I]);
+      Dispose(ThreadRec);
+    end;
+  end;
   FreeAndNil(FList);
   FreeAndNil(FLock);
   FreeAndNil(FReadLock);
@@ -4709,9 +4790,24 @@ begin
   end;    
 end;
 
-function TJclDebugThreadList.GetThreadIDs(Index: Integer): DWORD;
+function TJclDebugThreadList.GetThreadHandle(Index: Integer): DWORD;
 begin
-  Result := DWORD(FList.Objects[Index]);
+  FReadLock.Enter;
+  try
+    Result := PThreadListRec(FList.Objects[Index])^.ThreadHandle;
+  finally
+    FReadLock.Leave;
+  end;
+end;
+
+function TJclDebugThreadList.GetThreadID(Index: Integer): DWORD;
+begin
+  FReadLock.Enter;
+  try
+    Result := PThreadListRec(FList.Objects[Index])^.ThreadID;
+  finally
+    FReadLock.Leave;
+  end;
 end;
 
 function TJclDebugThreadList.GetThreadInfos(ThreadID: DWORD): string;
@@ -4730,14 +4826,14 @@ var
 
   function ThreadName: string;
   begin
-    Result := FList[I];
+    Result := FList.Strings[I];
     Delete(Result, 1, Pos('=', Result));
   end;
 
 begin
   FReadLock.Enter;
   try
-    I := FList.IndexOfObject(Pointer(ThreadID));
+    I := IndexOfThreadID(ThreadID);
     if I <> -1 then
     begin
       case Index of
@@ -4756,9 +4852,27 @@ begin
   end;
 end;
 
+function TJclDebugThreadList.IndexOfThreadID(ThreadID: DWORD): Integer;
+var
+  I: Integer;
+  ThreadRec: PThreadListRec;
+begin
+  Result := -1;
+  for I := FList.Count - 1 downto 0 do
+  begin
+    ThreadRec := PThreadListRec(FList.Objects[I]);
+    if ThreadRec^.ThreadID = ThreadID then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
+end;
+
 procedure TJclDebugThreadList.InternalRegisterThread(Thread: TThread; const ThreadName: string);
 var
   I: Integer;
+  ThreadRec: PThreadListRec;
 
   function FormatInternalName: string;
   begin
@@ -4768,12 +4882,15 @@ var
 begin
   FLock.Enter;
   try
-    I := FList.IndexOfObject(Pointer(Thread.ThreadID));
+    I := IndexOfThreadID(Thread.ThreadID);
     if I = -1 then
     begin
       FReadLock.Enter;
       try
-        FList.AddObject(FormatInternalName, Pointer(Thread.ThreadID));
+        New(ThreadRec);
+        ThreadRec^.ThreadID := Thread.ThreadID;
+        ThreadRec^.ThreadHandle := Thread.Handle;
+        FList.AddObject(FormatInternalName, TObject(ThreadRec));
       finally
         FReadLock.Leave;
       end;
@@ -4787,15 +4904,18 @@ end;
 procedure TJclDebugThreadList.InternalUnregisterThread(Thread: TThread);
 var
   I: Integer;
+  ThreadRec: PThreadListRec;
 begin
   FLock.Enter;
   try
-    I := FList.IndexOfObject(Pointer(Thread.ThreadID));
+    I := IndexOfThreadID(Thread.ThreadID);
     if I <> -1 then
     begin
       DoThreadUnregistered(Thread);
       FReadLock.Enter;
       try
+        ThreadRec := PThreadListRec(FList.Objects[I]);
+        Dispose(ThreadRec);
         FList.Delete(I);
       finally
         FReadLock.Leave;

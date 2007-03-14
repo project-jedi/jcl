@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,
+  Dialogs, StdCtrls, JclDebug,
   JclOtaExcDlgRepository, JclOtaWizardFrame;
 
 type
@@ -47,14 +47,17 @@ type
     MemoStack: TMemo;
     LabelPreview: TLabel;
     CheckBoxStackList: TCheckBox;
+    CheckBoxAllThreads: TCheckBox;
     procedure CheckBoxClick(Sender: TObject);
     procedure CheckBoxStackListClick(Sender: TObject);
   private
     FParams: TJclOtaExcDlgParams;
+    FTestThread: TJclDebugThread;
     procedure UpdatePreview;
     procedure UpdateCheckBoxes;
   public
     constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    destructor Destroy; override;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
@@ -62,13 +65,45 @@ type
     property Params: TJclOtaExcDlgParams read FParams write FParams;
   end;
 
+  // in interface to be exported and have basic debug informations based on exports
+  TTestThread = class(TJclDebugThread)
+  private
+    procedure ExecuteTask;
+    procedure ExecuteSubTask;
+  protected
+    procedure Execute; override;
+  end;
+
 implementation
 
 {$R *.dfm}
 
 uses
-  JclDebug,
   JclOtaResources;
+
+//=== { TTestThread } ========================================================
+
+{$W+}
+
+procedure TTestThread.Execute;
+begin
+  ExecuteTask;
+end;
+
+{$IFNDEF STACKFRAMES_ON}
+{$W-}
+{$ENDIF ~STACKFRAMES_ON}
+
+procedure TTestThread.ExecuteTask;
+begin
+  ExecuteSubTask;
+end;
+
+procedure TTestThread.ExecuteSubTask;
+begin
+  while not Terminated do
+    Sleep(100);
+end;
 
 //=== { TJclOtaExcDlgTracePage } =============================================
 
@@ -87,6 +122,7 @@ constructor TJclOtaExcDlgTracePage.Create(AOwner: TComponent;
 begin
   FParams := AParams;
   inherited Create(AOwner);
+  FTestThread := TTestThread.Create(False, 'MyTaskThread');
 
   Caption := RsExcDlgTraceOptions;
   CheckBoxStackList.Caption := RsStackList;
@@ -97,6 +133,13 @@ begin
   CheckBoxVirtualAddress.Caption := RsVirtualAddress;
   CheckBoxModuleOffset.Caption := RsModuleOffset;
   LabelPreview.Caption := RsPreview;
+  CheckBoxAllThreads.Caption := RsAllThreads;
+end;
+
+destructor TJclOtaExcDlgTracePage.Destroy;
+begin
+  FTestThread.Free;
+  inherited Destroy;
 end;
 
 procedure TJclOtaExcDlgTracePage.PageActivated(Direction: TJclWizardDirection);
@@ -110,6 +153,7 @@ begin
   CheckBoxCodeDetails.Checked := Params.CodeDetails;
   CheckBoxVirtualAddress.Checked := Params.VirtualAddress;
   CheckBoxModuleOffset.Checked := Params.ModuleOffset;
+  CheckBoxAllThreads.Checked := Params.AllThreads;
 
   UpdateCheckBoxes;
 end;
@@ -126,6 +170,7 @@ begin
   Params.CodeDetails := CheckBoxCodeDetails.Checked;
   Params.VirtualAddress := CheckBoxVirtualAddress.Checked;
   Params.ModuleOffset := CheckBoxModuleOffset.Checked;
+  Params.AllThreads := CheckBoxAllThreads.Checked;
 end;
 
 procedure TJclOtaExcDlgTracePage.UpdateCheckBoxes;
@@ -145,13 +190,30 @@ procedure TJclOtaExcDlgTracePage.UpdatePreview;
 var
   AStack: TJclStackInfoList;
 begin
+  MemoStack.Lines.Clear;
+  
+  if CheckBoxAllThreads.Checked then
+    MemoStack.Lines.Add('Main thread stack trace');
+
   AStack := TJclStackInfoList.Create(CheckBoxRawData.Checked, 0, nil, False);
   try
-    MemoStack.Lines.Clear;
     AStack.AddToStrings(MemoStack.Lines, CheckBoxModuleName.Checked,
       CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked, CheckBoxVirtualAddress.Checked);
   finally
     AStack.Free;
+  end;
+
+  if CheckBoxAllThreads.Checked then
+  begin
+    MemoStack.Lines.Add('');
+    MemoStack.Lines.Add(Format('Stack trace for thread: "%s" (%s)', [FTestThread.ThreadName, FTestThread.ClassName]));
+    AStack := JclCreateThreadStackTrace(CheckBoxRawData.Checked, FTestThread.Handle);
+    try
+      AStack.AddToStrings(MemoStack.Lines, CheckBoxModuleName.Checked,
+        CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked, CheckBoxVirtualAddress.Checked);
+    finally
+      AStack.Free;
+    end;
   end;
 end;
 

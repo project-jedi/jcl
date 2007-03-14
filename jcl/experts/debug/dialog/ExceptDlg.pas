@@ -54,7 +54,7 @@ type
   private
     private
     FDetailsVisible: Boolean;
-    FIsMainThead: Boolean;
+    FThreadID: DWORD;
     FLastActiveControl: TWinControl;
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
@@ -76,7 +76,7 @@ type
     procedure CopyReportToClipboard;
     class procedure ExceptionHandler(Sender: TObject; E: Exception);
     class procedure ExceptionThreadHandler(Thread: TJclDebugThread);
-    class procedure ShowException(E: Exception; Thread: TJclDebugThread);
+    class procedure ShowException(E: TObject; Thread: TJclDebugThread);
     property DetailsVisible: Boolean read FDetailsVisible
       write SetDetailsVisible;
     property ReportAsText: string read GetReportAsText;
@@ -99,6 +99,7 @@ uses
 resourcestring
   RsAppError = '%s - application error';
   RsExceptionClass = 'Exception class: %s';
+  RsExceptionMessage = 'Exception message: %s';
   RsExceptionAddr = 'Exception address: %p';
   RsStackList = 'Stack list, generated %s';
   RsModulesList = 'List of loaded modules:';
@@ -109,6 +110,7 @@ resourcestring
   RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
+
 
 var
   ExceptionDialog: TExceptionDialog;
@@ -272,18 +274,20 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
+ 
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
   try
     // Stack list
-    StackList := JclLastExceptStackList;
+    StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
+
 
 
     // System and OS information
@@ -389,7 +393,7 @@ end;
 class procedure TExceptionDialog.ExceptionHandler(Sender: TObject; E: Exception);
 begin
   if ExceptionShowing then
-    Application.ShowException(E)
+    Application.ShowException(Exception(E))
   else if Assigned(E) and not IsIgnoredException(E.ClassType) then
   begin
     ExceptionShowing := True;
@@ -406,7 +410,10 @@ end;
 class procedure TExceptionDialog.ExceptionThreadHandler(Thread: TJclDebugThread);
 begin
   if ExceptionShowing then
-    Application.ShowException(Thread.SyncException)
+  begin
+    if Thread.SyncException is EXception then
+      Application.ShowException(Exception(Thread.SyncException));
+  end
   else
   begin
     ExceptionShowing := True;
@@ -467,7 +474,7 @@ procedure TExceptionDialog.FormShow(Sender: TObject);
 begin
   BeforeCreateDetails;
   MessageBeep(MB_ICONERROR);
-  if FIsMainThead and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
+  if (GetCurrentThreadId = MainThreadID) and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
     PostMessage(Handle, UM_CREATEDETAILS, 0, 0)
   else
     CreateReport;
@@ -542,18 +549,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ShowException(E: Exception; Thread: TJclDebugThread);
+class procedure TExceptionDialog.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
   if ExceptionDialog = nil then
     ExceptionDialog := TExceptionDialogClass.Create(Application);
   try
     with ExceptionDialog do
     begin
-      FIsMainThead := (GetCurrentThreadId = MainThreadID);
+      if Assigned(Thread) then
+        FThreadID := Thread.ThreadID
+      else
+        FThreadID := MainThreadID;
       FLastActiveControl := Screen.ActiveControl;
-      TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.Message));
+      if E is Exception then
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
+      else
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
       UpdateTextLabelScrollbars;
       DetailsMemo.Lines.Add(Format(RsExceptionClass, [E.ClassName]));
+      if E is Exception then
+        DetailsMemo.Lines.Add(Format(RsExceptionMessage, [StrEnsureSuffix('.', Exception(E).Message)]));
       if Thread = nil then
         DetailsMemo.Lines.Add(Format(RsExceptionAddr, [ExceptAddr]))
       else

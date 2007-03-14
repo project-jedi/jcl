@@ -36,7 +36,7 @@ const
   UM_CREATEDETAILS = WM_USER + $100;
 
 type
-  TExceptionDialog = class(TForm)
+  TExceptionDialogMail = class(TForm)
     SendBtn: TButton;
     TextLabel: TMemo;
     OkBtn: TButton;
@@ -54,7 +54,7 @@ type
   private
     private
     FDetailsVisible: Boolean;
-    FIsMainThead: Boolean;
+    FThreadID: DWORD;
     FLastActiveControl: TWinControl;
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
@@ -76,17 +76,17 @@ type
     procedure CopyReportToClipboard;
     class procedure ExceptionHandler(Sender: TObject; E: Exception);
     class procedure ExceptionThreadHandler(Thread: TJclDebugThread);
-    class procedure ShowException(E: Exception; Thread: TJclDebugThread);
+    class procedure ShowException(E: TObject; Thread: TJclDebugThread);
     property DetailsVisible: Boolean read FDetailsVisible
       write SetDetailsVisible;
     property ReportAsText: string read GetReportAsText;
     property SimpleLog: TJclSimpleLog read FSimpleLog;
   end;
 
-  TExceptionDialogClass = class of TExceptionDialog;
+  TExceptionDialogMailClass = class of TExceptionDialogMail;
 
 var
-  ExceptionDialogClass: TExceptionDialogClass = TExceptionDialog;
+  ExceptionDialogMailClass: TExceptionDialogMailClass = TExceptionDialogMail;
 
 implementation
 
@@ -99,6 +99,7 @@ uses
 resourcestring
   RsAppError = '%s - application error';
   RsExceptionClass = 'Exception class: %s';
+  RsExceptionMessage = 'Exception message: %s';
   RsExceptionAddr = 'Exception address: %p';
   RsStackList = 'Stack list, generated %s';
   RsModulesList = 'List of loaded modules:';
@@ -110,8 +111,9 @@ resourcestring
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
 
+
 var
-  ExceptionDialog: TExceptionDialog;
+  ExceptionDialogMail: TExceptionDialogMail;
 
 //============================================================================
 // Helper routines
@@ -148,7 +150,7 @@ procedure HookShowException(ExceptObject: TObject; ExceptAddr: Pointer);
 begin
   if JclValidateModuleAddress(ExceptAddr)
     and (ExceptObject.InstanceSize >= Exception.InstanceSize) then
-    TExceptionDialog.ExceptionHandler(nil, Exception(ExceptObject))
+    TExceptionDialogMail.ExceptionHandler(nil, Exception(ExceptObject))
   else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
 end;
@@ -207,30 +209,30 @@ end;
 var
   ExceptionShowing: Boolean;
 
-//=== { TExceptionDialog } ===============================================
+//=== { TExceptionDialogMail } ===============================================
 
-procedure TExceptionDialog.AfterCreateDetails;
+procedure TExceptionDialogMail.AfterCreateDetails;
 begin
   SendBtn.Enabled := True;
 end;
 
 //----------------------------------------------------------------------------
 
-procedure TExceptionDialog.BeforeCreateDetails;
+procedure TExceptionDialogMail.BeforeCreateDetails;
 begin
   SendBtn.Enabled := False;
 end;
 
 //----------------------------------------------------------------------------
 
-function TExceptionDialog.ReportMaxColumns: Integer;
+function TExceptionDialogMail.ReportMaxColumns: Integer;
 begin
   Result := 78;
 end;
 
 //----------------------------------------------------------------------------
 
-procedure TExceptionDialog.SendBtnClick(Sender: TObject);
+procedure TExceptionDialogMail.SendBtnClick(Sender: TObject);
 begin
   with TJclEmail.Create do
   try
@@ -251,14 +253,14 @@ end;
 
 //----------------------------------------------------------------------------
 
-procedure TExceptionDialog.CopyReportToClipboard;
+procedure TExceptionDialogMail.CopyReportToClipboard;
 begin
   ClipBoard.AsText := ReportAsText;
 end;
 
 //----------------------------------------------------------------------------
 
-procedure TExceptionDialog.CreateDetails;
+procedure TExceptionDialogMail.CreateDetails;
 begin
   Screen.Cursor := crHourGlass;
   DetailsMemo.Lines.BeginUpdate;
@@ -279,7 +281,7 @@ end;
 
 //----------------------------------------------------------------------------
 
-procedure TExceptionDialog.CreateReport;
+procedure TExceptionDialogMail.CreateReport;
 var
   SL: TStringList;
   I: Integer;
@@ -292,18 +294,20 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
+ 
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
   try
     // Stack list
-    StackList := JclLastExceptStackList;
+    StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
+
 
 
     // System and OS information
@@ -399,17 +403,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.DetailsBtnClick(Sender: TObject);
+procedure TExceptionDialogMail.DetailsBtnClick(Sender: TObject);
 begin
   DetailsVisible := not DetailsVisible;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ExceptionHandler(Sender: TObject; E: Exception);
+class procedure TExceptionDialogMail.ExceptionHandler(Sender: TObject; E: Exception);
 begin
   if ExceptionShowing then
-    Application.ShowException(E)
+    Application.ShowException(Exception(E))
   else if Assigned(E) and not IsIgnoredException(E.ClassType) then
   begin
     ExceptionShowing := True;
@@ -423,10 +427,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ExceptionThreadHandler(Thread: TJclDebugThread);
+class procedure TExceptionDialogMail.ExceptionThreadHandler(Thread: TJclDebugThread);
 begin
   if ExceptionShowing then
-    Application.ShowException(Thread.SyncException)
+  begin
+    if Thread.SyncException is EXception then
+      Application.ShowException(Exception(Thread.SyncException));
+  end
   else
   begin
     ExceptionShowing := True;
@@ -440,7 +447,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormCreate(Sender: TObject);
+procedure TExceptionDialogMail.FormCreate(Sender: TObject);
 begin
   FSimpleLog := TJclSimpleLog.Create('filename.log');
   FFullHeight := ClientHeight;
@@ -450,14 +457,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormDestroy(Sender: TObject);
+procedure TExceptionDialogMail.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FSimpleLog);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TExceptionDialogMail.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = Ord('C')) and (ssCtrl in Shift) then
   begin
@@ -468,7 +475,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormPaint(Sender: TObject);
+procedure TExceptionDialogMail.FormPaint(Sender: TObject);
 begin
   DrawIcon(Canvas.Handle, TextLabel.Left - GetSystemMetrics(SM_CXICON) - 15,
     TextLabel.Top, LoadIcon(0, IDI_ERROR));
@@ -476,18 +483,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormResize(Sender: TObject);
+procedure TExceptionDialogMail.FormResize(Sender: TObject);
 begin
   UpdateTextLabelScrollbars;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormShow(Sender: TObject);
+procedure TExceptionDialogMail.FormShow(Sender: TObject);
 begin
   BeforeCreateDetails;
   MessageBeep(MB_ICONERROR);
-  if FIsMainThead and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
+  if (GetCurrentThreadId = MainThreadID) and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
     PostMessage(Handle, UM_CREATEDETAILS, 0, 0)
   else
     CreateReport;
@@ -495,28 +502,28 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExceptionDialog.GetReportAsText: string;
+function TExceptionDialogMail.GetReportAsText: string;
 begin
   Result := StrEnsureSuffix(AnsiCrLf, TextLabel.Text) + AnsiCrLf + DetailsMemo.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.NextDetailBlock;
+procedure TExceptionDialogMail.NextDetailBlock;
 begin
   DetailsMemo.Lines.Add(StrRepeat(ReportNewBlockDelimiterChar, ReportMaxColumns));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TExceptionDialog.ReportNewBlockDelimiterChar: Char;
+function TExceptionDialogMail.ReportNewBlockDelimiterChar: Char;
 begin
   Result := '-';
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.ReportToLog;
+procedure TExceptionDialogMail.ReportToLog;
 begin
   FSimpleLog.WriteStamp(ReportMaxColumns);
   try
@@ -528,7 +535,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.SetDetailsVisible(const Value: Boolean);
+procedure TExceptionDialogMail.SetDetailsVisible(const Value: Boolean);
 var
   DetailsCaption: string;
 begin
@@ -562,18 +569,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ShowException(E: Exception; Thread: TJclDebugThread);
+class procedure TExceptionDialogMail.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
-  if ExceptionDialog = nil then
-    ExceptionDialog := TExceptionDialogClass.Create(Application);
+  if ExceptionDialogMail = nil then
+    ExceptionDialogMail := TExceptionDialogMailClass.Create(Application);
   try
-    with ExceptionDialog do
+    with ExceptionDialogMail do
     begin
-      FIsMainThead := (GetCurrentThreadId = MainThreadID);
+      if Assigned(Thread) then
+        FThreadID := Thread.ThreadID
+      else
+        FThreadID := MainThreadID;
       FLastActiveControl := Screen.ActiveControl;
-      TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.Message));
+      if E is Exception then
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
+      else
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
       UpdateTextLabelScrollbars;
       DetailsMemo.Lines.Add(Format(RsExceptionClass, [E.ClassName]));
+      if E is Exception then
+        DetailsMemo.Lines.Add(Format(RsExceptionMessage, [StrEnsureSuffix('.', Exception(E).Message)]));
       if Thread = nil then
         DetailsMemo.Lines.Add(Format(RsExceptionAddr, [ExceptAddr]))
       else
@@ -582,13 +597,13 @@ begin
       ShowModal;
     end;
   finally
-    FreeAndNil(ExceptionDialog);
+    FreeAndNil(ExceptionDialogMail);
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.UMCreateDetails(var Message: TMessage);
+procedure TExceptionDialogMail.UMCreateDetails(var Message: TMessage);
 begin
   Update;
   CreateDetails;
@@ -596,7 +611,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.UpdateTextLabelScrollbars;
+procedure TExceptionDialogMail.UpdateTextLabelScrollbars;
 begin
   Canvas.Font := TextLabel.Font;
   if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
@@ -617,11 +632,11 @@ begin
   JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];
   JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
   JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
-  JclDebugThreadList.OnSyncException := TExceptionDialog.ExceptionThreadHandler;
+  JclDebugThreadList.OnSyncException := TExceptionDialogMail.ExceptionThreadHandler;
   JclStartExceptionTracking;
   if HookTApplicationHandleException then
     JclTrackExceptionsFromLibraries;
-  Application.OnException := TExceptionDialog.ExceptionHandler;
+  Application.OnException := TExceptionDialogMail.ExceptionHandler;
 end;
 
 //--------------------------------------------------------------------------------------------------

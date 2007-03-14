@@ -1,9 +1,9 @@
-object ExceptionDialog: TExceptionDialog
+object ExceptionDialogMail: TExceptionDialogMail
   Left = 310
   Top = 255
   BorderIcons = [biSystemMenu]
 
-  Caption = 'ExceptionDialog'
+  Caption = 'ExceptionDialogMail'
   ClientHeight = 255
   ClientWidth = 432
   Color = clBtnFace

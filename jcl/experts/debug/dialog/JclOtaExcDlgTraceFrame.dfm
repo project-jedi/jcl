@@ -2,7 +2,7 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
   object LabelPreview: TLabel
     Left = 303
     Top = 7
-    Width = 50
+    Width = 51
     Height = 13
     Caption = 'RsPreview'
   end
@@ -70,5 +70,14 @@ inherited JclOtaExcDlgTracePage: TJclOtaExcDlgTracePage
     Caption = 'RsStackList'
     TabOrder = 5
     OnClick = CheckBoxStackListClick
+  end
+  object CheckBoxAllThreads: TCheckBox
+    Left = 56
+    Top = 248
+    Width = 233
+    Height = 17
+    Caption = 'RsAllThreads'
+    TabOrder = 7
+    OnClick = CheckBoxClick
   end
 end

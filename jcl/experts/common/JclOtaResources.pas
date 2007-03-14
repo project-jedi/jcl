@@ -151,6 +151,7 @@ resourcestring
   RsVirtualAddress = '&Virtual address';
   RsModuleOffset = 'Module &offset';
   RsPreview = '&Preview:';
+  RsAllThreads = 'Include traces for registered &threads';
 
 //=== JclOtaExcDlgIgnoreFrame.pas ============================================
 resourcestring

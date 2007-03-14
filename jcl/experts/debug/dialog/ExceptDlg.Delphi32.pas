@@ -54,7 +54,7 @@ type
   private
     private
     FDetailsVisible: Boolean;
-    FIsMainThead: Boolean;
+    FThreadID: DWORD;
 %if ActiveControls    FLastActiveControl: TWinControl;%endif
     FNonDetailsHeight: Integer;
     FFullHeight: Integer;
@@ -76,7 +76,7 @@ type
     procedure CopyReportToClipboard;
     class procedure ExceptionHandler(Sender: TObject; E: Exception);
     class procedure ExceptionThreadHandler(Thread: TJclDebugThread);
-    class procedure ShowException(E: Exception; Thread: TJclDebugThread);
+    class procedure ShowException(E: TObject; Thread: TJclDebugThread);
     property DetailsVisible: Boolean read FDetailsVisible
       write SetDetailsVisible;
     property ReportAsText: string read GetReportAsText;
@@ -99,6 +99,7 @@ uses
 resourcestring
   RsAppError = '%s - application error';
   RsExceptionClass = 'Exception class: %s';
+  RsExceptionMessage = 'Exception message: %s';
   RsExceptionAddr = 'Exception address: %p';
   RsStackList = 'Stack list, generated %s';
   RsModulesList = 'List of loaded modules:';
@@ -109,6 +110,8 @@ resourcestring
   RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
+%if AllThreads  RsMainThreadCallStack = 'Call stack for main thread';
+  RsThreadCallStack = 'Call stack for thread %s';%endif
 
 var
   %FORMNAME%: T%FORMNAME%;
@@ -291,19 +294,56 @@ var
 %if ActiveControls  C: TWinControl;%endif
 %if OSInfo  CpuInfo: TCpuInfo;
   ProcessorDetails: string;%endif
-%if StackList  StackList: TJclStackInfoList;%endif
+%if StackList  StackList: TJclStackInfoList;
+%if AllThreads  ThreadList: TJclDebugThreadList;
+  AThreadID: DWORD;%endif %endif
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
   try
 %if StackList    // Stack list
-    StackList := JclLastExceptStackList;
+    StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
       DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
       NextDetailBlock;
     end;
+%if AllThreads    // Main thread
+    if FThreadID <> MainThreadID then
+    begin
+      StackList := JclCreateThreadStackTraceFromID(%BoolValue RawData, MainThreadID);
+      if Assigned(StackList) then
+      begin
+        DetailsMemo.Lines.Add(RsMainThreadCallStack);
+        DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
+        StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+        NextDetailBlock;
+      end;
+    end;
+    // All threads
+    ThreadList := JclDebugThreadList;
+    ThreadList.Lock.Enter; // avoid modifications
+    try
+      for I := 0 to ThreadList.ThreadIDCount - 1 do
+      begin
+        AThreadID := ThreadList.ThreadIDs[I];
+        if (AThreadID <> FThreadID) then
+        begin
+          StackList := JclCreateThreadStackTrace(%BoolValue RawData, ThreadList.ThreadHandles[I]);
+          if Assigned(StackList) then
+          begin
+            DetailsMemo.Lines.Add(Format(RsThreadCallStack, [ThreadList.ThreadInfos[AThreadID]]));
+            DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
+            StackList.AddToStrings(DetailsMemo.Lines, %BoolValue ModuleName, %BoolValue ModuleOffset, %BoolValue CodeDetails, %BoolValue VirtualAddress);
+            NextDetailBlock;
+          end;
+        end;
+      end;
+    finally
+      ThreadList.Lock.Leave;
+    end;
+%endif
 %endif
 
 %if OSInfo    // System and OS information
@@ -409,7 +449,7 @@ end;
 class procedure T%FORMNAME%.ExceptionHandler(Sender: TObject; E: Exception);
 begin
   if ExceptionShowing then
-    Application.ShowException(E)
+    Application.ShowException(Exception(E))
   else if Assigned(E) and not IsIgnoredException(E.ClassType) then
   begin
     ExceptionShowing := True;
@@ -426,7 +466,10 @@ end;
 class procedure T%FORMNAME%.ExceptionThreadHandler(Thread: TJclDebugThread);
 begin
   if ExceptionShowing then
-    Application.ShowException(Thread.SyncException)
+  begin
+    if Thread.SyncException is EXception then
+      Application.ShowException(Exception(Thread.SyncException));
+  end
   else
   begin
     ExceptionShowing := True;
@@ -487,7 +530,7 @@ procedure T%FORMNAME%.FormShow(Sender: TObject);
 begin
   BeforeCreateDetails;
   MessageBeep(MB_ICONERROR);
-  if FIsMainThead and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
+  if (GetCurrentThreadId = MainThreadID) and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
     PostMessage(Handle, UM_CREATEDETAILS, 0, 0)
   else
     CreateReport;
@@ -562,18 +605,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure T%FORMNAME%.ShowException(E: Exception; Thread: TJclDebugThread);
+class procedure T%FORMNAME%.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
   if %FORMNAME% = nil then
     %FORMNAME% := T%FORMNAME%Class.Create(Application);
   try
     with %FORMNAME% do
     begin
-      FIsMainThead := (GetCurrentThreadId = MainThreadID);
+      if Assigned(Thread) then
+        FThreadID := Thread.ThreadID
+      else
+        FThreadID := MainThreadID;
 %if ActiveControls      FLastActiveControl := Screen.ActiveControl;%endif
-      TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.Message));
+      if E is Exception then
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
+      else
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
       UpdateTextLabelScrollbars;
       DetailsMemo.Lines.Add(Format(RsExceptionClass, [E.ClassName]));
+      if E is Exception then
+        DetailsMemo.Lines.Add(Format(RsExceptionMessage, [StrEnsureSuffix('.', Exception(E).Message)]));
       if Thread = nil then
         DetailsMemo.Lines.Add(Format(RsExceptionAddr, [ExceptAddr]))
       else

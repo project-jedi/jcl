@@ -67,6 +67,7 @@ type
     FStackList: Boolean;
     FAutoScrollBars: Boolean;
     FMainThreadOnly: Boolean;
+    FAllThreads: Boolean;
     FTraceEAbort: Boolean;
     FIgnoredExceptions: TStrings;
     FTraceAllExceptions: Boolean;
@@ -110,6 +111,7 @@ type
     property RawData: Boolean read FRawData write FRawData;
     property ModuleName: Boolean read FModuleName write FModuleName;
     property ModuleOffset: Boolean read FModuleOffset write FModuleOffset;
+    property AllThreads: Boolean read FAllThreads write FAllThreads;
     //property AddressOffset: Boolean read FAddressOffset write FAddressOffset;
     property CodeDetails: Boolean read FCodeDetails write FCodeDetails;
     property VirtualAddress: Boolean read FVirtualAddress write FVirtualAddress;
