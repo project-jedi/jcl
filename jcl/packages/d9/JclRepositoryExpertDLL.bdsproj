@@ -149,8 +149,8 @@
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
       <VersionInfo Name="MinorVer">99</VersionInfo>
-      <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">2509</VersionInfo>
+      <VersionInfo Name="Release">1</VersionInfo>
+      <VersionInfo Name="Build">2551</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -162,13 +162,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JCL Package containing repository wizards</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.99.0.2509</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.99.1.2551</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclRepositoryExpertDLL</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclRepositoryExpertDLL90.dll</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.99 Build 2509</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.99 Build 2551</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

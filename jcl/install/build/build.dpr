@@ -30,7 +30,7 @@ program build;
 { build.exe setups the environment for a Delphi compiler }
 
 uses
-  Windows, ShlObj;
+  Windows, ShlObj, Registry;
 
 type
   TOption = record
@@ -76,7 +76,7 @@ type
   end;
 
 const // keep in sync with JVCL Installer's DelphiData.pas
-  BDSVersions: array[1..4] of record
+  BDSVersions: array[1..5] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -87,7 +87,8 @@ const // keep in sync with JVCL Installer's DelphiData.pas
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
-    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True)
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True),
+    (Name: 'Codegear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '110'; ProjectDirResId: 64719; Supported: True)
   );
 
 type
@@ -104,6 +105,7 @@ type
     FLibDir: string;
     FIsPersonal: Boolean;
     FIsCLX: Boolean;
+    FIsSpacely: Boolean;
 
     function GetBDSProjectsDir: string;
     procedure ReadRegistryData;
@@ -127,6 +129,7 @@ type
     property Name: string read FName;
     property IsPersonal: Boolean read FIsPersonal;
     property IsCLX: Boolean read FIsCLX;
+    property IsSpacely: Boolean read FIsSpacely;
   end;
 
 var
@@ -537,6 +540,7 @@ end;
 constructor TEdition.Create(const AEditionName, PerDirName: string);
 var
   Index: Integer;
+  reg: TRegistry;
 begin
   if UpCase(AEditionName[1]) = 'D' then
     Typ := Delphi
@@ -559,7 +563,25 @@ begin
   if Version > 7 then
   begin
     Typ := BDS;
+
     IDEVersion := Version - 6; // D 8 = BDS 2
+    
+    // We must detect Spacely here to modify IDEVersion to be one more than the one from BDS2006
+    if (Version = 10) then
+    begin
+      reg := TRegistry.Create;
+      try
+        reg.RootKey := HKEY_CURRENT_USER;
+        FIsSpacely := reg.OpenKeyReadOnly('Software\Borland\BDS\5.0\Known IDE Packages\Delphi') and
+                      reg.ValueExists('$(BDS)\Bin\delphide100.bpl');
+
+        if IsSpacely then
+          Inc(IDEVersion);
+      finally
+        reg.Free;
+      end;
+    end;
+
     IDEVersionStr := IntToStr(IDEVersion);
   end;
 

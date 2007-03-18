@@ -57,7 +57,6 @@ type
     FSaveBuildAllProjects: TAction;
     FSaveBuildAllProjectsExecute: TNotifyEvent;
     FNotifierIndex: Integer;
-    FOptionsModifiedState: Boolean;
     FSaveMapFile: Integer;
     FConfigFrame: TJclDebugIdeConfigFrame;
     FGenerateJdbg: Boolean;
@@ -241,10 +240,13 @@ begin
   if EnableExpert and Assigned(FCurrentProject) then
   begin
     ProjOptions := FCurrentProject.ProjectOptions;
+
     if FSaveMapFile <> MapFileOptionDetailed then
     begin
       ProjOptions.Values[MapFileOptionName] := FSaveMapFile;
-      ProjOptions.ModifiedState := FOptionsModifiedState;
+      // workaround for MsBuild, the project has to be saved
+      ProjOptions.ModifiedState := True;
+      FCurrentProject.Save(False, True);
     end;
     ProjectFileName := FCurrentProject.FileName;
     OutputDirectory := GetOutputDirectory(FCurrentProject);
@@ -343,10 +345,12 @@ begin
       if not Assigned(ProjOptions) then
         raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
-      FOptionsModifiedState := ProjOptions.ModifiedState;
       FSaveMapFile := ProjOptions.Values[MapFileOptionName];
       if FSaveMapFile <> MapFileOptionDetailed then
         ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+      // workaround for MsBuild, the project has to be saved
+      ProjOptions.ModifiedState := True;
+      Project.Save(False, True);
     end;
   end;
 end;

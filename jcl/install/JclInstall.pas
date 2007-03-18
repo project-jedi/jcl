@@ -881,10 +881,7 @@ procedure TJclInstallation.Init;
       begin
         AddOption(joHelp, [goChecked], Parent);
         AddOption(johelpHxS, [goStandaloneParent,goChecked], joHelp);
-        if IsAdministrator then
-          AddOption(joHelpHxSPlugin, [goChecked], joHelpHxS)
-        else
-          AddOption(joHelpHxSPlugin, [], joHelpHxS);
+        AddOption(joHelpHxSPlugin, [goNoAutoCheck], joHelpHxS);
       end;
     end
     else
@@ -1229,7 +1226,7 @@ function TJclInstallation.Install: Boolean;
       else
         CLRSuffix := '.net';
       TemplateFileName := PathAddSeparator(Distribution.JclSourceDir) + 'jcl.template.inc';
-      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.VersionNumberStr, CLRSuffix]);
+      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.IDEVersionNumberStr, CLRSuffix]);
       try
         IncludeFile := TStringList.Create;
         try
@@ -2895,7 +2892,7 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
       brCppBuilder :
         Result := Target.VersionNumber in [5, 6];
       brBorlandDevStudio :
-        Result := Target.VersionNumber in [1, 2, 3, 4];
+        Result := Target.VersionNumber in [1, 2, 3, 4, 5];
       else
         Result := False;
     end;
@@ -2914,7 +2911,8 @@ begin
     FTargetInstalls.Add(Inst);
     {$IFDEF MSWINDOWS}
     // .net "virtual" targets
-    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) and not Target.IsTurboExplorer then
+    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) and (not Target.IsTurboExplorer)
+      and (bpDelphiNet32 in Target.Personalities) then
     begin
       for Index := 0 to FCLRVersions.Count - 1 do
       begin

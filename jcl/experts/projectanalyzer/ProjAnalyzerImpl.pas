@@ -145,7 +145,6 @@ var
   SaveMapFile: Variant;
   OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
   ProjectName: string;
-  OptionsModifiedState: Boolean;
 begin
   try
     TempActiveProject := ActiveProject;
@@ -171,12 +170,18 @@ begin
     ProjectAnalyzerForm.ClearContent;
     ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
 
-    OptionsModifiedState := ProjOptions.ModifiedState;
     SaveMapFile := ProjOptions.Values[MapFileOptionName];
     ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
+    // workaround for MsBuild, the project has to be saved
+    ProjOptions.ModifiedState := True;
+    TempActiveProject.Save(False, True);
+
     BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
+
     ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-    ProjOptions.ModifiedState := OptionsModifiedState;
+    // workaround for MsBuild, the project has to be saved
+    ProjOptions.ModifiedState := True;
+    TempActiveProject.Save(False, True);
 
     if BuildOK then
     begin // Build was successful, continue ...

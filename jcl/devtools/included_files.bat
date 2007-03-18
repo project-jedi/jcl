@@ -13,3 +13,4 @@ copy ..\source\jcl.template.inc ..\source\jcld9.inc
 copy ..\source\jcl.template.inc ..\source\jcld9.net.inc
 copy ..\source\jcl.template.inc ..\source\jcld10.inc
 copy ..\source\jcl.template.inc ..\source\jcld10.net.inc
+copy ..\source\jcl.template.inc ..\source\jcld11.inc

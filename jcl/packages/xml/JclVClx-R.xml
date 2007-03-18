@@ -9,8 +9,8 @@
   <ImageBase>48300000</ImageBase>
   <VersionMajorNumber>1</VersionMajorNumber>
   <VersionMinorNumber>99</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>2509</BuildNumber>
+  <ReleaseNumber>1</ReleaseNumber>
+  <BuildNumber>2551</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="visualclx" Targets="all" Condition=""/>
