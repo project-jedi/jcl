@@ -1429,6 +1429,8 @@ begin
   Result := SameText(ExtractFileExt(FileName), SourceExtensionBCBProject);
 end;
 
+{$IFDEF MSWINDOWS}
+
 function LoadResStrings(const BaseBinName: string;
   const ResId: array of Integer): string;
 var
@@ -1479,7 +1481,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
 function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
   I: Integer;
@@ -3900,6 +3901,8 @@ begin
       FVersionNumber := 0;
     end;
   end;
+  FIDEVersionNumber := VersionNumber;
+
   {$ELSE ~KYLIX}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
 

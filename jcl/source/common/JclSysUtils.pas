@@ -501,10 +501,11 @@ type
   end;
 
 {$IFNDEF CLR}
+
 type
   TJclSimpleLog = class (TObject)
   private
-    FLogFileHandle: Integer;
+    FLogFileHandle: THandle;
     FLogFileName: string;
     FLogWasEmpty: Boolean;
     function GetLogOpen: Boolean;
@@ -522,6 +523,7 @@ type
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
+
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
@@ -3039,7 +3041,10 @@ end;
 
 //=== { TJclSimpleLog } ======================================================
 
-{$IFDEF MSWINDOWS}
+{$IFDEF LINUX}
+const
+  INVALID_HANDLE_VALUE = 0;
+{$ENDIF LINUX}
 
 procedure TJclSimpleLog.ClearLog;
 begin
@@ -3053,7 +3058,7 @@ begin
   if LogOpen then
   begin
     FileClose(FLogFileHandle);
-    FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
+    FLogFileHandle := INVALID_HANDLE_VALUE;
     FLogWasEmpty := False;
   end;
 end;
@@ -3064,7 +3069,7 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  FLogFileHandle := Integer(INVALID_HANDLE_VALUE);
+  FLogFileHandle := INVALID_HANDLE_VALUE;
 end;
 
 function TJclSimpleLog.CreateDefaultFileName: string;
@@ -3081,18 +3086,18 @@ end;
 
 function TJclSimpleLog.GetLogOpen: Boolean;
 begin
-  Result := (FLogFileHandle <> 0) and (FLogFileHandle <> Integer(INVALID_HANDLE_VALUE));
+  Result := FLogFileHandle <> INVALID_HANDLE_VALUE;
 end;
 
 procedure TJclSimpleLog.OpenLog;
 begin
   if not LogOpen then
   begin
-    FLogFileHandle := FileOpen(FLogFileName, fmShareDenyWrite or fmOpenReadWrite);
+    FLogFileHandle := FileOpen(FLogFileName, fmOpenWrite or fmShareDenyWrite);
     if not LogOpen then
       FLogFileHandle := FileCreate(FLogFileName);
     if LogOpen then
-      FLogWasEmpty := SetFilePointer(FLogFileHandle, 0, nil, FILE_END) = 0;
+      FLogWasEmpty := FileSeek(FLogFileHandle, 0, soFromEnd) = 0;
   end
   else
     FLogWasEmpty := False;
@@ -3112,7 +3117,7 @@ begin
       for I := 0 to SL.Count - 1 do
       begin
         S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
-        FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
+        FileWrite(Integer(FLogFileHandle), Pointer(S)^, Length(S));
       end;
     finally
       SL.Free;
@@ -3140,7 +3145,6 @@ begin
   Write(StrRepeat('=', SeparatorLen));
 end;
 
-{$ENDIF MSWINDOWS}
 {$ENDIF ~CLR}
 
 initialization
