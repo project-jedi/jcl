@@ -1,9 +1,0 @@
-type
-
-//
-// Unsigned Basics
-//
-
-  USHORT = Word;
-  {$EXTERNALSYM USHORT}
-

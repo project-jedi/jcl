@@ -1,4 +1,0 @@
-common\containers\performance\ContainerPerformance.dpr
-windows\clr\ClrDemo.dpr
-windows\tasks\TaskDemo.dpr
-visclx.exc

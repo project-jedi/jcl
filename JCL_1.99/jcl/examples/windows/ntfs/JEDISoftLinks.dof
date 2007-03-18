@@ -1,4 +1,0 @@
-[Directories]
-OutputDir=..\..\..\bin
-[Parameters]
-RunParams=/UNREGSERVER

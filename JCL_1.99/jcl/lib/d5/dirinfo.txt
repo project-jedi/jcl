@@ -1,3 +1,0 @@
-This directory is intended as a common place for .dcu files of Delphi 5 packages.
-
-windows.exc: List of D5-incompatible files in $(JCL)/source/windows; exclude from compilation.

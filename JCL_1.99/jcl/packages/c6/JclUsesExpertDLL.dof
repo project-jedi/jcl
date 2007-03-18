@@ -1,9 +1,0 @@
-[Directories]
-UnitOutputDir=..\..\lib\c6
-SearchPath=..\..\source
-Conditionals=BCB
-[Compiler]
-PackageNoLink=1
-[Linker]
-Packages=rtl;vcl;designide;Jcl;JclBaseExpert
-
