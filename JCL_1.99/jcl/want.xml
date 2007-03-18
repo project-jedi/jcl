@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<!--
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is want.xml.                                                             	   }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains want script for build JCl.                                                    }
+{                                                                                                  }
+{ Unit owner: Flier Lu                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+
+$Id$
+
+-->
+<project name="Project JEDI Code Library (JCL)" basedir="." default="help">
+  <tstamp>
+    <format property="when"         pattern="yyyy,mm,dd,HH,nn,ss"/>
+    <format property="date.tag"     pattern="yyyy-mm-dd"/>
+  </tstamp>
+
+  <property name="app.fullname"     value="Project JEDI Code Library"/>
+  <property name="app.shortname"    value="JCL"/>
+
+  <property name="version.major"    value="1"/>
+  <property name="version.minor"    value="96"/>
+  <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
+
+  <!-- why won't the following line work with subst=""? -->
+  <regexp property="ver.dir" pattern="\.0" subst=" " text="d%{delphi.version}" />
+  <property name="bin.dir"          value="${basedir}/bin"/>
+  <property name="lib.dir"          value="${basedir}/lib"/>
+  <property name="lib.ver.dir"      value="${lib.dir}/${ver.dir}"/>
+  <property name="dist.dir"         value="${basedir}/dist"/>
+  <property name="install.dir"      value="${basedir}/install"/>
+  <property name="samp.dir"         value="${basedir}/examples"/>
+  <property name="doc.dir"          value="${basedir}/docs"/>
+  <property name="help.dir"         value="${basedir}/help"/>
+  <property name="pack.dir"         value="${basedir}/packages"/>
+  <property name="pack.ver.dir"     value="${pack.dir}/${ver.dir}"/>
+  <property name="src.dir"          value="${basedir}/source"/>
+
+  <property name="zipname"          value="JCL${version.major}.${version.minor}.zip" />
+  <property name="zipfile"          value="${dist.dir}/${zipname}" />
+
+  <property name="helpzipname"      value="JCL${version.major}.${version.minor}-Help.zip" />
+  <property name="helpzipfile"      value="${dist.dir}/${helpzipname}" />
+
+  <property name="prepare.hint"     value="prepare the directories" />
+  <property name="clean.hint"       value="remove map and editor backup files" />
+  <property name="fresh.hint"       value="remove compiled files" />
+  <property name="versioninfo.hint" value="show the version of JCL" />
+  <property name="compile.hint"     value="compile library" />
+  <property name="samples.hint"     value="compile the sample files" />
+  <property name="dist.hint"        value="build JCL .zip file" />
+  <property name="disthelp.hint"    value="build JCL help .zip file" />
+
+  <patternset id="src.dirs" >
+    <include  name="${src.dir}/**" />
+    <exclude  name="${src.dir}/prototypes" />
+  </patternset>
+
+  <patternset id="unit.dirs" >
+    <include  name="${lib.ver.dir}" />
+    <patternset refid="src.dirs" />
+  </patternset>
+
+  <patternset id="samp.dirs" >
+    <include  name="${samp.dir}/**" />
+  </patternset>
+
+  <patternset id="samples" >
+    <include name="$(samp.dirs)/*.dpr" />
+  </patternset>
+
+  <patternset id="source.dirs" >
+    <patternset refid="src.dirs" />
+    <patternset refid="samp.dirs" />
+  </patternset>
+
+  <target name="help" >
+    <echo message="Usage:" />
+    <echo message="  want [target]" />
+    <echo message="" />
+    <echo message="Target:" />
+    <!-- echo message="  prepare      - ${prepare.hint}" / -->
+    <echo message="  clean        - ${clean.hint}" />
+    <echo message="  fresh        - ${fresh.hint}" />
+    <echo message="  versioninfo  - ${versioninfo.hint}" />
+    <!-- echo message="  compile      - ${compile.hint}" -->
+    <echo message="  dist         - ${dist.hint}" />
+  </target>
+
+  <target name="prepare" description="${prepare.hint}" >
+  </target>
+
+  <target name="clean" description="${clean.hint}" >
+    <delete file="**/*.~*" />
+    <delete file="${bin.dir}/*.map" />
+  </target>
+
+  <target name="fresh" description="${fresh.hint}" depends="clean" >
+    <!-- <delete dir="${dist.dir}" -->
+    <delete file="**/*.dcp" />
+    <delete file="**/*.dcu" />
+    <delete file="**/*.dpu" />
+    <delete file="${bin.dir}/*.exe" />
+    <delete file="${bin.dir}/*.bpl" />
+    <delete file="${bin.dir}/*.dll" />
+    <!-- BCB generated files -->
+    <delete file="${lib.dir}/**/*.obj" />
+    <delete file="${lib.dir}/**/*.res" />
+    <delete file="**/*.lib" />
+    <delete file="**/*.bpi" />
+    <!-- fpc generated files -->
+    <delete file="**/*.a" />
+    <delete file="**/*.o" />
+    <delete file="**/*.ppu" />
+    <delete file="**/*.rst" />
+  </target>
+
+  <target name="versioninfo" description="${versioninfo.hint}" >
+    <echo message="${app.fullname} (${app.shortname}) ${version}" />
+  </target>
+
+  <target name="dist" description="${dist.hint}" >
+    <mkdir dir="${dist.dir}" />
+    <delete file="${zipfile}" />
+    <zip zipfile="${zipfile}" >
+      <fileset dir="${basedir}\.." >
+          <exclude name="${basedir}/dist/**" />
+          <exclude name="${basedir}/**/__history/**" />
+          <exclude name="${basedir}/**/ModelSupport/**" />
+          <exclude name="${basedir}/**/.svn/**" />
+          <exclude name="${basedir}/docs/about jcl/**" />
+          <exclude name="${basedir}/docs/contributors.txt" />
+          <exclude name="${basedir}/devtools/**" />
+          <exclude name="${doc.dir}/*.info" />
+          <exclude name="${doc.dir}/internal/**" />
+          <exclude name="${install.dir}/prototypes/**" />
+          <exclude name="${install.dir}/prototypes.mak" />
+          <exclude name="${install.dir}/BCB5-dcc32.cfg.mak" />
+          <!-- exclude name="${help.dir}/**" / -->
+          <exclude name="${lib.dir}/**/*.res" />
+          <exclude name="${lib.dir}/d4/**" />
+          <exclude name="${lib.dir}/k1/**" />
+          <exclude name="${lib.dir}/k2/**" />
+          <exclude name="${pack.dir}/*.dev/**" />
+          <exclude name="${pack.dir}/JclDev*.*" />
+          <exclude name="${pack.dir}/**/*.mak" />
+          <exclude name="${pack.dir}/**/template.*" />
+          <exclude name="${pack.dir}/d4/**" />
+          <exclude name="${pack.dir}/k1/**" />
+          <exclude name="${pack.dir}/k2/**" />
+          <exclude name="${pack.dir}/JclPackagesDK1.bpg" />
+          <exclude name="${pack.dir}/JclPackagesDK2.bpg" />
+          <exclude name="${src.dir}/prototypes/**" />
+          <exclude name="${src.dir}/common/JclD4Compatibility.pas" />
+          <exclude name="${samp.dir}/makefile.mak" />
+          <exclude name="${samp.dir}/vcl/installhelper/**" />
+          <exclude name="${basedir}/want.*" />
+
+          <include name="${basedir}/include/**" />
+          <include name="${bin.dir}/JediInstaller.exe" />
+          <include name="${basedir}/devtools/jpp*" />
+          <include name="${basedir}/**/*.exc" />
+          <include name="${install.dir}/**/*.cfg" />
+          <include name="${install.dir}/**/*.conf" />
+          <include name="${install.dir}/QJediInstaller.conf" />
+          <include name="${install.dir}/build/**" />
+          <include name="${doc.dir}/**" />
+          <include name="${help.dir}/JclHelp.als" />
+          <include name="${help.dir}/JclHelp.cnt" />
+          <include name="${help.dir}/JclHelp.hlp" />
+          <include name="${pack.dir}/**/*.cfg" />
+          <include name="${pack.dir}/**/*.bmk" />
+          <include name="${pack.dir}/**/*.gmk" />
+          <include name="${src.dir}/**/*.obj" />
+          <include name="${src.dir}/common/*.fpc" />
+          <include name="${basedir}/**/*.pas" />
+          <include name="${basedir}/**/*.dfm" />
+          <include name="${basedir}/**/*.xfm" />
+          <include name="${basedir}/**/*.dof" />
+          <include name="${basedir}/**/*.kof" />
+          <include name="${basedir}/**/*.inc" />
+          <include name="${basedir}/**/*.cpp" />
+
+          <include name="${basedir}/**/*.dpr" />
+          <include name="${basedir}/**/*.dpk" />
+          <include name="${basedir}/**/*.bpg" />
+          <include name="${basedir}/**/*.bpf" />
+          <include name="${basedir}/**/*.bpk" />
+          <include name="${basedir}/**/*.mak" />
+          <include name="${basedir}/**/*.dcr" />
+
+          <include name="${basedir}/**/*.bdsgroup" />
+          <include name="${basedir}/**/*.bdsproj" />
+
+          <include name="${basedir}/**/*.rc" />
+          <include name="${basedir}/**/*.res" />
+          <include name="${basedir}/**/*.ico" />
+          <include name="${basedir}/**/*.tlb" />
+
+          <include name="${basedir}/**/*.txt" />
+          <include name="${basedir}/**/*.htm" />
+          <include name="${basedir}/**/*.html" />
+          <include name="${basedir}/Install.bat" />
+          <include name="${basedir}/QInstall.bat" />
+          <include name="${basedir}/clean.bat" />
+          <include name="${basedir}/clean.sh" />
+          <include name="${basedir}/install.sh" />
+          <include name="${samp.dir}/make.bat" />
+          <include name="${samp.dir}/pushd.bat" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="helpdist" description="${disthelp.hint}" >
+    <mkdir dir="${dist.dir}" />
+    <delete file="${helpzipfile}" />
+    <zip zipfile="${helpzipfile}" >
+      <fileset dir="${basedir}\.." >
+          <include name="${help.dir}/JCLHelp.hlp" />
+          <include name="${help.dir}/JCLHelp.cnt" />
+          <include name="${help.dir}/JCLHelp.als" />
+      </fileset>
+    </zip>
+  </target>
+</project>

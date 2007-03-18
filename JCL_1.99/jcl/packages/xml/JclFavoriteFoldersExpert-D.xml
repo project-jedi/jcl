@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclFavoriteFoldersExpert" Design="-1">
+  <Description>JCL Open and Save IDE dialogs with favorite folders</Description>
+  <GUID/>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>58040000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>99</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2509</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\favfolders\OpenDlgFavAdapter.pas" Targets="Windows" Formname="" Condition=""/>
+  </Contains>
+</Package>

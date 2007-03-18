@@ -1,0 +1,8 @@
+[Directories]
+UnitOutputDir=..\..\lib\d7
+SearchPath=..\..\source;..\..\experts\common
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=rtl;vcl;designide;Jcl;JclBaseExpert
+

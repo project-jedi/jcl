@@ -1,0 +1,15 @@
+[Directories]
+OutputDir=..\bin
+UnitOutputDir=.
+SearchPath=
+Conditionals=JCLINSTALL;VisualCLX
+[Version Info Keys]
+CompanyName=Project JEDI
+FileDescription=JCL x-platform installer
+FileVersion=2.1.0.1802
+InternalName=QJediInstaller
+LegalCopyright=Copyright (C) 1999, 2005 Project JEDI
+LegalTrademarks=
+OriginalFilename=QJediInstaller.dpr
+ProductName=Jedi X-Platform Installer
+ProductVersion=2.1

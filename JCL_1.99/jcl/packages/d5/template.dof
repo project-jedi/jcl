@@ -1,0 +1,10 @@
+[Directories]
+UnitOutputDir=..\..\lib\d5
+SearchPath=..\..\source;..\..\experts\common
+<%%% BEGIN LIBRARYONLY %%%>
+[Compiler]
+PackageNoLink=1
+[Linker]
+Packages=%NOLINKPACKAGELIST%
+<%%% END LIBRARYONLY %%%>
+

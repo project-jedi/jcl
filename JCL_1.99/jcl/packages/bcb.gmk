@@ -1,0 +1,187 @@
+# Hey Emacs, this is a -*- Makefile -*-
+# ---------------------------------------------------------------------------
+ifndef BCB
+BCB = !BCB!
+endif
+
+# ---------------------------------------------------------------------------
+# IDE SECTION
+# ---------------------------------------------------------------------------
+# The following section of the project makefile is managed by the BCB IDE.
+# It is recommended to use the IDE to change any of the values in this
+# section.
+# ---------------------------------------------------------------------------
+
+VERSION = !VERSION!
+# ---------------------------------------------------------------------------
+PROJECT = !PROJECT!
+OBJFILES = !OBJFILES!
+RESFILES = !RESFILES!
+MAINSOURCE = !MAINSOURCE!
+RESDEPEN = !RESDEPEN!
+LIBFILES = !LIBFILES!
+IDLFILES = !IDLFILES!
+IDLGENFILES = !IDLGENFILES!
+LIBRARIES = !LIBRARIES!
+PACKAGES = !PACKAGES!
+SPARELIBS = !SPARELIBS!
+DEFFILE = !DEFFILE!
+OTHERFILES = !OTHERFILES!
+# ---------------------------------------------------------------------------
+PATHCPP = !PATHCPP!
+PATHASM = !PATHASM!
+PATHPAS = !PATHPAS!
+PATHRC = !PATHRC!
+DEBUGLIBPATH = !DEBUGLIBPATH!
+RELEASELIBPATH = !RELEASELIBPATH!
+USERDEFINES = !USERDEFINES!
+SYSDEFINES = !SYSDEFINES!
+INCLUDEPATH = ../../lib/k3:!INCLUDEPATH!
+LIBPATH = !LIBPATH!
+WARNINGS = !WARNINGS!
+PATHOBJ = .:$(LIBPATH)
+# ---------------------------------------------------------------------------
+CFLAG1 = !CFLAG1!
+IDLCFLAGS = !IDLCFLAGS!
+
+BPILIBDIR = !BPILIBDIR!
+
+ifneq "$(BPLDIR)" ""
+LIBPATH = $(BPLDIR):!LIBPATH!
+BPL = $(BPLDIR)/!PROJECT!
+else
+BPL = !PROJECT!
+endif
+
+BPLFILE = \"$(BPL)\"
+
+PFLAGS = -I../../source -N0\"$(BPILIBDIR)\" -N2\"$(OBJDIR)\" -P -$$$$Y- -$$$$L- -$$$$D- -$$$$A8 -v -JPHNE -M
+RFLAGS = !RFLAGS!
+AFLAGS = !AFLAGS!
+
+ifneq "$(BPILIBDIR)" ""
+LIBPATH = $(BPILIBDIR):!LIBPATH!
+endif
+
+LFLAGS = -l\"$(BPILIBDIR)\" -I\"$(OBJDIR)\" -GB"CJcl" -N"" -D"" -aa -Tpp -Gpr -x -Gn -Gl -Gi
+# ---------------------------------------------------------------------------
+ALLOBJ = !ALLOBJ!
+ALLRES = !ALLRES!
+ALLLIB = !ALLLIB!
+# ---------------------------------------------------------------------------
+ifneq "$(USERDEFINES)" ""
+AUSERDEFINES = -d$(USERDEFINES:= -d)
+else
+AUSERDEFINES =
+endif
+
+ifndef BCC
+BCC = $(BCB)/bin/bc++
+endif
+
+ifndef CPP
+CPP = $(BCB)/bin/bcpp
+endif
+
+ifndef DCC
+DCC = $(BCB)/bin/dcc
+endif
+
+ifndef LINKER
+LINKER = $(BCB)/bin/ilink
+endif
+
+
+!TOOLS!
+# ---------------------------------------------------------------------------
+ifdef PATHCPP
+PATHC   = $(PATHCPP)
+else
+PATHCPP = $(BCB)/bin
+PATHC = $(BCB)/bin
+endif
+
+ifndef PATHPAS
+PATHPAS = $(BCB)/bin
+endif
+
+ifndef PATHASM
+PATHASM = $(BCB)/bin
+endif
+
+vpath %.o $(PATHOBJ)
+vpath %.pas $(PATHPAS)
+
+ifdef IDEOPTIONS
+[Debugging]
+DebugSourceDirs=$(BCB)/source/clx
+endif
+
+!FILE:.c.cpp.cc:.o:OBJFILES!
+!TARGET!: !DEPENDENCY!
+  $(PATHCPP)/$(BCC) $(CFLAG1) !CFLAG1! !WARNOPTSTR! [-I]!INCLUDEPATH!?$(INCLUDEPATH) [-D]!USERDEFINES!?$(USERDEFINES) -D$(SYSDEFINES) -n$(@D) {$** }
+
+!END FILE!
+!FILE:idl2cpp!
+!TOOL!
+ifndef IDL2CPP
+IDL2CPP = idl2cpp
+endif
+
+!END TOOL!
+ifneq "$(USERDEFINES)" ""
+DUSERDEFINES = -D$(USERDEFINES:= -D)
+else
+DUSERDEFINES =
+endif
+ifneq "$(SYSDEFINES)" ""
+DSYSDEFINES = -D$(SYSDEFINES:= -D)
+else
+DSYSDEFINES =
+endif
+!DEPENDENTS!: !DEPENDENCY!
+  $(IDL2CPP) $(IDLCFLAGS) !IDLCFLAGS! !IDLROOTDIR! $(DUSERDEFINES) $(DSYSDEFINES) $?
+
+!END FILE!
+
+# ---------------------------------------------------------------------------
+# MAKE SECTION
+# ---------------------------------------------------------------------------
+# This section of the project file is not used by the BCB IDE.  It is for
+# the benefit of building from the command-line using the MAKE utility.
+# ---------------------------------------------------------------------------
+$(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+	$(LINKER) \
+	$(LFLAGS) $(MAPFLAGS) -L\"$(LIBPATH)\" \
+	$(ALLOBJ), \
+	$(BPLFILE),, \
+	$(ALLLIB), \
+	$(DEFFILE), \
+	$(ALLRES)
+
+# ---------------------------------------------------------------------------
+%.hpp: %.pas
+	$(DCC) $(PFLAGS) -U$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -O$(INCLUDEPATH) --BCB $< 
+
+%.o: %.pas
+	$(DCC) $(PFLAGS) -U$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -O$(INCLUDEPATH) --BCB $< 
+
+%.o: %.cpp
+	$(BCC) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -n$(@D) $< 
+
+%.o: %.c
+	$(BCC) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -n$(@D) $< 
+
+%.i: %.c
+	$(CPP) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -n. $< 
+
+%.i: %.cpp
+	$(CPP) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES) -D$(SYSDEFINES) -n. $< 
+
+!BUILDTOOLS!
+
+# ---------------------------------------------------------------------------
+
+!FILES!
+
+

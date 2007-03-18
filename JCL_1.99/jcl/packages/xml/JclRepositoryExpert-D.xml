@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclRepositoryExpert" Design="-1">
+  <Description>JCL Package containing repository wizards</Description>
+  <GUID/>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>58000000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>99</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2509</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\debug\dialog\JclOtaRepositoryUtils.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgRepository.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaRepositoryReg.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgWizard.pas" Targets="Windows" Formname="JclOtaExcDlgForm" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgFileFrame.pas" Targets="Windows" Formname="JclOtaExcDlgFilePage: TFrame" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgFormFrame.pas" Targets="Windows" Formname="JclOtaExcDlgFormPage: TFrame" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgSystemFrame.pas" Targets="Windows" Formname="JclOtaExcDlgSystemPage: TFrame" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgTraceFrame.pas" Targets="Windows" Formname="JclOtaExcDlgTracePage: TFrame" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaTemplates.pas" Targets="Windows" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\dialog\JclOtaExcDlgIgnoreFrame.pas" Targets="Windows" Formname="JclOtaExcDlgIgnoredPage: TFrame" Condition=""/>
+  </Contains>
+</Package>

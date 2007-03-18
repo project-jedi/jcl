@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="Jcl" Type="L">
+  <Description>JEDI Code Library RTL package</Description>
+  <GUID>{44DB645B-C167-410D-9334-38AF9F0C7913}</GUID>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>48000000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>99</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2509</BuildNumber>
+  <Requires>
+    <Package Name="System.Reflection" Targets="JclDotNet" Condition=""/>
+    <Package Name="System.Runtime.InteropServices" Targets="JclDotNet" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBase.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclComplex.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclDateTime.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclFileUtils.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashMaps.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashSets.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclIniFiles.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLogic.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMath.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMime.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclQueues.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclResources.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStacks.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStrings.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclValidation.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclVectors.pas" Targets="JclDotNet" Formname="" Condition=""/>
+  </Contains>
+</Package>

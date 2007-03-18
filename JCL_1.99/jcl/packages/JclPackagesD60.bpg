@@ -1,0 +1,53 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = JclD60.bpl JclVclD60.bpl JclVClxD60.bpl JclBaseExpertD60.bpl \
+  JclDebugExpertD60.bpl JclFavoriteFoldersExpertD60.bpl \
+  JclProjectAnalysisExpertD60.bpl JclRepositoryExpertD60.bpl \
+  JclSIMDViewExpertD60.bpl JclThreadNameExpertD60.bpl JclUsesExpertD60.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+JclD60.bpl: d6\Jcl.dpk
+  $(DCC)
+
+JclBaseExpertD60.bpl: d6\JclBaseExpert.dpk
+  $(DCC)
+
+JclDebugExpertD60.bpl: d6\JclDebugExpert.dpk
+  $(DCC)
+
+JclFavoriteFoldersExpertD60.bpl: d6\JclFavoriteFoldersExpert.dpk
+  $(DCC)
+
+JclProjectAnalysisExpertD60.bpl: d6\JclProjectAnalysisExpert.dpk
+  $(DCC)
+
+JclRepositoryExpertD60.bpl: d6\JclRepositoryExpert.dpk
+  $(DCC)
+
+JclSIMDViewExpertD60.bpl: d6\JclSIMDViewExpert.dpk
+  $(DCC)
+
+JclThreadNameExpertD60.bpl: d6\JclThreadNameExpert.dpk
+  $(DCC)
+
+JclUsesExpertD60.bpl: d6\JclUsesExpert.dpk
+  $(DCC)
+
+JclVclD60.bpl: d6\JclVcl.dpk
+  $(DCC)
+
+JclVClxD60.bpl: d6\JclVClx.dpk
+  $(DCC)
+
+

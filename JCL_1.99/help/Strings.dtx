@@ -1,0 +1,3041 @@
+@@Stringmanipulation.CharacterSearchandReplace
+<GROUP Stringmanipulation>
+<TITLE Character Search and Replace>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.CharacterTestRoutines
+<GROUP Stringmanipulation>
+<TITLE Character Test Routines>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.CharacterTransformationRoutines
+<GROUP Stringmanipulation>
+<TITLE Character Transformation Routines>
+<TOPICORDER 300>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.Miscellaneous
+<GROUP Stringmanipulation>
+<TITLE Miscellaneous>
+<TOPICORDER 400>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.MultiSz
+<GROUP Stringmanipulation>
+<TITLE MultiSz>
+<TOPICORDER 500>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.PCharVector
+<GROUP Stringmanipulation>
+<TITLE PCharVector>
+<TOPICORDER 600>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.StringExtraction
+<GROUP Stringmanipulation>
+<TITLE String Extraction>
+<TOPICORDER 700>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.StringManagement
+<GROUP Stringmanipulation>
+<TITLE String Management>
+<TOPICORDER 800>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.StringSearchandReplaceRoutines
+<GROUP Stringmanipulation>
+<TITLE String Search and Replace Routines>
+<TOPICORDER 900>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.StringTestRoutines
+<GROUP Stringmanipulation>
+<TITLE String Test Routines>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.StringTransformationRoutines
+<GROUP Stringmanipulation>
+<TITLE String Transformation Routines>
+<TOPICORDER 1100>
+--------------------------------------------------------------------------------
+@@Stringmanipulation.TStringsManipulation
+<GROUP Stringmanipulation>
+<TITLE TStrings Manipulation>
+<TOPICORDER 1200>
+--------------------------------------------------------------------------------
+@@StrIsAlpha
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only alpha characters.
+Description:
+  StrIsAlpha tests whether the supplied string consists only of alpha characters.
+  That is, whether or not all individual characters come from the ['a'..'z', 'A'..'Z']
+  set.
+Parameters:
+  S - The string to test
+Result:
+  If S contains only alpha characters the result is True, otherwise the result is False.
+Notes:
+  If S is an empty string the result is False.
+See also:
+  StrConsistsOfNumberChars
+  StrIsAlphaNum
+Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@StrIsAlphaNum
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only alpha-numerical characters.
+Description:
+  StrIsAlphaNum tests whether the supplied string consists only of alpha-numerical
+  characters. That is, whether or not all individual characters come from
+  the ['a'..'z', 'A'..'Z', '0'..'9'] set.
+Parameters:
+  S - The string to test
+Result:
+  If S contains only alpha-numerical characters the result is True, otherwise the result is False.
+Notes:
+  If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrConsistsOfNumberChars
+  StrIsAlphaNumUnderscore
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrIsAlphaNumUnderscore
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only alpha-numerical and underscore characters.
+Description:
+  StrIsAlphaNum tests whether the supplied string consists only of alpha-numerical
+  and underscore characters. That is, whether or not all individual characters come
+  from the ['a'..'z', 'A'..'Z', '0'..'9', '_'] set.
+Parameters:
+  S - The string to test
+Result:
+  If S contains only alpha-numerical and underscore characters the result is True,
+  otherwise the result is False.
+Notes:
+  If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrConsistsOfNumberChars
+Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrContainsChars
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Determines whether a string contains a specified set of characters.
+Description:
+  StrContainsChars checks whether the specified string contains at least one character
+  that matches one of the characters in the Chars set. If CheckAll is True, the
+  function checks whether all characters in the Chars set appear at least once in
+  the specified string.
+Parameters:
+  S - The string to test.
+  Chars - The characters for which to test.
+  CheckAll - If True, all characters from Chars must appear at least once in the specified string. If False, at least one of the characters in Chars must appear at least once in the specified string.
+Result:
+  Returns True if the condition is met, otherwise it returns False.
+Donator: Petr Vones
+--------------------------------------------------------------------------------
+@@StrIsDigit
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only numerical characters.
+Description:
+  StrConsistsOfNumberChars tests whether the supplied string consists only of numerical characters.
+  That is, whether or not all individual characters come from the ['0'..'9'] set.
+  The test does not include the decimal separator. To include it in the test
+  use StrConsistsOfNumberChars instead.
+Parameters:
+  S - The string to test
+Result:
+  If S contains only numerical characters the result is True, otherwise the result is False.
+Notes:
+  If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsAlphaNum
+  StrConsistsOfNumberChars
+Donator: Martin Kubecka
+--------------------------------------------------------------------------------
+@@StrConsistsOfNumberChars
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only numerical characters.
+Description:
+  StrConsistsOfNumberChars tests whether the supplied string consists only of numerical characters.
+  That is, whether or not all individual characters come from the ['0'..'9'] set
+  including the decimal separator. To test for numerical characters without the
+  decimal separator, use StrIsDigit instead;
+Parameters:
+  S - The string to test
+Result:
+  If S contains only numerical characters the result is True, otherwise the result is False.
+Notes:
+  If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsAlphaNum
+  StrIsDigit
+Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@StrIsSubset
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests whether S contains only characters from the supplied set.
+Description:
+  StrIsSubset tests whether the supplied string contains only characters from the
+  supplied character set. Keep in mind that the test is case-sensitive.
+Parameters:
+  S - The string to test.
+  ValidChars - The set of characters allowed in S.
+Result:
+  If the string contains only characters from the supplied set the result is True,
+  otherwise the result is False.
+Notes:
+  If the supplied string is empty, the result is always True. If the supplied character set is empty, the result is always False. Empty string overules empty set.
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrSame
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Tests two strings for equality.
+Description:
+  StrSame compares the two supplied strings and returns whether or not they are
+  identical.
+Parameters:
+  S1 - First string to compare
+  S2 - Second string to compare
+Result:
+  If the two strings are identical the return value is True, if they are not the
+  return value is False.
+See also:
+  StrCompare
+Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrCenter
+<GROUP Stringmanipulation.StringTransformationRoutines>
+
+Description
+The StrCenter routine takes the specified string and pads it
+on both the left and right side with the specified character
+until the resulting string is of the specified length. While
+doing this the original string is kept centered. That is,
+there is the same amount of padding at the left side as there
+is on the right side.
+
+If the specified length is smaller than the length of the
+original the string remains unchanged. In cases where an odd
+number of padding chars have to be inserted there is always
+one more padding char on the right side than on the left
+side.
+
+
+
+Summary
+Centers a string.
+
+Parameters
+C :   The character to use for padding.
+L :   The desired length of the resulting string.
+S :   The string to center.
+
+Returns
+The centered string.
+
+Donator: Alexander Radchenko
+--------------------------------------------------------------------------------
+@@StrDoubleQuote
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Returns a double-quoted version of the string.
+Description:
+  StrDoubleQuote returns a copy of the string encapsulated in double quotes (").
+  That is, if you pass in 'Project JEDI' you'll get '"Project JEDI"' back. If double
+  quotes (") are already at the beginning and the end of the string they are added again.
+  If they should be added only if they are not already there use StrQuote instead.
+Parameters:
+  S - The string to encapsulate in quotes. Even an empty string.
+Result:
+  The double-quoted version of the string.
+See also:
+  StrQuote
+  StrSingleQuote
+  StrTrimQuotes
+Donator:
+  Anthony Steele
+--------------------------------------------------------------------------------
+@@StrEnsurePrefix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Forces Text to start with Prefix.
+Description:
+  StrEnsurePrefix tests whether the supplied text start with the supplied prefix.
+  If it doesn't then the prefix is prepended to the string otherwise the function
+  does nothing. Note that if Text is an empty string then the result will be Prefix.
+Parameters:
+  Prefix - The prefix to test for and apply
+  Text - The string which must be forced to have a prefix
+Result:
+  The function result is a copy of the supplied Text, prefixed with Prefix.
+See also:
+  StrEnsureNoPrefix
+  StrEnsureSuffix
+Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@StrEnsureNoPrefix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Eventually removes Prefix from Text.
+Description:
+  StrEnsureNoPrefix tests whether the supplied text start with the supplied prefix.
+  If it does then the prefix is deleted from the string otherwise the function
+  does nothing.
+Parameters:
+  Prefix - The prefix to test for and apply
+  Text - The string which must not have a prefix
+Result:
+  The function result is a copy of the supplied Text, eventually minus the prefix.
+See also:
+  StrEnsurePrefix
+  StrEnsureNoSuffix
+Donator: Olivier Sannier
+--------------------------------------------------------------------------------
+@@StrEnsureSuffix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Forces Text to end with Suffix.
+Description:
+  StrEnsureSuffix tests whether the supplied text ends in the supplied suffix.
+  If it doesn't then the suffix is appended to the string otherwise the function
+  does nothing. Note that if Text is an empty string then the result will be Suffix.
+Parameters:
+  Suffix - The suffix to test for and apply
+  Text - The string which must be forced to have a suffix
+Result:
+  The function result is a copy of the supplied Text, with the suffix.
+See also:
+  StrEnsureNoSuffix
+  StrEnsurePrefix
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrEnsureNoSuffix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Eventually removes Suffix from Text.
+Description:
+  StrEnsureSuffix tests whether the supplied text ends in the supplied suffix.
+  If it does then the suffix is deleted from the string otherwise the function
+  does nothing.
+Parameters:
+  Suffix - The suffix to test for and apply
+  Text - The string which must not have a suffix
+Result:
+  The function result is a copy of the supplied Text, eventually minus the suffix.
+See also:
+  StrEnsureSuffix
+  StrEnsureNoPrefix
+Donator: Olivier Sannier
+--------------------------------------------------------------------------------
+@@StrEscapedToString
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Converts an escaped string to a string.
+Description:
+  StrEscapedToString converts a string which contains escape characters to a string
+  without escape characters by replacing all escape characters with their string
+  counterparts. For example, a string which contains a '\a' sequence will
+  have the '\a' sequence replaced with the BELL character #7.
+  The supported escape characters are:
+   <TABLE>
+Character  Value  Constant   Description
+---------  -----  ---------  ------------------
+\a         #7     BELL       Bell
+\b         #8     BACKSPACE  Backspace
+\f         #12    FF         Form Feed
+\n         #10    LR         Line Feed
+\r         #13    CR         Carrage Return
+\t         #9     TAB        Tabulator
+\v         #11    VT         Vertical Tabulator
+\\         N/A    N/A        Backslash
+\"         N/A    N/A        Double quotes
+</TABLE>
+
+  In addition it supports hexadecimal escape sequences (sequences that start with \x)
+  and octal escape sequences (sequences starting with '\0', '\1' ... '\9').
+  The StrStringToEscaped is the "inverse" of this function.
+Parameters:
+  S - The "escaped" string to convert to a "normal" string.
+Result:
+  The string with all escape characters replaced with their string counterparts.
+See also:
+  StrStringToEscaped
+Donator: Robert Marquardt
+--------------------------------------------------------------------------------
+@@StrLower
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases all characters in a string
+Description:
+  StrLower returns a copy of the string, converted to lowercase. That is, if you pass in 'Project JEDI' you'll get 'project jedi'.
+Parameters:
+  S - String to convert to lowercase.
+See also:
+  StrLowerInPLace
+  StrLowerBuff
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
+Donator: Pelle F. S. Liljendal
+--------------------------------------------------------------------------------
+@@StrLowerInPlace
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases all characters in a string
+Description:
+  StrLower converts all characters in the supplied string to lowercase.
+Parameters:
+  S - String to convert to lowercase.
+See also:
+  StrLower
+  StrLowerBuff
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
+Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrLowerBuff
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases all characters in a string
+Description:
+  StrLowerBuff converts all characters in the supplied string to lowercase.
+Parameters:
+  P - String to convert to lowercase.
+See also:
+  StrLower
+  StrLowerInPlace
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
+Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrMove
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Copies a sub-string from one string to another.
+Description:
+  StrMove copies Count characters starting at FromIndex in the source string to
+  the destination string starting at ToIndex. The function checks the passed
+  parameters and if any is illegal the function does nothing. This includes
+  illegal indices and, for example, a zero-length destination string.
+Parameters:
+  Dest - The destination string which the sub-string is copied to.
+  Source - The source string from which the sub-string is copied.
+  ToIndex - The index into the destination string at which the sub-string is copied.
+  FromIndex - The starting index into the source string from which count characters are copied.
+  Count - Length of the sub-string to copy in characters.
+Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrPadLeft
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Left pads a string with characters.
+Description:
+  StrPadLeft left pads a string with the specified character until the resulting
+  string is Len characters long. If the source string is already greater than or
+  equal in length to Len the function does nothing.
+Parameters:
+  S - Source string to left pad.
+  Len - The length of the resulting string.
+  C - The character to pad the string with.
+Result:
+  The string left padded with the specified character.
+See also:
+  StrPadRight
+  StrCenter
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrPadRight
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Right pads a string with characters.
+Description:
+  StrPadRight right pads a string with the specified character until the resulting
+  string is Len characters long. If the source string is already greater than or equal
+  in length to Len the function does nothing.
+Parameters:
+  S - Source string to right pad.
+  Len - The length of the resulting string.
+  C - The character to pad the string with.
+Result:
+  The string right padded with the specified character.
+See also:
+  StrPadLeft
+  StrCenter
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrProper
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases the supplied string and uppercases the first character.
+Description:
+  The StrProper routine lowercases the entire string and subsequently uppercases
+  the first character.
+Parameters:
+  S - The string to transform.
+Result:
+  The transformed string.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrProperBuff
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases the supplied string and uppercases the first character.
+Description:
+  The StrProper routine lowercases the entire string and subsequently uppercases
+  the first character.
+Parameters:
+  S - The string to transform.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrQuote
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Quotes a string with a specific character.
+Description:
+  StrQuote quotes the string with a specified character. Upon return the string is
+  guarenteed to begin and end with the specified character. Note that if the string
+  already starts or ends with this character, it is not added again.
+Parameters:
+  S - The string to quote.
+  C - The character with which to quote the string.
+Result:
+  The quoted string.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrRemoveChars
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes a set of characters from a string.
+Description:
+  StrRemoveChars removes all instances of the characters in the set from the source
+  string. For example, if you pass in 'Joint Endeavour of Delphi Innovators' and
+  specify ['e', 'a', 'o', 'u', 'i'] the resulting string will be 'Jnt Endvr f Dlph Innvtrs'.
+Parameters:
+  S - The source string from which to remove the characters.
+  Chars - The set of characters which are removed from S.
+Result:
+  The string with all characters from the supplied set removed.
+Notes:
+  The function is case sensitive. That is, specifying 'e' will not remove 'E'.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrRepeat
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Repeats a string Count number of times.
+Description:
+  The StrRepeat routine returns a string consisting of the specified string, repeated
+  Count number of times. For example, StrRepeat('He', 3) returns 'HeHeHe'.
+Parameters:
+  S - The string to repeat.
+  Count - The number of times to repeat the specified string.
+Result:
+  The specified string, repeated Count number of times.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrReverse
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Reverses a string.
+Description:
+  StrReverse returns a reversed copy of S. That is, if you pass in 'Delphi' the
+  function result will be 'ihpleD'. Note that the original string remains unmodified,
+  as the const modifier indicates. If you don't need the original string after
+  reversing it, then do not write code like S := StrReverse(S) but instead use
+  the StrReverseInPlace function because it's much faster.
+Parameters:
+  S - The string to reverse
+Result:
+  A reversed copy of the supplied string.
+See also:
+  StrReverseInPlace
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrReverseInPlace
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Reverses a string.
+Description:
+  StrReverse reverses S. That is, if you pass in 'Delphi' then after the function
+  returns S contains the string 'ihpleD'. If you need to retain the original
+  string then use the StrReverse function instead.
+Parameters:
+  S - The string to reverse.
+See also:
+  StrReverse
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrSingleQuote
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Returns a single-quoted version of the string.
+Description:
+  StrSingleQuote returns a copy of the string encapsulated in single quotes (').
+  That is, if you pass in 'Project JEDI' you'll get ''Project JEDI'' back.
+Parameters:
+  S - The string to encapsulate in quotes. Even an empty string.
+Result:
+  The single-quoted version of the string.
+See also:
+  StrDoubleQuote
+  StrTrimQuotes
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrSmartCase
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Converts a string to 'smartcase' or 'camelcase'.
+Description:
+  StrSmartCase converts specified characters within the supplied source string to
+  uppercase. The characters that are uppercased are determined by the Delimiters
+  character set. Each time the function finds a character in the source string that
+  is also present in the Delimiters set it uppercases the next character
+  in the source string. In addition, the function always converts the first character
+  to uppercase. For example, if you call StrSmartCase('project jedi rules', [' '])
+  the function returns 'Project Jedi Rules'. As you can see, all characters that
+  immediately follow a space (as specified by Delimiters) are uppercased.
+Parameters:
+  S - Source string.
+  Delimiters - Set of characters to use as delimiters. These characters determine which other characters are uppercased. If you supply an empty set the function assumes you want to use a space only. That is, it sets Delimiters to [' '].
+Result:
+  The string converted to smart case.
+Notes:
+  Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten by Marcel van Brakel.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrStringToEscaped
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Converts a string to an escaped string.
+Description:
+  StrStringToEscaped converts a string to an escaped string by replacing non-visual
+  character sequences with their escape characters. For example, if a string contains
+  the character #7 the resulting string will have the #7 character replaced with the '\a'
+  sequence. This function is the inverse of StrEscapedToString.
+  The function supports the following escape characters:
+   <TABLE>
+Character  Value  Constant   Description
+---------  -----  ---------  ------------------
+\a         #7     BELL       Bell
+\b         #8     BACKSPACE  Backspace
+\f         #12    FF         Form Feed
+\n         #10    LR         Line Feed
+\r         #13    CR         Carrage Return
+\t         #9     TAB        Tabulator
+\v         #11    VT         Vertical Tabulator
+\\         N/A    N/A        Backslash
+\"         N/A    N/A        Double quotes
+</TABLE>
+
+  All other characters whose ordinal value are smaller than Ord(' ') are escaped
+  as a hexadecimal sequence like '\x01'. The StrEscapedToString is the "inverse"
+  of this function.
+Parameters:
+  S - The string to convert to an escaped string.
+Result:
+  The "escaped" string.
+See also:
+  StrEscapedToString
+Quick info:
+
+  Category: String manipulation
+  Donator: Robert Marquardt
+--------------------------------------------------------------------------------
+@@StrStripNonNumberChars
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes all non-number characters from a string.
+Description:
+  StrStripNonNumberChars removes all non-number characters from the specified string.
+  Hence the resulting string will contain only number characters. Testing whether
+  the individual characters are numbers is done using the CharIsNumberChar routine and
+  therefore characters that qualify are all digits (0..9), signs (+, -) and decimal
+  separators.
+Parameters:
+  S - The string from which to remove non-number characters.
+Result:
+  The string after all non-number characters are removed.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrTrimQuotes
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes surrounding quotes from the supplied string.
+Description:
+  StrTrimQuotes removes surrounding quotes, either single or double-quotes, from
+  the string. For example if you pass in ''Project JEDI'' you'll get 'Project JEDI'
+  back. Note that this function only removes quotes if the string both begins and
+  ends with the same quote character.
+Parameters:
+  S - The string to unquote.
+Result:
+  The unquoted string.
+See also:
+  StrSingleQuote
+  StrDoubleQuote
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrToHex
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Converts a string of hex digit pairs to the corresponding bytes.
+Description:
+  The Source string is expected to contain pairs of hex digit
+  characters ['0'..'9', 'a'..'f', 'A'..'F']. Each pair is converted to a single
+  byte thus converting '40' to '@'. Any character not from the hex set
+  results in an empty string. If the string length of the Source is odd
+  then a '0' is prepended internally to make up the first byte.
+Parameters:
+  S - A string of hex digit pairs to be converted
+Result:
+  The string of converted bytes.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrTrimCharLeft
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes leading characters from a string.
+Description:
+  The StrTrimCharLeft routine removes leading characters from the specified string.
+  For example, StrTrimCharLeft('000123', '0') returns '123'.
+Parameters:
+  S - The source string from which the leading characters need to be removed.
+  C - The character to remove
+Result:
+  The function returns the source string S without any leading characters C.
+See also:
+  StrTrimCharRight
+Quick info:
+
+  Category: String manipulation
+  Donator: Jack N.A. Bakker
+--------------------------------------------------------------------------------
+@@StrTrimCharRight
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes trailing characters from a string.
+Description:
+  The StrTrimCharRight routine removes trailing characters from the specified string.
+  For example, StrTrimCharRight('123000', '0') returns '123'.
+Parameters:
+  S - The source string from which the trailing characters need to be removed.
+  C - The character to remove
+Result:
+  The function returns the source string S without any trailing characters C.
+See also:
+  StrTrimCharLeft
+Quick info:
+
+  Category: String manipulation
+  Donator: Jack N.A. Bakker
+--------------------------------------------------------------------------------
+@@StrUpper
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Uppercases all characters in a string
+Description:
+  StrUpper returns a copy of the string, converted to uppercase. That is, if you pass in 'Project JEDI' you'll get 'PROJECT JEDI'.
+Parameters:
+  S - String to convert to uppercase.
+See also:
+  StrUpperInPlace
+  StrUpperBuff
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrUpperInPlace
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Uppercases all characters in a string
+Description:
+  StrUpper converts all characters in the supplied string to uppercase.
+Parameters:
+  S - String to convert to uppercase.
+See also:
+  StrUpper
+  StrUpperBuff
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrUpperBuff
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Uppercases all characters in a string
+Description:
+  StrUpper converts all characters in the supplied string to uppercase.
+Parameters:
+  S - String to convert to uppercase.
+See also:
+  StrUpper
+  StrUpperInPlace
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrAddRef
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Increments the reference count of a long string.
+Description:
+  The StrAddRef routine increments the reference count of the specified long string.
+  Explicitly incrementing a strings reference count forces Delphi to keep the string
+  in memory even if the variable itself goes out of scope and all other references
+  were removed already. Note that if the string points to a string constant this
+  routine will call UniqueString on it forcing a string copy, after which the
+  reference count becomes 1.
+Parameters:
+  S - The long string whose reference count to increment.
+See also:
+  StrDecRef
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrAllocSize
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Returns the memory allocated to store the string.
+Description:
+  A long string variable is a 4 byte pointer to a dynamically allocated block of
+  memory. This block of memory holds the actual string data, including a NULL
+  character. In addition this block of memory has, at a negative offset, a number
+  of 32 bit values used to manage the string. The StringAllocSize function looks
+  at this negative offset to determine the total amount of dynamic memory reserved
+  to hold the string and management data.</P><P>
+  Note that this function will always return 0 for string literals, string constants
+  and string variables that are assigned to string constants, but haven't been
+  modified yet. This is not a bug but a result of the way in which Delphi manages
+  string constants.
+Parameters:
+  S - The string for which to determine the total amount of used memory.
+Result:
+  The amount of dynamic memory allocated for the string or 0 in the exceptions noted
+  above. Note that, at least in Delphi 5, the result will always be a multiple of 4.
+Notes:
+  This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+See also:
+  StrRefCount
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrDecRef
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Decrements the reference count of a long string.
+Description:
+  The StrDecRef routine decrements the reference count of the specified long string.
+  Note that if decrementing the reference count will set it to 0 the string is
+  released and the string pointer is set to nil. Therefore the string may be
+  inaccessible after calling this routine.
+Parameters:
+  S - The long string whose reference count to increment. Upon return the string may have been freed.
+See also:
+  StrDecRef
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrLen
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Returns the length of the supplied string.
+Description:
+  StrLen returns the length of the supplied string, in characters, excluding the
+  null terminating character. This function is identical to the StrLen routine from
+  SysUtils.pas except that it is much faster.
+Parameters:
+  S - Pointer to the null terminated string for which to determine the length.
+Result:
+  The length of the string, in characters.
+Quick info:
+
+  Category: String manipulation
+  Donator: Robert Lee
+--------------------------------------------------------------------------------
+@@StrLength
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Returns the length of the supplied string.
+Description:
+  StrLength returns the length of the supplied string. This is a duplication of the
+  standard Delphi Length function and is only supplied for completeness. You should
+  prefer the Length function over StrLength.
+Parameters:
+  S - The string for which to determine the length.
+Result:
+  The length of the string in characters.
+Notes:
+  This function relies on pseudo undocumented knowledge.
+See also:
+  StrAllocSize
+  StrRefCount
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrRefCount
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Returns the reference count of the supplied string.
+Description:
+  StrRefCount returns the reference count of the string. Note that this function
+  will always return -1 for string literals, string constants and string variables
+  that are assigned to string constants, but haven't been modified yet. This is
+  not a bug but a result of the way in which Delphi manages string constants.
+Parameters:
+  S - String for which to determine the reference count.
+Result:
+  The reference count of the string or -1 if the string ultimately points to a
+  string constant.
+Notes:
+  This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+See also:
+  StrAllocSize
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrResetLength
+<GROUP Stringmanipulation.StringManagement>
+Summary:
+  Resets the length of the supplied string.
+Description:
+  StrResetLength resets the length of the string to encompass only the actual number
+  of used characters. This is particularly useful when passing strings to API
+  functions which accept PChar's. These kind of functions do modify the string but
+  since they are unaware of how Delphi manages strings, the length is not changed
+  on return. Depending on how you use the string from that point on the results
+  may be incorrect if you do not apply StrResetLength.
+  The function resets the length to the C string length, i. e. the length up to the first #0 byte.
+Parameters:
+  S - The string whose length to reset.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrCharCount
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Counts the occurrences of a character in a string.
+Description:
+  StrCharCount returns the number of occurrences of the specified character in the
+  supplied string.
+Parameters:
+  S - Source string.
+  C - The character whose occurrences to count.
+Result:
+  The number of occurrences of C in S.
+Quick info:
+
+  Category: String manipulation
+  Donator: Massimo Maria Ghisalberti
+--------------------------------------------------------------------------------
+@@StrCompare
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Compares two strings.
+Description:
+  StrCompare implements a case-insensitive comparison between the two supplied
+  strings. If the two strings match the function returns 0 otherwise it returns
+  the number of different characters. If the supplied strings are of equal length
+  but are not identical the function returns the difference of the first mismatched
+  character. The table below demonstrates this:
+   <TABLE>
+S1            S2            Result
+------------  ------------  ------------------------------
+jedi          jedi          0
+jedi          je            2
+di            jedi          -2
+project jedi  jedi          8
+jedi          project jedi  -8
+jedi          judi          Ord('e') - Ord('u')
+JEDI          Judi          Ord(LowerCase('E')) - Ord('u')
+</TABLE>
+
+Parameters:
+  S1 - First string to compare
+  S2 - Second string to compare
+Result:
+  StrCompare returns 0 if the two strings match or the number of different characters
+  in case of a mismatch.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrCompareRange
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+
+Description
+StrCompareRange compares, case-sensitive, a sub-string from the
+first supplied string with the second string. If the two
+strings are identical the function returns 0 otherwise it
+\returns an indication of difference between the two strings,
+Te result is equal to the result returned by StrCompare. This
+function is particularly useful to avoid code such as: "if
+Copy(S, 1, 4) = 'JEDI' then ..." which is quite inefficient.
+This code would be rewritten to: "if StrCompareRange(S1,
+'JEDI', 1, 4) = 0 then ...".
+
+Summary
+Compares two (sub) strings.
+
+Parameters
+Count :   Number of characters of the sub-string in S1 to
+          compare to S2.
+Index :   Starting index of sub-string in S1 to.
+S1 :      First string to compare.
+S2 :      Second string to compare.
+
+Returns
+StrCompareRange returns 0 if the two strings match or the
+number of different characters in case of a mismatch.
+
+QuickInfo
+Unit: JclStrings
+  Category: String manipulation
+  Donator: Azret Botash
+
+
+See Also
+StrCompare
+--------------------------------------------------------------------------------
+@@StrFillChar
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Creates a string consisting of the specified character repeated Count times.
+Description:
+  The StrFillChar routine returns a string consisting of the specified character
+  repeated Count number of times.
+Parameters:
+  C - The character to repeat.
+  Count - The number of times to repeat the character.
+Result:
+  A string consisting of the specified character repeated Count times.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrFind
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the first character in a specified sub-string that occurs in a given string.
+Description:
+  StrFind returns the index of the first character in a specified sub-string that
+  occurs in a given string. The search starts at the supplied index and is case-insensitive.
+Parameters:
+  Substr - The sub-string to search for.
+  Str - The string in which to search.
+  Index - The index in Str at which to start the search.
+Result:
+  One-based index of the first character of SubStr in Str or 0 if SubStr does not
+  occur in the supplied string.
+See also:
+  StrSearch
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrHasPrefix
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns whether a string is prefixed by one of the supplied strings.
+Description:
+  StrHasPrefix returns whether the string is prefixed with at least one of the strings
+  supplied in the Prefixes array. In other words, for each string in the Prefixes
+  array it determined if the supplied string starts with that prefix. Note that
+  the routine exits as soon as a match is found.
+Parameters:
+  S - The string to test.
+  Prefixes - Array of prefixes to test for.
+Result:
+  If the supplied string is prefixed with one of the supplied prefixes the routine
+  returns True, otherwise it returns False.
+See also:
+  StrPrefixIndex
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrIndex
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of a string in an array of strings.
+Description:
+  StrIndex returns the index into the List array at which S is positioned. This is
+  particularly useful to create a case statement based on string labels. For example:
+    <PRE class=syntax>
+    case StrIndex(S, ['zero', 'one', 'two']) of
+      0: // handle case where S = 'zero'
+      1: // handle case where S = 'one'
+      2: // handle case where S = 'two'
+    else
+      //
+    end;
+    </PRE>
+Parameters:
+  S - The string to test.
+  List - Array of strings to search in.
+Result:
+  If the supplied string exists in the List array the zero based index of the position
+  at which it appears is returned. If the string doesn't exist in the array -1 is
+  returned. Note that the string comparison is case insensitive but is based on the
+  current locale (ie it uses AnsiSameText).
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrILastPos
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the last occurrence of SubStr in S.
+Description:
+  StrILastPos scans the supplied string and returns the index of the first character
+  of the last occurrence of the supplied sub-string. The comparison is case-insensitive.
+Parameters:
+  SubStr - The sub-string to find the last occurrence of.
+  S - The string in which to search.
+Result:
+  The index of the last occurrence of SubStr in S. If the sub-string does not exist
+  at all the result is 0.
+See also:
+  StrLastPos
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrLastPos
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the last occurrence of SubStr in S.
+Description:
+  StrLastPos scans the supplied string and returns the index of the first character
+  of the last occurrence of the supplied sub-string. The comparison is case-sensitive.
+Parameters:
+  SubStr - The sub-string to find the last occurrence of.
+  S - The string in which to search.
+Result:
+  The index of the last occurrence of SubStr in S. If the sub-string does not exist
+  at all the result is 0.
+See also:
+  StrILastPos
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrIPos
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the first occurrence of SubStr in S.
+Description:
+  StrIPos scans the supplied string and returns the index of the first character
+  of the first occurrence of the supplied sub-string. The comparison is case-insensitive.
+Parameters:
+  SubStr - The sub-string to find the first occurrence of.
+  S - The string in which to search.
+Result:
+  The index of the first occurrence of SubStr in S. If the sub-string does not exist
+  at all the result is 0.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrIsOneOf
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Tests whether the supplied string exists in the list of strings.
+Description:
+  StrIsOneOf tests whether the supplied string exists in the list of strings. Note
+  that the comparison is case-insensitive.
+Parameters:
+  S - The string to test.
+  List - The list of string in which to search.
+Result:
+  If the string exists in the supplied list the result is True, otherwise it's False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrNPos
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the position of the N-th occurence of a sub-string within a string.
+Description:
+  StrNPos returns the index into S of the N-th occurence of the specified sub-string.
+  This function is case-sensitive and does not work with multibyte character sets.
+  If the specified sub-string does not have N occurence in S the function returns 0.
+Parameters:
+  S - The string in which to search for N occurences of SubStr.
+  SubStr - The sub-string to search for.
+  Index - The number of occurences of sub-string in S.
+Result:
+  Index into S where the N-th occurence of SubStr is located. If SubStr has less
+  than N occurences in S the result is 0.
+Notes:
+  This function was inspired by code submitted by George Tasker
+See also:
+  StrNIPos
+Quick info:
+
+  Category: String manipulation
+  Donator: JCL Team
+--------------------------------------------------------------------------------
+@@StrNIPos
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the position of the N-th occurence of a sub-string within a string.
+Description:
+  StrNPos returns the index into S of the N-th occurence of the specified sub-string.
+  This function is case-insensitive and does not work with multibyte character sets.
+  If the specified sub-string does not have N occurence in S the function returns 0.
+Parameters:
+  S - The string in which to search for N occurences of SubStr.
+  SubStr - The sub-string to search for.
+  Index - The number of occurences of sub-string in S.
+Result:
+  Index into S where the N-th occurence of SubStr is located. If SubStr has less
+  than N occurences in S the result is 0.
+Notes:
+  This function was inspired by code submitted by George Tasker
+See also:
+  StrNPos
+Quick info:
+
+  Category: String manipulation
+  Donator: JCL Team
+--------------------------------------------------------------------------------
+@@StrMatch
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the first character in a specified sub-string that occurs in a given string.
+Description:
+  StrMatch returns the index of the first character in a specified sub-string that
+  occurs in a given string. The search starts at the supplied index and is case-insensitive.
+  The specified sub-string may contain wildcards. The '?' wildcard matches 1 character
+  while the '*' wildcard matches 0 or more occurrences of a character. For example, 'J?DI'
+  will find 'JEDI', 'JZDI' and 'JODI' (and more) while 'J*I' will find 'JEDI' and 'JI'.
+Parameters:
+  Substr - The sub-string to search for. May contain wildcards.
+  Str - The string in which to search.
+  Index - The index in Str at which to start the search.
+Result:
+  One-based index of the first character of SubStr in Str or 0 if SubStr does not
+  occur in the supplied string.
+Notes:
+  The '*' wildcard currently doesn't work correctly, it produces the same result as '?'.
+See also:
+  StrSearch
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrPrefixIndex
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index at which a string appears which is used as a prefix.
+Description:
+  StrPrefixIndex returns the index into the prefixes array at which a string appears
+  with which the supplied string is prefixed. For example,
+  StrPrefixIndex('banana', ['call', 'ban', 'bana']) will return 1. Note that as
+  can be seen from the example, as soon as a prefix is found the routine stops and
+  doesn't attempt to find a better (longer) match.
+Parameters:
+  S - The string to test.
+  Prefixes - The list of prefixes.
+Result:
+  The zero based index into Prefixes at which the first string appears that is used
+  as a prefix in the supplied string. If none of the Prefixes array strings qualifies
+  the result is -1.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrSearch
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Returns the index of the first character in a specified sub-string that occurs in a given string.
+Description:
+  StrSearch returns the index of the first character in a specified sub-string that
+  occurs in a given string. The search starts at the supplied index and is case-sensitive.
+Parameters:
+  Substr - The sub-string to search for.
+  Str - The string in which to search.
+  Index - The index in Str at which to start the search.
+Result:
+  One-based index of the first character of SubStr in Str or 0 if SubStr does not
+  occur in the supplied string.
+See also:
+  StrFind
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrAfter
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the portion of the string after a specific sub-string.
+Description:
+  The StrAfter routine returns that portion of the specified string that appears
+  after a specified sub-string. For example, StrAfter('Hello', 'Hello world') returns
+  the string ' world'.
+Parameters:
+  SubStr - The sub-string to search for.
+  S - The source string.
+Result:
+  The portion of the string after the specified sub-string. If the sub-string does
+  not appear in the source string the result is an empty string.
+See also:
+  StrBefore
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrBefore
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the portion of the string before a specific sub-string.
+Description:
+  The StrBefore routine returns that portion of the specified string that appears
+  before a specified sub-string. For example, StrBefore('world', 'Hello world') returns
+  the string 'Hello '.
+Parameters:
+  SubStr - The sub-string to search for.
+  S - The source string.
+Result:
+  The portion of the string before the specified sub-string. If the sub-string does
+  not appear in the source string the result is the source string.
+See also:
+  StrAfter
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrBetween
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the sub-string between the first occurences of Start and Stop.
+Description:
+  The StrBetween routine returns the that portion of the string that appears between
+  the first occurences of the Start and Stop characters. For example,
+  StrBetween('Hello world', 'e', 'r') returns 'llo wo'. Note that if the position
+  of Start is greater than Stop, or either of these characters is not found in the
+  source string, the result is an empty string. If the Start and Stop symbols are
+  equal StrBetween returns the string between the first and second occurence of
+  that particular symbol. 
+Parameters:
+  S - The source string from which to extract the sub-string
+  Start - The character which denotes the start of the sub-string to extract.
+  Stop - The character which denotes the end of the sub-string to extract.
+Result:
+  If the function succeeds, it returns the sub-string between the first occurence of
+  Start and Stop, not including either of these characters. If the function fails
+  it returns an empty string, for example if the Start and/or Stop character doesn't
+  appear in the sources string.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrChopRight
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Removes the last N characters from the string.
+Description:
+  StrChopRight removes the last N characters from the specified string and returns
+  the resulting string.
+Parameters:
+  S - The source string from which the characters are removed.
+  N - The number of characters to remove from the end of the string.
+Result:
+  The string with the last N characters cut off. Note that when N is larger than
+  the string length, the result is an empty string.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrLeft
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the Count leftmost characters from the string.
+Description:
+  StrLeft returns the Count number of leftmost characters from the supplied string.
+  Note that if the supplied string contains fewer than Count characters, the function
+  returns the entire string.
+Parameters:
+  S - The string from which to copy.
+  Count - The number of characters to copy.
+Result:
+  The Count leftmost characters from S.
+See also:
+  StrRight
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrMid
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Copies part of a string.
+Description:
+  StrMid copies the part of the source string defined by Start and Count.
+  If Start exceeds the length of the string then an empty string is returned.
+  The extracted sub-string can be shorter than Count if Start+Count exceed the string length.
+Parameters:
+  S - Source string.
+  Start - Index of the first character to copy.
+  Count - Number of characters to copy.
+Result:
+  The string copied from S starting at offset Start and with length Count.
+Quick info:
+
+  Category: String manipulation
+  Donator: John C Molyneux
+--------------------------------------------------------------------------------
+@@StrRestOf
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the remainder of a string starting at the specified index.
+Description:
+  StrRestOf returns the remainder of the the string starting at index N. For example,
+  StrRestOf('Project JEDI', 9) returns 'JEDI' (index 9 through Length(S)).
+Parameters:
+  S - The source string from which to copy.
+  N - The starting index of the characters to copy.
+Result:
+  The remainder of the string starting at the specified index.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrRight
+<GROUP Stringmanipulation.StringExtraction>
+Summary:
+  Returns the Count rightmost characters from the string.
+Description:
+  StrRight returns the Count number of rightmost characters from the supplied string.
+  Note that if the supplied string contains fewer than Count characters, the function
+  returns the entire string.
+Parameters:
+  S - The string from which to copy.
+  Count - The number of characters to copy.
+Result:
+  The Count of rightmost characters from S.
+See also:
+  StrLeft
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharEqualNoCase
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Test whether two characters are equal except possibly for case.
+Description:
+  CharEqualNoCase determines whether two characters are equal except possibly for
+  case differences. For example, 'a' and 'a' are obviously equal but so are 'a' and 'A'.
+Parameters:
+  C1 - The first character to test.
+  C1 - The second character to test.
+Result:
+  If the supplied characters are equal except for case, the result is True, otherwise
+  the result is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharIsAlpha
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C is an alpha character.
+Description:
+  CharIsAlpha returns whether or not the supplied character is an alpha character.
+  That is, if C comes from the ['a'..'z', 'A'..'Z'] set.
+Parameters:
+  C - The character to test
+Result:
+  If C is an alpha character the return value is True, otherwise the return value is False.
+See also:
+  CharIsDigit
+  CharIsNumberChar
+  CharIsAlphaNum
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@CharIsAlphaNum
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Test whether C is an alphanumeric character.
+Description:
+  CharIsAlphaNum returns whether or not C is an alphanumerical character. That is,
+  if C comes from the ['a'..'z', 'A'..'Z', '0'..'9'] set.
+Parameters:
+  C - The character to test.
+Result:
+  If C is an alphanumerical character the return value is True, otherwise the return value is False.
+See also:
+  CharIsAlpha
+  CharIsNumberChar
+  CharIsDigit
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharIsBlank
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Test whether C is a blank character.
+Description:
+  CharIsBlank returns whether or not C is a blank character.
+Parameters:
+  C - The character to test.
+Result:
+  If C is a blank character the return value is True, otherwise the return value is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIsControl
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C is a control character.
+Description:
+  CharIsControl tests whether C is a control character. That is, if it has an
+  ordinal value smaller than 32.
+Parameters:
+  C - Character to test.
+Result:
+  If C is a control character the result is True, otherwise the result is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharIsDelete
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C is a delete character.
+Description:
+  CharIsDelete tests whether C is a delete character. That is, if it has an
+  ordinal value of 8.
+Parameters:
+  C - Character to test.
+Result:
+  If C is a delete character the result is True, otherwise the result is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharIsDigit
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Test whether C is a digit.
+Description:
+  CharIsDigit returns whether or not C is a digit. That is, if C comes from
+  the ['0'..'9'] set.
+Parameters:
+  C - The character to test.
+Result:
+  If C is a digit the return value is True, otherwise the return value is False.
+See also:
+  CharIsAlpha
+  CharIsNumberChar
+  CharIsAlphaNum
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@CharIsLower
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether a character is lowercase.
+Description:
+  CharIsLower returns whether the specified character is lowercase.
+Parameters:
+  C - The character to test.
+Result:
+  If C is lowercase the return value is True, otherwise the return value is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIsNumberChar
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C is a number.
+Description:
+  CharIsNumberChar returns whether or not the supplied character can occur in a number. That is,
+  if it comes from the ['0'..'9', '+', '-', '.'] set where the dot is replaced by the
+  system's decimal separator character.
+Parameters:
+  C - Character to test.
+Result:
+  If C is a number the result is True, otherwise the result is False.
+See also:
+  CharIsAlpha
+  CharIsAlphaNum
+  CharIsDigit
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+  Windows NT/2000: Requires Windows NT 4 or later.
+  Windows 95/98: Requires Windows 95 or later.
+  Requirements: Shell32 Version 4.00 or later.
+--------------------------------------------------------------------------------
+@@CharIsPrintable
+<GROUP Stringmanipulation.CharacterTestRoutines>
+
+Description
+CharIsPrintable returns whether the specified character is
+printable. A printable character is any character which is
+not a control character and as such has an ordinal value
+larger than 31.
+
+Summary
+Tests whether a character is printable.
+
+Parameters
+C :   The character to test.
+
+Returns
+If C is printable the return value is True, otherwise the
+\return value is False.
+
+QuickInfo
+Unit: JclStrings
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIsPunctuation
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether a character is a punctuation character.
+Description:
+  CharIsPunctuation returns whether the specified character is a punctuation character.
+  An example would be '.'.
+Parameters:
+  C - The character to test.
+Result:
+  If C is a punctuation character the return value is True, otherwise the return
+  value is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIsReturn
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C is a return character.
+Description:
+  CharIsReturn returns whether C is a return character. In this context both the
+  carriage return (#13) as well as the linefeed (#10) are considered return.
+  characters.
+Parameters:
+  C - Character to test.
+Result:
+  If C is a return character the result is True, otherwise the result is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharIsSpace
+<GROUP Stringmanipulation.CharacterTestRoutines>
+
+Description
+CharIsSpace returns whether or not the C character represents
+space(s). In this context that means the character is tested
+against the space (' '), tab (#9), line feed (#10), vertical tab
+(#11), form feed (#12) and carriage return (#13) characters.
+
+Summary
+Tests whether C represents space.
+
+Parameters
+C :   Character to test.
+
+Returns
+If the character represents a space the result is True,
+otherwise the result is False.
+
+QuickInfo
+ Unit: JclStrings
+  Category: String manipulation
+  Donator: Anthony Steele
+See Also
+CharIsWhiteSpace
+--------------------------------------------------------------------------------
+@@CharIsUpper
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether a character is uppercase.
+Description:
+  CharIsUpper returns whether the specified character is uppercase.
+Parameters:
+  C - The character to test.
+Result:
+  If C is uppercase the return value is True, otherwise the return value is False.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIsWhiteSpace
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Tests whether C represents space.
+Description:
+  CharIsWhiteSpace returns whether or not the C character represents a space.
+  Unlike CharIsSpace this function returns True if the specified
+  character comes from the AnsiWhiteSpace set which is defined as: 
+  AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
+Parameters:
+  C - Character to test.
+Result:
+  If the character represents a space the result is True, otherwise the result is False.
+See also:
+  CharIsSpace
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@CharType
+<GROUP Stringmanipulation.CharacterTestRoutines>
+Summary:
+  Returns character type information.
+Description:
+  The CharType function returns character type information about the specified
+  character. This routine returns the same information as routines such as IsCharControl.
+  For further information about character type information see the documentation for
+  the GetStringTypeEx routine in the Platform SDK.
+Parameters:
+  C - The character for which to retriev type information.
+Result:
+  The type of the character, this can be one of the following values.
+    <TABLE>
+Name       Value   Meaning
+---------  ------  ---------------------------------------------------------------
+C1_UPPER   0x0001  Uppercase
+C1_LOWER   0x0002  Lowercase
+C1_DIGIT   0x0004  Decimal digits
+C1_SPACE   0x0008  Space characters
+C1_PUNCT   0x0010  Punctuation
+C1_CNTRL   0x0020  Control characters
+C1_BLANK   0x0040  Blank characters
+C1_XDIGIT  0x0080  Hexadecimal digits
+C1_ALPHA   0x0100  Any linguistic character: alphabetic, syllabary, or ideographic
+</TABLE>
+
+Notes:
+  In a future Linux version the values may differ.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharHex
+<GROUP Stringmanipulation.CharacterTransformationRoutines>
+Summary:
+  Converts a hex digit character to its binary value.
+Description:
+  Converts a hex digit character to its binary value, ie $0 to $f.
+  If the character is no hex digit then $ff is returned.
+Parameters:
+  C - A hex digit to convert
+Result:
+  The binary value of the hex digit or $ff if it was no hex digit.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharLower
+<GROUP Stringmanipulation.CharacterTransformationRoutines>
+Summary:
+  Lowercases a character.
+Description:
+  CharLower converts the supplied character to lowercase. For example 'A' becomes
+  'a'. If the character is already lowercase the function does nothing.
+Parameters:
+  C - Character to convert to lowercase.
+Result:
+  Copy of character converted to lowercase.
+See also:
+  CharUpper
+  CharToggleCase
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharUpper
+<GROUP Stringmanipulation.CharacterTransformationRoutines>
+Summary:
+  Uppercases a character.
+Description:
+  CharUpper converts the supplied character to uppercase. For example 'a' becomes
+  'A'. If the character is already uppercase the function does nothing.
+Parameters:
+  C - The character to convert to upper case.
+Result:
+  Copy of the character converted to uppercase.
+See also:
+  CharLower
+  CharToggleCase
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharToggleCase
+<GROUP Stringmanipulation.CharacterTransformationRoutines>
+Summary:
+  Reverses the case of a character.
+Description:
+  CharToggleCase reverses the case of the supplied character. That is, if you pass an
+  uppercase character the function converts it to lowercase, if you pass a lowercase
+  character the function converts it to uppercase.
+Parameters:
+  C - Character whose case to reverse.
+Result:
+  Copy of the character with the case reversed.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharPos
+<GROUP Stringmanipulation.CharacterSearchandReplace>
+Summary:
+  Finds the position of a character in a string.
+Description:
+  CharPos returns the 1-based index of the first occurrence of the supplied character
+  in the string. The search starts at the supplied index and is case sensitive.
+Parameters:
+  S - String to search.
+  C - The character to search for.
+  Index - The character index where CharPos begins searching.
+Result:
+  The 1-based index of the first occurrence found, or 0 if the character was not found.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharIPos
+<GROUP Stringmanipulation.CharacterSearchandReplace>
+Summary:
+  Finds the position of a character in a string.
+Description:
+  CharPos returns the 1-based index of the first occurrence of the supplied character
+  in the string. The search starts at the supplied index and is case insensitive.
+Parameters:
+  S - String to search.
+  C - The character to search for.
+  Index - The character index where CharPos begins searching.
+Result:
+  The 1-based index of the first occurrence found, or 0 if the character was not found.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@CharReplace
+<GROUP Stringmanipulation.CharacterSearchandReplace>
+Summary:
+  Replaces all occurrences of a character in a string.
+Description:
+  CharReplace replaces all occurrences of the specified search character with the
+  supplied replace character. It returns the number of replacements performed.
+  Note that the replacement is case-sensitive.
+Parameters:
+  S - The string in which to replace characters.
+  Search - The character to replace.
+  Replace - The character to use as a replacement of Search.
+Result:
+  CharReplace returns the number of replacements performed.
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StringsToPCharVector
+<GROUP Stringmanipulation.PCharVector>
+Summary:
+  Converts a stringlist into a PCharVector.
+Description:
+  A PCharVector is an array of PChar's where each PChar points to a null terminated
+  string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
+  usually typed as a PPSTR. This function takes a string list and builds a
+  PCharVector from it. The memory allocated to store the PCharVector must eventually
+  be released by the caller, preferably using FreePCharVector.
+Parameters:
+  Dest - On return receives a pointer to the PCharVector.
+  Source - String list to convert to a PCharVector.
+Result:
+  The value placed in Dest to allow using the function on parameter position.
+See also:
+  PCharVectorToStrings
+  PCharVectorCount
+  FreePCharVector
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@PCharVectorCount
+<GROUP Stringmanipulation.PCharVector>
+Summary:
+  Returns the number of elements in a PCharVector.
+Description:
+  PCharVectorCount returns the number of items, PChar's, in the supplied PCharVector
+  excluding the NULL terminator.
+Parameters:
+   - The PCharVector to count the elements in.
+Result:
+  The number of elements in the PCharVector excluding the NULL terminator.
+See also:
+  PCharVectorToStrings
+  StringsToPCharVector
+  FreePCharVector
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@PCharVectorToStrings
+<GROUP Stringmanipulation.PCharVector>
+Summary:
+  Converts a PCharVector to a stringlist.
+Description:
+  A PCharVector is an array of PChar's where each PChar points to a null terminated
+  string. The array is delimited by a nil (NULL) pointer. In the Windows API this is
+  usually typed as a PPSTR. This function takes such a PCharVector and converts it
+  to a stringlist. Note that the memory for the PCharVector is not freed by this
+  function.
+Parameters:
+  Dest - List which recieves the elements in the PCharVector.
+  Source - PCharVector from which to retrieve the elements.
+See also:
+  PCharVectorCount
+  StringsToPCharVector
+  FreePCharVector
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@FreePCharVector
+<GROUP Stringmanipulation.PCharVector>
+Summary:
+  Frees a PCharVector
+Description:
+  FreePCharVector frees the memory pointed to by Dest and sets Dest to nil.
+  Only hand in memory allocated by StringsToPCharVector.
+  Freeing a PCharVector allocated by a Windows API function will crash your program.
+Parameters:
+  Dest - The PCharVector whose memory to free.
+See also:
+  PCharVectorCount
+  StringsToPCharVector
+  PCharVectorToStrings
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StringsToMultiSz
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Converts a stringlist to a list of null terminated strings.
+Description:
+  StringsToMultiSz concatenates the strings in Source into a single PChar string,
+  terminating each individual string with a NULL character and the last string with
+  a double NULL character. For example, if Source contains the items 'Project',
+  'JEDI' and 'Rules' Dest will point to a string with the contents 'Project#0JEDI#0Rules#0#0'
+Parameters:
+  Dest - PChar receives a pointer to the resulting string.
+  Source - List of strings to pack into a single string. This list may not contain empty items (items with the value '') or an EJclStringError is raised.
+Result:
+  On success the function returns the value of Dest. If the function fails to allocate
+  memory for the result string it (implicitly) raises an EOutOfMemory exception. The
+  caller is responsible for releasing the memory pointed to by Dest.
+See also:
+  MultiSzToStrings
+  FreeMultiSz
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@MultiSzToStrings
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Converts a list of null terminated strings to a string list.
+Description:
+  Source is assumed to be a list of strings, separated by a NULL character, terminated
+  by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
+  takes this string and copies the individual strings to the string list. Thus,
+  after executing this function with the above string the Dest list will contain
+  the items 'Project', 'JEDI' and 'Rules'.
+Parameters:
+  Dest - The string list to receive the individual strings.
+  Source - The source string to extract the items from.
+Notes:
+  This function does not release the memory associated with Source.
+See also:
+  StringsToMultiSz
+  FreeMultiSz
+Quick info:
+  Category: String manipulation
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@FreeMultiSz
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Frees the memory pointed to by Dest.
+Description:
+  FreeMultiSz frees the memory pointed to by Dest which is assumed to be a list
+  of strings, each terminated by a NULL character, terminated by a double NULL
+  character.
+Parameters:
+  Dest - The memory to free. Is set to nil before return.
+See also:
+  StringsToMultiSz
+  MultiSzToStrings
+Quick info:
+  Category: String manipulation
+Donator:
+  Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StringsToMultiString
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Assembles a single string from multiple strings
+Description:
+  StringsToMultiString concatenates the strings in Value into a single ANSI string,
+  terminating each individual string with a NULL character and the last string with
+  a double NULL character. For example, if Source contains the items 'Project',
+  'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
+Parameters:
+  Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+Result:
+  The string concatenated from the list or array of strings.
+See also:
+  StringsToMultiWideString
+  StringsToMultiSz
+  MultiStringToStrings
+Quick info:
+  Category: String manipulation
+Donator: Anonymous
+--------------------------------------------------------------------------------
+@@StringsToMultiWideString
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Assembles a single string from multiple strings
+Description:
+  StringsToMultiWideString concatenates the strings in Value into a single wide string,
+  terminating each individual string with a NULL character and the last string with
+  a double NULL character. For example, if Source contains the items 'Project',
+  'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
+Parameters:
+  Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+Result:
+  The string concatenated from the list or array of strings.
+See also:
+  StringsToMultiString
+  StringsToMultiSz
+  MultiWideStringToStrings
+Quick info:
+  Category: String manipulation
+Donator: Anonymous
+--------------------------------------------------------------------------------
+@@MultiStringToStrings
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Parses a string by separating into substrings whenever a NULL character is encountered.
+Description:
+  Value is assumed to be a list of strings, separated by a NULL character, terminated
+  by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
+  takes this string and copies the individual strings to Dest. Thus, after executing
+  this function with the above string the Dest list/array will contain the items
+  'Project', 'JEDI' and 'Rules'.
+Parameters:
+  Dest - The string list resp. dynamic array to receive the individual strings.
+  Value - The source string to extract the items from.
+See also:
+  MultiWideStringToStrings
+  StringsToMultiString
+Quick info:
+  Category: String manipulation
+Donator: Anonymous
+--------------------------------------------------------------------------------
+@@MultiWideStringToStrings
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Parses a string by separating into substrings whenever a NULL character is encountered.
+Description:
+  Value is assumed to be a list of strings, separated by a NULL character, terminated
+  by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
+  takes this string and copies the individual strings to Dest. Thus, after executing
+  this function with the above string the Dest list/array will contain the items
+  'Project', 'JEDI' and 'Rules'.
+Parameters:
+  Dest - The string list resp. dynamic array to receive the individual strings.
+  Value - The source string to extract the items from.
+See also:
+  MultiStringToStrings
+  StringsToMultiWideString
+Quick info:
+  Category: String manipulation
+Donator: Anonymous
+--------------------------------------------------------------------------------
+@@StrToStrings
+<GROUP Stringmanipulation.TStringsManipulation>
+
+Description
+StrToStrings converts the supplied string, which supposedly is
+a list of strings packed into a single string variable, to a
+TStrings. The function uses the supplied separator string to
+separate the string into its individual elements.
+
+For example, if you call the function like this:
+StrToStrings('Project JEDI Rules', ' ', List) then on return
+list will contain three items, namely 'Project', 'JEDI', and
+'Rules'. As this example shows, the last string doesn't have
+to be terminated by the separator string although it is
+allowed.
+
+Summary
+Converts a string into a list of strings using the specified
+separator character.
+
+Note
+The list will be cleared by this function before adding the
+elements.
+
+Parameters
+List :   A TStrings derivative that receives the individual
+         elements
+S :      The string to split into elements
+Sep :    The string that separates the individual elements
+
+QuickInfo
+ Unit: JclStrings
+  Category: String manipulation
+  Donator: Anthony Steele
+
+See Also
+StringsToStr
+
+@@StringsToStr
+<GROUP Stringmanipulation.TStringsManipulation>
+Summary:
+  Converts a stringlist to a single string.
+Description:
+  StringsToStr concatenates the items in List, separating them with the specified
+  separator string and returns the resulting string. The last element is not terminated
+  with the separator (its a separator not a terminator after all).
+Parameters:
+  List - Stringlist which contains the strings to concatenate.
+  Sep - String to separate the individual strings with.
+See also:
+  StrToStrings
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@TrimStrings
+<GROUP Stringmanipulation.TStringsManipulation>
+Summary:
+  Trims all strings in a string list.
+Description:
+  TrimStrings trims all strings in the specified stringlist using the standard
+  Delphi Trim procedure. If an entry in the list is empty or trimming it causes
+  it to become empty, the entry is optionally deleted from the list depending the
+  DeleteIfEmpty parameter.
+Parameters:
+  List - The stringlist whose contents to trim.
+  DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStringsRight
+  TrimStringsLeft
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@TrimStringsRight
+<GROUP Stringmanipulation.TStringsManipulation>
+Summary:
+  Right trims all strings in a stringlist.
+Description:
+  TrimStringsRight right trims all strings in the specified stringlist using the
+  standard Delphi TrimRight procedure. If an entry in the list is empty or trimming
+  it causes it to become empty, the entry is optionally deleted from the list
+  depending on the DeleteIfEmpty parameter.
+Parameters:
+  List - The stringlist whose contents to right trim.
+  DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStrings
+  TrimStringsLeft
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@TrimStringsLeft
+<GROUP Stringmanipulation.TStringsManipulation>
+Summary:
+  Left trims all strings in a stringlist.
+Description:
+  TrimStringsLeft left trims all strings in the specified stringlist using the
+  standard Delphi TrimLeft procedure. If an entry in the list is empty or trimming
+  it causes it to become empty, the entry is optionally deleted from the list
+  depending on the DeleteIfEmpty parameter.
+Parameters:
+  List - The stringlist whose contents to left trim.
+  DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStrings
+  TrimStringsRight
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@BooleanToStr
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Returns a string representation of the boolean values True and False.
+Description:
+  BooleanToStr returns a string representation of the boolean values True or False.
+  Thus, if B equals True the string 'True' is returned, if B equals False the
+  string 'False' is returned.
+Parameters:
+  B - The boolean value for which you want the string representation.
+Result:
+  If B is True the result is the string 'True', if B is False the result is the
+  string 'False'.
+Quick info:
+
+  Category: String manipulation
+  Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrTokenToStrings
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Breaks apart S using a specified delimiter into a StringList.
+Description:
+  Use StrTokenToStrings for breaking apart a string with parts delimited by a
+  separator. For example, if you passed 'C:\Windows;C:\Delphi;C:\JEDI;' List would
+  contain 'C:\Windows', 'C:\Delphi', 'C:\JEDI'.
+  You must create the StringList prior to passing it to StrTokenToString and
+  Free the StringList once finished with it.
+Parameters:
+  S - A string which contains one or more Separators (see List parameter).
+  Separator - Any character you want to use to separate S.
+  List - Returns separated parts or the entire string if no separator occurs.
+See also:
+  StrToken
+Quick info:
+
+  Category: String manipulation
+  Donator: Huanlin Tsai
+--------------------------------------------------------------------------------
+@@StrToken
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Returns a sub-string from S which is followed by Separator and deletes the sub-string from S including the separator.
+Description:
+  Splits a string into the part preceding the separator, which is returned
+  as function result, and the part following the separator which is placed
+  in S.
+  If no separator is contained in the string then the string is returned
+  as the function result and S becomes an empty string.
+Parameters:
+  S - The string you want to return the part after the Separator.
+  Separator - A character which determines where to break the string up at.
+Result:
+  Any part of S in front of Separator, or the original string if Separator
+  was not located in S.
+  S returns the remaining portion of the string after (but not including) Separator.
+  If Separator was not found, S is an empty string.
+See also:
+  StrTokenToStrings
+Quick info:
+
+  Category: String manipulation
+  Donator: Huanlin Tsai
+--------------------------------------------------------------------------------
+@@StrTokens
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+Description:
+Parameters:
+  S -
+  List -
+Result:
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@StrWord
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+Description:
+Parameters:
+Result:
+Quick info:
+
+  Category: String manipulation
+  Donator: Azret Botash
+--------------------------------------------------------------------------------
+@@FileToString
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Reads the contents of a file into a string.
+Description:
+  The FileToString routine reads the contents of the specified file into a string
+  and returns it as the function result. Note that the function doesn't care about
+  the contents of the file, it simply treats the string as a buffer and copies the
+  entire file contents into it.
+Parameters:
+  FileName - Full qualified name of the file whose contents to read.
+Result:
+  The contents of the file as a string buffer. Note that if the file contains
+  null terminating characters, the string will contain the entire contents but
+  for example displaying the string will only show the part of the string up to
+  the first null terminator.
+See also:
+  StringToFile
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StringToFile
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Writes a string to a file.
+Description:
+  The StringToFile routine writes the contents of the specified string to a file.
+  Note that the full content is written to the file, including any null terminating
+  characters. The string is considered a generic buffer and can contains anything.
+Parameters:
+  FileName - Fully qualified name of the file.
+  Contents - The string whose contents to write to the file.
+See also:
+  FileToString
+Quick info:
+
+  Category: String manipulation
+  Donator: Anthony Steele
+--------------------------------------------------------------------------------
+@@StrRepeatLength@AnsiString@Integer
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Repeats a string until a specified length L has been reached.
+Description:
+  The StrRepeatLength routine returns a string consisting of
+  the specified string, repeated until the length of the string
+  is exactly L. For example StrRepeatLength('JEDI!', 12) returns
+  'JEDI!JEDI!JE'.
+Parameters:
+  S - The string to repeat.
+  L - Length of the resulting string.
+Returns:
+  A string consisting of the specified string, repeated until
+  the length of the string is exactly L.
+QuickInfo:
+
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrCharPosLower@AnsiString@Integer
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases a character within a string.
+Description:
+  The StrCharPosLower routine returns a string with the specified character in lowercase.
+  If the character is already lowercase the function does nothing.
+Parameters:
+  S - The string which contains the character.
+  CharPos - The position of the character within the string to convert.
+QuickInfo:
+
+  Category: String manipulation
+  Donator: Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@StrCharPosUpper@AnsiString@Integer
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Uppercases a character within a string.
+Description:
+  The StrCharPosUpper routine returns a string with the specified character in uppercase.
+  If the character is already uppercase the function does nothing.
+Parameters:
+  S - The string which contains the character.
+  CharPos - The position of the character within the string to convert.
+QuickInfo:
+
+  Category: String manipulation
+  Donator: Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@StrTrimCharsLeft
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes characters from the left side of supplied string.
+Description:
+  StrTrimCharsLeft removes all characters defined in the "Chars" set from
+  the left side of the string.
+Parameters:
+  S - The string to trim.
+Result:
+  The trimmed string.
+Quick info:
+  Category: String manipulation
+  Donator: Leonard Wennekers
+--------------------------------------------------------------------------------
+@@StrTrimCharsRight
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes characters from the right side of supplied string.
+Description:
+  StrTrimCharsLeft removes all characters defined in the "Chars" set from
+  the right side of the string.
+Parameters:
+  S - The string to trim.
+Result:
+  The trimmed string.
+Quick info:
+  Category: String manipulation
+  Donator: Leonard Wennekers
+--------------------------------------------------------------------------------
+@@AnsiSameText
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+ AnsiSameText compares two strings.
+Description:
+  AnsiSameText compares the two supplied ANSI strings and returns whether or not they are
+  identical. AnsiSameText is case insensitive and uses the users local settings for
+  comparisation. For more information please refer to the Windows API CompareString function.
+Parameters:
+  S1 - First string to compare
+  S2 - Second string to compare
+Result:
+  AnsiSameText returns 0 (CSTR_EQUAL) if the two strings match.
+Quick info:
+  Category: Backward compatability
+  Donator: JCL Team
+--------------------------------------------------------------------------------
+@@StrAnsiToOem
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Translates an ANSI string into a string using the OEM character set.
+Description:
+  The StrAnsiToOem function translates an ansi string into a string using the
+  OEM defined character set.
+Parameters:
+  S - The string to translate.
+Result:
+  The translated string.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrOemToAnsi
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Translates an OEM string into an ansi string.
+Description:
+  The StrOemToAnsi function translated a string using the OEM defined character set
+  into an ansi string.
+Parameters:
+  S - The string to translate.
+Result:
+  The translated string.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrCharsCount
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Counts the occurrences of characters in a string.
+Description:
+  StrCharsCount returns the number of occurrences of the specified characters in the
+  supplied string.
+Parameters:
+  S - Source string.
+  Chars - The characters which occurrences to count.
+Result:
+  The number of occurrences of Chars in S.
+Quick info:
+
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrKeepChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Keeps all occurences of specified characters within a string and removes the
+  others.
+Description:
+  StrKeepChars keeps all occurences of the characters specified in the Chars set
+  and removes any other characters from the string.
+  For example, if you pass in 'Joint Endeavour of Delphi Innovators' and specify
+  ['e', 'a', 'o', 'u', 'i', ' '] the resulting string will be 'oi eaou o ei oao'.
+Parameters:
+  S - The source string from which to remove the characters.
+  Chars - The set of characters to keep within S.
+Result:
+  A string containing only characters which are within Chars.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrReplace
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
+  string.
+Description:
+  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
+  string. The flags determine how the search is done and if only one or if all occurrences should
+  be replaced.
+
+  TReplaceFlags = [rfIgnoreCase, rfReplaceAll]
+
+  If rfIgnoreCase is is within the flags the search is performed case insenitive, otherwise
+  it is case sensitive. If rfReplaceAll is specified StrReplace replaces all occurrences otherwise
+  only the first one.
+Parameters:
+  S - The source string.
+  Search - The substring to replace.
+  Replace - The string to use as a replacement of Search.
+Donator:
+  Robert Lee
+Contributor:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@StrReplaceChar
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of a character with another character
+Description:
+  StrReplaceChar replaces all occurrences of the specified search character with the supplied
+  replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The source string.
+  Search - The character to replace.
+  Replace - The character to use as a replacement of Search.
+Result:
+  The string with all replacements performed.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrReplaceChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of one or more characters with another character.
+Description:
+  StrReplaceChars replaces all occurrences of the specified search character(s) with the
+  supplied replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The string in which to replace characters.
+  Chars - The character(s) to replace.
+  Replace - The character to use as a replacement of the characters definied in Chars.
+Result
+  The string with all replacements performed.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrReplaceButChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of one or more characters with another character.
+Description:
+  StrReplaceButChars replaces all occurrences of characters which are not within the specified
+  search character(s) with the supplied replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The string in which to replace characters.
+  Chars - The characters which should not be replaced.
+  Replace - The character to use as replacement.
+Result:
+  The string with all replacements performed.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@StrMatches
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Compares two strings.
+Description:
+  StrMatches compares two given strings. The search starts at the supplied index and is case-sensitive.
+  The specified sub-string may contain wildcards. The '?' wildcard matches 1 character
+  while the '*' wildcard matches 0 or more occurrences of a character. For example, 'J?DI'
+  will find 'JEDI', 'JZDI' and 'JODI' (and more) while 'J*I' will find 'JEDI' and 'JI'.
+Parameters:
+  Substr - The sub-string to search for. May contain wildcards.
+  Str - The string in which to search.
+  Index - The index in Str at which to start the search.
+Result:
+  True if Str and Substr are equal.
+See also:
+  StrSearch
+Quick info:
+  Category: String manipulation
+  Donator: Michael Winter
+--------------------------------------------------------------------------------
+@@StrNormIndex
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+  Normalizes Index and count parameter.
+Description:
+  StrNormIndex is a auxiliary function for normalizations of Index
+  and Count parameters transfered in string functions.
+  Index and Count parameters are normalized as in standard Delphi
+  function System.Delete.
+
+  Str     Index Count => Index Count
+  '12345' 2     3        2     3
+  '12345' 2     <0       2     0
+  '12345' 2     >4       2     4
+  '12345' <1    3        1     3
+  '12345' <1    <0       1     0
+  '12345' <1    >5       1     5
+  '12345' >5    Any      6     0
+Quick info:
+
+  Category: String manipulation
+  Donator: Alexander Radchenko
+--------------------------------------------------------------------------------
+@@StrStrCount
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Counts the occurrences of a substring in a string.
+Description:
+  StrStrCount returns the number of occurrences of the specified substring in the
+  supplied string.
+Parameters:
+  S - Source string.
+  SubS - The character whose occurrences to count.
+Result:
+  The number of occurrences of SubS in S.
+Quick info:
+  Category: String manipulation
+Donator: Unknown
+--------------------------------------------------------------------------------
+@@AnsiNull
+
+JclStrings defines several often used character definitions. They are symbolic
+representations of their corresponding ANSI character. They can, for instance,
+be used to achieve self explaining code.
+
+<TABLE>
+Symbol                   Description                   Char
+---------------------    ----------------------------  ------
+AnsiNull                 No character                      #0
+AnsiSoh                  Start of header                   #1
+AnsiStx                  Start of Text                     #2
+AnsiEtx                  End of Text                       #3
+AnsiEot                  End of Transmission               #4
+AnsiEnq                  Enquiry                           #5
+AnsiAck                  Acknowledgment                    #6
+AnsiBell                 Bell                              #7
+AnsiBackspace            Backspace                         #8
+AnsiTab                  Horizontal Tab                    #9
+AnsiLineFeed             Line Feed                        #10
+AnsiVerticalTab          Vertical Tab                     #11
+AnsiFormFeed             Form Feed                        #12
+AnsiCarriageReturn       Carriage Return                  #13
+AnsiCrLf                 Carriage Return and LineFeed   #1310
+AnsiSo                   Shift Out                        #14
+AnsiSi                   Shift In                         #15
+AnsiDle                  Data Link Escape                 #16
+AnsiDc1                  Device Control 1                 #17
+AnsiDc2                  Device Control 2                 #18
+AnsiDc3                  Device Control 3                 #19
+AnsiDc4                  Device Control 4                 #20
+AnsiNak                  Negative Acknowledgement         #21
+AnsiSyn                  Synchronous Idle                 #22
+AnsiEtb                  End of Transmission Block        #23
+AnsiCan                  Cancel                           #24
+AnsiEm                   End of Medium                    #25
+AnsiEndOfFile            Substitute                       #26
+AnsiEscape               Escape                           #27
+AnsiFs                   File Separator                   #28
+AnsiGs                   Group Separator                  #29
+AnsiRs                   Request to Send                  #30
+AnsiUs                   Unit Separator                   #31
+AnsiSpace                Space                            #32
+AnsiComma                Comma                            #44
+AnsiBackslash            Backslash                        #92
+AnsiForwardSlash         Forward Slash                    #47
+AnsiDoubleQuote          Double Quote                     #34
+AnsiSingleQuote          Single Quote                     #39
+</TABLE>
+--------------------------------------------------------------------------------
+@@AnsiSoh
+<ALIAS AnsiNull>
+@@AnsiStx
+<ALIAS AnsiNull>
+@@AnsiEtx
+<ALIAS AnsiNull>
+@@AnsiEot
+<ALIAS AnsiNull>
+@@AnsiEnq
+<ALIAS AnsiNull>
+@@AnsiAck
+<ALIAS AnsiNull>
+@@AnsiBell
+<ALIAS AnsiNull>
+@@AnsiBackspace
+<ALIAS AnsiNull>
+@@AnsiTab
+<ALIAS AnsiNull>
+@@AnsiLineFeed
+<ALIAS AnsiNull>
+@@AnsiVerticalTab
+<ALIAS AnsiNull>
+@@AnsiFormFeed
+<ALIAS AnsiNull>
+@@AnsiCarriageReturn
+<ALIAS AnsiNull>
+@@AnsiCrLf
+<ALIAS AnsiNull>
+@@AnsiSo
+<ALIAS AnsiNull>
+@@AnsiSi
+<ALIAS AnsiNull>
+@@AnsiDle
+<ALIAS AnsiNull>
+@@AnsiDc1
+<ALIAS AnsiNull>
+@@AnsiDc2
+<ALIAS AnsiNull>
+@@AnsiDc3
+<ALIAS AnsiNull>
+@@AnsiDc4
+<ALIAS AnsiNull>
+@@AnsiNak
+<ALIAS AnsiNull>
+@@AnsiSyn
+<ALIAS AnsiNull>
+@@AnsiEtb
+<ALIAS AnsiNull>
+@@AnsiCan
+<ALIAS AnsiNull>
+@@AnsiEm
+<ALIAS AnsiNull>
+@@AnsiEndOfFile
+<ALIAS AnsiNull>
+@@AnsiEscape
+<ALIAS AnsiNull>
+@@AnsiFs
+<ALIAS AnsiNull>
+@@AnsiGs
+<ALIAS AnsiNull>
+@@AnsiRs
+<ALIAS AnsiNull>
+@@AnsiUs
+<ALIAS AnsiNull>
+@@AnsiSpace
+<ALIAS AnsiNull>
+@@AnsiComma
+<ALIAS AnsiNull>
+@@AnsiBackslash
+<ALIAS AnsiNull>
+@@AnsiForwardSlash
+<ALIAS AnsiNull>
+@@AnsiDoubleQuote
+<ALIAS AnsiNull>
+@@AnsiSingleQuote
+<ALIAS AnsiNull>
+@@AnsiLineBreak
+<ALIAS AnsiNull>
+--------------------------------------------------------------------------------
+@@StrToFloatSafe@string
+Description
+The function <B>StrToFloatSafe </B>attempts to convert the
+string passed as a parameter to its float value. It handles
+correctly decimal and float separators as well as negative
+sign. Function also handles national settings for thousand
+separator (see <B>ThousandSeparator </B>variable).
+
+
+
+Summary
+The function <B>StrToFloatSafe</B> attempts to convert the
+string passed as a parameter to its float value.
+
+Parameters
+S :   String to be converted to float value
+
+Returns
+Float value of the string <B>S </B>passed as a parameter. If
+error occurs, the function returns <B>0.00</B>
+
+QuickInfo
+Category: String manipulation
+Donator: Azret Botash
+Contributor: Robert Rossmair
+--------------------------------------------------------------------------------
+@@StrIToStrings@string@string@TStrings@Boolean
+Description
+<B>StrIToStrings</B> converts the supplied string, which
+supposedly is a list of strings packed into a single string
+variable, to a TStrings. The function uses the supplied
+separator string to separate the string into its individual
+elements.
+
+For example, if you call the function like this:
+StrIToStrings('Project JEDI Rules', ' ', List) then on return
+list will contain three items, namely 'Project', 'JEDI', and
+'Rules'. As this example shows, the last string doesn't have
+to be terminated by the separator string although it is
+allowed.
+
+
+
+Note
+The function differs from StrToString since it does not
+perform any case conversion of the string passed as the
+parameter.
+
+
+
+The list will be cleared by this function before adding the
+elements.
+
+Summary
+Converts a string into a list of strings using the specified
+separator character.
+
+
+
+Parameters
+S :                  The string to split into elements
+Sep :                The string that separates the individual elements
+List :               A TStrings derivative that receives the individual
+                     elements
+AllowEmptyString :   Specifies whether empty strings can be added to the
+                     list or not
+
+
+QuickInfo
+Unit: JclStrings
+Category: String manipulation
+Donator: Anthony Steele
+
+
+See Also
+<LINK StrToStrings, StrToStrings>
+--------------------------------------------------------------------------------
+@@StrToIntSafe@string
+Description
+
+
+Summary
+The function <B>StrToIntSafe</B> attempts to convert the
+string passed as a parameter to its integer value.
+
+Parameters
+S :   String to be converted to integer value
+
+Returns
+Integer value of the string <B>S </B>passed as a parameter.
+If error occurs, the function returns <B>0</B>
+
+QuickInfo
+Unit: JclStrings
+  Category: String manipulation
+  Donator: Azret Botash
+
+Description
+The function <B>StrToIntSafe </B>attempts to convert the
+string passed as a parameter to its integer value. The
+function handles correctly national settings ofr thousand
+separator (see <B>ThousandSeparator</B> variable) as well as
+negative sign.
+--------------------------------------------------------------------------------
+@@EJclStringError
+Summary
+Class of exceptions that are risen by JclStrings unit's
+routines.
+--------------------------------------------------------------------------------
+@@PCharVector
+Summary
+<B>PCharVector </B>type represents an array of pointers to
+PChars.
+
+QuickInfo
+ Unit: JclStrings
+  Category: String manipulation
+  Donator: Marcel van Brakel
+
+See Also
+PCharVectorToStrings, PCharVectorCount, FreePCharVector
+
+Description
+A PCharVector is an array of PChar's where each PChar points
+to a null terminated string. The array is delimited by a nil
+(NULL) pointer. In the Windows API this is usually typed as a
+PPSTR. This type is being operated by the following routines:
+<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
+<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>.
+
+See Also
+<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
+<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>
+--------------------------------------------------------------------------------
+@@AnsiDecDigits
+Summary
+Specifies the enumeration type containing digits from 0 to 9.
+
+Description
+The enumeration <B>AnsiDecDigits </B>contains all valid
+digits for decimal number representation.
+--------------------------------------------------------------------------------
+@@AnsiHexDigits
+Description
+The enumeration <B>AnsiHexDigits</B> contains all valid
+digits from 0 to 9 and letters of latin alphabet from A to F
+in both lower and upper cases for hexadecimal numbers
+representation.
+
+Summary
+Specifies enumeration typcontaining all valid characters for
+hexadecimal numbers representation.
+
+Note
+--------------------------------------------------------------------------------
+@@AddStringToStrings@string@TStrings@Boolean
+
+Description
+Add a string to an object of TStrings. If a string already
+exists in the list and there is a uniqueness requirement in
+place, the string is not added.
+
+Summary
+Add a string to TStrings instance if conditions met.
+
+Parameters
+S :         String to be added.
+Strings :   TStrings object to which the string specified by <B>S </B>should
+            be added.
+Unique :    Determines whether the the uniqueness check should be
+            performed before adding the string.
+
+
+Returns
+The function returns <B>True </B>if the string was added, <B>False
+</B>otherwise.
+
+QuickInfo
+  Donator: Jean-Fabien Connault
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JclBaseExpert" Design="-1">
+  <Description>JCL Package containing common units for JCL Experts</Description>
+  <GUID/>
+  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUdesignide</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <ImageBase>58000000</ImageBase>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>99</VersionMinorNumber>
+  <ReleaseNumber>0</ReleaseNumber>
+  <BuildNumber>2509</BuildNumber>
+  <Requires>
+    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
+    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
+    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
+    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\experts\common\JclOtaUtils.pas" Targets="Windows,Bds" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaResources.pas" Targets="Windows,Bds" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaConsts.pas" Targets="Windows,Bds" Formname="" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaExceptionForm.pas" Targets="Windows,Bds" Formname="JclExpertExceptionForm" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaConfigurationForm.pas" Targets="Windows,Bds" Formname="JclOtaOptionsForm" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaActionConfigureSheet.pas" Targets="Windows,Bds" Formname="JclOtaActionConfigureFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaWizardForm.pas" Targets="Windows,Bds" Formname="JclWizardForm" Condition=""/>
+    <File Name="..\..\experts\common\JclOtaWizardFrame.pas" Targets="Windows,Bds" Formname="JclWizardFrame: TFrame" Condition=""/>
+  </Contains>
+</Package>
