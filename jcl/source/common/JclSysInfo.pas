@@ -138,6 +138,7 @@ function GetSendToFolder: string;
 function GetStartmenuFolder: string;
 function GetDesktopDirectoryFolder: string;
 {$IFNDEF CLR}
+function GetCommonDocumentsFolder: string;
 function GetNethoodFolder: string;
 function GetFontsFolder: string;
 function GetCommonStartmenuFolder: string;
@@ -1840,6 +1841,13 @@ begin
   Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
   {$ENDIF ~CLR}
 end;
+
+{$IFNDEF CLR}
+function GetCommonDocumentsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_DOCUMENTS);
+end;
+{$ENDIF ~CLR}
 
 {$IFNDEF CLR}
 function GetNethoodFolder: string;

@@ -220,7 +220,7 @@ uses
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclFileUtils, JclStrings, JclSysInfo,
+  JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
   JclOtaActionConfigureSheet, JclOtaWizardForm, JclOtaWizardFrame;
 
@@ -861,9 +861,11 @@ end;
 
 function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
 var
-  FileName, FileExtension, ProjectContent: string;
-  Index, SourceNodePosition: Integer;
-  ProjectFile: TStrings;
+  FileName, FileExtension: string;
+  Index: Integer;
+  ProjectFile: TJclSimpleXML;
+  PersonalityNode, SourceNode, ProjectExtensions, ProjectTypeNode: TJclSimpleXMLElem;
+  NameProp: TJclSimpleXMLProp;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
@@ -871,17 +873,53 @@ begin
   FileName := Project.FileName;
   FileExtension := ExtractFileExt(FileName);
 
+  if AnsiSameText(FileExtension, SourceExtensionDProject) and FileExists(FileName) then
+  begin
+    Result := False;
+    ProjectFile := TJclSimpleXML.Create;
+    try
+      ProjectFile.Options := ProjectFile.Options - [sxoAutoCreate];
+      ProjectFile.LoadFromFile(FileName);
+      ProjectExtensions := ProjectFile.Root.Items.ItemNamed['ProjectExtensions'];
+      if Assigned(ProjectExtensions) then
+      begin
+        ProjectTypeNode := ProjectExtensions.Items.ItemNamed['Borland.ProjectType'];
+        if Assigned(ProjectTypeNode) then
+          Result := AnsiSameText(ProjectTypeNode.Value, 'Package');
+      end;
+    finally
+      ProjectFile.Free;
+    end;
+  end
+  else
   if AnsiSameText(FileExtension, SourceExtensionBDSProject) and FileExists(FileName) then
   begin
-    ProjectFile := TStringList.Create;
+    Result := False;
+    ProjectFile := TJclSimpleXML.Create;
     try
+      ProjectFile.Options := ProjectFile.Options - [sxoAutoCreate];
       ProjectFile.LoadFromFile(FileName);
-      ProjectContent := ProjectFile.Text;
-      SourceNodePosition := AnsiPos('</Source', ProjectContent);
-      for Index := SourceNodePosition-1 downto 1 do
-        if ProjectContent[Index] = '.' then
-          Break;
-      Result := AnsiSameText(Copy(ProjectContent, Index, SourceNodePosition-Index), SourceExtensionDelphiPackage);
+      PersonalityNode := ProjectFile.Root.Items.ItemNamed['Delphi.Personality'];
+      if not Assigned(PersonalityNode) then
+        PersonalityNode := ProjectFile.Root.Items.ItemNamed['CPlusPlusBuilder.Personality'];
+
+      if Assigned(PersonalityNode) then
+      begin
+        SourceNode := PersonalityNode.Items.ItemNamed['Source'];
+        if Assigned(SourceNode) then
+        begin
+          for Index := 0 to SourceNode.Items.Count - 1 do
+            if AnsiSameText(SourceNode.Items.Item[0].Name, 'Source') then
+          begin
+            NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
+            if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
+            begin
+              Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
+              Break;
+            end;
+          end;
+        end;
+      end;
     finally
       ProjectFile.Free;
     end;

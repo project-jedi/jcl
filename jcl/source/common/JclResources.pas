@@ -95,7 +95,8 @@ resourcestring
 
   RsUnknownProjectType = '%s not a known project type';
 
-  RsBorlandStudioProjects = 'Borland Studio Projects';                 
+  RsBorlandStudioProjects = 'Borland Studio Projects';
+  RsMsBuildNotSupported = 'MSBuild is not supported by this IDE';                 
 
   RsPackageInstallationStarted    = 'Installing package %s';
   RsPackageInstallationFinished   = 'Installation of package finished';
