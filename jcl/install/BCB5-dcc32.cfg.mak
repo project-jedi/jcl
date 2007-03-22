@@ -14,13 +14,13 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-DccCfg = $(MAKEDIR)\dcc32.cfg
+DccCfg = "$(MAKEDIR)\dcc32.cfg"
 
 $(ROOT)\Lib\Obj\AccCtrl.dcu:
 	@if exist $(DccCfg) (if not exist $(DccCfg).bak copy $(DccCfg) $(DccCfg).bak) else echo -u"$(ROOT)\Lib";"$(ROOT)\Lib\Obj" > $(DccCfg)
 	@if not exist "$(ROOT)\Lib\Obj\vcl50.dcp" goto Finis
-	-@$(MAKEDIR)\grep -i+ vcl50 $(DccCfg)
+	-@"$(MAKEDIR)\grep" -i+ vcl50 $(DccCfg)
 	@if errorlevel 1 echo -LUvcl50 >> $(DccCfg)
 	@:Finis
 	
-.precious: $(ROOT)\Lib\Obj\AccCtrl.dcu
+.precious: "$(ROOT)\Lib\Obj\AccCtrl.dcu"

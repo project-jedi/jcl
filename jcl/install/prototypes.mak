@@ -11,7 +11,7 @@ ROOT = $(MAKEDIR)\..
 VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uVCL -xClxGui\Q
 VclOptions      = -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\\
 #---------------------------------------------------------------------------------------------------
-MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
 jpp = ..\devtools\jpp.exe
 #---------------------------------------------------------------------------------------------------
 default:	VclGuiUnits ClxGuiUnits
