@@ -57,7 +57,7 @@ type
 implementation
 
 uses
-  JclFileUtils, JclRegistry,
+  JclFileUtils, JclRegistry, JclAnsiStrings,
   JclOtaUtils, JclOtaResources, JclOtaConsts;
 
 const
@@ -205,42 +205,58 @@ end;
 function TJclVersionControlSVN.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 var
-  EntryFile: string;
-  Entries: TStrings;
-  IndexDir, IndexEntry: Integer;
-  FileNameValue: string;
+  EntryFile, EntryLine, UpperCaseFileName, XmlFileNameValue: string;
+  Entries: TJclMappedTextReader;
+  IndexDir: Integer;
 begin
   Result := inherited GetFileActions(FileName);
 
   if Enabled then
   begin
-    Entries := TStringList.Create;
-    try
-      FileNameValue := Format('NAME="%s"', [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
+    UpperCaseFileName := AnsiUpperCase(ExtractFileName(FileName));
+    XmlFileNameValue := Format('NAME="%s"', [UpperCaseFileName]);
 
-      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+    for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+    begin
+      EntryFile := PathAddSeparator(ExtractFilePath(FileName))
+        + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNEntryFile;
+
+      if FileExists(EntryFile) then
       begin
-        EntryFile := PathAddSeparator(ExtractFilePath(FileName))
-          + JclVersionCtrlSVNDirectories[IndexDir] + JclVersionCtrlSVNEntryFile;
-
-        if FileExists(EntryFile) then
-        begin
-          Entries.LoadFromFile(EntryFile);
-
-          for IndexEntry := 0 to Entries.Count - 1 do
-            if Pos(FileNameValue, AnsiUpperCase(Entries.Strings[IndexEntry])) > 0 then
+        Entries := TJclMappedTextReader.Create(EntryFile);
+        try
+          while not Entries.Eof do
           begin
-            // TODO: check modifications
-            Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
-              vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
-              vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
-            FreeAndNil(Entries);
-            Exit;
+            EntryLine := Entries.ReadLn;
+            // old SVN entries file (xml-like)
+            if Pos(XmlFileNameValue, AnsiUpperCase(EntryLine)) > 0 then
+            begin
+              // TODO: check modifications
+              Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+                vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
+                vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
+              FreeAndNil(Entries);
+              Exit;
+            end;
+            // new SVN entries file (flat-style)
+            if EntryLine = AnsiFormFeed then
+            begin
+              EntryLine := Entries.ReadLn;
+              if AnsiSameStr(UpperCaseFileName, AnsiUpperCase(EntryLine)) then
+              begin
+                // TODO: check modifications
+                Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+                  vcaLog, vcaLock, vcaMerge, vcaRename, vcaRevert, vcaRepoBrowser,
+                  vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock];
+                FreeAndNil(Entries);
+                Exit;
+              end;
+            end;
           end;
+        finally
+          Entries.Free;
         end;
       end;
-    finally
-      Entries.Free;
     end;
     Result := Result + [vcaAdd];
   end;
