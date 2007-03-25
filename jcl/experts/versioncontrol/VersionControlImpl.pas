@@ -17,12 +17,13 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Florent Ouchet (outchy)                                                                        }
+{   Sandeep Chandra                                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Elahn Ientile                                                                        }
-{ Last modified: $Date$                                                      }
-{ Revision: $Revision$                                                                       }
+{ Last modified: $Date$                           }
+{ Revision: $Revision$                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1259,6 +1260,16 @@ var
   AOTAModule: IOTAModule;
 begin
   AOTAModule := ModuleServices.CurrentModule;
+  {$IFDEF COMPILER6_UP}
+  //SC  20/03/2007
+  if Assigned(AOTAModule) and Assigned(AOTAModule.CurrentEditor) then
+  begin
+    Result := AOTAModule.CurrentEditor.FileName;
+    Exit;
+  end
+  //SC  20/03/2007
+  else
+  {$ENDIF COMPILER6_UP}
   if Assigned(AOTAModule) and (AOTAModule.FileSystem = '') then
     Result := AOTAModule.FileName
   else
