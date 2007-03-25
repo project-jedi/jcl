@@ -4,11 +4,11 @@ cd install
 
 ::jpp prototypes
 
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui VclGui\JediGUIMain.pas
+..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIMain.pas
 if ERRORLEVEL 1 goto FailedCompile
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui VClGui\JediGUIReadme.pas
+..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIReadme.pas
 if ERRORLEVEL 1 goto FailedCompile
-..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui VclGui\JediGUIInstall.pas
+..\devtools\jpp.exe -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -xVclGui\ prototypes\JediGUIInstall.pas
 if ERRORLEVEL 1 goto FailedCompile
 
 
