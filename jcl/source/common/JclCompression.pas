@@ -262,6 +262,8 @@ type
     FOriginalSize: Cardinal;
     FDataCRC32: Cardinal;
     FHeaderWritten: Boolean;
+    FFooterWritten :Boolean; // flag so we only write the footer once! (NEW 2007)
+
     procedure WriteHeader;
     function GetDosTime: TDateTime;
     function GetUnixTime: Cardinal;
@@ -389,6 +391,17 @@ type
 
   EJclCompressionError = class(EJclError);
 
+  // callback type used in helper functions below:
+  TJclCompressStreamProgressCallback = procedure (filesize,position:Int64;userdata:Pointer) of Object;
+  
+
+{helper functions - one liners by wpostma}
+function GZipFile(  sourceFile,destinationFile:String; compressionLevel:Integer= Z_DEFAULT_COMPRESSION;
+                    progressCallback:TJclCompressStreamProgressCallback =nil;userdata:Pointer=nil):Boolean;
+function UnGZipFile( sourceFile,destinationFile:String;
+                      progressCallback:TJclCompressStreamProgressCallback =nil;userdata:Pointer=nil):Boolean;
+
+  
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -399,10 +412,13 @@ const
     );
 {$ENDIF UNITVERSIONING}
 
+
 implementation
 
 uses
-  JclResources, JclDateTime;
+  JclResources,
+  JclDateTime,
+  JclFileUtils; 
 
 const
   JclDefaultBufferSize = 131072; // 128k
@@ -756,6 +772,11 @@ end;
 
 destructor TJclGZIPCompressionStream.Destroy;
 begin
+  // BUGFIX: CRC32 and Uncompressed Size missing from GZIP output
+  // unless you called Flush manually. This is not correct Stream behaviour.
+  // Flush should be optional!
+  Flush;
+  
   FZLibStream.Free;
 
   inherited Destroy;
@@ -770,6 +791,10 @@ begin
   else
     Result := 0;
 
+  if (FFooterWritten) then 
+      exit;
+  FFooterWritten := true;
+    
   // Write footer, CRC32 followed by ISIZE
   AFooter.DataCRC32 := FDataCRC32;
   AFooter.DataSize := FOriginalSize;
@@ -1382,6 +1407,141 @@ begin
      Result := inherited Seek(Offset, Origin);
 end;
 *)
+
+//NEW MARCH 2007:
+
+
+{ Compress to a .gz file - one liner - NEW MARCH 2007  }
+function GZipFile( sourceFile,destinationFile:String; compressionLevel:Integer=Z_DEFAULT_COMPRESSION;
+                   progressCallback:TJclCompressStreamProgressCallback =nil;
+                   userdata:Pointer=nil ):Boolean;
+var
+  zlibstr:TJclGZIPCompressionStream;
+  destStr:TFileStream;
+  sourceStr:TFileStream;
+  Buffer:Pointer;
+  ReadBytes:Integer;
+  eofFlag:Boolean;
+  sourceFileSize:Int64;  
+begin
+  result := false;
+  if not FileExists(sourceFile) then  // can't copy what doesn't exist!
+      exit;
+
+  
+  {destination and source streams first and second}
+  sourceStr := TFileStream.Create( sourceFile, {mode}fmOpenRead or fmShareDenyWrite );
+  sourceFileSize := sourceStr.Size; // source file size
+  destStr := TFileStream.Create( destinationFile, {mode}fmCreate ); // see SysUtils
+  GetMem(Buffer, JclDefaultBufferSize+2);
+  try
+  {   create compressionstream third, and copy from source,
+       through zlib compress layer,
+       out through file stream}
+  zlibstr := TJclGZIPCompressionStream.Create( destStr, compressionLevel{-1:default} );
+  try
+        //    zlibStr.CopyFrom(sourceStr, 0 ); // One line way to do it! may not
+        //                                     // be reliable idea to do this! also,
+        //                                       //no progress callbacks!
+          eofFlag := false;
+          while not eofFlag do
+          begin
+            ReadBytes := sourceStr.Read(Buffer^,  JclDefaultBufferSize);
+            zlibstr.WriteBuffer(Buffer^, ReadBytes);
+            if ReadBytes <> JclDefaultBufferSize then begin
+              eofFlag := true;
+              Break; // short block indicates end of zlib stream
+            end;
+            if Assigned(progressCallback) then
+                    progressCallback( sourceFileSize, sourceStr.Position, userdata );
+
+            Sleep(80); // on purpose! make it visible! XXX delete later
+          end; //while
+
+
+    //destStr.Flush; // no such thing in streams.
+
+  finally
+      zlibStr.Free;
+  end;
+  finally
+      destStr.Free;
+      sourceStr.Free;
+      FreeMem(Buffer);
+  end;
+  result := FileExists(destinationFile);
+  if result then begin
+        if Assigned(progressCallback) then
+            progressCallback( sourceFileSize, sourceFileSize, userdata );
+
+  end;
+end;
+
+
+{ Decompress a .gz file - one liner - NEW MARCH 2007 }
+function UnGZipFile( sourceFile,destinationFile:String;
+                     progressCallback:TJclCompressStreamProgressCallback =nil;
+                     userdata:Pointer=nil):Boolean;
+var
+  zlibstr:TJclGZIPDecompressionStream;
+  destStr:TFileStream;
+  sourceStr:TFileStream;
+  Buffer:Pointer;
+  ReadBytes:Integer;
+  zlibstrDateTime:TDateTime;
+  sourceFileSize:Int64;
+begin
+  result := false;
+  if not FileExists(sourceFile) then  // can't copy what doesn't exist!
+      exit;
+
+
+  
+  {destination and source streams first and second}
+  sourceStr := TFileStream.Create( sourceFile, {mode}fmOpenRead or fmShareDenyWrite );
+  sourceFileSize := sourceStr.Size; // source file size
+  destStr := TFileStream.Create( destinationFile, {mode}fmCreate ); // see SysUtils
+  GetMem(Buffer, JclDefaultBufferSize+2);
+  try
+  {   create decompressionstream third, and copy from source,
+       through zlib decompress layer,
+       out through file stream
+  }
+  zlibstr := TJclGZIPDecompressionStream.Create( sourceStr );
+
+  try
+          { Copy in from sourceStr, through zlibstr, and out to DestStr }
+          while not zlibstr.FDataEnded do
+          begin
+            ReadBytes := zlibstr.Read(Buffer^,  JclDefaultBufferSize);
+            destStr.WriteBuffer(Buffer^, ReadBytes);
+            if ReadBytes <> JclDefaultBufferSize then
+              Break; // short block indicates end of zlib stream
+            if Assigned(progressCallback) then
+                    progressCallback( sourceFileSize, sourceStr.Position, userdata );
+
+            Sleep(80); // on purpose! make it visible! XXX delete later
+          end;
+          zlibstrDateTime := zlibstr.DosTime;
+
+  finally
+      zlibStr.Free;
+  end;
+  finally
+      destStr.Free;
+      sourceStr.Free;
+      FreeMem(Buffer);
+  end;
+  result := FileExists(destinationFile);
+  if result then begin
+        // one last progress update, for when we're finished!
+        if Assigned(progressCallback) then
+            progressCallback( sourceFileSize, sourceFileSize, userdata );
+
+        // preserve datetime when unpacking! (see JclFileUtils)
+        SetFileLastWrite(destinationFile,zlibstrDateTime );
+  end;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
