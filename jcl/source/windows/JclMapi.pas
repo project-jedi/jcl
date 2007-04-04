@@ -947,7 +947,8 @@ var
   Flags, Res: DWORD;
   I: Integer;
   MsgID: array [0..512] of AnsiChar;
-  AttachmentFileName, HtmlBodyFileName: string;
+  AttachmentFileName: array of string;
+  HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
@@ -965,22 +966,23 @@ begin
     if Attachments.Count > 0 then
     begin
       SetLength(AttachArray, Attachments.Count);
+      SetLength(AttachmentFileName, Attachments.Count);
       for I := 0 to Attachments.Count - 1 do
       begin
         FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
         AttachArray[I].nPosition := DWORD(-1);
         if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
         begin
-          AttachmentFileName := ExpandFileName(AttachmentFiles[I]);
+          AttachmentFileName[I] := ExpandFileName(AttachmentFiles[I]);
           AttachArray[I].lpszFileName := PChar(Attachments[I]);
         end
         else
         begin
-          AttachmentFileName := ExpandFileName(Attachments[I]);
+          AttachmentFileName[I] := ExpandFileName(Attachments[I]);
           AttachArray[I].lpszFileName := nil;
         end;
-        AttachArray[I].lpszPathName := PChar(AttachmentFileName);
-        if not FileExists(AttachmentFileName) then
+        AttachArray[I].lpszPathName := PChar(AttachmentFileName[I]);
+        if not FileExists(AttachmentFileName[I]) then
           MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
       end;
     end
@@ -1052,6 +1054,7 @@ begin
     begin
       DeleteFile(HtmlBodyFileName);
       Attachments.Delete(0);
+      AttachmentFiles.Delete(0);
     end;
   end;
 end;
