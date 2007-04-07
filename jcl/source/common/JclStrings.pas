@@ -899,7 +899,7 @@ var
   I: Integer;
   C: Char;
 begin
-  for i := 1 to Length(s) do
+  for I := 1 to Length(S) do
   begin
     C := S[I];
 
@@ -4363,14 +4363,14 @@ end;
 
 const
   BoolToStr: array[Boolean] of string[5] = ('false', 'true');
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   MaxCurrency: Currency =  922337203685477.5807;
 
   varShortInt = $0010; { vt_i1     16 }
   varWord     = $0012; { vt_ui2    18 }
   varLongWord = $0013; { vt_ui4    19 }
   varInt64    = $0014; { vt_i8     20 }
-{$ENDIF COMPILER5}
+  {$ENDIF COMPILER5}
 
 type
   TInterfacedObjectAccess = class(TInterfacedObject);
@@ -4945,7 +4945,7 @@ end;
 function TStringBuilder.Replace(OldChar, NewChar: Char; StartIndex,
   Count: Integer): TStringBuilder;
 var
-  i: Integer;
+  I: Integer;
 begin
   if Count = -1 then
     Count := FLength;
@@ -4953,17 +4953,16 @@ begin
     raise ArgumentOutOfRangeException.CreateRes(@RsArgumentOutOfRange);
   if (Count > 0) and (OldChar <> NewChar) then
   begin
-    for i := StartIndex to StartIndex + Length - 1 do
-      if FChars[i] = OldChar then
-        FChars[i] := NewChar;
+    for I := StartIndex to StartIndex + Length - 1 do
+      if FChars[I] = OldChar then
+        FChars[I] := NewChar;
   end;
   Result := Self;
 end;
 
-function TStringBuilder.Replace(OldValue, NewValue: string; StartIndex,
-  Count: Integer): TStringBuilder;
+function TStringBuilder.Replace(OldValue, NewValue: string; StartIndex, Count: Integer): TStringBuilder;
 var
-  i: Integer;
+  I: Integer;
   Offset: Integer;
   NewLen, OldLen, Capacity: Integer;
 begin
@@ -4980,11 +4979,11 @@ begin
     NewLen := System.Length(NewValue);
     Offset := NewLen - OldLen;
     Capacity := System.Length(FChars);
-    for i := StartIndex to StartIndex + Length - 1 do
-      if FChars[i] = OldValue[1] then
+    for I := StartIndex to StartIndex + Length - 1 do
+      if FChars[I] = OldValue[1] then
       begin
         if OldLen > 1 then
-          if StrLComp(@FChars[i + 1], PChar(OldValue) + 1, OldLen - 1) <> 0 then
+          if StrLComp(@FChars[I + 1], PChar(OldValue) + 1, OldLen - 1) <> 0 then
             Continue;
         if Offset <> 0 then
         begin
@@ -4996,17 +4995,17 @@ begin
             SetLength(FChars, Capacity);
           end;
           if Offset < 0 then
-            MoveChar(FChars[i - Offset], FChars[i], FLength - i)
+            MoveChar(FChars[I - Offset], FChars[I], FLength - I)
           else
-            MoveChar(FChars[i + OldLen], FChars[i + OldLen + Offset], FLength - OldLen - i);
+            MoveChar(FChars[I + OldLen], FChars[I + OldLen + Offset], FLength - OldLen - I);
           Inc(FLength, Offset);
         end;
         if NewLen > 0 then
         begin
           if (OldLen = 1) and (NewLen = 1) then
-            FChars[i] := NewValue[1]
+            FChars[I] := NewValue[1]
           else
-            MoveChar(NewValue[1], FChars[i], NewLen);
+            MoveChar(NewValue[1], FChars[I], NewLen);
         end;
       end;
   end;
@@ -5014,20 +5013,19 @@ begin
 end;
 {$ENDIF CLR}
 
-{$IFNDEF CLR}
+{$IFDEF CLR}
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+{$ENDIF UNITVERSIONING}
+{$ELSE}
 initialization
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
-{$ELSE}
-{$IFDEF UNITVERSIONING}
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
-{$ENDIF ~CLR}
+{$ENDIF CLR}
 
 {$IFDEF UNITVERSIONING}
 finalization
