@@ -297,11 +297,11 @@ end;
 
 function TJclOtaTemplateParams.GetStringsValue(const Name: string): TStrings;
 var
-  AInstance: TObject;
+  Instance: TObject;
 begin
-  AInstance := TObject(GetOrdProp(Self, Name));
-  if Assigned(Result) and (Result is TStrings) then
-    Result := TStrings(AInstance)
+  Instance := TObject(GetOrdProp(Self, Name));
+  if Instance is TStrings then
+    Result := TStrings(Instance)
   else
     Result := nil;
 end;
