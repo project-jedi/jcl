@@ -30,12 +30,10 @@
 #   5   Pentium (default)
 #   6   Pentium Pro
 #
-# Note: This assumes -DZEXPORT=__fastcall -DZEXPORTVA=__cdecl
-#
 # Robert Rossmair, 2004-10-16
 #
 
-CallingConvention = -pr -DZEXPORT=__fastcall -DZEXPORTVA=__cdecl
+CallingConvention = -pr -DVPCOMPAT
 
 !if !$d(BCB)
 BCB = $(MAKEDIR)\..
@@ -76,12 +74,12 @@ SYSDEFINES = NO_STRICT;_NO_VCL;_RTLDLL
 INCLUDEPATH = $(pcresrc);$(BCC)\include;$(BCB)\include\vcl
 LIBPATH = $(BCB)\lib\obj;$(BCB)\lib
 # LIBPATH = $(pcresrc)
-WARNINGS= -w-par -w-aus
+WARNINGS= -wpar -w-aus
 PATHC = .;$(pcresrc)
 # PATHOBJ = .;$(LIBPATH)
 ALLLIB = import32.lib cw32i.lib
 # ---------------------------------------------------------------------------
-CFLAG1 = -O2 -Ve -X- -a8 -$(CPU) -b -d -k- -vi -tWM- $(CallingConvention)
+CFLAG1 = -O2 -Ve -X- -a8 -$(CPU) -b -d -k- -vi -tWM-
 
 LFLAGS = -D"" -ap -Tpe -x -Gn
 # ---------------------------------------------------------------------------
@@ -112,7 +110,7 @@ pcre: INCLUDES TABLES $(OBJFILES)
 
 # ---------------------------------------------------------------------------
 .c.obj:
-    $(BCC)\BIN\$(BCC32) -c $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
+    $(BCC)\BIN\$(BCC32) -c $(CFLAG1) $(CallingConvention) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
 includes:
     @copy /Y $(pcresrc)\config.h.in $(pcresrc)\config.h
 tables:

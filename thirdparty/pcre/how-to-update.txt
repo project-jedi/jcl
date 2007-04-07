@@ -1,0 +1,5 @@
+// Version 1.0, march 2007
+
+1. Extract the source in jcl/source/pcre-X.Y
+2. Set the current directory to jcl/source/windows/obj/pcre
+3. Execute makefile.mak

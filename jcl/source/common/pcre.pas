@@ -30,13 +30,13 @@
 { Header conversion of pcre.h                                                                      }
 {                                                                                                  }
 { Unit owner: Peter Thornqvist                                                                     }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit pcre;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 
@@ -51,16 +51,6 @@ interface
 //
 // NOTE: if you enable static linking of DLL, this means that the pcre.dll *must*
 // be in the users path or an AV will occur at startup
-
-// IMPORTANT: The static link works only for Delphi 2005 and earlier
-//            (an internal error is raised on other compilers)
-// The following combinations of defines are valid
-//   static link: PCRE_STATICLINK
-//   static import: (nothing)
-//   dynamic import: PCRE_LINKONREQUEST
-
-//{$DEFINE PCRE_STATICLINK}
-{$DEFINE PCRE_LINKONREQUEST}
 
 (*$HPPEMIT '#include "pcre.h"'*)
 
@@ -289,53 +279,68 @@ type
   end;
   {$EXTERNALSYM pcre_callout_block}
 
-  pcre_malloc_callback = function(Size: Integer): Pointer; cdecl;
+  pcre_malloc_callback = function(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_malloc_callback}
-  pcre_free_callback = procedure(P: Pointer); cdecl;
+  pcre_free_callback = procedure(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_callback}
-  pcre_stack_malloc_callback = function(Size: Integer): Pointer; cdecl;
+  pcre_stack_malloc_callback = function(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_stack_malloc_callback}
-  pcre_stack_free_callback = procedure(P: Pointer); cdecl;
+  pcre_stack_free_callback = procedure(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_stack_free_callback}
-  pcre_callout_callback = function(var callout_block: pcre_callout_block): Integer; cdecl;
+  pcre_callout_callback = function(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_callout_callback}
 
 var
-  // do not modify the following variables, use the setters/getters below
-  pcre_malloc: ^pcre_malloc_callback = nil;
-  {$EXTERNALSYM pcre_malloc}
-  pcre_free: ^pcre_free_callback = nil;
-  {$EXTERNALSYM pcre_free}
-  pcre_stack_malloc: ^pcre_stack_malloc_callback = nil;
-  {$EXTERNALSYM pcre_stack_malloc}
-  pcre_stack_free: ^pcre_stack_free_callback = nil;
-  {$EXTERNALSYM pcre_stack_free}
-  pcre_callout: ^pcre_callout_callback = nil;
-  {$EXTERNALSYM pcre_callout}
+  // renamed from "pcre_X" to "pcre_X_func" to allow functions with name "pcre_X" to be
+  // declared in implementation when static linked
+  pcre_malloc_func: ^pcre_malloc_callback = nil;
+  {$EXTERNALSYM pcre_malloc_func}
+  pcre_free_func: ^pcre_free_callback = nil;
+  {$EXTERNALSYM pcre_free_func}
+  pcre_stack_malloc_func: ^pcre_stack_malloc_callback = nil;
+  {$EXTERNALSYM pcre_stack_malloc_func}
+  pcre_stack_free_func: ^pcre_stack_free_callback = nil;
+  {$EXTERNALSYM pcre_stack_free_func}
+  pcre_callout_func: ^pcre_callout_callback = nil;
+  {$EXTERNALSYM pcre_callout_func}
 
-procedure SetPCREMallocCallback(const FuncCallback: pcre_malloc_callback);
+procedure SetPCREMallocCallback(const Value: pcre_malloc_callback);
 {$EXTERNALSYM SetPCREMallocCallback}
 function GetPCREMallocCallback: pcre_malloc_callback;
 {$EXTERNALSYM GetPCREMallocCallback}
-procedure SetPCREFreeCallback(const FuncCallback: pcre_free_callback);
+function CallPCREMalloc(Size: Integer): Pointer;
+{$EXTERNALSYM CallPCREMalloc}
+
+procedure SetPCREFreeCallback(const Value: pcre_free_callback);
 {$EXTERNALSYM SetPCREFreeCallback}
 function GetPCREFreeCallback: pcre_free_callback;
 {$EXTERNALSYM GetPCREFreeCallback}
-procedure SetPCREStackMallocCallback(const FuncCallback: pcre_stack_malloc_callback);
+procedure CallPCREFree(P: Pointer);
+{$EXTERNALSYM CallPCREFree}
+
+procedure SetPCREStackMallocCallback(const Value: pcre_stack_malloc_callback);
 {$EXTERNALSYM SetPCREStackMallocCallback}
 function GetPCREStackMallocCallback: pcre_stack_malloc_callback;
 {$EXTERNALSYM GetPCREStackMallocCallback}
-procedure SetPCREStackFreeCallback(const FuncCallback: pcre_stack_free_callback);
+function CallPCREStackMalloc(Size: Integer): Pointer;
+{$EXTERNALSYM CallPCREStackMalloc}
+
+procedure SetPCREStackFreeCallback(const Value: pcre_stack_free_callback);
 {$EXTERNALSYM SetPCREStackFreeCallback}
 function GetPCREStackFreeCallback: pcre_stack_free_callback;
 {$EXTERNALSYM GetPCREStackFreeCallback}
-procedure SetPCRECalloutCallback(const FuncCallback: pcre_callout_callback);
+procedure CallPCREStackFree(P: Pointer);
+{$EXTERNALSYM CallPCREStackFree}
+
+procedure SetPCRECalloutCallback(const Value: pcre_callout_callback);
 {$EXTERNALSYM SetPCRECalloutCallback}
 function GetPCRECalloutCallback: pcre_callout_callback;
 {$EXTERNALSYM GetPCRECalloutCallback}
+function CallPCRECallout(var callout_block: pcre_callout_block): Integer;
+{$EXTERNALSYM CallPCRECallout}
 
 type
-  TPCRELibNotLoadedHandler = procedure; cdecl;
+  TPCRELibNotLoadedHandler = procedure; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 
 var
   // Value to initialize function pointers below with, in case LoadPCRE fails
@@ -343,123 +348,157 @@ var
   LibNotLoadedHandler: TPCRELibNotLoadedHandler = nil;
 
 (* Functions *)
-{$IFNDEF PCRE_LINKONREQUEST}
 
+{$IFNDEF PCRE_LINKONREQUEST}
+// static link and static dll import
 function pcre_compile(const pattern: PChar; options: Integer;
-  const errptr: PPChar; erroffset: PInteger; const tableptr: PChar): PPCRE; cdecl;
+  const errptr: PPChar; erroffset: PInteger; const tableptr: PChar): PPCRE;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_compile}
 function pcre_compile2(const pattern: PChar; options: Integer;
   const errorcodeptr: PInteger; const errorptr: PPChar; erroroffset: PInteger;
-  const tables: PChar): PPCRE; cdecl;
+  const tables: PChar): PPCRE;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_compile2}
-function pcre_config(what: Integer; where: Pointer): Integer; cdecl;
+function pcre_config(what: Integer; where: Pointer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_config}
 function pcre_copy_named_substring(const code: PPCRE; const subject: PChar;
   ovector: PInteger; stringcount: Integer; const stringname: PChar;
-  buffer: PChar; size: Integer): Integer; cdecl;
+  buffer: PChar; size: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_copy_named_substring}
-function pcre_copy_substring(const subject: PChar; ovector: PInteger; stringcount, stringnumber: Integer;
-  buffer: PChar; buffersize: Integer): Integer; cdecl;
+function pcre_copy_substring(const subject: PChar; ovector: PInteger;
+  stringcount, stringnumber: Integer; buffer: PChar; buffersize: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_copy_substring}
 function pcre_dfa_exec(const argument_re: PPCRE; const extra_data: PPCREExtra;
   const subject: PChar; length: Integer; start_offset: Integer;
   options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
-  wscount: Integer): Integer; cdecl;
+  wscount: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_dfa_exec}
 function pcre_exec(const code: PPCRE; const extra: PPCREExtra; const subject: PChar;
-  length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer; cdecl;
+  length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_exec}
-procedure pcre_free_substring(var stringptr: PChar); cdecl;
+procedure pcre_free_substring(var stringptr: PChar);
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring}
-procedure pcre_free_substring_list(var stringptr: PChar); cdecl;
+procedure pcre_free_substring_list(var stringptr: PChar);
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_free_substring_list}
 function pcre_fullinfo(const code: PPCRE; const extra: PPCREExtra;
-  what: Integer; where: Pointer): Integer; cdecl;
+  what: Integer; where: Pointer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_fullinfo}
 function pcre_get_named_substring(const code: PPCRE; const subject: PChar;
   ovector: PInteger; stringcount: Integer; const stringname: PChar;
-  const stringptr: PPChar): Integer; cdecl;
+  const stringptr: PPChar): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_named_substring}
-function pcre_get_stringnumber(const code: PPCRE; const stringname: PChar): Integer; cdecl;
+function pcre_get_stringnumber(const code: PPCRE; const stringname: PChar): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_stringnumber}
 function pcre_get_stringtable_entries(const code: PPCRE; const stringname: PChar;
-  firstptr: PPChar; lastptr: PPChar): Integer; cdecl;
+  firstptr: PPChar; lastptr: PPChar): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_stringtable_entries}
 function pcre_get_substring(const subject: PChar; ovector: PInteger;
-  stringcount, stringnumber: Integer; const stringptr: PPChar): Integer; cdecl;
+  stringcount, stringnumber: Integer; const stringptr: PPChar): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_substring}
 function pcre_get_substring_list(const subject: PChar; ovector: PInteger;
-  stringcount: Integer; listptr: PPPChar): Integer; cdecl;
+  stringcount: Integer; listptr: PPPChar): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_get_substring_list}
-function pcre_info(const code: PPCRE; optptr, firstcharptr: PInteger): Integer; cdecl;
+function pcre_info(const code: PPCRE; optptr, firstcharptr: PInteger): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_info}
-function pcre_maketables: PChar; cdecl;
+function pcre_maketables: PChar;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_maketables}
-function pcre_refcount(argument_re: PPCRE; adjust: Integer): Integer; cdecl;
+function pcre_refcount(argument_re: PPCRE; adjust: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_refcount}
-function pcre_study(const code: PPCRE; options: Integer; const errptr: PPChar): PPCREExtra; cdecl;
+function pcre_study(const code: PPCRE; options: Integer; const errptr: PPChar): PPCREExtra;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_study}
-function pcre_version: PChar; cdecl;
+function pcre_version: PChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 {$EXTERNALSYM pcre_version}
 
 {$ELSE}
-  // dynamic linking
+// dynamic dll import
 type
   pcre_compile_func = function(const pattern: PChar; options: Integer;
-    const errptr: PPChar; erroffset: PInteger; const tableptr: PChar): PPCRE; cdecl;
+    const errptr: PPChar; erroffset: PInteger; const tableptr: PChar): PPCRE;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_compile_func}
   pcre_compile2_func = function(const pattern: PChar; options: Integer;
     const errorcodeptr: PInteger; const errorptr: PPChar; erroroffset: PInteger;
-    const tables: PChar): PPCRE; cdecl;
+    const tables: PChar): PPCRE; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_compile2_func}
-  pcre_config_func = function(what: Integer; where: Pointer): Integer; cdecl;
+  pcre_config_func = function(what: Integer; where: Pointer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_config_func}
   pcre_copy_named_substring_func = function(const code: PPCRE; const subject: PChar;
     ovector: PInteger; stringcount: Integer; const stringname: PChar;
-    buffer: PChar; size: Integer): Integer; cdecl;
+    buffer: PChar; size: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_copy_named_substring_func}
-  pcre_copy_substring_func = function(const subject: PChar; ovector: PInteger; stringcount, stringnumber: Integer;
-    buffer: PChar; buffersize: Integer): Integer; cdecl;
+  pcre_copy_substring_func = function(const subject: PChar; ovector: PInteger;
+    stringcount, stringnumber: Integer; buffer: PChar; buffersize: Integer): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_copy_substring_func}
   pcre_dfa_exec_func = function(const argument_re: PPCRE; const extra_data: PPCREExtra;
     const subject: PChar; length: Integer; start_offset: Integer;
     options: Integer; offsets: PInteger; offsetcount: Integer; workspace: PInteger;
-    wscount: Integer): Integer; cdecl;
+    wscount: Integer): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_dfa_exec_func}
   pcre_exec_func = function(const code: PPCRE; const extra: PPCREExtra; const subject: PChar;
-    length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer; cdecl;
+    length, startoffset, options: Integer; ovector: PInteger; ovecsize: Integer): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_exec_func}
-  pcre_free_substring_func = procedure(var stringptr: PChar); cdecl;
+  pcre_free_substring_func = procedure(var stringptr: PChar);
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_func}
-  pcre_free_substring_list_func = procedure(var stringptr: PChar); cdecl;
+  pcre_free_substring_list_func = procedure(var stringptr: PChar);
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_free_substring_list_func}
   pcre_fullinfo_func = function(const code: PPCRE; const extra: PPCREExtra;
-    what: Integer; where: Pointer): Integer; cdecl;
+    what: Integer; where: Pointer): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_fullinfo_func}
   pcre_get_named_substring_func = function(const code: PPCRE; const subject: PChar;
     ovector: PInteger; stringcount: Integer; const stringname: PChar;
-    const stringptr: PPChar): Integer; cdecl;
+    const stringptr: PPChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_named_substring_func}
-  pcre_get_stringnumber_func = function(const code: PPCRE; const stringname: PChar): Integer; cdecl;
+  pcre_get_stringnumber_func = function(const code: PPCRE;
+    const stringname: PChar): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_stringnumber_func}
   pcre_get_stringtable_entries_func = function(const code: PPCRE; const stringname: PChar;
-    firstptr: PPChar; lastptr: PPChar): Integer; cdecl;
+    firstptr: PPChar; lastptr: PPChar): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_stringtable_entries_func}
   pcre_get_substring_func = function(const subject: PChar; ovector: PInteger;
-    stringcount, stringnumber: Integer; const stringptr: PPChar): Integer; cdecl;
+    stringcount, stringnumber: Integer; const stringptr: PPChar): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_substring_func}
   pcre_get_substring_list_func = function(const subject: PChar; ovector: PInteger;
-    stringcount: Integer; listptr: PPPChar): Integer; cdecl;
+    stringcount: Integer; listptr: PPPChar): Integer;
+    {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_get_substring_list_func}
-  pcre_info_func = function(const code: PPCRE; optptr, firstcharptr: PInteger): Integer; cdecl;
+  pcre_info_func = function(const code: PPCRE; optptr, firstcharptr: PInteger): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_info_func}
-  pcre_maketables_func = function: PChar; cdecl;
+  pcre_maketables_func = function: PChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_maketables_func}
-  pcre_refcount_func = function(argument_re: PPCRE; adjust: Integer): Integer; cdecl;
+  pcre_refcount_func = function(argument_re: PPCRE; adjust: Integer): Integer;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_refcount_func}
-  pcre_study_func = function(const code: PPCRE; options: Integer; const errptr: PPChar): PPCREExtra; cdecl;
+  pcre_study_func = function(const code: PPCRE; options: Integer; const errptr: PPChar): PPCREExtra;
+  {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_study_func}
-  pcre_version_func = function: PChar; cdecl;
+  pcre_version_func = function: PChar; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_version_func}
 
 var
@@ -549,7 +588,216 @@ uses
 {$LINK ..\windows\obj\pcre\pcre_version.obj}
 {$LINK ..\windows\obj\pcre\pcre_xclass.obj}
 {$LINK ..\windows\obj\pcre\pcre_default_tables.obj}
-{$ENDIF PCRE_STATICLINK}
+
+// user's defined callbacks
+var
+  pcre_malloc_user: pcre_malloc_callback;
+  pcre_free_user: pcre_free_callback;
+  pcre_stack_malloc_user: pcre_stack_malloc_callback;
+  pcre_stack_free_user: pcre_stack_free_callback;
+  pcre_callout_user: pcre_callout_callback;
+
+function pcre_compile; external;
+function pcre_compile2; external;
+function pcre_config; external;
+function pcre_copy_named_substring; external;
+function pcre_copy_substring; external;
+function pcre_dfa_exec; external;
+function pcre_exec; external;
+procedure pcre_free_substring; external;
+procedure pcre_free_substring_list; external;
+function pcre_fullinfo; external;
+function pcre_get_named_substring; external;
+function pcre_get_stringnumber; external;
+function pcre_get_stringtable_entries; external;
+function pcre_get_substring; external;
+function pcre_get_substring_list; external;
+function pcre_info; external;
+function pcre_maketables; external;
+function pcre_refcount; external;
+function pcre_study; external;
+function pcre_version; external;
+
+type
+  size_t = Longint;
+
+const
+  szMSVCRT = 'MSVCRT.DLL';
+
+function memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
+function _memcpy(dest, src: Pointer; count: size_t): Pointer;
+begin
+  Result := memcpy(dest, src, count);
+end;
+
+function memmove(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memmove';
+function _memmove(dest, src: Pointer; count: size_t): Pointer;
+begin
+  Result := memmove(dest, src, count);
+end;
+
+function memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
+function _memset(dest: Pointer; val: Integer; count: size_t): Pointer;
+begin
+  Result := memset(dest, val, count);
+end;
+
+function malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
+function _malloc(size: size_t): Pointer;
+begin
+  Result := malloc(size);
+end;
+
+procedure free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
+procedure _free(pBlock: Pointer);
+begin
+  free(pBlock);
+end;
+
+function strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; cdecl; external szMSVCRT name 'strncmp';
+function _strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer;
+begin
+  Result := strncmp(s1, s2, n);
+end;
+
+function memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; cdecl; external szMSVCRT name 'memcmp';
+function _memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer;
+begin
+  Result := memcmp(s1, s2, n);
+end;
+
+function strlen(s: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
+function _strlen(s: PAnsiChar): size_t;
+begin
+  Result := strlen(s);
+end;
+
+function tolower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'tolower';
+function __ltolower(__ch: Integer): Integer;
+begin
+  Result := tolower(__ch);
+end;
+
+function toupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'toupper';
+function __ltoupper(__ch: Integer): Integer;
+begin
+  Result := toupper(__ch);
+end;
+
+function isalnum(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalnum';
+function _isalnum(__ch: Integer): Integer;
+begin
+  Result := isalnum(__ch);
+end;
+
+function isalpha(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalpha';
+function _isalpha(__ch: Integer): Integer;
+begin
+  Result := isalpha(__ch);
+end;
+
+function iscntrl(__ch: Integer): Integer; cdecl; external szMSVCRT name 'iscntrl';
+function _iscntrl(__ch: Integer): Integer;
+begin
+  Result := iscntrl(__ch);
+end;
+
+function isdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isdigit';
+function _isdigit(__ch: Integer): Integer;
+begin
+  Result := isdigit(__ch);
+end;
+
+function isgraph(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isgraph';
+function _isgraph(__ch: Integer): Integer;
+begin
+  Result := isgraph(__ch);
+end;
+
+function islower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'islower';
+function _islower(__ch: Integer): Integer;
+begin
+  Result := islower(__ch);
+end;
+
+function isprint(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isprint';
+function _isprint(__ch: Integer): Integer;
+begin
+  Result := isprint(__ch);
+end;
+
+function ispunct(__ch: Integer): Integer; cdecl; external szMSVCRT name 'ispunct';
+function _ispunct(__ch: Integer): Integer;
+begin
+  Result := ispunct(__ch);
+end;
+
+function isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspace';
+function _isspace(__ch: Integer): Integer;
+begin
+  Result := isspace(__ch);
+end;
+
+function isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
+function _isupper(__ch: Integer): Integer;
+begin
+  Result := isupper(__ch);
+end;
+
+function isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
+function _isxdigit(__ch: Integer): Integer;
+begin
+  Result := isxdigit(__ch);
+end;
+
+//int _RTLENTRY _EXPFUNC isascii (int __c);
+function strchr(__s: PChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
+function _strchr(__s: PChar; __c: Integer): PAnsiChar;
+begin
+  Result := strchr(__s, __c);
+end;
+
+function pcre_malloc(Size: Integer): Pointer; cdecl;
+begin
+  if Assigned(pcre_malloc_user) then
+    Result := pcre_malloc_user(Size)
+  else
+    Result := _malloc(Size);
+end;
+
+procedure pcre_free(P: Pointer); cdecl;
+begin
+  if Assigned(pcre_free_user) then
+    pcre_free_user(P)
+  else
+    _free(P);
+end;
+
+function pcre_stack_malloc(Size: Integer): Pointer; cdecl;
+begin
+  if Assigned(pcre_stack_malloc_user) then
+    Result := pcre_stack_malloc_user(Size)
+  else 
+    Result := _malloc(Size);
+end;
+
+procedure pcre_stack_free(P: Pointer); cdecl;
+begin
+  if Assigned(pcre_stack_free_user) then
+    pcre_stack_free_user(P)
+  else
+    _free(P);
+end;
+
+function pcre_callout(var callout_block: pcre_callout_block): Integer; cdecl;
+begin
+  if Assigned(pcre_callout_user) then
+    Result := pcre_callout_user(callout_block)
+  else
+    Result := 0;
+end;
+
+{$ELSE ~PCRE_STATICLINK}
 
 type
   {$IFDEF MSWINDOWS}
@@ -595,137 +843,224 @@ const
 
 var
   PCRELib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+{$ENDIF ~PCRE_STATICLINK}
 
-procedure SetPCREMallocCallback(const FuncCallback: pcre_malloc_callback);
+procedure SetPCREMallocCallback(const Value: pcre_malloc_callback);
 begin
-  if not Assigned(pcre_malloc) then
+  {$IFDEF PCRE_STATICLINK}
+  pcre_malloc_user := Value;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_malloc_func) then
     LoadPCRE;
   
-  if Assigned(pcre_malloc) then
-    pcre_malloc^ := FuncCallback
+  if Assigned(pcre_malloc_func) then
+    pcre_malloc_func^ := Value
   else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function GetPCREMallocCallback: pcre_malloc_callback;
 begin
-  if not Assigned(pcre_malloc) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_malloc_user;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_malloc_func) then
     LoadPCRE;
 
-  if not Assigned(pcre_malloc) then
+  if not Assigned(pcre_malloc_func) then
   begin
     Result := nil;
     if Assigned(LibNotLoadedHandler) then
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_malloc^;
+    Result := pcre_malloc_func^;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
-procedure SetPCREFreeCallback(const FuncCallback: pcre_free_callback);
+function CallPCREMalloc(Size: Integer): Pointer;
 begin
-  if not Assigned(pcre_free) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_malloc(Size);
+  {$ELSE ~PCRE_STATICLINK}
+  Result := pcre_malloc_func^(Size);
+  {$ENDIF ~PCRE_STATICLINK}
+end;
+
+procedure SetPCREFreeCallback(const Value: pcre_free_callback);
+begin
+  {$IFDEF PCRE_STATICLINK}
+  pcre_free_user := Value;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_free_func) then
     LoadPCRE;
 
-  if Assigned(pcre_free) then
-    pcre_free^ := FuncCallback
+  if Assigned(pcre_free_func) then
+    pcre_free_func^ := Value
   else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function GetPCREFreeCallback: pcre_free_callback;
 begin
-  if not Assigned(pcre_free) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_free_user;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_free_func) then
     LoadPCRE;
 
-  if not Assigned(pcre_free) then
+  if not Assigned(pcre_free_func) then
   begin
     Result := nil;
     if Assigned(LibNotLoadedHandler) then
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_free^
+    Result := pcre_free_func^
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
-procedure SetPCREStackMallocCallback(const FuncCallback: pcre_stack_malloc_callback);
+procedure CallPCREFree(P: Pointer);
 begin
-  if not Assigned(pcre_stack_malloc) then
+  {$IFDEF PCRE_STATICLINK}
+  pcre_free(P);
+  {$ELSE ~PCRE_STATICLINK}
+  pcre_free_func^(P);
+  {$ENDIF ~PCRE_STATICLINK}
+end;
+
+procedure SetPCREStackMallocCallback(const Value: pcre_stack_malloc_callback);
+begin
+  {$IFDEF PCRE_STATICLINK}
+  pcre_stack_malloc_user := Value;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_stack_malloc_func) then
     LoadPCRE;
 
-  if Assigned(pcre_stack_malloc) then
-    pcre_stack_malloc^ := FuncCallback
+  if Assigned(pcre_stack_malloc_func) then
+    pcre_stack_malloc_func^ := Value
   else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function GetPCREStackMallocCallback: pcre_stack_malloc_callback;
 begin
-  if not Assigned(pcre_stack_malloc) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_stack_malloc_user;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_stack_malloc_func) then
     LoadPCRE;
 
-  if not Assigned(pcre_stack_malloc) then
+  if not Assigned(pcre_stack_malloc_func) then
   begin
     Result := nil;
     if Assigned(LibNotLoadedHandler) then
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_stack_malloc^;
+    Result := pcre_stack_malloc_func^;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
-procedure SetPCREStackFreeCallback(const FuncCallback: pcre_stack_free_callback);
+function CallPCREStackMalloc(Size: Integer): Pointer;
 begin
-  if not Assigned(pcre_stack_free) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_stack_malloc(Size);
+  {$ELSE ~PCRE_STATICLINK}
+  Result := pcre_stack_malloc_func^(Size);
+  {$ENDIF ~PCRE_STATICLINK}
+end;
+
+procedure SetPCREStackFreeCallback(const Value: pcre_stack_free_callback);
+begin
+  {$IFDEF PCRE_STATICLINK}
+  pcre_stack_free_user := Value;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_stack_free_func) then
     LoadPCRE;
 
-  if Assigned(pcre_stack_free) then
-    pcre_stack_free^ := FuncCallback
+  if Assigned(pcre_stack_free_func) then
+    pcre_stack_free_func^ := Value
   else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function GetPCREStackFreeCallback: pcre_stack_free_callback;
 begin
-  if not Assigned(pcre_stack_free) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_stack_free_user;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_stack_free_func) then
     LoadPCRE;
 
-  if not Assigned(pcre_stack_free) then
+  if not Assigned(pcre_stack_free_func) then
   begin
     Result := nil;
     if Assigned(LibNotLoadedHandler) then
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_stack_free^;
+    Result := pcre_stack_free_func^;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
-procedure SetPCRECalloutCallback(const FuncCallback: pcre_callout_callback);
+procedure CallPCREStackFree(P: Pointer);
 begin
-  if not Assigned(pcre_callout) then
+  {$IFDEF PCRE_STATICLINK}
+  pcre_stack_free(P);
+  {$ELSE ~PCRE_STATICLINK}
+  pcre_stack_free_func^(P);
+  {$ENDIF ~PCRE_STATICLINK}
+end;
+
+procedure SetPCRECalloutCallback(const Value: pcre_callout_callback);
+begin
+  {$IFDEF PCRE_STATICLINK}
+  pcre_callout_user := Value;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_callout_func) then
     LoadPCRE;
 
-  if Assigned(pcre_callout) then
-    pcre_callout^ := FuncCallback
+  if Assigned(pcre_callout_func) then
+    pcre_callout_func^ := Value
   else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function GetPCRECalloutCallback: pcre_callout_callback;
 begin
-  if not Assigned(pcre_callout) then
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_callout_user;
+  {$ELSE ~PCRE_STATICLINK}
+  if not Assigned(pcre_callout_func) then
     LoadPCRE;
 
-  if not Assigned(pcre_callout) then
+  if not Assigned(pcre_callout_func) then
   begin
     Result := nil;
     if Assigned(LibNotLoadedHandler) then
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_callout^;
+    Result := pcre_callout_func^;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
+function CallPCRECallout(var callout_block: pcre_callout_block): Integer;
+begin
+  {$IFDEF PCRE_STATICLINK}
+  Result := pcre_callout(callout_block);
+  {$ELSE ~PCRE_STATICLINK}
+  Result := pcre_callout_func^(callout_block);
+  {$ENDIF ~PCRE_STATICLINK}
+end;
+
+{$IFNDEF PCRE_STATICLINK}
 procedure InitPCREFuncPtrs(const Value: Pointer);
 begin
   {$IFDEF PCRE_LINKONREQUEST}
@@ -750,20 +1085,29 @@ begin
   @pcre_study := Value;
   @pcre_version := Value;
   {$ENDIF PCRE_LINKONREQUEST}
-  pcre_malloc := nil;
-  pcre_free := nil;
-  pcre_stack_malloc := nil;
-  pcre_stack_free := nil;
-  pcre_callout := nil;
+  pcre_malloc_func := nil;
+  pcre_free_func := nil;
+  pcre_stack_malloc_func := nil;
+  pcre_stack_free_func := nil;
+  pcre_callout_func := nil;
 end;
+{$ENDIF ~PCRE_STATICLINK}
 
 function IsPCRELoaded: Boolean;
 begin
+  {$IFDEF PCRE_STATICLINK}
+  Result := True;
+  {$ELSE ~PCRE_STATICLINK}
   Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
 function LoadPCRE: Boolean;
-
+{$IFDEF PCRE_STATICLINK}
+begin
+  Result := True;
+end;
+{$ELSE ~PCRE_STATICLINK}
   function GetSymbol(SymbolName: PChar): Pointer;
   begin
     {$IFDEF MSWINDOWS}
@@ -811,18 +1155,20 @@ begin
     @pcre_study := GetSymbol(PCREStudyExportName);
     @pcre_version := GetSymbol(PCREVersionExportName);
     {$ENDIF PCRE_LINKONREQUEST}
-    pcre_malloc := GetSymbol(PCREMallocExportName);
-    pcre_free := GetSymbol(PCREFreeExportName);
-    pcre_stack_malloc := GetSymbol(PCREStackMallocExportName);
-    pcre_stack_free := GetSymbol(PCREStackFreeExportName);
-    pcre_callout := GetSymbol(PCRECalloutExportName);
+    pcre_malloc_func := GetSymbol(PCREMallocExportName);
+    pcre_free_func := GetSymbol(PCREFreeExportName);
+    pcre_stack_malloc_func := GetSymbol(PCREStackMallocExportName);
+    pcre_stack_free_func := GetSymbol(PCREStackFreeExportName);
+    pcre_callout_func := GetSymbol(PCRECalloutExportName);
   end
   else
     InitPCREFuncPtrs(@LibNotLoadedHandler);
 end;
+{$ENDIF ~PCRE_STATICLINK}
 
 procedure UnloadPCRE;
 begin
+  {$IFNDEF PCRE_STATICLINK}
   if PCRELib <> INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
     FreeLibrary(PCRELib);
@@ -832,75 +1178,10 @@ begin
     {$ENDIF UNIX}
   PCRELib := INVALID_MODULEHANDLE_VALUE;
   InitPCREFuncPtrs(@LibNotLoadedHandler);
+  {$ENDIF ~PCRE_STATICLINK}
 end;
 
-{$IFDEF PCRE_STATICLINK}
-function pcre_compile; external;
-function pcre_compile2; external;
-function pcre_config; external;
-function pcre_copy_named_substring; external;
-function pcre_copy_substring; external;
-function pcre_dfa_exec; external;
-function pcre_exec; external;
-procedure pcre_free_substring; external;
-procedure pcre_free_substring_list; external;
-function pcre_fullinfo; external;
-function pcre_get_named_substring; external;
-function pcre_get_stringnumber; external;
-function pcre_get_stringtable_entries; external;
-function pcre_get_substring; external;
-function pcre_get_substring_list; external;
-function pcre_info; external;
-function pcre_maketables; external;
-function pcre_refcount; external;
-function pcre_study; external;
-function pcre_version; external;
-
-type
-  size_t = Longint;
-
-const
-  szMSVCRT = 'MSVCRT.DLL';
-
-function _memcpy(dest, src: Pointer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memcpy';
-{begin
-  Move(src^, dest^, count);
-  Result := dest;
-end;}
-function _memset(dest: Pointer; val: Integer; count: size_t): Pointer; cdecl; external szMSVCRT name 'memset';
-{begin
-  FillChar(dest^, count, val);
-  Result := dest;
-end;}
-function _malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
-{begin
-  GetMem(Result, size);
-end;}
-procedure _free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
-{begin
-  FreeMem(pBlock);
-end;}
-function _strncmp(s1: PAnsiChar; s2: PAnsiChar; n: size_t): Integer; cdecl; external szMSVCRT name 'strncmp';
-function _memcmp(s1: Pointer; s2: Pointer; n: size_t): Integer; cdecl; external szMSVCRT name 'memcmp';
-function _strlen(s: PAnsiChar): size_t; cdecl; external szMSVCRT name 'strlen';
-function __ltolower(__ch: Integer): Integer; cdecl; external szMSVCRT name '_tolower';
-function __ltoupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'toupper';
-function _isalnum(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalnum';
-function _isalpha(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isalpha';
-function _iscntrl(__ch: Integer): Integer; cdecl; external szMSVCRT name 'iscntrl';
-function _isdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isdigit';
-function _isgraph(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isgraph';
-function _islower(__ch: Integer): Integer; cdecl; external szMSVCRT name 'islower';
-function _isprint(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isprint';
-function _ispunct(__ch: Integer): Integer; cdecl; external szMSVCRT name 'ispunct';
-function _isspace(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isspace';
-function _isupper(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isupper';
-function _isxdigit(__ch: Integer): Integer; cdecl; external szMSVCRT name 'isxdigit';
-//int _RTLENTRY _EXPFUNC isascii (int __c);
-function _strchr(__s: PChar; __c: Integer): PAnsiChar; cdecl; external szMSVCRT name 'strchr';
-
-{$ELSE ~PCRE_STATICLINK}
-{$IFNDEF PCRE_LINKONREQUEST}
+{$IFDEF PCRE_LINKDLL}
 function pcre_compile; external libpcremodulename name PCRECompileExportName;
 function pcre_compile2; external libpcremodulename name PCRECompile2ExportName;
 function pcre_config; external libpcremodulename name PCREConfigExportName;
@@ -921,8 +1202,7 @@ function pcre_maketables; external libpcremodulename name PCREMakeTablesExportNa
 function pcre_refcount; external libpcremodulename name PCRERefCountExportName;
 function pcre_study; external libpcremodulename name PCREStudyExportName;
 function pcre_version; external libpcremodulename name PCREVersionExportName;
-{$ENDIF ~PCRE_LINKONREQUEST}
-{$ENDIF ~PCRE_STATICLINK}
+{$ENDIF PCRE_LINKDLL}
 
 end.
 

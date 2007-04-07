@@ -24,12 +24,14 @@
 {                                                                                                  }
 { Class wrapper for PCRE (PERL Compatible Regular Expression)                                      }
 {                                                                                                  }
-{ Unit owner: Peter Th�nqvist                                                                     }
+{ Unit owner: Peter Th?nqvist                                                                     }
 { Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit JclPCRE;
+
+{$I jcl.inc}
 
 {$RANGECHECKS OFF}
 
@@ -162,17 +164,17 @@ uses
 var
   GTables: PChar;
 
-function JclPCREGetMem(Size: Integer): Pointer; cdecl;
+function JclPCREGetMem(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   GetMem(Result, Size);
 end;
 
-procedure JclPCREFreeMem(P: Pointer); cdecl;
+procedure JclPCREFreeMem(P: Pointer); {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   FreeMem(P);
 end;
 
-function JclPCRECallout(var callout_block: pcre_callout_block): Integer; cdecl;
+function JclPCRECallout(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
    Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
@@ -243,9 +245,9 @@ end;
 destructor TJclAnsiRegEx.Destroy;
 begin
   if Assigned(FCode) then
-    pcre_free^(FCode);
+    CallPCREFree(FCode);
   if Assigned(FExtra) then
-    pcre_free^(FExtra);
+    CallPCREFree(FExtra);
   if Assigned(FVector) then
     FreeMem(FVector);
 
@@ -270,7 +272,7 @@ begin
   if FPattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
 
-  if Assigned(FCode) then pcre_free^(FCode);
+  if Assigned(FCode) then CallPCREFree(FCode);
   FCode := pcre_compile2(PChar(FPattern), GetAPIOptions(False),
     @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
   Inc(FErrorOffset);
@@ -280,7 +282,7 @@ begin
   begin
     if Study then
     begin
-      if Assigned(FExtra) then pcre_free^(FExtra);
+      if Assigned(FExtra) then CallPCREFree(FExtra);
       FExtra := pcre_study(FCode, 0, @ErrMsgPtr);
       Result := Assigned(FExtra) or (not Assigned(ErrMsgPtr));
       if not Result then
@@ -483,7 +485,7 @@ procedure TerminateLocaleSupport;
 begin
   if Assigned(GTables) then
   begin
-    pcre_free^(GTables);
+    CallPCREFree(GTables);
     GTables := nil;
   end;
 end;
@@ -496,18 +498,18 @@ begin
   inherited CreateRes(ResStringRec);
 end;
 
-procedure LibNotLoadedHandler; cdecl;
+procedure LibNotLoadedHandler; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
   raise EPCREError.CreateRes(@RsErrLibNotLoaded, 0);
 end;
 
 initialization
   pcre.LibNotLoadedHandler := LibNotLoadedHandler;
-  LoadPCRE;
-  if Assigned(pcre_malloc) then
+  if LoadPCRE then
+  begin
     SetPCREMallocCallback(JclPCREGetMem);
-  if Assigned(pcre_free) then
     SetPCREFreeCallback(JclPCREFreeMem);
+  end;
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}

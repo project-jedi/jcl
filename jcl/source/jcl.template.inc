@@ -73,3 +73,16 @@
 
 // mark EDI units as weak package units (to avoid conflicts with the EDI package)
 {.$DEFINE EDI_WEAK_PACKAGE_UNITS}
+
+// PCRE options, mutually exclusive
+
+// IMPORTANT: The static link works only for Delphi 2005 and newer
+//            (an internal error is raised on other compilers)
+// Only one of the following defines can be defined at a time
+//   static link: PCRE_STATICLINK
+//   static dll import: PCRE_LINKDLL
+//   dynamic dll import: PCRE_LINKONREQUEST
+
+{.$DEFINE PCRE_STATICLINK}
+{.$DEFINE PCRE_LINKDLL}
+{.$DEFINE PCRE_LINKONREQUEST}

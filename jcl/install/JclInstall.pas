@@ -38,13 +38,17 @@ type
   TJclOption = (
     joLibrary,
       joDef,
+        joDefMath,
+        joDefDebug,
+        joDefEDI,
+        joDefPCRE,
         joDefThreadSafe,
         joDefDropObsoleteCode,
+        joDefUnitVersioning,
         joDefMathPrecSingle,
         joDefMathPrecDouble,
         joDefMathPrecExtended,
         joDefMathExtremeValues,
-        joDefUnitVersioning,
         joDefHookDllExceptions,
         joDefDebugNoBinary,
         joDefDebugNoTD32,
@@ -52,6 +56,9 @@ type
         joDefDebugNoExports,
         joDefDebugNoSymbols,
         joDefEDIWeakPackageUnits,
+        joDefPCREStaticLink,
+        joDefPCRELinkDLL,
+        joDefPCRELinkOnRequest,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -306,19 +313,30 @@ resourcestring
   RsCaptionDef                    = 'Conditional defines';
   RsCaptionDefThreadSafe          = 'Enable thread safe code';
   RsCaptionDefDropObsoleteCode    = 'Drop obsolete code';
+  RsCaptionDefUnitVersioning      = 'Include Unit Versioning';
+  // math options
+  RsCaptionDefMath                = 'Math options';
   RsCaptionDefMathPrecSingle      = 'Single float precision';
   RsCaptionDefMathPrecDouble      = 'Double float precision';
   RsCaptionDefMathPrecExtended    = 'Extended float precision';
   RsCaptionDefMathExtremeValues   = 'Support for infinite and NaN';
-  RsCaptionDefUnitVersioning      = 'Include Unit Versioning';
+  // debug options
+  RsCaptionDefDebug               = 'Debug and exception hooking options';
   RsCaptionDefHookDllExceptions   = 'Hook exceptions in DLL';
   RsCaptionDefDebugNoBinary       = 'No debug source from Jedi debug informations';
   RsCaptionDefDebugNoTD32         = 'No debug source from TD32 debug symbols';
   RsCaptionDefDebugNoMap          = 'No debug source from Map files';
   RsCaptionDefDebugNoExports      = 'No debug source from function export table for libraries';
   RsCaptionDefDebugNoSymbols      = 'No debug source from Microsoft debug symbols';
+  // EDI options
+  RsCaptionDefEDI                 = 'EDI options';
   RsCaptionDefEDIWeakPackageUnits = 'EDI weak package units';
-
+  // PCRE options
+  RsCaptionDefPCRE                = 'PCRE options';
+  RsCaptionDefPCREStaticLink      = 'Static link to PCRE code';
+  RsCaptionDefPCRELinkDLL         = 'Static bind to pcre.dll';
+  RsCaptionDefPCRELinkOnRequest   = 'Late bind to pcre.dll';
+  
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
   RsCaptionMapCreate  = 'Create MAP files';
@@ -382,18 +400,29 @@ resourcestring
   RsHintDef                    = 'Enable or disable specific features to be compiled';
   RsHintDefThreadSafe          = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
   RsHintDefDropObsoleteCode    = 'Do not compile deprecated code';
+  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
+  // math options
+  RsHintDefMath                = 'Math specific options (JclMath.pas)';
   RsHintDefMathPrecSingle      = 'type Float = Single';
   RsHintDefMathPrecDouble      = 'type Float = Double';
   RsHintDefMathPrecExtended    = 'type Float = Extended';
   RsHintDefMathExtremeValues   = 'Exp en Power functions accept and return infinite and NaN';
-  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
+  // Debug options
+  RsHintDefDebug               = 'Debug and exception hooking specific options (JclDebug.pas and JclHookExcept.pas)';
   RsHintDefHookDllExceptions   = 'Hook exceptions raised in DLL compiled with the JCL';
   RsHintDefDebugNoBinary       = 'Disable support for JDBG files';
   RsHintDefDebugNoMap          = 'Disable support for MAP files';
   RsHintDefDebugNoTD32         = 'Disable support for TD32 informations';
   RsHintDefDebugNoExports      = 'Disable support for export names of libraries';
   RsHintDefDebugNoSymbols      = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
+  // EDI options
+  RsHintDefEDI                 = 'EDI specific options (JclEDI*.pas)';
   RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
+  // PCRE options
+  RsHintDefPCRE                = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
+  RsHintDefPCREStaticLink      = 'Code from PCRE is linked into JCL binaries';
+  RsHintDefPCRELinkDLL         = 'JCL binaries require pcre.dll to be present';
+  RsHintDefPCRELinkOnRequest   = 'JCL binaries require pcre.dll when calling PCRE functions';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -480,13 +509,17 @@ var
     (
       (Id: -1; Caption: RsCaptionLibrary; Hint: RsHintLibrary), // joLibrary
       (Id: -1; Caption: RsCaptionDef; Hint: RsHintDef), // joDef
+      (Id: -1; Caption: RsCaptionDefMath; Hint: RsHintDefMath), // joDefMath
+      (Id: -1; Caption: RsCaptionDefDebug; Hint: RsHintDefDebug), // joDefDebug
+      (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
+      (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
+      (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
       (Id: -1; Caption: RsCaptionDefMathPrecSingle; Hint: RsHintDefMathPrecSingle), // ioDefMathPrecSingle
       (Id: -1; Caption: RsCaptionDefMathPrecDouble; Hint: RsHintDefMathPrecDouble), // joDefMathPrecDouble
       (Id: -1; Caption: RsCaptionDefMathPrecExtended; Hint: RsHintDefMathPrecExtended), // joDefMathPrecExtended
       (Id: -1; Caption: RsCaptionDefMathExtremeValues; Hint: RsHintDefMathExtremeValues), // joDefMathExtremeValues
-      (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
       (Id: -1; Caption: RsCaptionDefHookDllExceptions; Hint: RsHintDefHookDllExceptions), // joDefHookDllExceptions
       (Id: -1; Caption: RsCaptionDefDebugNoBinary; Hint: RsHintDefDebugNoBinary), // joDefDebugNoBinary
       (Id: -1; Caption: RsCaptionDefDebugNoTD32; Hint: RsHintDefDebugNoTD32), // joDefDebugNoTD32
@@ -494,6 +527,9 @@ var
       (Id: -1; Caption: RsCaptionDefDebugNoExports; Hint: RsHintDefDebugNoExports), // joDefDebugNoExports
       (Id: -1; Caption: RsCaptionDefDebugNoSymbols; Hint: RsHintDefDebugNoSymbols), // joDefDebugNoSymbols
       (Id: -1; Caption: RsCaptionDefEDIWeakPackageUnits; Hint: RsHintDefEDIWeakPackageUnits), // joDefEDIWeakPackageUnits
+      (Id: -1; Caption: RsCaptionDefPCREStaticLink; Hint: RsHintDefPCREStaticLink), // joDefPCREStaticLink
+      (Id: -1; Caption: RsCaptionDefPCRELinkDLL; Hint: RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
+      (Id: -1; Caption: RsCaptionDefPCRELinkOnRequest; Hint: RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -818,22 +854,35 @@ procedure TJclInstallation.Init;
   begin
     AddOption(joDefThreadSafe, [goChecked], Parent);
     AddOption(joDefDropObsoleteCode, [goChecked], Parent);
-    AddOption(joDefMathPrecSingle, [goRadioButton], Parent);
-    AddOption(joDefMathPrecDouble, [goRadioButton], Parent);
-    AddOption(joDefMathPrecExtended, [goRadioButton, goChecked], Parent);
-    AddOption(joDefMathExtremeValues, [goChecked], Parent);
+    if CLRVersion = '' then
+      AddOption(joDefUnitVersioning, [goChecked], Parent);
+    AddOption(joDefMath, [goChecked], Parent);
+    AddOption(joDefMathPrecSingle, [goRadioButton], joDefMath);
+    AddOption(joDefMathPrecDouble, [goRadioButton], joDefMath);
+    AddOption(joDefMathPrecExtended, [goRadioButton, goChecked], joDefMath);
+    AddOption(joDefMathExtremeValues, [goChecked], joDefMath);
     if CLRVersion = '' then   // these units are not CLR compliant
     begin
       {$IFDEF MSWINDOWS}
-      AddOption(joDefHookDllExceptions, [goNoAutoCheck], Parent);
-      AddOption(joDefDebugNoBinary, [goNoAutoCheck], Parent);
-      AddOption(joDefDebugNoTD32, [goNoAutoCheck], Parent);
-      AddOption(joDefDebugNoMap, [goNoAutoCheck], Parent);
-      AddOption(joDefDebugNoExports, [goNoAutoCheck], Parent);
-      AddOption(joDefDebugNoSymbols, [goNoAutoCheck], Parent);
+      AddOption(joDefDebug, [goNoAutoCheck], Parent);
+      AddOption(joDefHookDllExceptions, [goNoAutoCheck], joDefDebug);
+      AddOption(joDefDebugNoBinary, [goNoAutoCheck], joDefDebug);
+      AddOption(joDefDebugNoTD32, [goNoAutoCheck], joDefDebug);
+      AddOption(joDefDebugNoMap, [goNoAutoCheck], joDefDebug);
+      AddOption(joDefDebugNoExports, [goNoAutoCheck], joDefDebug);
+      AddOption(joDefDebugNoSymbols, [goNoAutoCheck], joDefDebug);
       {$ENDIF MSWINDOWS}
-      AddOption(joDefEDIWeakPackageUnits, [goNoAutoCheck], Parent);
-      AddOption(joDefUnitVersioning, [goChecked], Parent);
+      AddOption(joDefEDI, [goNoAutoCheck], Parent);
+      AddOption(joDefEDIWeakPackageUnits, [goNoAutoCheck], joDefEDI);
+      AddOption(joDefPCRE, [goChecked], Parent);
+      if Target.RadToolKind = brBorlandDevStudio then
+      begin
+        AddOption(joDefPCREStaticLink, [goRadioButton, goChecked], joDefPCRE);
+        AddOption(joDefPCRELinkOnRequest, [goRadioButton], joDefPCRE);
+      end
+      else
+        AddOption(joDefPCRELinkOnRequest, [goRadioButton, goChecked], joDefPCRE);
+      AddOption(joDefPCRELinkDLL, [goRadioButton], joDefPCRE);
     end;
   end;
 
@@ -1272,12 +1321,13 @@ function TJclInstallation.Install: Boolean;
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefEDIWeakPackageUnits] of string =
-      ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'MATH_SINGLE_PRECISION',
-        'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
-        'MATH_EXT_EXTREMEVALUES', 'UNITVERSIONING', 'HOOK_DLL_EXCEPTIONS',
+    DefineNames: array [joDefThreadSafe..joDefPCRELinkOnRequest] of string =
+      ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
+        'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
+        'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
-        'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS');
+        'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
+        'PCRE_LINKDLL', 'PCRE_LINKONREQUEST' );
   var
     Option: TJclOption;
     Defines: TStrings;
