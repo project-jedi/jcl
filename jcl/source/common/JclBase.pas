@@ -228,6 +228,10 @@ const
   AnsiHexPrefix = AnsiHexPrefixPascal;
   {$ENDIF ~BCB}
 
+// basic set types
+type
+  TSetOfChar = set of Char;
+
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
