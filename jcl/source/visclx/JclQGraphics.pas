@@ -169,7 +169,8 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 
 function ExtractIconCount(const FileName: string): Integer;
-function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
+function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON; overload;
+function BitmapToIcon(Bitmap, Mask: HBITMAP; cx, cy: Integer): HICON; overload;
 function IconToBitmap(Icon: HICON): HBITMAP;
 {$ENDIF MSWINDOWS}
 
@@ -983,6 +984,20 @@ begin
   try
     I := ImageList_Add(ImgList, Bitmap, 0);
     Result := ImageList_GetIcon(ImgList, I, ILD_NORMAL);
+  finally
+    ImageList_Destroy(ImgList);
+  end;
+end;
+
+function BitmapToIcon(Bitmap, Mask: HBITMAP; cx, cy: Integer): HICON;
+var
+  ImgList: HIMAGELIST;
+  I: Integer;
+begin
+  ImgList := ImageList_Create(cx, cy, ILC_COLOR, 1, 1);
+  try
+    I := ImageList_Add(ImgList, Bitmap, Mask);
+    Result := ImageList_GetIcon(ImgList, I, ILD_TRANSPARENT);
   finally
     ImageList_Destroy(ImgList);
   end;
