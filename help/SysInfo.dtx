@@ -1127,19 +1127,6 @@ Result:
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
-@@IsWinXP
-<GROUP SystemInformationRoutines.VersionInformation>
-Summary:
-  Returns whether the system is running Windows XP
-Description:
-  IsWin95 returns whether or not the system is running Windows XP.
-Result:
-  If the system is running Windows XP the result is True otherwise the result is False.
-See also:
-  IsWin2K
-  IsWin98
-  IsWinNT4
---------------------------------------------------------------------------------
 @@IsWin95
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
@@ -1149,9 +1136,9 @@ Description:
 Result:
   If the system is running Windows 95 the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin98
-  IsWinNT4
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1164,9 +1151,9 @@ Description:
 Result:
   If the system is running Windows 95 OSR 2 the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin98
-  IsWinNT4
+<link IsWin95> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1179,10 +1166,9 @@ Description:
 Result:
   If the system is running Windows 98 the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin95
-  IsWinXP
-  IsWinNT4
+<link IsWin95> <link IsWin95OSR2> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1195,10 +1181,9 @@ Description:
 Result:
   If the system is running Windows 98 SE the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin95
-  IsWinXP
-  IsWinNT4
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1207,14 +1192,13 @@ Donator: Nick Hodges
 Summary:
   Returns whether the system is running Windows Millenium
 Description:
-  IsWin98SE returns whether or not the system is running Windows Millenium.
+  IsWinME returns whether or not the system is running Windows Millenium.
 Result:
   If the system is running Windows Millenium the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin95
-  IsWinXP
-  IsWinNT4
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1226,16 +1210,13 @@ Description:
   IsWinNT returns whether or not the system is running Windows NT.
 Result:
   If the system is running Windows NT the result is True otherwise the result is False.
-  You can use the IsWinNT3, IsWinNT4 and IsWin2K
-  to further distinguish between the different NT versions.
+  You can use the IsWinNT3, IsWinNT31, IsWinNT35, IsWinNT351, IsWinNT4, IsWin2K, IsWinXP,
+  IsWin2003, IsWinVista or IsWinLonghorn to further distinguish between the different NT
+  versions.
 See also:
-  IsWin2K
-  IsWin95
-  IsWin98
-  NtProductType
-  IsWinNT3
-  IsWinNT4
-  IsWinXP
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1248,12 +1229,10 @@ Description:
 Result:
   If the system is running Windows NT 3 the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin95
-  IsWin98
-  IsWinXP
-  NtProductType
-  IsWinNT4
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1262,13 +1241,14 @@ Donator: Nick Hodges
 Summary:
   Returns whether the system is running Windows NT 3.1
 Description:
-  IsWinNT3 returns whether or not the system is running Windows NT 3.1.
+  IsWinNT31 returns whether or not the system is running Windows NT 3.1.
 Result:
   If the system is running Windows NT 3.1 the result is True otherwise the result is False.
 See also:
-  IsWin3
-  IsWin35
-  NtProductType
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1277,13 +1257,14 @@ Donator: Nick Hodges
 Summary:
   Returns whether the system is running Windows NT 3.5
 Description:
-  IsWinNT3 returns whether or not the system is running Windows NT 3.5.
+  IsWinNT35 returns whether or not the system is running Windows NT 3.5.
 Result:
   If the system is running Windows NT 3.5 the result is True otherwise the result is False.
 See also:
-  IsWin3
-  IsWin31
-  NtProductType
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1292,13 +1273,14 @@ Donator: Nick Hodges
 Summary:
   Returns whether the system is running Windows NT 3.5.1
 Description:
-  IsWinNT3 returns whether or not the system is running Windows NT 3.5.1.
+  IsWinNT351 returns whether or not the system is running Windows NT 3.5.1.
 Result:
   If the system is running Windows NT 3.5.1 the result is True otherwise the result is False.
 See also:
-  IsWin3
-  IsWin35
-  NtProductType
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT4>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1311,12 +1293,10 @@ Description:
 Result:
   If the system is running Windows NT 4 the result is True otherwise the result is False.
 See also:
-  IsWin2K
-  IsWin95
-  IsWin98
-  IsWinNT3
-  IsWinXP
-  NtProductType
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1329,15 +1309,26 @@ Description:
 Result:
   If the system is running Windows 2000 the result is True otherwise the result is False.
 See also:
-  IsWinNT3
-  IsWin95
-  IsWin98
-  NtProductType
-  IsWinNT4
-  IsWinXP
-  IsWin2003
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@IsWinXP
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows XP
+Description:
+  IsWinXP returns whether or not the system is running Windows XP.
+Result:
+  If the system is running Windows XP (32 or 64 bit) the result is True otherwise the result is False.
+See Also:
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2k> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 --------------------------------------------------------------------------------
 @@IsWin2003
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1348,15 +1339,44 @@ Description:
 Result:
   If the system is running Windows Server 2003 the result is True otherwise the result is False.
 See also:
-  IsWinNT3
-  IsWin95
-  IsWin98
-  IsWinNT4
-  IsWin2K
-  IsWinXP
-  NtProductType
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
 
 Donator: Petr Vones
+--------------------------------------------------------------------------------
+@@IsWinVista
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Vista
+Description:
+  IsWinVista returns whether or not the system is running Windows Vista.
+Result:
+  If the system is running Windows Vista the result is True otherwise the result is False.
+See also:
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinLonghorn>
+<link NtProductType>
+
+Donator: Florent Ouchet
+--------------------------------------------------------------------------------
+@@IsWinLonghorn
+<GROUP SystemInformationRoutines.VersionInformation>
+Summary:
+  Returns whether the system is running Windows Longhorn.
+Description:
+  IsWinLonghorn returns whether or not the system is running Windows Longhorn.
+Result:
+  If the system is running Windows Longhorn the result is True otherwise the result is False.
+See also:
+<link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
+<link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
+<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinLonghorn>
+<link NtProductType>
+
+Donator: Florent Ouchet
 --------------------------------------------------------------------------------
 @@NtProductType
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1380,8 +1400,9 @@ Result:
 Notes:
   On platforms other then Windows NT/2000 this function always returns ptUnknown.
 See also:
-  IsWinNT
-  IsWin2K
+<link IsWinNT> <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
+<link IsWinNT4> <link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinVista>
+<link IsWinLonghorn> <link NtProductType>
 
 Donator: Marcel van Brakel
   Contributors: Scott Price, Jean-Fabien Connault
@@ -2768,3 +2789,6 @@ Result:
 
 Donator: Anonymous
 
+
+@@IsWindows64
+\ \ 
