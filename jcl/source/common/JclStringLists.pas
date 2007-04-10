@@ -148,7 +148,7 @@ type
     function Trim: IJclStringList;
     function Join(const ASeparator: string = ''): string;
     function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ABlanks: TSetOfChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string; const ADelims: TSetOfChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
     function LastIndex: Integer;
@@ -205,12 +205,6 @@ implementation
 
 uses
   TypInfo,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
   JclPCRE, JclStrings;
 
 type
@@ -293,18 +287,11 @@ type
     procedure EnsureObjectsMode(AMode: TJclStringListObjectsMode);
     function GetObjectsMode: TJclStringListObjectsMode;
   protected
-    { Copied from TInterfacedObject }
     FRefCount: Integer;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   public
-    { Copied from TInterfacedObject }
-    procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
-    class function NewInstance: TObject; override;
-    property RefCount: Integer read FRefCount;
-    { New }
     constructor Create;
     destructor Destroy; override;
     function LoadExeParams: IJclStringList;
@@ -324,7 +311,7 @@ type
     function Delimit(const ADelimiter: string): IJclStringList;
     function Join(const ASeparator: string = ''): string;
     function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ABlanks: TSetOfChar = [#0..' '];
+    function ExtractWords(const AText: string; const ADelims: TSetOfChar = [#0..' '];
       AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
@@ -479,7 +466,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.ExtractWords(const AText: string; const ABlanks: TSetOfChar;
+function TJclStringListImpl.ExtractWords(const AText: string; const ADelims: TSetOfChar;
   AClearBeforeAdd: Boolean): IJclStringList;
 var
   L, I, X: Integer;
@@ -491,10 +478,10 @@ begin
   L := Length(AText);
   while I <= L do
   begin
-    while (I <= L) and (AText[I] in ABlanks) do
+    while (I <= L) and (AText[I] in ADelims) do
       Inc(I);
     X := I;
-    while (I <= L) and not (AText[I] in ABlanks) do
+    while (I <= L) and not (AText[I] in ADelims) do
       Inc(I);
     if X <> I then
       Add(Copy(AText, X, I - X));
@@ -507,11 +494,6 @@ begin
   Result := Strings[0];
 end;
 
-{
-  Joins all the strings in the list.
-  ~Param ASeparator The separator for concatenation.
-  ~Result A string with all strings of the list.
-}
 function TJclStringListImpl.Join(const ASeparator: string): string;
 var
   I: Integer;
@@ -580,28 +562,15 @@ function TJclStringListImpl._Release: Integer;
 begin
   Result := InterlockedDecrement(FRefCount);
   if Result = 1 then
-    FSelfAsInterface := nil
+  begin
+    // When there is only one reference, it is the internal reference,
+    // so we release it. The compiler will call _Release again and
+    // the object will be destroyed.
+    FSelfAsInterface := nil;
+  end
   else
   if Result = 0 then
     Destroy;
-end;
-
-procedure TJclStringListImpl.AfterConstruction;
-begin
-  // Release the constructor's implicit refcount
-  InterlockedDecrement(FRefCount);
-end;
-
-procedure TJclStringListImpl.BeforeDestruction;
-begin
-  if RefCount <> 0 then
-    raise Exception.Create('A TNewStrinListImpl object would be improperly destroyed.');
-end;
-
-class function TJclStringListImpl.NewInstance: TObject;
-begin
-  Result := inherited NewInstance;
-  TJclStringListImpl(Result).FRefCount := 1;
 end;
 
 function TJclStringListImpl.DeleteRegEx(const APattern: string): IJclStringList;
