@@ -21,7 +21,7 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                              }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,9 +35,9 @@ interface
 uses
   SysUtils, Classes, Windows,
   Controls, ComCtrls, ActnList, Menus,
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   JclDebug,
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   JclBorlandTools,
   ToolsAPI;
 
@@ -304,9 +304,9 @@ end;
 constructor EJclExpertException.CreateTrace(const Msg: string);
 begin
   inherited Create(Msg);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   FStackInfo := JclCreateStackList(False, 0, nil, False);
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -1191,8 +1191,7 @@ begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddProductInfo(RsAboutDialogTitle,
-      RsAboutCopyright, RsAboutTitle, RsAboutDescription, 0,
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription, 
       ProductImage, False, RsAboutLicenceStatus);
   end;
 end;
@@ -1201,7 +1200,7 @@ procedure UnregisterAboutBox;
 begin
   if (AboutBoxIndex <> -1) and Assigned(AboutBoxServices) then
   begin
-    AboutBoxServices.RemoveProductInfo(AboutBoxIndex);
+    AboutBoxServices.RemovePluginInfo(AboutBoxIndex);
     AboutBoxIndex := -1;
     AboutBoxServices := nil;
   end;
