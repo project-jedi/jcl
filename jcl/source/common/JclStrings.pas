@@ -4362,7 +4362,7 @@ end;
 {$ELSE}
 
 const
-  BoolToStr: array[Boolean] of string[5] = ('false', 'true');
+  BoolToStr: array [Boolean] of string[5] = ('false', 'true');
   {$IFDEF COMPILER5}
   MaxCurrency: Currency =  922337203685477.5807;
 
@@ -4619,7 +4619,7 @@ begin
   SetLength(Result, Len);
 end;
 
-{ TStringBuilder }
+//=== { TStringBuilder } =====================================================
 
 constructor TStringBuilder.Create(Capacity: Integer; MaxCapacity: Integer);
 begin
