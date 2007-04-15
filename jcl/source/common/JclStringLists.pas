@@ -29,6 +29,8 @@ unit JclStringLists;
 
 interface
 
+{$IFNDEF COMPILER5} // Delphi 5 isn't supported
+
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -201,7 +203,11 @@ const
     );
 {$ENDIF UNITVERSIONING}
 
+{$ENDIF ~COMPILER5} // Delphi 5 isn't supported
+
 implementation
+
+{$IFNDEF COMPILER5} // Delphi 5 isn't supported
 
 uses
   TypInfo,
@@ -1305,5 +1311,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
+{$ENDIF ~COMPILER5} // Delphi 5 isn't supported
 
 end.

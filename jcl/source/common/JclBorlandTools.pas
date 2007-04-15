@@ -531,7 +531,7 @@ type
     {$ENDIF MSWINDOWS}
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
-    FVersionNumber: Integer;    // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 10
+    FVersionNumber: Integer;    // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
     FVersionNumberStr: string;
     FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7 - Delphi 2007: 11
     FIDEVersionNumberStr: string;
@@ -3914,9 +3914,15 @@ begin
 
  // If this is Spacely, then consider the version is equal to 4 (BDS2006)
  // as it is a non breaking version (dcu wise)
- if (FIDEVersionNumber = 5) and (RadToolKind = brBorlandDevStudio) then 
+
+ { ahuser: Delphi 2007 is a non breaking version in the case that you can use
+   BDS 2006 compiled units in Delphi 2007. But it completely breaks the BDS 2006
+   installation because if BDS 2006 uses the Delphi 2007 compile DCUs the
+   resulting executable is broken and will do strange things. So treat Delphi 2007
+   as version 11 what it actually is. }
+ {if (FIDEVersionNumber = 5) and (RadToolKind = brBorlandDevStudio) then
     FVersionNumber := 4
-  else
+  else}
     FVersionNumber := FIDEVersionNumber;
 
   {$ENDIF ~KYLIX}
