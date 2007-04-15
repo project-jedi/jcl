@@ -642,9 +642,9 @@ begin
     RegCloseKey(RegKey);
     if Result then
       Result := Windows.RegDeleteKey(RootKey, RelativeKey(RootKey, PChar(Key))) = ERROR_SUCCESS;
-    end
-    else
-      WriteError(RootKey, Key);
+  end
+  else
+    WriteError(RootKey, Key);
 end;
 
 function RegGetDataSize(const RootKey: DelphiHKEY; const Key, Name: string;
