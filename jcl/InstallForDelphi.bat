@@ -14,7 +14,7 @@ if ERRORLEVEL 1 goto FailedCompile
 
 :: compile installer
 
-build\dcc32ex.exe --use-search-paths -q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr
+build\dcc32ex.exe -q -w -dJCLINSTALL -E..\bin -I..\source -U..\source\common;..\source\windows JediInstaller.dpr %1 %2 %3 %4 %5 %6 %7 %8
 if ERRORLEVEL 1 goto FailedCompile
 
 
