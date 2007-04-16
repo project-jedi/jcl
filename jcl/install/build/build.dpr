@@ -30,7 +30,7 @@ program build;
 { build.exe setups the environment for a Delphi compiler }
 
 uses
-  Windows, ShlObj, Registry;
+  Windows, ShlObj;
 
 type
   TOption = record
@@ -105,7 +105,6 @@ type
     FLibDir: string;
     FIsPersonal: Boolean;
     FIsCLX: Boolean;
-    FIsSpacely: Boolean;
 
     function GetBDSProjectsDir: string;
     procedure ReadRegistryData;
@@ -129,7 +128,6 @@ type
     property Name: string read FName;
     property IsPersonal: Boolean read FIsPersonal;
     property IsCLX: Boolean read FIsCLX;
-    property IsSpacely: Boolean read FIsSpacely;
   end;
 
 var
@@ -540,7 +538,6 @@ end;
 constructor TEdition.Create(const AEditionName, PerDirName: string);
 var
   Index: Integer;
-  reg: TRegistry;
 begin
   if UpCase(AEditionName[1]) = 'D' then
     Typ := Delphi
@@ -563,25 +560,7 @@ begin
   if Version > 7 then
   begin
     Typ := BDS;
-
     IDEVersion := Version - 6; // D 8 = BDS 2
-    
-    // We must detect Spacely here to modify IDEVersion to be one more than the one from BDS2006
-    if (Version = 10) then
-    begin
-      reg := TRegistry.Create;
-      try
-        reg.RootKey := HKEY_CURRENT_USER;
-        FIsSpacely := reg.OpenKeyReadOnly('Software\Borland\BDS\5.0\Known IDE Packages\Delphi') and
-                      reg.ValueExists('$(BDS)\Bin\delphide100.bpl');
-
-        if IsSpacely then
-          Inc(IDEVersion);
-      finally
-        reg.Free;
-      end;
-    end;
-
     IDEVersionStr := IntToStr(IDEVersion);
   end;
 
