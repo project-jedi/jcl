@@ -69,10 +69,13 @@
           <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
           <VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
          </VersionInfoKeys>
-        <Source>
-          <Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>
-        </Source>
-      </Delphi.Personality>
+         <Source>
+           <Source Name="MainSource">%NAME%%SOURCEEXTENSION%</Source>
+         </Source>
+         <Package_Options>
+           <Package_Options Name="LibSuffix">110</Package_Options>
+         </Package_Options>
+       </Delphi.Personality>
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>

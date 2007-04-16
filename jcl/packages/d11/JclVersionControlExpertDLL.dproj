@@ -69,10 +69,13 @@
           <VersionInfoKeys Name="ProductName">Jedi Code Library</VersionInfoKeys>
           <VersionInfoKeys Name="ProductVersion">2.0 Build 2552</VersionInfoKeys>
          </VersionInfoKeys>
-        <Source>
-          <Source Name="MainSource">JclVersionControlExpertDLL.dpr</Source>
-        </Source>
-      </Delphi.Personality>
+         <Source>
+           <Source Name="MainSource">JclVersionControlExpertDLL.dpr</Source>
+         </Source>
+         <Package_Options>
+           <Package_Options Name="LibSuffix">110</Package_Options>
+         </Package_Options>
+       </Delphi.Personality>
     </BorlandProject>
   </BorlandProject>
   </ProjectExtensions>
