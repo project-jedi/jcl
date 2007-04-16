@@ -1,10 +1,13 @@
 {$A8,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W+,X+,Y+,Z1}
-{$WARN UNSAFE_TYPE OFF}
-{$WARN UNSAFE_CODE OFF}
-{$WARN UNSAFE_CAST OFF}
 program dcc32ex;
 
 {$APPTYPE CONSOLE}
+
+{$IF CompilerVersion >= 15.0}
+  {$WARN UNSAFE_TYPE OFF}
+  {$WARN UNSAFE_CODE OFF}
+  {$WARN UNSAFE_CAST OFF}
+{$IFEND}
 
 uses
   Windows;
@@ -13,6 +16,7 @@ var
   DxgettextDir: string;
   ExtraUnitDirs: string;
   UseSearchPaths: Boolean;
+  Verbose: Boolean;
   RequireJcl: Boolean;
   RequireJvcl: Boolean;
 
@@ -248,17 +252,16 @@ end;
 
 type
   TTargetType = (ttNone, ttDelphi, ttBCB, ttBDS);
+
 const
   ttFirst = ttDelphi;
-  TargetNames: array[TTargetType] of PChar = (
-    'none', 'Delphi', 'C++Builder', 'Delphi'
-  );
 
 type
   TTarget = record
     Typ: TTargetType;
     Version: Integer;
     IDEVersion: Integer;
+    Name: string;
     RootDir: string;
     LibDirs: string;
     SearchPaths: string;
@@ -268,22 +271,31 @@ type
     InstalledJvcl: Boolean;
   end;
 
+function RegReadStr(Reg: HKEY; const Name: string): string;
+var
+  Len: Longint;
+  Buf: array[0..MAX_PATH] of Char;
+begin
+  Len := MAX_PATH;
+  case RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(@Buf[0]), @Len) of
+    ERROR_SUCCESS:
+      SetString(Result, Buf, Len - 1); // Len contains the #0
+    ERROR_MORE_DATA:
+      begin
+        SetLength(Result, Len);
+        if RegQueryValueEx(Reg, PChar(Name), nil, nil, PByte(Result), @Len) = ERROR_SUCCESS then
+          SetLength(Result, Len - 1) // Len contains the #0
+        else
+          Result := '';
+      end;
+  else
+    Result := '';
+  end;
+end;
+
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
 var
   Reg: HKEY;
-  RegTyp: LongWord;
-
-  function ReadStr(const Name: string): string;
-  var
-    Len: Longint;
-  begin
-    Len := MAX_PATH;
-    SetLength(Result, MAX_PATH);
-    RegQueryValueEx(Reg, PChar(Name), nil, @RegTyp, PByte(Result), @Len);
-    SetLength(Result, StrLen(PChar(Result)));
-  end;
-
-var
   IDEVersionStr: string;
   JediLibDirs, Dir, DcpDir, RootDir: string;
 begin
@@ -292,9 +304,12 @@ begin
   Result.IDEVersion := 0;
   Result.RootDir := '';
   Result.KeyName := '';
+  Result.Name := '';
   Result.Id := '';
   Result.InstalledJcl := False;
   Result.InstalledJvcl := False;
+  Result.SearchPaths := '';
+  Result.LibDirs := '';
 
   Str(IDEVersion, IDEVersionStr);
   case Typ of
@@ -318,7 +333,7 @@ begin
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(Result.KeyName), 0,
                   KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
   begin
-    Result.RootDir := ExcludeTrailingPathDelimiter(ReadStr('RootDir'));
+    Result.RootDir := ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir'));
     RegCloseKey(Reg);
     if Result.RootDir = '' then
       Exit;
@@ -339,28 +354,47 @@ begin
     end;
     Result.Typ := Typ;
     Result.IDEVersion := IDEVersion;
-    Result.LibDirs := Result.RootDir + '\Lib';
-    if Typ = ttBCB then
-      Result.LibDirs := Result.LibDirs + ';' + Result.RootDir + '\Lib\Obj';
     Result.Id := Result.Id + IntToStr(Result.Version);
 
+    Result.Name := 'Delphi ' + IntToStr(Result.Version);
+    case Result.Typ of
+      ttDelphi:
+        Result.Name := 'Delphi ' + IntToStr(Result.Version);
+      ttBCB:
+        Result.Name := 'C++Builder ' + IntToStr(Result.Version);
+      ttBDS:
+        case Result.IDEVersion of
+          1: Result.Name := 'C#Builder';
+          2: Result.Name := 'Delphi 8';
+          3: Result.Name := 'Delphi 2005';
+          4: Result.Name := 'Borland Developer Studio 2006';
+          5: Result.Name := 'CodeGear Delphi 2007 for Win32';
+        end;
+    end;
 
+    Result.LibDirs := Result.RootDir + '\Lib';
+    if DirectoryExists(Result.RootDir + '\Lib\Obj') then
+      Result.LibDirs := Result.LibDirs + ';' + Result.RootDir + '\Lib\Obj';
+
+
+    { Read IDE search paths }
     if RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Library'), 0,
                     KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS then
     begin
-      Result.SearchPaths := ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('Search Path')), Result.RootDir);
+      Result.SearchPaths := ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'Search Path')), Result.RootDir);
       RegCloseKey(Reg);
       if UseSearchPaths then
         Result.LibDirs := Result.LibDirs + ';' + Result.SearchPaths;
     end;
 
+    { Read JCL information }
     JediLibDirs := '';
     if RequireJcl and
        (RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JCL'), 0,
                      KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
     begin
-      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('DcpDir')), Result.RootDir));
-      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('RootDir')), Result.RootDir));
+      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'DcpDir')), Result.RootDir));
+      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir')), Result.RootDir));
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
       if FileExists(Dir + '\JclBase.dcu') then
@@ -372,23 +406,21 @@ begin
         JediLibDirs := JediLibDirs + ';' +  RootDir + '\source';
         Result.InstalledJcl := True;
       end
-      else if FileExists(RootDir + '\source\common\JclBase.pas') then 
+      else if FileExists(RootDir + '\source\common\JclBase.pas') then
       begin
         JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx';
-        {$IFDEF WIN32}
         JediLibDirs := JediLibDirs + ';' + RootDir + '\source\windows';
-        {$ELSE}
-        JediLibDirs := JediLibDirs + ':' + RootDir + '\source\unix';
-        {$ENDIF WINDOWS}
         Result.InstalledJcl := True;
       end;
     end;
+
+    { Read JVCL information }
     if RequireJvcl and
        (RegOpenKeyEx(HKEY_CURRENT_USER, PChar(Result.KeyName + '\Jedi\JVCL'), 0,
                      KEY_QUERY_VALUE or KEY_READ, Reg) = ERROR_SUCCESS) then
     begin
-      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('DcpDir')), Result.RootDir));
-      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(ReadStr('RootDir')), Result.RootDir));
+      DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'DcpDir')), Result.RootDir));
+      RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir')), Result.RootDir));
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
       if FileExists(Dir + '\JVCLVer.dcu') then
@@ -473,6 +505,97 @@ begin
   end;
 end;
 
+
+
+procedure CheckTargets(const PreferedTyp: TTargetType; const PreferedVersion: Integer; var NewestTarget: TTarget; ShowErrors: Boolean);
+var
+  PreferedTarget: TTarget;
+  IDEVersion: Integer;
+  Typ: TTargetType;
+  Target: TTarget;
+  InvalidFound: Boolean;
+  DependencyCheckFailed: Boolean;
+  ErrMsg: string;
+begin
+  PreferedTarget.Typ := ttNone;
+
+  DependencyCheckFailed := False;
+  InvalidFound := False;
+  for Typ := ttFirst to High(TTargetType) do
+  begin
+    for IDEVersion := 1 to 20 do
+    begin
+      Target := ReadTargetInfo(Typ, IDEVersion);
+      if (Target.Typ <> ttNone) and (Target.Version >= 5) then
+      begin
+        // is the target valid
+        if FileExists(Target.RootDir + '\bin\dcc32.exe') and
+           (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
+        begin
+          if (not RequireJcl or Target.InstalledJcl) and (not RequireJvcl or Target.InstalledJvcl) then
+          begin
+            if (NewestTarget.Typ = ttNone) or (NewestTarget.Version < Target.Version) then
+              NewestTarget := Target;
+
+            if (Target.Typ = PreferedTyp) and (Target.Version = PreferedVersion) then
+              PreferedTarget := Target;
+          end
+          else
+          begin
+            if ShowErrors then
+            begin
+              WriteLn('Missing dependencies for ', Target.Name);
+              if RequireJcl and not Target.InstalledJcl then
+                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)');
+              if RequireJvcl and not Target.InstalledJvcl then
+                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)');
+              WriteLn;
+            end;
+            DependencyCheckFailed := True;
+            InvalidFound := True;
+          end;
+        end
+        else
+        begin
+          if ShowErrors then
+          begin
+            WriteLn(Target.Name, ' is no valid installation');
+            if not DirectoryExists(Target.RootDir) then
+              WriteLn(' - RootDir registry entry is not valid')
+            else
+            begin
+              if not FileExists(Target.RootDir + '\bin\dcc32.exe') then
+                WriteLn(' - dcc32.exe missing');
+              if not (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
+                WriteLn(' - System.dcu missing');
+            end;
+            WriteLn;
+          end;
+          InvalidFound := True;
+        end;
+      end;
+    end;
+  end;
+
+  if PreferedTarget.Typ <> ttNone then
+    NewestTarget := PreferedTarget;
+
+  if ShowErrors and (NewestTarget.Typ = ttNone) then
+  begin
+    if InvalidFound then
+    begin
+      if DependencyCheckFailed then
+        ErrMsg := 'Dependencies are missing. Please install them first.'
+      else
+        ErrMsg := 'No valid Delphi/BCB/BDS version found. Are your registry settings correct?';
+    end
+    else
+      ErrMsg := 'No Delphi/BCB/BDS version installed.';
+    WriteLn(ErrOutput, ErrMsg);
+    MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
+  end;
+end;
+
 function SkipOption(CmdLine: PChar): PChar;
 begin
   Result := CmdLine;
@@ -536,6 +659,12 @@ begin
 
     if (S <> '') and (S[1] = '"') then
       S := Copy(S, 2, Length(S) - 2);
+    if StartsText('--delphi-version=', S) then
+      SetEnvironmentVariable('DELPHIVERSION', PChar(Copy(S, 18, MaxInt)))
+    else
+    if SameText(S, '--verbose') then
+      Verbose := True
+    else
     if SameText(S, '--use-search-paths') then
       UseSearchPaths := True
     else
@@ -551,12 +680,7 @@ begin
 end;
 
 var
-  Typ: TTargetType;
-  IDEVersion: Integer;
   NewestTarget: TTarget;
-  Target: TTarget;
-  InvalidFound: Boolean;
-  DependencyCheckFailed: Boolean;
   f: TextFile;
   Status: Integer;
   Dcc32Cfg, CurDir, ExtraOpts: string;
@@ -564,21 +688,16 @@ var
   DelphiVersion: string;
   PreferedTyp: TTargetType;
   PreferedVersion: Integer;
-  PreferedTarget: TTarget;
   Err: Integer;
-  ErrMsg: string;
+  Target: TTarget;
 begin
   CmdLine := GetCommandLine;
   CmdLine := SkipOption(CmdLine); // skip executable name
   CmdLine := ParseParams(CmdLine);
-{  UseSearchPaths := GetEnvironmentVariable('UseSeachPaths') = '1';
-  RequireJcl := GetEnvironmentVariable('RequireJCL') = '1';
-  RequireJvcl := GetEnvironmentVariable('RequireJVCL') = '1';}
-
 
   PreferedTyp := ttNone;
   PreferedVersion := 0;
-  DelphiVersion := GetEnvironmentVariable('DelphiVersion');
+  DelphiVersion := GetEnvironmentVariable('DELPHIVERSION');
   if DelphiVersion <> '' then
   begin
     Val(Copy(DelphiVersion, 2, MaxInt), PreferedVersion, Err);
@@ -595,82 +714,24 @@ begin
         PreferedTyp := ttBDS;
     end;
   end;
-  PreferedTarget.Typ := ttNone;
 
   NewestTarget.Typ := ttNone;
-  DependencyCheckFailed := False;
-  InvalidFound := False;
-  for Typ := ttFirst to High(TTargetType) do
-  begin
-    for IDEVersion := 1 to 20 do
-    begin
-      Target := ReadTargetInfo(Typ, IDEVersion);
-      if (Target.Typ <> ttNone) and (Target.Version >= 5) then
-      begin
-        // is the target valid
-        if FileExists(Target.RootDir + '\bin\dcc32.exe') and
-           (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
-        begin
-          if (not RequireJcl or Target.InstalledJcl) and (not RequireJvcl or Target.InstalledJvcl) then
-          begin
-            if (NewestTarget.Typ = ttNone) or (NewestTarget.Version < Target.Version) then
-              NewestTarget := Target;
-
-            if (Target.Typ = PreferedTyp) and (Target.Version = PreferedVersion) then
-              PreferedTarget := Target;
-          end
-          else
-          begin
-            WriteLn('Missing dependencies for ', TargetNames[Target.Typ], ' ', Target.Version);
-            if RequireJcl and not Target.InstalledJcl then
-              WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)');
-            if RequireJvcl and not Target.InstalledJvcl then
-              WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)');
-            WriteLn;
-            DependencyCheckFailed := True;
-            InvalidFound := True;
-          end;
-        end
-        else
-        begin
-          WriteLn(TargetNames[Target.Typ], ' ', Target.Version, ' is no valid installation');
-          if not DirectoryExists(Target.RootDir) then
-            WriteLn(' - RootDir registry entry is not valid')
-          else
-          begin
-            if not FileExists(Target.RootDir + '\bin\dcc32.exe') then
-              WriteLn(' - dcc32.exe missing');
-            if not (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
-              WriteLn(' - System.dcu missing');
-          end;
-          WriteLn;
-          InvalidFound := True;
-        end;
-      end;
-    end;
-  end;
-
-  if PreferedTarget.Typ <> ttNone then
-    NewestTarget := PreferedTarget;
+  CheckTargets(PreferedTyp, PreferedVersion, NewestTarget, Verbose);
 
   if NewestTarget.Typ = ttNone then
   begin
-    if InvalidFound then
+    if not Verbose then
     begin
-      if DependencyCheckFailed then
-        ErrMsg := 'Dependencies are missing. Please install them first.'
-      else
-        ErrMsg := 'No valid Delphi/BCB/BDS version found. Are your registry settings correct?';
-    end
-    else
-      ErrMsg := 'No Delphi/BCB/BDS version installed.';
-    WriteLn(ErrOutput, ErrMsg);
-    MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
+      { Show detection errors and warnings }
+      NewestTarget.Typ := ttNone;
+      CheckTargets(PreferedTyp, PreferedVersion, NewestTarget, True);
+    end;
     Halt(1);
   end;
 
+
   Target := NewestTarget;
-  WriteLn('Using ', TargetNames[Target.Typ], ' ', Target.Version);
+  WriteLn('Using ', Target.Name);
   if Target.Version = 6 then
     TestDelphi6Update2(Target);
 
@@ -705,6 +766,10 @@ begin
     Dcc32Cfg := '';
   end;
 
+  if Verbose then
+    WriteLn('Using search path: ', Target.LibDirs);
+  WriteLn;
+
   Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' + ExtraOpts + CmdLine, CurDir, False);
   if Dcc32Cfg <> '' then
     DeleteFile(PChar(Dcc32Cfg));
@@ -713,13 +778,15 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
+    WriteLn('  --delphi-version=d11   Prefer this version, overrides environment variable');
+    WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --requires-jcl         Requires an installed JCL');
     WriteLn('  --requires-jvcl        Requires an installed JVCL');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d10    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, ...)');
+    WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, ...)');
   end;
 
   ExitCode := Status;
