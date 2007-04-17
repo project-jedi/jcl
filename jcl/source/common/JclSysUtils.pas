@@ -402,6 +402,7 @@ type
   {$ENDIF FPC}
 
 {$IFNDEF CLR}
+
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
 
@@ -450,6 +451,7 @@ const
   {$IFDEF LINUX}
   ListSeparator = ':';
   {$ENDIF LINUX}
+
 // functions to handle items in a separated list of items
 // add items at the end
 procedure ListAddItems(var List: string; const Separator, Items: string);
@@ -501,7 +503,6 @@ type
   end;
 
 {$IFNDEF CLR}
-
 type
   TJclSimpleLog = class (TObject)
   private
@@ -523,7 +524,6 @@ type
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
-
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
@@ -557,10 +557,10 @@ uses
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
   Contnrs,
-  JclResources, JclStrings, JclMath,
-  JclSysInfo, JclFileUtils;
+  JclFileUtils, JclMath, JclResources, JclStrings, JclSysInfo;
 
 {$IFNDEF CLR}
+
 // Pointer manipulation
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 begin
@@ -686,7 +686,7 @@ begin
     Inc(ProtectSize, PageSize);
 
   if mprotect(Pointer(AlignedAddress), ProtectSize,
-       PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then // obtain write access
+    PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then // obtain write access
   begin
     try
       Move(Buffer^, BaseAddress^, Size); // replace code
@@ -804,8 +804,9 @@ destructor TMultiSafeGuard.Destroy;
 var
   I: Integer;
 begin
-  for I := FItems.Count - 1 downto 0 do FreeItem(I);
-    FItems.Free;
+  for I := FItems.Count - 1 downto 0 do
+    FreeItem(I);
+  FItems.Free;
   inherited Destroy;
 end;
 
@@ -1088,7 +1089,6 @@ function SharedCloseMem(var p{: Pointer}): Boolean;
 begin
   Result := SharedFreeMem(p);
 end;
-
 
 procedure FinalizeMMFHandleList;
 var
@@ -1399,6 +1399,7 @@ function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
 end;
+
 {$ENDIF ~CLR}
 
 //=== Object lists ===========================================================
@@ -1437,8 +1438,9 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
 //=== { TJclReferenceMemoryStream } ==========================================
+
+{$IFNDEF CLR}
 
 constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
 begin
@@ -1453,6 +1455,7 @@ function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
+
 {$ENDIF ~CLR}
 
 //=== { TAutoPtr } ===========================================================
@@ -1475,8 +1478,6 @@ function CreateAutoPtr(Value: TObject): IAutoPtr;
 begin
   Result := TAutoPtr.Create(Value);
 end;
-
-{ TAutoPtr }
 
 constructor TAutoPtr.Create(AValue: TObject);
 begin
@@ -1597,6 +1598,7 @@ end;
 {$ENDIF SUPPORTS_VARIANT}
 
 {$IFNDEF CLR}
+
 //=== Classes information and manipulation ===================================
 // Virtual Methods
 // Helper method
@@ -1850,6 +1852,7 @@ begin
     Result := nil;
   end;
 end;
+
 {$ENDIF ~CLR}
 
 //=== Numeric formatting routines ============================================
@@ -1873,15 +1876,15 @@ end;
   GetMantisseExponent: similar to AsString, but returns the Exponent separately as an integer
 }
 const
-{$IFDEF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
   BinaryPrecision = 64;
-{$ENDIF MATH_EXTENDED_PRECISION}
-{$IFDEF MATH_DOUBLE_PRECISION}
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
   BinaryPrecision = 53;
-{$ENDIF MATH_DOUBLE_PRECISION}
-{$IFDEF MATH_SINGLE_PRECISION}
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
   BinaryPrecision = 24;
-{$ENDIF MATH_SINGLE_PRECISION}
+  {$ENDIF MATH_SINGLE_PRECISION}
 
 constructor TJclNumericFormat.Create;
 begin
@@ -2207,7 +2210,8 @@ begin
     Dec(I);
     Inc(Digits);
     Inc(Chars);
-    if (Remainder = 0) and (SpacePadding or (Chars >= Width)) then Break;
+    if (Remainder = 0) and (SpacePadding or (Chars >= Width)) then
+      Break;
     if (Digits = DigitBlockSize) then
     begin
       Inc(Chars);
@@ -2472,13 +2476,14 @@ begin
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
   StartupInfo.hStdOutput := PipeWrite;
   StartupInfo.hStdError := PipeWrite;
-  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
-    ProcessInfo) then
+  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
+    nil, nil, StartupInfo, ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
     if AbortPtr <> nil then
       AbortPtr^ := False;
-    while ((AbortPtr = nil) or not AbortPtr^) and ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
+    while ((AbortPtr = nil) or not AbortPtr^) and
+      ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
       ProcessBuffer;
     if (AbortPtr <> nil) and AbortPtr^ then
       TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
@@ -2603,6 +2608,7 @@ end;
 {$ENDIF ~CLR}
 
 {$IFNDEF CLR}
+
 //=== Loading of modules (DLLs) ==============================================
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
@@ -2616,7 +2622,8 @@ end;
 {$IFDEF UNIX}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := dlopen(PChar(FileName), RTLD_NOW);   Result := Module <> INVALID_MODULEHANDLE_VALUE;
+    Module := dlopen(PChar(FileName), RTLD_NOW);
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2631,7 +2638,8 @@ end;
 {$IFDEF UNIX}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := dlopen(PChar(FileName), Flags);   Result := Module <> INVALID_MODULEHANDLE_VALUE;
+    Module := dlopen(PChar(FileName), Flags);
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2646,7 +2654,8 @@ end;
 {$IFDEF UNIX}
 begin
   if Module <> INVALID_MODULEHANDLE_VALUE then
-    dlclose(Pointer(Module));   Module := INVALID_MODULEHANDLE_VALUE;
+    dlclose(Pointer(Module));
+  Module := INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF UNIX}
 
@@ -2679,7 +2688,8 @@ end;
 begin
   Result := nil;
   if Module <> INVALID_MODULEHANDLE_VALUE then
-    Result := dlsym(Module, PChar(SymbolName));   Accu := Accu and (Result <> nil);
+    Result := dlsym(Module, PChar(SymbolName));
+  Accu := Accu and (Result <> nil);
 end;
 {$ENDIF UNIX}
 
@@ -2702,6 +2712,7 @@ begin
   if Result then
     Move(Buffer, Sym^, Size);
 end;
+
 {$ENDIF ~CLR}
 
 //=== Conversion Utilities ===================================================
@@ -2798,7 +2809,7 @@ end;
 function JclStringToGUID(const S: string): TGUID;
 begin
   if (Length(S) <> 38) or (S[1] <> '{') or (S[10] <> '-') or (S[15] <> '-') or
-      (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
+    (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
     {$IFDEF CLR}
     raise EJclConversionError.CreateFmt(RsInvalidGUIDString, [S]);
     {$ELSE}
@@ -3004,9 +3015,10 @@ begin
   end;
 end;
 
+{$IFNDEF CLR}
+
 //=== { TJclIntfCriticalSection } ============================================
 
-{$IFNDEF CLR}
 constructor TJclIntfCriticalSection.Create;
 begin
   inherited Create;
@@ -3046,6 +3058,27 @@ const
   INVALID_HANDLE_VALUE = 0;
 {$ENDIF LINUX}
 
+constructor TJclSimpleLog.Create(const ALogFileName: string);
+begin
+  if ALogFileName = '' then
+    FLogFileName := CreateDefaultFileName
+  else
+    FLogFileName := ALogFileName;
+  FLogFileHandle := INVALID_HANDLE_VALUE;
+end;
+
+function TJclSimpleLog.CreateDefaultFileName: string;
+begin
+  Result := PathExtractFileDirFixed(ParamStr(0)) +
+    PathExtractFileNameNoExt(ParamStr(0)) + '_Err.log';
+end;
+
+destructor TJclSimpleLog.Destroy;
+begin
+  CloseLog;
+  inherited Destroy;
+end;
+
 procedure TJclSimpleLog.ClearLog;
 begin
   CloseLog;
@@ -3061,27 +3094,6 @@ begin
     FLogFileHandle := INVALID_HANDLE_VALUE;
     FLogWasEmpty := False;
   end;
-end;
-
-constructor TJclSimpleLog.Create(const ALogFileName: string);
-begin
-  if ALogFileName = '' then
-    FLogFileName := CreateDefaultFileName
-  else
-    FLogFileName := ALogFileName;
-  FLogFileHandle := INVALID_HANDLE_VALUE;
-end;
-
-function TJclSimpleLog.CreateDefaultFileName: string;
-begin
-  Result := PathExtractFileDirFixed(ParamStr(0))
-    + PathExtractFileNameNoExt(ParamStr(0)) + '_Err.log';
-end;
-
-destructor TJclSimpleLog.Destroy;
-begin
-  CloseLog;
-  inherited;
 end;
 
 function TJclSimpleLog.GetLogOpen: Boolean;
@@ -3168,7 +3180,7 @@ finalization
   {$IFDEF MSWINDOWS}
   FinalizeMMFHandleList;
   {$IFDEF THREADSAFE}
-  GlobalMMFHandleListCS.Free;
+  FreeAndNil(GlobalMMFHandleListCS);
   {$ENDIF THREADSAFE}
   {$ENDIF MSWINDOWS}
   {$ENDIF ~CLR}
