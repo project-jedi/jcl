@@ -123,6 +123,7 @@ type
     FLogLines: TJclSimpleLog;
     FDemoSectionName: string;
     FLogFileName: string;
+    FSilent: Boolean;
     procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
     procedure AddDemos(const Directory: string);
     function GetDemoList: TStringList;
@@ -174,6 +175,7 @@ type
     property OptionCheckedById[Id: Integer]: Boolean read GetOptionCheckedById;
     property OptionChecked[Option: TJclOption]: Boolean read GetOptionChecked;
     property LogFileName: string read FLogFileName;
+    property Silent: Boolean read FSilent write FSilent;
   end;
 
   TJclDistribution = class (TInterfacedObject, IJediProduct)
@@ -1829,7 +1831,10 @@ begin
       {$IFDEF MSWINDOWS} and InstallExperts and InstallHelpFiles {$ENDIF MSWINDOWS}
       and InstallRepository and MakeDemos;
     if not Result then
+    begin
+      Silent := True;
       Uninstall(False);
+    end;
 
     FLogLines.CloseLog;
   finally
@@ -1954,6 +1959,8 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     begin
       //ioJclPackages
       UninstallPackage(FullPackageFileName(Target, JclDpk));
+      if (Target.RadToolKind = brBorlandDevStudio) and (Target.IDEVersionNumber = 5) then
+
       if Target.SupportsVisualCLX then
         UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
       if ((Target.VersionNumber >= 6) and (Target.RadToolKind <> brBorlandDevStudio))
@@ -2096,9 +2103,12 @@ var
   Line: string;
   LineType: TCompileLineType;
 begin
-  Line := InstallCore.ProcessLogLine(Msg, LineType, GUIPage);
-  if Line <> '' then
-    FLogLines.Write(Line);
+  if not Silent then
+  begin
+    Line := InstallCore.ProcessLogLine(Msg, LineType, GUIPage);
+    if Line <> '' then
+      FLogLines.Write(Line);
+  end;
 end;
 
 function TJclInstallation.GetBplPath: string;
@@ -2708,12 +2718,14 @@ begin
   if FileExists(Distribution.JclPath + PackageFileName) then
   begin
     Result := UninstallPackage(PackageFileName);
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.IDEVersionNumber = 5) then
+      Target.IdePackages.RemovePackage(PathAddSeparator(GetBplPath) + PathExtractFileNameNoExt(PackageFileName) + '100.bpl');
     // eventually remove old expert packages to avoid annoying package conflicts during IDE startup;
     // for simplicity, .dcp files are not handled
     BaseName := ExtractFileName(BaseName);
     BPLFileName := OldExpertBPLFileName(BaseName);
-    FileDelete(BPLFileName);
     Target.IdePackages.RemovePackage(BPLFileName);
+    FileDelete(BPLFileName);
   end;
 
   if FileExists(Distribution.JclPath + LibraryFileName) then
@@ -3177,6 +3189,7 @@ begin
       AInstallation := TargetInstalls[I];
       if AInstallation.Enabled then
       begin
+        AInstallation.Silent := False;
         if (AInstallation.CLRVersion = '') and not KeepSettings then
           AInstallation.RemoveSettings;
         AInstallation.Uninstall(False);
@@ -3421,6 +3434,7 @@ begin
     for I := 0 to TargetInstallCount - 1 do
     begin
       AInstallation := TargetInstalls[I];
+      AInstallation.Silent := False;
       if AInstallation.Enabled and (not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True) then
         Success := False;
     end;
