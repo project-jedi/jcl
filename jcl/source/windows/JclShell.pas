@@ -168,7 +168,7 @@ function ShellExecEx(const FileName: string; const Parameters: string = ''; cons
   CmdShow: Integer = SW_SHOWNORMAL): Boolean;
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 function ShellExecAndWait(const FileName: string; const Parameters: string = ''; const Verb: string = '';
-  CmdShow: Integer = SW_SHOWNORMAL): Boolean;
+  CmdShow: Integer = SW_SHOWNORMAL; const Directory: string = ''): Boolean;
 
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
@@ -1353,7 +1353,7 @@ begin
 end;
 
 function ShellExecAndWait(const FileName: string; const Parameters: string;
-  const Verb: string; CmdShow: Integer): Boolean;
+  const Verb: string; CmdShow: Integer; const Directory: string): Boolean;
 var
   Sei: TShellExecuteInfo;
   Res: LongBool;
@@ -1367,6 +1367,7 @@ begin
   Sei.lpParameters := PCharOrNil(Parameters);
   Sei.lpVerb := PCharOrNil(Verb);
   Sei.nShow := CmdShow;
+  Sei.lpDirectory := PCharOrNil(Directory);
   Result := ShellExecuteEx(@Sei);
   if Result then
   begin
