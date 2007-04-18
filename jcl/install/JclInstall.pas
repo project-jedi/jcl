@@ -139,6 +139,7 @@ type
     function CompileCLRPackage(const Name: string): Boolean;
     {$ENDIF MSWINDOWS}
     function CompilePackage(const Name: string; InstallPackage: Boolean): Boolean;
+    function CompileApplication(FileName: string): Boolean;
     function UninstallPackage(const Name: string): Boolean;
     procedure ConfigureBpr2Mak(const PackageFileName: string);
     {$IFDEF MSWINDOWS}
@@ -160,7 +161,7 @@ type
     procedure Init;
     function RemoveSettings: Boolean;
     function Install: Boolean;
-    function Uninstall: Boolean;
+    function Uninstall(AUninstallHelp: Boolean): Boolean;
 
     property Distribution: TJclDistribution read FDistribution;
     property Target: TJclBorRADToolInstallation read FTarget;
@@ -200,6 +201,7 @@ type
     FNbInstalled: Integer;
     {$IFDEF MSWINDOWS}
     FCLRVersions: TStrings;
+    FRegHelpCommands: TStrings;
     {$ENDIF MSWINDOWS}
     FRadToolInstallations: TJclBorRADToolInstallations;
     FTargetInstalls: TObjectList;
@@ -240,9 +242,28 @@ type
     function CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
     function GetTargetInstall(Index: Integer): TJclInstallation;
     function GetTargetInstallCount: Integer;
+    {$IFDEF MSWINDOWS}
+    procedure RegHelpInternalAdd(Command: Integer; Arguments: string; DoNotRepeatCommand: Boolean);
+    function RegHelpExecuteCommands(DisplayErrors: Boolean): Boolean;
+    procedure RegHelpClearCommands;
+    {$ENDIF MSWINDOWS}
   public
     constructor Create;
     destructor Destroy; override;
+
+    {$IFDEF MSWINDOWS}
+    procedure RegHelpCreateTransaction;
+    procedure RegHelpCommitTransaction;
+    procedure RegHelpRegisterNameSpace(const Name, Collection, Description: WideString);
+    procedure RegHelpUnregisterNameSpace(const Name: WideString);
+    procedure RegHelpRegisterHelpFile(const NameSpace, Identifier: WideString;
+      const LangId: Integer; const HxSFile, HxIFile: WideString);
+    procedure RegHelpUnregisterHelpFile(const NameSpace, Identifier: WideString;
+      const LangId: Integer);
+    procedure RegHelpPlugNameSpaceIn(const SourceNameSpace, TargetNameSpace: WideString);
+    procedure RegHelpUnPlugNameSpace(const SourceNameSpace, TargetNameSpace: WideString);
+    {$ENDIF MSWINDOWS}
+
     // IJediProduct
     procedure Init;
     procedure Install;
@@ -285,12 +306,14 @@ uses
   TypInfo,
   JclBase, JclResources, JclSysInfo,
   {$IFDEF MSWINDOWS}
+  Windows,
   JclPeImage,
   JclRegistry,
   JclDebug,
   JclDotNet,
   JclSecurity,
   JediRegInfo,
+  JclShell,
   {$ENDIF MSWINDOWS}
   JclFileUtils, JclStrings;
 
@@ -496,6 +519,8 @@ resourcestring
     'environment variable, otherwise JCL packages won''t be found by the IDE.' + sLineBreak +
     'Do you want the JCL installer to add it?' + sLineBreak +
     'You will have to reboot your computer and/or to close your session to validate this change';
+  RsHtmlHelp2Credentials = 'Registering HTML Help 2.0 files requires administrator privilege to be performed' + sLineBreak +
+    'The RegHelper.exe utility will make this operation';
 
 type
   TOptionRec = record
@@ -1685,12 +1710,11 @@ function TJclInstallation.Install: Boolean;
 
     function RegisterHelp2Files: Boolean;
     var
-      Help2Manager: TJclHelp2Manager;
-      CurrentDir: string;
+      //CurrentDir: string;
       NameSpace, Collection, Description, Identifier, HxSFile, HxIFile: WideString;
       LangId: Integer;
     begin
-      Result := False;
+      Result := True;
       if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
         Exit;
 
@@ -1704,52 +1728,20 @@ function TJclInstallation.Install: Boolean;
       LangId := Help2LangId;
       HxSFile := Help2HxSFile;
       HxIFile := Help2HxIFile;
-    
-      CurrentDir := GetCurrentDir;
-      if SetCurrentDir(Distribution.JclPath + 'help\') then
-      try
-        Help2Manager := TJclBDSInstallation(Target).Help2Manager;
 
-        Result := Help2Manager.CreateTransaction;
-        if Result then
-          WriteLog('Transaction created')
-        else
-          WriteLog('Failed to create a transaction');
-
-        WriteLog('Registering namespace...');
-        Result := Result and Help2Manager.RegisterNameSpace(NameSpace, Collection, Description);
-        if Result then
-          WriteLog('...success')
-        else
-          WriteLog('...failed');
-
-        WriteLog('Registering help file...');
-        Result := Result and Help2Manager.RegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile);
-        if Result then
-          WriteLog('...success')
-        else
-          WriteLog('...failed');
-    
-        if OptionChecked[joHelpHxSPlugin] then
-        begin
-          MarkOptionBegin(joHelpHxSPlugin);
-          WriteLog('Registering plugin...');
-          Result := Result and Help2Manager.PlugNameSpaceInBorlandHelp(NameSpace);
-          if Result then
-            WriteLog('...success')
-          else
-            WriteLog('...failed');
-          MarkOptionEnd(joHelpHxSPlugin, Result);
-        end;
-
-        Result := Result and Help2Manager.CommitTransaction;
-        if Result then
-          WriteLog('Transaction committed')
-        else
-          WriteLog('Failed to commit the transaction');
-      finally
-        SetCurrentDir(CurrentDir);
+      Distribution.RegHelpCreateTransaction;
+      Distribution.RegHelpRegisterNameSpace(NameSpace, Collection, Description);
+      Distribution.RegHelpRegisterHelpFile(NameSpace, Identifier, LangId, HxSFile, HxIFile);
+      if OptionChecked[joHelpHxSPlugin] then
+      begin
+        MarkOptionBegin(joHelpHxSPlugin);
+        Distribution.RegHelpPlugNameSpaceIn(NameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
+        MarkOptionEnd(joHelpHxSPlugin, Result);
       end;
+
+      Distribution.RegHelpCommitTransaction;
+
+      WriteLog('...defered');
     end;
   begin
     Result := True;
@@ -1784,23 +1776,6 @@ function TJclInstallation.Install: Boolean;
   {$ENDIF MSWINDOWS}
 
   function MakeDemos: Boolean;
-    function MakeDemo(FileName: string): Boolean;
-    var
-      CfgFileName, Directory: string;
-    begin
-      Directory := ExtractFileDir(FileName);
-      FileName := ExtractFileName(FileName);
-      WriteLog(Format(RsBuildingMessage, [FileName]));
-      SetCurrentDir(Directory);
-      CfgFileName := ChangeFileExt(FileName, '.cfg');
-      StringToFile(CfgFileName, Format(
-        '-e%s' + AnsiLineBreak +    // Exe output dir
-        '-u%s' + AnsiLineBreak +    // Unit directories
-        '-i%s',                     // Include path
-        [Distribution.JclBinDir, FLibDir, Distribution.JclSourceDir]));
-      Result := Target.DCC32.Execute(FileName);
-      FileDelete(CfgFileName);
-    end;
   var
     SaveDir: string;
     Index, ID: Integer;
@@ -1820,7 +1795,7 @@ function TJclInstallation.Install: Boolean;
           if OptionCheckedById[ID] then
           begin
             MarkOptionBegin(ID);
-            DemoResult := MakeDemo(ADemoList.Strings[Index]);
+            DemoResult := CompileApplication(ADemoList.Strings[Index]);
             MarkOptionEnd(ID, DemoResult);
             Result := Result and DemoResult;
           end;
@@ -1854,7 +1829,7 @@ begin
       {$IFDEF MSWINDOWS} and InstallExperts and InstallHelpFiles {$ENDIF MSWINDOWS}
       and InstallRepository and MakeDemos;
     if not Result then
-      Uninstall;
+      Uninstall(False);
 
     FLogLines.CloseLog;
   finally
@@ -1896,7 +1871,7 @@ begin
     Result := True;
 end;
 
-function TJclInstallation.Uninstall: Boolean;
+function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   procedure RemoveEnvironment;
   begin
     //ioJclEnvLibPath
@@ -2028,58 +2003,28 @@ function TJclInstallation.Uninstall: Boolean;
 
     procedure UnregisterHelp2Files;
     var
-      Help2Manager: TJclHelp2Manager;
-      CurrentDir: string;
       NameSpace, Identifier, HxSFile, HxIFile: WideString;
       LangId: Integer;
     begin
       if (Target.RadToolKind <> brBorlandDevStudio) or (Target.VersionNumber < 3) then
         Exit;
-    
-      WriteLog('Unregistering help 2.0 files');
-    
+
+      WriteLog('Unregistering help 2.0 files...');
+
       // to avoid Write AV, data has to be copied in data segment
       NameSpace := Help2NameSpace;
       Identifier := Help2Identifier;
       LangId := Help2LangId;
       HxSFile := Help2HxSFile;
       HxIFile := Help2HxIFile;
-    
-      CurrentDir := GetCurrentDir;
-      if SetCurrentDir(Distribution.JclPath + 'help\') then
-      try
-        Help2Manager := TJclBDSInstallation(Target).Help2Manager;
-    
-        if Help2Manager.CreateTransaction then
-          WriteLog('Transaction created')
-        else
-          WriteLog('Failed to create a transaction');
-    
-        WriteLog('Unregistering plugin...');
-        if Help2Manager.UnPlugNameSpaceFromBorlandHelp(NameSpace) then
-          WriteLog('...success')
-        else
-          WriteLog('...failed');
-    
-        WriteLog('Unregistering help file...');
-        if Help2Manager.UnregisterHelpFile(NameSpace, Identifier, LangId) then
-          WriteLog('...success')
-        else
-          WriteLog('...failed');
-    
-        WriteLog('Unregistering namespace...');
-        if Help2Manager.UnregisterNameSpace(NameSpace) then
-          WriteLog('...success')
-        else
-          WriteLog('...failed');
-    
-        if Help2Manager.CommitTransaction then
-          WriteLog('Transaction committed')
-        else
-          WriteLog('Failed to commit the transaction');
-      finally
-        SetCurrentDir(CurrentDir);
-      end;
+
+      Distribution.RegHelpCreateTransaction;
+      Distribution.RegHelpUnPlugNameSpace(NameSpace, TJclBDSInstallation(Target).Help2Manager.IdeNamespace);
+      Distribution.RegHelpUnregisterHelpFile(NameSpace, Identifier, LangId);
+      Distribution.RegHelpUnregisterNameSpace(NameSpace);
+      Distribution.RegHelpCommitTransaction;
+
+      WriteLog('...defered');
     end;
 
   begin
@@ -2133,7 +2078,8 @@ begin
     {$IFDEF MSWINDOWS}
     if not Target.IsTurboExplorer then
       UninstallExperts;
-    UninstallHelp;
+    if AUninstallHelp then
+      UninstallHelp;
     {$ENDIF MSWINDOWS}
     // TODO: ioJclCopyPackagesHppFiles
     UninstallRepository;
@@ -2516,6 +2462,25 @@ begin
     WriteLog('...done.')
   else
     WriteLog('...failed');
+end;
+
+function TJclInstallation.CompileApplication(FileName: string): Boolean;
+var
+  CfgFileName, Directory: string;
+begin
+  Directory := ExtractFileDir(FileName);
+  FileName := ExtractFileName(FileName);
+  WriteLog(Format(RsBuildingMessage, [FileName]));
+  SetCurrentDir(Directory);
+  CfgFileName := ChangeFileExt(FileName, '.cfg');
+  StringToFile(CfgFileName, Format(
+    '-e%s' + AnsiLineBreak +    // Exe output dir
+    '-n.' + AnsiLineBreak +    // Unit output dir
+    '-u%s;%s' + AnsiLineBreak + // Unit directories
+    '-i%s',                     // Include path
+    [Distribution.JclBinDir, FLibDir, Distribution.JclSourcePath, Distribution.JclSourceDir]));
+  Result := Target.DCC32.Execute(FileName);
+  FileDelete(CfgFileName);
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
@@ -2928,6 +2893,8 @@ begin
 
   FTargetInstalls := TObjectList.Create;
   FTargetInstalls.OwnsObjects := True;
+
+  FRegHelpCommands := TStringList.Create;
 end;
 
 function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
@@ -2995,6 +2962,8 @@ begin
   FRadToolInstallations.Free;
 
   FTargetInstalls.Free;
+
+  FRegHelpCommands.Free;
 
   inherited Destroy;
 end;
@@ -3192,6 +3161,7 @@ begin
         end;
       end;
     end;
+    RegHelpClearCommands;
     {$ENDIF MSWINDOWS}
 
     FNbEnabled := 0;
@@ -3209,13 +3179,17 @@ begin
       begin
         if (AInstallation.CLRVersion = '') and not KeepSettings then
           AInstallation.RemoveSettings;
-        AInstallation.Uninstall;
+        AInstallation.Uninstall(False);
         Success := AInstallation.Install;
         if not Success then
           Break;
         Inc(FNbInstalled);
       end;
     end;
+
+    {$IFDEF MSWINDOWS}
+    Success := Success and RegHelpExecuteCommands(True);
+    {$ENDIF MSWINDOWS}
 
     if Assigned(GUI) then
     begin
@@ -3229,6 +3203,198 @@ begin
       GUI.Status := 'Installation finished';
   end;
 end;
+
+{$IFDEF MSWINDOWS}
+const
+  // Reg Helper constant (chronological order)
+  RHCreateTransaction   = 1;
+  RHRegisterNameSpace   = 2;
+  RHRegisterFile        = 3;
+  RHPlugNameSpace       = 4;
+  RHUnplugNameSpace     = 5;
+  RHUnregisterFile      = 6;
+  RHUnregisterNameSpace = 7;
+  RHCommitTransaction   = 8;
+
+procedure TJclDistribution.RegHelpClearCommands;
+begin
+  FRegHelpCommands.Clear;
+end;
+
+procedure TJclDistribution.RegHelpCommitTransaction;
+begin
+  RegHelpInternalAdd(RHCommitTransaction, 'commit', True);
+end;
+
+procedure TJclDistribution.RegHelpCreateTransaction;
+begin
+  RegHelpInternalAdd(RHCreateTransaction, 'create', True);
+end;
+
+function TJclDistribution.RegHelpExecuteCommands(DisplayErrors: Boolean): Boolean;
+var
+  Index: Integer;
+  Parameters, LogFileName, ProgramResult, Verb: string;
+  ResultLines: TJclMappedTextReader;
+  TargetInstall: TJclInstallation;
+begin
+  Result := True;
+  if FRegHelpCommands.Count = 0 then
+    Exit;
+
+  // step 1: compile the RegHelper utility
+
+  for Index := TargetInstallCount - 1 downto 0 do // from the end (newer releases ready for vista)
+  begin
+    TargetInstall := TargetInstalls[Index];
+    if TargetInstall.Enabled then
+    begin
+      Result := TargetInstall.CompileApplication(JclPath + 'install\RegHelper.dpr');
+      if not Result then
+      begin
+        if Assigned(GUI) then
+          GUI.Dialog('Failed to compile RegHelper utility', dtError, [drOK]);
+        Exit;
+      end;
+      Break;
+    end;
+  end;
+
+  // step 2: create parameters for the RegHelper utility
+
+  LogFileName := JclBinDir + '\RegHelper.log';
+  if FileExists(LogFileName) then
+    FileDelete(LogFileName);
+  Parameters := '-c -o' + LogFileName;
+  for Index := 0 to FRegHelpCommands.Count - 1 do
+  begin
+    case Integer(FRegHelpCommands.Objects[Index]) of
+      RHCreateTransaction:
+        Parameters := Format('%s Create', [Parameters]);
+      RHRegisterNameSpace:
+        Parameters := Format('%s "RegNameSpace;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHRegisterFile:
+        Parameters := Format('%s "RegHelpFile;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHPlugNameSpace:
+        Parameters := Format('%s "PlugNameSpace;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHUnplugNameSpace:
+        Parameters := Format('%s "UnplugNameSpace;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHUnregisterFile:
+        Parameters := Format('%s "UnregHelpFile;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHUnregisterNameSpace:
+        Parameters := Format('%s "UnregNameSpace;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
+      RHCommitTransaction:
+        Parameters := Format('%s Commit', [Parameters]);
+    else
+      if Assigned(GUI) then
+        GUI.Dialog('Fatal error: unknown reghelp command', dtError, [drOK]);
+      Exit;
+    end;
+  end;
+
+  // step 3:  inform the user and execute RegHelper
+
+  // simple dialog explaining user why we need credentials
+  if Assigned(GUI) and ((not IsAdministrator) or (IsWinVista or IsWinLonghorn)) then
+    GUI.Dialog(RsHTMLHelp2Credentials, dtInformation, [drOK]);
+
+  // RegHelper.exe manifest requires elevation on Vista
+  if IsAdministrator or IsWinVista or IsWinLonghorn then
+    Verb := 'open'
+  else
+    Verb := 'runas';
+
+  Result := JclShell.ShellExecAndWait(JclBinDir + '\RegHelper.exe', Parameters, Verb, SW_HIDE, JclPath + 'help\');
+
+  // step 4: examine output
+  if Result then
+  begin
+    if not DisplayErrors then
+      Exit;
+    Sleep(500); // wait possible antivirus lock
+    ResultLines := TJclMappedTextReader.Create(LogFileName);
+    try
+      while not ResultLines.Eof do
+      begin
+        ProgramResult := ResultLines.ReadLn;
+        if AnsiPos('ERROR', AnsiUpperCase(ProgramResult)) > 0 then
+        begin
+          Result := False;
+          if Assigned(GUI) then
+            GUI.Dialog('RegHelper raised an error while executing RegHelp command: ' + AnsiLineBreak + ProgramResult, dtError, [drCancel]);
+        end;
+      end;
+    finally
+      ResultLines.Free;
+    end;
+  end
+  else
+    GUI.Dialog('Fatal error: failed to execute RegHelp utility', dtError, [drOK]);
+end;
+
+procedure TJclDistribution.RegHelpInternalAdd(Command: Integer;
+  Arguments: string; DoNotRepeatCommand: Boolean);
+var
+  Index: Integer;
+  AObject: TObject;
+begin
+  Index := 0;
+  while Index <= FRegHelpCommands.Count do
+  begin
+    if Index = FRegHelpCommands.Count then
+    begin
+      FRegHelpCommands.AddObject(Arguments, TObject(Command));
+      Break;
+    end;
+    AObject := FRegHelpCommands.Objects[Index];
+    if (Integer(AObject) = Command) and
+      (DoNotRepeatCommand or (FRegHelpCommands.Strings[Index] = Arguments)) then
+      Break;
+    if Integer(AObject) > Command then
+    begin
+      FRegHelpCommands.InsertObject(Index, Arguments, TObject(Command));
+      Break;
+    end;
+    Inc(Index);
+  end;
+end;
+
+procedure TJclDistribution.RegHelpPlugNameSpaceIn(const SourceNameSpace,
+  TargetNameSpace: WideString);
+begin
+  RegHelpInternalAdd(RHPlugNameSpace, Format('%s;%s', [SourceNameSpace, TargetNameSpace]), False);
+end;
+
+procedure TJclDistribution.RegHelpRegisterHelpFile(const NameSpace,
+  Identifier: WideString; const LangId: Integer; const HxSFile,
+  HxIFile: WideString);
+begin
+  RegHelpInternalAdd(RHRegisterFile, Format('%s;%s;%d;%s;%s', [NameSpace, Identifier, LangId, HxSFile, HxIFile]), False);
+end;
+
+procedure TJclDistribution.RegHelpRegisterNameSpace(const Name, Collection,
+  Description: WideString);
+begin
+  RegHelpInternalAdd(RHRegisterNameSpace, Format('%s;%s;%s', [Name, Collection, Description]), False);
+end;
+
+procedure TJclDistribution.RegHelpUnPlugNameSpace(const SourceNameSpace,
+  TargetNameSpace: WideString);
+begin
+  RegHelpInternalAdd(RHUnplugNameSpace, Format('%s;%s', [SourceNameSpace, TargetNameSpace]), False);
+end;
+
+procedure TJclDistribution.RegHelpUnregisterHelpFile(const NameSpace,
+  Identifier: WideString; const LangId: Integer);
+begin
+  RegHelpInternalAdd(RHUnregisterFile, Format('%s;%s;%d', [NameSpace, Identifier, LangId]), False);
+end;
+
+procedure TJclDistribution.RegHelpUnregisterNameSpace(const Name: WideString);
+begin
+  RegHelpInternalAdd(RHUnregisterNameSpace, Name, False);
+end;
+{$ENDIF MSWINDOWS}
 
 procedure TJclDistribution.Uninstall;
 var
@@ -3247,13 +3413,21 @@ begin
     if Assigned(GUI) then
       GUI.Status := 'Initializing JCL uninstallation process';
 
+    {$IFDEF MSWINDOWS}
+    RegHelpClearCommands;
+    {$ENDIF MSWINDOWS}
+
     Success := True;
     for I := 0 to TargetInstallCount - 1 do
     begin
       AInstallation := TargetInstalls[I];
-      if AInstallation.Enabled then
-        Success := Success and AInstallation.RemoveSettings and AInstallation.Uninstall;
+      if AInstallation.Enabled and (not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True) then
+        Success := False;
     end;
+
+    {$IFDEF MSWINDOWS}
+    RegHelpExecuteCommands(False);
+    {$ENDIF MSWINDOWS}
 
     if Assigned(GUI) then
     begin
