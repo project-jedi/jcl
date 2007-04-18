@@ -1,5 +1,7 @@
 program ToolHelpViewer;
 
+{$I jcl.inc}
+
 uses
   Forms,
   SysUtils,
@@ -17,6 +19,7 @@ uses
   ExceptDlg in '..\..\..\..\experts\debug\dialog\ExceptDlg.pas' {ExceptionDialog};
 
 {$R *.RES}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   try

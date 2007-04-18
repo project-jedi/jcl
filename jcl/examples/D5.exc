@@ -1,3 +1,2 @@
-common\containers\performance\ContainerPerformance.dpr
 windows\clr\ClrDemo.dpr
 visclx.exc

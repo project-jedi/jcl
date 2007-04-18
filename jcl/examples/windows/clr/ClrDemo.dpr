@@ -1,5 +1,7 @@
 program ClrDemo;
 
+{$I jcl.inc}
+
 uses
   Forms,
   ClrDemoMain in 'ClrDemoMain.pas' {frmMain},
@@ -13,6 +15,7 @@ uses
   ClrDemoCLRFrame in 'ClrDemoCLRFrame.pas' {frmCLR: TFrame};
 
 {$R *.RES}
+{$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

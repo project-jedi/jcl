@@ -1,5 +1,7 @@
 library EDISDK;
 
+{$I jcl.inc}
+
 uses
   ComServ,
   EDISDK_TLB in 'EDISDK_TLB.pas',

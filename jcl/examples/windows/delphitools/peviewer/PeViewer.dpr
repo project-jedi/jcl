@@ -1,5 +1,7 @@
 program PeViewer;
 
+{$I jcl.inc}
+
 uses
   Forms,
   SysUtils,
@@ -21,6 +23,7 @@ uses
 {$R *.TLB}
 
 {$R *.RES}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

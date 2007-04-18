@@ -35,10 +35,13 @@ const
   SNeedRTL140Up = 'requires RTL > 14.0';
 {$ENDIF ~RTL140_UP}
 
+var
+  Res: Integer;
+
 procedure TestList(Results: TStrings);
 var
   List: TList;
-  I, res: Integer;
+  I: Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -74,7 +77,7 @@ procedure TestJclArrayList(Results: TStrings);
 var
   List: IJclList;
   It: IJclIterator;
-  I, Res: Integer;
+  I: Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -92,7 +95,7 @@ begin
     // Slower but same for every IJclList
     It := List.First;
     while It.HasNext do
-      I := Integer(It.Next);
+      Res := Integer(It.Next);
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
@@ -116,7 +119,7 @@ end;
 procedure TestJclLinkedList(Results: TStrings);
 var
   List: IJclList;
-  I, Res: Integer;
+  I: Integer;
   It: IJclIterator;
   Start: TDateTime;
 begin
@@ -131,7 +134,7 @@ begin
     Start := Now;
     It := List.First;
     while It.HasNext do
-      I := Integer(It.Next);
+      Res := Integer(It.Next);
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
@@ -154,8 +157,8 @@ end;
 
 procedure TestJclVector(Results: TStrings);
 var
-  List: TJclVector;
-  I, res: Integer;
+  List: IJclList;
+  I: Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -175,18 +178,16 @@ begin
       Res := List.IndexOf(TObject(Random(1000000)));
     Results[3] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
+    for I := List.Size - 1 downto 20 do
+      List.Items[I - 10] := List.Items[I];
     for I := 0 to 10 do
-    begin
-      System.Move(List.Items[10], List.Items[10 + 1],
-        (List.Size - 10) * SizeOf(TObject));
-      List.Items[10] := TObject(I);
-    end;
+      List.Items[I + 10] := TObject(I);
     Results[4] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
     Results[5] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
-    List.Free;
+    List := nil;
     Screen.Cursor := crDefault;
   end;
 end;
@@ -194,7 +195,7 @@ end;
 procedure TestBucketList(Results: TStrings);
 {$IFDEF RTL140_UP}
 var
-  I, Res: Integer;
+  I: Integer;
   Start: TDateTime;
   List: TBucketList;
 begin
@@ -230,7 +231,7 @@ end;
 procedure TestJclHashMap(Results: TStrings);
 var
   Map: IJclMap;
-  I, Res: Integer;
+  I: Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -262,7 +263,6 @@ procedure TestHashedStringList(Results: TStrings);
 {$IFDEF RTL140_UP}
 var
   I: Integer;
-  Index: Integer;
   List: THashedStringList;
   Start: TDateTime;
 begin
@@ -276,7 +276,7 @@ begin
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
-      Index := List.IndexOf(GenId(123));
+      Res := List.IndexOf(GenId(123));
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;

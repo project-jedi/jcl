@@ -6,6 +6,7 @@ uses
   MidiOutExampleTuningDlg in 'MidiOutExampleTuningDlg.pas' {TuningDialog};
 
 {$R *.RES}
+{$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

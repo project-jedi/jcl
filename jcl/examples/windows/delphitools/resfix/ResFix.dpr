@@ -1,5 +1,7 @@
 program ResFix;
 
+{$I jcl.inc}
+
 uses
   Forms,
   ResFixMain in 'ResFixMain.pas' {MainForm},
@@ -8,6 +10,7 @@ uses
   ExceptDlg in '..\..\..\..\experts\debug\dialog\ExceptDlg.pas' {ExceptionDialog};
 
 {$R *.RES}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

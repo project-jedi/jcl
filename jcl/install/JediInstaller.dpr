@@ -1,5 +1,7 @@
 program JediInstaller;
 
+{$I jcl.inc}
+
 uses
   Forms,
   JclInstall in 'JclInstall.pas',
@@ -15,6 +17,7 @@ uses
   JediGUIMain in 'VclGui\JediGUIMain.pas' {MainForm};
 
 {$R *.res}
+{$R ..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

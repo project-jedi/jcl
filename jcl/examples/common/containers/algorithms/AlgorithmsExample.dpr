@@ -12,6 +12,7 @@ uses
   AlgorithmsExampleMain in 'AlgorithmsExampleMain.pas' {MainForm};
 
 {$R *.res}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

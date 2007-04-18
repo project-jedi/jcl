@@ -1,5 +1,7 @@
 program ExprEvalExample;
 
+{$I jcl.inc}
+
 uses
   Forms,
   ExprEvalExampleMain in 'ExprEvalExampleMain.pas' {Form1},
@@ -8,6 +10,7 @@ uses
   ExprEvalExampleLogic in 'ExprEvalExampleLogic.pas';
 
 {$R *.RES}
+{$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

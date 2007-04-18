@@ -37,6 +37,7 @@ uses
   UnitVersioningTestMain in 'UnitVersioningTestMain.pas' {frmUnitVersioningTestMain};
 
 {$R *.res}
+{$R ..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

@@ -29,7 +29,7 @@ uses
   SysUtils, Windows, ActiveX,
   JclAnsiStrings, JclBorlandTools, JclSysUtils;
 
-{$R VistaElevate.res}
+{$R ..\source\windows\JclNoDepAdmin.res}
 {$R RegHelper.res}
 
 type

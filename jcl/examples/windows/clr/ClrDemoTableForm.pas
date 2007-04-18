@@ -52,7 +52,7 @@ implementation
 
 {$R *.DFM}
 
-{$DEFINE USE_JWA}
+{.$DEFINE USE_JWA}
 
 uses
   ComObj, TypInfo, ClrDemoAbstractFrame,

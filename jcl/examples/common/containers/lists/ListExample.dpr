@@ -13,6 +13,7 @@ uses
   MyObjectList in 'MyObjectList.pas';
 
 {$R *.res}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

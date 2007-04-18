@@ -1,5 +1,7 @@
 program ThreadExceptExample;
 
+{$I jcl.inc}
+
 uses
   Forms,
   JclIdeThreadStatus in '..\..\..\..\experts\debug\threadnames\JclIdeThreadStatus.pas',
@@ -7,6 +9,7 @@ uses
   ThreadExceptDemoMain in 'ThreadExceptDemoMain.pas' {MainForm};
 
 {$R *.res}
+{$R ..\..\..\..\source\windows\JclCommCtrlAsInvoker.res}
 
 begin
   Application.Initialize;

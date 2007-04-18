@@ -1,5 +1,7 @@
 program NtSvcExample;
 
+{$I jcl.inc}
+
 uses
   Forms,
   NtSvcDemoMain in 'NtSvcDemoMain.pas' {frmMain},
@@ -7,6 +9,7 @@ uses
   NtSvcDemoGroups in 'NtSvcDemoGroups.pas' {frmServiceGroups};
 
 {$R *.RES}
+{$R ..\..\..\source\windows\JclCommCtrlAdmin.res}
 
 begin
   Application.Initialize;
