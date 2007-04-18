@@ -246,6 +246,7 @@ type
     FHxRegisterSession: IHxRegisterSession;
     FHxRegister: IHxRegister;
     FHxPlugin: IHxPlugIn;
+    FIdeNameSpace: WideString;
     function RequireObject(HelpObjects: TJclHelp2Objects): Boolean;
     function GetHxPlugin: IHxPlugin;
     function GetHxRegister: IHxRegister;
@@ -272,6 +273,7 @@ type
     property HxRegisterSession: IHxRegisterSession read GetHxRegisterSession;
     property HxRegister: IHxRegister read GetHxRegister;
     property HxPlugin: IHxPlugin read GetHxPlugin;
+    property IdeNamespace: WideString read FIdeNameSpace;
   end;
   {$ENDIF MSWINDOWS}
 
@@ -1678,6 +1680,10 @@ begin
   FHxRegisterSession := nil;
   FHxRegister := nil;
   FHxPlugin := nil;
+  if Assigned(Installation) then
+    FIdeNameSpace := Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber])
+  else
+    FIdeNameSpace := '';
 end;
 
 constructor TJclHelp2Manager.Create;
@@ -1758,7 +1764,7 @@ function TJclHelp2Manager.PlugNameSpaceInBorlandHelp(
   const NameSpace: WideString): Boolean;
 begin
   Result := Assigned(FInstallation) and (Installation.RadToolKind = brBorlandDevStudio) and
-    PlugNameSpaceIn(NameSpace, Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber]));
+    PlugNameSpaceIn(NameSpace, IdeNamespace);
 end;
 
 function TJclHelp2Manager.RegisterHelpFile(const NameSpace, Identifier: WideString;
@@ -1847,7 +1853,7 @@ end;
 function TJclHelp2Manager.UnPlugNameSpaceFromBorlandHelp(const NameSpace: WideString): Boolean;
 begin
   Result := Assigned(FInstallation) and (Installation.RadToolKind = brBorlandDevStudio) and
-    UnPlugNameSpace(NameSpace, Format(Help2BorlandNameSpace, [Installation.IDEVersionNumber]));
+    UnPlugNameSpace(NameSpace, IdeNamespace);
 end;
 
 function TJclHelp2Manager.UnregisterHelpFile(const NameSpace, Identifier: WideString;
@@ -4615,7 +4621,7 @@ end;
 
 function TJclBDSInstallation.CleanPackageCache(const BinaryFileName: string): Boolean;
 var
-  FileName: string;
+  FileName, KeyName: string;
 begin
   Result := True;
 
@@ -4625,9 +4631,10 @@ begin
 
     try
       OutputString(Format(RsCleaningPackageCache, [FileName]));
+      KeyName := PathAddSeparator(ConfigDataLocation) + PackageCacheKeyName + '\' + FileName;
 
-      Result :=  RegDeleteKeyTree(HKCU, PathAddSeparator(ConfigDataLocation) +
-        PackageCacheKeyName + '\' + FileName);
+      if RegKeyExists(HKCU, KeyName) then
+        Result := RegDeleteKeyTree(HKCU, KeyName);
 
       if Result then
         OutputString(RsCleaningOk)
