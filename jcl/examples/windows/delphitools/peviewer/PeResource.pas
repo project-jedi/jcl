@@ -30,10 +30,7 @@ unit PeResource;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils, Graphics, ComCtrls,
-  {$IFDEF DELPHI5_UP}
-  Contnrs,
-  {$ENDIF}
+  Windows, Messages, Classes, SysUtils, Graphics, ComCtrls, Contnrs,
   JclBase, JclFileUtils, JclPeImage, JclStrings;
 
 type

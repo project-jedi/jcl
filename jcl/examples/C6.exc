@@ -1,1 +1,5 @@
+common\multimedia\MidiOutExample.dpr
+windows\debug\sourceloc\SourceLocExample.dpr
+windows\delphitools\peviewer\PeViewer.dpr
+windows\tasks\TaskDemo.dpr
 visclx.exc
