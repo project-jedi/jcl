@@ -777,18 +777,28 @@ resourcestring
   RsCompressionZLibZDataError        = 'zlib returned: data error';
   RsCompressionZLibZMemError         = 'zlib returned: memory error';
   RsCompressionZLibZBufError         = 'zlib returned: buffer error';
-  RsCompressionZLibZVersionError     = 'zlib returned: Version error';
-  RsCompressionZLibError             = 'ZLib error';
-  RsCompressionGZIPInvalidID         = 'GZip: Invalid ID (ID1=%.2x; ID2=%.2x)';
-  RsCompressionGZIPUnsupportedCM     = 'GZip: unsupported compression method (%d)';
-  RsCompressionGZIPHeaderCRC         = 'GZip: CRC failed, header is damaged';
-  RsCompressionGZIPDecompressing     = 'GZip: this property is not readable when the data are being decompressed';
-  RsCompressionGZIPNotDecompressed   = 'GZip: this property is not readable until the data are fully decompressed';
-  RsCompressionGZIPDataTruncated     = 'GZip: data are truncated';
-  RsCompressionGZIPInternalError     = 'GZip: internal error';
-  RsCompressionGZIPDataCRCFailed     = 'GZip: CRC failed, data are damaged';
-  RsCompilationGZIPExtraFieldTooLong = 'GZip: extra field is too long';
-  RsCompilationGZIPBadString         = 'GZip: the string contains null chars';
+  RsCompressionZLibZVersionError     = 'zlib returned: version error';
+  RsCompressionZLibError             = 'zLib returned: unknown error (%d)';
+  RsCompressionGZIPInvalidID         = 'gzip: Invalid ID (ID1=%.2x; ID2=%.2x)';
+  RsCompressionGZIPUnsupportedCM     = 'gzip: unsupported compression method (%d)';
+  RsCompressionGZIPHeaderCRC         = 'gzip: CRC failed, header is damaged';
+  RsCompressionGZIPDecompressing     = 'gzip: this property is not readable when the data are being decompressed';
+  RsCompressionGZIPNotDecompressed   = 'gzip: this property is not readable until the data are fully decompressed';
+  RsCompressionGZIPDataTruncated     = 'gzip: data are truncated';
+  RsCompressionGZIPInternalError     = 'gzip: internal error';
+  RsCompressionGZIPDataCRCFailed     = 'gzip: CRC failed, data are damaged';
+  RsCompressionGZIPExtraFieldTooLong = 'gzip: extra field is too long';
+  RsCompressionGZIPBadString         = 'gzip: the string contains null chars';
+  RsCompressionBZIP2SequenceError    = 'bzip2 returned: sequence error';
+  RsCompressionBZIP2ParameterError   = 'bzip2 returned: parameter error';
+  RsCompressionBZIP2MemoryError      = 'bzip2 returned: memory error';
+  RsCompressionBZIP2DataError        = 'bzip2 returned: data error';
+  RsCompressionBZIP2HeaderError      = 'bzip2 returned: header error';
+  RsCompressionBZIP2IOError          = 'bzip2 returned: IO error';
+  RsCompressionBZIP2EOFError         = 'bzip2 returned: unexpected end of file';
+  RsCompressionBZIP2OutBuffError     = 'bzip2 returned: out buffer is too small';
+  RsCompressionBZIP2ConfigError      = 'bzip2 returned: configuration error';
+  RsCompressionBZIP2Error            = 'bzip2 returned: unknown error (%d)';
 
 //=== JclConsole =============================================================
 resourcestring

@@ -75,7 +75,6 @@
 {.$DEFINE EDI_WEAK_PACKAGE_UNITS}
 
 // PCRE options, mutually exclusive
-
 // IMPORTANT: The static link works only for Delphi 2005 and newer
 //            (an internal error is raised on other compilers)
 // Only one of the following defines can be defined at a time
@@ -86,3 +85,10 @@
 {.$DEFINE PCRE_STATICLINK}
 {.$DEFINE PCRE_LINKDLL}
 {.$DEFINE PCRE_LINKONREQUEST}
+
+// BZIP2 options, mutually exclusive
+// IMPORTANT: The static link is still experimental
+
+{.$DEFINE BZIP2_STATICLINK}
+{.$DEFINE BZIP2_LINKDLL}
+{.$DEFINE BZIP2_LINKONREQUEST}

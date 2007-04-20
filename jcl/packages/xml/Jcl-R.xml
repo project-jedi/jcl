@@ -17,6 +17,7 @@
     <Package Name="vcljpg50" Targets="c5,d5" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\source\common\bzip2.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\Jcl8087.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev" Formname="" Condition=""/>

@@ -42,6 +42,7 @@ type
         joDefDebug,
         joDefEDI,
         joDefPCRE,
+        joDefBZip2,
         joDefThreadSafe,
         joDefDropObsoleteCode,
         joDefUnitVersioning,
@@ -59,6 +60,9 @@ type
         joDefPCREStaticLink,
         joDefPCRELinkDLL,
         joDefPCRELinkOnRequest,
+        joDefBZip2StaticLink,
+        joDefBZip2LinkDLL,
+        joDefBZip2LinkOnRequest,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -361,6 +365,11 @@ resourcestring
   RsCaptionDefPCREStaticLink      = 'Static link to PCRE code';
   RsCaptionDefPCRELinkDLL         = 'Static bind to pcre.dll';
   RsCaptionDefPCRELinkOnRequest   = 'Late bind to pcre.dll';
+  // BZip2 options
+  RsCaptionDefBZip2               = 'BZip2 options';
+  RsCaptionDefBZip2StaticLink     = 'Static link to BZip2 code (experimental)';
+  RsCaptionDefBZip2LinkDLL        = 'Static bind to bzip2.dll';
+  RsCaptionDefBZip2LinkOnRequest  = 'Late bind to bzip2.dll';
   
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
@@ -448,6 +457,11 @@ resourcestring
   RsHintDefPCREStaticLink      = 'Code from PCRE is linked into JCL binaries';
   RsHintDefPCRELinkDLL         = 'JCL binaries require pcre.dll to be present';
   RsHintDefPCRELinkOnRequest   = 'JCL binaries require pcre.dll when calling PCRE functions';
+  // BZip2 options
+  RsHintDefBZip2               = 'BZip2 specific options (bzip2.pas)';
+  RsHintDefBZip2StaticLink     = 'Code from BZip2 is linked into JCL binaries';
+  RsHintDefBZip2LinkDLL        = 'JCL binaries require bzip2.dll to be present';
+  RsHintDefBZip2LinkOnRequest  = 'JCL binaries require bzip2.dll when calling PCRE functions';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -540,6 +554,7 @@ var
       (Id: -1; Caption: RsCaptionDefDebug; Hint: RsHintDefDebug), // joDefDebug
       (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
       (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
+      (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
       (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
@@ -557,6 +572,9 @@ var
       (Id: -1; Caption: RsCaptionDefPCREStaticLink; Hint: RsHintDefPCREStaticLink), // joDefPCREStaticLink
       (Id: -1; Caption: RsCaptionDefPCRELinkDLL; Hint: RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
       (Id: -1; Caption: RsCaptionDefPCRELinkOnRequest; Hint: RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
+      (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
+      (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
+      (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -891,6 +909,7 @@ procedure TJclInstallation.Init;
     if CLRVersion = '' then   // these units are not CLR compliant
     begin
       {$IFDEF MSWINDOWS}
+      // debug options
       AddOption(joDefDebug, [goNoAutoCheck], Parent);
       AddOption(joDefHookDllExceptions, [goNoAutoCheck], joDefDebug);
       AddOption(joDefDebugNoBinary, [goNoAutoCheck], joDefDebug);
@@ -899,8 +918,10 @@ procedure TJclInstallation.Init;
       AddOption(joDefDebugNoExports, [goNoAutoCheck], joDefDebug);
       AddOption(joDefDebugNoSymbols, [goNoAutoCheck], joDefDebug);
       {$ENDIF MSWINDOWS}
+      // EDI options
       AddOption(joDefEDI, [goNoAutoCheck], Parent);
       AddOption(joDefEDIWeakPackageUnits, [goNoAutoCheck], joDefEDI);
+      // PCRE options
       AddOption(joDefPCRE, [goChecked], Parent);
       if Target.RadToolKind = brBorlandDevStudio then
       begin
@@ -910,6 +931,13 @@ procedure TJclInstallation.Init;
       else
         AddOption(joDefPCRELinkOnRequest, [goRadioButton, goChecked], joDefPCRE);
       AddOption(joDefPCRELinkDLL, [goRadioButton], joDefPCRE);
+      // BZip2 options
+      AddOption(joDefBZip2, [goChecked], Parent);
+      {$IFDEF MSWINDOWS}
+      AddOption(joDefBZip2StaticLink, [goRadioButton], joDefBZip2);
+      {$ENDIF MSWINDOWS}
+      AddOption(joDefBZip2LinkOnRequest, [goRadioButton, goChecked], joDefBZip2);
+      AddOption(joDefBZip2LinkDLL, [goRadioButton], joDefBZip2);
     end;
   end;
 
@@ -1348,13 +1376,14 @@ function TJclInstallation.Install: Boolean;
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefPCRELinkOnRequest] of string =
+    DefineNames: array [joDefThreadSafe..joDefBZip2LinkOnRequest] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
-        'PCRE_LINKDLL', 'PCRE_LINKONREQUEST' );
+        'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
+        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST' );
   var
     Option: TJclOption;
     Defines: TStrings;

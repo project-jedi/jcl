@@ -16,6 +16,8 @@
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributors:                                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -59,7 +61,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
-  zlibh,
+  zlibh, bzip2,
   JclBase, JclStreams;
 
 {**************************************************************************************************}
@@ -356,13 +358,13 @@ type
   end;
 
   // BZIP2 Support
-(*
-  TJclBZIP2CompressStream = class(TJclCompressStream)
- private
+  TJclBZIP2CompressionStream = class(TJclCompressStream)
+  private
     FDeflateInitialized: Boolean;
-
+    FCompressionLevel: Integer;
   protected
-    BZLibRecord: TBZStream;
+    BZLibRecord: bz_stream;
+    procedure SetCompressionLevel(const Value: Integer);
   public
     function Flush: Integer; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
@@ -370,15 +372,15 @@ type
 
     constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
     destructor Destroy; override;
+
+    property CompressionLevel: Integer read FCompressionLevel write SetCompressionLevel;
   end;
 
-  TJclBZIP2DecompressStream = class(TJclDecompressStream)
+  TJclBZIP2DecompressionStream = class(TJclDecompressStream)
   private
     FInflateInitialized: Boolean;
-
   protected
-    BZLibRecord: TBZStream;
-
+    BZLibRecord: bz_stream;
   public
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
@@ -386,7 +388,6 @@ type
     constructor Create(Source: TStream); overload;
     destructor Destroy; override;
   end;
-*)
 
   EJclCompressionError = class(EJclError);
 
@@ -397,6 +398,11 @@ type
 function GZipFile(SourceFile, DestinationFile: string; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
 function UnGZipFile(SourceFile, DestinationFile: string;
+  ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
+
+function BZip2File(SourceFile, DestinationFile: string; CompressionLevel: Integer = 5;
+  ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
+function UnBZip2File(SourceFile, DestinationFile: string;
   ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
 
 {$IFDEF UNITVERSIONING}
@@ -495,24 +501,24 @@ end;
 
 function ZLibCheck(const ErrCode: Integer): Integer;
 begin
-  Result := ErrCode;
-  if ErrCode < 0 then
-    case ErrCode of
-      Z_ERRNO:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR:
-        raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
-    else
-      raise EJclCompressionError.CreateRes(@RsCompressionZLibError);
-    end;
+  case ErrCode of
+    0..High(ErrCode):
+      Result := ErrCode; // no error
+    Z_ERRNO:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZErrNo);
+    Z_STREAM_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZStreamError);
+    Z_DATA_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZDataError);
+    Z_MEM_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZMemError);
+    Z_BUF_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
+    Z_VERSION_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
+  else
+    raise EJclCompressionError.CreateResFmt(@RsCompressionZLibError, [ErrCode]);
+  end;
 end;
 
 constructor TJclZLibCompressStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
@@ -918,7 +924,7 @@ begin
   if (gfExtraField in Flags) and (ExtraField <> '') then
   begin
     if Length(ExtraField) > High(Word) then
-      raise EJclCompressionError.CreateRes(@RsCompilationGZIPExtraFieldTooLong);
+      raise EJclCompressionError.CreateRes(@RsCompressionGZIPExtraFieldTooLong);
     ExtraFieldLength := Length(ExtraField);
     StreamWriteBuffer(ExtraFieldLength, SizeOf(ExtraFieldLength));
     StreamWriteBuffer(ExtraField[1], Length(ExtraField));
@@ -927,14 +933,14 @@ begin
   if (gfOriginalFileName in Flags) and (OriginalFileName <> '') then
   begin
     if not CheckCString(OriginalFileName) then
-      raise EJclCompressionError.CreateRes(@RsCompilationGZIPBadString);
+      raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
     StreamWriteBuffer(OriginalFileName[1], Length(OriginalFileName) + 1);
   end;
 
   if (gfComment in Flags) and (Comment <> '') then
   begin
     if not CheckCString(Comment) then
-      raise EJclCompressionError.CreateRes(@RsCompilationGZIPBadString);
+      raise EJclCompressionError.CreateRes(@RsCompressionGZIPBadString);
     StreamWriteBuffer(Comment[1], Length(Comment) + 1);
   end;
 
@@ -1197,64 +1203,122 @@ begin
 end;
 
 //=== { TJclBZLibCompressionStream } =========================================
-(*
+
 { Error checking helper }
 
 function BZIP2LibCheck(const ErrCode: Integer): Integer;
 begin
-  Result := ErrCode;
-
-  if ErrCode < 0 then
-  begin
-    case ErrCode of
-      Z_ERRNO:         raise EJclCompressionError.CreateRes(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:  raise EJclCompressionError.CreateRes(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:    raise EJclCompressionError.CreateRes(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:     raise EJclCompressionError.CreateRes(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:     raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR: raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
-    else
-      raise EJclCompressionError.CreateRes(@RsCompressionZLibError);
-    end;
+  case ErrCode of
+    0..High(ErrCode):
+      Result := ErrCode; // no error
+    BZ_SEQUENCE_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2SequenceError);
+    BZ_PARAM_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2ParameterError);
+    BZ_MEM_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2MemoryError);
+    BZ_DATA_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2DataError);
+    BZ_DATA_ERROR_MAGIC:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2HeaderError);
+    BZ_IO_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2IOError);
+    BZ_UNEXPECTED_EOF:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2EOFError);
+    BZ_OUTBUFF_FULL:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2OutBuffError);
+    BZ_CONFIG_ERROR:
+      raise EJclCompressionError.CreateRes(@RsCompressionBZIP2ConfigError);
+  else
+    raise EJclCompressionError.CreateResFmt(@RsCompressionBZIP2Error, [ErrCode]);
   end;
 end;
 
-constructor TJclBZIP2CompressStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
+constructor TJclBZIP2CompressionStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
 begin
   inherited Create(Destination);
+
+  LoadBZip2;
 
   Assert(FBuffer <> nil);
   Assert(FBufferSize > 0);
 
   // Initialize ZLib StreamRecord
-  with BZLibRecord do
-  begin
-    bzalloc   := nil; // Use build-in memory allocation functionality
-    bzfree    := nil;
-    next_in   := nil;
-    avail_in  := 0;
-    next_out  := FBuffer;
-    avail_out := FBufferSize;
-
-  end;
+  BZLibRecord.bzalloc   := nil; // Use build-in memory allocation functionality
+  BZLibRecord.bzfree    := nil;
+  BZLibRecord.next_in   := nil;
+  BZLibRecord.avail_in  := 0;
+  BZLibRecord.next_out  := FBuffer;
+  BZLibRecord.avail_out := FBufferSize;
 
   FDeflateInitialized := False;
+
+  FCompressionLevel := 9;
 end;
 
-destructor TJclBZIP2CompressStream.Destroy;
+destructor TJclBZIP2CompressionStream.Destroy;
 begin
   Flush;
   if FDeflateInitialized then
-    BZIP2LibCheck(BZ2_bzCompressEnd(@BZLibRecord));
+    BZIP2LibCheck(BZ2_bzCompressEnd(BZLibRecord));
 
   inherited Destroy;
 end;
 
-function TJclBZIP2CompressStream.Write(const Buffer; Count: Longint): Longint;
+function TJclBZIP2CompressionStream.Flush: Integer;
+begin
+  Result := 0;
+
+  if FDeflateInitialized then
+  begin
+    BZLibRecord.next_in := nil;
+    BZLibRecord.avail_in := 0;
+
+    while (BZIP2LibCheck(BZ2_bzCompress(BZLibRecord, BZ_FINISH)) <> BZ_STREAM_END) and (BZLibRecord.avail_out = 0) do
+    begin
+      FStream.WriteBuffer(FBuffer^, FBufferSize);
+      Progress(Self);
+
+      BZLibRecord.next_out := FBuffer;
+      BZLibRecord.avail_out := FBufferSize;
+      Inc(Result, FBufferSize);
+    end;
+
+    if BZLibRecord.avail_out < FBufferSize then
+    begin
+      FStream.WriteBuffer(FBuffer^, FBufferSize - BZLibRecord.avail_out);
+      Progress(Self);
+      Inc(Result, FBufferSize - BZLibRecord.avail_out);
+      BZLibRecord.next_out := FBuffer;
+      BZLibRecord.avail_out := FBufferSize;
+    end;
+  end;
+end;
+
+function TJclBZIP2CompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+begin
+   if (Offset = 0) and (Origin = soCurrent) then
+    Result := (BZLibRecord.total_in_hi32 shl 32) or BZLibRecord.total_in_lo32
+   else
+   if (Offset = 0) and (Origin = soBeginning) and (BZLibRecord.total_in_lo32 = 0) then
+       Result := 0
+   else
+     Result := inherited Seek(Offset, Origin);
+end;
+
+procedure TJclBZIP2CompressionStream.SetCompressionLevel(const Value: Integer);
+begin
+  if not FDeflateInitialized then
+    FCompressionLevel := Value
+  else
+    raise EJclCompressionError.CreateRes(@RsCompressionBZIP2SequenceError);
+end;
+
+function TJclBZIP2CompressionStream.Write(const Buffer; Count: Longint): Longint;
 begin
   if not FDeflateInitialized then
   begin
-    BZIP2LibCheck(BZ2_bzCompressInit(@BZLibRecord,9,0,0));
+    BZIP2LibCheck(BZ2_bzCompressInit(BZLibRecord, FCompressionLevel, 0, 0));
     FDeflateInitialized := True;
   end;
 
@@ -1263,7 +1327,7 @@ begin
 
   while BZLibRecord.avail_in > 0 do
   begin
-    BZIP2LibCheck(BZ2_bzCompress(@BZLibRecord, BZ_RUN));
+    BZIP2LibCheck(BZ2_bzCompress(BZLibRecord, BZ_RUN));
 
     if BZLibRecord.avail_out = 0 then   // Output buffer empty. Write to stream and go on...
     begin
@@ -1277,202 +1341,203 @@ begin
   Result := Count;
 end;
 
-function TJclBZIP2CompressStream.Flush: Integer;
-begin
-    Result := 0;
-
-    if FDeflateInitialized then
-    begin
-      BZLibRecord.next_in := nil;
-      BZLibRecord.avail_in := 0;
-
-      while (BZIP2LibCheck(BZ2_bzCompress(@BZLibRecord, BZ_FLUSH)) <> Z_STREAM_END) and (BZLibRecord.avail_out = 0) do
-      begin
-        FStream.WriteBuffer(FBuffer^, FBufferSize);
-        Progress(Self);
-
-        BZLibRecord.next_out := FBuffer;
-        BZLibRecord.avail_out := FBufferSize;
-        Result := Result + FBufferSize;
-      end;
-
-      if BZLibRecord.avail_out < FBufferSize then
-      begin
-        FStream.WriteBuffer(FBuffer^, FBufferSize-BZLibRecord.avail_out);
-        Progress(Self);
-        Result := Result + FBufferSize-BZLibRecord.avail_out;
-        BZLibRecord.next_out := FBuffer;
-        BZLibRecord.avail_out := FBufferSize;
-      end;
-    end;
-end;
-
-function TJclBZIP2CompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
-begin
-   if (Offset = 0) and (Origin = soFromCurrent) then
-    Result := BZLibRecord.total_in_lo32
-   else
-   if (Offset = 0) and (Origin = soFromBeginning) and (BZLibRecord.total_in_lo32 = 0) then
-       Result := 0
-   else
-     Result := inherited Seek(Offset, Origin);
-end;
-
 //=== { TJclZLibDecompressionStream } ========================================
 
-constructor TJclBZIP2DecompressStream.Create(Source: TStream);
+constructor TJclBZIP2DecompressionStream.Create(Source: TStream);
 begin
   inherited Create(Source);
 
+  LoadBZip2;
+
   // Initialize ZLib StreamRecord
-  with BZLibRecord do
-  begin
-    bzalloc   := nil; // Use build-in memory allocation functionality
-    bzfree    := nil;
-    opaque    := nil;
-    next_in   := nil;
-    state     := nil;
-    avail_in  := 0;
-    next_out  := FBuffer;
-    avail_out := FBufferSize;
-  end;
+  BZLibRecord.bzalloc   := nil; // Use build-in memory allocation functionality
+  BZLibRecord.bzfree    := nil;
+  BZLibRecord.opaque    := nil;
+  BZLibRecord.next_in   := nil;
+  BZLibRecord.state     := nil;
+  BZLibRecord.avail_in  := 0;
+  BZLibRecord.next_out  := FBuffer;
+  BZLibRecord.avail_out := FBufferSize;
 
   FInflateInitialized := False;
 end;
 
-destructor TJclBZIP2DecompressStream.Destroy;
+destructor TJclBZIP2DecompressionStream.Destroy;
 begin
   if FInflateInitialized then
   begin
     FStream.Seek(-BZLibRecord.avail_in, soFromCurrent);
-    BZIP2LibCheck(BZ2_bzDecompressEnd(@BZLibRecord));
+    BZIP2LibCheck(BZ2_bzDecompressEnd(BZLibRecord));
   end;
 
   inherited Destroy;
 end;
 
-function TJclBZIP2DecompressStream.Read(var Buffer; Count: Longint): Longint;
-var
-  avail_out_ctr: Integer;
-
+function TJclBZIP2DecompressionStream.Read(var Buffer; Count: Longint): Longint;
 begin
   if not FInflateInitialized then
   begin
-    BZIP2LibCheck(BZ2_bzDecompressInit(@BZLibRecord,0,0));
+    BZIP2LibCheck(BZ2_bzDecompressInit(BZLibRecord, 0, 0));
     FInflateInitialized := True;
   end;
 
   BZLibRecord.next_out := @Buffer;
   BZLibRecord.avail_out := Count;
-  avail_out_ctr := Count;
+  Result := 0;
 
-  while avail_out_ctr > 0 do     // as long as we have data
+  while Result < Count do     // as long as we need data
   begin
-    if BZLibRecord.avail_in = 0 then
+    if BZLibRecord.avail_in = 0 then // no more compressed data
     begin
       BZLibRecord.avail_in := FStream.Read(FBuffer^, FBufferSize);
       if BZLibRecord.avail_in = 0 then
-      begin
-        Result := Count - avail_out_ctr;
         Exit;
-      end;
 
       BZLibRecord.next_in := FBuffer;
     end;
 
     if BZLibRecord.avail_in > 0 then
     begin
-      BZIP2LibCheck(BZ2_bzDecompress(@BZLibRecord));
-      avail_out_ctr := Count - BZLibRecord.avail_out;
+      BZIP2LibCheck(BZ2_bzDecompress(BZLibRecord));
+      Result := Count;
+      Dec(Result, BZLibRecord.avail_out);
     end
   end;
 
   Result := Count;
 end;
 
-function TJclBZIP2DecompressStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclBZIP2DecompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-   if (Offset = 0) and (Origin = soFromCurrent) then
-    Result := BZLibRecord.total_out_lo32
+   if (Offset = 0) and (Origin = soCurrent) then
+    Result := (BZLibRecord.total_out_hi32 shl 32) or BZLibRecord.total_out_lo32
    else
      Result := inherited Seek(Offset, Origin);
 end;
-*)
 
-{ Compress to a .gz file - one liner - NEW MARCH 2007  }
-
-function GZipFile(SourceFile, DestinationFile: string; CompressionLevel: Integer = Z_DEFAULT_COMPRESSION;
-  ProgressCallback: TJclCompressStreamProgressCallback = nil; UserData: Pointer = nil): Boolean;
+procedure InternalCompress(SourceStream: TStream; CompressStream: TJclCompressStream;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer);
 var
-  ZLibStream: TJclGZIPCompressionStream;
-  DestStream: TFileStream;
-  SourceStream: TFileStream;
+  SourceStreamSize, SourceStreamPosition: Int64;
   Buffer: Pointer;
   ReadBytes: Integer;
   EofFlag: Boolean;
-  SourceFileSize: Int64;
+begin
+  SourceStreamSize := SourceStream.Size; // source file size
+  SourceStreamPosition := 0;
+
+  GetMem(Buffer, JclDefaultBufferSize + 2);
+  try
+    //    ZLibStream.CopyFrom(SourceStream, 0 ); // One line way to do it! may not
+    //                                     // be reliable idea to do this! also,
+    //                                       //no progress callbacks!
+    EofFlag := False;
+    while not EofFlag do
+    begin
+      if Assigned(ProgressCallback) then
+        ProgressCallback(SourceStreamSize, SourceStreamPosition, UserData);
+
+      ReadBytes := SourceStream.Read(Buffer^, JclDefaultBufferSize);
+      SourceStreamPosition := SourceStreamPosition + ReadBytes;
+
+      CompressStream.WriteBuffer(Buffer^, ReadBytes);
+
+      // short block indicates end of zlib stream
+      EofFlag := ReadBytes < JclDefaultBufferSize;
+    end;
+    //CompressStream.Flush; (called by the destructor of compression streams
+  finally
+    FreeMem(Buffer);
+  end;
+  if Assigned(ProgressCallback) then
+    ProgressCallback(SourceStreamSize, SourceStreamPosition, UserData);
+end;
+
+procedure InternalDecompress(SourceStream, DestStream: TStream;
+  DecompressStream: TJclDecompressStream;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer);
+var
+  SourceStreamSize: Int64;
+  Buffer: Pointer;
+  ReadBytes: Integer;
+  EofFlag: Boolean;
+begin
+  SourceStreamSize := SourceStream.Size; // source file size
+
+  GetMem(Buffer, JclDefaultBufferSize + 2);
+  try
+    //    ZLibStream.CopyFrom(SourceStream, 0 ); // One line way to do it! may not
+    //                                     // be reliable idea to do this! also,
+    //                                       //no progress callbacks!
+    EofFlag := False;
+    while not EofFlag do
+    begin
+      if Assigned(ProgressCallback) then
+        ProgressCallback(SourceStreamSize, SourceStream.Position, UserData);
+
+      ReadBytes := DecompressStream.Read(Buffer^, JclDefaultBufferSize);
+
+      DestStream.WriteBuffer(Buffer^, ReadBytes);
+
+      // short block indicates end of zlib stream
+      EofFlag := ReadBytes < JclDefaultBufferSize;
+    end;
+  finally
+    FreeMem(Buffer);
+  end;
+  if Assigned(ProgressCallback) then
+    ProgressCallback(SourceStreamSize, SourceStream.Position, UserData);
+end;
+
+{ Compress to a .gz file - one liner - NEW MARCH 2007  }
+
+function GZipFile(SourceFile, DestinationFile: string; CompressionLevel: Integer;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
+var
+  GZipStream: TJclGZIPCompressionStream;
+  DestStream: TFileStream;
+  SourceStream: TFileStream;
+  GZipStreamDateTime: TDateTime;
 begin
   Result := False;
   if not FileExists(SourceFile) then // can't copy what doesn't exist!
     Exit;
 
+  GetFileLastWrite(SourceFile, GZipStreamDateTime);
+
   {destination and source streams first and second}
   SourceStream := TFileStream.Create(SourceFile, fmOpenRead or fmShareDenyWrite);
-  SourceFileSize := SourceStream.Size; // source file size
-  DestStream := TFileStream.Create(DestinationFile, fmCreate); // see SysUtils
-  GetMem(Buffer, JclDefaultBufferSize + 2);
-
-  // (rom) initial progress callback
-  if Assigned(ProgressCallback) then
-    ProgressCallback(SourceFileSize, 0, UserData);
   try
-  {   create compressionstream third, and copy from source,
-       through zlib compress layer,
-       out through file stream}
-    ZLibStream := TJclGZIPCompressionStream.Create(DestStream, CompressionLevel);
+    DestStream := TFileStream.Create(DestinationFile, fmCreate); // see SysUtils
     try
-      //    ZLibStream.CopyFrom(SourceStream, 0 ); // One line way to do it! may not
-      //                                     // be reliable idea to do this! also,
-      //                                       //no progress callbacks!
-      EofFlag := False;
-      while not EofFlag do
-      begin
-        ReadBytes := SourceStream.Read(Buffer^, JclDefaultBufferSize);
-        ZLibStream.WriteBuffer(Buffer^, ReadBytes);
-        if ReadBytes <> JclDefaultBufferSize then
-          Break; // short block indicates end of zlib stream
-        if Assigned(ProgressCallback) then
-          ProgressCallback(SourceFileSize, SourceStream.Position, UserData);
+      {   create compressionstream third, and copy from source,
+          through zlib compress layer,
+          out through file stream}
+      GZipStream := TJclGZIPCompressionStream.Create(DestStream, CompressionLevel);
+      try
+        GZipStream.DosTime := GZipStreamDateTime;
+        InternalCompress(SourceStream, GZipStream, ProgressCallback, UserData);
+      finally
+        GZipStream.Free;
       end;
-    //DestStream.Flush; // no such thing in streams.
     finally
-      ZLibStream.Free;
+      DestStream.Free;
     end;
   finally
-    DestStream.Free;
     SourceStream.Free;
-    FreeMem(Buffer);
   end;
   Result := FileExists(DestinationFile);
-  if Result then
-  begin
-    if Assigned(ProgressCallback) then
-      ProgressCallback(SourceFileSize, SourceFileSize, UserData);
-  end;
 end;
 
 { Decompress a .gz file }
 
-function UnGZipFile(SourceFile, DestinationFile: string; ProgressCallback: TJclCompressStreamProgressCallback = nil;
-  UserData: Pointer = nil): Boolean;
+function UnGZipFile(SourceFile, DestinationFile: string;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
-  ZLibStream: TJclGZIPDecompressionStream;
+  GZipStream: TJclGZIPDecompressionStream;
   DestStream: TFileStream;
   SourceStream: TFileStream;
-  Buffer: Pointer;
-  ReadBytes: Integer;
-  ZLibStreamDateTime: TDateTime;
-  SourceFileSize: Int64;
+  GZipStreamDateTime: TDateTime;
 begin
   Result := False;
   if not FileExists(SourceFile) then // can't copy what doesn't exist!
@@ -1480,48 +1545,101 @@ begin
 
   {destination and source streams first and second}
   SourceStream := TFileStream.Create(SourceFile, {mode} fmOpenRead or fmShareDenyWrite);
-  SourceFileSize := SourceStream.Size; // source file size
-  DestStream := TFileStream.Create(DestinationFile, {mode} fmCreate); // see SysUtils
-  GetMem(Buffer, JclDefaultBufferSize + 2);
-
-  // (rom) initial progress callback
-  if Assigned(ProgressCallback) then
-    ProgressCallback(SourceFileSize, 0, UserData);
   try
-    {   create decompressionstream third, and copy from source,
-        through zlib decompress layer, out through file stream
-    }
-    ZLibStream := TJclGZIPDecompressionStream.Create(SourceStream);
+    DestStream := TFileStream.Create(DestinationFile, {mode} fmCreate); // see SysUtils
     try
-      { Copy in from SourceStream, through ZLibStream, and out to DestStream }
-      while not ZLibStream.FDataEnded do
-      begin
-        ReadBytes := ZLibStream.Read(Buffer^, JclDefaultBufferSize);
-        DestStream.WriteBuffer(Buffer^, ReadBytes);
-        if ReadBytes <> JclDefaultBufferSize then
-          Break; // short block indicates end of zlib stream
-        if Assigned(ProgressCallback) then
-          ProgressCallback(SourceFileSize, SourceStream.Position, UserData);
+      {   create decompressionstream third, and copy from source,
+          through zlib decompress layer, out through file stream
+      }
+      GZipStream := TJclGZIPDecompressionStream.Create(SourceStream);
+      try
+        InternalDecompress(SourceStream, DestStream, GZipStream, ProgressCallback, UserData);
+        GZipStreamDateTime := GZipStream.DosTime;
+      finally
+        GZipStream.Free;
       end;
-      ZLibStreamDateTime := ZLibStream.DosTime;
     finally
-      ZLibStream.Free;
+      DestStream.Free;
     end;
   finally
-    DestStream.Free;
     SourceStream.Free;
-    FreeMem(Buffer);
   end;
   Result := FileExists(DestinationFile);
-  if Result then
-  begin
-    // one last progress update, for when we're finished!
-    if Assigned(ProgressCallback) then
-      ProgressCallback(SourceFileSize, SourceFileSize, UserData);
+  if Result and (GZipStreamDateTime <> 0) then
+    // preserve datetime when unpacking! (see JclFileUtils)
+    SetFileLastWrite(DestinationFile, GZipStreamDateTime);
+end;
 
-        // preserve datetime when unpacking! (see JclFileUtils)
-    SetFileLastWrite(DestinationFile, ZLibStreamDateTime);
+{ Compress to a .bz2 file - one liner }
+
+function BZip2File(SourceFile, DestinationFile: string; CompressionLevel: Integer;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
+var
+  BZip2Stream: TJclBZIP2CompressionStream;
+  DestStream: TFileStream;
+  SourceStream: TFileStream;
+begin
+  Result := False;
+  if not FileExists(SourceFile) then // can't copy what doesn't exist!
+    Exit;
+
+  {destination and source streams first and second}
+  SourceStream := TFileStream.Create(SourceFile, fmOpenRead or fmShareDenyWrite);
+  try
+    DestStream := TFileStream.Create(DestinationFile, fmCreate); // see SysUtils
+    try
+      {   create compressionstream third, and copy from source,
+          through zlib compress layer,
+          out through file stream}
+      BZip2Stream := TJclBZIP2CompressionStream.Create(DestStream, CompressionLevel);
+      try
+        InternalCompress(SourceStream, BZip2Stream, ProgressCallback, UserData);
+      finally
+        BZip2Stream.Free;
+      end;
+    finally
+      DestStream.Free;
+    end;
+  finally
+    SourceStream.Free;
   end;
+  Result := FileExists(DestinationFile);
+end;
+
+{ Decompress a .bzip2 file }
+
+function UnBZip2File(SourceFile, DestinationFile: string;
+  ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
+var
+  BZip2Stream: TJclBZIP2DecompressionStream;
+  DestStream: TFileStream;
+  SourceStream: TFileStream;
+begin
+  Result := False;
+  if not FileExists(SourceFile) then // can't copy what doesn't exist!
+    exit;
+
+  {destination and source streams first and second}
+  SourceStream := TFileStream.Create(SourceFile, {mode} fmOpenRead or fmShareDenyWrite);
+  try
+    DestStream := TFileStream.Create(DestinationFile, {mode} fmCreate); // see SysUtils
+    try
+      {   create decompressionstream third, and copy from source,
+          through zlib decompress layer, out through file stream
+      }
+      BZip2Stream := TJclBZIP2DecompressionStream.Create(SourceStream);
+      try
+        InternalDecompress(SourceStream, DestStream,  BZip2Stream, ProgressCallback, UserData);
+      finally
+        BZip2Stream.Free;
+      end;
+    finally
+      DestStream.Free;
+    end;
+  finally
+    SourceStream.Free;
+  end;
+  Result := FileExists(DestinationFile);
 end;
 
 {$IFDEF UNITVERSIONING}
