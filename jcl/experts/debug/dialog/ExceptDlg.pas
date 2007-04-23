@@ -194,11 +194,14 @@ var
 begin
   TApplicationHandleExceptionAddr := PeMapImgResolvePackageThunk(@TApplication.HandleException);
   SysUtilsShowExceptionAddr := PeMapImgResolvePackageThunk(@SysUtils.ShowException);
-  Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
-  if Result then
+  if Assigned(TApplicationHandleExceptionAddr) and Assigned(SysUtilsShowExceptionAddr) then
   begin
-    CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
-    Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
+    Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
+    if Result then
+    begin
+      CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
+      Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
+    end;
   end;
 end;
 
