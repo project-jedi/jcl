@@ -506,7 +506,7 @@ type
 type
   TJclSimpleLog = class (TObject)
   private
-    FLogFileHandle: THandle;
+    FLogFileHandle: Integer;
     FLogFileName: string;
     FLogWasEmpty: Boolean;
     function GetLogOpen: Boolean;
@@ -3129,7 +3129,7 @@ begin
       for I := 0 to SL.Count - 1 do
       begin
         S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
-        FileWrite(Integer(FLogFileHandle), Pointer(S)^, Length(S));
+        FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally
       SL.Free;
