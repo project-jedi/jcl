@@ -1,6 +1,7 @@
 object ExceptionDialog: TExceptionDialog
   Left = 310
   Top = 255
+  AutoScroll = False
   BorderIcons = [biSystemMenu]
 
   Caption = 'ExceptionDialog'

@@ -202,7 +202,9 @@ begin
       CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
       Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
     end;
-  end;
+  end
+  else
+    Result := False;
 end;
 
 //============================================================================

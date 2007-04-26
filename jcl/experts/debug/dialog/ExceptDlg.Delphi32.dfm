@@ -1,6 +1,7 @@
 object %FORMNAME%: T%FORMNAME%
   Left = 310
   Top = 255
+  AutoScroll = False
   BorderIcons = [biSystemMenu]
 %ifnot SizeableDialog  BorderStyle = bsDialog%endif
   Caption = '%FORMNAME%'

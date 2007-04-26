@@ -1,6 +1,7 @@
 object ExceptionDialogMail: TExceptionDialogMail
   Left = 310
   Top = 255
+  AutoScroll = False
   BorderIcons = [biSystemMenu]
 
   Caption = 'ExceptionDialogMail'
