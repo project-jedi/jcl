@@ -486,13 +486,13 @@ resourcestring
     'When installed, available through Project Options|Compiler|Use Debug DCUs.';
   RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
   RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
-  RsHintCopyHppFiles    = 'Copy .hhp files into C++Builder''s include path.';
+  RsHintCopyHppFiles    = 'Copy .hpp files into C++Builder''s include path.';
 
   // packages
   RsHintPackages             = 'Build and eventually install JCL runtime packages (RTL, VCL and Visual ' +
     'CLX) and optional IDE experts.';
   RsHintDualPackages         = 'The same package introduce component for Delphi Win32 and C++Builder Win32';
-  RsHintCopyPackagesHppFiles = 'Output .hhp files into C++Builder''s include path instead of ' +
+  RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
 
   // exception dialogs
