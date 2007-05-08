@@ -3064,7 +3064,7 @@ begin
     FLogFileName := CreateDefaultFileName
   else
     FLogFileName := ALogFileName;
-  FLogFileHandle := INVALID_HANDLE_VALUE;
+  DWord(FLogFileHandle) := INVALID_HANDLE_VALUE;
 end;
 
 function TJclSimpleLog.CreateDefaultFileName: string;
@@ -3091,14 +3091,14 @@ begin
   if LogOpen then
   begin
     FileClose(FLogFileHandle);
-    FLogFileHandle := INVALID_HANDLE_VALUE;
+    DWord(FLogFileHandle) := INVALID_HANDLE_VALUE;
     FLogWasEmpty := False;
   end;
 end;
 
 function TJclSimpleLog.GetLogOpen: Boolean;
 begin
-  Result := FLogFileHandle <> INVALID_HANDLE_VALUE;
+  Result := DWord(FLogFileHandle) <> INVALID_HANDLE_VALUE;
 end;
 
 procedure TJclSimpleLog.OpenLog;
