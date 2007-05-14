@@ -271,7 +271,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(P^);
+    Cardinal(Result) := Cardinal((Result shl cOneEight) + Ord(P^));
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -306,7 +306,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(UpCase(P^));
+    Cardinal(Result) := Cardinal((Result shl cOneEight) + Ord(UpCase(P^)));
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
