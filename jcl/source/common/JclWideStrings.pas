@@ -111,7 +111,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     function ExtractName(const S: WideString): WideString;
     function GetP(Index: Integer): PWideString; virtual; abstract;
-    function Get(Index: Integer): WideString; 
+    function Get(Index: Integer): WideString;
     function GetCapacity: Integer; virtual;
     function GetCount: Integer; virtual; abstract;
     function GetObject(Index: Integer): TObject; virtual;
@@ -288,8 +288,10 @@ procedure WideReverseInPlace(var S: WideString);
 function TrimLeftLengthW(const S: WideString): Integer;
 function TrimRightLengthW(const S: WideString): Integer;
 
+{$IFNDEF FPC}
 function WideStartsText(const SubStr, S: WideString): Boolean;
 function WideStartsStr(const SubStr, S: WideString): Boolean;
+{$ENDIF ~FPC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -995,8 +997,12 @@ begin
     Result := CompareStringW(LOCALE_USER_DEFAULT, 0,
       PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
   {$ELSE ~MSWINDOWS}
-  { TODO : Don't cheat here }
-  Result := CompareString(S1, S2);
+    {$IFDEF FPC}
+    Result := SysUtils.WideCompareStr(S1, S2);
+    {$ELSE}
+    { TODO : Don't cheat here }
+    Result := CompareString(S1, S2);
+    {$ENDIF FPC}
   {$ENDIF ~MSWINDOWS}
 end;
 
@@ -1044,6 +1050,8 @@ begin
     Dec(Result);
 end;
 
+{$IFNDEF FPC}
+
 function WideStartsText(const SubStr, S: WideString): Boolean;
 var
   Len: Integer;
@@ -1060,6 +1068,7 @@ begin
   Result := (Len <= Length(S)) and (StrLCompW(PWideChar(SubStr), PWideChar(S), Len) = 0);
 end;
 
+{$ENDIF ~FPC}
 
 //=== { TWStrings } ==========================================================
 

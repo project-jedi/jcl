@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Alexander Radchenko                                                                            }
-{   André Snepvangers (asnepvangers)                                                               }
+{   Andre Snepvangers (asnepvangers)                                                               }
 {   Azret Botash                                                                                   }
 {   Bryan Coutch                                                                                   }
 {   Carl Clark                                                                                     }
@@ -32,7 +32,7 @@
 {   Nick Hodges                                                                                    }
 {   Olivier Sannier (obones)                                                                       }
 {   Peter Friese                                                                                   }
-{   Peter Thörnquist (peter3)                                                                      }
+{   Peter Thornquist (peter3)                                                                      }
 {   Petr Vones (pvones)                                                                            }
 {   Rik Barker                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -138,7 +138,9 @@ function GetSendToFolder: string;
 function GetStartmenuFolder: string;
 function GetDesktopDirectoryFolder: string;
 {$IFNDEF CLR}
+{$IFNDEF FPC}
 function GetCommonDocumentsFolder: string;
+{$ENDIF ~FPC}
 function GetNethoodFolder: string;
 function GetFontsFolder: string;
 function GetCommonStartmenuFolder: string;
@@ -418,7 +420,7 @@ type
     LinePerSector: Byte;  // for L3 Normal Cache
     Entries: Cardinal;        // for TLB
     I: string;
-  end; 
+  end;
 
   TFreqInfo = record
     RawFreq: Cardinal;
@@ -664,7 +666,7 @@ const
   EINTEL64_BIT_26 = BIT_26; // Reserved, do not count on value
   EINTEL64_BIT_27 = BIT_27; // Reserved, do not count on value
   EINTEL64_BIT_28 = BIT_28; // Reserved, do not count on value
-  EINTEL64_EM64T  = BIT_29; // Intel® Extended Memory 64 Technology
+  EINTEL64_EM64T  = BIT_29; // Intel Extended Memory 64 Technology
   EINTEL64_BIT_30 = BIT_30; // Reserved, do not count on value
   EINTEL64_BIT_31 = BIT_31; // Reserved, do not count on value
 
@@ -1312,7 +1314,9 @@ uses
   JclBase, JclFileUtils, JclStrings;
 
 {$IFDEF FPC}
+{$IFDEF MSWINDOWS}
 {$I JclSysInfo.fpc}
+{$ENDIF MSWINDOWS}
 {$ENDIF FPC}
 
 //=== Environment ============================================================
@@ -1445,12 +1449,12 @@ begin
 end;
 {$ENDIF UNIX}
 
-{$IFDEF MSWINDOWS}
-
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
 begin
   Result := GetEnvironmentVars(Vars, True);
 end;
+
+{$IFDEF MSWINDOWS}
 
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 {$IFDEF CLR}
@@ -1661,7 +1665,11 @@ begin
       StrResetLength(Result);
       Exit;
     end;
+    {$IFDEF FPC}
+    if GetLastOSError <> ERANGE then
+    {$ELSE}
     if GetLastError <> ERANGE then
+    {$ENDIF FPC}
       RaiseLastOSError;
     Size := Size * 2;
   end;
@@ -1843,10 +1851,12 @@ begin
 end;
 
 {$IFNDEF CLR}
+{$IFNDEF FPC}
 function GetCommonDocumentsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_DOCUMENTS);
 end;
+{$ENDIF ~FPC}
 {$ENDIF ~CLR}
 
 {$IFNDEF CLR}
@@ -2171,13 +2181,22 @@ begin
       while IfList^.if_index <> 0 do
       begin
         //copy in the interface name to look up address of
+        {$IFDEF FPC}
+        strncpy(IfReq.ifr_ifrn.ifrn_name, IfList^.if_name, IFNAMSIZ);
+        {$ELSE}
         strncpy(IfReq.ifrn_name, IfList^.if_name, IFNAMSIZ);
+        {$ENDIF FPC}
         //get the address for this interface
         if ioctl(Sock, SIOCGIFADDR, @IfReq) <> 0 then
           RaiseLastOSError;
         //print out the address
+        {$IFDEF FPC}
+        SockAddrPtr := PSockAddrIn(@IfReq.ifr_ifru.ifru_addr);
+        Results.Add(Format('%s=%s', [IfReq.ifr_ifrn.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
+        {$ELSE}
         SockAddrPtr := PSockAddrIn(@IfReq.ifru_addr);
         Results.Add(Format('%s=%s', [IfReq.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
+        {$ENDIF FPC}
         Inc(IfList);
       end;
     finally
@@ -2422,8 +2441,13 @@ begin
   if ProcDir <> nil then
   begin
     PtrDirEnt := nil;
+    {$IFDEF FPC}
+    if readdir_r(ProcDir, @Scratch, @PtrDirEnt) <> 0 then
+      Exit;
+    {$ELSE}
     if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
       Exit;
+    {$ENDIF FPC}
     List.BeginUpdate;
     try
       while PtrDirEnt <> nil do
@@ -2455,8 +2479,13 @@ begin
 
           List.AddObject(FileName, Pointer(ProcID));
         end;
+        {$IFDEF FPC}
+        if readdir_r(ProcDir, @Scratch, @PtrDirEnt) <> 0 then
+          Break;
+        {$ELSE}
         if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
           Break;
+        {$ENDIF FPC}
       end;
     finally
       List.EndUpdate;
@@ -2921,7 +2950,7 @@ begin
   if GetWindowThreadProcessId(Wnd, @PID) <> 0 then
     Result := TerminateApp(PID, Timeout)
   else
-    Result := taError;  
+    Result := taError;
 end;
 
 function GetProcessNameFromWnd(Wnd: THandle): string;
@@ -4052,7 +4081,7 @@ function CPUID: TCpuInfo;
       POP  EDI
     end;
   end;
-  
+
   procedure ProcessStandard(var CPUInfo: TCpuInfo; HiVal: Cardinal);
   var
     VersionInfo, AdditionalInfo, ExFeatures: Cardinal;
@@ -4141,36 +4170,36 @@ function CPUID: TCpuInfo;
             if IntelCacheDescription[J].D = CPUInfo.IntelSpecific.CacheDescriptors[I] then
               with IntelCacheDescription[J] do
         case Family of
-          //cfInstructionTLB :
-          //cfDataTLB :
-          cfL1InstructionCache :
+          //cfInstructionTLB:
+          //cfDataTLB:
+          cfL1InstructionCache:
             begin
               Inc(CPUInfo.L1InstructionCacheSize,Size);
               CPUInfo.L1InstructionCacheLineSize := LineSize;
               CPUInfo.L1InstructionCacheAssociativity := WaysOfAssoc;
             end;
-          cfL1DataCache :
+          cfL1DataCache:
             begin
               Inc(CPUInfo.L1DataCacheSize,Size);
               CPUInfo.L1DataCacheLineSize := LineSize;
               CPUInfo.L1DataCacheAssociativity := WaysOfAssoc;
             end;
-          cfL2Cache :
+          cfL2Cache:
             if (CPUInfo.IntelSpecific.L2Cache = 0) then
             begin
               Inc(CPUInfo.L2CacheSize,Size);
               CPUInfo.L2CacheLineSize := LineSize;
               CPUInfo.L2CacheAssociativity := WaysOfAssoc;
             end;
-          cfL3Cache :
+          cfL3Cache:
             begin
               Inc(CPUInfo.L3CacheSize,Size);
               CPUInfo.L3CacheLineSize := LineSize;
               CPUInfo.L3CacheAssociativity := WaysOfAssoc;
               CPUInfo.L3LinesPerSector := LinePerSector;
             end;
-          //cfTrace :    // no numeric informations
-          //cfOther :
+          //cfTrace:    // no numeric informations
+          //cfOther:
         end;
     end;
     if not CPUInfo.HasExtendedInfo then
@@ -4402,7 +4431,7 @@ function CPUID: TCpuInfo;
             10:
               CPUInfo.CpuName := 'AMD Athlon™ XP (Model 10)';
             else
-              StrFmt(CPUInfo.CpuName,PChar(RsUnknownAMDModel),[CPUInfo.Model]);
+              StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
           end;
         8:
 
@@ -4428,7 +4457,7 @@ function CPUID: TCpuInfo;
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_LONG) <> 0);
     CPUInfo.DEPCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_NX) <> 0);
   end;
-  
+
   procedure ProcessCyrix(var CPUInfo: TCpuInfo; HiVal: Cardinal);
   var
     ExHiVal, Unused, VersionInfo, AdditionalInfo: Cardinal;
@@ -4546,7 +4575,7 @@ function CPUID: TCpuInfo;
       else CPUInfo.SSE := 0;
     CPUInfo._3DNow := (CPUInfo.Features and VIA_3DNOW) <> 0;
   end;
-  
+
   procedure ProcessTransmeta(var CPUInfo: TCpuInfo; HiVal: Cardinal);
   var
     ExHiVal, Unused, VersionInfo: Cardinal;
@@ -4629,14 +4658,14 @@ function CPUID: TCpuInfo;
     end;
     CPUInfo.MMX := (CPUInfo.Features and TRANSMETA_MMX) <> 0;
   end;
-  
+
 var
   HiVal: Cardinal;
 begin
   FillChar(Result, sizeof(Result), 0);
   Result.LogicalCore := 1;
   Result.PhysicalCore := 1;
-  
+
   if HasCPUIDInstruction then
   begin
     Result.HasInstruction := True;
@@ -4874,7 +4903,11 @@ function GetMemoryLoad: Byte;
 var
   SystemInf: TSysInfo ;
 begin
+  {$IFDEF FPC}
+  SysInfo(@SystemInf);
+  {$ELSE}
   SysInfo(SystemInf);
+  {$ENDIF FPC}
   with SystemInf do
     Result := 100 - Round(100 * freeram / totalram);
 end;
@@ -4895,7 +4928,11 @@ function GetSwapFileSize: Cardinal;
 var
   SystemInf: TSysInfo;
 begin
+  {$IFDEF FPC}
+  SysInfo(@SystemInf);
+  {$ELSE}
   SysInfo(SystemInf);
+  {$ENDIF FPC}
   Result := SystemInf.totalswap;
 end;
 {$ENDIF UNIX}
@@ -4916,7 +4953,11 @@ function GetSwapFileUsage: Byte;
 var
   SystemInf: TSysInfo;
 begin
+  {$IFDEF FPC}
+  SysInfo(@SystemInf);
+  {$ELSE}
   SysInfo(SystemInf);
+  {$ENDIF FPC}
   with SystemInf do
     Result := 100 - Trunc(100 * FreeSwap / TotalSwap);
 end;
@@ -4941,7 +4982,11 @@ function GetTotalPhysicalMemory: Cardinal;
 var
   SystemInf: TSysInfo;
 begin
+  {$IFDEF FPC}
+  SysInfo(@SystemInf);
+  {$ELSE}
   SysInfo(SystemInf);
+  {$ENDIF FPC}
   Result := SystemInf.totalram;
 end;
 {$ENDIF UNIX}
@@ -4961,7 +5006,11 @@ function GetFreePhysicalMemory: Cardinal;
 var
   SystemInf: TSysInfo;
 begin
+  {$IFDEF FPC}
+  SysInfo(@SystemInf);
+  {$ELSE}
   SysInfo(SystemInf);
+  {$ENDIF FPC}
   Result := SystemInf.freeram;
 end;
 {$ENDIF UNIX}
@@ -5078,7 +5127,7 @@ function IsSystemResourcesMeterPresent: Boolean;
       @MyGetFreeSystemResources := GetProcAddress(ResmeterLibHandle, '_MyGetFreeSystemResources32@4');
       if not Assigned(MyGetFreeSystemResources) then
         UnloadSystemResourcesMeterLib;
-    end;    
+    end;
   end;
 
 begin

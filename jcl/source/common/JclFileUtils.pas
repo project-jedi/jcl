@@ -16,10 +16,10 @@
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributors:                                                                                    }
-{   André Snepvangers (asnepvangers)                                                               }
+{   Andre Snepvangers (asnepvangers)                                                               }
 {   Andreas Hausladen (ahuser)                                                                     }
 {   Anthony Steele                                                                                 }
-{   Rik Barker    (rikbarker)                                                                      }
+{   Rik Barker (rikbarker)                                                                         }
 {   Azret Botash                                                                                   }
 {   Charlie Calvert                                                                                }
 {   David Hervieux                                                                                 }
@@ -1570,14 +1570,14 @@ begin
       while P < FEnd do
       begin
         case P^ of
-          AnsiLineFeed :
+          AnsiLineFeed:
             begin
               Inc(FLineCount);
               Inc(P);
               if (P < FEnd) and (P^ = AnsiCarriageReturn) then
                 Inc(P);
             end;
-          AnsiCarriageReturn :
+          AnsiCarriageReturn:
             begin
               Inc(FLineCount);
               Inc(P);
@@ -1680,14 +1680,14 @@ begin
       while (Result < FEnd) and (LineOffset > 0) do
       begin
         case Result^ of
-          AnsiLineFeed :
+          AnsiLineFeed:
             begin
               Dec(LineOffset);
               Inc(Result);
               if (Result < FEnd) and (Result^ = AnsiCarriageReturn) then
                 Inc(Result);
             end;
-          AnsiCarriageReturn :
+          AnsiCarriageReturn:
             begin
               Dec(LineOffset);
               Inc(Result);
@@ -1695,7 +1695,7 @@ begin
                 Inc(Result);
             end;
         else
-          Inc(Result);  
+          Inc(Result);
         end;
       end;
     end
@@ -1707,7 +1707,7 @@ begin
       begin
         Dec(Result);
         case Result^ of
-          AnsiLineFeed :
+          AnsiLineFeed:
             begin
               Inc(LineOffset);
               if LineOffset >= 1 then
@@ -1716,7 +1716,7 @@ begin
               if (Result > FContent) and ((Result-1)^ = AnsiCarriageReturn) then
                 Dec(Result);
             end;
-          AnsiCarriageReturn :
+          AnsiCarriageReturn:
             begin
               Inc(LineOffset);
               if LineOffset >= 1 then
@@ -1769,18 +1769,18 @@ begin
     if P < FEnd then
     begin
       case P^ of
-        AnsiLineFeed :
+        AnsiLineFeed:
           begin
             Inc(P);
             if (P < FEnd) and (P^ = AnsiCarriageReturn) then
               Inc(P);
           end;
-        AnsiCarriageReturn :
+        AnsiCarriageReturn:
           begin
             Inc(P);
             if (P < FEnd) and (P^ = AnsiLineFeed) then
               Inc(P);
-          end;   
+          end;
       end;
     end;
     StartPos := P;
@@ -2441,7 +2441,7 @@ begin
   if realpath(PChar(Path), PChar(FullPath)) = nil then
     RaiseLastOSError;
   StrResetLength(FullPath);
-  
+
   FsTypes := TStringList.Create;
   try
     GetAvailableFileSystems(FsTypes);
@@ -2689,10 +2689,11 @@ begin
           List.Add(SearchRec.Name);
           Break;
         end;
-        
+
         case FindNext(SearchRec) of
-          0 : ;
-          ERROR_NO_MORE_FILES :
+          0:
+            ;
+          ERROR_NO_MORE_FILES:
             Break;
           else
             Result := False;
@@ -3237,12 +3238,14 @@ end;
 {$ENDIF UNIX}
 {$ENDIF ~CLR}
 
+{$IFDEF MSWINDOWS}
 {$IFDEF FPC}
 { TODO : Move this over to JclWin32 when JclWin32 gets overhauled. }
 function GetTempFileName(lpPathName, lpPrefixString: PChar;
   uUnique: UINT; lpTempFileName: PChar): UINT; stdcall;
 external kernel32 name 'GetTempFileNameA';
 {$ENDIF FPC}
+{$ENDIF MSWINDOWS}
 
 function FileGetTempName(const Prefix: string): string;
 {$IFDEF CLR}
@@ -3752,12 +3755,16 @@ var
 begin
   L := MAX_PATH + 1;
   SetLength(Result, L);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   L := Windows.GetModuleFileName(Module, Pointer(Result), L);
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  {$IFDEF FPC}
+  L := 0; // FIXME
+  {$ELSE}
   L := GetModuleFileName(Module, Pointer(Result), L);
-{$ENDIF UNIX}
+  {$ENDIF FPC}
+  {$ENDIF UNIX}
   SetLength(Result, L);
 end;
 {$ENDIF ~CLR}
@@ -5488,7 +5495,11 @@ begin
   Priority := tpIdle;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
+  {$IFDEF FPC}
+  Priority := tpIdle;
+  {$ELSE}
   Priority := 0;
+  {$ENDIF FPC}
   {$ENDIF UNIX}
   {$ENDIF ~CLR}
   FreeOnTerminate := True;
@@ -6100,7 +6111,7 @@ begin
       for IndexNew := 0 to NewItems.Count - 1 do
       begin
         Item := NewItems.Strings[IndexNew];
-        
+
         Duplicate := False;
         for IndexList := 0 to StrList.Count - 1 do
           if SamePath(Item, StrList.Strings[IndexList]) then
