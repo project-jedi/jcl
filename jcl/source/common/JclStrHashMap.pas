@@ -246,6 +246,11 @@ begin
   Result := True;
 end;
 
+{$IFOPT Q+}
+{$DEFINE OVERFLOWCHECKS_ON}
+{$Q-}
+{$ENDIF}
+
 function StrHash(const S: string): Cardinal;
 {$IFDEF CLR}
 begin
@@ -271,7 +276,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Cardinal(Result) := Cardinal((Result shl cOneEight) + Ord(P^));
+    Result := (Result shl cOneEight) + Ord(P^);
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -306,7 +311,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Cardinal(Result) := Cardinal((Result shl cOneEight) + Ord(UpCase(P^)));
+    Result := (Result shl cOneEight) + Ord(UpCase(P^));
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -348,6 +353,10 @@ begin
   end;
 end;
 {$ENDIF CLR}
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$Q+}
+{$ENDIF}
 
 //=== { TStringHashMap } =====================================================
 
