@@ -267,7 +267,7 @@ type
   TWindowsVersion =
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP,
-    wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinLonghorn);
+    wvWin2003, wvWinXP64, wvWin2003R2, wvWinVista, wvWinServer2008);
   TNtProductType =
    (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
     ptPersonal, ptProfessional, ptDatacenterServer, ptEnterprise, ptWebEdition);
@@ -296,7 +296,7 @@ var
   IsWinXP64: Boolean = False;
   IsWin2003R2: Boolean = False;
   IsWinVista: Boolean = False;
-  IsWinLonghorn: Boolean = False;
+  IsWinServer2008: Boolean = False;
 
 const
   PROCESSOR_ARCHITECTURE_INTEL = 0;
@@ -2581,7 +2581,7 @@ end;
         else
         begin
           if IsWin2k or IsWinXP or IsWin2003 or IsWin2003R2 or IsWinXP64 or
-            IsWinVista or IsWinLonghorn then
+            IsWinVista or IsWinServer2008 then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -3169,7 +3169,7 @@ begin
             if GetVersionEx(OSVersionInfoEx) and (OSVersionInfoEx.wProductType = VER_NT_WORKSTATION) then
               Result := wvWinVista
             else
-              Result := wvWinLonghorn;
+              Result := wvWinServer2008;
           end;
       end;
   end;
@@ -3246,7 +3246,7 @@ begin
     end;
   end
   else
-  if IsWinXP or IsWinVista or IsWinLonghorn then // workstation
+  if IsWinXP or IsWinVista or IsWinServer2008 then // workstation
   begin
     if GetVersionEx(OSVersionInfo) then
     begin
@@ -3304,8 +3304,8 @@ begin
       Result := RsOSVersionWin2003R2;
     wvWinXP64:
       Result := RsOSVersionWinXP64;
-    wvWinLonghorn:
-      Result := RsOSVersionWinLonghorn;
+    wvWinServer2008:
+      Result := RsOSVersionWinServer2008;
     wvWinVista:
       Result := RsOSVersionWinVista;
   else
@@ -3345,7 +3345,7 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
-  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista or IsWinLonghorn then
+  if IsWin2K or IsWinXP or IsWin2003 or IsWinXP64 or IsWin2003R2 or IsWinVista or IsWinServer2008 then
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
@@ -5295,8 +5295,8 @@ begin
       IsWin2003R2 := True;
     wvWinVista:
       IsWinVista := True;
-    wvWinLonghorn:
-      IsWinLonghorn := True;
+    wvWinServer2008:
+      IsWinServer2008 := True;
   end;
 end;
 

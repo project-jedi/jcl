@@ -1749,20 +1749,20 @@ resourcestring
   RsIntelCacheDescrF0 = '64-Byte Prefetching';
   RsIntelCacheDescrF1 = '128-Byte Prefetching';
 
-  RsOSVersionWin95       = 'Windows 95';
-  RsOSVersionWin95OSR2   = 'Windows 95 OSR2';
-  RsOSVersionWin98       = 'Windows 98';
-  RsOSVersionWin98SE     = 'Windows 98 SE';
-  RsOSVersionWinME       = 'Windows ME';
-  RsOSVersionWinNT3      = 'Windows NT 3.%u';
-  RsOSVersionWinNT4      = 'Windows NT 4.%u';
-  RsOSVersionWin2000     = 'Windows 2000';
-  RsOSVersionWinXP       = 'Windows XP';
-  RsOSVersionWin2003     = 'Windows Server 2003';
-  RsOSVersionWin2003R2   = 'Windows Server 2003 "R2"';
-  RsOSVersionWinXP64     = 'Windows XP x64';
-  RsOSVersionWinVista    = 'Windows Vista';
-  RsOSVersionWinLonghorn = 'Windows Server "Longhorn"';
+  RsOSVersionWin95 = 'Windows 95';
+  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
+  RsOSVersionWin98 = 'Windows 98';
+  RsOSVersionWin98SE = 'Windows 98 SE';
+  RsOSVersionWinME = 'Windows ME';
+  RsOSVersionWinNT3 = 'Windows NT 3.%u';
+  RsOSVersionWinNT4 = 'Windows NT 4.%u';
+  RsOSVersionWin2000 = 'Windows 2000';
+  RsOSVersionWinXP = 'Windows XP';
+  RsOSVersionWin2003 = 'Windows Server 2003';
+  RsOSVersionWin2003R2 = 'Windows Server 2003 "R2"';
+  RsOSVersionWinXP64 = 'Windows XP x64';
+  RsOSVersionWinVista = 'Windows Vista';
+  RsOSVersionWinServer2008 = 'Windows Server 2008';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';

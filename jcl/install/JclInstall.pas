@@ -3337,11 +3337,11 @@ begin
   // step 3:  inform the user and execute RegHelper
 
   // simple dialog explaining user why we need credentials
-  if Assigned(GUI) and ((not IsAdministrator) or (IsWinVista or IsWinLonghorn)) then
+  if Assigned(GUI) and ((not IsAdministrator) or (IsWinVista or IsWinServer2008)) then
     GUI.Dialog(RsHTMLHelp2Credentials, dtInformation, [drOK]);
 
   // RegHelper.exe manifest requires elevation on Vista
-  if IsAdministrator or IsWinVista or IsWinLonghorn then
+  if IsAdministrator or IsWinVista or IsWinServer2008 then
     Verb := 'open'
   else
     Verb := 'runas';
