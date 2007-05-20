@@ -1749,6 +1749,8 @@ resourcestring
   RsIntelCacheDescrF0 = '64-Byte Prefetching';
   RsIntelCacheDescrF1 = '128-Byte Prefetching';
 
+  RsUnknownAMDModel = 'Unknown AMD (Model %d)';
+
   RsOSVersionWin95 = 'Windows 95';
   RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
   RsOSVersionWin98 = 'Windows 98';

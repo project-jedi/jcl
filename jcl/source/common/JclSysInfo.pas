@@ -4034,9 +4034,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-resourcestring
-  RsUnknownAMDModel = 'Unknown AMD (Model %d)';
-
 function CPUID: TCpuInfo;
   function HasCPUIDInstruction: Boolean;
   const
