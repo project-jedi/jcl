@@ -2709,6 +2709,7 @@ function TJclDebugInfoList.GetLocationInfo(const Addr: Pointer; var Info: TJclLo
 var
   Item: TJclDebugInfoSource;
 begin
+  Finalize(Info);
   FillChar(Info, SizeOf(Info), #0);
   Item := ItemFromModule[ModuleFromAddr(Addr)];
   if Item <> nil then
@@ -3317,6 +3318,7 @@ begin
       DebugInfoCritSect.Leave;
     end;
   except
+    Finalize(Result);
     FillChar(Result, SizeOf(Result), #0);
   end;
 end;
@@ -4192,6 +4194,52 @@ begin
     StoreToList(StackInfo);
 end;
 
+function SearchForStackPtrManipulation(StackPtr: Pointer; Proc: Pointer): Pointer;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF SUPPORTS_INLINE}
+{var
+  Addr: PByteArray;}
+begin
+{  Addr := Proc;
+  while (Addr <> nil) and (Cardinal(Addr) > Cardinal(Proc) - $100) and not IsBadReadPtr(Addr, 6) do
+  begin
+    if (Addr[0] = $55) and                                           // push ebp
+       (Addr[1] = $8B) and (Addr[2] = $EC) then                      // mov ebp,esp
+    begin
+      if (Addr[3] = $83) and (Addr[4] = $C4) then                    // add esp,c8
+      begin
+        Result := Pointer(Integer(StackPtr) - ShortInt(Addr[5]));
+        Exit;
+      end;
+      Break;
+    end;
+
+    if (Addr[0] = $C2) and // ret $xxxx
+         (((Addr[3] = $90) and (Addr[4] = $90) and (Addr[5] = $90)) or // nop
+          ((Addr[3] = $CC) and (Addr[4] = $CC) and (Addr[5] = $CC))) then // int 3
+      Break;
+
+    if (Addr[0] = $C3) and // ret
+         (((Addr[1] = $90) and (Addr[2] = $90) and (Addr[3] = $90)) or // nop
+          ((Addr[1] = $CC) and (Addr[2] = $CC) and (Addr[3] = $CC))) then // int 3
+      Break;
+
+    if (Addr[0] = $E9) and // jmp rel-far
+         (((Addr[5] = $90) and (Addr[6] = $90) and (Addr[7] = $90)) or // nop
+          ((Addr[5] = $CC) and (Addr[6] = $CC) and (Addr[7] = $CC))) then // int 3
+      Break;
+
+    if (Addr[0] = $EB) and // jmp rel-near
+         (((Addr[2] = $90) and (Addr[3] = $90) and (Addr[4] = $90)) or // nop
+          ((Addr[2] = $CC) and (Addr[3] = $CC) and (Addr[4] = $CC))) then // int 3
+      Break;
+
+    Dec(Cardinal(Addr));
+  end;}
+  Result := StackPtr;
+end;
+
 procedure TJclStackInfoList.TraceStackRaw;
 var
   StackInfo: TStackInfo;
@@ -4219,6 +4267,9 @@ begin
 
   StackTop := TopOfStack;
 
+  if Count > 0 then
+    StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(Items[0].StackInfo.CallerAdr));
+
   // We will not be able to fill in all the fields in the StackInfo record,
   // so just blank it all out first
   FillChar(StackInfo, SizeOf(StackInfo), 0);
@@ -4238,6 +4289,7 @@ begin
       Inc(StackInfo.Level);
       // then report it back to our caller
       StoreToList(StackInfo);
+      StackPtr := SearchForStackPtrManipulation(StackPtr, Pointer(StackInfo.CallerAdr));
     end;
     // Look at the next DWORD on the stack
     Inc(StackPtr);
