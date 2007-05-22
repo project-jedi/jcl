@@ -1131,6 +1131,14 @@ const
   MsBuildWin32DLLOutputPathNodeName = 'Win32DLLOutputPath';
   MsBuildPropertyGroupNodeName = 'PropertyGroup';
 
+function AnsiStartsText(const SubStr, S: string): Boolean;
+begin
+  if Length(SubStr) <= Length(S) then
+    Result := AnsiStrLIComp(PChar(S), PChar(SubStr), Length(SubStr)) = 0
+  else
+    Result := False;
+end;
+
 procedure GetDPRFileInfo(const DPRFileName: string; out BinaryExtension: string;
   const LibSuffix: PString = nil);
 var
@@ -1153,14 +1161,14 @@ begin
     for Index := 0 to DPRFile.Count - 1 do
     begin
       S := TrimRight(DPRFile.Strings[Index]);
-      if (AnsiStrLIComp(PChar(S), ProgramText, Length(ProgramText)) = 0) and (BinaryExtension = '') then
+      if AnsiStartsText(ProgramText, S) and (BinaryExtension = '') then
         BinaryExtension := BinaryExtensionExecutable;
-      if (AnsiStrLIComp(PChar(S), LibraryText, Length(LibraryText)) = 0) and (BinaryExtension = '') then
+      if AnsiStartsText(LibraryText, S) and (BinaryExtension = '') then
         BinaryExtension := BinaryExtensionLibrary;
-      if AnsiStrLIComp(PChar(S), DelphiBinaryExtOption, Length(DelphiBinaryExtOption)) = 0 then
+      if AnsiStartsText(DelphiBinaryExtOption, S) then
         BinaryExtension := StrTrimQuotes(Copy(S, Length(DelphiBinaryExtOption), Length(S) - Length(DelphiBinaryExtOption)));
       if Assigned(LibSuffix) and
-        (AnsiStrLIComp(PChar(S), DelphiLibSuffixOption, Length(DelphiLibSuffixOption)) = 0) then
+        AnsiStartsText(DelphiLibSuffixOption, S) then
         LibSuffix^ := StrTrimQuotes(Copy(S, Length(DelphiLibSuffixOption), Length(S) - Length(DelphiLibSuffixOption)));
     end;
   finally
