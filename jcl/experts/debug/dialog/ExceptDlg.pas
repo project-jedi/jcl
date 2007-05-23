@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls,
+  Dialogs, StdCtrls, ExtCtrls, AppEvnts,
   JclSysUtils, JclDebug;
 
 const
@@ -609,29 +609,39 @@ end;
 // Exception handler initialization code
 //==================================================================================================
 
+var
+  AppEvents: TApplicationEvents = nil;
+
 procedure InitializeHandler;
 begin
+  if AppEvents = nil then
+  begin
+    AppEvents := TApplicationEvents.Create(nil);
+    AppEvents.OnException := TExceptionDialog.ExceptionHandler;
 
 
 
-  JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];
-  JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
-  JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
-  JclDebugThreadList.OnSyncException := TExceptionDialog.ExceptionThreadHandler;
-  JclStartExceptionTracking;
-  if HookTApplicationHandleException then
-    JclTrackExceptionsFromLibraries;
-  Application.OnException := TExceptionDialog.ExceptionHandler;
+    JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];
+    JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
+    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
+    JclDebugThreadList.OnSyncException := TExceptionDialog.ExceptionThreadHandler;
+    JclStartExceptionTracking;
+    if HookTApplicationHandleException then
+      JclTrackExceptionsFromLibraries;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure UnInitializeHandler;
 begin
-  Application.OnException := nil;
-  JclDebugThreadList.OnSyncException := nil;
-  JclUnhookExceptions;
-  JclStopExceptionTracking;
+  if AppEvents <> nil then
+  begin
+    FreeAndNil(AppEvents);
+    JclDebugThreadList.OnSyncException := nil;
+    JclUnhookExceptions;
+    JclStopExceptionTracking;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------

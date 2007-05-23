@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls,
+  Dialogs, StdCtrls, ExtCtrls, AppEvnts,
   JclSysUtils,%if SendEMail JclMapi,%endif JclDebug;
 
 const
@@ -665,29 +665,39 @@ end;
 // Exception handler initialization code
 //==================================================================================================
 
+var
+  AppEvents: TApplicationEvents = nil;
+
 procedure InitializeHandler;
 begin
-%repeatline IgnoredExceptionsCount  AddIgnoredException(%IgnoredExceptions);
-%if TraceEAbort  RemoveIgnoredException(EAbort);%endif
-%if TraceAllExceptions  JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];%endif
-%if RawData  JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];%endif
-%if HookDll  JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
-%if DelayedTrace  JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
-  JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
-  JclStartExceptionTracking;
-%if HookDll  if HookTApplicationHandleException then
-    JclTrackExceptionsFromLibraries;%endif
-  Application.OnException := T%FORMNAME%.ExceptionHandler;
+  if AppEvents = nil then
+  begin
+    AppEvents := TApplicationEvents.Create(nil);
+    AppEvents.OnException := T%FORMNAME%.ExceptionHandler;
+%repeatline IgnoredExceptionsCount    AddIgnoredException(%IgnoredExceptions);
+%if TraceEAbort    RemoveIgnoredException(EAbort);%endif
+%if TraceAllExceptions    JclStackTrackingOptions := JclStackTrackingOptions + [stTraceAllExceptions];%endif
+%if RawData    JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];%endif
+%if HookDll    JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];%endif
+%if DelayedTrace    JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];%endif
+    JclDebugThreadList.OnSyncException := T%FORMNAME%.ExceptionThreadHandler;
+    JclStartExceptionTracking;
+%if HookDll    if HookTApplicationHandleException then
+      JclTrackExceptionsFromLibraries;%endif
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure UnInitializeHandler;
 begin
-  Application.OnException := nil;
-  JclDebugThreadList.OnSyncException := nil;
-  JclUnhookExceptions;
-  JclStopExceptionTracking;
+  if AppEvents <> nil then
+  begin
+    FreeAndNil(AppEvents);
+    JclDebugThreadList.OnSyncException := nil;
+    JclUnhookExceptions;
+    JclStopExceptionTracking;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
