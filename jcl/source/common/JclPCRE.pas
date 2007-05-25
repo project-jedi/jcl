@@ -82,19 +82,23 @@ type
     LastPos: Integer;
   end;
 
-  TJclAnsiRegExCallout = procedure (Sender: TJclAnsiRegEx; 
+  TJclAnsiRegExCallout = procedure (Sender: TJclAnsiRegEx;
     Index, MatchStart, SubjectPos, LastCapture, PatternPos, NextItemLength: Integer;
     var ErrorCode: Integer) of object;
   TPCRECalloutIndex = 0 .. 255;
 
   TJclAnsiRegEx = class(TObject)
   private
-    FCode: Pointer;
-    FExtra: Pointer;
+    FCode: PPCRE;
+    FExtra: PPCREExtra;
     FOptions: TJclAnsiRegExOptions;
     FPattern: AnsiString;
     FDfaMode: Boolean;
     FSubject: AnsiString;
+
+    FViewChanges: Boolean;
+    FChangedCaptures: TList;
+    FResultValues: array of String;
 
     FErrorCode: Integer;
     FErrorMessage: AnsiString;
@@ -106,9 +110,12 @@ type
 
     FOnCallout: TJclAnsiRegExCallout;
 
+    function GetResult: AnsiString;
     function GetCapture(Index: Integer): AnsiString;
+    procedure SetCapture(Index: Integer; const Value: AnsiString);
     function GetCaptureRange(Index: Integer): TJclAnsiCaptureRange;
     function GetNamedCapture(const Name: AnsiString): AnsiString;
+    procedure SetNamedCapture(const Name, Value: Ansistring);
     function GetCaptureNameCount: Integer;
     function GetCaptureName(Index: Integer): String;
     function GetAPIOptions(RunTime: Boolean): Integer;
@@ -124,12 +131,15 @@ type
     property DfaMode: Boolean read FDfaMode write FDfaMode;
     function Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
     property Subject: AnsiString read FSubject;
+    property Result: AnsiString read GetResult;
 
+    property ViewChanges: Boolean read FViewChanges write FViewChanges;
     property CaptureCount: Integer read FCaptureCount write FCaptureCount;
-    property Captures[Index: Integer]: AnsiString read GetCapture;
+    property Captures[Index: Integer]: AnsiString read GetCapture write SetCapture;
     property CaptureRanges[Index: Integer]: TJclAnsiCaptureRange read GetCaptureRange;
 
-    property NamedCaptures[const Name: AnsiString]: AnsiString read GetNamedCapture;
+    property NamedCaptures[const Name: AnsiString]: AnsiString
+      read GetNamedCapture write SetNamedCapture;
     property CaptureNameCount: Integer read GetCaptureNameCount;
     property CaptureNames[Index: Integer]: AnsiString read GetCaptureName;
     function IndexOfName(const Name: String): Integer;
@@ -146,6 +156,10 @@ type
 procedure InitializeLocaleSupport;
 procedure TerminateLocaleSupport;
 
+// Args is an array of pairs (CaptureIndex, Value) or (CaptureName, Value).
+// For example: NewIp := StrReplaceRegEx(DirIP, '(\d+)\.(\d+)\.(\d+)\.(\d+)', [3, '128', 4, '254']); 
+function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -159,6 +173,7 @@ const
 implementation
 
 uses
+  SysConst,
   JclResources;
 
 var
@@ -250,6 +265,8 @@ begin
     CallPCREFree(FExtra);
   if Assigned(FVector) then
     FreeMem(FVector);
+  if Assigned(FChangedCaptures) then
+    FChangedCaptures.Free;
 
   inherited Destroy;
 end;
@@ -338,6 +355,33 @@ begin
   end;
 end;
 
+function TJclAnsiRegEx.GetResult: AnsiString;
+var
+  Index, CaptureIndex, Pos: Integer;
+  Range: TJclAnsiCaptureRange;
+begin
+  if Assigned(FChangedCaptures) and (FChangedCaptures.Count > 0) then
+  begin
+    Pos := 1;
+    Result := '';
+    for Index := 0 to FChangedCaptures.Count - 1 do
+    begin
+      CaptureIndex := Integer(FChangedCaptures[Index]);
+      Range := GetCaptureRange(CaptureIndex);
+      
+      Result := Result +
+        Copy(FSubject, Pos, Range.FirstPos - Pos) + 
+        FResultValues[CaptureIndex];
+        
+      Pos := Range.LastPos + 1;
+    end;
+    if Pos <= Length(FSubject) then
+      Result := Result + Copy(FSubject, Pos, Length(FSubject) - Pos + 1);
+  end
+  else
+    Result := FSubject;
+end;
+
 function TJclAnsiRegEx.GetCapture(Index: Integer): AnsiString;
 var
   From, Len: Integer;
@@ -346,11 +390,39 @@ begin
     PCRECheck(PCRE_ERROR_NOSUBSTRING)
   else
   begin
+    if FViewChanges and (FChangedCaptures.IndexOf(Pointer(Index)) >= 0) then
+    begin
+      Result := FResultValues[Index];
+      Exit;
+    end;
+
     Index := Index * 2;
     From := FVector^[Index];
     Len := FVector^[Index + 1] - From;
     SetLength(Result, Len);
     Move(FSubject[From + 1], PChar(Result)^, Len);
+  end;
+end;
+
+procedure TJclAnsiRegEx.SetCapture(Index: Integer; const Value: String);
+begin
+  if (Index < 0) or (Index >= FCaptureCount) then
+    PCRECheck(PCRE_ERROR_NOSUBSTRING)
+  else
+  begin
+    if (not Assigned(FChangedCaptures)) or (FChangedCaptures.Count = 0) then
+    begin
+      if not Assigned(FChangedCaptures) then
+        FChangedCaptures := TList.Create;
+        
+      // Always resize to the max length to avoid repeated allocations.
+      FChangedCaptures.Capacity := FCaptureCount;
+      SetLength(FResultValues, FCaptureCount);
+    end;
+
+    if FChangedCaptures.IndexOf(Pointer(Index)) < 0 then
+      FChangedCaptures.Add(Pointer(Index));
+    FResultValues[Index] := Value;
   end;
 end;
 
@@ -361,8 +433,8 @@ begin
   else
   begin
     Index := Index * 2;
-    Result.FirstPos := FVector^[Index];
-    Result.LastPos := FVector^[Index + 1] - 1;
+    Result.FirstPos := FVector^[Index] + 1;
+    Result.LastPos := FVector^[Index + 1];
   end;
 end;
 
@@ -374,6 +446,16 @@ begin
   PCRECheck(Index);
 
   Result := GetCapture(Index);
+end;
+
+procedure TJclAnsiRegEx.SetNamedCapture(const Name, Value: String);
+var
+  Index: Integer;
+begin
+  Index := pcre_get_stringnumber(FCode, PChar(Name));
+  PCRECheck(Index);
+
+  SetCapture(Index, Value);
 end;
 
 function TJclAnsiRegEx.GetCaptureNameCount: Integer;
@@ -441,6 +523,8 @@ begin
   end;
 
   FSubject := Subject;
+  if Assigned(FChangedCaptures) then
+    FChangedCaptures.Clear;
   if FDfaMode then
   begin
     ExecRslt := pcre_dfa_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
@@ -487,6 +571,55 @@ begin
   begin
     CallPCREFree(GTables);
     GTables := nil;
+  end;
+end;
+
+// TODO: Better/specific error messages, show index when available.
+function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+
+  function ArgToString(Index: Integer): AnsiString;
+  begin
+    // TODO: Any other type?
+    case TVarRec(Args[Index]).VType of
+      vtString: Result := TVarRec(Args[Index]).VString^;
+      vtPChar: Result := TVarRec(Args[Index]).VPChar;
+      vtAnsiString: Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
+      else
+        raise EConvertError.Create(SInvalidFormat);
+    end;
+  end;
+
+var
+  Re: TJclAnsiRegEx;
+  Index, ArgIndex: Integer;
+  Value: AnsiString;
+begin
+  if Odd(Length(Args)) then
+    raise EConvertError.Create(SArgumentMissing)
+  else
+  begin
+    Re := TJclAnsiRegEx.Create;
+    try
+      if Re.Compile(Pattern, False) and Re.Match(Subject) then
+      begin
+        for Index := 0 to Length(Args) div 2 - 1 do
+        begin
+          ArgIndex := Index * 2;
+          Value := ArgToString(ArgIndex + 1);
+
+          if TVarRec(Args[ArgIndex]).VType = vtInteger then
+            Re.Captures[TVarRec(Args[ArgIndex]).VInteger] := Value
+          else
+            Re.NamedCaptures[ArgToString(ArgIndex)] := Value;
+        end;
+
+        Result := Re.Result;
+      end
+      else
+        raise EConvertError.Create(SInvalidFormat);
+    finally
+      Re.Free;
+    end;
   end;
 end;
 
