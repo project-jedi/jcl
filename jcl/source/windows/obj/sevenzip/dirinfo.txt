@@ -1,0 +1,1 @@
+This is the directory where object files for sevenzip (http://sevenzip.sourceforge.net) reside.

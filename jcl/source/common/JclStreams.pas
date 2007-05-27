@@ -312,6 +312,69 @@ type
     property OnSize: TJclStreamSizeEvent read FOnSize write FOnSize;
   end;
 
+  TJclSplitStream = class(TJclStream)
+  private
+    FVolume: TStream;
+    FVolumeIndex: Integer;
+    FVolumeMaxSize: Int64;
+    FPosition: Int64;
+    FVolumePosition: Int64;
+  protected
+    function GetVolume(Index: Integer): TStream; virtual; abstract;
+    function GetVolumeMaxSize(Index: Integer): Int64; virtual; abstract;
+    function GetSize: Int64; {$IFDEF COMPILER7_UP}override;{$ENDIF COMPILER7_UP}
+    procedure SetSize(const NewSize: Int64); override;
+    procedure InternalLoadVolume(Index: Integer);
+  public
+    constructor Create;
+
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
+  end;
+
+  TJclVolumeEvent = function(Index: Integer): TStream of object;
+  TJclVolumeMaxSizeEvent = function(Index: Integer): Int64 of object;
+
+  TJclDynamicSplitStream = class(TJclSplitStream)
+  private
+    FOnVolume: TJclVolumeEvent;
+    FOnVolumeMaxSize: TJclVolumeMaxSizeEvent;
+  protected
+    function GetVolume(Index: Integer): TStream; override;
+    function GetVolumeMaxSize(Index: Integer): Int64; override;
+  public
+    property OnVolume: TJclVolumeEvent read FOnVolume write FOnVolume;
+    property OnVolumeMaxSize: TJclVolumeMaxSizeEvent read FOnVolumeMaxSize
+      write FOnVolumeMaxSize;
+  end;
+
+  TJclSplitVolume = record
+    MaxSize: Int64;
+    Stream: TStream;
+    OwnStream: Boolean;
+  end;
+  PJclSplitVolume = ^TJclSplitVolume;
+
+  TJclStaticSplitStream = class(TJclSplitStream)
+  private
+    FVolumes: TList;
+    function GetVolumeCount: Integer;
+  protected
+    function GetVolume(Index: Integer): TStream; override;
+    function GetVolumeMaxSize(Index: Integer): Int64; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function AddVolume(AStream: TStream; AMaxSize: Int64 = 0;
+      AOwnStream: Boolean = False): Integer;
+
+    property VolumeCount: Integer read GetVolumeCount;
+    property Volumes[Index: Integer]: TStream read GetVolume;
+    property VolumeMaxSizes[Index: Integer]: Int64 read GetVolumeMaxSize;
+  end;
+
 // call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
 // otherwize call TStream.Seek(LongInt,Word) with range checking
 function StreamSeek(Stream: TStream; const Offset: Int64;
@@ -1390,6 +1453,310 @@ begin
     Result := FOnWrite(Self, Buffer, Count)
   else
     Result := -1;
+end;
+
+//=== { TJclSplitStream } ====================================================
+
+constructor TJclSplitStream.Create;
+begin
+  inherited Create;
+  FVolume := nil;
+  FVolumeIndex := -1;
+  FVolumeMaxSize := 0;
+  FPosition := 0;
+  FVolumePosition := 0;
+end;
+
+function TJclSplitStream.GetSize: Int64;
+var
+  OldVolumeIndex: Integer;
+  OldVolumePosition, OldPosition: Int64;
+begin
+  OldVolumeIndex := FVolumeIndex;
+  OldVolumePosition := FVolumePosition;
+  OldPosition := FPosition;
+
+  Result := 0;
+  try
+    FVolumeIndex := -1;
+    repeat
+      InternalLoadVolume(FVolumeIndex + 1);
+      if not Assigned(FVolume) then
+        Break;
+      Result := Result + FVolume.Size;
+    until FVolume.Size = 0;
+  finally
+    InternalLoadVolume(OldVolumeIndex);
+    FPosition := OldPosition;
+    if Assigned(FVolume) then
+      FVolumePosition := StreamSeek(FVolume, OldVolumePosition, soBeginning);
+  end;
+end;
+
+procedure TJclSplitStream.InternalLoadVolume(Index: Integer);
+begin
+  if Index = -1 then
+    Index := 0;
+  if Index <> FVolumeIndex then
+  begin
+    FVolumeIndex := Index;
+    FVolumePosition := 0;
+    FVolume := GetVolume(Index);
+    FVolumeMaxSize := GetVolumeMaxSize(Index);
+    if Assigned(FVolume) then
+      StreamSeek(FVolume, 0, soBeginning);
+  end;
+end;
+
+function TJclSplitStream.Read(var Buffer; Count: Integer): Longint;
+var
+  Data: PByte;
+  Total, LoopRead: Integer;
+begin
+  Result := 0;
+
+  InternalLoadVolume(FVolumeIndex);
+  if not Assigned(FVolume) then
+    Exit;
+
+  Data := PByte(@Buffer);
+  Total := Count;
+
+  repeat
+    // try to read (Count) bytes from current stream
+    LoopRead := FVolume.Read(Data^, Count);
+    FVolumePosition := FVolumePosition + LoopRead;
+    FPosition := FPosition + LoopRead;
+    Inc(Result, LoopRead);
+    if Result = Total then
+      Break;
+
+    // with next volume
+    Dec(Count, Result);
+    Inc(Data, Result);
+    InternalLoadVolume(FVolumeIndex + 1);
+    if not Assigned(FVolume) then
+      Break;
+  until False;
+end;
+
+function TJclSplitStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
+var
+  ExpectedPosition, RemainingOffset: Int64;
+begin
+  case TSeekOrigin(Origin) of
+    soBeginning:
+      ExpectedPosition := Offset;
+    soCurrent:
+      ExpectedPosition := FPosition + Offset;
+    soEnd:
+      ExpectedPosition := Size - Offset;
+  else
+    raise EJclStreamError.CreateRes(@RsStreamsSeekError);
+  end;
+  RemainingOffset := ExpectedPosition - FPosition;
+  Result := FPosition;
+  repeat
+    InternalLoadVolume(FVolumeIndex);
+    if not Assigned(FVolume) then
+      Break;
+
+    if RemainingOffset < 0 then
+    begin
+      // FPosition > ExpectedPosition, seek backward
+      if FVolumePosition > -RemainingOffset then
+      begin
+        // seek in current volume
+        FVolumePosition := StreamSeek(FVolume, FVolumePosition + RemainingOffset, soBeginning);
+        Result := Result + RemainingOffset;
+        FPosition := Result;
+        RemainingOffset := 0;
+      end
+      else
+      begin
+        // seek to previous volume
+        if FVolumeIndex = 0 then
+          Exit;
+        // seek to the beginning of current volume
+        RemainingOffset := RemainingOffset + FVolumePosition;
+        Result := Result - FVolumePosition;
+        FPosition := Result;
+        FVolumePosition := FVolume.Seek(0, soFromBeginning);
+        // load previous volume
+        InternalLoadVolume(FVolumeIndex - 1);
+        if not Assigned(FVolume) then
+          Break;
+        Result := Result - FVolume.Size;
+        FPosition := Result;
+        RemainingOffset := RemainingOffset + FVolume.Size;
+      end;
+    end
+    else if RemainingOffset > 0 then
+    begin
+      // FPosition < ExpectedPosition, seek forward
+      if (FVolumeMaxSize = 0) or ((FVolumePosition + RemainingOffset) < FVolumeMaxSize) then
+      begin
+        // can seek in current volume
+        FVolumePosition := StreamSeek(FVolume, FVolumePosition + RemainingOffset, soBeginning);
+        Result := Result + RemainingOffset;
+        FPosition := Result;
+        RemainingOffset := 0;
+      end
+      else
+      begin
+        // seek to next volume
+        RemainingOffset := RemainingOffset - FVolumeMaxSize + FVolumePosition;
+        Result := Result + FVolumeMaxSize - FVolumePosition;
+        FPosition := Result;
+        InternalLoadVolume(FVolumeIndex + 1);
+        if not Assigned(FVolume) then
+          Break;
+      end;
+    end;
+  until RemainingOffset = 0;
+end;
+
+procedure TJclSplitStream.SetSize(const NewSize: Int64);
+var
+  OldVolumeIndex: Integer;
+  OldVolumePosition, OldPosition, RemainingSize, VolumeSize: Int64;
+begin
+  OldVolumeIndex := FVolumeIndex;
+  OldVolumePosition := FVolumePosition;
+  OldPosition := FPosition;
+
+  RemainingSize := NewSize;
+  try
+    FVolumeIndex := 0;
+    repeat
+      InternalLoadVolume(FVolumeIndex);
+      if not Assigned(FVolume) then
+        Break;
+      if (FVolumeMaxSize > 0) and (RemainingSize > FVolumeMaxSize) then
+        VolumeSize := FVolumeMaxSize
+      else
+        VolumeSize := RemainingSize;
+      FVolume.Size := VolumeSize;
+      RemainingSize := RemainingSize - VolumeSize;
+
+      Inc(FVolumeIndex);
+    until RemainingSize = 0;
+  finally
+    InternalLoadVolume(OldVolumeIndex);
+    FPosition := OldPosition;
+    if Assigned(FVolume) then
+      FVolumePosition := StreamSeek(FVolume, OldVolumePosition, soBeginning);
+  end;
+end;
+
+function TJclSplitStream.Write(const Buffer; Count: Integer): Longint;
+var
+  Data: PByte;
+  Total, LoopWritten: Integer;
+begin
+  Result := 0;
+
+  InternalLoadVolume(FVolumeIndex);
+  if not Assigned(FVolume) then
+    Exit;
+
+  Data := PByte(@Buffer);
+  Total := Count;
+
+  repeat
+    // do not write more than (VolumeMaxSize) bytes in current stream
+    if (FVolumeMaxSize > 0) and ((Count + FVolumePosition) > FVolumeMaxSize) then
+      LoopWritten := FVolumeMaxSize - FVolumePosition
+    else
+      LoopWritten := Count;
+    // try to write (Count) bytes from current stream
+    LoopWritten := FVolume.Write(Data^, LoopWritten);
+    FVolumePosition := FVolumePosition + LoopWritten;
+    FPosition := FPosition + LoopWritten;
+    Inc(Result, LoopWritten);
+    if Result = Total then
+      Break;
+
+    // with next volume
+    Dec(Count, LoopWritten);
+    Inc(Data, LoopWritten);
+    InternalLoadVolume(FVolumeIndex + 1);
+    if not Assigned(FVolume) then
+      Break;
+  until False;
+end;
+
+//=== { TJclDynamicSplitStream } =============================================
+
+function TJclDynamicSplitStream.GetVolume(Index: Integer): TStream;
+begin
+  if Assigned(FOnVolume) then
+    Result := FOnVolume(Index)
+  else
+    Result := nil;
+end;
+
+function TJclDynamicSplitStream.GetVolumeMaxSize(Index: Integer): Int64;
+begin
+  if Assigned(FOnVolumeMaxSize) then
+    Result := FOnVolumeMaxSize(Index)
+  else
+    Result := 0;
+end;
+
+//=== { TJclStaticSplitStream } ===========================================
+
+constructor TJclStaticSplitStream.Create;
+begin
+  inherited Create;
+  FVolumes := TList.Create;
+end;
+
+destructor TJclStaticSplitStream.Destroy;
+var
+  Index: Integer;
+  AVolumeRec: PJclSplitVolume;
+begin
+  if Assigned(FVolumes) then
+  begin
+    for Index := 0 to FVolumes.Count - 1 do
+    begin
+      AVolumeRec := FVolumes.Items[Index];
+      if AVolumeRec^.OwnStream then
+        AVolumeRec^.Stream.Free;
+      Dispose(AVolumeRec);
+    end;
+    FVolumes.Destroy;
+  end;
+  inherited Destroy;
+end;
+
+function TJclStaticSplitStream.AddVolume(AStream: TStream; AMaxSize: Int64;
+  AOwnStream: Boolean): Integer;
+var
+  AVolumeRec: PJclSplitVolume;
+begin
+  New(AVolumeRec);
+  AVolumeRec^.MaxSize := AMaxSize;
+  AVolumeRec^.Stream := AStream;
+  AVolumeRec^.OwnStream := AOwnStream;
+  Result := FVolumes.Add(AVolumeRec);
+end;
+
+function TJclStaticSplitStream.GetVolume(Index: Integer): TStream;
+begin
+  Result := PJclSplitVolume(FVolumes.Items[Index]).Stream;
+end;
+
+function TJclStaticSplitStream.GetVolumeCount: Integer;
+begin
+  Result := FVolumes.Count;
+end;
+
+function TJclStaticSplitStream.GetVolumeMaxSize(Index: Integer): Int64;
+begin
+  Result := PJclSplitVolume(FVolumes.Items[Index]).MaxSize;
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -124,12 +124,15 @@ type
   {$ELSE ~RTL140_UP}
   PBoolean = ^Boolean;
   PByte = Windows.PByte;
+  PPWideChar = ^PWideChar;
   {$ENDIF ~RTL140_UP}
   {$ENDIF FPC}
   PCardinal = ^Cardinal;
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
+  PUInt64 = ^UInt64;
+  PPUInt64 = ^PUInt64;
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}

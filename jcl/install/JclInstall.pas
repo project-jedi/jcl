@@ -43,6 +43,7 @@ type
         joDefEDI,
         joDefPCRE,
         joDefBZip2,
+        joDef7z,
         joDefThreadSafe,
         joDefDropObsoleteCode,
         joDefUnitVersioning,
@@ -63,6 +64,9 @@ type
         joDefBZip2StaticLink,
         joDefBZip2LinkDLL,
         joDefBZip2LinkOnRequest,
+        joDef7zStaticLink,
+        joDef7zLinkDLL,
+        joDef7zLinkOnRequest,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -370,6 +374,11 @@ resourcestring
   RsCaptionDefBZip2StaticLink     = 'Static link to BZip2 code (experimental)';
   RsCaptionDefBZip2LinkDLL        = 'Static bind to bzip2.dll';
   RsCaptionDefBZip2LinkOnRequest  = 'Late bind to bzip2.dll';
+  // 7Z options
+  RsCaptionDef7z               = 'Sevenzip options';
+  RsCaptionDef7zStaticLink     = 'Static link to Sevenzip code (not supported yet)';
+  RsCaptionDef7zLinkDLL        = 'Static bind to 7z.dll';
+  RsCaptionDef7zLinkOnRequest  = 'Late bind to 7z.dll';
   
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
@@ -461,7 +470,12 @@ resourcestring
   RsHintDefBZip2               = 'BZip2 specific options (bzip2.pas)';
   RsHintDefBZip2StaticLink     = 'Code from BZip2 is linked into JCL binaries';
   RsHintDefBZip2LinkDLL        = 'JCL binaries require bzip2.dll to be present';
-  RsHintDefBZip2LinkOnRequest  = 'JCL binaries require bzip2.dll when calling PCRE functions';
+  RsHintDefBZip2LinkOnRequest  = 'JCL binaries require bzip2.dll when calling BZip2 functions';
+  // 7Z options
+  RsHintDef7z               = 'Sevenzip specific options (sevenzip.pas)';
+  RsHintDef7zStaticLink     = 'Code from Sevenzip is linked into JCL binaries';
+  RsHintDef7zLinkDLL        = 'JCL binaries require 7z.dll to be present';
+  RsHintDef7zLinkOnRequest  = 'JCL binaries require 7z.dll when calling Sevenzip functions';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -555,6 +569,7 @@ var
       (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
       (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
+      (Id: -1; Caption: RsCaptionDef7z; Hint: RsHintDef7z), // joDef7z
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
       (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
@@ -575,6 +590,9 @@ var
       (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
       (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
       (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
+      (Id: -1; Caption: RsCaptionDef7zStaticLink; Hint: RsHintDef7zStaticLink), // joDef7zStaticLink
+      (Id: -1; Caption: RsCaptionDef7zLinkDLL; Hint: RsHintDef7zLinkDLL), // joDef7zLinkDLL
+      (Id: -1; Caption: RsCaptionDef7zLinkOnRequest; Hint: RsHintDef7zLinkOnRequest), // joDef7zLinkOnRequest
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -938,6 +956,11 @@ procedure TJclInstallation.Init;
       {$ENDIF MSWINDOWS}
       AddOption(joDefBZip2LinkOnRequest, [goRadioButton, goChecked], joDefBZip2);
       AddOption(joDefBZip2LinkDLL, [goRadioButton], joDefBZip2);
+      // Sevenzip options
+      AddOption(joDef7z, [goChecked], Parent);
+      //AddOption(joDef7zStaticLink, [goRadioButton], joDef7z);
+      AddOption(joDef7zLinkOnRequest, [goRadioButton, goChecked], joDef7z);
+      AddOption(joDef7zLinkDLL, [goRadioButton], joDef7z);
     end;
   end;
 
@@ -1376,14 +1399,15 @@ function TJclInstallation.Install: Boolean;
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefBZip2LinkOnRequest] of string =
+    DefineNames: array [joDefThreadSafe..joDef7zLinkOnRequest] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST' );
+        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', '7ZIP_STATICLINK', '7ZIP_LINKDLL',
+        '7ZIP_LINKONREQUEST' );
   var
     Option: TJclOption;
     Defines: TStrings;

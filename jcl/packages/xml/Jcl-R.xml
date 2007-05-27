@@ -105,6 +105,7 @@
     <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="DelphiDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSHelpServices_TLB.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSTask.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\sevenzip.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphics.pas" Targets="c5,d5" Formname="" Condition=""/>
