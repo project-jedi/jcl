@@ -3045,7 +3045,7 @@ type
     // ISequentialOutStream
     function Write(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal): HRESULT; stdcall;
     // IOutStream
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PUInt64): HRESULT; stdcall;
+    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
     function SetSize(NewSize: Int64): HRESULT; stdcall;
 
     property Stream: TStream read FStream;
@@ -3070,7 +3070,7 @@ begin
 end;
 
 function TJclSevenzipOutStream.Seek(Offset: Int64; SeekOrigin: Cardinal;
-  NewPosition: PUInt64): HRESULT;
+  NewPosition: PInt64): HRESULT;
 var
   NewPos: Integer;
 begin
@@ -3114,9 +3114,9 @@ type
     // ISequentialInStream
     function Read(Data: Pointer; Size: Cardinal; ProcessedSize: PCardinal): HRESULT; stdcall;
     // IInStream
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PUInt64): HRESULT; stdcall;
+    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
     // IStreamGetSize
-    function GetSize(Size: PUInt64): HRESULT; stdcall;
+    function GetSize(Size: PInt64): HRESULT; stdcall;
 
     property Stream: TStream read FStream;
   end;
@@ -3139,7 +3139,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclSevenzipInStream.GetSize(Size: PUInt64): HRESULT;
+function TJclSevenzipInStream.GetSize(Size: PInt64): HRESULT;
 begin
   if Assigned(Size) then
     Size^ := Stream.Size;
@@ -3158,7 +3158,7 @@ begin
 end;
 
 function TJclSevenzipInStream.Seek(Offset: Int64; SeekOrigin: Cardinal;
-  NewPosition: PUInt64): HRESULT;
+  NewPosition: PInt64): HRESULT;
 var
   NewPos: Int64;
 begin
@@ -3181,7 +3181,7 @@ type
   public
     constructor Create(ACompressionArchive: TJclSevenzipCompressArchive);
     // IProgress
-    function SetCompleted(CompleteValue: PUInt64): HRESULT; stdcall;
+    function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
     function SetTotal(Total: UInt64): HRESULT; stdcall;
     // IArchiveUpdateCallback
     function GetProperty(Index: Cardinal; PropID: Cardinal; out Value: tagPROPVARIANT): HRESULT; stdcall;
@@ -3190,7 +3190,7 @@ type
       NewProperties: PInteger; IndexInArchive: PCardinal): HRESULT; stdcall;
     function SetOperationResult(OperationResult: Integer): HRESULT; stdcall;
     // IArchiveUpdateCallback2
-    function GetVolumeSize(Index: Cardinal; Size: PUInt64): HRESULT; stdcall;
+    function GetVolumeSize(Index: Cardinal; Size: PInt64): HRESULT; stdcall;
     function GetVolumeStream(Index: Cardinal;
       out VolumeStream: ISequentialOutStream): HRESULT; stdcall;
     // ICryptoGetTextPassword2
@@ -3337,7 +3337,7 @@ begin
 end;
 
 function TJclSevenzipUpdateCallback.GetVolumeSize(Index: Cardinal;
-  Size: PUInt64): HRESULT;
+  Size: PInt64): HRESULT;
 begin
   if Assigned(Size) then
     Size^ := 0;
@@ -3352,7 +3352,7 @@ begin
 end;
 
 function TJclSevenzipUpdateCallback.SetCompleted(
-  CompleteValue: PUInt64): HRESULT;
+  CompleteValue: PInt64): HRESULT;
 begin
   if Assigned(CompleteValue) then
     FCompressionArchive.DoProgress(CompleteValue^, FCompressionArchive.FProgressMax);
@@ -3393,8 +3393,8 @@ type
   public
     constructor Create(ADecompressionArchive: TJclSevenzipDecompressArchive);
     // IArchiveOpenCallback
-    function SetCompleted(Files: PUInt64; Bytes: PUInt64): HRESULT; stdcall;
-    function SetTotal(Files: PUInt64; Bytes: PUInt64): HRESULT; stdcall;
+    function SetCompleted(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
+    function SetTotal(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
     // ICryptoGetTextPassword
     function CryptoGetTextPassword(password: PBStr): HRESULT; stdcall;
   end;
@@ -3414,14 +3414,14 @@ begin
   Result := S_OK;
 end;
 
-function TJclSevenzipOpenCallback.SetCompleted(Files, Bytes: PUInt64): HRESULT;
+function TJclSevenzipOpenCallback.SetCompleted(Files, Bytes: PInt64): HRESULT;
 begin
   if Assigned(Files) then
     FDecompressionArchive.DoProgress(Files^, FDecompressionArchive.FProgressMax);
   Result := S_OK;
 end;
 
-function TJclSevenzipOpenCallback.SetTotal(Files, Bytes: PUInt64): HRESULT;
+function TJclSevenzipOpenCallback.SetTotal(Files, Bytes: PInt64): HRESULT;
 begin
   if Assigned(Files) then
     FDecompressionArchive.FProgressMax := Files^;
@@ -3444,7 +3444,7 @@ type
     function PrepareOperation(askExtractMode: Cardinal): HRESULT; stdcall;
     function SetOperationResult(resultEOperationResult: Integer): HRESULT; stdcall;
     // IProgress
-    function SetCompleted(CompleteValue: PUInt64): HRESULT; stdcall;
+    function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
     function SetTotal(Total: UInt64): HRESULT; stdcall;
     // ICryptoGetTextPassword
     function CryptoGetTextPassword(password: PBStr): HRESULT; stdcall;
@@ -3494,7 +3494,7 @@ begin
 end;
 
 function TJclSevenzipExtractCallback.SetCompleted(
-  CompleteValue: PUInt64): HRESULT;
+  CompleteValue: PInt64): HRESULT;
 begin
   if Assigned(CompleteValue) then
     FDecompressionArchive.DoProgress(CompleteValue^, FDecompressionArchive.FProgressMax);

@@ -75,18 +75,18 @@ type
 
   IInStream = interface(ISequentialInStream)
     ['{23170F69-40C1-278A-0000-000300030000}']
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PUInt64): HRESULT; stdcall;
+    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
   end;
 
   IOutStream = interface(ISequentialOutStream)
     ['{23170F69-40C1-278A-0000-000300040000}']
-    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PUInt64): HRESULT; stdcall;
+    function Seek(Offset: Int64; SeekOrigin: Cardinal; NewPosition: PInt64): HRESULT; stdcall;
     function SetSize(NewSize: Int64): HRESULT; stdcall;
   end;
 
   IStreamGetSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000300060000}']
-    function GetSize(Size: PUInt64): HRESULT; stdcall;
+    function GetSize(Size: PInt64): HRESULT; stdcall;
   end;
 
   IOutStreamFlush = interface(IUnknown)
@@ -141,13 +141,13 @@ const
 type
   ICompressProgressInfo = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400040000}']
-    function SetRatioInfo(InSize: PUInt64; OutSize: PUInt64): HRESULT; stdcall;
+    function SetRatioInfo(InSize: PInt64; OutSize: PInt64): HRESULT; stdcall;
   end;
 
   ICompressCoder = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400050000}']
     function Code(InStream: ISequentialInStream; OutStream: ISequentialOutStream;
-      InSize, OutSize: PUInt64; Progress: ICompressProgressInfo): HRESULT; stdcall;
+      InSize, OutSize: PInt64; Progress: ICompressProgressInfo): HRESULT; stdcall;
   end;
 
   PISequentialInStream = ^ISequentialInStream;
@@ -155,8 +155,8 @@ type
 
   ICompressCoder2 = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400180000}']
-    function Code(InStreams: PISequentialInStream; InSizes: PPUInt64; NumInStreams: Cardinal;
-      OutStreams: PISequentialOutStream; OutSizes: PPUInt64; NumOutStreams: Cardinal;
+    function Code(InStreams: PISequentialInStream; InSizes: PPInt64; NumInStreams: Cardinal;
+      OutStreams: PISequentialOutStream; OutSizes: PPInt64; NumOutStreams: Cardinal;
       Progress: ICompressProgressInfo): HRESULT; stdcall;
   end;
 
@@ -195,7 +195,7 @@ type
 
   ICompressGetInStreamProcessedSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400240000}']
-    function GetInStreamProcessedSize(Value: PUInt64): HRESULT; stdcall;
+    function GetInStreamProcessedSize(Value: PInt64): HRESULT; stdcall;
   end;
 
   ICompressSetCoderMt = interface(IUnknown)
@@ -222,12 +222,12 @@ type
 
   ICompressSetInStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400330000}']
-    function SetInStreamSize(InSize: PUInt64): HRESULT; stdcall;
+    function SetInStreamSize(InSize: PInt64): HRESULT; stdcall;
   end;
 
   ICompressSetOutStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400340000}']
-    function SetOutStreamSize(OutSize: PUInt64): HRESULT; stdcall;
+    function SetOutStreamSize(OutSize: PInt64): HRESULT; stdcall;
   end;
 
   ICompressFilter = interface(IUnknown)
@@ -286,7 +286,7 @@ type
   IProgress = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000000050000}']
     function SetTotal(Total: UInt64): HRESULT; stdcall;
-    function SetCompleted(CompleteValue: PUInt64): HRESULT; stdcall;
+    function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
   end;
   
 // IArchive.h
@@ -324,8 +324,8 @@ type
   // "23170F69-40C1-278A-0000-000600xx0000"
   IArchiveOpenCallback = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600100000}']
-    function SetTotal(Files: PUInt64; Bytes: PUInt64): HRESULT; stdcall;
-    function SetCompleted(Files: PUInt64; Bytes: PUInt64): HRESULT; stdcall;
+    function SetTotal(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
+    function SetCompleted(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
   end;
 
   IArchiveExtractCallback = interface(IProgress)
@@ -355,7 +355,7 @@ type
 
   IInArchive = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000600600000}']
-    function Open(Stream: IInStream; MaxCheckStartPosition: PUInt64;
+    function Open(Stream: IInStream; MaxCheckStartPosition: PInt64;
        OpenArchiveCallback: IArchiveOpenCallback): HRESULT; stdcall;
     function Close: HRESULT; stdcall;
     function GetNumberOfItems(NumItems: PCardinal): HRESULT; stdcall;
@@ -391,7 +391,7 @@ type
 
   IArchiveUpdateCallback2 = interface(IArchiveUpdateCallback)
     ['{23170F69-40C1-278A-0000-000600820000}']
-    function GetVolumeSize(Index: Cardinal; Size: PUInt64): HRESULT; stdcall;
+    function GetVolumeSize(Index: Cardinal; Size: PInt64): HRESULT; stdcall;
     function GetVolumeStream(Index: Cardinal; out VolumeStream: ISequentialOutStream): HRESULT; stdcall;
   end;
 

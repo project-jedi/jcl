@@ -133,6 +133,7 @@ type
   {$ENDIF ~COMPILER7_UP}
   PUInt64 = ^UInt64;
   PPUInt64 = ^PUInt64;
+  PPInt64 = ^PInt64;
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
