@@ -2,7 +2,7 @@
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
   <assemblyIdentity
     type="win32"
-    name="Jedi Code Library"
+    name="JEDI Code Library"
     version="2.0.0.2552"
     processorArchitecture="*"/>
   <dependency>

@@ -24,7 +24,7 @@
 {   Charlie Calvert                                                                                }
 {   David Hervieux                                                                                 }
 {   Florent Ouchet (outchy)                                                                        }
-{   Jeff                                                                                           }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   Jens Fudickar (jfudickar)                                                                      }
 {   JohnML                                                                                         }
 {   John Molyneux                                                                                  }
@@ -2742,7 +2742,6 @@ begin
 end;
 
 {$IFNDEF FPC}  // needs JclShell
-{ TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Anthony Steele". Excuse me?) }
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -2996,7 +2995,6 @@ begin
 end;
 {$ELSE ~CLR}
 {$IFDEF MSWINDOWS}
-  { TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?) }
 begin
   {$IFNDEF FPC}  // needs JclShell
   if MoveToRecycleBin then

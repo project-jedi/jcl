@@ -276,7 +276,7 @@ begin
             OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
         end;
 
-        // insertion of Jedi Debug Information into the binary
+        // insertion of JEDI Debug Information into the binary
         if Succ and InsertJdbg then
         begin
           Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);

@@ -24,7 +24,7 @@
 {   Eric S. Fisher                                                                                 }
 {   Florent Ouchet (outchy)                                                                        }
 {   James Azarja                                                                                   }
-{   Jean-Fabien Connault                                                                           }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   John C Molyneux                                                                                }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }

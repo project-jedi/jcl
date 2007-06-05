@@ -81,7 +81,7 @@ uses
   About, CommCtrl, JclPeImage, JclWin32;
 
 resourcestring
-  RsJCLLink = 'Jedi Code Library;http://delphi-jedi.org/Jedi:CODELIBJCL';
+  RsJCLLink = 'JEDI Code Library;http://delphi-jedi.org/Jedi:CODELIBJCL';
   RsEmailAddress = 'mailto:petr.v@mujmail.cz?subject=[Delphi Tools]';
 
 function StrEmpty(const S: AnsiString): Boolean;

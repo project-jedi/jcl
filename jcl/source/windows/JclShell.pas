@@ -19,7 +19,7 @@
 { Contributor(s):                                                                                  }
 {   Rik Barker (rikbarker)                                                                         }
 {   Marcel van Brakel                                                                              }
-{   Jeff                                                                                           }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   Aleksej Kudinov                                                                                }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -1344,7 +1344,7 @@ begin
   Result := ShellExecuteEx(@Sei);
 end;
 
-{ TODO -cHelp : author Jeff note, ShellExecEx() above used to be ShellExec()... }
+{ TODO -cHelp : author Jean-Fabien Connault note, ShellExecEx() above used to be ShellExec()... }
 
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 begin

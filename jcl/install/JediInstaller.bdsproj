@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<PersonalityInfo>
 		<Option>
@@ -156,13 +156,13 @@
 		</VersionInfo>
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
-			<VersionInfoKeys Name="FileDescription">Jedi installer</VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription">JEDI installer</VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName">JediInstaller</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2005 Project JEDI</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename">JediInstaller.dpr</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductName">Jedi Installer</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName">JEDI Installer</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">2.1</VersionInfoKeys>
 		</VersionInfoKeys>
 		<Language>

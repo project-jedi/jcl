@@ -379,7 +379,7 @@ resourcestring
   RsSvnMenuItemNotInserted = 'Can''t insert the ''%s'' menu item';
   RsENoToolsMenuItem = 'Tools menu item not found';
   RsVersionControlSheet = 'Version control';
-  RsActionCategory = 'Jedi Code Library';
+  RsActionCategory = 'JEDI Code Library';
   RsVersionCtrlSystemName = 'System';
 
 procedure Register;

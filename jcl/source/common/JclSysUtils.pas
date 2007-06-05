@@ -21,7 +21,7 @@
 {   Anthony Steele                                                                                 }
 {   Bernhard Berger                                                                                }
 {   Heri Bender                                                                                    }
-{   Jeff                                                                                           }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   Jeroen Speldekamp                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
@@ -2718,7 +2718,7 @@ end;
 //=== Conversion Utilities ===================================================
 
 { TODO -cHelp : StrToBoolean, IntToBool, BoolToInt }
-{ Author: Jeff
+{ Author: Jean-Fabien Connault
 
   StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1' or 'T/F' or 'Y/N'.
                 raises an EJclConversionError exception on failure.

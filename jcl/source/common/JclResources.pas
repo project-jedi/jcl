@@ -115,8 +115,8 @@ resourcestring
   RsCompilingProject            = 'Compiling project %s';
   RsCompilationOk               = 'Compilation success';
   RsCompilationFailed           = 'Compilation failure';
-  RsCreatingJdbg                = 'Creating Jedi Debug informations for %s';
-  RsInsertingJdbg               = 'Inserting Jedi Debug informations in %s';
+  RsCreatingJdbg                = 'Creating JEDI Debug informations for %s';
+  RsInsertingJdbg               = 'Inserting JEDI Debug informations in %s';
   RsJdbgInfo                    = 'Bug unit: %s; MAP size: %d; Debug size: %d';
   RsJdbgInfoOk                  = 'JDBG successfully generated';
   RsJdbgInfoFailed              = 'Cannot generate JDBG informations';
