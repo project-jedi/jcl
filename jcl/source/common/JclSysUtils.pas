@@ -2717,15 +2717,6 @@ end;
 
 //=== Conversion Utilities ===================================================
 
-{ TODO -cHelp : StrToBoolean, IntToBool, BoolToInt }
-{ Author: Jean-Fabien Connault
-
-  StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1' or 'T/F' or 'Y/N'.
-                raises an EJclConversionError exception on failure.
-  IntToBool: converts an integer to a boolean where 0 means false and anything else is tue.
-  BoolToInt: converts a boolean to an integer: True=>1 and False=>0
-}
-
 const
   DefaultTrueBoolStr  = 'True';  // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE

@@ -28,6 +28,23 @@
 <TITLE Shortcuts>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
+@@GetSpecialFolderLocation
+<GROUP Windows.Shell.FilesandFolders>
+Summary:
+  Returns special folder location path.
+Description:
+  The GetSpecialFolderLocation function returns the location path of the special
+  folder specified.
+Parameters:
+  FolderID - Special folder ID to locate. One of the CSIDL_XXX constants must be specified here (see ShlObj.pas for the full list).
+Result:
+  If the function succeeds the result is the location path of the special folder.
+  Otherwise the result is an empty string.
+See also:
+  OpenSpecialFolder
+Quick info:
+  Donator: Petr Vones
+--------------------------------------------------------------------------------
 @@OpenFolder
 <GROUP Windows.Shell.FilesandFolders>
 Summary:
@@ -49,17 +66,18 @@ Quick info:
 @@OpenSpecialFolder
 <GROUP Windows.Shell.FilesandFolders>
 Summary:
-  Opens a special folder in Explorer,.
+  Opens a special folder in Explorer.
 Description:
   The OpenSpecialFolder function opens Explorer with the specified Folder as the root
   of the namespace (root of the lefthand treeview).
 Parameters:
-  FolderId - SpecialFolder id to open. One of the CSIDL_Xxx constants must be specified here (see ShlObj.pas for the full list).
+  FolderID - Special folder ID to open. One of the CSIDL_XXX constants must be specified here (see ShlObj.pas for the full list).
   Parent - Handle of the window to serve as the parent of any dialogs displayed
 Result:
   If the function succeeds the result is True, otherwise it is False.
 See also:
   OpenFolder
+  GetSpecialFolderLocation
 Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
@@ -234,7 +252,7 @@ Description:
 Parameters:
   Flags - Flags that determine what type of items to include in the enumeration.
   F - Record that returns information about the items found and holds data used to continue the enumeration with a later call the SHEnumFolderNext.
-  SpecialFolder - One of the CSIDL_x constants that identify the special folder to enumerate.
+  SpecialFolder - One of the CSIDL_XXX constants that identify the special folder to enumerate.
   Folder - Fully qualified name of the folder you want to enumerate.
 Result:
   If the function succeeds it returns True and the Types\TEnumFolderRec record
@@ -818,7 +836,7 @@ Description:
   S_OK otherwise it returns an OLE error code.
 Parameters:
   ShellLink - TShellLink record with the details about the shortcut to create.
-  Folder - The folder in which to create the shortcut. This must be set to one of the CSIDL_x constants.
+  Folder - The folder in which to create the shortcut. This must be set to one of the CSIDL_XXX constants.
   FileName - Filename for the new shortcut. This can include a folder but no drive indication.
 Result:
   If the function succeeds the shortcut is created and the return value is S_OK. If

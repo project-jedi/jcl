@@ -50,6 +50,11 @@ Summary
 <TITLE Version Information>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
+@@SystemInformationRoutines.UserAccountControl
+<GROUP SystemInformationRoutines>
+<TITLE User Account Control>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
 @@RunningProcessesList
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
@@ -2816,5 +2821,18 @@ Result:
   the version and vendor of the OpenGL library in the parameters passed.
 
 Donator: Anonymous
+--------------------------------------------------------------------------------
+@@IsUACEnabled
+<GROUP SystemInformationRoutines.UserAccountControl>
+Summary:
+  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008
+Description:
+  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008.
+  UAC is enabled by default on Windows versions supporting this technology.
+Result:
+  Returns True if UAC is enabled and OS version is Windows Vista or Windows Server 2008.
+  Returns False if UAC is disabled or OS version is not Windows Vista nor Windows Server 2008.
+
+Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 

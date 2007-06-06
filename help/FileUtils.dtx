@@ -2193,9 +2193,9 @@ Donator: Marcel van Brakel
 @@DeleteDirectory
 <GROUP FilesandIO.FilesandDirectories>
 Summary
-  Deletes specified file or moves it to recycle bin.
+  Deletes specified directory or moves it to recycle bin.
 Description
-  Delete the specified file either permanently or moves it to
+  Delete the specified directory either permanently or moves it to
   recycle bin. The behaviour depends on the value of
   MoveToRecycleBin parameter.
 Parameters
@@ -2206,7 +2206,45 @@ Parameters
 Category: Files and IO
 Donator: Jean-Fabien Connault
 Quick info:
-  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@CopyDirectory
+<GROUP FilesandIO.FilesandDirectories>
+Summary
+  Copies specified directory to a new directory.
+Description
+  Copy the existing directory to a new directory.
+  If the new directory name already exists then the existing directory is copied
+  inside the new directory.
+  If the new directory name does not exist then the existing directory is copied
+  as the new directory.
+Parameters
+  ExistingDirectoryName -      Source directory
+  NewDirectoryName -           Destination directory
+Category: Files and IO
+Donator: Jean-Fabien Connault
+Quick info:
+  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@MoveDirectory
+<GROUP FilesandIO.FilesandDirectories>
+Summary
+  Moves specified directory to a new directory.
+Description
+  Move the existing directory to a new directory.
+  If the new directory name already exists then the existing directory is moved
+  inside the new directory.
+  If the new directory name does not exist then the existing directory is moved
+  (renamed) as the new directory.
+Parameters
+  ExistingDirectoryName -      Source directory
+  NewDirectoryName -           Destination directory
+Category: Files and IO
+Donator: Jean-Fabien Connault
+Quick info:
+  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@GetBackupFileName
@@ -2216,11 +2254,25 @@ Summary
 Description
   Returns a file name that can be used for backup purposes.
   Basically it prepends the file extention with a tilde (<B>~</B>).
-  If file does not contain extension, the function does
-  nothing.
+  If file does not contain extension, the function does nothing.
 Parameters
-  FileName :   File name that is used to construct file name of
-               backup file.
+  FileName :   File name that is used to construct file name of backup file.
+See Also
+   IsBackupFileName
+Category: Files and IO
+Donator: Jean-Fabien Connault
+--------------------------------------------------------------------------------
+@@IsBackupFileName
+<GROUP FilesandIO.PathManipulation>
+Summary
+  Checks if a file name is a backup file name or not.
+Description
+  Returns True if the specified file name is a backup file name (file extension starts with a tilde).
+  Returns False if the specified file name is not a backup file name (file extension doesn't start with a tilde).
+Parameters
+  FileName :   File name to check.
+See Also
+   GetBackupFileName
 Category: Files and IO
 Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -2254,10 +2306,10 @@ Description
 Parameters
   Depth - Specifies the maximum of path parts to return.
   Path - The path to extract parts from.
-Donator:
-  Jean-Fabien Connault
 See Also
   PathGetDepth
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@PathGetDepth
 Summary
