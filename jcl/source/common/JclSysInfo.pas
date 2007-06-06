@@ -76,7 +76,7 @@ uses
   System.Net, System.ComponentModel,
   {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
-  Windows, ActiveX,
+  Windows, ActiveX, Registry,
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF ~FPC}
@@ -1262,7 +1262,7 @@ function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; o
 function GetFreeSystemResources: TFreeSystemResources; overload;
 function GetBPP: Cardinal;
 
-// installed programs information
+// Installed programs information
 function ProgIDExists(const ProgID: string): Boolean;
 function IsWordInstalled: Boolean;
 function IsExcelInstalled: Boolean;
@@ -1272,8 +1272,10 @@ function IsFrontPageInstalled: Boolean;
 function IsOutlookInstalled: Boolean;
 function IsInternetExplorerInstalled: Boolean;
 function IsMSProjectInstalled: Boolean;
-
 function IsOpenOfficeInstalled: Boolean;
+
+// Windows Vista/Server 2008 UAC (User Account Control)
+function IsUACEnabled: Boolean;
 
 {$ENDIF MSWINDOWS}
 
@@ -5221,6 +5223,29 @@ end;
 function IsOpenOfficeInstalled: Boolean;
 begin
   Result := ProgIDExists('com.sun.star.ServiceManager');
+end;
+
+//=== Windows Vista/Server 2008 UAC (User Account Control) ===================
+
+function IsUACEnabled: Boolean;
+var
+  UACActive: Boolean;
+  Registry:  TRegistry;
+begin
+  Registry := TRegistry.Create;
+  try
+    Registry.RootKey := HKEY_LOCAL_MACHINE;
+    if Registry.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Policies\System', False) then
+    begin
+      UACActive := Registry.ReadBool('EnableLUA');
+      Registry.CloseKey;
+    end
+    else
+      UACActive := False;
+  finally
+    Registry.Free;
+  end;
+  Result := (IsWinVista or IsWinServer2008) and UACActive;
 end;
 
 //=== Initialization/Finalization ============================================

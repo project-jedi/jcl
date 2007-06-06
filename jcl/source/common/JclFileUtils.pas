@@ -220,6 +220,8 @@ procedure CreateEmptyFile(const FileName: string);
 function CloseVolume(var Volume: THandle): Boolean;
 {$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
+function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
 {$ENDIF ~FPC}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
@@ -238,6 +240,7 @@ function FileExists(const FileName: string): Boolean;
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
 function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
+function IsBackupFileName(const FileName: string): Boolean;
 function FileGetDisplayName(const FileName: string): string;
 {$IFNDEF CLR}
 function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
@@ -2750,6 +2753,39 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
+
+function CopyDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+var
+  SH: SHFILEOPSTRUCT;
+begin
+  FillChar(SH, SizeOf(SH), 0);
+  with SH do
+  begin
+    Wnd    := 0;
+    wFunc  := FO_COPY;
+    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+    fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
+  end;
+  Result := SHFileOperation(SH) = 0;
+end;
+
+function MoveDirectory(ExistingDirectoryName, NewDirectoryName: string): Boolean;
+var
+  SH: SHFILEOPSTRUCT;
+begin
+  FillChar(SH, SizeOf(SH), 0);
+  with SH do
+  begin
+    Wnd    := 0;
+    wFunc  := FO_MOVE;
+    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+    fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
+  end;
+  Result := SHFileOperation(SH) = 0;
+end;
+
 {$ENDIF ~FPC}
 
 function DelTree(const Path: string): Boolean;
@@ -3096,6 +3132,11 @@ begin
   else
     NewExt := '.~';
   Result := ChangeFileExt(FileName, NewExt);
+end;
+
+function IsBackupFileName(const FileName: string): Boolean;
+begin
+  Result := (pos('.~', ExtractFileExt(FileName)) = 1);
 end;
 
 function FileGetDisplayName(const FileName: string): string;
