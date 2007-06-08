@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Various miscellanuous routines that do not (yet) fit nicely into other units                     }
+{ Various miscellaneous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -108,6 +108,22 @@ implementation
 uses
   SysUtils,
   JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32, JclSysInfo;
+
+function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
+var
+  DevMode: TDeviceMode;
+begin
+  Result := DISP_CHANGE_FAILED;
+  FillChar(DevMode, SizeOf(DevMode), #0);
+  DevMode.dmSize := SizeOf(DevMode);
+  if EnumDisplaySettings(nil, 0, DevMode) then
+  begin
+    DevMode.dmFields := DM_PELSWIDTH or DM_PELSHEIGHT;
+    DevMode.dmPelsWidth := XRes;
+    DevMode.dmPelsHeight := YRes;
+    Result := ChangeDisplaySettings(DevMode, 0);
+  end;
+end;
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 var
@@ -347,22 +363,6 @@ begin
     Result := False;
   end;
   {$ENDIF MSWINDOWS}
-end;
-
-function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
-var
-  DevMode: TDeviceMode;
-begin
-  Result := DISP_CHANGE_FAILED;
-  FillChar(DevMode, SizeOf(DevMode), #0);
-  DevMode.dmSize := SizeOf(DevMode);
-  if EnumDisplaySettings(nil, 0, DevMode) then
-  begin
-    DevMode.dmFields := DM_PELSWIDTH or DM_PELSHEIGHT;
-    DevMode.dmPelsWidth := XRes;
-    DevMode.dmPelsHeight := YRes;
-    Result := ChangeDisplaySettings(DevMode, 0);
-  end;
 end;
 
 function GetAllowedPowerOperations: TJclAllowedPowerOperations;
