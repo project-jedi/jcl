@@ -109,6 +109,7 @@
     <File Name="..\..\source\windows\zlibh.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphics.pas" Targets="c5,d5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="c5,d5" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclFont.pas" Targets="c5,d5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="c5,d5" Formname="" Condition=""/>
   </Contains>
 </Package>
