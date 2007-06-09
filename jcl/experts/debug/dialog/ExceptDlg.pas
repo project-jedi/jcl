@@ -397,37 +397,45 @@ end;
 
 class procedure TExceptionDialog.ExceptionHandler(Sender: TObject; E: Exception);
 begin
-  if ExceptionShowing then
-    Application.ShowException(Exception(E))
-  else if Assigned(E) and not IsIgnoredException(E.ClassType) then
-  begin
-    ExceptionShowing := True;
-    try
-      ShowException(E, nil);
-    finally
-      ExceptionShowing := False;
+  if Assigned(E) then
+    if ExceptionShowing then
+      Application.ShowException(E)
+    else
+    begin
+      ExceptionShowing := True;
+      try
+        if IsIgnoredException(E.ClassType) then
+          Application.ShowException(E)
+        else
+          ShowException(E, nil);
+      finally
+        ExceptionShowing := False;
+      end;
     end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class procedure TExceptionDialog.ExceptionThreadHandler(Thread: TJclDebugThread);
+var
+  E: Exception;
 begin
-  if ExceptionShowing then
-  begin
-    if Thread.SyncException is EXception then
-      Application.ShowException(Exception(Thread.SyncException));
-  end
-  else
-  begin
-    ExceptionShowing := True;
-    try
-      ShowException(Thread.SyncException, Thread);
-    finally
-      ExceptionShowing := False;
+  E := Exception(Thread.SyncException);
+  if Assigned(E) then
+    if ExceptionShowing then
+      Application.ShowException(E)
+    else
+    begin
+      ExceptionShowing := True;
+      try
+        if IsIgnoredException(E.ClassType) then
+          Application.ShowException(E)
+        else
+          ShowException(E, Thread);
+      finally
+        ExceptionShowing := False;
+      end;
     end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
