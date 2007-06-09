@@ -164,9 +164,7 @@ Description:
   the view. If the size of the specified stream is larger than what the view can
   hold an exception is raised (a view will not expand in size).
 Parameters:
-  Stream - The stream from which to copy the contents. The contents are read starting at
-  position 0 up to the end of the stream. The stream's size must be smaller than or equal
-  to the view's size or an exception is raised.
+  Stream - The stream from which to copy the contents. The contents are read starting at position 0 up to the end of the stream. The stream's size must be smaller than or equal to the view's size or an exception is raised.
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMappingView.LoadFromFile
@@ -542,8 +540,7 @@ Result:
   ForceDirectories returns True if it successfully creates all necessary directories,
   False if it could not create a needed directory.
 Notes:
-  Do not call ForceDirectories with an empty string. Doing so causes ForceDirectories
-  to raise an exception.
+  Do not call ForceDirectories with an empty string. Doing so causes ForceDirectories to raise an exception.
 
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -638,7 +635,7 @@ Notes:
   relative paths to absolute ones - and thus needs to evaluate the program's
   environment.
 Donator:
-  Jean-Fabien Connault
+  Jeff
 --------------------------------------------------------------------------------
 @@PathGetLongName
 <GROUP FilesandIO.Pathmanipulation>
@@ -688,8 +685,7 @@ Summary:
 Description:
   PathGetShortName returns the short name of the given path.
 Parameters:
-  Path - The path for which you want the short name. The path must physically exist on
-  the specified drive and the drive must support short name aliases or the function will fail.
+  Path - The path for which you want the short name. The path must physically exist on the specified drive and the drive must support short name aliases or the function will fail.
 Result:
   If the function succeeds it returns the short name of the given path. If it fails
   it returns a copy of the supplied path.
@@ -918,8 +914,7 @@ cpEnd     Replaces characters at the end of the string with an ellipsis
 Result:
   The compacted path or an empty string if the function fails.
 Notes:
-  If Width is smaller than the most compacted path then the result is the most compacted
-  path, even though it does not fit within the specified width.
+  If Width is smaller than the most compacted path then the result is the most compacted path, even though it does not fit within the specified width.
 Platform:
   Windows
 Donator: Marcel van Brakel
@@ -999,9 +994,7 @@ Description:
   GetModulePath returns the fully qualified filename of the executable file that
   houses the module specified by the Module parameter.
 Parameters:
-  Module - Handle of the module whose path you are querying for. This, for example, is
-  the handle returned by LoadLibrary (or LoadLibraryEx) or the address at which the module
-  is loaded (in Win32 a module handle is the base address at which a module is loaded).
+  Module - Handle of the module whose path you are querying for. This, for example, is the handle returned by LoadLibrary (or LoadLibraryEx) or the address at which the module is loaded (in Win32 a module handle is the base address at which a module is loaded).
 Result:
   The fully qualified filename of the specified module, or an empty string on failure.
 
@@ -1023,8 +1016,7 @@ Description:
   can hardly be predicted, but when opening the file you should use the O_EXCL
   flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
 Parameters:
-  Prefix - On input the first three characters of the string are used to form the name of
-  the temporary file (can be empty).
+  Prefix - On input the first three characters of the string are used to form the name of the temporary file (can be empty).
 Result:
   If the function succeeds it returns a fully qualified filename. If it fails it
   returns an empty string.
@@ -1045,10 +1037,7 @@ Description:
   attempt to keep the file's data in memory rather than caching it. Therefore you
   should close the file as soon as possible using CloseHandle.
 Parameters:
-  Prefix - On input the first three characters of the string are used to form the name of
-  the temporary file (can be empty). On return, assuming the function succeeded, Prefix
-  contains the actual name of the temporary file, including the path. On failure the contents
-  of Prefix are undefined.
+  Prefix - On input the first three characters of the string are used to form the name of the temporary file (can be empty). On return, assuming the function succeeded, Prefix contains the actual name of the temporary file, including the path. On failure the contents of Prefix are undefined.
 Result:
   If the function succeeds the result is a handle to the temporary file, on failure
   the function returns INVALID_HANDLE_VALUE.
@@ -1106,7 +1095,7 @@ Result:
 Platforms:
   Windows, Unix
 Donator:
-  Jean-Fabien Connault
+  Marcel van Brakel
 Contributor:
   Robert Rossmair
 --------------------------------------------------------------------------------
@@ -2193,9 +2182,9 @@ Donator: Marcel van Brakel
 @@DeleteDirectory
 <GROUP FilesandIO.FilesandDirectories>
 Summary
-  Deletes specified directory or moves it to recycle bin.
+  Deletes specified file or moves it to recycle bin.
 Description
-  Delete the specified directory either permanently or moves it to
+  Delete the specified file either permanently or moves it to
   recycle bin. The behaviour depends on the value of
   MoveToRecycleBin parameter.
 Parameters
@@ -2204,47 +2193,9 @@ Parameters
                        the system Recycle Bin instead of being
                        deleted.
 Category: Files and IO
-Donator: Jean-Fabien Connault
+Donator: Anthony Steele
 Quick info:
-  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
-@@CopyDirectory
-<GROUP FilesandIO.FilesandDirectories>
-Summary
-  Copies specified directory to a new directory.
-Description
-  Copy the existing directory to a new directory.
-  If the new directory name already exists then the existing directory is copied
-  inside the new directory.
-  If the new directory name does not exist then the existing directory is copied
-  as the new directory.
-Parameters
-  ExistingDirectoryName -      Source directory
-  NewDirectoryName -           Destination directory
-Category: Files and IO
-Donator: Jean-Fabien Connault
-Quick info:
-  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
-@@MoveDirectory
-<GROUP FilesandIO.FilesandDirectories>
-Summary
-  Moves specified directory to a new directory.
-Description
-  Move the existing directory to a new directory.
-  If the new directory name already exists then the existing directory is moved
-  inside the new directory.
-  If the new directory name does not exist then the existing directory is moved
-  (renamed) as the new directory.
-Parameters
-  ExistingDirectoryName -      Source directory
-  NewDirectoryName -           Destination directory
-Category: Files and IO
-Donator: Jean-Fabien Connault
-Quick info:
-  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
+  Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@GetBackupFileName
@@ -2254,27 +2205,13 @@ Summary
 Description
   Returns a file name that can be used for backup purposes.
   Basically it prepends the file extention with a tilde (<B>~</B>).
-  If file does not contain extension, the function does nothing.
+  If file does not contain extension, the function does
+  nothing.
 Parameters
-  FileName :   File name that is used to construct file name of backup file.
-See Also
-   IsBackupFileName
+  FileName :   File name that is used to construct file name of
+               backup file.
 Category: Files and IO
-Donator: Jean-Fabien Connault
---------------------------------------------------------------------------------
-@@IsBackupFileName
-<GROUP FilesandIO.PathManipulation>
-Summary
-  Checks if a file name is a backup file name or not.
-Description
-  Returns True if the specified file name is a backup file name (file extension starts with a tilde).
-  Returns False if the specified file name is not a backup file name (file extension doesn't start with a tilde).
-Parameters
-  FileName :   File name to check.
-See Also
-   GetBackupFileName
-Category: Files and IO
-Donator: Jean-Fabien Connault
+Donator: Marcel van Brakel (Jeff?)
 --------------------------------------------------------------------------------
 @@OSFileTypeToString
 <GROUP FilesandIO.FileSystems>
@@ -2306,10 +2243,10 @@ Description
 Parameters
   Depth - Specifies the maximum of path parts to return.
   Path - The path to extract parts from.
+Donator:
+  Jeff
 See Also
   PathGetDepth
-Donator:
-  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@PathGetDepth
 Summary
@@ -2322,7 +2259,7 @@ Parameters
 See Also
    PathExtractPathDepth
 Donator:
-  Jean-Fabien Connault
+  Jeff
 --------------------------------------------------------------------------------
 @@UnlockVolume
 <GROUP FilesandIO.FilesandDirectories>
@@ -2366,7 +2303,7 @@ Result:
 Note:
   Obsolete. Use FileDelete instead.
 Donator:
-  Jean-Fabien Connault
+  Jeff
 --------------------------------------------------------------------------------
 @@Win32MoveFileReplaceExisting
 <GROUP FilesandIO.FilesandDirectories>
@@ -2400,7 +2337,7 @@ Note:
 Platform:
   Windows
 Donator:
-  Jean-Fabien Connault
+  ?
 --------------------------------------------------------------------------------
 @@Win32RestoreFile
 <GROUP FilesandIO.FilesandDirectories>
@@ -2417,7 +2354,7 @@ Note:
 Platform:
   Windows
 Donator:
-  Jean-Fabien Connault
+  ?
 --------------------------------------------------------------------------------
 @@VersionFixedFileInfo
 <GROUP FilesandIO.FilesandDirectories.FileVersionInfo>

@@ -19,7 +19,7 @@
 { Contributor(s):                                                                                  }
 {   Rik Barker (rikbarker)                                                                         }
 {   Marcel van Brakel                                                                              }
-{   Jean-Fabien Connault (cycocrew)                                                                }
+{   Jeff                                                                                           }
 {   Aleksej Kudinov                                                                                }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -96,7 +96,7 @@ function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
 procedure SHEnumFolderClose(var F: TEnumFolderRec);
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 
-function GetSpecialFolderLocation(const FolderID: Integer): string;
+function GetSpecialFolderLocation(const Folder: Integer): string;
 
 function DisplayPropDialog(const Handle: THandle; const FileName: string): Boolean; overload;
 function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean; overload;
@@ -507,11 +507,11 @@ begin
   end;
 end;
 
-function GetSpecialFolderLocation(const FolderID: Integer): string;
+function GetSpecialFolderLocation(const Folder: Integer): string;
 var
   FolderPidl: PItemIdList;
 begin
-  if Succeeded(SHGetSpecialFolderLocation(0, FolderID, FolderPidl)) then
+  if Succeeded(SHGetSpecialFolderLocation(0, Folder, FolderPidl)) then
   begin
     Result := PidlToPath(FolderPidl);
     PidlFree(FolderPidl);
@@ -1344,7 +1344,7 @@ begin
   Result := ShellExecuteEx(@Sei);
 end;
 
-{ TODO -cHelp : author Jean-Fabien Connault note, ShellExecEx() above used to be ShellExec()... }
+{ TODO -cHelp : author Jeff note, ShellExecEx() above used to be ShellExec()... }
 
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 begin

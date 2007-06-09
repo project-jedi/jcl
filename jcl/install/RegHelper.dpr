@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {                                                                                                  }
-{ Last modified: $Date$                           }
+{ Last modified: $Date$                          }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -177,7 +177,7 @@ var
 procedure DisplayCopyright;
 begin
   WriteLn(RegHelperOutput,'HTML Help 2.0 registration helper');
-  WriteLn(RegHelperOutput,'Copyright (c) 2007 Project JEDI');
+  WriteLn(RegHelperOutput,'Copyright (c) 2007 Project Jedi');
   WriteLn(RegHelperOutput,'');
 end;
 

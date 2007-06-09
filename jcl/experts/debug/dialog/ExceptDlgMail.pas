@@ -242,8 +242,8 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add('support@visigate.de');
-    Subject := 'Exception Report';
+    Recipients.Add('name@domain.ext');
+    Subject := 'email subject';
     Body := ReportAsText;
     SaveTaskWindows;
     try
@@ -417,45 +417,37 @@ end;
 
 class procedure TExceptionDialogMail.ExceptionHandler(Sender: TObject; E: Exception);
 begin
-  if Assigned(E) then
-    if ExceptionShowing then
-      Application.ShowException(E)
-    else
-    begin
-      ExceptionShowing := True;
-      try
-        if IsIgnoredException(E.ClassType) then
-          Application.ShowException(E)
-        else
-          ShowException(E, nil);
-      finally
-        ExceptionShowing := False;
-      end;
+  if ExceptionShowing then
+    Application.ShowException(Exception(E))
+  else if Assigned(E) and not IsIgnoredException(E.ClassType) then
+  begin
+    ExceptionShowing := True;
+    try
+      ShowException(E, nil);
+    finally
+      ExceptionShowing := False;
     end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class procedure TExceptionDialogMail.ExceptionThreadHandler(Thread: TJclDebugThread);
-var
-  E: Exception;
 begin
-  E := Exception(Thread.SyncException);
-  if Assigned(E) then
-    if ExceptionShowing then
-      Application.ShowException(E)
-    else
-    begin
-      ExceptionShowing := True;
-      try
-        if IsIgnoredException(E.ClassType) then
-          Application.ShowException(E)
-        else
-          ShowException(E, Thread);
-      finally
-        ExceptionShowing := False;
-      end;
+  if ExceptionShowing then
+  begin
+    if Thread.SyncException is EXception then
+      Application.ShowException(Exception(Thread.SyncException));
+  end
+  else
+  begin
+    ExceptionShowing := True;
+    try
+      ShowException(Thread.SyncException, Thread);
+    finally
+      ExceptionShowing := False;
     end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------

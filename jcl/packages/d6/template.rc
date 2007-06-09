@@ -21,7 +21,7 @@ BEGIN
               VALUE "InternalName", "%NAME%\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2007 Project JEDI\0"
               VALUE "OriginalFilename", "%NAME%D60%BINEXTENSION%\0"
-              VALUE "ProductName", "JEDI Code Library\0"
+              VALUE "ProductName", "Jedi Code Library\0"
               VALUE "ProductVersion", "%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%\0"
          END
     END

@@ -17,13 +17,13 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Alexander Radchenko                                                                            }
-{   Andreas Hausladen (ahuser)                                                                     }
+{   Andreas Hausladen                                                                              }
 {   Anthony Steele                                                                                 }
 {   Azret Botash                                                                                   }
 {   Barry Kelly                                                                                    }
 {   Huanlin Tsai                                                                                   }
 {   Jack N.A. Bakker                                                                               }
-{   Jean-Fabien Connault (cycocrew)                                                                }
+{   Jean-Fabien Connault                                                                           }
 {   John C Molyneux                                                                                }
 {   Leonard Wennekers                                                                              }
 {   Martin Kimmings                                                                                }
@@ -32,11 +32,11 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Michael Winter                                                                                 }
 {   Nick Hodges                                                                                    }
-{   Olivier Sannier (obones)                                                                       }
+{   Olivier Sannier                                                                                }
 {   Pelle F. S. Liljendal                                                                          }
-{   Petr Vones (pvones)                                                                            }
+{   Petr Vones                                                                                     }
 {   Robert Lee                                                                                     }
-{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Marquardt                                                                               }
 {   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}

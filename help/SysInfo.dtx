@@ -50,11 +50,6 @@ Summary
 <TITLE Version Information>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
-@@SystemInformationRoutines.UserAccountControl
-<GROUP SystemInformationRoutines>
-<TITLE User Account Control>
-<TOPICORDER 1000>
---------------------------------------------------------------------------------
 @@RunningProcessesList
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
 Summary:
@@ -495,9 +490,7 @@ See also:
 
 Donator: Marcel van Brakel
 @@TWindowsVersion.wvUnknown
-  Unknown Windows version. This can happen when a new Windows version is released
-  after JCL or if you are running a Windows version with a different build number
-  then expected. For example a beta version.
+  Unknown Windows version. This can happen when a new Windows version is released after JCL or if you are running a Windows version with a different build number then expected. For example a beta version.
 @@TWindowsVersion.wvWin95
   Windows 95
 @@TWindowsVersion.wvWin95OSR2
@@ -522,10 +515,6 @@ Donator: Marcel van Brakel
   Windows XP
 @@TWindowsVersion.wvWin2003
   Windows Server 2003
-@@TWindowsVersion.wvWinVista
-  Windows Vista
-@@TWindowsVersion.wvWinServer2008
-  Windows Server 2008
 --------------------------------------------------------------------------------
 @@GetWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -543,9 +532,6 @@ See also:
   IsWinNT4
   IsWin2K
   IsWinXP
-  IsWin2003
-  IsWinVista
-  IsWinServer2008
   NtProductType
 
 Donator: Marcel van Brakel
@@ -938,7 +924,7 @@ Summary:
   Returns the Windows Common Files directory.
 Description:
   GetCommonFilesFolder returns the Windows Common Files folder as read from the
-  registry. On a default installation of Windows 2000/XP/Vista this is a string such as
+  registry. On a default installation of Windows 2000 this is a string such as
   c:\Program Files\Common Files.
 Result:
   The Windows Common Files folder. If the function fails it returns an empty string.
@@ -978,8 +964,7 @@ Description:
 Result:
   The local user name or an empty string on failure.
 Notes:
-  If you're running Windows 2000 you can use the GetUserNameEx function to control
-  the format of the returned name.
+  If you're running Windows 2000 you can use the GetUserNameEx function to control the format of the returned name.
 See also:
   GetLocalComputerName
 
@@ -991,7 +976,7 @@ Summary:
   Returns the Windows Program Files directory.
 Description:
   GetProgramFilesFolder returns the Windows Program Files folder as read from the
-  registry. On a default installation of Windows 2000/XP/Vista this is a string such as
+  registry. On a default installation of Windows 2000 this is a string such as
   c:\Program Files.
 Result:
   The Windows Program Files folder. If the function fails it returns an empty string.
@@ -1059,8 +1044,7 @@ Notes:
   This information is accurate only if you have not updated or
   changed the BIOS since you last ran Windows 95/98 or Windows Millennium
   Edition (Me) Setup.
-  The result is valid for Win9x/ME only; under Windows NT/2000/XP/2003/Vista/Server 2008,
-  an empty string is returned.
+  The result is valid for Win9x/ME only; under Windows NT/2000/XP/2003, an empty string is returned.
 See also:
   GetBIOSDate
   GetBIOSCopyright
@@ -1106,7 +1090,6 @@ Description:
   The GetWindowsFolder function retrieves the path of the Windows directory. The
   Windows directory contains such files as Win32-based applications, initialization
   files, and help files. On a default installation of Windows 2000 this is c:\winnt.
-  On a default installation of Windows XP/Vista this is c:\windows.
 Result:
   The Windows directory or an empty string on failure.
 See also:
@@ -1119,10 +1102,9 @@ Donator: Petr Vones
 Summary:
   Returns the Windows system directory.
 Description:
-  The GetWindowsSystemFolder function retrieves the path of the Windows system directory.
-  The Windows system directory contains such files as dynamic-link libraries, drivers,
-  and font files. On a default installation of Windows 2000 this is c:\winnt\system32.
-  On a default installation of Windows XP/Vista this is c:\windows\system32.
+  The GetWindowsSystemFolder function retrieves the path of the system directory. The
+  system directory contains such files as dynamic-link libraries, drivers, and font
+  files. On a default installation of Windows 2000 this is c:\winnt\system32.
 Result:
   The Windows system directory or an empty string on failure.
 See also:
@@ -1135,10 +1117,11 @@ Donator: Petr Vones
 Summary:
   Returns the Windows temp folder.
 Description:
-  The GetWindowsTempFolder function retrieves the path of the directory designated for
-  temporary files. Normally this is the folder specified by the TMP or TEMP environment
-  variable. If TMP and TEMP do not exist then for Windows 95/98 the result is the current
-  directory and for Windows NT/2000 the result is the Windows directory.
+  The GetWindowsTempFolder function retrieves the path of the directory designated
+  for temporary files. Normally this is the folder specified by the TMP or TEMP
+  environment variable. If TMP and TEMP do not exist then for Windows 95/98 the
+  result is the current directory and for Windows NT/2000 the result is the Windows
+  directory.
 Result:
   The Windows folder designated for temporary files.
 
@@ -1155,7 +1138,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1170,7 +1153,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1185,7 +1168,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1200,7 +1183,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1215,7 +1198,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1228,12 +1211,12 @@ Description:
 Result:
   If the system is running Windows NT the result is True otherwise the result is False.
   You can use the IsWinNT3, IsWinNT31, IsWinNT35, IsWinNT351, IsWinNT4, IsWin2K, IsWinXP,
-  IsWin2003, IsWinVista or IsWinServer2008 to further distinguish between the different NT
+  IsWin2003, IsWinVista or IsWinLonghorn to further distinguish between the different NT
   versions.
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 
 Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -1248,7 +1231,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Nick Hodges
@@ -1264,7 +1247,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Nick Hodges
@@ -1280,7 +1263,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Nick Hodges
@@ -1296,7 +1279,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT4>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Nick Hodges
@@ -1312,7 +1295,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
-<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Nick Hodges
@@ -1328,7 +1311,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Marcel van Brakel
@@ -1344,7 +1327,7 @@ Result:
 See Also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2k> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2k> <link IsWin2003> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 --------------------------------------------------------------------------------
 @@IsWin2003
@@ -1358,7 +1341,7 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Petr Vones
@@ -1374,23 +1357,23 @@ Result:
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinServer2008>
+<link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Florent Ouchet
 --------------------------------------------------------------------------------
-@@IsWinServer2008
+@@IsWinLonghorn
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns whether the system is running Windows Server 2008.
+  Returns whether the system is running Windows Longhorn.
 Description:
-  IsWinServer2008 returns whether or not the system is running Windows Server 2008.
+  IsWinLonghorn returns whether or not the system is running Windows Longhorn.
 Result:
-  If the system is running Windows Server 2008 the result is True otherwise the result is False.
+  If the system is running Windows Longhorn the result is True otherwise the result is False.
 See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
-<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinServer2008>
+<link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinLonghorn>
 <link NtProductType>
 
 Donator: Florent Ouchet
@@ -1408,18 +1391,18 @@ Result:
 
    * ptUnknown Edition could not be determined. Most likely the system is not running NT
    * ptWorkStation The system is running Windows NT workstation or Windows 2000 professional.
-   * ptServer The system is running Windows NT/2000 Server
+   * ptServer The system is running Windows NT/2000Windows 2000 Server
    * ptAdvancedServer The system is running Windows NT/2000 Server as a (primary or backup) domain controller.
    * ptPersonal The system is running Windows XP Personal
    * ptProfessional The system is running Windows 2000/XP Professional
-   * ptDatacenterServer The system is running Windows 2000 DataCenter Server
+   * ptDatacenterServer The system is running Windows 2000 DataCenter server
 
 Notes:
   On platforms other then Windows NT/2000 this function always returns ptUnknown.
 See also:
 <link IsWinNT> <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
 <link IsWinNT4> <link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinVista>
-<link IsWinServer2008> <link NtProductType>
+<link IsWinLonghorn> <link NtProductType>
 
 Donator: Marcel van Brakel
   Contributors: Scott Price, Jean-Fabien Connault
@@ -1478,8 +1461,7 @@ Donator:
 @@TEnvironmentOption.eoCurrentUser
   Copy the environment of the user that is running the process.
 @@TEnvironmentOption.eoAdditional
-  Copy additional name / value pairs to the new environment block. These additional pairs
-  must be passed in the AdditionalVars parameter of the CreateEnvironmentBlock function.
+  Copy additional name / value pairs to the new environment block. These additional pairs must be passed in the AdditionalVars parameter of the CreateEnvironmentBlock function.
 @@TEnvironmentOptions
 <GROUP SystemInformationRoutines.Environment>
 <COMBINE TEnvironmentOption>
@@ -1497,10 +1479,8 @@ Result:
   As the result, you will receive the name of the domain the user is defined in,
   or an empty string if the function fails.
 Notes:
-  The function tries to find the user account on the local system first. Next, the
-  primary domain is checked. If the name is not found there, trusted domains are checked.
-  GetUserDomainName relies on LookupAccountName, which is not implemented by Win9x/ME,
-  and will return an empty result string on these platforms.
+  The function tries to find the user account on the local system first. Next, the primary domain is checked. If the name is not found there, trusted domains are checked.
+  GetUserDomainName relies on LookupAccountName, which is not implemented by Win9x/ME, and will return an empty result string on these platforms.
 See also:
   GetDomainName
   GetLocalUserName
@@ -1520,8 +1500,8 @@ Result:
   The name of the domain where the user account resides, or an empty string if
   the function fails.
 Notes:
-  The function determines the name of the domain by checking which domain the currently
-  logged in user is belonging to. Under Win9x/ME, the result will be an empty string.
+  The function determines the name of the domain by checking which domain the currently logged in user is belonging to.
+  Under Win9x/ME, the result will be an empty string.
 See also:
   GetUserDomainName
   GetLocalUserName
@@ -1575,14 +1555,13 @@ Summary:
   Returns the name of the file system directory containing the current user's program groups.
 Description:
   GetProgramsFolder returns the name of the file system directory containing the user's
-  program groups (which are in fact file system directories themselves) and program shortcuts
-  (which are special files). On a standard Windows NT 4.0 installation, this is equivalent
-  to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files".
+  program groups (which are in fact file system directories themselves) and program
+  shortcuts (which are special files). On a standard Windows NT 4.0 installation,
+  this is equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files".
 Result:
   A string containing the local path to the programs directory.
 Notes:
-  Applications that need to add program groups and program shortcuts should place them
-  into the directory returned by this function.
+  Applications that need to add program groups and program shortcuts should place them into the directory returned by this function.
 See also:
   GetCommonFilesFolder
   GetCurrentFolder
@@ -1658,12 +1637,11 @@ Donators: Peter Friese (Win32), André Snepvangers (Unix)
 @@GetFavoritesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the directory that serves as a common repository for the user's
-  favorite items.
+  Returns the name of the directory that serves as a common repository for the user's favorite items.
 Description:
-  GetFavoritesFolder returns the name of the directory that serves as a common repository
-  for the user's favorite items. On a standard Windows NT 4.0 installation, this is equivalent
-  to "C:\WINNT\Profiles\%Username%\Favorites".
+  GetFavoritesFolder returns the name of the directory that serves as a common
+  repository for the user's favorite items. On a standard Windows NT 4.0 installation,
+  this is equivalent to "C:\WINNT\Profiles\%Username%\Favorites".
 Result:
   A string containing the local path to the current user's favorite files folder.
 See also:
@@ -1702,10 +1680,10 @@ Donator: Peter Friese
 Summary:
   Returns the name of the directory that corresponds to the user's Startup program group.
 Description:
-  GetStartupFolder returns the name of the directory that corresponds to the user's Startup
-  program group. The system starts these programs whenever any user logs onto Windows NT
-  or starts Windows 95. On a standard Windows NT 4.0 installation, this directory is
-  equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files\Startup".
+  GetStartupFolder returns the name of the directory that corresponds to the user's
+  Startup program group. The system starts these programs whenever any user logs
+  onto Windows NT or starts Windows 95. On a standard Windows NT 4.0 installation,
+  this directory is equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files\Startup".
 Result:
   A string containing the local path to the current user's startup files folder.
 See also:
@@ -1743,12 +1721,11 @@ Donator: Peter Friese
 @@GetRecentFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that contains the user's most recently
-  used documents.
+  Returns the name of the file system directory that contains the user's most recently used documents.
 Description:
-  GetRecentFolder returns the name of the file system directory that contains the user's
-  most recently used documents. On a standard Windows NT 4.0 installation, this directory
-  is equivalent to "C:\WINNT\Profiles\%Username%\Recent".
+  GetRecentFolder returns the name of the file system directory that contains the
+  user's most recently used documents. On a standard Windows NT 4.0 installation,
+  this directory is equivalent to "C:\WINNT\Profiles\%Username%\Recent".
 Result:
   A string containing the local path to the current user's recently used files folder.
 See also:
@@ -1788,11 +1765,11 @@ Donator: Peter Friese
 Summary:
   Returns the name of the file system directory that contains Send To menu items.
 Description:
-  GetSendToFolder returns the name of the file system directory that contains SendTo
-  menu items. On a standard Windows NT 4.0 installation, this directory is equivalent
-  to "C:\WINNT\Profiles\%Username%\SendTo".
+  GetSendToFolder returns the name of the file system directory that contains Send
+  To menu items. On a standard Windows NT 4.0 installation, this directory is
+  equivalent to "C:\WINNT\Profiles\%Username%\SendTo".
 Result:
-  A string containing the local path to the current user's SendTo files folder.
+  A string containing the local path to the current user's Send To files folder.
 See also:
   GetCommonFilesFolder
   GetCurrentFolder
@@ -1870,8 +1847,7 @@ Donator: Peter Friese
 @@GetDesktopDirectoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory used to physically store file objects
-  on the desktop.
+  Returns the name of the file system directory used to physically store file objects on the desktop.
 Description:
   GetDesktopDirectoryFolder returns the name of the file system directory used to
   physically store file objects on the desktop (not to be confused with the desktop
@@ -1914,8 +1890,7 @@ Donator: Peter Friese
 @@GetNethoodFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory containing objects that appear in
-  the network neighborhood.
+  Returns the name of the file system directory containing objects that appear in the network neighborhood.
 Description:
   GetNetHoodFolder returns the name of the file system directory containing objects
   that appear in the network neighborhood. On a standard Windows NT 4.0 installation,
@@ -1959,8 +1934,9 @@ Donator: Peter Friese
 Summary:
   Returns the name of the file system directory containing fonts.
 Description:
-  GetFontsFolder returns the name of the file system directory containing fonts.
-  On a standard Windows NT 4.0 installation, this directory is equivalent to "C:\WINNT\Fonts".
+  GetFontsFolder returns the name of the file system directory containing fonts. On
+  a standard Windows NT 4.0 installation, this directory is equivalent
+  to "C:\WINNT\Fonts".
 Result:
   A string containing the local path to the system's fonts folder.
 See also:
@@ -1998,13 +1974,12 @@ Donator: Peter Friese
 @@GetCommonStartmenuFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that contains the programs and
-  folders that appear on the Start menu for all users.
+  Returns the name of the file system directory that contains the programs and folders that appear on the Start menu for all users.
 Description:
   GetCommonStartmenuFolder returns the name of the file system directory that
-  contains the programs and folders that appear on the Start menu for all users.
-  On a standard Windows NT 4.0 installation, this directory is equivalent to
-  "C:\WINNT\Profiles\All Users\Start Menu".
+  contains the programs and folders that appear on the Start menu for all users. On
+  a standard Windows NT 4.0 installation, this directory is equivalent
+  to "C:\WINNT\Profiles\All Users\Start Menu".
 Result:
   A string containing the local path to the system's Start menu folder.
 See also:
@@ -2042,8 +2017,7 @@ Donator: Peter Friese
 @@GetCommonProgramsFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that contains the directories for
-  the common program groups that appear on the Start menu for all users.
+  Returns the name of the file system directory that contains the directories for the common program groups that appear on the Start menu for all users.
 Description:
   Returns the name of the file system directory that contains the directories for
   the common program groups that appear on the Start menu for all users. On
@@ -2086,8 +2060,7 @@ Donator: Peter Friese
 @@GetCommonStartupFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that contains the programs that
-  appear in the Startup folder for all users.
+  Returns the name of the file system directory that contains the programs that appear in the Startup folder for all users.
 Description:
   GetCommonStartupFolder returns the name of the file system directory that contains
   the programs that appear in the Startup folder for all users. On a standard Windows
@@ -2130,8 +2103,7 @@ Donator: Peter Friese
 @@GetCommonDesktopdirectoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that contains files and folders that
-  appear on the desktop for all users.
+  Returns the name of the file system directory that contains files and folders that appear on the desktop for all users.
 Description:
   GetCommonDesktopdirectoryFolder returns the name of the file system directory that
   contains files and folders that appear on the desktop for all users. On a standard
@@ -2174,8 +2146,7 @@ Donator: Peter Friese
 @@GetAppdataFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that serves as a common repository
-  for application-specific data.
+  Returns the name of the file system directory that serves as a common repository for application-specific data.
 Description:
   GetAppdataFolder Returns the name of the file system directory that serves as a
   common repository for application-specific data. On a standard Windows NT 4.0
@@ -2337,8 +2308,7 @@ Donator: Peter Friese
 @@GetInternetCacheFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that serves as a common repository
-  for temporary Internet files.
+  Returns the name of the file system directory that serves as a common repository for temporary Internet files.
 Description:
   GetInternetCacheFolder returns the name of the file system directory that serves
   as a common repository for temporary Internet files.
@@ -2378,8 +2348,7 @@ Donator: Peter Friese
 @@GetCookiesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that serves as a common repository
-  for Internet cookies.
+  Returns the name of the file system directory that serves as a common repository for Internet cookies.
 Description:
   GetCookiesFolder returns the name of the file system directory that serves as a
   common repository for Internet cookies.
@@ -2419,8 +2388,7 @@ Donator: Peter Friese
 @@GetHistoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
-  Returns the name of the file system directory that serves as a common repository
-  for Internet history items.
+  Returns the name of the file system directory that serves as a common repository for Internet history items.
 Description:
   GetHistoryFolder returns the name of the file system directory that serves as a
   common repository for Internet history items.
@@ -2559,8 +2527,7 @@ Donator: Peter Friese
 @@GetAPMBatteryFullLifeTime
 <GROUP SystemInformationRoutines.PowerManagement>
 Summary:
-  Returns the number of seconds of battery life minutes when at full charge, or -1
-  if full batery lifetime is unknown.
+  Returns the number of seconds of battery life minutes when at full charge, or -1 if full batery lifetime is unknown.
 Description:
   Returns the number of seconds of battery life minutes when at full charge, or -1
   if full batery lifetime is unknown.
@@ -2803,7 +2770,7 @@ Result:
   the version and vendor of the OpenGL library in the parameters passed.
 
 Donator: Scott Price
-Contributor: Anonymous
+  Contributor: Anonymous
 --------------------------------------------------------------------------------
 @@GetOpenGLVersionBitmapRendering
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -2821,18 +2788,7 @@ Result:
   the version and vendor of the OpenGL library in the parameters passed.
 
 Donator: Anonymous
---------------------------------------------------------------------------------
-@@IsUACEnabled
-<GROUP SystemInformationRoutines.UserAccountControl>
-Summary:
-  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008
-Description:
-  Checks if UAC (User Account Control) is enabled or not on Windows Vista/Server 2008.
-  UAC is enabled by default on Windows versions supporting this technology.
-Result:
-  Returns True if UAC is enabled and OS version is Windows Vista or Windows Server 2008.
-  Returns False if UAC is disabled or OS version is not Windows Vista nor Windows Server 2008.
 
-Donator: Jean-Fabien Connault
---------------------------------------------------------------------------------
 
+@@IsWindows64
+\ \ 

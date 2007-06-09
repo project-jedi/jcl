@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 
-JEDI Code Library
+Jedi Code Library
 Release 1.99
 Build 2551
 24-Februray-2007
@@ -71,8 +71,8 @@ Important:
   Packages compiled by the JCL installer don't contain any debug informations to
 keep their size as small as possible.
 
-  The JEDI Code Library packages are required by some 3rd party packages
-(including the JEDI Visual Component Library - JVCL), the installer generates
+  The Jedi Code Library packages are required by some 3rd party packages
+(including the Jedi Visual Component Library - JVCL), the installer generates
 them if the "Packages" node is checked.
 
   The installer can generate MAP informations for each package. These
@@ -131,7 +131,7 @@ Installation notes
 
 Installation for Turbo Delphi
 
-The JEDI Code Library can be compiled targetting Turbo Delphi Explorer and Turbo
+The Jedi Code Library can be compiled targetting Turbo Delphi Explorer and Turbo
 Delphi Professional. Turbo Delphi Professional is recognized as BDS 2006, you
 have to download its command line compiler from CodeGear website at
 http://www.codegear.com/Default.aspx?tabid=160  to install the full JCL on this
@@ -274,7 +274,7 @@ These sources are official JCL releases and file status can be considered as
 stable for use in final applications. During the past years, there have been
 around 2 or 3 releases per year.
 
-JEDI Code Library: File List on SourceForge:
+Jedi Code Library: File List on SourceForge:
 http://sourceforge.net/project/showfiles.php?group_id=47514
 
 --------------------------------------------------------------------------------

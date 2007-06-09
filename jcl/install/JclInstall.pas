@@ -352,7 +352,7 @@ resourcestring
   // debug options
   RsCaptionDefDebug               = 'Debug and exception hooking options';
   RsCaptionDefHookDllExceptions   = 'Hook exceptions in DLL';
-  RsCaptionDefDebugNoBinary       = 'No debug source from JEDI debug informations';
+  RsCaptionDefDebugNoBinary       = 'No debug source from Jedi debug informations';
   RsCaptionDefDebugNoTD32         = 'No debug source from TD32 debug symbols';
   RsCaptionDefDebugNoMap          = 'No debug source from Map files';
   RsCaptionDefDebugNoExports      = 'No debug source from function export table for libraries';
@@ -374,8 +374,8 @@ resourcestring
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
   RsCaptionMapCreate  = 'Create MAP files';
-  RsCaptionJdbgCreate = 'Create JEDI Debug Informations';
-  RsCaptionJdbgInsert = 'Insert JEDI Debug Informations in the libraries';
+  RsCaptionJdbgCreate = 'Create Jedi Debug Informations';
+  RsCaptionJdbgInsert = 'Insert Jedi Debug Informations in the libraries';
   RsCaptionMapDelete  = 'Do not keep MAP files';
 
   // environment
@@ -466,9 +466,9 @@ resourcestring
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
   RsHintMapCreate  = 'Create detailed MAP files for each libraries';
-  RsHintJdbgCreate = 'Create JEDI Debug Informations from the MAP files';
-  RsHintJdbgInsert = 'Insert JEDI Debug Informations into the libraries (only the BPL has to be redistributed)';
-  RsHintMapDelete  = 'The original MAP file is not kept once JEDI Debug Informations are generated';
+  RsHintJdbgCreate = 'Create Jedi Debug Informations from the MAP files';
+  RsHintJdbgInsert = 'Insert Jedi Debug Informations into the libraries (only the BPL has to be redistributed)';
+  RsHintMapDelete  = 'The original MAP file is not kept once Jedi Debug Informations are generated';
 
   // environment
   RsHintEnvironment     = 'Set selected environment items';
@@ -692,7 +692,7 @@ const
   Help2HxIFile           = 'JCLHelp.HxI';
 
   JclHelpTitle      = 'JCL %d.%d Help';
-  JclHelpIndexName  = 'JEDI Code Library Reference';
+  JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
 
   {$IFDEF VisualCLX}

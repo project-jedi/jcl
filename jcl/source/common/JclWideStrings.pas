@@ -251,7 +251,7 @@ function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PW
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
 function StrLCatW(Dest: PWideChar; const Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
-function StrICompW(const Str1, Str2: PWideChar): Integer;
+function StrICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrLICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 function StrLICompW2(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
@@ -473,13 +473,9 @@ begin
     Result := 0;
 end;
 
-function StrICompW(const Str1, Str2: PWideChar): Integer;
-var
-  S1, S2: WideString;
+function StrICompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 begin
-  S1 := Str1;
-  S2 := Str2;
-  Result := WideCompareText(Str1, Str2);
+  Result := StrLICompW(Str1, Str2, Max(StrLenW(Str1), StrLenW(Str2)));
 end;
 
 function StrPosW(const Str, SubStr: PWideChar): PWideChar;
