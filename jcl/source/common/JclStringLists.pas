@@ -166,7 +166,7 @@ type
     function Trim: IJclStringList;
     function Join(const ASeparator: string = ''): string;
     function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
     function LastIndex: Integer;
@@ -344,7 +344,7 @@ type
     function Delimit(const ADelimiter: string): IJclStringList;
     function Join(const ASeparator: string = ''): string;
     function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfChar = [#0..' '];
+    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' '];
       AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
@@ -507,7 +507,7 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.ExtractWords(const AText: string; const ADelims: TSetOfChar;
+function TJclStringListImpl.ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar;
   AClearBeforeAdd: Boolean): IJclStringList;
 var
   L, I, X: Integer;

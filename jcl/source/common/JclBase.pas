@@ -230,7 +230,7 @@ const
 
 // basic set types
 type
-  TSetOfChar = set of Char;
+  TSetOfAnsiChar = set of AnsiChar;
 
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
