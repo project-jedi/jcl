@@ -242,8 +242,8 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := Application.Handle;
-    Recipients.Add('support@visigate.de');
-    Subject := 'Exception Report';
+    Recipients.Add('name@domain.ext');
+    Subject := 'email subject';
     Body := ReportAsText;
     SaveTaskWindows;
     try
