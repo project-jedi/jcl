@@ -1611,7 +1611,13 @@ resourcestring
   RsScheduleDayInRange      = 'Day values should fall in the range 1 .. 31';
   RsScheduleMonthInRange    = 'Month values should fall in the range 1 .. 12';
 
-//=== JclSimpleXml.pas =======================================================
+//=== JclSecurity ============================================================
+resourcestring
+  RsInvalidSID = 'Invalid SID';
+  RsSIDBufferTooSmall = 'SID buffer too small.';
+  RsLsaError = 'LSA Error: NT Status = %.8x, message: %s'; 
+
+//=== JclSimpleXml ===========================================================
 resourcestring
   RsEInvalidXMLElementUnexpectedCharacte =
     'Invalid XML Element: Unexpected character in property declaration ("%s" found)';

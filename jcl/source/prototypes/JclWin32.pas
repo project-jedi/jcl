@@ -102,8 +102,9 @@ uses
 {$HPPEMIT '#include "propidl.h"'}
 {$HPPEMIT '#include "msidefs.h"'}
 {$HPPEMIT '#include "shlguid.h"'}
-{$HPPEMIT '#include "imgguids.h"}
-{$HPPEMIT '#include "objbase.h"}
+{$HPPEMIT '#include "imgguids.h"'}
+{$HPPEMIT '#include "objbase.h"'}
+{$HPPEMIT '#include "ntsecapi.h"'}
 {$HPPEMIT ''}
 
 {$IFDEF CLR}
@@ -148,6 +149,7 @@ type
 {$I win32api\ShlGuid.int}
 {$I win32api\imgguids.int}
 {$I win32api\ObjBase.int}
+{$I win32api\NtSecApi.int}
 
 {$IFDEF MSWINDOWS}
 
@@ -272,6 +274,7 @@ end;
 {$I win32api\WinNT.imp}
 {$I win32api\PowrProf.imp}
 {$I win32api\ObjBase.imp}
+{$I win32api\NtSecApi.imp}
 
 {$IFDEF UNITVERSIONING}
 initialization

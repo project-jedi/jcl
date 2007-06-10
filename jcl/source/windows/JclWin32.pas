@@ -97,8 +97,9 @@ uses
 {$HPPEMIT '#include "propidl.h"'}
 {$HPPEMIT '#include "msidefs.h"'}
 {$HPPEMIT '#include "shlguid.h"'}
-{$HPPEMIT '#include "imgguids.h"}
-{$HPPEMIT '#include "objbase.h"}
+{$HPPEMIT '#include "imgguids.h"'}
+{$HPPEMIT '#include "objbase.h"'}
+{$HPPEMIT '#include "ntsecapi.h"'}
 {$HPPEMIT ''}
 
 {$IFDEF CLR}
@@ -326,7 +327,7 @@ const
   MAX_NATURAL_ALIGNMENT = SizeOf(ULONG);
   {$EXTERNALSYM MAX_NATURAL_ALIGNMENT}
 
-// line² 72
+// line 72
 
 const
   VER_SERVER_NT                      = DWORD($80000000);
@@ -457,6 +458,15 @@ function SORTVERSIONFROMLCID(LocaleId: LCID): WORD;
 //
 
 type
+  _SID_IDENTIFIER_AUTHORITY = record
+    Value: array [0..5] of Byte;
+  end;
+  {$EXTERNALSYM _SID_IDENTIFIER_AUTHORITY}
+  SID_IDENTIFIER_AUTHORITY = _SID_IDENTIFIER_AUTHORITY;
+  {$EXTERNALSYM SID_IDENTIFIER_AUTHORITY}
+  PSID_IDENTIFIER_AUTHORITY = ^_SID_IDENTIFIER_AUTHORITY;
+  {$EXTERNALSYM PSID_IDENTIFIER_AUTHORITY}
+
   // PSid = ^SID;
   _SID = record
     Revision: Byte;
@@ -7148,6 +7158,157 @@ function StgOpenStorageEx(const pwcsName: PWideChar; grfMode: DWORD;
 {$ENDIF ~CLR}
 
 
+// NtSecApi.h line 566
+type
+  PLSA_UNICODE_STRING = ^LSA_UNICODE_STRING;
+  _LSA_UNICODE_STRING = record
+    Length: USHORT;
+    MaximumLength: USHORT;
+    Buffer: Windows.LPWSTR;
+  end;
+  LSA_UNICODE_STRING = _LSA_UNICODE_STRING;
+  TLsaUnicodeString = LSA_UNICODE_STRING;
+  PLsaUnicodeString = PLSA_UNICODE_STRING;
+
+  PLSA_STRING = ^LSA_STRING;
+  _LSA_STRING = record
+    Length: USHORT;
+    MaximumLength: USHORT;
+    Buffer: PCHAR;
+  end;
+  LSA_STRING = _LSA_STRING;
+  TLsaString = LSA_STRING;
+  PLsaString = PLSA_STRING;
+
+  PLSA_OBJECT_ATTRIBUTES = ^LSA_OBJECT_ATTRIBUTES;
+  _LSA_OBJECT_ATTRIBUTES = record
+    Length: ULONG;
+    RootDirectory: Windows.THandle;
+    ObjectName: PLSA_UNICODE_STRING;
+    Attributes: ULONG;
+    SecurityDescriptor: Pointer; // Points to type SECURITY_DESCRIPTOR
+    SecurityQualityOfService: Pointer; // Points to type SECURITY_QUALITY_OF_SERVICE
+  end;
+  LSA_OBJECT_ATTRIBUTES = _LSA_OBJECT_ATTRIBUTES;
+  TLsaObjectAttributes = _LSA_OBJECT_ATTRIBUTES;
+  PLsaObjectAttributes = PLSA_OBJECT_ATTRIBUTES;
+
+// NtSecApi.h line 680
+
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+// Local Security Policy Administration API datatypes and defines         //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
+//
+// Access types for the Policy object
+//
+
+const
+  POLICY_VIEW_LOCAL_INFORMATION = $00000001;
+  POLICY_VIEW_AUDIT_INFORMATION = $00000002;
+  POLICY_GET_PRIVATE_INFORMATION = $00000004;
+  POLICY_TRUST_ADMIN = $00000008;
+  POLICY_CREATE_ACCOUNT = $00000010;
+  POLICY_CREATE_SECRET = $00000020;
+  POLICY_CREATE_PRIVILEGE = $00000040;
+  POLICY_SET_DEFAULT_QUOTA_LIMITS = $00000080;
+  POLICY_SET_AUDIT_REQUIREMENTS = $00000100;
+  POLICY_AUDIT_LOG_ADMIN = $00000200;
+  POLICY_SERVER_ADMIN = $00000400;
+  POLICY_LOOKUP_NAMES = $00000800;
+  POLICY_NOTIFICATION = $00001000;
+
+  POLICY_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED or
+                               POLICY_VIEW_LOCAL_INFORMATION or
+                               POLICY_VIEW_AUDIT_INFORMATION or
+                               POLICY_GET_PRIVATE_INFORMATION or
+                               POLICY_TRUST_ADMIN or
+                               POLICY_CREATE_ACCOUNT or
+                               POLICY_CREATE_SECRET or
+                               POLICY_CREATE_PRIVILEGE or
+                               POLICY_SET_DEFAULT_QUOTA_LIMITS or
+                               POLICY_SET_AUDIT_REQUIREMENTS or
+                               POLICY_AUDIT_LOG_ADMIN or
+                               POLICY_SERVER_ADMIN or
+                               POLICY_LOOKUP_NAMES);
+
+  POLICY_READ = (STANDARD_RIGHTS_READ or
+                               POLICY_VIEW_AUDIT_INFORMATION or
+                               POLICY_GET_PRIVATE_INFORMATION);
+
+  POLICY_WRITE = (STANDARD_RIGHTS_WRITE or
+                               POLICY_TRUST_ADMIN or
+                               POLICY_CREATE_ACCOUNT or
+                               POLICY_CREATE_SECRET or
+                               POLICY_CREATE_PRIVILEGE or
+                               POLICY_SET_DEFAULT_QUOTA_LIMITS or
+                               POLICY_SET_AUDIT_REQUIREMENTS or
+                               POLICY_AUDIT_LOG_ADMIN or
+                               POLICY_SERVER_ADMIN);
+
+  POLICY_EXECUTE = (STANDARD_RIGHTS_EXECUTE or
+                               POLICY_VIEW_LOCAL_INFORMATION or
+                               POLICY_LOOKUP_NAMES);
+
+// NtSecApi.h line 914
+type
+  _POLICY_INFORMATION_CLASS = (
+    picFill0,
+    PolicyAuditLogInformation,
+    PolicyAuditEventsInformation,
+    PolicyPrimaryDomainInformation,
+    PolicyPdAccountInformation,
+    PolicyAccountDomainInformation,
+    PolicyLsaServerRoleInformation,
+    PolicyReplicaSourceInformation,
+    PolicyDefaultQuotaInformation,
+    PolicyModificationInformation,
+    PolicyAuditFullSetInformation,
+    PolicyAuditFullQueryInformation,
+    PolicyDnsDomainInformation,
+    PolicyDnsDomainInformationInt);
+  POLICY_INFORMATION_CLASS = _POLICY_INFORMATION_CLASS;
+  PPOLICY_INFORMATION_CLASS = ^POLICY_INFORMATION_CLASS;
+  TPolicyInformationClass = POLICY_INFORMATION_CLASS;
+  PPolicyInformationClass = PPOLICY_INFORMATION_CLASS;
+
+// NtSecApi.h line 1031
+//
+// The following structure corresponds to the PolicyAccountDomainInformation
+// information class.
+//
+type
+  PPOLICY_ACCOUNT_DOMAIN_INFO = ^POLICY_ACCOUNT_DOMAIN_INFO;
+  _POLICY_ACCOUNT_DOMAIN_INFO = record
+    DomainName: LSA_UNICODE_STRING;
+    DomainSid: Windows.PSID;
+  end;
+  POLICY_ACCOUNT_DOMAIN_INFO = _POLICY_ACCOUNT_DOMAIN_INFO;
+  TPolicyAccountDomainInfo = POLICY_ACCOUNT_DOMAIN_INFO;
+  PPolicyAccountDomainInfo = PPOLICY_ACCOUNT_DOMAIN_INFO;
+
+// NtSecApi.h line 1298
+type
+  LSA_HANDLE = Pointer;
+  PLSA_HANDLE = ^LSA_HANDLE;
+  TLsaHandle = LSA_HANDLE;
+
+// NtSecApi.h line 1714
+type
+  NTSTATUS = DWORD;
+
+function LsaOpenPolicy(SystemName: PLSA_UNICODE_STRING;
+  var ObjectAttributes: LSA_OBJECT_ATTRIBUTES; DesiredAccess: ACCESS_MASK;
+  var PolicyHandle: LSA_HANDLE): NTSTATUS; stdcall;
+function LsaQueryInformationPolicy(PolicyHandle: LSA_HANDLE;
+  InformationClass: POLICY_INFORMATION_CLASS; var Buffer: Pointer): NTSTATUS; stdcall;
+function LsaFreeMemory(Buffer: Pointer): NTSTATUS; stdcall;
+function LsaFreeReturnBuffer(Buffer: Pointer): NTSTATUS; stdcall;
+function LsaClose(ObjectHandle: LSA_HANDLE): NTSTATUS; stdcall;
+function LsaNtStatusToWinError(Status: NTSTATUS): ULONG; stdcall;
+
 
 
 {$IFNDEF CLR}
@@ -8292,6 +8453,84 @@ end;
 
 {$ENDIF ~CLR}
 
+
+var
+  _LsaOpenPolicy: Pointer;
+
+function LsaOpenPolicy;
+begin
+  GetProcedureAddress(_LsaOpenPolicy, advapi32, 'LsaOpenPolicy');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaOpenPolicy]
+  end;
+end;
+
+var
+  _LsaQueryInformationPolicy: Pointer;
+
+function LsaQueryInformationPolicy;
+begin
+  GetProcedureAddress(_LsaQueryInformationPolicy, advapi32, 'LsaQueryInformationPolicy');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaQueryInformationPolicy]
+  end;
+end;
+
+var
+  _LsaFreeMemory: Pointer;
+
+function LsaFreeMemory;
+begin
+  GetProcedureAddress(_LsaFreeMemory, advapi32, 'LsaFreeMemory');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaFreeMemory]
+  end;
+end;
+
+var
+  _LsaFreeReturnBuffer: Pointer;
+
+function LsaFreeReturnBuffer;
+begin
+  GetProcedureAddress(_LsaFreeReturnBuffer, advapi32, 'LsaFreeReturnBuffer');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaFreeReturnBuffer]
+  end;
+end;
+
+var
+  _LsaClose: Pointer;
+
+function LsaClose;
+begin
+  GetProcedureAddress(_LsaClose, advapi32, 'LsaClose');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaClose]
+  end;
+end;
+
+var
+  _LsaNtStatusToWinError: Pointer;
+
+function LsaNtStatusToWinError;
+begin
+  GetProcedureAddress(_LsaNtStatusToWinError, advapi32, 'LsaNtStatusToWinError');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_LsaNtStatusToWinError]
+  end;
+end;
 
 
 {$IFDEF UNITVERSIONING}

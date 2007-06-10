@@ -20,6 +20,7 @@ Carl Clark=carl@caztec.co.za
 Cenon Del Rosario=cenon@mail.com
 Charlie Calvert=ccalvert@inprise.com
 Chris Morris=
+Christoph Lindeman=christoph@lindemann.nu
 Clayton Collie=
 Corrie Engelbrecht=sahfs@iafrica.com
 Cybertron_549672=Cybertron_549672@yahoo.com

@@ -373,7 +373,7 @@ end;
 
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 var
-  sia: SID_IDENTIFIER_AUTHORITY;
+  sia: Windows.SID_IDENTIFIER_AUTHORITY;
   rd1, rd2: DWORD;
   ridCount: Integer;
   sd: PSID;
