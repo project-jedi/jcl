@@ -20,6 +20,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
+{   Carsten Schuette (schuettecarsten)                                                             }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -61,7 +62,7 @@ type
   end;
 
   TJclMapiClientConnect = (ctAutomatic, ctMapi, ctDirect);
-                   
+
   TJclSimpleMapi = class(TObject)
   private
     FAnyClientInstalled: Boolean;
@@ -154,13 +155,15 @@ type
     FAddressType: string;
     FKind: TJclEmailRecipKind;
     FName: string;
+  private
+    procedure SetAddress(Value: string);
   protected
     function SortingName: string;
   public
     function AddressAndName: string;
     class function RecipKindToString(const AKind: TJclEmailRecipKind): string;
     property AddressType: string read FAddressType write FAddressType;
-    property Address: string read FAddress write FAddress;
+    property Address: string read FAddress write SetAddress;
     property Kind: TJclEmailRecipKind read FKind write FKind;
     property Name: string read FName write FName;
   end;
@@ -325,58 +328,58 @@ begin
 end;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
-begin   
+begin
    case ErrorCode of
      MAPI_E_USER_ABORT:
        Result := RsMapiErrUSER_ABORT;
      MAPI_E_FAILURE:
        Result := RsMapiErrFAILURE;
-     MAPI_E_LOGIN_FAILURE:   
-       Result := RsMapiErrLOGIN_FAILURE;   
-     MAPI_E_DISK_FULL:   
-       Result := RsMapiErrDISK_FULL;   
-     MAPI_E_INSUFFICIENT_MEMORY:   
-       Result := RsMapiErrINSUFFICIENT_MEMORY;   
-     MAPI_E_ACCESS_DENIED:   
-       Result := RsMapiErrACCESS_DENIED;   
-     MAPI_E_TOO_MANY_SESSIONS:   
-       Result := RsMapiErrTOO_MANY_SESSIONS;   
-     MAPI_E_TOO_MANY_FILES:   
-       Result := RsMapiErrTOO_MANY_FILES;   
-     MAPI_E_TOO_MANY_RECIPIENTS:   
-       Result := RsMapiErrTOO_MANY_RECIPIENTS;   
-     MAPI_E_ATTACHMENT_NOT_FOUND:   
-       Result := RsMapiErrATTACHMENT_NOT_FOUND;   
-     MAPI_E_ATTACHMENT_OPEN_FAILURE:   
-       Result := RsMapiErrATTACHMENT_OPEN_FAILURE;   
-     MAPI_E_ATTACHMENT_WRITE_FAILURE:   
-       Result := RsMapiErrATTACHMENT_WRITE_FAILURE;   
-     MAPI_E_UNKNOWN_RECIPIENT:   
-       Result := RsMapiErrUNKNOWN_RECIPIENT;   
-     MAPI_E_BAD_RECIPTYPE:   
-       Result := RsMapiErrBAD_RECIPTYPE;   
-     MAPI_E_NO_MESSAGES:   
-       Result := RsMapiErrNO_MESSAGES;   
-     MAPI_E_INVALID_MESSAGE:   
-       Result := RsMapiErrINVALID_MESSAGE;   
-     MAPI_E_TEXT_TOO_LARGE:   
-       Result := RsMapiErrTEXT_TOO_LARGE;   
-     MAPI_E_INVALID_SESSION:   
-       Result := RsMapiErrINVALID_SESSION;   
-     MAPI_E_TYPE_NOT_SUPPORTED:   
-       Result := RsMapiErrTYPE_NOT_SUPPORTED;   
-     MAPI_E_AMBIGUOUS_RECIPIENT:   
-       Result := RsMapiErrAMBIGUOUS_RECIPIENT;   
-     MAPI_E_MESSAGE_IN_USE:   
-       Result := RsMapiErrMESSAGE_IN_USE;   
-     MAPI_E_NETWORK_FAILURE:   
-       Result := RsMapiErrNETWORK_FAILURE;   
-     MAPI_E_INVALID_EDITFIELDS:   
-       Result := RsMapiErrINVALID_EDITFIELDS;   
-     MAPI_E_INVALID_RECIPS:   
-       Result := RsMapiErrINVALID_RECIPS;   
-     MAPI_E_NOT_SUPPORTED:   
-       Result := RsMapiErrNOT_SUPPORTED;   
+     MAPI_E_LOGIN_FAILURE:
+       Result := RsMapiErrLOGIN_FAILURE;
+     MAPI_E_DISK_FULL:
+       Result := RsMapiErrDISK_FULL;
+     MAPI_E_INSUFFICIENT_MEMORY:
+       Result := RsMapiErrINSUFFICIENT_MEMORY;
+     MAPI_E_ACCESS_DENIED:
+       Result := RsMapiErrACCESS_DENIED;
+     MAPI_E_TOO_MANY_SESSIONS:
+       Result := RsMapiErrTOO_MANY_SESSIONS;
+     MAPI_E_TOO_MANY_FILES:
+       Result := RsMapiErrTOO_MANY_FILES;
+     MAPI_E_TOO_MANY_RECIPIENTS:
+       Result := RsMapiErrTOO_MANY_RECIPIENTS;
+     MAPI_E_ATTACHMENT_NOT_FOUND:
+       Result := RsMapiErrATTACHMENT_NOT_FOUND;
+     MAPI_E_ATTACHMENT_OPEN_FAILURE:
+       Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
+     MAPI_E_ATTACHMENT_WRITE_FAILURE:
+       Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
+     MAPI_E_UNKNOWN_RECIPIENT:
+       Result := RsMapiErrUNKNOWN_RECIPIENT;
+     MAPI_E_BAD_RECIPTYPE:
+       Result := RsMapiErrBAD_RECIPTYPE;
+     MAPI_E_NO_MESSAGES:
+       Result := RsMapiErrNO_MESSAGES;
+     MAPI_E_INVALID_MESSAGE:
+       Result := RsMapiErrINVALID_MESSAGE;
+     MAPI_E_TEXT_TOO_LARGE:
+       Result := RsMapiErrTEXT_TOO_LARGE;
+     MAPI_E_INVALID_SESSION:
+       Result := RsMapiErrINVALID_SESSION;
+     MAPI_E_TYPE_NOT_SUPPORTED:
+       Result := RsMapiErrTYPE_NOT_SUPPORTED;
+     MAPI_E_AMBIGUOUS_RECIPIENT:
+       Result := RsMapiErrAMBIGUOUS_RECIPIENT;
+     MAPI_E_MESSAGE_IN_USE:
+       Result := RsMapiErrMESSAGE_IN_USE;
+     MAPI_E_NETWORK_FAILURE:
+       Result := RsMapiErrNETWORK_FAILURE;
+     MAPI_E_INVALID_EDITFIELDS:
+       Result := RsMapiErrINVALID_EDITFIELDS;
+     MAPI_E_INVALID_RECIPS:
+       Result := RsMapiErrINVALID_RECIPS;
+     MAPI_E_NOT_SUPPORTED:
+       Result := RsMapiErrNOT_SUPPORTED;
    else
      Result := '';
    end;
@@ -611,7 +614,9 @@ begin
           if RegKeyExists(HKEY_LOCAL_MACHINE, ClientKey) then
           begin
             FClients[I].ClientName := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, '', '');
-            FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
+            FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPathEx', '');
+            if FClients[I].ClientPath = '' then
+              FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
             ExpandEnvironmentVar(FClients[I].ClientPath);
             if CheckValid(FClients[I]) then
               FAnyClientInstalled := True;
@@ -713,6 +718,21 @@ begin
    end;
 end;
 
+procedure TJclEmailRecip.SetAddress(Value: string);
+var
+  N: Integer;
+begin
+  Value := Trim(Value);
+  N := Pos(AddressTypeDelimiter, Value);
+  if N = 0 then
+    FAddress := Value
+  else
+  begin
+    FAddress := Copy(Value, N + 1, Length(Value));
+    FAddressType := Copy(Value, 1, N - 1);
+  end;
+end;
+
 function TJclEmailRecip.SortingName: string;
 begin
   if FName = '' then
@@ -730,8 +750,9 @@ var
 begin
   Item := TJclEmailRecip.Create;
   try
-    Item.Address := Trim(Address);
-    Item.AddressType := AddressType;
+    Item.Address := Address;
+    if AddressType <> '' then
+      Item.AddressType := AddressType;
     Item.Name := Name;
     Item.Kind := Kind;
     Result := inherited Add(Item);
@@ -812,7 +833,7 @@ begin
   if Result then
   try
     DecodeRecips(NewRecips, NewRecipCount);
-  finally  
+  finally
     MapiFreeBuffer(NewRecips);
   end;
 end;
@@ -853,16 +874,16 @@ begin
          MAPI_ORIG:
            Kind := rkOriginator;
          MAPI_TO:
-           Kind := rkTO;   
-         MAPI_CC:   
-           Kind := rkCC;   
-         MAPI_BCC:   
+           Kind := rkTO;
+         MAPI_CC:
+           Kind := rkCC;
+         MAPI_BCC:
            Kind := rkBCC;
         $FFFFFFFF:  // Eudora client version 5.2.0.9 bug
           Kind := rkOriginator;
       else
         MapiCheck(MAPI_E_INVALID_MESSAGE, True);
-      end;  
+      end;
       S := lpszAddress;
       N := Pos(AddressTypeDelimiter, S);
       if N = 0 then
@@ -939,123 +960,155 @@ function TJclEmail.InternalSendOrSave(Save, ShowDialog: Boolean): Boolean;
 const
   RecipClasses: array [TJclEmailRecipKind] of DWORD =
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
+type
+  TSetDllDirectory = function(lpPathName: PAnsiChar): LONGBOOL; stdcall;
+  TGetDllDirectory = function(nBufferLength: DWord; lpPathName: PAnsiChar): LONGBOOL; stdcall;
 var
-  AttachArray: array of TMapiFileDesc;
-  RecipArray: array of TMapiRecipDesc;
-  RealAdresses: array of string;
+  AttachArray: packed array of TMapiFileDesc;
+  RecipArray: packed array of TMapiRecipDesc;
+  RealAddresses: array of string;
+  RealNames: array of string;
   MapiMessage: TMapiMessage;
   Flags, Res: DWORD;
   I: Integer;
   MsgID: array [0..512] of AnsiChar;
-  AttachmentFileName: array of string;
+  AttachmentFileNames: array of string;
+  AttachmentPathNames: array of string;
   HtmlBodyFileName: string;
+  SetDllDirectory: TSetDllDirectory;
+  GetDllDirectory: TGetDllDirectory;
+  DllDirectoryBuffer: array[0..1024] of Char;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
-  HtmlBodyFileName := '';
+  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryA');
+  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryA');
+  if Assigned(@GetDllDirectory) and Assigned(@SetDllDirectory) then
+  begin
+    GetDllDirectory(SizeOf(DllDirectoryBuffer), @DllDirectoryBuffer);
+    SetDllDirectory(nil);
+  end;
   try
-    if FHtmlBody then
-    begin
-      HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
-      Attachments.Insert(0, HtmlBodyFileName);
-      AttachmentFiles.Insert(0, '');
-      StringToFile(HtmlBodyFileName, Body);
-    end;
-    // Create attachments
-    if Attachments.Count > 0 then
-    begin
-      SetLength(AttachArray, Attachments.Count);
-      SetLength(AttachmentFileName, Attachments.Count);
-      for I := 0 to Attachments.Count - 1 do
+    HtmlBodyFileName := '';
+    try
+      if FHtmlBody then
       begin
-        FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
-        AttachArray[I].nPosition := DWORD(-1);
-        if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
-        begin
-          AttachmentFileName[I] := ExpandFileName(AttachmentFiles[I]);
-          AttachArray[I].lpszFileName := PChar(Attachments[I]);
-        end
-        else
-        begin
-          AttachmentFileName[I] := ExpandFileName(Attachments[I]);
-          AttachArray[I].lpszFileName := nil;
-        end;
-        AttachArray[I].lpszPathName := PChar(AttachmentFileName[I]);
-        if not FileExists(AttachmentFileName[I]) then
-          MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
+        HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
+        Attachments.Insert(0, HtmlBodyFileName);
+        AttachmentFiles.Insert(0, '');
+        StringToFile(HtmlBodyFileName, Body);
       end;
-    end
-    else
-      AttachArray := nil;
-    // Create recipients
-    if Recipients.Count > 0 then
-    begin
-      SetLength(RecipArray, Recipients.Count);
-      SetLength(RealAdresses, Recipients.Count);
-      for I := 0 to Recipients.Count - 1 do
+      // Create attachments
+      if Attachments.Count > 0 then
       begin
-        FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
-        with RecipArray[I], Recipients[I] do
+        SetLength(AttachArray, Attachments.Count);
+        SetLength(AttachmentFileNames, Attachments.Count);
+        SetLength(AttachmentPathNames, Attachments.Count);
+        for I := 0 to Attachments.Count - 1 do
         begin
-          ulRecipClass := RecipClasses[Kind];
-          if Name = '' then // some clients requires Name item always filled
+          FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
+          AttachArray[I].nPosition := DWORD(-1);
+          if (AttachmentFiles.Count > I) and (AttachmentFiles[I] <> '') then
           begin
-            if FAddress = '' then
-              MapiCheck(MAPI_E_INVALID_RECIPS, False);
-            lpszName := PChar(FAddress);
+            AttachmentFileNames[I] := Attachments[I];
+            AttachmentPathNames[I] := ExpandFileName(AttachmentFiles[I]);
           end
           else
-            lpszName := PChar(FName);
-          if FAddressType <> '' then
-            RealAdresses[I] := FAddressType + AddressTypeDelimiter + FAddress
-          else
-          if Recipients.AddressesType <> '' then
-            RealAdresses[I] := Recipients.AddressesType + AddressTypeDelimiter + FAddress
-          else
-            RealAdresses[I] := FAddress;
-          lpszAddress := PCharOrNil(RealAdresses[I]);
+          begin
+            AttachmentFileNames[I] := ExtractFileName(Attachments[I]);
+            AttachmentPathNames[I] := ExpandFileName(Attachments[I]);
+          end;
+          AttachArray[I].lpszFileName := PAnsiChar(AttachmentFileNames[I]);
+          AttachArray[I].lpszPathName := PAnsiChar(AttachmentPathNames[I]);
+          if not FileExists(AttachmentPathNames[I]) then
+            MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
         end;
-      end;
-    end
-    else
-    begin
-      if ShowDialog then
-        RecipArray := nil
+      end
       else
-        MapiCheck(MAPI_E_INVALID_RECIPS, False);
+        AttachArray := nil;
+      // Create recipients
+      if Recipients.Count > 0 then
+      begin
+        SetLength(RecipArray, Recipients.Count);
+        SetLength(RealAddresses, Recipients.Count);
+        SetLength(RealNames, Recipients.Count);
+        for I := 0 to Recipients.Count - 1 do
+        begin
+          FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
+          with RecipArray[I], Recipients[I] do
+          begin
+            ulRecipClass := RecipClasses[Kind];
+            if FName = '' then // some clients requires Name item always filled
+            begin
+              if FAddress = '' then
+                MapiCheck(MAPI_E_INVALID_RECIPS, False);
+              RealNames[I] := FAddress;
+            end
+            else
+              RealNames[I] := FName;
+            if FAddressType <> '' then
+              RealAddresses[I] := FAddressType + AddressTypeDelimiter + FAddress
+            else
+              if Recipients.AddressesType <> '' then
+                RealAddresses[I] := Recipients.AddressesType + AddressTypeDelimiter + FAddress
+              else
+                RealAddresses[I] := FAddress;
+            lpszName := PAnsiChar(RealNames[I]);
+            lpszAddress := PAnsiChar(RealAddresses[I]);
+          end;
+        end;
+      end
+      else
+      begin
+        if ShowDialog then
+          RecipArray := nil
+        else
+          MapiCheck(MAPI_E_INVALID_RECIPS, False);
+      end;
+      // Load MAPI client library
+      LoadClientLib;
+      // Fill MapiMessage structure
+      FillChar(MapiMessage, SizeOf(MapiMessage), #0);
+      MapiMessage.lpszSubject := PChar(FSubject);
+      if FHtmlBody then
+        MapiMessage.lpszNoteText := #0
+      else
+        MapiMessage.lpszNoteText := PChar(FBody);
+      MapiMessage.nRecipCount := Length(RecipArray);
+      if MapiMessage.nRecipCount > 0 then
+        MapiMessage.lpRecips := PMapiRecipDesc(@RecipArray[0]);
+      MapiMessage.nFileCount := Length(AttachArray);
+      if MapiMessage.nFileCount > 0 then
+        MapiMessage.lpFiles := PMapiFileDesc(@AttachArray[0]);
+      Flags := LogonOptionsToFlags(ShowDialog);
+      if Save then
+      begin
+        StrPLCopy(MsgID, SeedMessageID, SizeOf(MsgID));
+        Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
+        if Res = SUCCESS_SUCCESS then
+          SeedMessageID := MsgID;
+      end
+      else
+        Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
+      Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
+    finally
+      SetLength(AttachArray, 0);
+      SetLength(RecipArray, 0);
+      SetLength(RealAddresses, 0);
+      SetLength(RealNames, 0);
+      SetLength(AttachmentFileNames, 0);
+      SetLength(AttachmentPathNames, 0);
+      if HtmlBodyFileName <> '' then
+      begin
+        DeleteFile(HtmlBodyFileName);
+        Attachments.Delete(0);
+        AttachmentFiles.Delete(0);
+      end;
     end;
-    // Load MAPI client library
-    LoadClientLib;
-    // Fill MapiMessage structure
-    FillChar(MapiMessage, SizeOf(MapiMessage), #0);
-    MapiMessage.lpszSubject := PChar(FSubject);
-    if FHtmlBody then
-      MapiMessage.lpszNoteText := #0
-    else
-      MapiMessage.lpszNoteText := PChar(FBody);
-    MapiMessage.lpRecips := PMapiRecipDesc(RecipArray);
-    MapiMessage.nRecipCount := Length(RecipArray);
-    MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
-    MapiMessage.nFileCount := Length(AttachArray);
-    Flags := LogonOptionsToFlags(ShowDialog);
-    if Save then
-    begin
-      StrPLCopy(MsgID, SeedMessageID, SizeOf(MsgID));
-      Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
-      if Res = SUCCESS_SUCCESS then
-        SeedMessageID := MsgID;
-    end
-    else
-      Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
-    Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
   finally
-    if HtmlBodyFileName <> '' then
-    begin
-      DeleteFile(HtmlBodyFileName);
-      Attachments.Delete(0);
-      AttachmentFiles.Delete(0);
-    end;
+    if Assigned(@SetDllDirectory) then
+      SetDllDirectory(DllDirectoryBuffer);
   end;
 end;
 
@@ -1075,7 +1128,7 @@ begin
     LoadClientLib;
     MapiCheck(MapiLogOn(ParentWND, PChar(ProfileName), PChar(Password),
       LogonOptionsToFlags(False), 0, @FSessionHandle), True);
-  end; 
+  end;
 end;
 
 function TJclEmail.LogonOptionsToFlags(ShowDialog: Boolean): DWORD;
