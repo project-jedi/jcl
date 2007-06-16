@@ -691,6 +691,10 @@ begin
     raise EJclExpertException.CreateTrace(RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
+  if LibPrefix = 'false' then
+    LibPrefix := '';
+  if LibSuffix = 'false' then
+    LibSuffix := '';
   {$ELSE ~RTL140_UP}
   LibPrefix := '';
   LibSuffix := '';
@@ -717,6 +721,9 @@ begin
   begin
     Result := VarToStr(Project.ProjectOptions.Values[PkgDllDirOptionName]);
 
+    if Result = 'false' then
+      Result := '';
+
     if Result = '' then
     begin
       if not Assigned(FServices.GetEnvironmentOptions) then
@@ -726,6 +733,9 @@ begin
   end
   else
     Result := VarToStr(Project.ProjectOptions.Values[OutputDirOptionName]);
+
+  if Result = 'false' then
+    Result := '';
 
   Result := SubstitutePath(Trim(Result));
   if Result = '' then

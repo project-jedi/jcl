@@ -1,9 +1,9 @@
 --------------------------------------------------------------------------------
 
 Jedi Code Library
-Release 1.99
-Build 2551
-24-Februray-2007
+Release 1.100
+Build 2646
+30-May-2007
 
 --------------------------------------------------------------------------------
 
@@ -22,8 +22,8 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.99 provide an updated support for all targets (including CodeGear
-Delphi 2007 for Win32).
+JCL release 1.100 provides an updated support for all targets (including CodeGear
+Delphi 2007 for Win32 and CodeGear C++Builder 2007).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
 facilities of our Subversion repository at Sourceforge.net

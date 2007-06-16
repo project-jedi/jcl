@@ -1,4 +1,4 @@
-JEDI Code Library v 1.99 Installation
+JEDI Code Library v 1.100 Installation
 
 Supported development tools versions:
 
@@ -11,6 +11,7 @@ Supported development tools versions:
 - Borland Delphi 2005
 - Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006)
 - CodeGear Delphi 2007
+- CodeGear C++Builder 2007
 
 For more detailed information, see docs\Readme.html.
 

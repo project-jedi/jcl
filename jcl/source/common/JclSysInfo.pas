@@ -1441,20 +1441,18 @@ begin
     Vars.EndUpdate;
   end;
 end;
-{$ENDIF KYLIX}
-{$IFDEF UNIX}
+
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 begin
   Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
 end;
-{$ENDIF UNIX}
+{$ENDIF KYLIX}
 
+{$IFDEF MSWINDOWS}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
 begin
   Result := GetEnvironmentVars(Vars, True);
 end;
-
-{$IFDEF MSWINDOWS}
 
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 {$IFDEF CLR}
