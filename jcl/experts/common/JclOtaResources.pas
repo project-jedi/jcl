@@ -189,7 +189,6 @@ resourcestring
 //=== ProjAnalyserImpl.pas ===================================================
 resourcestring
   RsAnalyzeActionCaption = 'Analyze project %s';
-  RsAnalyzeActionName = 'ProjectAnalyseCommand';
   RsProjectNone = '[none]';
   RsCantFindFiles = 'Can''t find MAP or executable file';
   RsBuildingProject = 'Building project %s ...';
@@ -218,15 +217,10 @@ resourcestring
 //=== JclDebugIdeImpl.pas ====================================================
 resourcestring
   RsENoProjectOptions = 'Project options are not available';
-  RsBuildActionCaption = 'Build JCL Debug %s';
-  RsBuildAllCaption = 'Build JCL Debug All Projects';
-  RsBuildActionName = 'ProjectJCLBuildCommand';
-  RsBuildAllActionName = 'ProjectJCLBuildAllCommand';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
     AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable inserting JCL Debug data ?';
   RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak + 'Compilation aborted';
   RsInsertDataCaption = 'Insert JCL Debug data';
-  RsInsertDataActionName = 'ProjectJCLInsertDataCommand';
   RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
     'JCL debug data can''t be added to the binary.';
   RsEMapFileNotFound = 'Map file "%s" for project "%s" not found.' +

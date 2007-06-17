@@ -61,8 +61,9 @@ const
   JclActionSettings = 'Actions';
 
   //=== Configuration form ===================================================
-  JclPanelTreeWidth = 'PanelTreeWidth';
-  JclConfigureActionName = 'ActionJCLConfigure';
+  JclPanelTreeWidth      = 'PanelTreeWidth';
+  JclConfigureActionName = 'JCLConfigureCommand';
+  JclConfigureMenuName   = 'JCLConfigureMenu';
 
   //=== Debug Expert =========================================================
   JclDebugExpertRegKey         = 'JclDebugExpert';
@@ -78,6 +79,8 @@ const
   LIBSUFFIXOptionName          = 'SOSuffix';
   ColumnRegName                = 'Column%d';
   JclDebugMessagePrefix        = 'Jcl Debug Expert';
+  JclInsertDataActionName      = 'JCLInsertDataCommand';
+  JclInsertDataMenuName        = 'JCLInsertDataMenu';
 
   //=== Favorite Folders Expert ==============================================
   JclFavoritesExpertName     = 'JclFavoriteFoldersExpert';
@@ -91,7 +94,9 @@ const
   JclThreadsExpertName = 'JclThreadsExpert';
 
   //=== SIMD Expert ==========================================================
-  JclSIMDExpertName   = 'JclSIMDExpert';
+  JclSIMDExpertName = 'JclSIMDExpert';
+  JclSIMDActionName = 'JCLSIMDCommand';
+  JclSIMDMenuName   = 'JCLSIMDMenu';
 
   //=== Uses Expert ==========================================================
   JclUsesExpertName   = 'JclUsesExpert';
@@ -105,12 +110,16 @@ const
   JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================
-  AnalyzerViewName = 'AnalyzerView';
-
+  AnalyzerViewName            = 'AnalyzerView';
+  JclProjectAnalyzeActionName = 'JCLProjectAnalyseCommand';
+  JclProjectAnalyzeMenuName   = 'JCLProjectAnalyseMenu';
 
   //=== Repository Expert ====================================================
   JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};
   JclRepositoryCategoryCBuilderFiles = {$IFDEF BDS} sCategoryCBuilderNewFiles {$ELSE BDS} '' {$ENDIF BDS};
+
+  //=== Version Control Expert ===============================================
+  JclVersionCtrlMenuName = 'JclVersionCtrlMenu';
 
 implementation
 

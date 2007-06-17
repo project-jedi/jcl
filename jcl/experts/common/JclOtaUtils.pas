@@ -1125,6 +1125,7 @@ begin
       raise EJclExpertException.CreateTrace(RsENoToolsMenu);
 
     ConfigurationMenuItem := TMenuItem.Create(nil);
+    ConfigurationMenuItem.Name := JclConfigureMenuName;
     ConfigurationMenuItem.Action := ConfigurationAction;
 
     ToolsMenuItem.Insert(0, ConfigurationMenuItem);

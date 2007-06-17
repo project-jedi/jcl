@@ -124,9 +124,6 @@ uses
   JclOtaConsts, JclOtaResources, 
   JclSIMDUtils;
 
-const
-  RsSIMDActionName = 'DebugSSECommand';
-
 procedure Register;
 begin
   try
@@ -312,12 +309,13 @@ begin
   FSIMDAction.OnExecute := SIMDActionExecute;
   FSIMDAction.OnUpdate := SIMDActionUpdate;
   FSIMDAction.Category := Category;
-  FSIMDAction.Name := RsSIMDActionName;
+  FSIMDAction.Name := JclSIMDActionName;
   FSIMDAction.ImageIndex := NTAServices.ImageList.AddIcon(FIcon);
   FSIMDAction.ActionList := NTAServices.ActionList;
   FSIMDAction.ShortCut := Shortcut(Ord('D'), [ssCtrl, ssAlt]);
 
   FSIMDMenuItem := TMenuItem.Create(nil);
+  FSIMDMenuItem.Name := JCLSIMDMenuName;
   FSIMDMenuItem.Action := FSIMDAction;
 
   IDEMenu := NTAServices.MainMenu;

@@ -256,7 +256,6 @@ uses
 
 //=== VersionControlImpl.pas ===================================================
 const
-  JclVersionCtrlMenuName = 'JclVersionCtrlMenu';
   // vcaAdd
   JclVersionCtrlAddActionName = 'JclVersionCtrlAddCommand';
   // vcaAddSandbox

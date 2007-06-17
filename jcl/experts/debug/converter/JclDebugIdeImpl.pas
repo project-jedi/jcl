@@ -518,9 +518,10 @@ begin
     FInsertDataAction.Visible := True;
     FInsertDataAction.OnExecute := InsertDataExecute;
     FInsertDataAction.ActionList := IDEActionList;
-    FInsertDataAction.Name := RsInsertDataActionName;
+    FInsertDataAction.Name := JclInsertDataActionName;
     RegisterAction(FInsertDataAction);
     FInsertDataItem := TMenuItem.Create(nil);
+    FInsertDataItem.Name := JclInsertDataMenuName;
     FInsertDataItem.Action := FInsertDataAction;
   finally
     ImageBmp.Free;

@@ -251,7 +251,7 @@ begin
   FBuildAction.Visible := True;
   FBuildAction.OnExecute := ActionExecute;
   FBuildAction.OnUpdate := ActionUpdate;
-  FBuildAction.Name := RsAnalyzeActionName;
+  FBuildAction.Name := JclProjectAnalyzeActionName;
   ImageBmp := TBitmap.Create;
   try
     ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'PROJANALYZER');
@@ -282,6 +282,7 @@ begin
         FBuildAction.ActionList := IDEActionList;
         RegisterAction(FBuildAction);
         FBuildMenuItem := TMenuItem.Create(nil);
+        FBuildMenuItem.Name := JclProjectAnalyzeMenuName;
         FBuildMenuItem.Action := FBuildAction;
 
         IDEProjectItem.Insert(I + 1, FBuildMenuItem);
