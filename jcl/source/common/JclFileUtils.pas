@@ -3056,18 +3056,23 @@ var
 {$ENDIF MSWINDOWS}
 {$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  Result := &File.Exists(FileName);
-  {$ELSE ~CLR}
-  {$IFDEF MSWINDOWS}
-  // FileGetSize is very slow, GetFileAttributes is much faster
-  Attr := GetFileAttributes(Pointer(Filename));
-  Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY = 0);
-  {$ELSE}
-  // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
-  Result := FileGetSize(FileName) <> -1;
-  {$ENDIF MSWINDOWS}
-  {$ENDIF ~CLR}
+  if FileName <> '' then
+  begin
+    {$IFDEF CLR}
+    Result := &File.Exists(FileName);
+    {$ELSE ~CLR}
+    {$IFDEF MSWINDOWS}
+    // FileGetSize is very slow, GetFileAttributes is much faster
+    Attr := GetFileAttributes(Pointer(Filename));
+    Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY = 0);
+    {$ELSE}
+    // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
+    Result := FileGetSize(FileName) <> -1;
+    {$ENDIF MSWINDOWS}
+    {$ENDIF ~CLR}
+  end
+  else
+    Result := False;
 end;
 
 function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
