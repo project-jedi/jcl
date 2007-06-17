@@ -7,10 +7,10 @@
   <C5Libs/>
   <C6Libs/>
   <ImageBase>580E0000</ImageBase>
-  <VersionMajorNumber>2</VersionMajorNumber>
-  <VersionMinorNumber>0</VersionMinorNumber>
+  <VersionMajorNumber>1</VersionMajorNumber>
+  <VersionMinorNumber>101</VersionMinorNumber>
   <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>2552</BuildNumber>
+  <BuildNumber>2647</BuildNumber>
   <Requires>
     <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>

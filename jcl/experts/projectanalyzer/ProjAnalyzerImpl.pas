@@ -191,7 +191,7 @@ begin
         ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
         ProjectAnalyzerForm.Show;
       end;
-      if SaveMapFile <> MapFileOptionDetailed then
+      if Integer(SaveMapFile) <> MapFileOptionDetailed then
       begin // delete MAP and DRC file
         DeleteFile(MapFileName);
         DeleteFile(ChangeFileExt(MapFileName, DrcFileExtension));

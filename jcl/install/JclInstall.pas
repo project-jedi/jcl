@@ -1452,7 +1452,8 @@ function TJclInstallation.Install: Boolean;
             and OptionChecked[joDualPackages] then
             with TJclBDSInstallation(Target) do
           begin
-            Result := AddToCppSearchPath(FLibDir) and AddToCppSearchPath(Distribution.JclSourceDir);
+            Result := AddToCppSearchPath(FLibDir) and AddToCppSearchPath(Distribution.JclSourceDir) and 
+                      ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibDir));
             if Result then
               WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibDir, Distribution.JclSourceDir]))
             else
@@ -1919,7 +1920,8 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
         with TJclBDSInstallation(Target) do
       begin
-        if RemoveFromCppSearchPath(FLibDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) then
+        if RemoveFromCppSearchPath(FLibDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
+           ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibDir)) then
           WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibDir, Distribution.JclSourceDir]))
         else
           WriteLog('Failed to remove cpp search path.');
@@ -2929,13 +2931,12 @@ begin
 
   {$IFDEF MSWINDOWS}
   FCLRVersions := TStringList.Create;
+  FRegHelpCommands := TStringList.Create;
   {$ENDIF MSWINDOWS}
   FRadToolInstallations := TJclBorRADToolInstallations.Create;
 
   FTargetInstalls := TObjectList.Create;
   FTargetInstalls.OwnsObjects := True;
-
-  FRegHelpCommands := TStringList.Create;
 end;
 
 function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boolean;
@@ -2998,13 +2999,12 @@ destructor TJclDistribution.Destroy;
 begin
   {$IFDEF MSWINDOWS}
   FCLRVersions.Free;
+  FRegHelpCommands.Free;
   {$ENDIF MSWINDOWS}
 
   FRadToolInstallations.Free;
 
   FTargetInstalls.Free;
-
-  FRegHelpCommands.Free;
 
   inherited Destroy;
 end;

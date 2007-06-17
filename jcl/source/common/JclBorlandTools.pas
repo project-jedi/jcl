@@ -776,10 +776,13 @@ type
     FDCCIL: TJclDCCIL;
     FPdbCreate: Boolean;
     procedure SetDualPackageInstallation(const Value: Boolean);
+    function GetCppPathsKeyName: string;
     function GetCppBrowsingPath: TJclBorRADToolPath;
     function GetCppSearchPath: TJclBorRADToolPath;
+    function GetCppLibraryPath: TJclBorRADToolPath;
     procedure SetCppBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetCppSearchPath(const Value: TJclBorRADToolPath);
+    procedure SetCppLibraryPath(const Value: TJclBorRADToolPath);
     function GetMaxDelphiCLRVersion: string;
 
     function GetMsBuildEnvOptionsFileName: string;
@@ -817,11 +820,14 @@ type
 
     function AddToCppSearchPath(const Path: string): Boolean;
     function AddToCppBrowsingPath(const Path: string): Boolean;
+    function AddToCppLibraryPath(const Path: string): Boolean;
     function RemoveFromCppSearchPath(const Path: string): Boolean;
     function RemoveFromCppBrowsingPath(const Path: string): Boolean;
+    function RemoveFromCppLibraryPath(const Path: string): Boolean;
 
     property CppSearchPath: TJclBorRADToolPath read GetCppSearchPath write SetCppSearchPath;
     property CppBrowsingPath: TJclBorRADToolPath read GetCppBrowsingPath write SetCppBrowsingPath;
+    property CppLibraryPath: TJclBorRADToolPath read GetCppLibraryPath write SetCppLibraryPath;  // Only exists in BDS 5 and upper
 
     function RegisterPackage(const BinaryFileName, Description: string): Boolean; override;
     function UnregisterPackage(const BinaryFileName: string): Boolean; override;
@@ -1021,8 +1027,10 @@ const
   BDSDebugDCUPathValueName   = 'Debug DCU Path';
 
   CppPathsKeyName            = 'CppPaths';
+  CppPathsV5UpperKeyName     = 'C++\Paths';
   CppBrowsingPathValueName   = 'BrowsingPath';
   CppSearchPathValueName     = 'SearchPath';
+  CppLibraryPathValueName    = 'LibraryPath';
 
   TransferKeyName            = 'Transfer';
   TransferCountValueName     = 'Count';
@@ -1129,6 +1137,9 @@ const
   MsBuildWin32BrowsingPathNodeName = 'Win32BrowsingPath';
   MsBuildWin32DebugDCUPathNodeName = 'Win32DebugDCUPath';
   MsBuildWin32DLLOutputPathNodeName = 'Win32DLLOutputPath';
+  MsBuildCBuilderBPLOutputPathNodeName = 'CBuilderBPLOutputPath';
+  MsBuildCBuilderBrowsingPathNodeName = 'CBuilderBrowsingPath';
+  MsBuildCBuilderLibraryPathNodeName = 'CBuilderLibraryPath';
   MsBuildPropertyGroupNodeName = 'PropertyGroup';
 
 function AnsiStartsText(const SubStr, S: string): Boolean;
@@ -4627,6 +4638,21 @@ begin
     Result := False;
 end;
 
+function TJclBDSInstallation.AddToCppLibraryPath(const Path: string): Boolean;
+var
+  TempLibraryPath: TJclBorRADToolPath;
+begin
+  if (bpBCBuilder32 in Personalities) and (IDEVersionNumber >= 5) then
+  begin
+    TempLibraryPath := CppLibraryPath;
+    PathListIncludeItems(TempLibraryPath, Path);
+    Result := True;
+    CppLibraryPath := TempLibraryPath;
+  end
+  else
+    Result := False;
+end;
+
 function TJclBDSInstallation.CleanPackageCache(const BinaryFileName: string): Boolean;
 var
   FileName, KeyName: string;
@@ -4758,7 +4784,11 @@ begin
       Result := PathAddSeparator(GetDefaultProjectsDir) + 'bpl';
     3, 4:
       Result := inherited GetBPLOutputPath;
-    //5:
+    5:
+      if bpBCBuilder32 in Personalities then
+        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName))
+      else
+        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
   else
     Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
   end;
@@ -4780,14 +4810,27 @@ begin
     Result := DefaultProjectsDir;
 end;
 
+function TJclBDSInstallation.GetCppPathsKeyName: string;
+begin
+  if IDEVersionNumber >= 5 then
+    Result := CppPathsV5UpperKeyName
+  else
+    Result := CppPathsKeyName;
+end;
+
 function TJclBDSInstallation.GetCppBrowsingPath: TJclBorRADToolPath;
 begin
-  Result := ConfigData.ReadString(CppPathsKeyName, CppBrowsingPathValueName, '');
+  Result := ConfigData.ReadString(GetCppPathsKeyName, CppBrowsingPathValueName, '');
 end;
 
 function TJclBDSInstallation.GetCppSearchPath: TJclBorRADToolPath;
 begin
-  Result := ConfigData.ReadString(CppPathsKeyName, CppSearchPathValueName, '');
+  Result := ConfigData.ReadString(GetCppPathsKeyName, CppSearchPathValueName, '');
+end;
+
+function TJclBDSInstallation.GetCppLibraryPath: TJclBorRADToolPath;
+begin
+  Result := ConfigData.ReadString(GetCppPathsKeyName, CppLibraryPathValueName, '');
 end;
 
 function TJclBDSInstallation.GetDCPOutputPath: string;
@@ -4959,7 +5002,17 @@ function TJclBDSInstallation.RadToolName: string;
 begin
   // The name comes from IDEVersionNumber
   if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
-    Result := BDSVersions[IDEVersionNumber].Name
+  begin
+    Result := BDSVersions[IDEVersionNumber].Name;
+    // IDE Version 5 comes in two flavors: 
+    // - Delphi only  (Spacely)
+    // - C++ Builder only  (Cogswell)
+    // In the second case the product name is "C++ Builder" and not "Delphi" 
+    // Right now, the name of an installation of Cogswell on top of Spacely
+    // is not yet known and a way to detect it will have to be thought of.
+    if (IDEVersionNumber = 5) and (bpBCBuilder32 in Personalities) then
+      Result := RsBCBName;
+  end
   else
     Result := RsBDSName;
 end;
@@ -5000,14 +5053,41 @@ begin
     Result := False;
 end;
 
+function TJclBDSInstallation.RemoveFromCppLibraryPath(const Path: string): Boolean;
+var
+  TempLibraryPath: TJclBorRADToolPath;
+begin
+  if (bpBCBuilder32 in Personalities) and (IDEVersionNumber >= 5) then
+  begin
+    TempLibraryPath := CppLibraryPath;
+    Result := RemoveFromPath(TempLibraryPath, Path);
+    CppLibraryPath := TempLibraryPath;
+  end
+  else
+    Result := False;
+end;
+
 procedure TJclBDSInstallation.SetCppBrowsingPath(const Value: TJclBorRADToolPath);
 begin
-  ConfigData.WriteString(CppPathsKeyName, CppBrowsingPathValueName, Value);
+  // update registry
+  ConfigData.WriteString(GetCppPathsKeyName, CppBrowsingPathValueName, Value);
+  // update EnvOptions.dproj
+  if IDEVersionNumber >= 5 then
+    SetMsBuildEnvOption(MsBuildCBuilderBrowsingPathNodeName, Value);
 end;
 
 procedure TJclBDSInstallation.SetCppSearchPath(const Value: TJclBorRADToolPath);
 begin
-  ConfigData.WriteString(CppPathsKeyName, CppSearchPathValueName, Value);
+  ConfigData.WriteString(GetCppPathsKeyName, CppSearchPathValueName, Value);
+end;
+
+procedure TJclBDSInstallation.SetCppLibraryPath(const Value: TJclBorRADToolPath);
+begin
+  // update registry
+  ConfigData.WriteString(GetCppPathsKeyName, CppLibraryPathValueName, Value);
+  // update EnvOptions.dproj
+  if IDEVersionNumber >= 5 then
+    SetMsBuildEnvOption(MsBuildCBuilderLibraryPathNodeName, Value);
 end;
 
 procedure TJclBDSInstallation.SetDebugDCUPath(const Value: TJclBorRADToolPath);
