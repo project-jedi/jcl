@@ -244,9 +244,9 @@ begin
     if FSaveMapFile <> MapFileOptionDetailed then
     begin
       ProjOptions.Values[MapFileOptionName] := FSaveMapFile;
-      // workaround for MsBuild, the project has to be saved
+      // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
       ProjOptions.ModifiedState := True;
-      FCurrentProject.Save(False, True);
+      //FCurrentProject.Save(False, True);
     end;
     ProjectFileName := FCurrentProject.FileName;
     OutputDirectory := GetOutputDirectory(FCurrentProject);
@@ -348,9 +348,9 @@ begin
       FSaveMapFile := ProjOptions.Values[MapFileOptionName];
       if FSaveMapFile <> MapFileOptionDetailed then
         ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
-      // workaround for MsBuild, the project has to be saved
+      // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
       ProjOptions.ModifiedState := True;
-      Project.Save(False, True);
+      //Project.Save(False, True);
     end;
   end;
 end;

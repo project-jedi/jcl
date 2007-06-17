@@ -172,16 +172,16 @@ begin
 
     SaveMapFile := ProjOptions.Values[MapFileOptionName];
     ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
-    // workaround for MsBuild, the project has to be saved
+    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
     ProjOptions.ModifiedState := True;
-    TempActiveProject.Save(False, True);
+    //TempActiveProject.Save(False, True);
 
     BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
 
     ProjOptions.Values[MapFileOptionName] := SaveMapFile;
-    // workaround for MsBuild, the project has to be saved
+    // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
     ProjOptions.ModifiedState := True;
-    TempActiveProject.Save(False, True);
+    //TempActiveProject.Save(False, True);
 
     if BuildOK then
     begin // Build was successful, continue ...
