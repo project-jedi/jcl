@@ -4100,8 +4100,13 @@ function CPUID: TCpuInfo;
         CPUInfo.IntelSpecific.BrandID := AdditionalInfo and $000000FF;
         CPUInfo.IntelSpecific.FlushLineSize := (AdditionalInfo and $0000FF00) shr 8;
         CPUInfo.IntelSpecific.APICID := (AdditionalInfo and $FF000000) shr 24;
-        CPUInfo.LogicalCore := (AdditionalInfo and $00FF0000) shr 16;
         CPUInfo.HyperThreadingTechnology := (CPUInfo.Features and INTEL_HTT) <> 0;
+        if CPUInfo.HyperThreadingTechnology then
+        begin
+          CPUInfo.LogicalCore := (AdditionalInfo and $00FF0000) shr 16;
+          if CPUInfo.LogicalCore = 0 then
+            CPUInfo.LogicalCore := 1;
+        end;
 
         if HiVal >= 2 then
         begin
@@ -4326,7 +4331,11 @@ function CPUID: TCpuInfo;
       CPUInfo.AMDSpecific.APICID := (VersionInfo and $FF000000) shr 24;
       CPUInfo.HyperThreadingTechnology := (CPUInfo.Features and AMD_HTT) <> 0;
       if CPUInfo.HyperThreadingTechnology then
+      begin
         CPUInfo.LogicalCore := (AdditionalInfo and $00FF0000) shr 16;
+        if CPUInfo.LogicalCore = 0 then
+          CPUInfo.LogicalCore := 1;
+      end;
     end;
 
     CallCPUID($80000000, 0, ExHiVal, Unused, Unused, Unused);
