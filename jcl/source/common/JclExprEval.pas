@@ -903,8 +903,10 @@ const
 
 implementation
 
+{$IFDEF MSWINDOWS}
 uses
-  JclAnsiStrings;
+  Windows; // inline of AnsiSameText
+{$ENDIF MSWINDOWS}
 
 //=== { TExprHashContext } ===================================================
 
