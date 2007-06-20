@@ -32,6 +32,20 @@
 
 // Last modified: $Date$
 
+// operator priority (as implemented in this unit)
+// all binary operators are associated from left to right
+// all unary operators are associated from right to left
+
+// (highest) not bnot(bitwise) +(unary) -(unary)                      (level 3)
+//           * / div mod and band(bitwise) shl shr                    (level 2)
+//           +(binary) -(binary) or xor bor(bitwise) bxor(bitwise)    (level 1)
+// (lowest)  < <= > >= cmp = <>                                       (level 0)
+
+// details on cmp operator:
+//  "1.5 cmp 2.0" returns -1.0 because 1.5 < 2.0
+//  "1.5 cmp 1.5" returns 0.0 because 1.5 = 1.5
+//  "1.5 cmp 0.0" returns 1.0 because 1.5 > 0.0
+
 unit JclExprEval;
 
 {$I jcl.inc}
@@ -401,9 +415,28 @@ type
     function Subtract(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Multiply(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Divide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function Modulo(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Negate(AValue: TExprNode): TExprNode; virtual; abstract;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareNotEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareLess(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareLessEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareGreater(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+
+    function LogicalAnd(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function LogicalOr(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function LogicalXor(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function LogicalNot(AValue: TExprNode): TExprNode; virtual; abstract;
+    function BitwiseAnd(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function BitwiseOr(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function BitwiseXor(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function BitwiseNot(AValue: TExprNode): TExprNode; virtual; abstract;
+    function ShiftLeft(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function ShiftRight(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
     function LoadVar(ALoc: PFloat32): TExprNode; overload;
     function LoadVar(ALoc: PFloat64): TExprNode; overload;
@@ -418,42 +451,38 @@ type
     FContext: TExprContext;
     FLexer: TExprLexer;
     FNodeFactory: TExprNodeFactory;
+  protected
+    function CompileExprLevel0(ASkip: Boolean): TExprNode; virtual;
+    function CompileExprLevel1(ASkip: Boolean): TExprNode; virtual;
+    function CompileExprLevel2(ASkip: Boolean): TExprNode; virtual;
+    function CompileExprLevel3(ASkip: Boolean): TExprNode; virtual;
+    function CompileFactor: TExprNode; virtual;
+    function CompileIdentFactor: TExprNode; virtual;
   public
     constructor Create(ALexer: TExprLexer; ANodeFactory: TExprNodeFactory);
     function Compile: TExprNode; virtual;
     property Lexer: TExprLexer read FLexer;
     property NodeFactory: TExprNodeFactory read FNodeFactory;
     property Context: TExprContext read FContext write FContext;
-
-    // grammar starts here
-
-    function CompileExpr(ASkip: Boolean): TExprNode; virtual;
-    function CompileSimpleExpr(ASkip: Boolean): TExprNode;
-    function CompileTerm(ASkip: Boolean): TExprNode;
-    function CompileSignedFactor(ASkip: Boolean): TExprNode;
-    function CompileFactor: TExprNode;
-    function CompileIdentFactor: TExprNode;
   end;
 
   TExprEvalParser = class(TObject)
   private
     FContext: TExprContext;
     FLexer: TExprLexer;
+  protected
+    function EvalExprLevel0(ASkip: Boolean): TFloat; virtual;
+    function EvalExprLevel1(ASkip: Boolean): TFloat; virtual;
+    function EvalExprLevel2(ASkip: Boolean): TFloat; virtual;
+    function EvalExprLevel3(ASkip: Boolean): TFloat; virtual;
+    function EvalFactor: TFloat; virtual;
+    function EvalIdentFactor: TFloat; virtual;
   public
     constructor Create(ALexer: TExprLexer);
     function Evaluate: TFloat; virtual;
 
     property Lexer: TExprLexer read FLexer;
     property Context: TExprContext read FContext write FContext;
-
-    // grammar starts here
-
-    function EvalExpr(ASkip: Boolean): TFloat; virtual;
-    function EvalSimpleExpr(ASkip: Boolean): TFloat;
-    function EvalTerm(ASkip: Boolean): TFloat;
-    function EvalSignedFactor(ASkip: Boolean): TFloat;
-    function EvalFactor: TFloat;
-    function EvalIdentFactor: TFloat;
   end;
 
 { some concrete class descendants follow... }
@@ -536,8 +565,28 @@ type
     function Subtract(ALeft, ARight: TExprNode): TExprNode; override;
     function Multiply(ALeft, ARight: TExprNode): TExprNode; override;
     function Divide(ALeft, ARight: TExprNode): TExprNode; override;
+    function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; override;
+    function Modulo(ALeft, ARight: TExprNode): TExprNode; override;
     function Negate(AValue: TExprNode): TExprNode; override;
+
     function Compare(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareEqual(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareNotEqual(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareLess(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareLessEqual(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareGreater(ALeft, ARight: TExprNode): TExprNode; override;
+    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode; override;
+
+    function LogicalAnd(ALeft, ARight: TExprNode): TExprNode; override;
+    function LogicalOr(ALeft, ARight: TExprNode): TExprNode; override;
+    function LogicalXor(ALeft, ARight: TExprNode): TExprNode; override;
+    function LogicalNot(AValue: TExprNode): TExprNode; override;
+    function BitwiseAnd(ALeft, ARight: TExprNode): TExprNode; override;
+    function BitwiseOr(ALeft, ARight: TExprNode): TExprNode; override;
+    function BitwiseXor(ALeft, ARight: TExprNode): TExprNode; override;
+    function BitwiseNot(AValue: TExprNode): TExprNode; override;
+    function ShiftLeft(ALeft, ARight: TExprNode): TExprNode; override;
+    function ShiftRight(ALeft, ARight: TExprNode): TExprNode; override;
   end;
 
   { some concrete symbols }
@@ -854,6 +903,9 @@ const
 
 implementation
 
+uses
+  JclAnsiStrings;
+
 //=== { TExprHashContext } ===================================================
 
 constructor TExprHashContext.Create(ACaseSensitive: Boolean; AHashSize: Integer);
@@ -985,12 +1037,12 @@ end;
 
 function TExprCompileParser.Compile: TExprNode;
 begin
-  Result := CompileExpr(False);
+  Result := CompileExprLevel0(False);
 end;
 
-function TExprCompileParser.CompileExpr(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileExprLevel0(ASkip: Boolean): TExprNode;
 begin
-  Result := CompileSimpleExpr(ASkip);
+  Result := CompileExprLevel1(ASkip);
 
   { Utilize some of these compound instructions to test DAG optimization
     techniques later on.
@@ -1000,192 +1052,129 @@ begin
   while True do
     case Lexer.CurrTok of
       etEqualTo: // =
-      begin
-        // need to return 1 if true, 0 if false
-        // compare will return 0 if true, -1 / +1 if false
-        // squaring will force a positive or zero value
-        // subtract value from 1 to get answer
-        // IOW: 1 - Sqr(Compare(X, Y))
-
-        // first, get comparison
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-
-        // next, square comparison - note that this
-        // forces a common sub-expression; parse tree will no longer
-        // be a tree, but a DAG
-        Result := NodeFactory.Multiply(Result, Result);
-
-        // finally, subtract from one
-        Result := NodeFactory.Subtract(
-          NodeFactory.LoadConst32(1),
-          Result
-        );
-      end;
-
+        Result := NodeFactory.CompareEqual(Result, CompileExprLevel1(True));
       etNotEqual: // <>
-      begin
-        // same as above, but without the subtract
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-        Result := NodeFactory.Multiply(Result, Result);
-      end;
-
+        Result := NodeFactory.CompareNotEqual(Result, CompileExprLevel1(True));
       etLessThan: // <
-      begin
-        // have 1 for less than, 0 for equal, 0 for greater than too
-        // c = compare(X, Y)
-        // d = c * c
-        // if less than, d = 1, c = -1; d - c = 2
-        // if greater than, d = c = 1;  d - c = 0
-        // if equal, d = c = 0;         d - c = 0
-        // IOW: (Sqr(compare(X, Y)) - compare(X, Y)) / 2
-
-        // get comparison
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-        // subtract from square
-        Result := NodeFactory.Subtract(
-          NodeFactory.Multiply(
-            Result,
-            Result
-          ),
-          Result
-        );
-        // divide by two
-        Result := NodeFactory.Divide(Result, NodeFactory.LoadConst32(2));
-      end;
-
+        Result := NodeFactory.CompareLess(Result, CompileExprLevel1(True));
       etLessEqual: // <=
-      begin
-        // less than or equal to return 1, greater than returns 0
-        // c = compare(X, Y)
-        // d = c * c
-        // <  c = -1, d = 1, c + d = 0
-        // =  c = 0,  d = 0, c + d = 0
-        // >  c = +1, d = 1, c + d = 2
-        // then divide by two, take away from 1
-        // IOW: 1 - (compare(X, Y) + Sqr(compare(X, Y))) / 2
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-        // now, for some fun!
-        Result := NodeFactory.Subtract(
-          NodeFactory.LoadConst32(1),
-          NodeFactory.Divide(
-            NodeFactory.Add(
-              Result,
-              NodeFactory.Multiply(
-                Result,
-                Result
-              )
-            ),
-            NodeFactory.LoadConst32(2)
-          )
-        );
-      end;
-
+        Result := NodeFactory.CompareLessEqual(Result, CompileExprLevel1(True));
       etGreaterThan: // >
-      begin
-        // same as <=, without the taking away from 1 bit
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-        Result := NodeFactory.Divide(
-          NodeFactory.Add(
-            Result,
-            NodeFactory.Multiply(
-              Result,
-              Result
-            )
-          ),
-          NodeFactory.LoadConst32(2)
-        );
-      end;
-
+        Result := NodeFactory.CompareGreater(Result, CompileExprLevel1(True));
       etGreaterEqual: // >=
-      begin
-        // same as less than, but subtract from one
-        Result := NodeFactory.Compare(Result, CompileSimpleExpr(True));
-        Result := NodeFactory.Subtract(
-          NodeFactory.Multiply(
-            Result,
-            Result
-          ),
-          Result
-        );
-        Result := NodeFactory.Divide(Result, NodeFactory.LoadConst32(2));
-        Result := NodeFactory.Subtract(NodeFactory.LoadConst32(1), Result);
-      end;
+        Result := NodeFactory.CompareGreaterEqual(Result, CompileExprLevel1(True));
+      etIdentifier: // cmp
+        if AnsiSameText(Lexer.TokenAsString, 'cmp') then
+          Result := NodeFactory.Compare(Result, CompileExprLevel1(True))
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprCompileParser.CompileSimpleExpr(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileExprLevel1(ASkip: Boolean): TExprNode;
 begin
-  Result := CompileTerm(ASkip);
+  Result := CompileExprLevel2(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etPlus:
-        Result := NodeFactory.Add(Result, CompileTerm(True));
+        Result := NodeFactory.Add(Result, CompileExprLevel2(True));
       etMinus:
-        Result := NodeFactory.Subtract(Result, CompileTerm(True));
+        Result := NodeFactory.Subtract(Result, CompileExprLevel2(True));
+      etIdentifier: // or, xor, bor, bxor
+        if AnsiSameText(Lexer.TokenAsString, 'or') then
+          Result := NodeFactory.LogicalOr(Result, CompileExprLevel2(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'xor') then
+          Result := NodeFactory.LogicalXor(Result, CompileExprLevel2(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'bor') then
+          Result := NodeFactory.BitwiseOr(Result, CompileExprLevel2(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'bxor') then
+          Result := NodeFactory.BitwiseXor(Result, CompileExprLevel2(True))
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprCompileParser.CompileTerm(ASkip: Boolean): TExprNode;
+function TExprCompileParser.CompileExprLevel2(ASkip: Boolean): TExprNode;
 begin
-  Result := CompileSignedFactor(ASkip);
+  Result := CompileExprLevel3(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etAsterisk:
-        Result := NodeFactory.Multiply(Result, CompileSignedFactor(True));
+        Result := NodeFactory.Multiply(Result, CompileExprLevel3(True));
       etForwardSlash:
-        Result := NodeFactory.Divide(Result, CompileSignedFactor(True));
+        Result := NodeFactory.Divide(Result, CompileExprLevel3(True));
+      etIdentifier: // div, mod, and, shl, shr, band
+        if AnsiSameText(Lexer.TokenAsString, 'div') then
+          Result := NodeFactory.IntegerDivide(Result, CompileExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'mod') then
+          Result := NodeFactory.Modulo(Result, CompileExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'and') then
+          Result := NodeFactory.LogicalAnd(Result, CompileExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'shl') then
+          Result := NodeFactory.ShiftLeft(Result, CompileExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'shr') then
+          Result := NodeFactory.ShiftRight(Result, CompileExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'band') then
+          Result := NodeFactory.BitwiseAnd(Result, CompileExprLevel3(True))
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprCompileParser.CompileSignedFactor(ASkip: Boolean): TExprNode;
-var
-  Neg: Boolean;
+function TExprCompileParser.CompileExprLevel3(ASkip: Boolean): TExprNode;
 begin
   if ASkip then
     Lexer.NextTok;
 
-  Neg := False;
-  while True do
-  begin
-    case Lexer.CurrTok of
-      etPlus:
-        { do nothing };
-      etMinus:
-        Neg := not Neg;
-    else
-      Break;
-    end;
-    Lexer.NextTok;
+  case Lexer.CurrTok of
+    etPlus:
+      Result := CompileExprLevel3(True);
+    etMinus:
+      Result := NodeFactory.Negate(CompileExprLevel3(True));
+    etIdentifier: // not, bnot
+      if AnsiSameText(Lexer.TokenAsString, 'not') then
+        Result := NodeFactory.LogicalNot(CompileExprLevel3(True))
+      else
+      if AnsiSameText(Lexer.TokenAsString, 'bnot') then
+        Result := NodeFactory.BitwiseNot(CompileExprLevel3(True))
+      else
+        Result := CompileFactor;
+  else
+    Result := CompileFactor;
   end;
-
-  Result := CompileFactor;
-  if Neg then
-    Result := NodeFactory.Negate(Result);
 end;
 
 function TExprCompileParser.CompileFactor: TExprNode;
 begin
   case Lexer.CurrTok of
-    etNumber:
-      begin
-        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
-        Lexer.NextTok;
-      end;
     etIdentifier:
       Result := CompileIdentFactor;
     etLParen:
       begin
-        Result := CompileExpr(True);
+        Result := CompileExprLevel0(True);
         if Lexer.CurrTok <> etRParen then
           raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
+        Lexer.NextTok;
+      end;
+    etNumber:
+      begin
+        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
         Lexer.NextTok;
       end;
   else
@@ -1238,7 +1227,7 @@ end;
 
 function TExprEvalParser.Evaluate: TFloat;
 begin
-  Result := EvalExpr(False);
+  Result := EvalExprLevel0(False);
 
   if (Lexer.CurrTok <> etEof) then
   begin
@@ -1247,114 +1236,178 @@ begin
   end;
 end;
 
-function TExprEvalParser.EvalExpr(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalExprLevel0(ASkip: Boolean): TFloat;
+var
+  RightValue: TFloat;
 begin
-  Result := EvalSimpleExpr(ASkip);
+  Result := EvalExprLevel1(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etEqualTo: // =
-        if Result = EvalSimpleExpr(True) then
+        if Result = EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
       etNotEqual: // <>
-        if Result <> EvalSimpleExpr(True) then
+        if Result <> EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
       etLessThan: // <
-        if Result < EvalSimpleExpr(True) then
+        if Result < EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
       etLessEqual: // <=
-        if Result <= EvalSimpleExpr(True) then
+        if Result <= EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
       etGreaterThan: // >
-        if Result > EvalSimpleExpr(True) then
+        if Result > EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
       etGreaterEqual: // >=
-        if Result >= EvalSimpleExpr(True) then
+        if Result >= EvalExprLevel1(True) then
           Result := 1.0
         else
           Result := 0.0;
+      etIdentifier: // cmp
+        if AnsiSameText(Lexer.TokenAsString, 'cmp') then
+        begin
+          RightValue := EvalExprLevel1(True);
+          if Result > RightValue then
+            Result := 1.0
+          else
+          if Result = RightValue then
+            Result := 0.0
+          else
+            Result := -1.0;
+        end
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprEvalParser.EvalSimpleExpr(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalExprLevel1(ASkip: Boolean): TFloat;
 begin
-  Result := EvalTerm(ASkip);
+  Result := EvalExprLevel2(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etPlus:
-        Result := Result + EvalTerm(True);
+        Result := Result + EvalExprLevel2(True);
       etMinus:
-        Result := Result - EvalTerm(True);
+        Result := Result - EvalExprLevel2(True);
+      etIdentifier: // or, xor, bor, bxor
+        if AnsiSameText(Lexer.TokenAsString, 'or') then
+        begin
+          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+            Result := 1.0
+          else
+            Result := 0.0;
+        end
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'xor') then
+        begin
+          if (Result <> 0) xor (EvalExprLevel2(True) <> 0) then
+            Result := 1.0
+          else
+            result := 0.0;
+        end
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'bor') then
+          Result := Round(Result) or Round(EvalExprLevel2(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'bxor') then
+          Result := Round(Result) xor Round(EvalExprLevel2(True))
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprEvalParser.EvalTerm(ASkip: Boolean): TFloat;
+function TExprEvalParser.EvalExprLevel2(ASkip: Boolean): TFloat;
 begin
-  Result := EvalSignedFactor(ASkip);
+  Result := EvalExprLevel3(ASkip);
 
   while True do
     case Lexer.CurrTok of
       etAsterisk:
-        Result := Result * EvalSignedFactor(True);
+        Result := Result * EvalExprLevel3(True);
       etForwardSlash:
-        Result := Result / EvalSignedFactor(True);
+        Result := Result / EvalExprLevel3(True);
+      etIdentifier: // div, mod, and, shl, shr, band
+        if AnsiSameText(Lexer.TokenAsString, 'div') then
+          Result := Round(Result) div Round(EvalExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'mod') then
+          Result := Round(Result) mod Round(EvalExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'and') then
+        begin
+          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+            Result := 1.0
+          else
+            Result := 0.0;
+        end
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'shl') then
+          Result := Round(Result) shl Round(EvalExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'shr') then
+          Result := Round(Result) shr Round(EvalExprLevel3(True))
+        else
+        if AnsiSameText(Lexer.TokenAsString, 'band') then
+          Result := Round(Result) and Round(EvalExprLevel3(True))
+        else
+          Break;
     else
       Break;
     end;
 end;
 
-function TExprEvalParser.EvalSignedFactor(ASkip: Boolean): TFloat;
-var
-  Neg: Boolean;
+function TExprEvalParser.EvalExprLevel3(ASkip: Boolean): TFloat;
 begin
   if ASkip then
     Lexer.NextTok;
 
-  Neg := False;
-  while True do
-  begin
-    case Lexer.CurrTok of
-      etPlus:
-        { do nothing };
-      etMinus:
-        Neg := not Neg;
-    else
-      Break;
-    end;
-    Lexer.NextTok;
+  case Lexer.CurrTok of
+    etPlus:
+      Result := EvalExprLevel3(True);
+    etMinus:
+      Result := -EvalExprLevel3(True);
+    etIdentifier: // not, bnot
+      if AnsiSameText(Lexer.TokenAsString, 'not') then
+      begin
+        if EvalExprLevel3(True) <> 0.0 then
+          Result := 0.0
+        else
+          Result := 1.0;
+      end
+      else
+      if AnsiSameText(Lexer.TokenAsString, 'bnot') then
+        Result := not Round(EvalExprLevel3(True))
+      else
+        Result := EvalFactor;
+  else
+    Result := EvalFactor;
   end;
-
-  Result := EvalFactor;
-  if Neg then
-    Result := -Result;
 end;
 
 function TExprEvalParser.EvalFactor: TFloat;
 begin
-    case Lexer.CurrTok of
-     etIdentifier:
-       begin
-         Result := EvalIdentFactor;
-       end;
-
-     etLParen:
-     begin
-        Result := EvalExpr(True);
+  case Lexer.CurrTok of
+    etIdentifier:
+      Result := EvalIdentFactor;
+    etLParen:
+      begin
+        Result := EvalExprLevel0(True);
         if Lexer.CurrTok <> etRParen then
           raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
         Lexer.NextTok;
@@ -1364,9 +1417,9 @@ begin
         Result := Lexer.TokenAsNumber;
         Lexer.NextTok;
       end;
-    else
-      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
-   end;
+  else
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
+  end;
 end;
 
 function TExprEvalParser.EvalIdentFactor: TFloat;
@@ -1774,9 +1827,99 @@ type
     procedure Execute; override;
   end;
 
+  TExprGreaterVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprGreaterEqualVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLessVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLessEqualVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprEqualVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprNotEqualVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprIntegerDivideVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprModuloVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprShiftLeftVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprShiftRightVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprBitwiseAndVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprBitwiseOrVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprBitwiseXorVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLogicalAndVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLogicalOrVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLogicalXorVmOp = class(TExprBinaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
   { the unary operators }
 
   TExprNegateVmOp = class(TExprUnaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprLogicalNotVmOp = class(TExprUnaryVmOp)
+  public
+    procedure Execute; override;
+  end;
+
+  TExprBitwiseNotVmOp = class(TExprUnaryVmOp)
   public
     procedure Execute; override;
   end;
@@ -2013,11 +2156,167 @@ begin
     FOutput := 0.0;
 end;
 
+//=== { TExprCmpGreaterVmOp } ================================================
+
+procedure TExprGreaterVmOp.Execute;
+begin
+  if FLeft^ > FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprCmpGreaterEqualVmOp } ===========================================
+
+procedure TExprGreaterEqualVmOp.Execute;
+begin
+  if FLeft^ >= FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprCmpLessVmOp } ===================================================
+
+procedure TExprLessVmOp.Execute;
+begin
+  if FLeft^ < FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+// === { TExprCmpLessEqualVmOp } =============================================
+
+procedure TExprLessEqualVmOp.Execute;
+begin
+  if FLeft^ <= FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprCmpEqualVmOp } ==================================================
+
+procedure TExprEqualVmOp.Execute;
+begin
+  if FLeft^ = FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprCmpNotEqualVmOp } ===============================================
+
+procedure TExprNotEqualVmOp.Execute;
+begin
+  if FLeft^ <> FRight^ then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprDivVmOp } =======================================================
+
+procedure TExprIntegerDivideVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) div Round(FRight^);
+end;
+
+//=== { TExprModVmOp } =======================================================
+
+procedure TExprModuloVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) mod Round(FRight^);
+end;
+
+//=== { TExprShiftLeftVmOp } =================================================
+
+procedure TExprShiftLeftVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) shl Round(FRight^);
+end;
+
+//=== { TExprShiftRightVmOp } ================================================
+
+procedure TExprShiftRightVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) shr Round(FRight^);
+end;
+
+//=== { TExprBitwiseAndVmOp } ================================================
+
+procedure TExprBitwiseAndVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) and Round(FRight^);
+end;
+
+//=== { TExprOrVmOp } ========================================================
+
+procedure TExprBitwiseOrVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) or Round(FRight^);
+end;
+
+//=== { TExprXorVmOp } =======================================================
+
+procedure TExprBitwiseXorVmOp.Execute;
+begin
+  FOutput := Round(FLeft^) xor Round(FRight^);
+end;
+
+//=== { TExprLogicalAndVmOp } ================================================
+
+procedure TExprLogicalAndVmOp.Execute;
+begin
+  if (FLeft^ <> 0.0) and (FRight^ <> 0) then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprLogicalOrVmOp } =================================================
+
+procedure TExprLogicalOrVmOp.Execute;
+begin
+  if (FLeft^ <> 0.0) or (FRight^ <> 0) then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
+//=== { TExprLogicalXorVmOp } ================================================
+
+procedure TExprLogicalXorVmOp.Execute;
+begin
+  if (FLeft^ <> 0.0) xor (FRight^ <> 0) then
+    FOutput := 1.0
+  else
+    FOutput := 0.0;
+end;
+
 //=== { TExprNegateVmOp } ====================================================
 
 procedure TExprNegateVmOp.Execute;
 begin
   FOutput := - FInput^;
+end;
+
+//=== { TExprLogicalNotVmOp } ================================================
+
+procedure TExprLogicalNotVmOp.Execute;
+begin
+  if FInput^ <> 0.0 then
+    FOutput := 0.0
+  else
+    FOutput := 1.0;
+end;
+
+//=== { TExprBitwiseNotVmOp } ================================================
+
+procedure TExprBitwiseNotVmOp.Execute;
+begin
+  FOutput := not Round(FInput^);
 end;
 
 //=== { TExprVarVmOp } =======================================================
@@ -2527,12 +2826,6 @@ type
     procedure GenCode(AVirtMach: TExprVirtMach); override;
   end;
 
-  TExprCompareVmNode = class(TExprVirtMachNode)
-  public
-    constructor Create(ALeft, ARight: TExprNode);
-    procedure GenCode(AVirtMach: TExprVirtMach); override;
-  end;
-
 //== { TExprUnaryVmNode } ====================================================
 
 constructor TExprUnaryVmNode.Create(AUnaryClass: TExprUnaryVmOpClass; const ADeps: array of TExprNode);
@@ -2707,6 +3000,16 @@ begin
   Result := AddNode(TExprBinaryVmNode.Create(TExprDivideVmOp, [ALeft, ARight]));
 end;
 
+function TExprVirtMachNodeFactory.IntegerDivide(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprIntegerDivideVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.Modulo(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprModuloVmOp, [ALeft, ARight]));
+end;
+
 function TExprVirtMachNodeFactory.Negate(AValue: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprUnaryVmNode.Create(TExprNegateVmOp, [AValue]));
@@ -2832,7 +3135,87 @@ end;
 
 function TExprVirtMachNodeFactory.Compare(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprCompareVmNode.Create(ALeft, ARight));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprCompareVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareEqual(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprEqualVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareNotEqual(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprNotEqualVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareLess(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLessVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareLessEqual(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLessEqualVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareGreater(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterEqualVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.LogicalAnd(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalAndVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.LogicalOr(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalOrVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.LogicalXor(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalXorVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.LogicalNot(AValue: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprUnaryVmNode.Create(TExprLogicalNotVmOp, [AValue]));
+end;
+
+function TExprVirtMachNodeFactory.BitwiseAnd(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseAndVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.BitwiseOr(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseOrVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.BitwiseXor(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseXorVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.BitwiseNot(AValue: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprUnaryVmNode.Create(TExprBitwiseNotVmOp, [AValue]));
+end;
+
+function TExprVirtMachNodeFactory.ShiftLeft(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftLeftVmOp, [ALeft, ARight]));
+end;
+
+function TExprVirtMachNodeFactory.ShiftRight(ALeft, ARight: TExprNode): TExprNode;
+begin
+  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftRightVmOp, [ALeft, ARight]));
 end;
 
 //=== { TCompiledEvaluator } =================================================
@@ -3199,49 +3582,34 @@ begin
   AVirtMach.Add(FExprVmCode);
 end;
 
-//=== { TExprCompareVmNode } =================================================
-
-constructor TExprCompareVmNode.Create(ALeft, ARight: TExprNode);
-begin
-  inherited Create([ALeft, ARight]);
-end;
-
-procedure TExprCompareVmNode.GenCode(AVirtMach: TExprVirtMach);
-begin
-  FExprVmCode := TExprCompareVmOp.Create(
-    VmDeps[0].ExprVmCode.OutputLoc,
-    VmDeps[1].ExprVmCode.OutputLoc);
-  AVirtMach.Add(FExprVmCode);
-end;
-
 //=== { TExprAbstractFuncSym } ===============================================
 
 function TExprAbstractFuncSym.CompileFirstArg: TExprNode;
 begin
   if Lexer.CurrTok <> etLParen then
     raise EJclExprEvalError.CreateRes(@RsExprEvalFirstArg);
-  Result := CompileParser.CompileExpr(True);
+  Result := CompileParser.CompileExprLevel0(True);
 end;
 
 function TExprAbstractFuncSym.CompileNextArg: TExprNode;
 begin
   if Lexer.CurrTok <> etComma then
     raise EJclExprEvalError.CreateRes(@RsExprEvalNextArg);
-  Result := CompileParser.CompileExpr(True);
+  Result := CompileParser.CompileExprLevel0(True);
 end;
 
 function TExprAbstractFuncSym.EvalFirstArg: TFloat;
 begin
   if Lexer.CurrTok <> etLParen then
     raise EJclExprEvalError.CreateRes(@RsExprEvalFirstArg);
-  Result := EvalParser.EvalExpr(True);
+  Result := EvalParser.EvalExprLevel0(True);
 end;
 
 function TExprAbstractFuncSym.EvalNextArg: TFloat;
 begin
   if Lexer.CurrTok <> etComma then
     raise EJclExprEvalError.CreateRes(@RsExprEvalNextArg);
-  Result := EvalParser.EvalExpr(True);
+  Result := EvalParser.EvalExprLevel0(True);
 end;
 
 procedure TExprAbstractFuncSym.EndArgs;
