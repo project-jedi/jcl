@@ -1675,7 +1675,7 @@ begin
   TdsFileName := ChangeFileExt(FileName, TurboDebuggerSymbolExt);
   if FileExists(TdsFileName) then
   begin
-    TempStream := TJclFileMappingStream.Create(TdsFileName);
+    TempStream := TJclFileMappingStream.Create(TdsFileName, fmOpenRead or fmShareDenyNone);
     try
       Result := TJclTD32InfoParser.IsTD32DebugInfoValid(TempStream.Memory, TempStream.Size);
       if Result then
