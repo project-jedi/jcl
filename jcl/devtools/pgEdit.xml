@@ -133,6 +133,12 @@
         <alias name="Bds" value="cs1,d8,d9,d10,d11"/>
         <alias name="JclDotNet" value="d9.net,d10.net"/>
       </aliases>
+      <ProjectProperties>
+        <ProjectProperty name="VersionMajorNumber" value="1"/>
+        <ProjectProperty name="VersionMinorNumber" value="101"/>
+        <ProjectProperty name="ReleaseNumber" value="0"/>
+        <ProjectProperty name="BuildNumber" value="2647"/>
+      </ProjectProperties>
     </Model>
   </models>
 </Configuration>
