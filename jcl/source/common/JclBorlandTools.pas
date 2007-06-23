@@ -994,7 +994,7 @@ const
       CLRVersionResId: 9500;
       Supported: True),
     (
-      Name: RsDelphiName;
+      Name: RsRSName;
       VersionStr: '2007';
       Version: 11;
       CoreIdeVersion: '100';
@@ -5004,13 +5004,14 @@ begin
   if IDEVersionNumber in [Low(BDSVersions)..High(BDSVersions)] then
   begin
     Result := BDSVersions[IDEVersionNumber].Name;
-    // IDE Version 5 comes in two flavors: 
+    // IDE Version 5 comes in three flavors: 
     // - Delphi only  (Spacely)
-    // - C++ Builder only  (Cogswell)
-    // In the second case the product name is "C++ Builder" and not "Delphi" 
-    // Right now, the name of an installation of Cogswell on top of Spacely
-    // is not yet known and a way to detect it will have to be thought of.
-    if (IDEVersionNumber = 5) and (bpBCBuilder32 in Personalities) then
+    // - C++Builder only  (Cogswell)
+    // - Delphi and C++Builder
+    if (IDEVersionNumber = 5) and (Personalities = [bpDelphi32]) then
+      Result := RsDelphiName
+    else
+    if (IDEVersionNumber = 5) and (Personalities = [bpBCBuilder32]) then    
       Result := RsBCBName;
   end
   else

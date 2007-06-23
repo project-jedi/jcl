@@ -74,6 +74,7 @@ resourcestring
   RsBCBName             = 'C++Builder';
   RsCSharpName          = 'C#Builder';
   RsBDSName             = 'Borland Developer Studio';
+  RsRSName              = 'RAD Studio';
   {$IFDEF KYLIX}
   RsKylixName           = 'Kylix for %s';
   RsKylixVersionName    = 'Kylix %d for %s';
