@@ -59,7 +59,7 @@ procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string);
 function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Version,
   DcpDir, BplDir, RootDir: string): Boolean; overload;
 
-{ ReadJediInformation() reads the Jedi Information from the registry. }
+{ ReadJediInformation() reads the JEDI Information from the registry. }
 function ReadJediRegInformation(const IdeRegKey, ProjectName: string): TJediInformation; overload;
 
 { ParseVersionNumber() converts a version number 'major.minor.release.build' to
