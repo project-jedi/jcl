@@ -4,10 +4,10 @@
   <title>JEDI Code Library Release 1.100</title>
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 
-  
+
   <link rel="stylesheet" type="text/css" href="styles/default.css">
 
-  
+
   <meta content="Project JEDI" name="author">
 </head>
 
@@ -55,7 +55,7 @@ Build 2647
 <h3><a name="about">About this release</a></h3>
 <p>JCL release 1.100 provides an updated support for all targets (including CodeGear Delphi 2007 for Win32 and CodeGear C++Builder 2007).</p>
 
-<p>As always, multiple bugs have been fixed; for detailed change logs, 
+<p>As always, multiple bugs have been fixed; for detailed change logs,
 use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 <a href="http://sourceforge.net/projects/jcl/">http://sourceforge.net/projects/jcl/</a>
 , see below.</p>
@@ -89,7 +89,7 @@ stream, being notifyed on changes, reading common data types, scoping a
 stream, delegating read/write/seek operations.
 </li>
 
-  <li>Integration of the JCL help into the help system of Delphi 2005, BDS 2006, Turbo Delphi and Delphi 2007 for Win32.
+  <li>Integration of the JCL help into the help system of Delphi 2005, BDS 2006, Turbo Delphi and RAD Studio 2007.
   </li>
 
   <li>New IDE expert to have TortoiseSVN (<a href="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</a>) and TortoiseCVS (<a href="http://tortoisecvs.sourceforge.net/">http://tortoisecvs.sourceforge.net/</a>) commands integrated in all supportted IDE.</li>
@@ -102,17 +102,17 @@ stream, delegating read/write/seek operations.
 <ul>
 
   <li>
-    <p>Note that the package naming has changed: the same package name is used by 
-all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6, 
-Delphi 7, C#Builder 1, Delphi 8, Delphi 2005 and BDS 2006); a different suffix 
-is added for each target to the BPL file name (for BDS 2006, the library file is named jcl100.bpl). 
-The installer tries to remove old packages. 3rd party packages requiring old DJcl* resp. CJcl* packages need to be changed 
+    <p>Note that the package naming has changed: the same package name is used by
+all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
+Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006 and RAD Studio 2007); a different suffix
+is added for each target to the BPL file name (for BDS 2006, the library file is named jcl100.bpl).
+The installer tries to remove old packages. 3rd party packages requiring old DJcl* resp. CJcl* packages need to be changed
 to accomodate the new naming scheme or they will cause conflicts in the IDE at load time.</p>
   </li>
 
   <li>
-    <p>DCP files are now created in the lib\target subdirectory of the JCL 
-installation. 3rd party packages requiring JCL packages need to have this path 
+    <p>DCP files are now created in the lib\target subdirectory of the JCL
+installation. 3rd party packages requiring JCL packages need to have this path
 in their "browse path" option to compile.</p>
   </li>
 
@@ -120,26 +120,26 @@ in their "browse path" option to compile.</p>
 
 <p><span style="font-weight: bold;">(Windows only)&nbsp;Installation&nbsp;options:</span></p>
 
-<p>Packages compiled by the JCL installer don't contain any debug 
+<p>Packages compiled by the JCL installer don't contain any debug
 informations to keep their size as small as possible.</p>
 
-<p>The JEDI Code Library packages are required by some 3rd party packages 
-(including the JEDI Visual Component Library - JVCL), the installer generates 
+<p>The JEDI Code Library packages are required by some 3rd party packages
+(including the JEDI Visual Component Library - JVCL), the installer generates
 them if the "Packages" node is checked.</p>
 
-<p>The installer can generate MAP informations for each package. These informations 
-can be linked into binaries to become JCL debug data or be converted to .jdbg files. 
+<p>The installer can generate MAP informations for each package. These informations
+can be linked into binaries to become JCL debug data or be converted to .jdbg files.
 Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.</p>
 
-<p>For BDS 2006, the compiler introduced a new option to make the same packages available in C++, 
-by checking the "Dual packages" option of the "Packages" node, you will be able to call functions 
+<p>For BDS 2006, the compiler introduced a new option to make the same packages available in C++,
+by checking the "Dual packages" option of the "Packages" node, you will be able to call functions
 of the JCL from C++ code.</p>
 
 <p><span style="font-weight: bold;">.net Framework support:</span></p>
 
-<p>A subset of JCL units was worked over to support Delphi.Net (Delphi 2005 
-&amp; BDS 2006). The packages belong to the Jedi.Jcl namespace. The installer can generate these 
-packages for Delphi 2005 and BDS 2006, it displays an other tab to configure options and directory. 
+<p>A subset of JCL units was worked over to support Delphi.Net (Delphi 2005
+&amp; BDS 2006). The packages belong to the Jedi.Jcl namespace. The installer can generate these
+packages for Delphi 2005 and BDS 2006, it displays an other tab to configure options and directory.
 The installation process is similar to the native targets.</p>
 
 <hr><br>
@@ -181,13 +181,13 @@ The installation process is similar to the native targets.</p>
   <li>Delphi 2005 (Delphi Win32 and Delphi.net personalities).
   </li>
 
-  <li>Borland Developer Studio 2006 (Delphi Win32, C++ Builder Win32, Delphi.net and C#Builder personalities).
+  <li>Borland Developer Studio 2006 (Delphi Win32, C++Builder Win32, Delphi.net and C#Builder personalities).
   </li>
 
   <li>Turbo Delphi (explorer and professional - cf <a href="#notes">Installation notes</a>).
   </li>
 
-  <li>CodeGear Delphi 2007 for Win32.</li>
+  <li>CodeGear RAD Studio 2007 (Delphi Win32 and C++Builder Win32 personalities).</li>
 
 </ul>
 
@@ -206,7 +206,7 @@ The installation process is similar to the native targets.</p>
 	 versions of the kernel. Please ensure you use the flavor of the JCL with Unix EOL.
   </li>
 
-  <li>Free Pascal (<a href="http://www.freepascal.org/">http://www.freepascal.org/</a>) 
+  <li>Free Pascal (<a href="http://www.freepascal.org/">http://www.freepascal.org/</a>)
   support has not been updated for this release; most units from
   source/common should work with FP 2.0, as tests with a 2.0 beta (1.9.8)
   indicated, but this has not been verified. Note that there are no plans
@@ -216,9 +216,9 @@ The installation process is similar to the native targets.</p>
 
 <p><span style="font-weight: bold;">Installation for Turbo Delphi</span></p>
 
-<p>The JEDI Code Library can be compiled targetting Turbo Delphi Explorer and Turbo Delphi Professional. 
-Turbo Delphi Professional is recognized as BDS 2006, you have to download its command line compiler from 
-CodeGear website at&nbsp;<a href="http://www.codegear.com/Default.aspx?tabid=160">http://www.codegear.com/Default.aspx?tabid=160</a>&nbsp; 
+<p>The JEDI Code Library can be compiled targetting Turbo Delphi Explorer and Turbo Delphi Professional.
+Turbo Delphi Professional is recognized as BDS 2006, you have to download its command line compiler from
+CodeGear website at&nbsp;<a href="http://www.codegear.com/Default.aspx?tabid=160">http://www.codegear.com/Default.aspx?tabid=160</a>&nbsp;
 to install the full JCL on this tool.</p>
 
 <p>To install the JCL targetting Turbo Delphi Explorer, consider the following checks:</p>
@@ -261,15 +261,15 @@ to install the full JCL on this tool.</p>
 
 <p><span style="font-weight: bold;">Default installation</span></p>
 
-<p>For all others versions of Delphi, C++Builder and BDS, simply launch Install.bat 
+<p>For all others versions of Delphi, C++Builder and BDS, simply launch Install.bat
 and the installer window will let you configure options and install the library.</p>
 
 <hr><br>
 
 <h3><a name="manual">Manual Installation</a></h3>
 
-<p>Although it is not recommended, a manual installation is possible. You will have 
-to manually configure options for the library. That is done by modifying an included 
+<p>Although it is not recommended, a manual installation is possible. You will have
+to manually configure options for the library. That is done by modifying an included
 file.
 </p>
 <p>
@@ -308,12 +308,15 @@ file.
 	<li>For Delphi.net 2005: source\jcld9.net.inc
     </li>
 
-	<li>For BDS 2006 (Delphi and C++Builder) and CodeGear Delphi 2007 for Win32 : source\jcld10.inc
+	<li>For BDS 2006 (Delphi and C++Builder): source\jcld10.inc
+    </li>
+
+    <li>For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc
     </li>
 
 	<li>For Delphi.net 2006: source\jcld10.net.inc</li>
 
-  
+
   </ul>
 
   <li>In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
@@ -322,7 +325,7 @@ file.
    any components.
   </li>
 
-  <li>If you want to install experts, open package JclBaseExpert.dpk and compile it, 
+  <li>If you want to install experts, open package JclBaseExpert.dpk and compile it,
    then you can install all the experts you want (packages are located in the same
     directory).</li>
 
@@ -338,21 +341,21 @@ file.
 
 <h3><a name="feedback">Giving your feedback</a></h3>
 
-If you have any comments or suggestions we would appreciate it if you 
+If you have any comments or suggestions we would appreciate it if you
 drop us a note. There are several ways to get in contact with us:
 <ul>
 
-  <li>Newsgroup is the recommended way to contact other JCL users and the team itself. 
+  <li>Newsgroup is the recommended way to contact other JCL users and the team itself.
 They are hosted at&nbsp;<a href="news://forums.talkto.net/jedi.jcl">news://forums.talkto.net/jedi.jcl</a>.
   </li>
 
-  <li>Write to&nbsp;<a href="mailto:jcl@delphi-jedi.org">jcl@delphi-jedi.org</a>&nbsp; 
-or to&nbsp;<a href="mailto:jcl-testing@delphi-jedi.org">jcl-testing@delphi-jedi.org</a>&nbsp; 
-This email account should not be used for support requests. If you need 
+  <li>Write to&nbsp;<a href="mailto:jcl@delphi-jedi.org">jcl@delphi-jedi.org</a>&nbsp;
+or to&nbsp;<a href="mailto:jcl-testing@delphi-jedi.org">jcl-testing@delphi-jedi.org</a>&nbsp;
+This email account should not be used for support requests. If you need
 support please use either the newsgroups or the mailing list.
   </li>
 
-  <li>If you want to keep up to date about JCL then you can join the 
+  <li>If you want to keep up to date about JCL then you can join the
 JCL mailing list by going to <a href="http://tech.groups.yahoo.com/group/JEDI-JCL/">http://tech.groups.yahoo.com/group/JEDI-JCL/</a>
 You can also use this list to voice your opinion, comments or suggestions.</li>
 
@@ -361,7 +364,7 @@ You can also use this list to voice your opinion, comments or suggestions.</li>
 <hr>
 <h3><a name="issues">Reporting bugs</a></h3>
 
-<p>The general rule is: <b><font color="#ff0000">If you want to get a 
+<p>The general rule is: <b><font color="#ff0000">If you want to get a
 bug fixed you need to log it!</font></b></p>
 
 <p>An issue tracking tool can be accessed via ('Code Library' category):
@@ -369,7 +372,7 @@ bug fixed you need to log it!</font></b></p>
 
 <p>Please be aware that you are allowed there to enter feature request and code donations as well.</p>
 
-<p>The JEDI issue tracker is based up on the Mantis BugTracker Open 
+<p>The JEDI issue tracker is based up on the Mantis BugTracker Open
 Source project. More background information about it is available on its homepage&nbsp;
 <a href="http://mantisbt.sourceforge.net/">http://mantisbt.sourceforge.net</a></p>
 
@@ -377,8 +380,8 @@ Source project. More background information about it is available on its homepag
 
 <h3><a name="releases">Downloads of stable sources</a></h3>
 
-<p>These sources are official JCL releases and file status can be considered as 
-stable for use in final applications. During the past years, there have been around 2 
+<p>These sources are official JCL releases and file status can be considered as
+stable for use in final applications. During the past years, there have been around 2
 or 3 releases per year.</p>
 
 <p>JEDI Code Library: File List on SourceForge:&nbsp;
@@ -389,28 +392,28 @@ or 3 releases per year.</p>
 
 <h3><a name="development">Development sources</a></h3>
 
-<p>These files are under active development and may cause some incompatibilities 
-and some conflicts with existing code. You should not use these files in final 
-applications. The JCL development team provides these files for testing and 
+<p>These files are under active development and may cause some incompatibilities
+and some conflicts with existing code. You should not use these files in final
+applications. The JCL development team provides these files for testing and
 feedback from users.</p>
 
-<p>You can download snapshots of the Subversion repository updated every day in the JCL daily page 
+<p>You can download snapshots of the Subversion repository updated every day in the JCL daily page
 &nbsp;<a href="http://jcl.sourceforge.net/daily/">http://jcl.sourceforge.net/daily/</a></p>
 
-<p>To always have access to the most recent changes in the JCL, you 
+<p>To always have access to the most recent changes in the JCL, you
 should install a Subversion client (we recommend TortoiseSVN <a href="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</a>
-and RapidSVN <a href="http://rapidsvn.tigris.org/">http://rapidsvn.tigris.org/</a>) and download the 
-SVN repository files to your computer as explained in the repository page of the JEDI Wiki at 
+and RapidSVN <a href="http://rapidsvn.tigris.org/">http://rapidsvn.tigris.org/</a>) and download the
+SVN repository files to your computer as explained in the repository page of the JEDI Wiki at
 <a href="http://homepages.codegear.com/jedi/wiki/index.php?title=Repository">http://homepages.codegear.com/jedi/wiki/index.php?title=Repository</a>&nbsp;
-With the SVN client, you can update your local repository at any time. 
+With the SVN client, you can update your local repository at any time.
 You can also view the repository online via the web interface at <a href="http://jcl.svn.sourceforge.net/">http://jcl.svn.sourceforge.net/</a></p>
 
 <hr><br>
 
 <h3><a name="contribute">Getting involved in JCL development</a></h3>
 
-If you want to help out making JCL better or bigger or just plain 
-cooler, there are several ways in which you can help out. Here are some of the 
+If you want to help out making JCL better or bigger or just plain
+cooler, there are several ways in which you can help out. Here are some of the
 things we need your help on:
 <ul>
 
@@ -429,21 +432,21 @@ things we need your help on:
 
 </ul>
 
-<p>JCL accepts donations from developers as long as the source fullfills the 
-requirements set up by the JEDI and JCL teams. To read more about these 
+<p>JCL accepts donations from developers as long as the source fullfills the
+requirements set up by the JEDI and JCL teams. To read more about these
 requirements, visit the page <a href="http://homepages.codegear.com/jedi/jcl">http://homepages.codegear.com/jedi/jcl</a></p>
 
-<p>You can also donate your time by writing help for the source already 
-in JCL. We currently use Doc-o-Matic to create the finished help files but 
-the actual help sources are plain text files in a simple to understand format. 
-We can provide you with auto-generated templates with all classes, properties, 
-types etc already inserted. The "only" thing left to do is fill in the actual 
+<p>You can also donate your time by writing help for the source already
+in JCL. We currently use Doc-o-Matic to create the finished help files but
+the actual help sources are plain text files in a simple to understand format.
+We can provide you with auto-generated templates with all classes, properties,
+types etc already inserted. The "only" thing left to do is fill in the actual
 help text for the help items. If you are interested in writing help, contact us.</p>
 
-<p>If you want to help fix bugs in JCL, go to Mantis and check the bug report 
-there. You can post replies as well as fixes directly in the bug report. One of the 
-JCL developers will pick up the report/fix and update the Subversion repository if the fi 
-is satisfactory. If you report and fix a lot of bugs, you might even get developer 
+<p>If you want to help fix bugs in JCL, go to Mantis and check the bug report
+there. You can post replies as well as fixes directly in the bug report. One of the
+JCL developers will pick up the report/fix and update the Subversion repository if the fi
+is satisfactory. If you report and fix a lot of bugs, you might even get developer
 access to SVN so you can update the JCL files directly.</p>
 
 </body>

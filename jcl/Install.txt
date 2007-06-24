@@ -10,8 +10,7 @@ Supported development tools versions:
 - Borland Kylix 3
 - Borland Delphi 2005
 - Borland Developer Studio 2006 (also known as Delphi 2006, C++Builder 2006)
-- CodeGear Delphi 2007
-- CodeGear C++Builder 2007
+- CodeGear RAD Studio 2007 (also known as Delphi 2007 for Win32, C++Builder 2007)
 
 For more detailed information, see docs\Readme.html.
 
@@ -69,4 +68,4 @@ To execute for
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
 --------------------------------
-Document last updated 2007-06-21
+Document last updated 2007-06-25

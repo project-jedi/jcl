@@ -46,7 +46,7 @@ Head changes:
    on changes, reading common data types, scoping a stream, delegating
    read/write/seek operations.
  - Integration of the JCL help into the help system of Delphi 2005, BDS 2006,
-   Turbo Delphi and Delphi 2007 for Win32.
+   Turbo Delphi and RAD Studio 2007.
  - New IDE expert to have TortoiseSVN (http://tortoisesvn.tigris.org/) and
    TortoiseCVS (http://tortoisecvs.sourceforge.net/) commands integrated in all
    supportted IDE.
@@ -55,7 +55,7 @@ Important:
 
  - Note that the package naming has changed: the same package name is used by
    all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
-   Delphi 7, C#Builder 1, Delphi 8, Delphi 2005 and BDS 2006); a different
+   Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006 and RAD Studio 2007); a different
    suffix is added for each target to the BPL file name (for BDS 2006, the
    library file is named jcl100.bpl). The installer tries to remove old
    packages. 3rd party packages requiring old DJcl* resp. CJcl* packages need to
@@ -108,10 +108,10 @@ Both supports (run time and design time):
  - Delphi version 5, 6, 7.
  - C++Builder version 5 & 6.
  - Delphi 2005 (Delphi Win32 and Delphi.net personalities).
- - Borland Developer Studio 2006 (Delphi Win32, C++ Builder Win32, Delphi.net
+ - Borland Developer Studio 2006 (Delphi Win32, C++Builder Win32, Delphi.net
    and C#Builder personalities).
  - Turbo Delphi (explorer and professional - cf Installation notes).
- - CodeGear Delphi 2007 for Win32.
+ - CodeGear RAD Studio 2007 (Delphi Win32 and C++Builder Win32 personalities).
 
 --------------------------------------------------------------------------------
 
@@ -188,8 +188,8 @@ For each tool you want to install the JCL in, repeat the following steps:
  - For Delphi 7: source\jcld7.inc
  - For Delphi 2005: source\jcld9.inc
  - For Delphi.net 2005: source\jcld9.net.inc
- - For BDS 2006 (Delphi and C++Builder) and CodeGear Delphi 2007 for Win32 :
-   source\jcld10.inc
+ - For BDS 2006 (Delphi and C++Builder): source\jcld10.inc
+ - For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc
  - For Delphi.net 2006: source\jcld10.net.inc
 
 2. In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
