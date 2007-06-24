@@ -42126,7 +42126,7 @@ ID32=RegistryandInifiles
 ID33=Regular Expressions
 ID34=RuntimeTypeInformation
 ID35=Source files
-ID36=Stringmanipulation
+ID36=StringManipulation
 ID37=SystemInformationRoutines
 ID38=TJclAnsiCaptureOffset
 ID39=TJclAnsiCaptureOffset.FirstPos
@@ -42362,7 +42362,7 @@ ETPCommand1=3
 ETPGroup1=JCL
 ETPTopicOrder0=26
 
-[External Topic Properties\Stringmanipulation]
+[External Topic Properties\StringManipulation]
 Count=1
 ETPCommand0=2
 ETPTopicOrder0=20

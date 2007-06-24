@@ -11808,7 +11808,7 @@ ID18=$OrdinalMathandLogic
 ID19=$RegistryandInifiles
 ID2=$BaseServices
 ID20=$RuntimeTypeInformation
-ID21=$Stringmanipulation
+ID21=$StringManipulation
 ID22=$SystemInformationRoutines
 ID23=$Unicode
 ID24=$UnitConversions
@@ -11976,7 +11976,7 @@ Count=1
 ETPCommand0=2
 ETPTopicOrder0=18
 
-[External Topic Properties\$Stringmanipulation]
+[External Topic Properties\$StringManipulation]
 Count=1
 ETPCommand0=2
 ETPTopicOrder0=19
