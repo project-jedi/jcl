@@ -3577,22 +3577,18 @@ var
   _GetNativeSystemInfo: TGetNativeSystemInfo;
 begin
   Result := False;
-  LibraryHandle := LoadLibrary('kernel32.dll');
+  LibraryHandle := GetModuleHandle(kernel32);
 
   if LibraryHandle <> 0 then
   begin
-    try
-      _GetNativeSystemInfo := GetProcAddress(LibraryHandle,'GetNativeSystemInfo');
-      if Assigned(_GetNativeSystemInfo) then
-      begin
-        _GetNativeSystemInfo(SystemInfo);
-        Result := True;
-      end
-      else
-        GetSystemInfo(SystemInfo);
-    finally
-      FreeLibrary(LibraryHandle);
-    end;
+    _GetNativeSystemInfo := GetProcAddress(LibraryHandle,'GetNativeSystemInfo');
+    if Assigned(_GetNativeSystemInfo) then
+    begin
+      _GetNativeSystemInfo(SystemInfo);
+      Result := True;
+    end
+    else
+      GetSystemInfo(SystemInfo);
   end
   else
     GetSystemInfo(SystemInfo);
@@ -3686,7 +3682,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     Result := True;
     if NetBiosLib = 0 then
     begin
-      NetBiosLib := LoadLibrary(PChar('netapi32.dll'));
+      NetBiosLib := SafeLoadLibrary('netapi32.dll');
       Result := NetBiosLib <> 0;
       if Result then
       begin
@@ -5119,15 +5115,8 @@ end;
 function IsSystemResourcesMeterPresent: Boolean;
 
   procedure LoadResmeter;
-  var
-    OldErrorMode: UINT;
   begin
-    OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
-    try
-      ResmeterLibHandle := LoadLibrary('rsrc32.dll');
-    finally
-      SetErrorMode(OldErrorMode);
-    end;
+    ResmeterLibHandle := SafeLoadLibrary('rsrc32.dll', SEM_FAILCRITICALERRORS);
     if ResmeterLibHandle <> 0 then
     begin
       @MyGetFreeSystemResources := GetProcAddress(ResmeterLibHandle, '_MyGetFreeSystemResources32@4');

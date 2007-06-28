@@ -2615,7 +2615,7 @@ function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := LoadLibrary(PChar(FileName));
+    Module := SafeLoadLibrary(FileName);
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF MSWINDOWS}
@@ -2631,7 +2631,7 @@ function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardin
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
-    Module := LoadLibraryEx(PChar(FileName), 0, Flags);
+    Module := LoadLibraryEx(PChar(FileName), 0, Flags); // SafeLoadLibrary?
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
 {$ENDIF MSWINDOWS}

@@ -3222,7 +3222,7 @@ end;
 
 class function TJclDebugInfoSymbols.LoadDebugFunctions: Boolean;
 begin
-  ImageHlpDllHandle := LoadLibrary(ImageHlpDllName);
+  ImageHlpDllHandle := SafeLoadLibrary(ImageHlpDllName);
 
   if ImageHlpDllHandle <> 0 then
   begin

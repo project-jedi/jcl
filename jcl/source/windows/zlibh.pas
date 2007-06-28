@@ -61,7 +61,7 @@ unit zlibh;
 interface
 
 uses
-  Windows;
+  Windows, SysUtils;
 type
   uShort = Word;
   {$EXTERNALSYM uShort}

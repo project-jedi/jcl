@@ -166,7 +166,7 @@ begin
   Result := not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2]);
   if not Result then
   begin
-    OLE32 := LoadLibrary(pcOLE32);
+    OLE32 := SafeLoadLibrary(pcOLE32);
     if OLE32 > 0 then
     try
       Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;

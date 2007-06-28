@@ -373,7 +373,7 @@ begin
   else
   // >= Win 2000 uses GetDefaultPrinter
   begin
-    hWinSpool := LoadLibrary(cPrintSpool);
+    hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
         @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
@@ -475,7 +475,7 @@ begin
   else
   // >= Win 2000 uses SetDefaultPrinter
   begin
-    hWinSpool := LoadLibrary(cPrintSpool);
+    hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
         @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');

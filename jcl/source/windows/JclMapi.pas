@@ -533,7 +533,7 @@ var
 begin
   if ClientLibLoaded then
     Exit;
-  FClientLibHandle := LoadLibrary(PChar(GetClientLibName));
+  FClientLibHandle := SafeLoadLibrary(GetClientLibName);
   if FClientLibHandle = 0 then
     RaiseLastOSError;
   for I := 0 to Length(FFunctions) - 1 do

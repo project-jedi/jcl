@@ -253,7 +253,7 @@ begin
     ModuleHandle := GetModuleHandle(PChar(ModuleName));
     if ModuleHandle = 0 then
     begin
-      ModuleHandle := LoadLibrary(PChar(ModuleName));
+      ModuleHandle := SafeLoadLibrary(PChar(ModuleName));
       if ModuleHandle = 0 then
         raise EJclError.CreateResFmt(@RsELibraryNotFound, [ModuleName]);
     end;

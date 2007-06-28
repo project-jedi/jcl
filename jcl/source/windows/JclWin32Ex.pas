@@ -31,7 +31,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows;
+  Windows, Sysutils;
 
 type
   TJclWin32ExFunction = (jwfTryEnterCriticalSection, jwfSignalObjectAndWait,
@@ -181,7 +181,7 @@ begin
     if not Assigned(FunctionAddr) then
     begin
       if DllHandle^ = 0 then
-        DllHandle^ := LoadLibrary(PChar(DllName));
+        DllHandle^ := SafeLoadLibrary(DllName);
       if DllHandle^ = 0 then
         raise EJclError.CreateResFmt(@RsELibraryNotFound, [DllName])
       else
@@ -377,7 +377,7 @@ end;
 procedure JclCheckAndInitializeOpenGL;
 begin
   if OpenGl32DllHandle = 0 then
-    OpenGl32DllHandle := LoadLibrary(PChar(opengl32));
+    OpenGl32DllHandle := SafeLoadLibrary(opengl32);
   if OpenGl32DllHandle = 0 then
     raise EJclError.CreateResFmt(@RsELibraryNotFound, [opengl32]);
 end;

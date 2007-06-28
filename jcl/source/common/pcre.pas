@@ -1125,7 +1125,7 @@ begin
 
   if PCRELib = INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
-    PCRELib := LoadLibrary(libpcremodulename);
+    PCRELib := SafeLoadLibrary(libpcremodulename);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     PCRELib := dlopen(PChar(libpcremodulename), RTLD_NOW);

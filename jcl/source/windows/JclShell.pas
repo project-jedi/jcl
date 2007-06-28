@@ -1243,7 +1243,7 @@ var
   LibHandle: HINST;
 begin
   Result := False;
-  LibHandle := LoadLibrary(PChar(FileName));
+  LibHandle := SafeLoadLibrary(FileName);
   if LibHandle <> 0 then
   begin
     @_DllGetVersion := GetProcAddress(LibHandle, PChar('DllGetVersion'));
@@ -1404,7 +1404,7 @@ begin
    if IsWinNT then
    begin
      Result := False;
-     RasDlg := LoadLibrary(PChar('rasdlg.dll'));
+     RasDlg := SafeLoadLibrary('rasdlg.dll');
      if RasDlg <> 0 then
      try
        @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));

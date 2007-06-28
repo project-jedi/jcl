@@ -54,7 +54,7 @@ interface
 {$ENDIF ~SNMP_DYNAMIC_LINK}
 
 uses
-  Windows;
+  Windows, SysUtils;
 
 (*$HPPEMIT '#include <snmp.h>'*)
 
@@ -676,7 +676,7 @@ begin
   Result := UnloadSnmpExtension;
   if Result then
   begin
-    ExtensionLibHandle := LoadLibrary(PChar(LibName));
+    ExtensionLibHandle := SafeLoadLibrary(LibName);
     Result := SnmpExtensionLoaded;
     if Result then
     begin
@@ -781,7 +781,7 @@ begin
   Result := SnmpLoaded;
   if not Result then
   begin
-    SnmpLibHandle := LoadLibrary(snmpapilib);
+    SnmpLibHandle := SafeLoadLibrary(snmpapilib);
     if SnmpLoaded then
     begin
       @SnmpUtilOidCpy := GetProcAddress(SnmpLibHandle, 'SnmpUtilOidCpy');

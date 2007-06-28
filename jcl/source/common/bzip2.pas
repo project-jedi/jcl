@@ -416,7 +416,7 @@ begin
 
   if BZip2Lib = INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
-    BZip2Lib := LoadLibrary(szBZIP2);
+    BZip2Lib := SafeLoadLibrary(szBZIP2);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     BZip2Lib := dlopen(PChar(szBZIP2), RTLD_NOW);
