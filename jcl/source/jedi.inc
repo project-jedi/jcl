@@ -126,7 +126,9 @@
   DELPHI2005          Defined when compiling with Delphi 2005
   DELPHI9             Alias for DELPHI2005
   DELPHI10            Defined when compiling with Delphi Personality of BDS 4.0
+  DELPHI2006          Alias for DELPHI10
   DELPHI11            Defined when compiling with Delphi for Win32 2007 
+  DELPHI2007          Alias for DELPHI11
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
   DELPHI3_UP          Defined when compiling with Delphi 3 or higher
@@ -138,7 +140,9 @@
   DELPHI2005_UP       Defined when compiling with Delphi 2005 or higher
   DELPHI9_UP          Alias for DELPHI2005_UP
   DELPHI10_UP         Defined when compiling with Delphi Personality of BDS 4.0 or higher
+  DELPHI2006_UP       Alias for DELPHI10_UP
   DELPHI11_UP         Defined when compiling with Delphi for Win32 2007 or higher
+  DELPHI2007_UP       Alias for DELPHI11_UP
 
 
 - Kylix Versions
@@ -529,6 +533,7 @@
           {$DEFINE BCB11}
         {$ELSE}
           {$DEFINE DELPHI11}
+          {$DEFINE DELPHI2007} // synonym to DELPHI11
           {$DEFINE DELPHICOMPILER11}
         {$ENDIF}
         {$DEFINE RTL185_UP}
@@ -539,6 +544,7 @@
           {$DEFINE BCB10}
         {$ELSE}
           {$DEFINE DELPHI10}
+          {$DEFINE DELPHI2006} // synonym to DELPHI10
           {$DEFINE DELPHICOMPILER10}
         {$ENDIF}
         {$DEFINE RTL180_UP}
@@ -551,6 +557,7 @@
       {$DEFINE BDS}
       {$DEFINE COMPILER11}
       {$DEFINE DELPHI11}
+      {$DEFINE DELPHI2007} // synonym to DELPHI11
       {$DEFINE DELPHICOMPILER11}
       {$DEFINE RTL185_UP}
       {$UNDEF UNKNOWN_COMPILER_VERSION}
@@ -588,8 +595,15 @@
 { DELPHIX_UP from DELPHIX_UP mappings                                          }
 {------------------------------------------------------------------------------}
 
-{$IFDEF DELPHI11_UP} {$DEFINE DELPHI10_UP} {$ENDIF}
-{$IFDEF DELPHI10_UP} {$DEFINE DELPHI9_UP}  {$ENDIF}
+{$IFDEF DELPHI11_UP}
+  {$DEFINE DELPHI2007_UP} // synonym to DELPHI11_UP
+  {$DEFINE DELPHI10_UP}
+{$ENDIF}
+
+{$IFDEF DELPHI10_UP}
+  {$DEFINE DELPHI2006_UP} // synonym to DELPHI10_UP
+  {$DEFINE DELPHI9_UP}
+{$ENDIF}
 
 {$IFDEF DELPHI9_UP}
   {$DEFINE DELPHI2005_UP} // synonym to DELPHI9_UP
