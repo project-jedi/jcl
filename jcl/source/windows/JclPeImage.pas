@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -714,6 +714,7 @@ type
     FFlags: Integer;
     FDescription: string;
     FEnsureExtension: Boolean;
+    FSorted: Boolean;
     function GetContains: TStrings;
     function GetContainsCount: Integer;
     function GetContainsFlags(Index: Integer): Byte;
@@ -743,6 +744,7 @@ type
     property Requires: TStrings read GetRequires;
     property RequiresCount: Integer read GetRequiresCount;
     property RequiresNames[Index: Integer]: string read GetRequiresNames;
+    property Sorted: Boolean read FSorted write FSorted;
   end;
 
   TJclPeBorForm = class(TObject)
@@ -4185,6 +4187,7 @@ begin
   FContains := TStringList.Create;
   FRequires := TStringList.Create;
   FEnsureExtension := True;
+  FSorted := True;
   ReadPackageInfo(ALibHandle);
 end;
 
@@ -4297,8 +4300,11 @@ begin
     GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
     if FDcpName = '' then
       FDcpName := PathExtractFileNameNoExt(GetModulePath(ALibHandle)) + CompilerExtensionDCP;
-    FContains.Sort;
-    FRequires.Sort;
+    if FSorted then
+    begin
+      FContains.Sort;
+      FRequires.Sort;
+    end;
   end;
   DescrResInfo := FindResource(ALibHandle, DescriptionResName, RT_RCDATA);
   if DescrResInfo <> 0 then
