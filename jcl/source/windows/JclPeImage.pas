@@ -22,6 +22,7 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {   Hallvard Vassbotn                                                                              }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -775,6 +776,7 @@ type
     FIsBorlandImage: Boolean;
     FLibHandle: THandle;
     FPackageInfo: TJclPePackageInfo;
+    FPackageInfoSorted: Boolean;
     FPackageCompilerVersion: Integer;
     function GetFormCount: Integer;
     function GetForms(Index: Integer): TJclPeBorForm;
@@ -799,6 +801,7 @@ type
     property LibHandle: THandle read GetLibHandle;
     property PackageCompilerVersion: Integer read GetPackageCompilerVersion;
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
+    property PackageInfoSorted: Boolean read FPackageInfoSorted write FPackageInfoSorted;
   end;
 
   // Threaded function search
@@ -4388,6 +4391,7 @@ end;
 constructor TJclPeBorImage.Create(ANoExceptions: Boolean);
 begin
   FForms := TObjectList.Create(True);
+  FPackageInfoSorted := True;
   inherited Create(ANoExceptions);
 end;
 
@@ -4596,6 +4600,7 @@ begin
   begin
     GetLibHandle;
     FPackageInfo := TJclPePackageInfo.Create(FLibHandle);
+    FPackageInfo.Sorted := FPackageInfoSorted;
     FreeLibHandle;
   end;
   Result := FPackageInfo;

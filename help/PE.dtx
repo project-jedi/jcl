@@ -2292,7 +2292,7 @@ Summary:
 Description:
   Returns a list containing the names of all units contained in the package.
   Note that the returned TStrings instance remains owned by the class so you should
-  never free it.
+  never free it. The list sorting is controlled by the Sorted property.
 Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
@@ -2377,6 +2377,7 @@ Summary:
 Description:
   Returns a list of package names that the package requires. Note that the returned
   TStrings object remains owned by the class so you should never free it.
+  The list sorting is controlled by the Sorted property.
 Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
@@ -2397,6 +2398,15 @@ Description:
   the list read the RequiresCount property.
 Quick info:
   Donator: Petr Vones
+--------------------------------------------------------------------------------
+@@TJclPePackageInfo.Sorted
+Summary:
+  Defines if Contains and Requires lists are sorted (or not).
+Description:
+  The Sorted property defines if Contains and Requires lists are sorted (or not).
+  It is set to True by default.
+Quick info:
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TJclPeBorImage
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage>
@@ -2452,6 +2462,15 @@ Description:
   if the image is a package.
 Quick info:
   Donator: Petr Vones
+--------------------------------------------------------------------------------
+@@TJclPeBorImage.PackageInfoSorted
+Summary:
+  Defines if PackageInfo's Contains and Requires lists are sorted (or not).
+Description:
+  The Sorted property defines if PackageInfo's Contains and Requires lists are
+  sorted (or not). It is set to True by default.
+Quick info:
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TJclPeNameSearchOption
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
