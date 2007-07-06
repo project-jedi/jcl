@@ -88,7 +88,7 @@ const // keep in sync with JVCL Installer's DelphiData.pas
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; ProjectDirResId: 64719; Supported: True),
-    (Name: 'Codegear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '110'; ProjectDirResId: 64719; Supported: True)
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '110'; ProjectDirResId: 64719; Supported: True)
   );
 
 type

@@ -226,7 +226,7 @@
   BDS2         Defined when compiling with BDS 2.0 (Delphi 8)
   BDS3         Defined when compiling with BDS 3.0 (Delphi 2005)
   BDS4         Defined when compiling with BDS 4.0 (Borland Developer Studio 2006)
-  BDS5         Defined when compiling with BDS 5.0 (Codegear RAD Studio 2007)
+  BDS5         Defined when compiling with BDS 5.0 (CodeGear RAD Studio 2007)
   BDS2_UP      Defined when compiling with BDS 2.0 or higher
   BDS3_UP      Defined when compiling with BDS 3.0 or higher
   BDS4_UP      Defined when compiling with BDS 4.0 or higher
