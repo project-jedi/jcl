@@ -1,6 +1,6 @@
 @@JclSysInfo.pas
 <GROUP SystemInformationRoutines>
-Summary
+Summary:
   This unit contains routines and classes to retrieve various pieces of system information.
   Examples are the location of standard folders, settings of environment variables,
   processor details and the OS version.
@@ -70,7 +70,8 @@ Result:
 Notes:
   On Windows NT/2000 there exists two processes with PIDs 0 and 2 (8 on Windows 2000) which do not map to an executable image file. The names of these processes are fabricated by the routine as "System Idle Process" and "System Process" respectively.
 Donators:
-  Petr Vones (Windows), Robert Rossmair (Unix)
+  Petr Vones (Windows)
+  Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@LoadedModulesList
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -85,8 +86,8 @@ Parameters:
 Result:
   If the function it returns True, otherwise it returns False. In this latter case
   the contents of the list are undefined.
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetTasksList
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -102,8 +103,8 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In this
   latter case the contents of the list are undefined.
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@IsWindowResponding
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -121,8 +122,8 @@ Parameters:
 Result:
   If the window is not responding the function returns False, otherwise it returns
   True.
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowIcon
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -137,7 +138,8 @@ Result:
   If the function succeeds it returns a handle to the requested icon, otherwise
   it returns 0. In case of success you must release the handle by calling the
   DestroyIcon API function.
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TerminateTask
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -154,8 +156,8 @@ Result:
   message) it returns taClean. If the function had to terminate the application by
   a call to TerminateProcess it returns taKill. If the function fails to terminate
   the application it returns taError.
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TerminateApp
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -178,8 +180,8 @@ Result:
   message) it returns taClean. If the function had to terminate the application by
   a call to TerminateProcess it returns taKill. If the function fails to terminate
   the application it returns taError.
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetProcessNameFromWnd
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -198,8 +200,8 @@ Result:
 See also:
   GetPidFromProcessName
   GetProcessNameFromPid
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetProcessNameFromPid
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -216,8 +218,8 @@ Result:
 See also:
   GetProcessNameFromWnd
   GetPidFromProcessName
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetShellProcessName
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -231,8 +233,8 @@ Result:
   The name of the shell process executable.
 See also:
   GetShellProcessHandle
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetShellProcessHandle
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -247,8 +249,8 @@ Result:
   function raises an exception (EOSError).
 See also:
   GetShellProcessName
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetPidFromProcessName
 <GROUP SystemInformationRoutines.ProcessesTasksandModules>
@@ -269,8 +271,8 @@ Result:
 See also:
   GetProcessNameFromWnd
   GetProcessNameFromPid
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RoundToAllocGranularityPtr
 <GROUP SystemInformationRoutines>
@@ -279,15 +281,15 @@ Summary:
 Description:
   Some Win32 API routines that take pointer parameters require that the specified
   address is a multiple of the allocation granularity. On current Intel platforms
-   (x86) this is 64K. RoundToAllocGranularityPtr rounds the given 32 bit address
+  (x86) this is 64K. RoundToAllocGranularityPtr rounds the given 32 bit address
   to a system defined allocation granularity boundary. You can have the function
   round upwards or downwards by specifying True or False for the Up parameter
   respectively. This function also exists for 64 bit pointers.
 Parameters:
   Value - The address to adjust.
   Up - If True the function rounds the address up to the next multiple of the allocation granularity, if False it rounds the address down to the previous multiple of the allocation granularity.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@ProcessorCount
 <GROUP SystemInformationRoutines.Hardware>
@@ -296,8 +298,8 @@ Summary:
 Description:
   ProcessorCount contains the number of processors in the system. Initialized during
   unit initialization.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AllocGranularity
 <GROUP SystemInformationRoutines.Memory>
@@ -305,8 +307,8 @@ Summary:
   Systems memory allocation granularity.
 Description:
   AllocGranularity contains the systems virtual memory allocation granularity.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PageSize
 <GROUP SystemInformationRoutines.Memory>
@@ -328,7 +330,7 @@ Description:
 Result:
   The current directory for the calling process or an empty string on failure.
 Note:
-  Requires shell v 5.00 and upwards.
+  Requires shell v5.00 and upwards.
 See also:
   GetCommonFilesFolder
   GetCurrentFolder
@@ -358,8 +360,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetCurrentFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -369,8 +371,9 @@ Description:
   GetCurrentFolder returns the current directory (folder) for the calling process.
 Result:
   The current directory for the calling process or an empty string on failure.
-
-Donators: Robert Marquardt (Win32), Robert Rossmair (Unix)
+Donators:
+  Robert Marquardt (Win32)
+  Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@DelEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -388,8 +391,9 @@ See also:
   GetEnvironmentVar
   GetEnvironmentVars
   SetEnvironmentVar
-
-Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
+Donators:
+  Marcel van Brakel (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@ExpandEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -410,8 +414,9 @@ See also:
   GetEnvironmentVar
   GetEnvironmentVars
   SetEnvironmentVar
-
-Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
+Donators:
+  Marcel van Brakel (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -434,8 +439,9 @@ See also:
   ExpandEnvironmentVar
   GetEnvironmentVars
   SetEnvironmentVar
-
-Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
+Donators:
+  Marcel van Brakel (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetEnvironmentVars
 <GROUP SystemInformationRoutines.Environment>
@@ -461,8 +467,9 @@ See also:
   ExpandEnvironmentVar
   GetEnvironmentVar
   SetEnvironmentVar
-
-Donators: Marcel van Brakel (Win32), Robert Rossmair (Unix)
+Donators:
+  Marcel van Brakel (Win32)
+  Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@SetEnvironmentVar
 <GROUP SystemInformationRoutines.Environment>
@@ -481,8 +488,9 @@ See also:
   ExpandEnvironmentVar
   GetEnvironmentVar
   GetEnvironmentVars
-
-Donators: Marcel van Brakel (Win32), André Snepvangers (Unix)
+Donators:
+  Marcel van Brakel (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@TWindowsVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -492,8 +500,8 @@ Description:
   Enumeration of Windows versions. Used as function result by GetWindowsVersion
 See also:
   GetWindowsVersion
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TWindowsVersion.wvUnknown
   Unknown Windows version. This can happen when a new Windows version is released
   after JCL or if you are running a Windows version with a different build number
@@ -547,8 +555,8 @@ See also:
   IsWinVista
   IsWinServer2008
   NtProductType
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetOSVersionString
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -561,9 +569,10 @@ Result:
   The operating sytem version and release/service pack information as a string,
   or an empty string if the OS is not recognized.
 See also:
-  GetWindowsVersionString, GetWindowsServicePackVersionString
-
-Donator: Robert Rossmair
+  GetWindowsVersionString
+  GetWindowsServicePackVersionString
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetWindowsVersionString
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -575,8 +584,8 @@ Result:
   The Windows version as a string or an empty string if the OS is not recognized.
 See also:
   GetWindowsVersion
-
-Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsServicePackVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -588,9 +597,10 @@ Result:
   The major version number of the latest installed Service Pack. In case of failure, or it
   no Service Pack is installed, the function returns 0.
 See Also:
-  GetWindowsVersion, GetWindowsServicePackVersionString
-
-Donator: Jean-Fabien Connault
+  GetWindowsVersion
+  GetWindowsServicePackVersionString
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsServicePackVersionString
 Summary:
@@ -601,9 +611,10 @@ Result:
   The major version number of the latest installed Service Pack. In case of failure, or if
   no Service Pack is installed, the function returns an empty string.
 See Also:
-  GetWindowsServicePackVersion, GetWindowsVersionString
-
-Donator: Jean-Fabien Connault
+  GetWindowsServicePackVersion
+  GetWindowsVersionString
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TestFDIVInstruction
 <GROUP SystemInformationRoutines.Hardware>
@@ -621,8 +632,8 @@ See also:
   TCpuInfo
   TestFDIVInstruction
   GetCpuSpeed
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 --------------------------------------------------------------------------------
 @@CPUID
 <GROUP SystemInformationRoutines.Hardware>
@@ -640,8 +651,8 @@ See also:
   TCpuInfo
   TestFDIVInstruction
   GetCpuSpeed
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetCpuSpeed
 <GROUP SystemInformationRoutines.Hardware>
@@ -659,8 +670,8 @@ Result:
 See also:
   GetCpuInfo
   TFreqInfo
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 --------------------------------------------------------------------------------
 @@RoundFrequency
 <GROUP SystemInformationRoutines.Hardware>
@@ -674,8 +685,8 @@ Parameters:
   Frequency - The frequency to round (normalize) in MHz.
 Result:
   The normalized frequency in MHz.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetMacAddresses
 <GROUP SystemInformationRoutines.Hardware>
@@ -695,8 +706,8 @@ Result:
   failure the function returns -1 and the Addresses list will be empty.
 Notes:
   This function is an adapted conversion from the Platform SDK example described in knowledge base article Q118623.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ReadTimeStampCounter
 <GROUP SystemInformationRoutines.Hardware>
@@ -714,8 +725,8 @@ Result:
   The current value of the time stamp counter.
 Notes:
   This instruction is only available on Pentium (and higher) processors.
-
-Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@GetVolumeSerialNumber
 <GROUP SystemInformationRoutines.Identification>
@@ -729,8 +740,8 @@ Parameters:
 Result:
   If the function succeeds it returns the serial number of the specified volume.
   If the function fails it returns an empty string.
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@GetVolumeFileSystem
 <GROUP SystemInformationRoutines.Identification>
@@ -745,8 +756,8 @@ Parameters:
 Result:
   If the function succeeds it returns the name of the filesystem of the specified
   volume. If the function fails it returns an empty string.
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@GetVolumeName
 <GROUP SystemInformationRoutines.Identification>
@@ -760,8 +771,8 @@ Parameters:
 Result:
   If the function succeeds it returns the name of the specified volume.
   If the function fails it returns an empty string.
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@GetIPAddress
 <GROUP SystemInformationRoutines.Identification>
@@ -779,8 +790,8 @@ Parameters:
 Result:
   If the function succeeds it returns the IP address of the specified host in the
   dotted decimal notation. If the function fails it returns an empty string.
-
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@TIntelSpecific
 <GROUP SystemInformationRoutines.Hardware>
@@ -788,8 +799,8 @@ Summary:
   Describes the cache of an Intel processor.
 Description:
   Describes the cache of an Intel processor.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TIntelSpecific.L2Cache
   Size of the level 2 cache in Kb.
 @@TIntelSpecific.CacheDescriptors
@@ -801,8 +812,8 @@ Summary:
   Describes the cache of a Cyrix processor.
 Description:
   Describes the cache of a Cyrix processor.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TCyrixSpecific.L1CacheInfo
   Describes the level 1 cache. If an entry contains the value $80 it denotes a '16KB L1 Cache, 4-way set associative, 16 byte line size' cache.
 @@TCyrixSpecific.TLBInfo
@@ -814,8 +825,8 @@ Summary:
   Describes the cache of an AMD processor.
 Description:
   Describes the cache of an AMD processor.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TAMDSpecific.DataTLB
   Describes the Data TLB. The entries have the following meaning:    * DataTLB[0] Contains the number of TLB entries while  * DataTLB[1] Contains the associativity ($FF denotes fully associative TLB)  
 @@TAMDSpecific.InstructionTLB
@@ -831,8 +842,8 @@ Summary:
   The IntelCacheDescription global variable uses this type to provide a mapping from a cache descriptor to a cache entry description.
 Description:
   The IntelCacheDescription global variable uses this type to provide a mapping from a cache descriptor to a cache entry description.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TCacheInfo.D
   Descriptor used to match a cache descriptor to it's representative string.
 @@TCacheInfo.I
@@ -844,8 +855,8 @@ Summary:
   Record used as a field in the TCpuInfo record which contains frequency information about the CPU. This information is calculated when you call GetCpuInfo.
 Description:
   Record used as a field in the TCpuInfo record which contains frequency information about the CPU. This information is calculated when you call GetCpuInfo.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TFreqInfo.RawFreq
   The raw frequency of the CPU in MHz.
 @@TFreqInfo.NormFreq
@@ -861,8 +872,8 @@ Summary:
   The TCpuInfo record is used by GetCpuInfo and returns the requested processor information.
 Description:
   The TCpuInfo record is used by GetCpuInfo and returns the requested processor information.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 @@TCpuInfo.HasInstruction
   True if the processor supports CPU identification instructions. If False the MMX, Features and FrequencyInfo fields do not contain valid data.
 @@TCpuInfo.MMX
@@ -912,8 +923,8 @@ Description:
   AMD AM486 to Athlon, Cyrix Media GX to 6x86MX, and Crusoe.
 Parameters:
   CpuInfo - Record to receive processor information.
-
-Donator: Bryan Coutch
+Donator:
+  Bryan Coutch
 --------------------------------------------------------------------------------
 @@GetIntelCacheDescription
 <GROUP SystemInformationRoutines.Hardware>
@@ -929,8 +940,8 @@ Result:
   available the function returns an empty string.
 See also:
   TIntelSpecific
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetCommonFilesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -946,8 +957,8 @@ Notes:
   You can use the SHGetFolderPath API function to get many more common directories.
 See also:
   GetProgramFilesFolder
-
-Donator: Carl Clark
+Donator:
+  Carl Clark
 --------------------------------------------------------------------------------
 @@GetLocalComputerName
 <GROUP SystemInformationRoutines.Identification>
@@ -964,8 +975,9 @@ Notes:
   If you're running Windows 2000 you can use the GetComputerNameEx function for more detailed control over exactly which name you want.
 See also:
   GetLocalUserName
-
-Donators: Nick Hodges (Win32), André Snepvangers (Unix)
+Donators:
+  Nick Hodges (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetLocalUserName
 <GROUP SystemInformationRoutines.Identification>
@@ -982,8 +994,9 @@ Notes:
   the format of the returned name.
 See also:
   GetLocalComputerName
-
-Donators: Nick Hodges (Win32), André Snepvangers (Unix)
+Donators:
+  Nick Hodges (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetProgramFilesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -999,8 +1012,8 @@ Notes:
   You can use the SHGetFolderPath API function to get many more common directories.
 See also:
   GetCommonFilesFolder
-
-Donator: Carl Clark
+Donator:
+  Carl Clark
 --------------------------------------------------------------------------------
 @@GetRegisteredCompany
 <GROUP SystemInformationRoutines.Identification>
@@ -1013,8 +1026,8 @@ Result:
   The registered company string or an empty string on failure.
 See also:
   GetRegisteredOwner
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@GetRegisteredOwner
 <GROUP SystemInformationRoutines.Identification>
@@ -1026,8 +1039,8 @@ Result:
   The registered owner string or an empty string on failure.
 See also:
   GetRegisteredCompany
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@GetBIOSDate
 <GROUP SystemInformationRoutines.Identification>
@@ -1044,8 +1057,8 @@ See also:
   GetBIOSName
   GetBIOSCopyright
   GetBIOSExtendedInfo
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetBIOSName
 <GROUP SystemInformationRoutines.Identification>
@@ -1065,8 +1078,8 @@ See also:
   GetBIOSDate
   GetBIOSCopyright
   GetBIOSExtendedInfo
-
-Donator: James Azarja
+Donator:
+  James Azarja
 --------------------------------------------------------------------------------
 @@GetBIOSCopyright
 <GROUP SystemInformationRoutines.Identification>
@@ -1080,8 +1093,8 @@ See also:
   GetBIOSDate
   GetBIOSName
   GetBIOSExtendedInfo
-
-Donator: James Azarja
+Donator:
+  James Azarja
 --------------------------------------------------------------------------------
 @@GetBIOSExtendedInfo
 <GROUP SystemInformationRoutines.Identification>
@@ -1095,8 +1108,8 @@ See also:
   GetBIOSDate
   GetBIOSName
   GetBIOSCopyright
-
-Donator: James Azarja
+Donator:
+  James Azarja
 --------------------------------------------------------------------------------
 @@GetWindowsFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1111,7 +1124,6 @@ Result:
   The Windows directory or an empty string on failure.
 See also:
   GetWindowsSystemFolder
-
 Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowsSystemFolder
@@ -1127,8 +1139,8 @@ Result:
   The Windows system directory or an empty string on failure.
 See also:
   GetWindowsFolder
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetWindowsTempFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1141,8 +1153,8 @@ Description:
   directory and for Windows NT/2000 the result is the Windows directory.
 Result:
   The Windows folder designated for temporary files.
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin95
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1156,8 +1168,8 @@ See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin95OSR2
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1171,8 +1183,8 @@ See also:
 <link IsWin95> <link IsWin98> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1186,8 +1198,8 @@ See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98SE> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin98SE
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1201,8 +1213,8 @@ See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWinME> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinME
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1216,8 +1228,8 @@ See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinNT>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1234,8 +1246,8 @@ See also:
 <link IsWin95> <link IsWin95OSR2> <link IsWin98> <link IsWin98SE> <link IsWinME>
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT3
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1250,8 +1262,8 @@ See also:
 <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT31
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1266,8 +1278,8 @@ See also:
 <link IsWinNT3> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT35
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1282,8 +1294,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT351
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1298,8 +1310,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT4>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWinNT4
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1314,8 +1326,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
 <link IsWin2K> <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@IsWin2K
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1330,8 +1342,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWinXP> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsWinXP
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1346,6 +1358,8 @@ See Also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2k> <link IsWin2003> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@IsWin2003
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1360,8 +1374,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@IsWinVista
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1376,8 +1390,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Florent Ouchet
+Donator:
+  Florent Ouchet
 --------------------------------------------------------------------------------
 @@IsWinServer2008
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1392,8 +1406,8 @@ See also:
 <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351> <link IsWinNT4>
 <link IsWin2k> <link IsWinXP> <link IsWinVista> <link IsWinServer2008>
 <link NtProductType>
-
-Donator: Florent Ouchet
+Donator:
+  Florent Ouchet
 --------------------------------------------------------------------------------
 @@NtProductType
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1420,9 +1434,11 @@ See also:
 <link IsWinNT> <link IsWinNT3> <link IsWinNT31> <link IsWinNT35> <link IsWinNT351>
 <link IsWinNT4> <link IsWin2k> <link IsWinXP> <link IsWin2003> <link IsWinVista>
 <link IsWinServer2008> <link NtProductType>
-
-Donator: Marcel van Brakel
-  Contributors: Scott Price, Jean-Fabien Connault
+Donator:
+  Marcel van Brakel
+Contributors:
+  Scott Price
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@NtProductTypeString
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -1434,8 +1450,8 @@ Result:
   The NT product type as a string or an empty string if the product type is not recognized.
 See also:
   NtProductType
-
-Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@CreateEnvironmentBlock
 <GROUP SystemInformationRoutines.Environment>
@@ -1460,8 +1476,8 @@ See also:
   CreateProcAsUserEx
   CreateProcAsUser
   TEnvironmentOptions
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@TEnvironmentOption
 <GROUP SystemInformationRoutines.Environment>
@@ -1526,7 +1542,8 @@ See also:
   GetUserDomainName
   GetLocalUserName
 Donators:
-  Peter Friese (Win32), André Snepvangers (Unix)
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetDesktopFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1567,7 +1584,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetProgramsFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1612,7 +1630,8 @@ See also:
   GetInternetCacheFolder
   GetCookiesFolder
   GetHistoryFolder
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetPersonalFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1653,7 +1672,9 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFavoritesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1695,7 +1716,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetStartupFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1709,7 +1731,7 @@ Description:
 Result:
   A string containing the local path to the current user's startup files folder.
 See also:
-  <LINK GetCommonFilesFolder1,GetCommonFilesFolder>
+  GetCommonFilesFolder
   GetCurrentFolder
   GetProgramFilesFolder
   GetWindowsFolder
@@ -1737,8 +1759,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetRecentFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1780,8 +1802,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetSendToFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1822,8 +1844,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetStartmenuFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1864,8 +1886,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetDesktopDirectoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1908,8 +1930,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetNethoodFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1951,8 +1973,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetFontsFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -1992,8 +2014,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonStartmenuFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2036,8 +2058,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonProgramsFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2080,8 +2102,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonStartupFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2124,8 +2146,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonDesktopdirectoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2168,8 +2190,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetAppdataFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2210,8 +2232,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetPrinthoodFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2251,8 +2273,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCommonFavoritesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2291,8 +2313,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetTemplatesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2331,8 +2353,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetInternetCacheFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2372,8 +2394,8 @@ See also:
   GetCookiesFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCookiesFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2413,8 +2435,8 @@ See also:
   GetInternetCacheFolder
   GetHistoryFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetHistoryFolder
 <GROUP SystemInformationRoutines.CommonFolders>
@@ -2454,8 +2476,8 @@ See also:
   GetInternetCacheFolder
   GetCookiesFolder
   GetProgramsFolder
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMLineStatus
 <GROUP SystemInformationRoutines.PowerManagement>
@@ -2502,8 +2524,8 @@ See also:
   GetAPMLineStatus
   GetAPMBatteryFlag
   TAPMLineStatus
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 @@TAPMBatteryFlag.abfUnknown
   Unknown battery status. The system could not read the battery status.
 @@TAPMBatteryFlag.abfHigh
@@ -2529,8 +2551,8 @@ See also:
   TAPMBatteryFlag
   GetAPMLineStatus
   TAPMLineStatus
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryLifePercent
 <GROUP SystemInformationRoutines.PowerManagement>
@@ -2541,8 +2563,8 @@ Description:
   may be within 0 to 100, or 255 if the percentage is unknown.
 Result:
   The percentage of full battery charge remaining.
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryLifeTime
 <GROUP SystemInformationRoutines.PowerManagement>
@@ -2553,8 +2575,8 @@ Description:
   unknown.
 Result:
   The remaining battery life time in seconds.
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetAPMBatteryFullLifeTime
 <GROUP SystemInformationRoutines.PowerManagement>
@@ -2566,8 +2588,8 @@ Description:
   if full batery lifetime is unknown.
 Result:
   The number of seconds of battery life time when at full charge.
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetMaxAppAddress
 <GROUP SystemInformationRoutines.Memory>
@@ -2582,8 +2604,8 @@ Result:
   integer.
 See also:
   GetMinAppAddress
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetMinAppAddress
 <GROUP SystemInformationRoutines.Memory>
@@ -2598,8 +2620,8 @@ Result:
   integer.
 See also:
   GetMaxAppAddress
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetMemoryLoad
 <GROUP SystemInformationRoutines.Memory>
@@ -2612,8 +2634,9 @@ Result:
   The current system memory load.
 See also:
   GetSwapFileUsage
-
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileSize
 <GROUP SystemInformationRoutines.Memory>
@@ -2625,8 +2648,9 @@ Result:
   The current system pagefile size in bytes.
 See also:
   GetSwapFileUsage
-
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetSwapFileUsage
 <GROUP SystemInformationRoutines.Memory>
@@ -2640,7 +2664,9 @@ Result:
 See also:
   GetMemoryLoad
   GetSwapFileSize
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPhysicalMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2652,8 +2678,9 @@ Result:
   The total size of physical memory.
 See also:
   GetFreePhysicalMemory
-
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetFreePhysicalMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2665,8 +2692,9 @@ Result:
   The size of free physical memory.
 See also:
   GetTotalPhysicalMemory
-
-Donators: Peter Friese (Win32), André Snepvangers (Unix)
+Donators:
+  Peter Friese (Win32)
+  André Snepvangers (Unix)
 --------------------------------------------------------------------------------
 @@GetTotalPageFileMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2678,8 +2706,8 @@ Result:
   The total size of pagefile memory.
 See also:
   GetFreePageFileMemory
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetFreePageFileMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2691,8 +2719,8 @@ Result:
   The amount of free pagefile memory.
 See also:
   GetTotalPageFileMemory
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetTotalVirtualMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2704,8 +2732,8 @@ Result:
   The total size of virtual memory.
 See also:
   GetFreeVirtualMemory
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetFreeVirtualMemory
 <GROUP SystemInformationRoutines.Memory>
@@ -2717,8 +2745,8 @@ Result:
   The amount of free virtual memory.
 See also:
   GetTotalVirtualMemory
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetKeyState
 <GROUP SystemInformationRoutines.Keyboard>
@@ -2735,8 +2763,8 @@ See also:
   GetNumLockKeyState
   GetScrollLockKeyState
   GetCapsLockKeyState
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetNumLockKeyState
 <GROUP SystemInformationRoutines.Keyboard>
@@ -2751,8 +2779,8 @@ See also:
   GetKeyState
   GetScrollLockKeyState
   GetCapsLockKeyState
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetScrollLockKeyState
 <GROUP SystemInformationRoutines.Keyboard>
@@ -2767,8 +2795,8 @@ See also:
   GetKeyState
   GetNumLockKeyState
   GetCapsLockKeyState
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetCapsLockKeyState
 <GROUP SystemInformationRoutines.Keyboard>
@@ -2783,8 +2811,8 @@ See also:
   GetKeyState
   GetNumLockKeyState
   GetScrollLockKeyState
-
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@GetOpenGLVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -2801,9 +2829,10 @@ Parameters:
 Result:
   Surfaces the information provided by the OpenGL library (if any) relating to
   the version and vendor of the OpenGL library in the parameters passed.
-
-Donator: Scott Price
-Contributor: Anonymous
+Donator:
+  Scott Price
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@GetOpenGLVersionBitmapRendering
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -2814,13 +2843,13 @@ Description:
   the Version String information provided by the current OpenGL library.
 Parameters:
   Win - Handle of the window to use for rendering
-  \Version - the string to receive the library version information
+  Version - the string to receive the library version information
   Vendor - the string to receive the library vendor information
 Result:
   Surfaces the information provided by the OpenGL library (if any) relating to
   the version and vendor of the OpenGL library in the parameters passed.
-
-Donator: Anonymous
+Donator:
+ Anonymous
 --------------------------------------------------------------------------------
 @@IsUACEnabled
 <GROUP SystemInformationRoutines.UserAccountControl>
@@ -2832,7 +2861,7 @@ Description:
 Result:
   Returns True if UAC is enabled and OS version is Windows Vista or Windows Server 2008.
   Returns False if UAC is disabled or OS version is not Windows Vista nor Windows Server 2008.
-
-Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 

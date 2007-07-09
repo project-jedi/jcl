@@ -59,8 +59,8 @@ Result:
   a pointer to the first character of the string.
 See also:
   PCharOrNil
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@PCharOrNil
 <GROUP BaseServices.Pointermanipulation>
@@ -78,8 +78,8 @@ Result:
   a pointer to the first character of the string.
 See also:
   PWideCharOrNil
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@IntToStrZeroPad
 <GROUP BaseServices.Numericformattingroutines>
@@ -96,8 +96,8 @@ Result:
   The string representation of the specified integer value, left padded with zero's.
   I don't know of any input that can cause this function to fail, but in the
   unlikely event that it does, it does so by raising an exception.
-Quick info:
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@Iff
 <GROUP BaseServices>
@@ -114,8 +114,8 @@ Parameters:
   FalsePart - The function result if Condition evaluates to False.
 Result:
   If Condition evaluates to True TruePart is returned, otherwise FalsePart is returned.
-Quick info:
-  Donator: Bernhard Berger
+Donator:
+  Bernhard Berger
 --------------------------------------------------------------------------------
 @@SizeOfMem
 <GROUP MemoryClassesandObjects.Pointermanipulation>
@@ -137,8 +137,8 @@ Result:
   was allocated) simply subtract 4. If the function fails to determine the size of
   the memory, for example because it detected that the Delphi memory manager was
   replaced by a custom memory manager, it returns -1.
-Quick info:
-  Donator: Robert R. Marsh
+Donator:
+  Robert R. Marsh
 --------------------------------------------------------------------------------
 @@FreeAndNil
 <GROUP MemoryClassesandObjects.Pointermanipulation>
@@ -154,8 +154,8 @@ Parameters:
   Obj - Reference to an instance of a TObject descendant to free. Upon return the Obj variable has been reset to nil so future references ensure a relatively easy to understand access violation.
 See also:
   FreeMemAndNil
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FreeMemAndNil
 <GROUP MemoryClassesandObjects.Pointermanipulation>
@@ -170,8 +170,8 @@ Parameters:
   P - Reference to the memory block to release. Upon return the P variable has been reset to nil so future references ensure a relatively easy to understand access violation.
 See also:
   FreeAndNil
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetAndFillMem
 <GROUP MemoryClassesandObjects.Pointermanipulation>
@@ -184,8 +184,8 @@ Parameters:
   P - Receives a pointer to the allocated memory block.
   Size - Size, in bytes, of the block of memory to allocate.
   Value - Value with which to fill the memory block.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetVirtualMethodCount
 <GROUP MemoryClassesandObjects.ClassManipulation.VMT>
@@ -203,8 +203,8 @@ Result:
 See also:
   GetVirtualMethod
   SetVirtualMethod
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetVirtualMethod
 <GROUP MemoryClassesandObjects.ClassManipulation.VMT>
@@ -223,8 +223,8 @@ Result:
 See also:
   GetVirtualMethodCount
   SetVirtualMethod
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@SetVirtualMethod
 <GROUP MemoryClassesandObjects.ClassManipulation.VMT>
@@ -247,8 +247,8 @@ Parameters:
 See also:
   GetVirtualMethodCount
   GetVirtualMethod
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetDynamicMethodCount
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -262,8 +262,8 @@ Parameters:
   AClass - The class for which to get the number of dynamic methods.
 Result:
   The number of dynamic methods of the specified class.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetDynamicIndexList
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -283,8 +283,8 @@ Result:
   Pointer to an array containing the indices. Do not modify this array!
 See also:
   TDynamicIndexList
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@TDynamicIndexList
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -293,8 +293,8 @@ Summary:
 Description:
   List of indices of valid entries in a dynamic method table. Use GetDynamicMethodCount
   to get the count of valid entries in this list.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@PDynamicIndexList
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
 <COMBINE TDynamicIndexList>
@@ -316,8 +316,8 @@ Result:
   Pointer to an array containing the addresses. Do not modify this array!
 See also:
   TDynamicAddressList
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@TDynamicAddressList
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -326,8 +326,8 @@ Summary:
 Description:
   List of addresses of the dynamic methods, use GetDynamicMethodCount
   to get the indices of valid entries in the list.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@PDynamicAddressList
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
 <COMBINE TDynamicAddressList>
@@ -344,8 +344,8 @@ Parameters:
 Result:
   If the class contains a dynamic method with the given index the result is True,
   otherwise the result is False.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetDynamicMethod
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -362,8 +362,8 @@ Parameters:
 Result:
   Returns a pointer to the dynamic method, or System._AbstractError if the
   dynamic method is an abstract method.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetInitTable
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -381,8 +381,8 @@ Parameters:
   AClass - The class for which to get the initialization table.
 Result:
   The result is a pointer to the initialization table. Do not modify this structure!
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetFieldTable
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -397,8 +397,8 @@ Result:
   Pointer to the field table. Do not modify this structure!
 See also:
   TFieldTable
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@TFieldTable
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -406,8 +406,8 @@ Summary:
   TODO
 Description:
   TODO
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@TFieldTable.EntryCount
   Number of entries in the field table.
 @@TFieldTable.FieldClassTable
@@ -426,12 +426,12 @@ Description:
   List of classes used by the fields entries.
 See also:
   TFieldEntry
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@TFieldClassTable.Count
   Number of classes in the Classes array.
 @@TFieldClassTable.Classes
-  array of classes. The highest valid index in this array is Count - 1.
+  Array of classes. The highest valid index in this array is Count - 1.
 @@PFieldClassTable
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
 <COMBINE TFieldClassTable>
@@ -442,8 +442,8 @@ Summary:
   TFieldEntry contains information about a field of a class.
 Description:
   TFieldEntry contains information about a field of a class.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@TFieldEntry.OffSet
   OffSet of the field. TODO relative to what?
 @@TFieldEntry.IDX
@@ -468,8 +468,8 @@ Result:
   Pointer to the method table. Do not modify this structure!
 See also:
   TMethodTable
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@TMethodTable
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -483,8 +483,8 @@ See also:
   GetMethodTable
   GetMethodEntry
   TMethodEntry
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@TMethodTable.Count
   Number of TMethodEntries after count.
 @@TMethodTable.FirstEntry
@@ -509,8 +509,8 @@ Result:
 See also:
   TMethodEntry
   GetMethodTable
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@TMethodEntry
 <GROUP MemoryClassesandObjects.ClassManipulation.DMT>
@@ -518,8 +518,8 @@ Summary:
   Entry of a method table use by TMethodTable.
 Description:
   Entry of a method table use by TMethodTable.
-Quick info:
-  Donator: Python
+Donator:
+  Python
 @@TMethodEntry.EntrySize
   Size of the TMethodEntry. Use this to go to the next MethodEntry.
 @@TMethodEntry.Address
@@ -546,8 +546,8 @@ Parameters:
   NewClassParent - The new parent for AClass.
 See also:
   GetClassParent
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@GetClassParent
 <GROUP MemoryClassesandObjects.ClassManipulation.Miscellanuous>
@@ -563,8 +563,8 @@ Result:
   of the specified class is TObject.
 See also:
   SetClassParent
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@IsClass
 <GROUP MemoryClassesandObjects.ClassManipulation.Miscellanuous>
@@ -579,8 +579,8 @@ Result:
   The result is True if the Address is a class otherwise it is False.
 See also:
   IsObject
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@IsObject
 <GROUP MemoryClassesandObjects.ClassManipulation.Miscellanuous>
@@ -595,8 +595,8 @@ Result:
   The result is True if the Address is an object otherwise it is False.
 See also:
   IsClass
-Quick info:
-  Donator: Python
+Donator:
+  Python
 --------------------------------------------------------------------------------
 @@ISafeGuard
 <GROUP MemoryClassesandObjects.Guards.ISafeGuard>
@@ -611,15 +611,15 @@ Description:
   even when an exception is raised, you can use a safeguard to ensure that a resource
   always gets freed without having to explicitly code it. For example: 
    <PRE class=syntax>
-   <B>var</B>
+   var
      SafeGuard: ISafeGuard;
      Strings: TStrings;
-   <B>begin</B>
+   begin
      Strings := TStrings(Guard(TStringList.Create, SafeGuard));
      String.ReadFromFile('d:\delphi\jcl\source\JclBase.pas');
      // code to manipulate strings goes here
      Strings.SaveToFile('d:\delphi\jcl\source\JclBase.pas');
-   <B>end</B>;
+   end;
    </PRE>
   In the above code, the TStrings object is associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the TStrings object is
@@ -627,11 +627,11 @@ Description:
   in a variable at the appropriate scope and forget about it. However, the ISafeGuard
   interface does provide some additional functionality which may be useful at times.
 See also:
-  <LINK Guard,..\Guard>
-  <LINK GuardGetMem,..\GuardGetMem>
-  <LINK GuardAllocMem,..\GuardAllocMem>
-Quick info:
-  Donator: Rudy Velthuis
+  Guard
+  GuardGetMem
+  GuardAllocMem
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@ISafeGuard.ReleaseItem
 Summary:
@@ -644,8 +644,8 @@ Description:
   the resource.
 Result:
   Pointer to the resource associated with the safeguard.
-Quick info:
-  Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@ISafeGuard.GetItem
 Summary:
@@ -656,8 +656,8 @@ Description:
   however you can use the safeguard as the storage for the resource pointer itself.
 Result:
   Pointer to the resource associated with the safeguard.
-Quick info:
-  Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@ISafeGuard.FreeItem
 Summary:
@@ -666,8 +666,8 @@ Description:
   The FreeItem method frees the resource associated with the safeguard. You should
   never call this method directly, it is called automatically when execution leaves
   the scope in which the interface variable is declared.
-Quick info:
-  Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@ISafeGuard.Item
 Summary:
@@ -675,8 +675,8 @@ Summary:
 Description:
   The Item property returns a pointer to the associated resource protected by the
   safeguard. You'll have to cast the pointer to the appropriate type.
-Quick info:
-  Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard
 <GROUP MemoryClassesandObjects.Guards.IMultiSafeGuard>
@@ -692,14 +692,14 @@ Description:
   safeguard to ensure that a resource always gets freed without having to explicitly
   code it. For example: 
    <PRE class=syntax>
-   <B>var</B>
+   var
      SafeGuard: IMultiSafeGuard;
      O1, O2: TObject;
-   <B>begin</B>
+   begin
      O1 := Guard(TObject.Create, SafeGuard);
      O2 := Guard(TObject.Create, SafeGuard);
      // use O1 and O2 here
-   <B>end</B>;
+   end;
    </PRE>
   In the above code, the objects are associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the objects are
@@ -709,10 +709,10 @@ Description:
 Notes:
   You can use IMultiSafeGuard to guard multiple memory allocations or multiple objects. However, a single IMultiSafeGuard interface can only store one or the other, you can not mix memory and objects in a single IMultiSafeGuard.
 See also:
-  <LINK Guard,..\Guard>
-  <LINK ISafeGuard,..\ISafeGuard>
-Quick info:
-  Donator: Team JEDI
+  Guard
+  ISafeGuard
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.ReleaseItem
 Summary:
@@ -725,8 +725,8 @@ Description:
   the resource.
 Result:
   Pointer to the resource associated with the safeguard.
-Quick info:
-  Donator: Team JEDI
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.GetItem
 Summary:
@@ -737,8 +737,8 @@ Description:
   however you can use the safeguard as the storage for the resource pointer itself.
 Result:
   Pointer to the resource associated with the safeguard.
-Quick info:
-  Donator: Team JEDI
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.FreeItem
 Summary:
@@ -747,16 +747,16 @@ Description:
   The FreeItem method frees the resource associated with the safeguard. You should
   never call this method directly, it is called automatically when execution leaves
   the scope in which the interface variable is declared.
-Quick info:
-  Donator: Team JEDI
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.Count
 Summary:
   Returns the number of items guarded by the interface.
 Description:
   The Count property returns the number of items guarded by the interface.
-Quick info:
-  Donator: Team JEDI
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@IMultiSafeGuard.Items
 Summary:
@@ -765,8 +765,8 @@ Description:
   The Items property provides zero-based indexed access to the items guarded by the
   interface. The total numer of items can be learned from the Count property.
   You'll have to cast the pointer to the appropriate type.
-Quick info:
-  Donator: Team JEDI
+Donator:
+  Team JEDI
 --------------------------------------------------------------------------------
 @@Guard
 <GROUP MemoryClassesandObjects.Guards>
@@ -781,15 +781,15 @@ Description:
   is raised, you can use a safeguard to ensure that a resource always gets freed
   without having to explicitly code it. For example: 
    <PRE class=syntax>
-   <B>var</B>
+   var
      SafeGuard: ISafeGuard;
      Strings: TStrings;
-   <B>begin</B>
+   begin
      Strings := TStrings(Guard(TStringList.Create, SafeGuard));
      String.ReadFromFile('d:\delphi\jcl\source\JclBase.pas');
      // code to manipulate strings goes here
      Strings.SaveToFile('d:\delphi\jcl\source\JclBase.pas');
-   <B>end;</B>
+   end;
    </PRE>
   In the above code, the TStrings object is associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the TStrings object is
@@ -806,9 +806,9 @@ Result:
 See also:
   GuardGetMem
   GuardAllocMem
-  ISafeGuard\ISafeGuard
-Quick info:
-  Donator: Rudy Velthuis
+  ISafeGuard
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@GuardGetMem
 <GROUP MemoryClassesandObjects.Guards>
@@ -828,9 +828,9 @@ Result:
 See also:
   Guard
   GuardAllocMem
-  ISafeGuard\ISafeQuard
-Quick info:
-  Donator: Rudy Velthuis
+  ISafeGuard
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@GuardAllocMem
 <GROUP MemoryClassesandObjects.Guards>
@@ -852,9 +852,9 @@ Result:
 See also:
   Guard
   GuardGetMem
-  ISafeGuard\ISafeGuard
-Quick info:
-  Donator: Rudy Velthuis
+  ISafeGuard
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@ClearObjectList
 <GROUP MemoryClassesandObjects.Miscellanuous>
@@ -869,8 +869,8 @@ Parameters:
   List - The list to clear.
 See also:
   FreeObjectList
-Quick info:
-  Donator: Heri Bender
+Donator:
+  Heri Bender
 --------------------------------------------------------------------------------
 @@FreeObjectList
 <GROUP MemoryClassesandObjects.Miscellanuous>
@@ -886,8 +886,8 @@ Parameters:
   List - The list to free.
 See also:
   ClearObjectList
-Quick info:
-  Donator: Heri Bender
+Donator:
+  Heri Bender
 --------------------------------------------------------------------------------
 @@TModuleHandle
 <GROUP BaseServices.Dynamicloading>
@@ -895,8 +895,8 @@ Summary:
   OS independent type for loaded modules.
 Description:
   OS independent type for loaded modules.
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@INVALID_MODULEHANDLE_VALUE
 <GROUP BaseServices.Dynamicloading>
@@ -905,8 +905,8 @@ Summary:
 Description:
   OS independent value for variables of type TModuleHandle.
   Denotes that the variable does not contain a valid handle to a module.
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@LoadModule
 <GROUP BaseServices.Dynamicloading>
@@ -925,8 +925,8 @@ Result:
 See also:
   LoadModuleEx
   UnloadModule
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@LoadModuleEx
 <GROUP BaseServices.Dynamicloading>
@@ -946,8 +946,8 @@ Parameters:
 See also:
   LoadModule
   UnloadModule
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@UnloadModule
 <GROUP BaseServices.Dynamicloading>
@@ -960,8 +960,8 @@ Parameters:
 See also:
   LoadModule
   LoadModuleEx
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@GetModuleSymbol
 <GROUP BaseServices.Dynamicloading>
@@ -979,8 +979,8 @@ Result:
   not contained in the module.
 See also:
   GetModuleSymbolEx
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@GetModuleSymbolEx
 <GROUP BaseServices.Dynamicloading>
@@ -1002,8 +1002,8 @@ Result:
   not contained in the module and Accu will contain False.
 See also:
   GetModuleSymbol
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@ReadModuleData
 <GROUP BaseServices.Dynamicloading>
@@ -1020,12 +1020,12 @@ Description:
 Parameters:
   Module - Handle to the loaded module.
   SymbolName - Name of the exported variable to access.
-   - The untyped destination of the copy.
+  Buffer - The untyped destination of the copy.
   Size - Amount of bytes to copy.
 See also:
   WriteModuleData
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@WriteModuleData
 <GROUP BaseServices.Dynamicloading>
@@ -1044,25 +1044,21 @@ Description:
 Parameters:
   Module - Handle to the loaded module.
   SymbolName - Name of the exported variable to access.
-   - The untyped source of the copy.
+  Buffer - The untyped source of the copy.
   Size - Amount of bytes to copy.
 See also:
   ReadModuleData
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@TJclNumericFormat
 <GROUP BaseServices.Numericformattingroutines>
-
-Description
-\TODO
-
 Summary
-\TODO
-
-QuickInfo
-Category: numeric formatting routines
-Donator: Robert Rossmair
+  TODO
+Description:
+  TODO
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@StrToBoolean
 <GROUP BaseServices.ConversionUtilities>
@@ -1076,9 +1072,8 @@ Parameters:
 Result:
   If S equals 'True' or 'T' or '1' the boolean True is returned.
   If S equals 'False' or 'F' or '0' the boolean False is returned.
-
-Quick info:
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@BooleanToStr
 <GROUP BaseServices.ConversionUtilities>
@@ -1091,9 +1086,8 @@ Parameters:
 Result:
   If B is True the result is the string 'True'.
   if B is False the result is the string 'False'.
-
-Quick info:
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@IntToBool
 <GROUP BaseServices.ConversionUtilities>
@@ -1106,9 +1100,8 @@ Parameters:
 Result:
   If I does not equal 0 (1 for example) the result is the boolean True.
   if I equals 0 the result is the boolean False.
-
-Quick info:
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@BoolToInt
 <GROUP BaseServices.ConversionUtilities>
@@ -1123,6 +1116,5 @@ Parameters:
 Result:
   If B is True the result is 1.
   if B is False the result is 0.
-
-Quick info:
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault

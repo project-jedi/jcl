@@ -12,8 +12,8 @@ Description:
 See also:
   StartCount
   StopCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.Create
 Summary:
@@ -23,14 +23,14 @@ Description:
   high performance counters the constructor raises an exception.
 Parameters:
   Compensate - If compensate is True the class internally determines the overhead
-    associated with calling the user calling the Start and Stop methods and
-    corrects the resulting time; thereby providing a more accurate timing.
-    By default, for backwards compatibility, no compensation takes place.
+  associated with calling the user calling the Start and Stop methods and
+  corrects the resulting time; thereby providing a more accurate timing.
+  By default, for backwards compatibility, no compensation takes place.
 See also:
   StartCount
   StopCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.Start
 Summary:
@@ -41,8 +41,8 @@ Description:
   the Stop method.
 See also:
   StartCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.Stop
 Summary:
@@ -54,8 +54,8 @@ Result:
   The elapsed time between Start and Stop calls. Unit is seconds.
 See also:
   StartCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.ElapsedTime
 Summary:
@@ -64,8 +64,8 @@ Description:
   ElpasedTime returns the elapsed time between the last Start and Stop calls. The
   value is divided by the counter's frequency before returning so the unit is seconds.
   During a counting operation, Counting equals True, ElapsedTimer is always 0.
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.Overhead
 Summary:
@@ -73,8 +73,8 @@ Summary:
 Description:
   Overhead returns the time it takes between issueing a Start/Stop and the
   actual execution. The value is the number of ticks, not the number of seconds.
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@TJclCounter.Counting
 Summary:
@@ -84,8 +84,8 @@ Description:
   Start has, but Stop hasn't, been called the return value is True. Immediately
   after construction or after a call to Stop, Counting is False. When Counting is
   True the ElapsedTime property is invalid.
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@StartCount
 <GROUP DateandTime.TimersandCounters>
@@ -99,15 +99,15 @@ Description:
 Parameters:
   Counter - Counter object instantiated by this function.
   Compensate - If compensate is True the class internally determines the overhead
-    associated with calling the user calling the Start and Stop methods and
-    corrects the resulting time; thereby providing a more accurate timing.
-    By default, for backwards compatibility, no compensation takes place.
+  associated with calling the user calling the Start and Stop methods and
+  corrects the resulting time; thereby providing a more accurate timing.
+  By default, for backwards compatibility, no compensation takes place.
 Notes:
   If the hardware does not support high performance resolution counters an exception is raised.
 See also:
   StopCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
 --------------------------------------------------------------------------------
 @@StopCount
 <GROUP DateandTime.TimersandCounters>
@@ -123,5 +123,5 @@ Result:
   The elapsed time since the counter was started, in seconds.
 See also:
   StartCount
-Quick info:
-  Donator: Theo Bebekis
+Donator:
+  Theo Bebekis
