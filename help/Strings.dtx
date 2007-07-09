@@ -75,7 +75,8 @@ Notes:
 See also:
   StrConsistsOfNumberChars
   StrIsAlphaNum
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@StrIsAlphaNum
 <GROUP StringManipulation.StringTestRoutines>
@@ -95,7 +96,8 @@ See also:
   StrIsAlpha
   StrConsistsOfNumberChars
   StrIsAlphaNumUnderscore
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrIsAlphaNumUnderscore
 <GROUP StringManipulation.StringTestRoutines>
@@ -115,7 +117,8 @@ Notes:
 See also:
   StrIsAlpha
   StrConsistsOfNumberChars
-Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrContainsChars
 <GROUP StringManipulation.StringTestRoutines>
@@ -132,7 +135,8 @@ Parameters:
   CheckAll - If True, all characters from Chars must appear at least once in the specified string. If False, at least one of the characters in Chars must appear at least once in the specified string.
 Result:
   Returns True if the condition is met, otherwise it returns False.
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@StrIsDigit
 <GROUP StringManipulation.StringTestRoutines>
@@ -153,7 +157,8 @@ See also:
   StrIsAlpha
   StrIsAlphaNum
   StrConsistsOfNumberChars
-Donator: Martin Kubecka
+Donator:
+  Martin Kubecka
 --------------------------------------------------------------------------------
 @@StrConsistsOfNumberChars
 <GROUP StringManipulation.StringTestRoutines>
@@ -174,7 +179,8 @@ See also:
   StrIsAlpha
   StrIsAlphaNum
   StrIsDigit
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@StrIsSubset
 <GROUP StringManipulation.StringTestRoutines>
@@ -190,8 +196,10 @@ Result:
   If the string contains only characters from the supplied set the result is True,
   otherwise the result is False.
 Notes:
-  If the supplied string is empty, the result is always True. If the supplied character set is empty, the result is always False. Empty string overules empty set.
-Donator: Marcel van Brakel
+  If the supplied string is empty, the result is always True. If the supplied character
+  set is empty, the result is always False. Empty string overules empty set.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrSame
 <GROUP StringManipulation.StringTestRoutines>
@@ -208,39 +216,34 @@ Result:
   return value is False.
 See also:
   StrCompare
-Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrCenter
 <GROUP StringManipulation.StringTransformationRoutines>
+Summary:
+  Centers a string.
+Description:
+  The StrCenter routine takes the specified string and pads it
+  on both the left and right side with the specified character
+  until the resulting string is of the specified length. While
+  doing this the original string is kept centered. That is,
+  there is the same amount of padding at the left side as there
+  is on the right side.
 
-Description
-The StrCenter routine takes the specified string and pads it
-on both the left and right side with the specified character
-until the resulting string is of the specified length. While
-doing this the original string is kept centered. That is,
-there is the same amount of padding at the left side as there
-is on the right side.
-
-If the specified length is smaller than the length of the
-original the string remains unchanged. In cases where an odd
-number of padding chars have to be inserted there is always
-one more padding char on the right side than on the left
-side.
-
-
-
-Summary
-Centers a string.
-
-Parameters
-C :   The character to use for padding.
-L :   The desired length of the resulting string.
-S :   The string to center.
-
-Returns
-The centered string.
-
-Donator: Alexander Radchenko
+  If the specified length is smaller than the length of the
+  original the string remains unchanged. In cases where an odd
+  number of padding chars have to be inserted there is always
+  one more padding char on the right side than on the left
+  side.
+Parameters:
+  C - The character to use for padding.
+  L - The desired length of the resulting string.
+  S - The string to center.
+Result:
+  Returns the centered string.
+Donator:
+  Alexander Radchenko
 --------------------------------------------------------------------------------
 @@StrDoubleQuote
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -278,7 +281,8 @@ Result:
 See also:
   StrEnsureNoPrefix
   StrEnsureSuffix
-Donator: Nick Hodges
+Donator:
+  Nick Hodges
 --------------------------------------------------------------------------------
 @@StrEnsureNoPrefix
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -296,7 +300,8 @@ Result:
 See also:
   StrEnsurePrefix
   StrEnsureNoSuffix
-Donator: Olivier Sannier
+Donator:
+  Olivier Sannier
 --------------------------------------------------------------------------------
 @@StrEnsureSuffix
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -314,7 +319,8 @@ Result:
 See also:
   StrEnsureNoSuffix
   StrEnsurePrefix
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrEnsureNoSuffix
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -332,7 +338,8 @@ Result:
 See also:
   StrEnsureSuffix
   StrEnsureNoPrefix
-Donator: Olivier Sannier
+Donator:
+  Olivier Sannier
 --------------------------------------------------------------------------------
 @@StrEscapedToString
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -367,7 +374,8 @@ Result:
   The string with all escape characters replaced with their string counterparts.
 See also:
   StrStringToEscaped
-Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@StrLower
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -383,7 +391,8 @@ See also:
   StrUpper
   StrUpperInPlace
   StrUpperBuff
-Donator: Pelle F. S. Liljendal
+Donator:
+  Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@StrLowerInPlace
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -399,7 +408,8 @@ See also:
   StrUpper
   StrUpperInPlace
   StrUpperBuff
-Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrLowerBuff
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -415,7 +425,8 @@ See also:
   StrUpper
   StrUpperInPlace
   StrUpperBuff
-Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrMove
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -432,7 +443,8 @@ Parameters:
   ToIndex - The index into the destination string at which the sub-string is copied.
   FromIndex - The starting index into the source string from which count characters are copied.
   Count - Length of the sub-string to copy in characters.
-Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrPadLeft
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -451,7 +463,8 @@ Result:
 See also:
   StrPadRight
   StrCenter
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrPadRight
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -470,7 +483,8 @@ Result:
 See also:
   StrPadLeft
   StrCenter
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrProper
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -483,10 +497,8 @@ Parameters:
   S - The string to transform.
 Result:
   The transformed string.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrProperBuff
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -497,10 +509,8 @@ Description:
   the first character.
 Parameters:
   S - The string to transform.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrQuote
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -515,10 +525,8 @@ Parameters:
   C - The character with which to quote the string.
 Result:
   The quoted string.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrRemoveChars
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -535,10 +543,8 @@ Result:
   The string with all characters from the supplied set removed.
 Notes:
   The function is case sensitive. That is, specifying 'e' will not remove 'E'.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRepeat
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -552,10 +558,8 @@ Parameters:
   Count - The number of times to repeat the specified string.
 Result:
   The specified string, repeated Count number of times.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrReverse
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -573,10 +577,8 @@ Result:
   A reversed copy of the supplied string.
 See also:
   StrReverseInPlace
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrReverseInPlace
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -590,10 +592,8 @@ Parameters:
   S - The string to reverse.
 See also:
   StrReverse
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrSingleQuote
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -609,10 +609,8 @@ Result:
 See also:
   StrDoubleQuote
   StrTrimQuotes
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrSmartCase
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -629,15 +627,16 @@ Description:
   immediately follow a space (as specified by Delimiters) are uppercased.
 Parameters:
   S - Source string.
-  Delimiters - Set of characters to use as delimiters. These characters determine which other characters are uppercased. If you supply an empty set the function assumes you want to use a space only. That is, it sets Delimiters to [' '].
+  Delimiters - Set of characters to use as delimiters. These characters determine which other
+  characters are uppercased. If you supply an empty set the function assumes you want to use a
+  space only. That is, it sets Delimiters to [' '].
 Result:
   The string converted to smart case.
 Notes:
-  Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten by Marcel van Brakel.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+  Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten by
+  Marcel van Brakel.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrStringToEscaped
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -672,10 +671,8 @@ Result:
   The "escaped" string.
 See also:
   StrEscapedToString
-Quick info:
-
-  Category: String Manipulation
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@StrStripNonNumberChars
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -691,10 +688,8 @@ Parameters:
   S - The string from which to remove non-number characters.
 Result:
   The string after all non-number characters are removed.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrTrimQuotes
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -712,10 +707,8 @@ Result:
 See also:
   StrSingleQuote
   StrDoubleQuote
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrToHex
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -731,10 +724,8 @@ Parameters:
   S - A string of hex digit pairs to be converted
 Result:
   The string of converted bytes.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrTrimCharLeft
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -750,10 +741,8 @@ Result:
   The function returns the source string S without any leading characters C.
 See also:
   StrTrimCharRight
-Quick info:
-
-  Category: String Manipulation
-  Donator: Jack N.A. Bakker
+Donator:
+  Jack N.A. Bakker
 --------------------------------------------------------------------------------
 @@StrTrimCharRight
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -769,17 +758,16 @@ Result:
   The function returns the source string S without any trailing characters C.
 See also:
   StrTrimCharLeft
-Quick info:
-
-  Category: String Manipulation
-  Donator: Jack N.A. Bakker
+Donator:
+  Jack N.A. Bakker
 --------------------------------------------------------------------------------
 @@StrUpper
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
   Uppercases all characters in a string
 Description:
-  StrUpper returns a copy of the string, converted to uppercase. That is, if you pass in 'Project JEDI' you'll get 'PROJECT JEDI'.
+  StrUpper returns a copy of the string, converted to uppercase. That is, if you pass
+  in 'Project JEDI' you'll get 'PROJECT JEDI'.
 Parameters:
   S - String to convert to uppercase.
 See also:
@@ -788,10 +776,8 @@ See also:
   StrLower
   StrLowerInPlace
   StrLowerBuff
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrUpperInPlace
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -807,10 +793,8 @@ See also:
   StrLower
   StrLowerInPlace
   StrLowerBuff
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrUpperBuff
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -826,10 +810,8 @@ See also:
   StrLower
   StrLowerInPlace
   StrLowerBuff
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrAddRef
 <GROUP StringManipulation.StringManagement>
@@ -846,10 +828,8 @@ Parameters:
   S - The long string whose reference count to increment.
 See also:
   StrDecRef
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrAllocSize
 <GROUP StringManipulation.StringManagement>
@@ -872,13 +852,12 @@ Result:
   The amount of dynamic memory allocated for the string or 0 in the exceptions noted
   above. Note that, at least in Delphi 5, the result will always be a multiple of 4.
 Notes:
-  This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+  This function relies on pseudo-undocumented knowledge and should only be used for
+  debugging purposes.
 See also:
   StrRefCount
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrDecRef
 <GROUP StringManipulation.StringManagement>
@@ -890,13 +869,12 @@ Description:
   released and the string pointer is set to nil. Therefore the string may be
   inaccessible after calling this routine.
 Parameters:
-  S - The long string whose reference count to increment. Upon return the string may have been freed.
+  S - The long string whose reference count to increment. Upon return the string may
+  have been freed.
 See also:
   StrDecRef
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrLen
 <GROUP StringManipulation.StringManagement>
@@ -910,10 +888,8 @@ Parameters:
   S - Pointer to the null terminated string for which to determine the length.
 Result:
   The length of the string, in characters.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Robert Lee
+Donator:
+  Robert Lee
 --------------------------------------------------------------------------------
 @@StrLength
 <GROUP StringManipulation.StringManagement>
@@ -932,10 +908,8 @@ Notes:
 See also:
   StrAllocSize
   StrRefCount
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRefCount
 <GROUP StringManipulation.StringManagement>
@@ -952,13 +926,12 @@ Result:
   The reference count of the string or -1 if the string ultimately points to a
   string constant.
 Notes:
-  This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+  This function relies on pseudo-undocumented knowledge and should only be used for
+  debugging purposes.
 See also:
   StrAllocSize
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrResetLength
 <GROUP StringManipulation.StringManagement>
@@ -974,10 +947,8 @@ Description:
   The function resets the length to the C string length, i. e. the length up to the first #0 byte.
 Parameters:
   S - The string whose length to reset.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrCharCount
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -991,10 +962,8 @@ Parameters:
   C - The character whose occurrences to count.
 Result:
   The number of occurrences of C in S.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Massimo Maria Ghisalberti
+Donator:
+  Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
 @@StrCompare
 <GROUP StringManipulation.StringTestRoutines>
@@ -1024,47 +993,35 @@ Parameters:
 Result:
   StrCompare returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrCompareRange
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
-
-Description
-StrCompareRange compares, case-sensitive, a sub-string from the
-first supplied string with the second string. If the two
-strings are identical the function returns 0 otherwise it
-\returns an indication of difference between the two strings,
-Te result is equal to the result returned by StrCompare. This
-function is particularly useful to avoid code such as: "if
-Copy(S, 1, 4) = 'JEDI' then ..." which is quite inefficient.
-This code would be rewritten to: "if StrCompareRange(S1,
-'JEDI', 1, 4) = 0 then ...".
-
-Summary
-Compares two (sub) strings.
-
-Parameters
-Count :   Number of characters of the sub-string in S1 to
-          compare to S2.
-Index :   Starting index of sub-string in S1 to.
-S1 :      First string to compare.
-S2 :      Second string to compare.
-
-Returns
-StrCompareRange returns 0 if the two strings match or the
-number of different characters in case of a mismatch.
-
-QuickInfo
-Unit: JclStrings
-  Category: String Manipulation
-  Donator: Azret Botash
-
-
-See Also
-StrCompare
+Description:
+  StrCompareRange compares, case-sensitive, a sub-string from the
+  first supplied string with the second string. If the two
+  strings are identical the function returns 0 otherwise it
+  returns an indication of difference between the two strings,
+  The result is equal to the result returned by StrCompare. This
+  function is particularly useful to avoid code such as: "if
+  Copy(S, 1, 4) = 'JEDI' then ..." which is quite inefficient.
+  This code would be rewritten to: "if StrCompareRange(S1,
+  'JEDI', 1, 4) = 0 then ...".
+Summary:
+  Compares two (sub) strings.
+Parameters:
+  Count - Number of characters of the sub-string in S1 to compare to S2.
+  Index - Starting index of sub-string in S1 to.
+  S1 - First string to compare.
+  S2 - Second string to compare.
+Result:
+  StrCompareRange returns 0 if the two strings match or the
+  number of different characters in case of a mismatch.
+See Also:
+  StrCompare
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrFillChar
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1078,10 +1035,8 @@ Parameters:
   Count - The number of times to repeat the character.
 Result:
   A string consisting of the specified character repeated Count times.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrFind
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1099,10 +1054,8 @@ Result:
   occur in the supplied string.
 See also:
   StrSearch
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrHasPrefix
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1121,10 +1074,8 @@ Result:
   returns True, otherwise it returns False.
 See also:
   StrPrefixIndex
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrIndex
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1150,10 +1101,8 @@ Result:
   at which it appears is returned. If the string doesn't exist in the array -1 is
   returned. Note that the string comparison is case insensitive but is based on the
   current locale (ie it uses AnsiSameText).
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrILastPos
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1170,10 +1119,8 @@ Result:
   at all the result is 0.
 See also:
   StrLastPos
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrLastPos
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1190,10 +1137,8 @@ Result:
   at all the result is 0.
 See also:
   StrILastPos
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrIPos
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1208,10 +1153,8 @@ Parameters:
 Result:
   The index of the first occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrIsOneOf
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1225,10 +1168,8 @@ Parameters:
   List - The list of string in which to search.
 Result:
   If the string exists in the supplied list the result is True, otherwise it's False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrNPos
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1249,10 +1190,8 @@ Notes:
   This function was inspired by code submitted by George Tasker
 See also:
   StrNIPos
-Quick info:
-
-  Category: String Manipulation
-  Donator: JCL Team
+Donator:
+  JCL Team
 --------------------------------------------------------------------------------
 @@StrNIPos
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1273,10 +1212,8 @@ Notes:
   This function was inspired by code submitted by George Tasker
 See also:
   StrNPos
-Quick info:
-
-  Category: String Manipulation
-  Donator: JCL Team
+Donator:
+  JCL Team
 --------------------------------------------------------------------------------
 @@StrMatch
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1299,10 +1236,8 @@ Notes:
   The '*' wildcard currently doesn't work correctly, it produces the same result as '?'.
 See also:
   StrSearch
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrPrefixIndex
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1321,10 +1256,8 @@ Result:
   The zero based index into Prefixes at which the first string appears that is used
   as a prefix in the supplied string. If none of the Prefixes array strings qualifies
   the result is -1.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrSearch
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -1342,10 +1275,8 @@ Result:
   occur in the supplied string.
 See also:
   StrFind
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrAfter
 <GROUP StringManipulation.StringExtraction>
@@ -1363,10 +1294,8 @@ Result:
   not appear in the source string the result is an empty string.
 See also:
   StrBefore
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrBefore
 <GROUP StringManipulation.StringExtraction>
@@ -1384,10 +1313,8 @@ Result:
   not appear in the source string the result is the source string.
 See also:
   StrAfter
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrBetween
 <GROUP StringManipulation.StringExtraction>
@@ -1410,10 +1337,8 @@ Result:
   Start and Stop, not including either of these characters. If the function fails
   it returns an empty string, for example if the Start and/or Stop character doesn't
   appear in the sources string.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrChopRight
 <GROUP StringManipulation.StringExtraction>
@@ -1428,10 +1353,8 @@ Parameters:
 Result:
   The string with the last N characters cut off. Note that when N is larger than
   the string length, the result is an empty string.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrLeft
 <GROUP StringManipulation.StringExtraction>
@@ -1448,10 +1371,8 @@ Result:
   The Count leftmost characters from S.
 See also:
   StrRight
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrMid
 <GROUP StringManipulation.StringExtraction>
@@ -1467,10 +1388,8 @@ Parameters:
   Count - Number of characters to copy.
 Result:
   The string copied from S starting at offset Start and with length Count.
-Quick info:
-
-  Category: String Manipulation
-  Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@StrRestOf
 <GROUP StringManipulation.StringExtraction>
@@ -1484,10 +1403,8 @@ Parameters:
   N - The starting index of the characters to copy.
 Result:
   The remainder of the string starting at the specified index.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrRight
 <GROUP StringManipulation.StringExtraction>
@@ -1504,10 +1421,8 @@ Result:
   The Count of rightmost characters from S.
 See also:
   StrLeft
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharEqualNoCase
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1522,10 +1437,8 @@ Parameters:
 Result:
   If the supplied characters are equal except for case, the result is True, otherwise
   the result is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsAlpha
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1542,10 +1455,8 @@ See also:
   CharIsDigit
   CharIsNumberChar
   CharIsAlphaNum
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CharIsAlphaNum
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1562,10 +1473,8 @@ See also:
   CharIsAlpha
   CharIsNumberChar
   CharIsDigit
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsBlank
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1577,10 +1486,8 @@ Parameters:
   C - The character to test.
 Result:
   If C is a blank character the return value is True, otherwise the return value is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIsControl
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1593,10 +1500,8 @@ Parameters:
   C - Character to test.
 Result:
   If C is a control character the result is True, otherwise the result is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsDelete
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1609,10 +1514,8 @@ Parameters:
   C - Character to test.
 Result:
   If C is a delete character the result is True, otherwise the result is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsDigit
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1629,10 +1532,8 @@ See also:
   CharIsAlpha
   CharIsNumberChar
   CharIsAlphaNum
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CharIsLower
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1644,10 +1545,8 @@ Parameters:
   C - The character to test.
 Result:
   If C is lowercase the return value is True, otherwise the return value is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIsNumberChar
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1665,37 +1564,29 @@ See also:
   CharIsAlpha
   CharIsAlphaNum
   CharIsDigit
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Platforms:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-  Requirements: Shell32 Version 4.00 or later.
+Requirements:
+  Shell32 Version 4.00 or later.
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsPrintable
 <GROUP StringManipulation.CharacterTestRoutines>
-
-Description
-CharIsPrintable returns whether the specified character is
-printable. A printable character is any character which is
-not a control character and as such has an ordinal value
-larger than 31.
-
-Summary
-Tests whether a character is printable.
-
-Parameters
-C :   The character to test.
-
-Returns
-If C is printable the return value is True, otherwise the
-\return value is False.
-
-QuickInfo
-Unit: JclStrings
-  Category: String Manipulation
-  Donator: Azret Botash
+Summary:
+  Tests whether a character is printable.
+Description:
+  CharIsPrintable returns whether the specified character is
+  printable. A printable character is any character which is
+  not a control character and as such has an ordinal value
+  larger than 31.
+Parameters:
+  C - The character to test.
+Result:
+  If C is printable the return value is True, otherwise the return value is False.
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIsPunctuation
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1709,10 +1600,8 @@ Parameters:
 Result:
   If C is a punctuation character the return value is True, otherwise the return
   value is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIsReturn
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1726,36 +1615,27 @@ Parameters:
   C - Character to test.
 Result:
   If C is a return character the result is True, otherwise the result is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsSpace
 <GROUP StringManipulation.CharacterTestRoutines>
-
-Description
-CharIsSpace returns whether or not the C character represents
-space(s). In this context that means the character is tested
-against the space (' '), tab (#9), line feed (#10), vertical tab
-(#11), form feed (#12) and carriage return (#13) characters.
-
-Summary
-Tests whether C represents space.
-
+Summary:
+  Tests whether C represents space.
+Description:
+  CharIsSpace returns whether or not the C character represents
+  space(s). In this context that means the character is tested
+  against the space (' '), tab (#9), line feed (#10), vertical tab
+  (#11), form feed (#12) and carriage return (#13) characters.
 Parameters
-C :   Character to test.
-
-Returns
-If the character represents a space the result is True,
-otherwise the result is False.
-
-QuickInfo
- Unit: JclStrings
-  Category: String Manipulation
-  Donator: Anthony Steele
-See Also
-CharIsWhiteSpace
+  C - Character to test.
+Result:
+  If the character represents a space the result is True,
+  otherwise the result is False.
+See Also:
+  CharIsWhiteSpace
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharIsUpper
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1767,10 +1647,8 @@ Parameters:
   C - The character to test.
 Result:
   If C is uppercase the return value is True, otherwise the return value is False.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIsWhiteSpace
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1780,17 +1658,16 @@ Description:
   CharIsWhiteSpace returns whether or not the C character represents a space.
   Unlike CharIsSpace this function returns True if the specified
   character comes from the AnsiWhiteSpace set which is defined as: 
-  AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
+  AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed, AnsiCarriageReturn,
+  AnsiSpace];
 Parameters:
   C - Character to test.
 Result:
   If the character represents a space the result is True, otherwise the result is False.
 See also:
   CharIsSpace
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@CharType
 <GROUP StringManipulation.CharacterTestRoutines>
@@ -1805,7 +1682,7 @@ Parameters:
   C - The character for which to retriev type information.
 Result:
   The type of the character, this can be one of the following values.
-    <TABLE>
+<TABLE>
 Name       Value   Meaning
 ---------  ------  ---------------------------------------------------------------
 C1_UPPER   0x0001  Uppercase
@@ -1818,13 +1695,10 @@ C1_BLANK   0x0040  Blank characters
 C1_XDIGIT  0x0080  Hexadecimal digits
 C1_ALPHA   0x0100  Any linguistic character: alphabetic, syllabary, or ideographic
 </TABLE>
-
 Notes:
   In a future Linux version the values may differ.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharHex
 <GROUP StringManipulation.CharacterTransformationRoutines>
@@ -1837,10 +1711,8 @@ Parameters:
   C - A hex digit to convert
 Result:
   The binary value of the hex digit or $ff if it was no hex digit.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharLower
 <GROUP StringManipulation.CharacterTransformationRoutines>
@@ -1856,10 +1728,8 @@ Result:
 See also:
   CharUpper
   CharToggleCase
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharUpper
 <GROUP StringManipulation.CharacterTransformationRoutines>
@@ -1875,10 +1745,8 @@ Result:
 See also:
   CharLower
   CharToggleCase
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharToggleCase
 <GROUP StringManipulation.CharacterTransformationRoutines>
@@ -1892,10 +1760,8 @@ Parameters:
   C - Character whose case to reverse.
 Result:
   Copy of the character with the case reversed.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharPos
 <GROUP StringManipulation.CharacterSearchandReplace>
@@ -1910,10 +1776,8 @@ Parameters:
   Index - The character index where CharPos begins searching.
 Result:
   The 1-based index of the first occurrence found, or 0 if the character was not found.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharIPos
 <GROUP StringManipulation.CharacterSearchandReplace>
@@ -1928,10 +1792,8 @@ Parameters:
   Index - The character index where CharPos begins searching.
 Result:
   The 1-based index of the first occurrence found, or 0 if the character was not found.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@CharReplace
 <GROUP StringManipulation.CharacterSearchandReplace>
@@ -1947,10 +1809,8 @@ Parameters:
   Replace - The character to use as a replacement of Search.
 Result:
   CharReplace returns the number of replacements performed.
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StringsToPCharVector
 <GROUP StringManipulation.PCharVector>
@@ -1971,10 +1831,8 @@ See also:
   PCharVectorToStrings
   PCharVectorCount
   FreePCharVector
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PCharVectorCount
 <GROUP StringManipulation.PCharVector>
@@ -1984,17 +1842,15 @@ Description:
   PCharVectorCount returns the number of items, PChar's, in the supplied PCharVector
   excluding the NULL terminator.
 Parameters:
-   - The PCharVector to count the elements in.
+  PCharVector - The PCharVector to count the elements in.
 Result:
   The number of elements in the PCharVector excluding the NULL terminator.
 See also:
   PCharVectorToStrings
   StringsToPCharVector
   FreePCharVector
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PCharVectorToStrings
 <GROUP StringManipulation.PCharVector>
@@ -2013,10 +1869,8 @@ See also:
   PCharVectorCount
   StringsToPCharVector
   FreePCharVector
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FreePCharVector
 <GROUP StringManipulation.PCharVector>
@@ -2032,10 +1886,8 @@ See also:
   PCharVectorCount
   StringsToPCharVector
   PCharVectorToStrings
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StringsToMultiSz
 <GROUP StringManipulation.MultiSz>
@@ -2048,7 +1900,8 @@ Description:
   'JEDI' and 'Rules' Dest will point to a string with the contents 'Project#0JEDI#0Rules#0#0'
 Parameters:
   Dest - PChar receives a pointer to the resulting string.
-  Source - List of strings to pack into a single string. This list may not contain empty items (items with the value '') or an EJclStringError is raised.
+  Source - List of strings to pack into a single string. This list may not contain empty items
+  (items with the value '') or an EJclStringError is raised.
 Result:
   On success the function returns the value of Dest. If the function fails to allocate
   memory for the result string it (implicitly) raises an EOutOfMemory exception. The
@@ -2056,10 +1909,8 @@ Result:
 See also:
   MultiSzToStrings
   FreeMultiSz
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@MultiSzToStrings
 <GROUP StringManipulation.MultiSz>
@@ -2079,9 +1930,8 @@ Notes:
 See also:
   StringsToMultiSz
   FreeMultiSz
-Quick info:
-  Category: String Manipulation
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FreeMultiSz
 <GROUP StringManipulation.MultiSz>
@@ -2096,8 +1946,6 @@ Parameters:
 See also:
   StringsToMultiSz
   MultiSzToStrings
-Quick info:
-  Category: String Manipulation
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2112,16 +1960,16 @@ Description:
   'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
 Parameters:
   Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
-  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be
+  skipped.
 Result:
   The string concatenated from the list or array of strings.
 See also:
   StringsToMultiWideString
   StringsToMultiSz
   MultiStringToStrings
-Quick info:
-  Category: String Manipulation
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@StringsToMultiWideString
 <GROUP StringManipulation.MultiSz>
@@ -2134,16 +1982,16 @@ Description:
   'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
 Parameters:
   Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
-  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be
+  skipped.
 Result:
   The string concatenated from the list or array of strings.
 See also:
   StringsToMultiString
   StringsToMultiSz
   MultiWideStringToStrings
-Quick info:
-  Category: String Manipulation
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@MultiStringToStrings
 <GROUP StringManipulation.MultiSz>
@@ -2161,9 +2009,8 @@ Parameters:
 See also:
   MultiWideStringToStrings
   StringsToMultiString
-Quick info:
-  Category: String Manipulation
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@MultiWideStringToStrings
 <GROUP StringManipulation.MultiSz>
@@ -2181,48 +2028,38 @@ Parameters:
 See also:
   MultiStringToStrings
   StringsToMultiWideString
-Quick info:
-  Category: String Manipulation
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@StrToStrings
 <GROUP StringManipulation.TStringsManipulation>
+Summary:
+  Converts a string into a list of strings using the specified
+  separator character.
+Description:
+  StrToStrings converts the supplied string, which supposedly is
+  a list of strings packed into a single string variable, to a
+  TStrings. The function uses the supplied separator string to
+  separate the string into its individual elements.
 
-Description
-StrToStrings converts the supplied string, which supposedly is
-a list of strings packed into a single string variable, to a
-TStrings. The function uses the supplied separator string to
-separate the string into its individual elements.
-
-For example, if you call the function like this:
-StrToStrings('Project JEDI Rules', ' ', List) then on return
-list will contain three items, namely 'Project', 'JEDI', and
-'Rules'. As this example shows, the last string doesn't have
-to be terminated by the separator string although it is
-allowed.
-
-Summary
-Converts a string into a list of strings using the specified
-separator character.
-
-Note
-The list will be cleared by this function before adding the
-elements.
-
-Parameters
-List :   A TStrings derivative that receives the individual
-         elements
-S :      The string to split into elements
-Sep :    The string that separates the individual elements
-
-QuickInfo
- Unit: JclStrings
-  Category: String Manipulation
-  Donator: Anthony Steele
-
-See Also
-StringsToStr
-
+  For example, if you call the function like this:
+  StrToStrings('Project JEDI Rules', ' ', List) then on return
+  list will contain three items, namely 'Project', 'JEDI', and
+  'Rules'. As this example shows, the last string doesn't have
+  to be terminated by the separator string although it is
+  allowed.
+Notes:
+  The list will be cleared by this function before adding the
+  elements.
+Parameters:
+  List - A TStrings derivative that receives the individual elements.
+  S - The string to split into elements.
+  Sep - The string that separates the individual elements.
+See Also:
+  StringsToStr
+Donator:
+  Anthony Steele
+--------------------------------------------------------------------------------
 @@StringsToStr
 <GROUP StringManipulation.TStringsManipulation>
 Summary:
@@ -2236,10 +2073,8 @@ Parameters:
   Sep - String to separate the individual strings with.
 See also:
   StrToStrings
-Quick info:
-
-  Category: String Manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TrimStrings
 <GROUP StringManipulation.TStringsManipulation>
@@ -2256,10 +2091,8 @@ Parameters:
 See also:
   TrimStringsRight
   TrimStringsLeft
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@TrimStringsRight
 <GROUP StringManipulation.TStringsManipulation>
@@ -2276,10 +2109,8 @@ Parameters:
 See also:
   TrimStrings
   TrimStringsLeft
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@TrimStringsLeft
 <GROUP StringManipulation.TStringsManipulation>
@@ -2296,10 +2127,8 @@ Parameters:
 See also:
   TrimStrings
   TrimStringsRight
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrTokenToStrings
 <GROUP StringManipulation.Miscellaneous>
@@ -2317,10 +2146,8 @@ Parameters:
   List - Returns separated parts or the entire string if no separator occurs.
 See also:
   StrToken
-Quick info:
-
-  Category: String Manipulation
-  Donator: Huanlin Tsai
+Donator:
+  Huanlin Tsai
 --------------------------------------------------------------------------------
 @@StrToken
 <GROUP StringManipulation.Miscellaneous>
@@ -2342,34 +2169,35 @@ Result:
   If Separator was not found, S is an empty string.
 See also:
   StrTokenToStrings
-Quick info:
-
-  Category: String Manipulation
-  Donator: Huanlin Tsai
+Donator:
+  Huanlin Tsai
 --------------------------------------------------------------------------------
 @@StrTokens
 <GROUP StringManipulation.Miscellaneous>
 Summary:
+  TODO
 Description:
+  TODO
 Parameters:
-  S -
-  List -
+  S - TODO
+  List - TODO
 Result:
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+  TODO
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@StrWord
 <GROUP StringManipulation.Miscellaneous>
 Summary:
+  TODO
 Description:
+  TODO
 Parameters:
+  TODO
 Result:
-Quick info:
-
-  Category: String Manipulation
-  Donator: Azret Botash
+  TODO
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@FileToString
 <GROUP StringManipulation.Miscellaneous>
@@ -2389,10 +2217,8 @@ Result:
   the first null terminator.
 See also:
   StringToFile
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StringToFile
 <GROUP StringManipulation.Miscellaneous>
@@ -2407,10 +2233,8 @@ Parameters:
   Contents - The string whose contents to write to the file.
 See also:
   FileToString
-Quick info:
-
-  Category: String Manipulation
-  Donator: Anthony Steele
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrRepeatLength@AnsiString@Integer
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2427,10 +2251,8 @@ Parameters:
 Returns:
   A string consisting of the specified string, repeated until
   the length of the string is exactly L.
-QuickInfo:
-
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrCharPosLower@AnsiString@Integer
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2442,10 +2264,8 @@ Description:
 Parameters:
   S - The string which contains the character.
   CharPos - The position of the character within the string to convert.
-QuickInfo:
-
-  Category: String Manipulation
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@StrCharPosUpper@AnsiString@Integer
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2457,10 +2277,8 @@ Description:
 Parameters:
   S - The string which contains the character.
   CharPos - The position of the character within the string to convert.
-QuickInfo:
-
-  Category: String Manipulation
-  Donator: Jean-Fabien Connault
+Donator:
+  Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@StrTrimCharsLeft
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2473,9 +2291,8 @@ Parameters:
   S - The string to trim.
 Result:
   The trimmed string.
-Quick info:
-  Category: String Manipulation
-  Donator: Leonard Wennekers
+Donator:
+  Leonard Wennekers
 --------------------------------------------------------------------------------
 @@StrTrimCharsRight
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2488,9 +2305,8 @@ Parameters:
   S - The string to trim.
 Result:
   The trimmed string.
-Quick info:
-  Category: String Manipulation
-  Donator: Leonard Wennekers
+Donator:
+  Leonard Wennekers
 --------------------------------------------------------------------------------
 @@AnsiSameText
 <GROUP StringManipulation.Miscellaneous>
@@ -2505,9 +2321,8 @@ Parameters:
   S2 - Second string to compare
 Result:
   AnsiSameText returns 0 (CSTR_EQUAL) if the two strings match.
-Quick info:
-  Category: Backward compatability
-  Donator: JCL Team
+Donator:
+  JCL Team
 --------------------------------------------------------------------------------
 @@StrAnsiToOem
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2520,9 +2335,8 @@ Parameters:
   S - The string to translate.
 Result:
   The translated string.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrOemToAnsi
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2535,9 +2349,8 @@ Parameters:
   S - The string to translate.
 Result:
   The translated string.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrCharsCount
 <GROUP StringManipulation.StringTransformationRoutines>
@@ -2551,10 +2364,8 @@ Parameters:
   Chars - The characters which occurrences to count.
 Result:
   The number of occurrences of Chars in S.
-Quick info:
-
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrKeepChars
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -2571,19 +2382,18 @@ Parameters:
   Chars - The set of characters to keep within S.
 Result:
   A string containing only characters which are within Chars.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrReplace
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
 Summary:
-  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
-  string.
+  StrReplace replaces one or all occurrences of the specified search pattern with
+  the supplied replace string.
 Description:
-  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
-  string. The flags determine how the search is done and if only one or if all occurrences should
-  be replaced.
+  StrReplace replaces one or all occurrences of the specified search pattern with
+  the supplied replace string. The flags determine how the search is done and if
+  only one or if all occurrences should be replaced.
 
   TReplaceFlags = [rfIgnoreCase, rfReplaceAll]
 
@@ -2612,9 +2422,8 @@ Parameters:
   Replace - The character to use as a replacement of Search.
 Result:
   The string with all replacements performed.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrReplaceChars
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -2627,11 +2436,10 @@ Parameters:
   S - The string in which to replace characters.
   Chars - The character(s) to replace.
   Replace - The character to use as a replacement of the characters definied in Chars.
-Result
+Result:
   The string with all replacements performed.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrReplaceButChars
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -2646,9 +2454,8 @@ Parameters:
   Replace - The character to use as replacement.
 Result:
   The string with all replacements performed.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@StrMatches
 <GROUP StringManipulation.StringTestRoutines>
@@ -2667,9 +2474,8 @@ Result:
   True if Str and Substr are equal.
 See also:
   StrSearch
-Quick info:
-  Category: String Manipulation
-  Donator: Michael Winter
+Donator:
+  Michael Winter
 --------------------------------------------------------------------------------
 @@StrNormIndex
 <GROUP StringManipulation.Miscellaneous>
@@ -2689,10 +2495,9 @@ Description:
   '12345' <1    <0       1     0
   '12345' <1    >5       1     5
   '12345' >5    Any      6     0
-Quick info:
 
-  Category: String Manipulation
-  Donator: Alexander Radchenko
+Donator:
+  Alexander Radchenko
 --------------------------------------------------------------------------------
 @@StrStrCount
 <GROUP StringManipulation.StringSearchandReplaceRoutines>
@@ -2706,9 +2511,8 @@ Parameters:
   SubS - The character whose occurrences to count.
 Result:
   The number of occurrences of SubS in S.
-Quick info:
-  Category: String Manipulation
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@AnsiNull
 
@@ -2840,184 +2644,129 @@ AnsiSingleQuote          Single Quote                     #39
 <ALIAS AnsiNull>
 --------------------------------------------------------------------------------
 @@StrToFloatSafe@string
-Description
-The function <B>StrToFloatSafe </B>attempts to convert the
-string passed as a parameter to its float value. It handles
-correctly decimal and float separators as well as negative
-sign. Function also handles national settings for thousand
-separator (see <B>ThousandSeparator </B>variable).
-
-
-
-Summary
-The function <B>StrToFloatSafe</B> attempts to convert the
-string passed as a parameter to its float value.
-
-Parameters
-S :   String to be converted to float value
-
-Returns
-Float value of the string <B>S </B>passed as a parameter. If
-error occurs, the function returns <B>0.00</B>
-
-QuickInfo
-Category: String Manipulation
-Donator: Azret Botash
-Contributor: Robert Rossmair
+Summary:
+  The function StrToFloatSafe attempts to convert the
+  string passed as a parameter to its float value.
+Description:
+  The function StrToFloatSafe attempts to convert the
+  string passed as a parameter to its float value. It handles
+  correctly decimal and float separators as well as negative
+  sign. Function also handles national settings for thousand
+  separator (see ThousandSeparator variable).
+Parameters:
+  S - String to be converted to float value
+Result:
+  Returns the float value of the string S passed as a parameter.
+  If error occurs, the function returns 0.00.
+Donator:
+  Azret Botash
+Contributor:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@StrIToStrings@string@string@TStrings@Boolean
-Description
-<B>StrIToStrings</B> converts the supplied string, which
-supposedly is a list of strings packed into a single string
-variable, to a TStrings. The function uses the supplied
-separator string to separate the string into its individual
-elements.
+Summary:
+  Converts a string into a list of strings using the specified
+  separator character.
+Description:
+  StrIToStrings converts the supplied string, which
+  supposedly is a list of strings packed into a single string
+  variable, to a TStrings. The function uses the supplied
+  separator string to separate the string into its individual
+  elements.
 
-For example, if you call the function like this:
-StrIToStrings('Project JEDI Rules', ' ', List) then on return
-list will contain three items, namely 'Project', 'JEDI', and
-'Rules'. As this example shows, the last string doesn't have
-to be terminated by the separator string although it is
-allowed.
+  For example, if you call the function like this:
+  StrIToStrings('Project JEDI Rules', ' ', List) then on return
+  list will contain three items, namely 'Project', 'JEDI', and
+  'Rules'. As this example shows, the last string doesn't have
+  to be terminated by the separator string although it is
+  allowed.
+Notes:
+  The function differs from StrToString since it does not
+  perform any case conversion of the string passed as the
+  parameter.
 
-
-
-Note
-The function differs from StrToString since it does not
-perform any case conversion of the string passed as the
-parameter.
-
-
-
-The list will be cleared by this function before adding the
-elements.
-
-Summary
-Converts a string into a list of strings using the specified
-separator character.
-
-
-
-Parameters
-S :                  The string to split into elements
-Sep :                The string that separates the individual elements
-List :               A TStrings derivative that receives the individual
-                     elements
-AllowEmptyString :   Specifies whether empty strings can be added to the
-                     list or not
-
-
-QuickInfo
-Unit: JclStrings
-Category: String Manipulation
-Donator: Anthony Steele
-
-
-See Also
-<LINK StrToStrings, StrToStrings>
+  The list will be cleared by this function before adding the
+  elements.
+Parameters:
+  S - The string to split into elements.
+  Sep - The string that separates the individual elements.
+  List - A TStrings derivative that receives the individual elements.
+  AllowEmptyString - Specifies whether empty strings can be added to the list or not.
+See Also:
+ StrToStrings
+Donator:
+  Anthony Steele
 --------------------------------------------------------------------------------
 @@StrToIntSafe@string
-Description
-
-
-Summary
-The function <B>StrToIntSafe</B> attempts to convert the
-string passed as a parameter to its integer value.
-
-Parameters
-S :   String to be converted to integer value
-
-Returns
-Integer value of the string <B>S </B>passed as a parameter.
-If error occurs, the function returns <B>0</B>
-
-QuickInfo
-Unit: JclStrings
-  Category: String Manipulation
-  Donator: Azret Botash
-
-Description
-The function <B>StrToIntSafe </B>attempts to convert the
-string passed as a parameter to its integer value. The
-function handles correctly national settings ofr thousand
-separator (see <B>ThousandSeparator</B> variable) as well as
-negative sign.
+Summary:
+  The function StrToIntSafe attempts to convert the
+  string passed as a parameter to its integer value.
+Description:
+  The function StrToIntSafe attempts to convert the
+  string passed as a parameter to its integer value. The
+  function handles correctly national settings ofr thousand
+  separator (see ThousandSeparator variable) as well as
+  negative sign.
+Parameters:
+  S - String to be converted to integer value.
+Result:
+  Integer value of the string S passed as a parameter.
+  If error occurs, the function returns 0.
+Donator:
+  Azret Botash
 --------------------------------------------------------------------------------
 @@EJclStringError
-Summary
-Class of exceptions that are risen by JclStrings unit's
-routines.
+Summary:
+  Class of exceptions that are risen by JclStrings unit's routines.
 --------------------------------------------------------------------------------
 @@PCharVector
-Summary
-<B>PCharVector </B>type represents an array of pointers to
-PChars.
-
-QuickInfo
- Unit: JclStrings
-  Category: String Manipulation
-  Donator: Marcel van Brakel
-
-See Also
-PCharVectorToStrings, PCharVectorCount, FreePCharVector
-
-Description
-A PCharVector is an array of PChar's where each PChar points
-to a null terminated string. The array is delimited by a nil
-(NULL) pointer. In the Windows API this is usually typed as a
-PPSTR. This type is being operated by the following routines:
-<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
-<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>.
-
-See Also
-<LINK StringsToPCharVector, StringsToPCharVector>, <LINK PCharVectorCount, PCharVectorCount>,
-<LINK PCharVectorToStrings, PCharVectorToStrings>, <LINK FreePCharVector, FreePCharVector>
+Summary:
+  PCharVector type represents an array of pointers to PChars.
+Description:
+  A PCharVector is an array of PChar's where each PChar points
+  to a null terminated string. The array is delimited by a nil
+  (NULL) pointer. In the Windows API this is usually typed as a
+  PPSTR.
+See Also:
+  StringsToPCharVector
+  PCharVectorCount
+  PCharVectorToStrings
+  FreePCharVector
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AnsiDecDigits
-Summary
-Specifies the enumeration type containing digits from 0 to 9.
-
-Description
-The enumeration <B>AnsiDecDigits </B>contains all valid
-digits for decimal number representation.
+Summary:
+  Specifies the enumeration type containing digits from 0 to 9.
+Description:
+  The enumeration AnsiDecDigits contains all valid
+  digits for decimal number representation.
 --------------------------------------------------------------------------------
 @@AnsiHexDigits
-Description
-The enumeration <B>AnsiHexDigits</B> contains all valid
-digits from 0 to 9 and letters of latin alphabet from A to F
-in both lower and upper cases for hexadecimal numbers
-representation.
-
-Summary
-Specifies enumeration typcontaining all valid characters for
-hexadecimal numbers representation.
-
-Note
+Summary:
+  Specifies enumeration typcontaining all valid characters for
+  hexadecimal numbers representation.
+Description:
+  The enumeration AnsiHexDigits contains all valid
+  digits from 0 to 9 and letters of latin alphabet from A to F
+  in both lower and upper cases for hexadecimal numbers
+  representation.
 --------------------------------------------------------------------------------
 @@AddStringToStrings@string@TStrings@Boolean
-
-Description
-Add a string to an object of TStrings. If a string already
-exists in the list and there is a uniqueness requirement in
-place, the string is not added.
-
-Summary
-Add a string to TStrings instance if conditions met.
-
-Parameters
-S :         String to be added.
-Strings :   TStrings object to which the string specified by <B>S </B>should
-            be added.
-Unique :    Determines whether the the uniqueness check should be
-            performed before adding the string.
-
-
-Returns
-The function returns <B>True </B>if the string was added, <B>False
-</B>otherwise.
-
-QuickInfo
-  Donator: Jean-Fabien Connault
-  Windows NT/2000: Requires Windows NT 3.1 or later.
+Summary:
+  Add a string to TStrings instance if conditions met.
+Description:
+  Add a string to an object of TStrings. If a string already
+  exists in the list and there is a uniqueness requirement in
+  place, the string is not added.
+Parameters:
+  S - String to be added.
+  Strings - TStrings object to which the string specified by S should be added.
+  Unique - Determines whether the the uniqueness check should be performed before adding the string.
+Result:
+  The function returns True if the string was added, False otherwise.
+Platforms:
+  Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
-
+Donator:
+  Jean-Fabien Connault
