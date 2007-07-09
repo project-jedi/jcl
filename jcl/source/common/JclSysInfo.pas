@@ -202,9 +202,7 @@ function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 function GetIPAddress(const HostName: string): string;
-{$IFDEF UNIX}
 procedure GetIpAddresses(Results: TStrings);
-{$ENDIF UNIX}
 function GetLocalComputerName: string;
 {$IFNDEF CLR}
 function GetLocalUserName: string;
@@ -2141,6 +2139,43 @@ begin
     {$ENDIF MSWINDOWS}
 end;
 {$ENDIF ~CLR}
+
+{ TODO -cDoc: Donator: twm }
+
+{$IFDEF MSWINDOWS}
+procedure GetIpAddresses(Results: TStrings);
+type
+  TaPInAddr = array[0..10] of PInAddr;
+  PaPInAddr = ^TaPInAddr;
+var
+  R: Integer;
+  HostEnt: PHostEnt;
+  pptr: PaPInAddr;
+  Host: string;
+  i: Integer;
+  WSAData: TWSAData;
+begin
+  //need a socket for ioctl()
+  R := WSAStartup(MakeWord(1, 1), WSAData);
+  if R = 0 then begin
+    try
+      SetLength(Host, MAX_PATH);
+      GetHostName(PChar(Host), MAX_PATH);
+      HostEnt := GetHostByName(PChar(Host));
+      if HostEnt <> nil then begin
+        pPtr := PaPInAddr(HostEnt^.h_addr_list);
+        i := 0;
+        while pPtr^[I] <> nil do begin
+          Results.Add(inet_ntoa(pptr^[i]^));
+          Inc(i);
+        end;
+      end;
+    finally
+      WSACleanup;
+    end;
+  end;
+end;
+{$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
 
