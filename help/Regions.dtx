@@ -9,8 +9,8 @@ Description:
   as the other objects on the canvas but they can create real beauty. Or maybe you ever dreamed
   of making custom forms, then this is your chance.<p>Note for Delphi 3 users, this class is
   not compatible with Delphi 3.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Create
 Summary:
@@ -20,8 +20,8 @@ Description:
   a Windows function.
 Parameters:
   RegionHandle - The Windows region handle.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreateElliptic
 Summary:
@@ -34,8 +34,8 @@ Parameters:
   Left - Y-coordinate of the upper left point.
   Bottom - X-coordinate of the bottom right point.
   Right - Y-coordinate of the bottom right point.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreatePoly
 Summary:
@@ -48,8 +48,8 @@ Parameters:
   FillMode - Specifies the fillmode of polygon, which pixels will be included in the region.
 See also:
   TPolyFillMode
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreateRect
 Summary:
@@ -62,8 +62,8 @@ Parameters:
   Left - Y-coordinate of the upper left point.
   Bottom - X-coordinate of the bottom right point.
   Right - Y-coordinate of the bottom right point.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreateRoundRect
 Summary:
@@ -78,8 +78,8 @@ Parameters:
   Right - Y-coordinate of the bottom right point.
   CornerWidth - X-size of the quarter ellipse for the rounded corners.
   CornerHeight - Y-size of the quarter ellipse for the rounded corners.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreatePolyPolygon
 Summary:
@@ -93,8 +93,8 @@ Parameters:
   FillMode - Specifies the fillmode of the polygon, which pixels will be included in the region.
 See also:
   TPolyFillMode
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreateBitmap
 Summary:
@@ -107,8 +107,8 @@ Parameters:
   RegionBitmapMode - This flag specifies if the RegionColor is included or excluded.
 See also:
   TJclRegionBitmapMode
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreatePath
 Summary:
@@ -117,8 +117,8 @@ Description:
   Creates the region from a path currently selected in a canvas.
 Parameters:
   Canvas - A canvas that contains a path.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.CreateRegionInfo
 Summary:
@@ -130,8 +130,8 @@ Parameters:
   RegionInfo - A regioninfo class.
 See also:
   TJclRegionInfo
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Destroy
 Summary:
@@ -140,8 +140,8 @@ Description:
   Destroys the region class, this will also delete the region handle.
 Parameters:
   RegionInfo - A regioninfo class.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Clip
 Summary:
@@ -150,8 +150,8 @@ Description:
   Selects the region as the current clipping region on a canvas.
 Parameters:
   Canvas - A canvas where the region should be used as a clipping area.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Combine
 Summary:
@@ -165,8 +165,8 @@ Parameters:
   CombineOp - The operator for the combination instruction.
 See also:
   TJclRegionCombineOperator
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Copy
 Summary:
@@ -176,8 +176,8 @@ Description:
   destroy it if you don't need it anymore.
 Result:
   The copy of the region.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Equals
 Summary:
@@ -188,8 +188,8 @@ Parameters:
   CompareRegion - The region which will be compared.
 Result:
   Are the regions equal.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Fill
 Summary:
@@ -198,8 +198,8 @@ Description:
   Fills the area defined by the region with the current brush.
 Parameters:
   Canvas - The canvas on which the region will be filled.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.FillGradient
 Summary:
@@ -214,8 +214,8 @@ Parameters:
   ADirection - The direction of the gradient, horizontial or vertical.
 See also:
   TGradientDirection
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Frame
 Summary:
@@ -226,8 +226,8 @@ Parameters:
   Canvas - The canvas on which the border will be drawn.
   FrameWidth - The width of horizontial brush strokes.
   FrameHeight - The height of vertical brush strokes.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Invert
 Summary:
@@ -236,8 +236,8 @@ Description:
   Inverts the area defined by the region on the canvas.
 Parameters:
   Canvas - The canvas on which the region will be inverted.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Offset
 Summary:
@@ -247,8 +247,8 @@ Description:
 Parameters:
   X - Specifies the number of logical units to move left or right, this value can be negative to move left.
   Y - Specifies the number of logical units to move up or down, this value can be negative to move up.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Paint
 Summary:
@@ -257,8 +257,8 @@ Description:
   Paints the region on the canvas using the current brush.
 Parameters:
   Canvas - The canvas where the region will be painted.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.PointIn
 Summary:
@@ -271,8 +271,8 @@ Parameters:
   Point - The point to check.
 Result:
   Is the point in the region.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.RectIn
 Summary:
@@ -288,8 +288,8 @@ Parameters:
   Right - Y-coordinate of the bottom right point.
 Result:
   Is the rectangle in the region.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.SetWindow
 Summary:
@@ -303,8 +303,8 @@ Parameters:
   Redraw - Should there be a repaint of the window.
 See also:
   CreateBitmap
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.GetRegionInfo
 Summary:
@@ -318,16 +318,16 @@ Result:
   The TJclRegionInfo class.
 See also:
   TJclRegionInfo
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Box
 Summary:
   Returns the current bounding rectangle of the region.
 Description:
   Returns the current bounding rectangle of the region.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.Handle
 Summary:
@@ -335,8 +335,8 @@ Summary:
 Description:
   Returns the Windows handle of the region. Keep in mind that when you destroy the
   TJclRegion class this handle gets also destroyed.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegion.RegionType
 Summary:
@@ -345,8 +345,8 @@ Description:
   Returns the complexity of the region.
 See also:
   TJclRegionType
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo
 <GROUP Graphics.Regions>
@@ -358,16 +358,16 @@ Description:
   method call.
 See also:
   TJclRegion
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo.Box
 Summary:
   Returns the current bounding rectangle of the region.
 Description:
   Returns the current bounding rectangle of the region.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo.Rectangles
 Summary:
@@ -377,8 +377,8 @@ Description:
   Count - 1.
 See also:
   Count
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo.Count
 Summary:
@@ -387,8 +387,8 @@ Description:
   Returns the number of rectangles that describe the region.
 See also:
   Rectangles
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo.Create
 Summary:
@@ -400,16 +400,16 @@ Parameters:
   Region - The region from which you want the info.
 See also:
   TJclRegion
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionInfo.Destroy
 Summary:
   Destroys the class.
 Description:
   Destroys the class.
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@FillGradient
 <GROUP Graphics>
@@ -427,8 +427,8 @@ Parameters:
   ADirection - The direction of the gradient, horizontial or vertical.
 See also:
   TGradientDirection
-
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@CreateRegionFromBitmap
 <GROUP Graphics.Bitmaps, $Graphics.Regions>
@@ -449,7 +449,8 @@ Result:
   The region handle.
 See also:
   TJclRegionBitmapMode, <LINK TJclRegion.CreateBitmap, CreateBitmap>
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TGradientDirection
 <GROUP Graphics.Types>
@@ -459,20 +460,21 @@ Description:
   Specifies the direction of the gradient. This can be gdVertical and gdHorizontial.
 See also:
   FillGradient
-  <LINK TJclRegion.FillGradient, FillGradient>
-Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclRegionBitmapMode
-Summary
-Specifies the operation on the color.
-Description
-Specifies the operation on the color when creating the region
-from a bitmap.
-See Also
-<link CreateRegionFromBitmap>, <link TJclRegion.CreateBitmap, CreateBitmap>
-Donator
-Wim De Cleen
-
+Summary:
+  Specifies the operation on the color.
+Description:
+  Specifies the operation on the color when creating the region
+  from a bitmap.
+See Also:
+  CreateRegionFromBitmap
+  CreateBitmap
+Donator:
+  Wim De Cleen
+--------------------------------------------------------------------------------
 @@TPolyFillMode
 <GROUP Graphics.Types>
 Summary:
@@ -482,9 +484,10 @@ Description:
   the region is filled between odd-numbered and even-numbered sides of the polygon. Specifing
   fmWinding will fill any part of the poly region with a non-zero winding value.
 See also:
-  <LINK TJclRegion.CreatePoly, CreatePoly>,
-  <LINK TJclRegion.CreatePolyPolygon, CreatePolyPolygon>
-Donator: Wim De Cleen
+  CreatePoly
+  CreatePolyPolygon
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionCombineOperator
 <GROUP Graphics.Types, $Graphics.Regions>
@@ -493,7 +496,7 @@ Summary:
 Description:
   Specifies the operator when combining two regions.
   The following values can be specified:
-    <TABLE>
+<TABLE>
 Value   Description
 ------  -----------------------------------------------------------------------------
 coAnd   The resulting region is the intersection of the two regions
@@ -501,11 +504,10 @@ coDiff  The resulting region is any area of region one that is not in region two
 coOr    The resulting region is the union of the regions
 coXor   The resulting region is the union of the regions except any overlapping areas
 </TABLE>
-
 See also:
-  <LINK TJclRegion.Combine, Combine>
-
-Donator: Wim De Cleen
+  Combine
+Donator:
+  Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclRegionType
 <GROUP Graphics.Types>
@@ -514,7 +516,7 @@ Summary:
 Description:
   Specifies the complexity of the region.
   The following values can be specified:
-    <TABLE>
+<TABLE>
 Value      Description
 ---------  -------------------------------------------------------------------------
 rtNull     The region is empty
@@ -522,8 +524,7 @@ rtSimple   The region is a rectangle region
 rtComplex  The region consists of more than one rectangle
 rtError    The region is in error state, the last function that was executed failed.
 </TABLE>
-
 See also:
   TJclRegion
-
-Donator: Wim De Cleen
+Donator:
+  Wim De Cleen

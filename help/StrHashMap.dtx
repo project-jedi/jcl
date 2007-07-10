@@ -1,8 +1,14 @@
 @@JclStrHashMap.pas
-This unit contains a string-pointer associative map.
-It works by hashing the added strings using a passed-in traits object. 
-Donator: Barry Kelly
-Contributors: Barry Kelly, Robert Rossmair, Matthias Thoma, Petr Vones
+Summary:
+  This unit contains a string-pointer associative map.
+  It works by hashing the added strings using a passed-in traits object. 
+Donator:
+  Barry Kelly
+Contributors:
+  Barry Kelly
+  Robert Rossmair
+  Matthias Thoma
+  Petr Vones
 --------------------------------------------------------------------------------
 @@Algorithms.Searching
 <GROUP Algorithms>
@@ -17,23 +23,29 @@ Contributors: Barry Kelly, Robert Rossmair, Matthias Thoma, Petr Vones
 @@TStringHashMap_Alloc
 <GROUP Algorithms.Searching.HashMaps>
 <TITLE Customizing TStringHashMap's node allocation strategy.>
-You can customize the way TStringHashMap allocates nodes, to avoid the
-overhead of millions of calls to New, by overriding the AllocNode
-and FreeNode methods.
+Summary:
+  You can customize the way TStringHashMap allocates nodes, to avoid the
+  overhead of millions of calls to New, by overriding the AllocNode
+  and FreeNode methods.
 --------------------------------------------------------------------------------
 @@EJclStringHashMapError
 <GROUP Algorithms.Searching.HashMaps>
-The error exception class used by TStringhashMap.
-Donator: Barry Kelly
+Summary:
+  The error exception class used by TStringhashMap.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@THashValue
 <GROUP Algorithms.Searching.HashMaps>
-The type of the return value for hashing functions.
-Donator: Barry Kelly
+Summary:
+  The type of the return value for hashing functions.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMapTraits
 <GROUP Algorithms.Searching.HashMaps>
-Brief: An abstract class describing the interface for traits classes.
+Summary:
+  An abstract class describing the interface for traits classes.
 Description:
   The desired behaviour of TStringHashMap for case sensitive and
   case insensitive maps is different. This class describes the
@@ -41,277 +53,314 @@ Description:
   how string keys added should be treated. Concrete instances are
   returned by the CaseSensitiveTraits and CaseInsensitiveTraits
   functions.
-See also: TCaseSensitiveTraits, TCaseInsensitiveTraits
-Donator: Barry Kelly
+See also:
+  TCaseSensitiveTraits
+  TCaseInsensitiveTraits
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMapTraits.Hash
-Returns the hash value of the string s.
-Donator: Barry Kelly
+Result:
+  Returns the hash value of the string s.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMapTraits.Compare
-Returns a negative integer if l is before r, a positive
-      integer if r is before l, and zero if they are equal; all comparisons
-      being lexicographical, i.e. not necessarily based on the ordinal
-      values of the characters, but may be case insensitive, for example.
-Donator: Barry Kelly
+Result:
+  Returns a negative integer if l is before r, a positive
+  integer if r is before l, and zero if they are equal; all comparisons
+  being lexicographical, i.e. not necessarily based on the ordinal
+  values of the characters, but may be case insensitive, for example.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@CaseSensitiveTraits
 <GROUP Algorithms.Searching.HashMaps>
-A utility function returning an instance of TCaseSensitiveTraits.
-Donator: Barry Kelly
+Summary:
+  A utility function returning an instance of TCaseSensitiveTraits.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@CaseInsensitiveTraits
 <GROUP Algorithms.Searching.HashMaps>
-A utility function returning an instance of TCaseInsensitiveTraits.
-Donator: Barry Kelly
+Summary:
+  A utility function returning an instance of TCaseInsensitiveTraits.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TIterateFunc
 <GROUP Algorithms.Searching.HashMaps>
-Brief: The type of the parameter to TStringHashMap.Iterate.
-Description:
-  * AUserData:
-    The same parameter as was passed to the Iterate method.
-  * AStr:
-    The value of the string part of the current key.
-  * APtr:
-    The value of the pointer part of the current key.
-Should return True to continue iterating, or False to
-stop iterating and return to whatever called the Iterate method.
-Donator: Barry Kelly
+Summary:
+  The type of the parameter to TStringHashMap.Iterate.
+Parameters:
+  AUserData - The same parameter as was passed to the Iterate method.
+  AStr - The value of the string part of the current key.
+  APtr - The value of the pointer part of the current key.
+Result:
+  Should return True to continue iterating, or False to
+  stop iterating and return to whatever called the Iterate method.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TIterateMethod
 <GROUP Algorithms.Searching.HashMaps>
-Brief: The type of the parameter to TStringHashMap.IterateMethod.
-Description:
-  These are the meanings of the arguments:<p>
-  AUserData:
-    The same parameter as was passed to the IterateMethod method.
-  AStr:
-    The value of the string part of the current key.
-  APtr:
-    The value of the pointer part of the current key.
-
-  <p>Return value: Should return True to continue iterating, or False to
-    stop iterating and return to whatever called the IterateMethod method.
-Donator: Barry Kelly
+Summary:
+  The type of the parameter to TStringHashMap.IterateMethod.
+Parameters:
+  AUserData - The same parameter as was passed to the IterateMethod method.
+  AStr - The value of the string part of the current key.
+  APtr - The value of the pointer part of the current key.
+Result:
+  Should return True to continue iterating, or False to
+  stop iterating and return to whatever called the IterateMethod method.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@THashNode
 <GROUP Algorithms.Searching.HashMaps>
-The internal storage record used by TStringHashMap.
-Donator: Barry Kelly
-
+Summary:
+  The internal storage record used by TStringHashMap.
+Donator:
+  Barry Kelly
 @@PHashNode
 <COMBINE THashNode>
-Pointer to a THashNode record.
-
+  Pointer to a THashNode record.
 @@PPHashNode
 <COMBINE THashNode>
-Pointer to a pointer to a THashNode record.
+  Pointer to a pointer to a THashNode record.
 --------------------------------------------------------------------------------
 @@THashArray
 <GROUP Algorithms.Searching.HashMaps>
-THashArray is the type of the array used for internal storage in
-  TStringHashMap.
-Donator: Barry Kelly
-
+Summary:
+  THashArray is the type of the array used for internal storage in TStringHashMap.
+Donator:
+  Barry Kelly
 @@PHashArray
 <COMBINE THashArray>
-Pointer to a THashArray.
+  Pointer to a THashArray.
 --------------------------------------------------------------------------------
 @@TStringHashMap
 <GROUP Algorithms.Searching.HashMaps>
-Brief: TStringHashMap is a string-pointer associative array.
+Summary:
+  TStringHashMap is a string-pointer associative array.
 Description:
   TStringHashMap is a string-pointer associative array. It uses a
   hash table for its implementation, which has several ramifications
   for its behaviour:
-    * Lookup by string takes a constant time, i.e. if the map is big
-      enough it takes just as long to find an item from 10 as from
-      10 million (ignoring cache and paging effects).
-    * Items are unordered. An iteration of all the items using the
-      Iterate or IterateMethod methods won't go through all the items
-      in any order that has meaning, i.e. the ordering is essentially
-      random. 
-Donator: Barry Kelly
+  - Lookup by string takes a constant time, i.e. if the map is big
+    enough it takes just as long to find an item from 10 as from
+    10 million (ignoring cache and paging effects).
+  - Items are unordered. An iteration of all the items using the
+    Iterate or IterateMethod methods won't go through all the items
+    in any order that has meaning, i.e. the ordering is essentially random. 
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.FindNode
-Brief:
+Summary:
   A helper method used by the public methods.
-
-Parameters:
-  s: The string key of the node to find.
-
-Returns:
-  The location of the pointer to the node corresponding to s, if
-  s is in the hash table. If s isn't in the table, then it will
-  return the location of the pointer (= nil) which must be set
-  in order to add s correctly to the table.
-
 Description:
   Returns, using double indirection, the node corresponding to the
   parameter. The double indirection allows internal implementation
   methods to both search and add using only one search through the
   table.
-Donator: Barry Kelly
+Parameters:
+  s: The string key of the node to find.
+Result:
+  The location of the pointer to the node corresponding to s, if
+  s is in the hash table. If s isn't in the table, then it will
+  return the location of the pointer (= nil) which must be set
+  in order to add s correctly to the table.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.AllocNode
 <GROUP TStringHashMap_Alloc>
 <TITLE Allocating a node>
-Allocates a node.
-Returns:
-  A pointer to a newly allocated node, with the Left and Right members set to nil.
-Donator: Barry Kelly
+Summary:
+  Allocates a node.
+Result:
+  Returns a pointer to a newly allocated node, with the Left and Right members set to nil.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.FreeNode
 <GROUP TStringHashMap_Alloc>
 <TITLE Freeing a node>
-Frees a node.
+Summary:
+  Frees a node.
 Parameters:
-  ANode: The node to free.
-Donator: Barry Kelly
+  ANode - The node to free.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.GetData
-Data property getter.
+Summary:
+  Data property getter.
 Parameters:
-  s: The key of the node to find.
-Returns:
-  The value of the pointer if the node exists, or nil otherwise.
-Donator: Barry Kelly
+  s - The key of the node to find.
+Result:
+  Returns the value of the pointer if the node exists, or nil otherwise.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.SetData
-Brief: Data property setter.
-Parameters:
-  s: The key of the node to set.
-  p: The data to set the node's data to.
+Summary:
+  Data property setter.
 Description:
   SetData will create a new node if none exists with key s.
-Donator: Barry Kelly
+Parameters:
+  s - The key of the node to set.
+  p - The data to set the node's data to.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Create
-Constructs a new TStringHashMap instance.
+Summary:
+  Constructs a new TStringHashMap instance.
 Parameters:
-  ATraits:
-    An instance of a descendant of TStringHashMapTraits. This object
-    describes how the hash map will hash and compare string values.
-  AHashSize:
-    An initial size for the internal hash lookup table. This doesn't
-    limit the amount of items the hash can hold; it just affects the
-    speed of operations on the hash map. See the HashSize property for
-    more info.
-Note: AHashSize should <b>not</b> be a power of 2. Use a power of 2
+  ATraits   - An instance of a descendant of TStringHashMapTraits. This object
+              describes how the hash map will hash and compare string values.
+  AHashSize - An initial size for the internal hash lookup table. This doesn't
+              limit the amount of items the hash can hold; it just affects the
+              speed of operations on the hash map. See the HashSize property for
+              more info.
+Notes:
+  AHashSize should <b>not</b> be a power of 2. Use a power of 2
   minus 1, or a prime number.
-Donator: Barry Kelly
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Destroy
-Destroys the instance. Call Free instead of Destroy.
-Donator: Barry Kelly
+Summary:
+  Destroys the instance. Call Free instead of Destroy.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Add
-Adds an association to the map.
+Summary:
+  Adds an association to the map.
 Parameters:
-  s: The key to add.
-  p: The data to add. It is an untyped constant to avoid typecasting
-    issues, and to make code using the map more readable. It should
-    be a 4-byte data type, like Integer or Pointer, or some object
-    reference.
-Donator: Barry Kelly
+  s - The key to add.
+  p - The data to add. It is an untyped constant to avoid typecasting
+      issues, and to make code using the map more readable. It should
+      be a 4-byte data type, like Integer or Pointer, or some object
+      reference.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Remove
-Brief: Removes an association from the map.
-Parameters:
-  s: The string value of the association to remove.
-Returns:
-  The data field of the assocation.
+Summary:
+  Removes an association from the map.
 Description:
   The Remove method isn't as fast at removing items as Clear is; that
   is, calling Remove for every key in the hash will be quite a bit
   slower than calling Clear. The method returns the data field so that
   compact code can be written. See the example for sample usage.
-
   EJclStringHashMapError will be raised if the item isn't found.
+Parameters:
+  s - The string value of the association to remove.
+Result:
+  Returns the data field of the assocation.
 Example:
-  This example demonstrates how the Remove method's return value can
-  be used.
-  <code>
+  This example demonstrates how the Remove method's return value can be used.
   var
     myMap: TStringHashMap;
     // ...
     TObject(myMap.Remove('SomeItem')).Free;
-  </code> }
-Donator: Barry Kelly
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.RemoveData
-Removes <b>every</b> instance of p as a data field from the map.
+Summary:
+  Removes every instance of p as a data field from the map.
 Parameters:
-  p: The data to item.
-Donator: Barry Kelly
+  p - The data to item.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Iterate
-Iterates through associations in the map.
+Summary:
+  Iterates through associations in the map.
 Parameters:
-  AUserData: A pointer parameter passed through untouched to the
-    iterator function.
-  AIterateFunc: A function pointer called for every assocation in
-    the map; it should return False if it wants to prematurely stop
-    the iteration.
-See Also: IterateMethod
-Donator: Barry Kelly
+  AUserData    - A pointer parameter passed through untouched to the
+                 iterator function.
+  AIterateFunc - A function pointer called for every assocation in
+                 the map; it should return False if it wants to prematurely stop
+                 the iteration.
+See Also:
+  IterateMethod
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.IterateMethod
-Brief: Iterates through associations in the map.
+Summary:
+  Iterates through associations in the map.
 Parameters:
-  AUserData: A pointer parameter passed through untouched to the
-    iterator method.
-  AIterateMethod: A method pointer called for every assocation in
-    the map; it should return False if it wants to prematurely stop
-    the iteration.
-See Also: Iterate
-Donator: Barry Kelly
+  AUserData      - A pointer parameter passed through untouched to the
+                   iterator method.
+  AIterateMethod - A method pointer called for every assocation in
+                   the map; it should return False if it wants to prematurely stop
+                   the iteration.
+See Also:
+  Iterate
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Has
-Brief: Checks if the map has an association with a string key.
+Summary:
+  Checks if the map has an association with a string key.
 Parameters:
-  s: The key to search for.
-Returns:
-  True if found, False if there is no assocation with key s in the map.
-Donator: Barry Kelly
+  s - The key to search for.
+Result:
+  Returns True if found, False if there is no assocation with key s in the map.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Find
-Finds the data part of an association corresponding to a string
-  key.
+Summary:
+  Finds the data part of an association corresponding to a string key.
 Parameters:
-  s: The string key to find.
-  p: A reference to a pointer which will be updated if the assocation
-    is found. If the assocation isn't found, the pointer isn't touched.
-    That is, it won't automatically be set to nil.
-Returns:
-  True if the key was found, False otherwise.
-Donator: Barry Kelly
+  s - The string key to find.
+  p - A reference to a pointer which will be updated if the assocation
+      is found. If the assocation isn't found, the pointer isn't touched.
+      That is, it won't automatically be set to nil.
+Result:
+  Returns True if the key was found, False otherwise.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.FindData
-Brief: Finds the string key for a data value.
-Parameters:
-  p: The data value to find.
-  s: A reference to the string key to set if found.
-Returns:
-  True if found, false otherwise.
+Summary:
+  Finds the string key for a data value.
 Description:
   FindData will find the first association in the map with a data
   field equal to p. However, the order of the search has no meaning;
   if there are multiple instances of p in the node, the key returned
   is not in any particular order.
-Donator: Barry Kelly
+Parameters:
+  p - The data value to find.
+  s - A reference to the string key to set if found.
+Result:
+  Returns True if found, false otherwise.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Clear
-Clears the map of all associations.
-Donator: Barry Kelly
+Summary:
+  Clears the map of all associations.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Count
-The number of assocations stored in the map.
-Donator: Barry Kelly
+Summary:
+  The number of assocations stored in the map.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Data
-Brief: Allows access to the map like an array looked up by string.
+Summary:
+  Allows access to the map like an array looked up by string.
 Description:
   This is the default property, so it needn't be specified directly.
   If the key corresponding to the string isn't found, an assocation
@@ -319,90 +368,109 @@ Description:
   map with a key not in the map will return nil.
 Example:
   Demonstrates use of the TStringHashMap.Data property.
-  <code>
   var
     myMap: TStringHashMap;
     // ...
     myMap['this'] := Self;
     if myMap['something'] = nil then
       // 'something' not found
-  </code>
-Donator: Barry Kelly
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Traits
-Returns the traits object being used by the map.
-Donator: Barry Kelly
+Result:
+  Returns the traits object being used by the map.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.HashSize
-Brief: The internal hash table size.
+Summary:
+  The internal hash table size.
 Description:
   The hash table size affects all operations on the hash map. For maps
   designed to work with large numbers of assocations, the table should
   be correspondingly larger.
-Note: Don't change the value of this property too often, as it will
-  force all items in the table to be rehashed, and this can take
-  some time.
-Donator: Barry Kelly
+Notes:
+  Don't change the value of this property too often, as it will force
+  all items in the table to be rehashed, and this can take some time.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@StrHash
 <GROUP Algorithms.Searching.HashMaps>
-Case sensitive hash of string s.
-Donator: Barry Kelly
+Summary:
+  Case sensitive hash of string s.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TextHash
 <GROUP Algorithms.Searching.HashMaps>
-Case insensitive hash of string s.
-Donator: Barry Kelly
+Summary:
+  Case insensitive hash of string s.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@DataHash
 <GROUP Algorithms.Searching.HashMaps>
-A utility function which computes a hash a buffer.
+Summary:
+  A utility function which computes a hash a buffer.
 Parameters:
-  AValue: A reference to the buffer to compute a hash value for.
-  ASize: The size of the buffer. Use SizeOf where possible.
-Donator: Barry Kelly
+  AValue - A reference to the buffer to compute a hash value for.
+  ASize - The size of the buffer. Use SizeOf where possible.
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_FreeObjects
 <GROUP Algorithms.Searching.HashMaps>
-A utility iterating function that calls TObject.Free for all
-  data items in a map.
+Summary:
+  A utility iterating function that calls TObject. Free for all data items in a map.
 Example:
   This frees all objects in the map and clears the map.
-  <code>
   var
     myMap: TStringHashMap;
     // ...
     myMap.Iterate(nil, Iterate_FreeObjects);
     myMap.Clear;
-  </code>
-Donator: Barry Kelly
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_Dispose
 <GROUP Algorithms.Searching.HashMaps>
-A utility iterating function that calls Dispose for all data
+Summary:
+  A utility iterating function that calls Dispose for all data
   items in a map.
-See Also: Iterate_FreeObjects
-Donator: Barry Kelly
+See Also:
+  Iterate_FreeObjects
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_FreeMem
 <GROUP Algorithms.Searching.HashMaps>
-A utility iterating function that calls FreeMem for all data
+Summary:
+  A utility iterating function that calls FreeMem for all data
   items in a map.
-See Also: Iterate_FreeMem
-Donator: Barry Kelly
+See Also:
+  Iterate_FreeMem
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TCaseSensitiveTraits
 <GROUP Algorithms.Searching.HashMaps>
-A useful concrete descendant of TStringHashMapTraits which
-       implements case sensitive traits, with order based on ordinal value.
-See Also: TCaseInsensitiveTraits
-Donator: Barry Kelly
+Summary:
+  A useful concrete descendant of TStringHashMapTraits which
+  implements case sensitive traits, with order based on ordinal value.
+See Also:
+  TCaseInsensitiveTraits
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
 @@TCaseInsensitiveTraits
 <GROUP Algorithms.Searching.HashMaps>
-A useful concrete descendant of TStringHashMapTraits which
-    implements case insensitive traits, with order based on ordinal value.
-    See Also: TCaseSensitiveTraits
-Donator: Barry Kelly
+Summary:
+  A useful concrete descendant of TStringHashMapTraits which
+  implements case insensitive traits, with order based on ordinal value.
+See Also:
+  TCaseSensitiveTraits
+Donator:
+  Barry Kelly
 --------------------------------------------------------------------------------
-

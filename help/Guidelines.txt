@@ -12,6 +12,8 @@ Result:
   This is a sample result description.
 Notes:
   This is a sample note.
+Example:
+  This is a code sample.
 See also:
   Seealso1
   Seealso2
