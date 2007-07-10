@@ -13,21 +13,20 @@
 <TOPICORDER 300>
 <GROUP MultiMedia>
 Summary:
-MIDI is an acronym for <B>Musical Instrument Digital
-Interface</B>, a standard to communicate musical information.
-
+  MIDI is an acronym for <B>Musical Instrument Digital
+  Interface, a standard to communicate musical information.
 Description:
-MIDI is an acronym for <B>Musical Instrument Digital
-Interface</B>, a standard to communicate musical information
-(in contrast to sound), as defined by the MIDI Manufacturers
-Association (MMA). The standard is threefold: it defines a
-protocol (language), a connector (hardware interface) and a
-distribution format called Standard MIDI Files.
+  MIDI is an acronym for <B>Musical Instrument Digital
+  Interface, a standard to communicate musical information
+  (in contrast to sound), as defined by the MIDI Manufacturers
+  Association (MMA). The standard is threefold: it defines a
+  protocol (language), a connector (hardware interface) and a
+  distribution format called Standard MIDI Files.
 
-For more information about MIDI, look up the MMA's <EXTLINK http://www.midi.org>website</EXTLINK>.
+  For more information about MIDI, look up the MMA's <EXTLINK http://www.midi.org>website</EXTLINK>.
 
-We also recommend George Hansper's MIDI
-<EXTLINK http://crystal.apana.org.au/ghansper/midi_introduction/contents.html>introduction</EXTLINK>.
+  We also recommend George Hansper's MIDI
+  <EXTLINK http://crystal.apana.org.au/ghansper/midi_introduction/contents.html>introduction</EXTLINK>.
 --------------------------------------------------------------------------------
 @@MultiMedia.WaveformAudio
 <TITLE Waveform Audio>
@@ -50,10 +49,11 @@ Description:
   programmable timer resolution, and provides guarantees about delivery of timer
   notifications. In addition it's much more flexible.
 See also:
-  <LINK TJclCounter,TJclCount>
+  TJclCounter
+  TJclCount
   TJclWaitableTimer
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Create
 Summary:
@@ -67,8 +67,8 @@ Description:
 Parameters:
   Kind - Determines the kind of timer, you have the option of a one-shot timer or a periodic timer. See TMmTimerKind for more information.
   Notification - Determines the method of notification when the timer elapses (fires). See TMmNotificationKind for more information.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.GetTime
 Summary:
@@ -85,8 +85,8 @@ Description:
   and the Period property.
 Result:
   The time since Windows was started, in milliseconds.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Event
 Summary:
@@ -100,40 +100,40 @@ Description:
   situation. Namely, if you have specified nkSetEvent in the constructor the event
   must be reset manually. To do that call the event's ResetEvent method as in:
   MyMmTimer.Event.ResetEvent.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Kind
 Summary:
   Straight copy of the Kind parameter as specified in the constructor.
 Description:
   Straight copy of the Kind parameter as specified in the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Notification
 Summary:
   Straight copy of the Notification parameter as specified in the constructor.
 Description:
   Straight copy of the Notification parameter as specified in the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.MaxPeriod
 Summary:
   MaxPeriod returns the maximum period (resolution) supported by the timer hardware.
 Description:
   MaxPeriod returns the maximum period (resolution) supported by the timer hardware.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.MinPeriod
 Summary:
   MinPeriod returns the minimum period (resolution) supported by the timer hardware.
 Description:
   MinPeriod returns the minimum period (resolution) supported by the timer hardware.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Period
 Summary:
@@ -148,8 +148,8 @@ Description:
   to set alternative resolutions used by the GetTime class function but you should
   not do this when the timer is active since it will mess up the values returned
   by the Elapsed function.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.OnTimer
 Summary:
@@ -158,8 +158,8 @@ Description:
   Only applies if you specified nkCallback for the Notification parameter in the
   constructor. After calling BeginTimer this is the event that gets fired each
   time the interval expires.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.BeginTimer
 Summary:
@@ -171,17 +171,16 @@ Description:
 Parameters:
   Delay - Event delay in milliseconds. This is the interval after which the timer 'fires'.
   Resolution - Timer event resolution, in milliseconds. This influences the accuracy with which periodic events occur. A value of 0 specified the greatest possible accuracy while larger values decrease in accuracy. In effect this means that you are saying you want to be notified after an interval of Delay +/- Resolution. The specified value must be supported by the timer hardware or the function fails. You can use the MaxPeriod and MinPeriod properties to retrieve the range of supported resolutions.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.EndTimer
 Summary:
   Stops the timer.
 Description:
-  The EndTimer method stops the timer. Always call this method, even for a one-shot
-  timer.
-Quick info:
-  Donator: Marcel van Brakel
+  The EndTimer method stops the timer. Always call this method, even for a one-shot timer.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.Elapsed
 Summary:
@@ -195,8 +194,8 @@ Result:
   The elapsed time, in milliseconds, since the last call to BeginTimer or Elapsed.
   If the timer is inactive (you haven't called BeginTimer or called EndTimer more
   recently) the return value is always 0.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer.WaitFor
 Summary:
@@ -215,8 +214,8 @@ Result:
   wrSignaled. Other values indicate some kind of error.
   See TJclWaitResult
   for the details.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TMmTimerKind
 <GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
@@ -224,8 +223,8 @@ Summary:
   Determines the kind of timer, periodic or one-shot.
 Description:
   Determines the kind of timer, periodic or one-shot.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TMmTimerKind.tkOneShot
   The timer is a one-shot timer. After calling BeginTimer and the specified interval has elapsed, the timer will 'fire' once and once only. Note that even for a one-shot timer you still need to call EndTimer.
 @@TMmTimerKind.tkPeriodic
@@ -238,8 +237,8 @@ Summary:
 Description:
   Determines the method of notification when the timer's interval ellapses. You can
   choose between using kernel events or callbacks.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TMmNotificationKind.nkCallback
   The timer uses the callback method to notify you when the timer expires. This means that the handler assigned to the OnTimer event property will be called every time the timer's interval expires.
 @@TMmNotificationKind.nkSetEvent
@@ -251,15 +250,15 @@ Quick info:
 <GROUP MultiMedia.CDDrive>
 Description:
   OpenCloseCdDrive opens or closes the CD drive. If an error
-  \occurs an EJclMciError exception is raised.
+  occurs an EJclMciError exception is raised.
 Summary:
   Opens or closes the CD drive.
 Note:
   Currently this function can only handle a single CD drive.
 Parameters:
-  OpenMode      If True the CD drive is opened, if False the CD drive is closed.
-Quick Info:
-  Donator: Bernhard Berger
+  OpenMode - If True the CD drive is opened, if False the CD drive is closed.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetMciErrorMessage
 <GROUP MultiMedia.MCI>
@@ -272,5 +271,5 @@ Parameters:
   ErrorCode - The errorcode for which you want the error message.
 Result:
   Error message for the specified error code.
-Quick info:
-  Donator: Bernhard Berger
+Donator:
+  Bernhard Berger

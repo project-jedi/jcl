@@ -31,7 +31,7 @@ Parameters:
   Path - Path of the registry key for which to set full access to everyone.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Note:
+Notes:
   Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
 Donator:
   John C Molyneux
@@ -53,8 +53,9 @@ Result:
   A pointer to the passed in TSecurityAttributes structure. This allows you to write
   code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
 Notes:
-  The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
-  Under Windows 95/98/Millenium Edition, this function always returns <b>nil</b>.
+  The caller is responsible for freeing the memory associated with the lpSecurityDescriptor
+  member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
+  Under Windows 95/98/Millenium Edition, this function always returns nil.
 See also:
   CreateInheritable
 Donator:
@@ -74,8 +75,8 @@ Parameters:
 Result:
   A pointer to the passed in TSecurityAttributes structure. This allows you to write
   code such as CreateFile(..., CreateInheritable(Sa), ...).
-Note:
-  Under Windows 95/98/Millenium Edition, this function always returns <b>nil</b>.
+Notes:
+  Under Windows 95/98/Millenium Edition, this function always returns nil.
 See also:
   CreateNullDacl
 Donator:
@@ -96,8 +97,9 @@ Result:
   If the specified privilege is enabled for the calling thread then the function
   returns True, otherwise the function returns False - this is also the return
   value if the function fails in retrieving the status of the specified privilege.
-Note:
-  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Notes:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition,
+  it always returns True.
 See also:
   EnableProcessPrivilege
   EnableThreadPrivilege
@@ -120,7 +122,8 @@ Result:
   If the function succeeds the result is True, otherwise the result is False. Failure
   is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
   to enable or disable privileges.
-Note: Under Windows 95/98/Millenium Edition, this function always returns True.
+Notes:
+  Under Windows 95/98/Millenium Edition, this function always returns True.
 See also:
   EnableThreadPrivilege
   IsPrivilegeEnabled
@@ -147,8 +150,9 @@ Result:
 See also:
   EnableProcessPrivilege
   IsPrivilegeEnabled
-Note:
-  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Notes:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition,
+  it always returns True.
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -163,8 +167,10 @@ Description:
 Result:
   If the process is running in the user context of a local administrator the function
   returns True, otherwise it returns False.
-Note: Under Windows 95/98/Millenium Edition, this function always returns True.
-Donator: Marcel van Brakel
+Notes:
+  Under Windows 95/98/Millenium Edition, this function always returns True.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LookupAccountBySid
 <GROUP AccountInformation>
@@ -178,9 +184,10 @@ Parameters:
   Sid - Security Identifier of the account for which to lookup the domain and account-name.
   Name - Returns the account-name of the principal identified by Sid.
   Domain - Returns the domain-name in which the principal identified by Sid is located (if any).
-Note:
+Notes:
   Under Windows 95/98/Millenium Edition, LookupAccountBySid always returns empty strings.
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@QueryTokenInformation
 <GROUP AccountInformation>
@@ -195,8 +202,8 @@ Parameters:
   Token - Handle to an access token to query for information.
   InformationClass - The type of information to retrieve.
   Buffer - Upon success reveices a buffer containing the requested information. This buffer must be freed by the caller by using the FreeMem function. Upon failure the buffer is undefined and should not be freed.
-Note:
-  Under Windows 95/98/Millenium Edition, QueryTokenInformation always sets Buffer to <b>nil</b>.
+Notes:
+  Under Windows 95/98/Millenium Edition, QueryTokenInformation always sets Buffer to nil.
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -217,7 +224,7 @@ Description:
   accept one running in the localsystem security context.
 Result:
   The name of the interactively logged on user, if any, in the format domain\username.
-Note:
+Notes:
   Under Windows 95/98/Millenium Edition, this function always returns an empty string.
 Donator:
   Marcel van Brakel
@@ -236,7 +243,7 @@ Result:
   A string that specifies the privilege display name, or an empty string if the function failed.
   For example, if the PrivilegeName parameter is 'SeRemoteShutdownPrivilege', the privilege display
   name is 'Force shutdown from a remote system.'
-Note:
+Notes:
   Under Windows 95/98/Millenium Edition, this function always returns an empty string.
 Donator:
   Unknown
@@ -251,7 +258,7 @@ Parameters:
     This handle is returned by the CreateWindowStation, OpenWindowStation, CreateDesktop, or OpenDesktop function.
 Result:
   The name of the specified object, or an empty string if the function failed.
-Note:
+Notes:
   Under Windows 95/98/Millenium Edition, this function always returns an empty result.
 Donator:
   Unknown
@@ -267,8 +274,8 @@ Parameters:
   hUserObject - Handle to a user object for which full access is to be granted.
 Result:
   True on success, False otherwise.
-Note:
-  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Notes:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition,
+  it always returns True.
 Donator:
   Unknown
-

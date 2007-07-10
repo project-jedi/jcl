@@ -1,0 +1,37 @@
+--------------------------------------------------------------------------------
+@@EntryName
+<GROUP Category.SubCategory>
+Summary:
+  This is a sample summary.
+Description:
+  This is a sample description.
+Parameters:
+  P1 - P1 parameter description.
+  P2 - P2 parameter description.
+Result:
+  This is a sample result description.
+Notes:
+  This is a sample note.
+See also:
+  Seealso1
+  Seealso2
+Donators:
+  Donator1
+  Donator2
+Contributors:
+  Contributor1
+  Contributor2
+--------------------------------------------------------------------------------
+
+The section are listed in the specific order outlined in the sample.
+
+Sentences are always ended with a '.'.
+
+"Notes" is always spelled with an 's' at the end.
+
+If one donator only then spell "Donator" instead of "Donators".
+
+If one contributor only then spell "Contributor" instead of "Contributors".
+
+If a section is missing entries, use the TODO keyword.
+

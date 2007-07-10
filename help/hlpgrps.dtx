@@ -251,33 +251,38 @@ have all the standard container behavior.
 <TOPICORDER 2800>
 --------------------------------------------------------------------------------
 @@JclCounter.pas
-
-This unit contains a high performance counter class which can be used for highly
-accurate timing
+Summary:
+  This unit contains a high performance counter class which can be used for highly
+  accurate timing
 --------------------------------------------------------------------------------
 @@JclDateTime.pas
-
-Routines for working with dates and times. Mostly conversion between the
-different formats but also some date testing routines (is leap year? etc)
-
+Summary:
+  Routines for working with dates and times. Mostly conversion between the
+  different formats but also some date testing routines (is leap year? etc)
 Contributors:
-Anthony Steele, Charlie Calvert, Heri Bender, Marc Convents, Marcel van Brakel,
-Matthias Thoma, Michael Schnell, Nick Hodges,
-  Anonymous,
-  Petr Vones,
-  Robert Marquardt,
+  Anthony Steele
+  Charlie Calvert
+  Heri Bender
+  Marc Convents
+  Marcel van Brakel
+  Matthias Thoma
+  Michael Schnell
+  Nick Hodges
+  Anonymous
+  Petr Vones
+  Robert Marquardt
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@JclDebug.pas
-
-Various debugging support routines and classes. This includes: Diagnostics
-routines, Trace routines, Stack tracing and Source Locations a la the C/C++
-__FILE__ and __LINE__ macros.
-
-Contributor(s):
-  Marcel van Brakel, Flier Lu,
-  Robert Marquardt,
-  Robert Rossmair,
+Summary:
+ Various debugging support routines and classes. This includes: Diagnostics
+ routines, Trace routines, Stack tracing and Source Locations a la the C/C++
+ __FILE__ and __LINE__ macros.
+Contributors:
+  Marcel van Brakel
+  Flier Lu
+  Robert Marquardt
+  Robert Rossmair
   Petr Vones
 --------------------------------------------------------------------------------
 @@JclFileUtils.pas
@@ -292,9 +297,10 @@ Generically speaking, everything that has to do with files
 and directories. Note that filesystem specific functionality
 has been extracted into external units, for example <link JclNTFS.pas>
 which contains NTFS specific utility routines, and that the <link JclShell.pas>
-\unit contains some file related routines as well but they
+unit contains some file related routines as well but they
 are specific to the Windows shell.
 
+--------------------------------------------------------------------------------
 @@JclGraphics.pas
 <autolink off>
 
@@ -305,6 +311,7 @@ in the book Graphics Gems III, published by Academic Press,
 Inc. Additional improvements were done by David Ullrich,
 Josha Beukema and Mike Lischke.
 
+--------------------------------------------------------------------------------
 @@JclMidi.pas
 <GROUP MultiMedia.MIDI>
 
@@ -320,35 +327,45 @@ to compression, sparse files, reparse points, volume mount points and so forth.
 Note that some functions require NTFS 5 or higher!
 --------------------------------------------------------------------------------
 @@JclRegistry.pas
-Summary
-Unit <B>JclRegistry </B>contains useful routines for registry
-manipulation in addition to standard routines provided by
-several Delphi classes.
+Summary:
+  Unit JclRegistry contains useful routines for registry
+  manipulation in addition to standard routines provided by
+  several Delphi classes.
 Description:
   Contains various utility routines to read and write registry values. Using these routines
   prevents you from having to instantiate temporary TRegistry objects and since the routines
   directly call the registry API they do not suffer from the resource overhead as TRegistry does.
-Donators: John C Molyneux, Marcel van Brakel, Charlie Calvert
+Donators:
+  John C Molyneux
+  Marcel van Brakel
+  Charlie Calvert
 Contributors:
-  Marcel van Brakel, Stephane Fillon, Eric S.Fisher, Peter Friese,
-  Anonymous, Andreas Hausladen, Manlio Laschena,
-  Robert Marquardt, Robert Rossmair, Olivier Sannier, Petr Vones
+  Marcel van Brakel
+  Stephane Fillon
+  Eric S.Fisher
+  Peter Friese,
+  Anonymous
+  Andreas Hausladen
+  Manlio Laschena
+  Robert Marquardt
+  Robert Rossmair
+  Olivier Sannier
+  Petr Vones
 --------------------------------------------------------------------------------
 @@JclStrings.pas
-The module <B>JclStrings</B> contains routines for strings
+The module JclStrings contains routines for strings
 manipulation, conversion and transformation.
 --------------------------------------------------------------------------------
 @@JclSvcCtrl.pas
 <autolink off>
 
-This unit contains routines and classes to control Windows NT
-services
+This unit contains routines and classes to control Windows NT services
 
 @@Regular Expressions
-\ \ 
+TODO
 
 @@Source files
-\ \ 
+TODO
 
 @@UnitVersioning
-\ \ 
+TODO
