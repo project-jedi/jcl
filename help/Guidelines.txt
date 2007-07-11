@@ -14,6 +14,11 @@ Notes:
   This is a sample note.
 Example:
   This is a code sample.
+Platforms:
+  Windows
+  Unix
+Requirements:
+  This is a requirement sample.
 See also:
   Seealso1
   Seealso2

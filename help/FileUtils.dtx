@@ -478,7 +478,8 @@ Description:
   deleted when the object is freed. The stream object is opened with full access
   rights and in such manner that the stream cannot be opened by another thread.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -607,7 +608,8 @@ Result:
 Note:
   Not supported on Windows 95/98/ME.
 Platforms:
-  Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
+  Windows
+  Unix
 See also:
   FileGetGroupName
 Donator:
@@ -629,7 +631,8 @@ Result:
 Note:
   Not supported on Windows 95/98/ME.
 Platforms:
-  Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
+  Windows
+  Unix
 See also:
   FileGetOwnerName
 Donator:
@@ -680,7 +683,7 @@ Result:
 Category: Files and IO
 Platform:
   Windows
-See Also:
+See also:
   PathGetShortName
 Donator:
   Rudy Velthuis
@@ -748,7 +751,8 @@ Description:
 Result:
   The path of the directory designated for temporary files.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
@@ -1067,7 +1071,8 @@ Result:
   If the function succeeds it returns a fully qualified filename. If it fails it
   returns an empty string.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donators:
   Marcel van Brakel (Windows)
   Robert Rossmair (Unix)
@@ -1092,7 +1097,8 @@ Result:
   If the function succeeds the result is a handle to the temporary file, on failure
   the function returns INVALID_HANDLE_VALUE.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donators:
   Marcel van Brakel (Windows)
   Robert Rossmair (Unix)
@@ -1110,7 +1116,8 @@ Result:
   to get extended error information, or RaiseLastOSError to pass the information
   on to the user.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 See also:
   FileRestore
 Donator:
@@ -1136,7 +1143,8 @@ Parameters:
 Result:
   If the function succeeds, the return value is True; False otherwise
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
@@ -1155,7 +1163,8 @@ Result:
   If the file has been successfully deleted the function returns True, otherwise
   it returns False.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donator:
   Jean-Fabien Connault
 Contributor:
@@ -1189,7 +1198,8 @@ Parameters:
 Result:
   True, if the file was successfully moved, False, if not.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
@@ -1206,7 +1216,8 @@ Result:
   to get extended error information, or RaiseLastOSError to pass the information
   on to the user.
 Platforms:
-  Windows, Unix
+  Windows
+  Unix
 See also:
   FileBackup
 Donator:
@@ -2326,7 +2337,7 @@ Description:
   If file does not contain extension, the function does nothing.
 Parameters:
   FileName - File name that is used to construct file name of backup file.
-See Also:
+See also:
   IsBackupFileName
 Donator:
   Jean-Fabien Connault
@@ -2340,7 +2351,7 @@ Description:
   Returns False if the specified file name is not a backup file name (file extension doesn't start with a tilde).
 Parameters:
   FileName - File name to check.
-See Also:
+See also:
   GetBackupFileName
 Donator:
   Jean-Fabien Connault
@@ -2375,7 +2386,7 @@ Description
 Parameters:
   Depth - Specifies the maximum of path parts to return.
   Path - The path to extract parts from.
-See Also:
+See also:
   PathGetDepth
 Donator:
   Jean-Fabien Connault
@@ -2388,7 +2399,7 @@ Description:
   of subdirectories in the path.
 Parameters:
   Path - The path to count the depth of.
-See Also:
+See also:
    PathExtractPathDepth
 Donator:
   Jean-Fabien Connault
@@ -2420,7 +2431,7 @@ Parameters:
 Result:
   Returns <B>True </B>if the function succeeded, <B>False </B>otherwise.
 Platforms:
-  Windows NT/2000: Requires Windows NT 4 or later.
+  Windows NT/2000/Vista: Requires Windows NT 4 or later.
   Windows 95/98: Unsupported.
 Donator:
   Rudy Velthuis
@@ -2514,7 +2525,7 @@ Parameters:
 Result:
   Function returns <B>True</B> if version information resources
   was retrieved successfully, <B>False</B> otherwise.
-See Also:
+See also:
   VersionResourceAvailable
   TJclFileVersionInfo
 Donator: Marcel van Brakel

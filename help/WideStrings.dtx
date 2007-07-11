@@ -9,8 +9,8 @@ Parameters:
 Result:
   If both strings are equal (case insensitive) the function returns True, otherwise
   False is returned.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings
 <GROUP Unicode.TWideStrings>
@@ -21,15 +21,13 @@ Description:
   WideStrings. It is very similar to the Delphi TStrings class with the one
   fundamental difference; instead of storing a list of strings it stores a list of
   WideStrings. TWideStrings introduces properties and methods to:
-    
       * Add or delete WideStrings at specified positions in the list.
       * Access the WideStrings at specified positions.
       * Rearrange the WideStrings in the list.
       * Persistence (load from and save to a file).
       * Associate an object with an item in the list.
-    
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Create
 Description:
@@ -37,8 +35,8 @@ Description:
   TWideStrings is an abstract base class you cannot actually instantiate it, instead
   use a derived class such as TWideStringList. The TWideStrings constructor only
   initializes the language used by the class to the users default language.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Destroy
 Summary:
@@ -47,8 +45,8 @@ Description:
   Destroys the object instance for which this method is called. It is not a recommended
   coding style to call the destructor directly, instead you should call the Free
   method or even better use the FreeAndNil procedure.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Add
 Summary:
@@ -64,8 +62,8 @@ See also:
   InsertObject
   Append
   AddObject
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.AddObject
 Summary:
@@ -83,8 +81,8 @@ See also:
   InsertObject
   Append
   Add
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Append
 Summary:
@@ -101,8 +99,8 @@ See also:
   InsertObject
   Add
   AddObject
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.AddStrings
 Summary:
@@ -118,8 +116,8 @@ Parameters:
 See also:
   Assign
   AssignTo
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Assign
 Summary:
@@ -133,8 +131,8 @@ Description:
   the strings are implicitly converted to WideStrings based on the systems locale.
 Parameters:
   Source - An object from which to assign the list. This object must be of type TStrings or TWideStrings.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.AssignTo
 Summary:
@@ -146,8 +144,8 @@ Description:
   TWideStrings to be assigned to a TStrings which otherwise wouldn't be possible.
 Parameters:
   Dest - The TStrings or TWideStrings descendant to which to assign this list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.BeginUpdate
 Summary:
@@ -162,8 +160,8 @@ Notes:
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
 See also:
   EndUpdate
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Clear
 Summary:
@@ -173,8 +171,8 @@ Description:
   WideStrings and associated objects. Note that, unless otherwise stated in the
   documentation for the descendant class, clearing the list of objects does not
   free the objects, it only removes the references to the objects.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Delete
 Summary:
@@ -185,8 +183,8 @@ Description:
   the reference to that object is deleted as well.
 Parameters:
   Index - Zero based index of the WideString to delete from the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.EndUpdate
 Summary:
@@ -202,8 +200,8 @@ Notes:
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
 See also:
   BeginUpdate
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Equals
 Summary:
@@ -221,8 +219,8 @@ Result:
   If the strings in two lists are identical, that is all individual strings are
   equal and both lists have the same number of strings, the function returns True,
   in all other cases the function returns False.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Exchange
 Summary:
@@ -233,8 +231,8 @@ Description:
 Parameters:
   Index1 - Index of the first WideString to exchange.
   Index2 - Index of the second WideString to exchange.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetSeparatedText
 Summary:
@@ -247,8 +245,8 @@ Description:
 Result:
   WideString holding the concatenation of the individual strings in the
   list. If the list is empty the returned string is empty.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetText
 Summary:
@@ -260,8 +258,8 @@ Description:
 Result:
   Pointer to the buffer holding the concatenation of the individual strings in the
   list. If the list is empty the returned pointer points to an empty buffer.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOf
 Summary:
@@ -277,8 +275,8 @@ Result:
 See also:
   IndexOfName
   IndexOfObject
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOfName
 Summary:
@@ -297,8 +295,8 @@ Result:
 See also:
   IndexOf
   IndexOfObject
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.IndexOfObject
 Summary:
@@ -312,8 +310,8 @@ Parameters:
 Result:
   Zero based index of the first string associated with the specified object or -1
   if the object is not associated with any of the strings.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Insert
 Summary:
@@ -331,8 +329,8 @@ See also:
   Add
   AddObject
   Append
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.InsertObject
 Summary:
@@ -346,8 +344,8 @@ Parameters:
   Index - The zero based index at which to insert the new string.
   S - The string to insert at the specified position.
   AObject - The object to associate with the string.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.LoadFromFile
 Summary:
@@ -366,8 +364,8 @@ See also:
   LoadFromStream
   SaveToFile
   SaveToStream
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.LoadFromStream
 Summary:
@@ -386,8 +384,8 @@ See also:
   LoadFromFile
   SaveToFile
   SaveToStream
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Move
 Summary:
@@ -399,8 +397,8 @@ Description:
 Parameters:
   CurIndex - Zero based index of the WideString to move.
   NewIndex - Zero based index of the position to move the WideString to.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveToFile
 Summary:
@@ -423,8 +421,8 @@ Notes:
 See also:
   SaveToStream
   OnConfirmConversion
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveToStream
 Summary:
@@ -448,8 +446,8 @@ Notes:
 See also:
   SaveToFile
   OnConfirmConversion
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SetText
 Summary:
@@ -460,8 +458,8 @@ Description:
   CarriageReturn, VerticalTab, FormFeed, LineSeparator or ParagraphSeparator.
 Parameters:
   Value - WideString containing the strings with which to replace the current contents.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Capacity
 Summary:
@@ -471,8 +469,8 @@ Description:
   to resize/reallocate the internal storage. For TWideStrings reading Capacity
   returns the Count property and setting Capacity does nothing. Descendant classes
   can, and usually will, override this behavior in an appropriate manner.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.CommaText
 Summary:
@@ -504,9 +502,10 @@ Description:
   3
   Hello4
 Notes:
-  TODO Description is copied from VCL helpfile. Rewrite to avoid cp issues!!!  BLW -Check rewrite
-Quick info:
-  Donator: Mike Lischke
+  TODO - Description is copied from VCL helpfile. Rewrite to avoid cp issues!!!
+  BLW - Check rewrite
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Count
 Summary:
@@ -516,8 +515,8 @@ Description:
   use this property to iterate over all the items in the list. When doing so keep
   in mind that the Strings property accepts a zero based index and as such the
   last string in the list is at index Count - 1.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Objects
 Summary:
@@ -529,10 +528,9 @@ Description:
   behavior to allow you to associate objects with the strings. The Objects and
   Strings properties are in synch, that is, the object at index zero is the object
   associated with the string at index 0, the same goes for index 1, 2, ... Count - 1.
-  If a string is not associated with an object, reading the Objects property returns
-  nil.
-Quick info:
-  Donator: Mike Lischke
+  If a string is not associated with an object, reading the Objects property returns nil.
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Values
 Summary:
@@ -547,8 +545,8 @@ Description:
 See also:
   Names
   Items
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Names
 Summary:
@@ -561,16 +559,16 @@ Description:
 See also:
   Values
   Items
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.NormalizationForm
 Summary:
   Determines in which form Unicode strings should be stored
 Description:
   NormalizationForm determines in which form Unicode strings should be stored.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Saved
 Summary:
@@ -579,8 +577,8 @@ Description:
   The Saved property reflects the result of the last SaveToFile and/or SaveToStream
   method call. If that call actually wrote the list to a file or stream, this property
   is set to True, in all other cases it is set to False.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SaveUnicode
 Summary:
@@ -591,8 +589,8 @@ Description:
   to False the data is implicitly converted to and saved as ANSI. In the latter
   case the OnConfirmConversion event may be fired if the conversion would have the
   potential of information loss.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Strings
 Summary:
@@ -608,8 +606,8 @@ Description:
   MyWideStrings.Strings[0]
   is equivalent to
   MyWideStrings[0]
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Text
 Summary:
@@ -624,8 +622,8 @@ Description:
   alternative to the Text property is the CommaText property.
 See also:
   CommaText
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@OnConfirmConversion
 <GROUP Unicode.TWideStrings>
@@ -645,8 +643,8 @@ Description:
   property to check whether the list was actually saved.
 See also:
   CommaText
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.DefineProperties
 Summary:
@@ -659,8 +657,8 @@ Description:
   See ReadData and WriteData methods for implementation details.
 Parameters:
   Filer - The TFiler object. See TPersistent.DefineProperties in the VCL help for information.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Error
 Summary:
@@ -671,8 +669,8 @@ Description:
 Parameters:
   Msg - The runtime error message to display in the exception dialog box. The exception object is created with the CreateFmt constructor and as such this message can contain an integer format specifier.
   Data - The Data argument is passed to the CreateFmt constructor of the EStringListError constructor as its Args parameter and as such replaces the first format specifier found in the Msg argument.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Get
 Summary:
@@ -685,8 +683,8 @@ Parameters:
 Result:
   The WideString at the specified Index. If the specified Index is invalid an
   exception is raised.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetCapacity
 Summary:
@@ -700,8 +698,8 @@ Description:
   actual capacity of the list.
 Result:
   The capacity of the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetCount
 Summary:
@@ -712,8 +710,8 @@ Description:
   list.
 Result:
   The number of strings in the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetObject
 Summary:
@@ -726,8 +724,8 @@ Parameters:
 Result:
   The TObject at the specified index. If the index is invalid an exception is raised.
   If no object exists at the specified index the method returns nil.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.GetText
 Summary:
@@ -742,8 +740,8 @@ Description:
 Result:
   The WideStrings in the list as a single string with the individual strings delimited
   by a carriage return - linefeed.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.Put
 Summary:
@@ -755,8 +753,8 @@ Description:
 Parameters:
   Index - The zero based index of the WideString to set.
   S - New value for the WideString at the specified Index.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.PutObject
 Summary:
@@ -768,8 +766,8 @@ Description:
 Parameters:
   Index - The zero based Index of the object to set.
   AObject - The object to place at the specified index.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SetCapacity
 Summary:
@@ -783,8 +781,8 @@ Description:
   than Capacity number of strings.
 Parameters:
   NewCapacity - The new capacity for the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SetUpdateState
 Summary:
@@ -796,8 +794,8 @@ Description:
   can override this method to receive notification of changes to the update state.
 Parameters:
   Updating - Denotes the current state of the class. If True the state has just switched to the update state, if False the state just changed to normal (non-update). Thus, when BeginUpdate is called, SetUpdateState is called with True as its argument.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStrings.SetLanguage
 Description:
@@ -806,8 +804,8 @@ Description:
   override this method to respond to language changes such as re-sorting the list.
 Parameters:
   Value - The new language locale.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList
 <GROUP Unicode.TWideStringList>
@@ -815,14 +813,12 @@ Description:
   TWideStringList is a TWideStrings descendant which maintains a list of WideStrings.
   The class implements the abstract methods of TWideStrings and introduces some new
   methods and properties to:
-    
       * Search for WideStrings in the list.
       * Sort the WideStrings in the list.
       * Prohibit duplicates from being inserted into the list.
       * Respond to changes in the list.
-    
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Add
 Summary:
@@ -837,8 +833,8 @@ Parameters:
   S - The WideString to add at the end of the list.
 Result:
   Zero based index of the newly inserted WideString.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Clear
 Summary:
@@ -846,8 +842,8 @@ Summary:
 Description:
   Clear clears the list of WideStrings and associated objects. Note that references
   to associated objects are removed, but the objects themselves are not destroyed.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Delete
 Summary:
@@ -858,8 +854,8 @@ Description:
   the reference to that object (but not the object itself) is deleted as well.
 Parameters:
   Index - Zero based index of the WideString to delete from the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Exchange
 Summary:
@@ -872,8 +868,8 @@ Parameters:
   Index2 - Index of the second WideString to exchange.
 Notes:
   Do not call Exchange on a sorted list except to exchange two identical strings with different associated objects. Exchange does not check whether the list is sorted and as such calling it may destroy the sort order.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Find
 Summary:
@@ -891,8 +887,8 @@ Parameters:
 Result:
   If the specified string exists in the list the method returns True, otherwise it
   returns False.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.IndexOf
 Summary:
@@ -905,8 +901,8 @@ Parameters:
 Result:
   Zero based index of the first occurrence of S in the list. If S does not exist in
   the list -1 is returned.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Insert
 Summary:
@@ -920,8 +916,8 @@ Description:
 Parameters:
   Index - The zero based index at which to insert the new string.
   S - The string to insert at the specified position.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Sort
 Summary:
@@ -929,8 +925,8 @@ Summary:
 Description:
   Sorts the strings in the list in ascending order. Note that the sort procedure
   uses the Language property to determine the sort order of the strings.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Changed
 Summary:
@@ -940,10 +936,10 @@ Description:
   is being updated Changed does nothing, otherwise it fires the OnChange event.
 See also:
   Changing
-  <LINK OnChanged,OnChange>
+  OnChange
   OnChanging
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Changing
 Description:
@@ -952,10 +948,10 @@ Description:
   OnChanging event.
 See also:
   Changed
-  <LINK OnChanged,OnChange>
+  OnChange
   OnChanging
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Get
 Summary:
@@ -967,8 +963,8 @@ Parameters:
   Index - Zero based index of the string to retrieve. Must be in the range 0 to Count - 1 or an exception is raised.
 Result:
   The string at the specified index. If the index is invalid an exception is raised.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.GetCapacity
 Summary:
@@ -979,8 +975,8 @@ Description:
   strings the list can hold without having to resize its internal data structures.
 Result:
   Capacity of the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.GetCount
 Summary:
@@ -990,8 +986,8 @@ Description:
   number of strings that are currently in the list.
 Result:
   The number of strings in the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.GetObject
 Summary:
@@ -1005,8 +1001,8 @@ Parameters:
 Result:
   The object associated with the string at the specified index or nil if the string
   has no associated object.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Put
 Summary:
@@ -1019,8 +1015,8 @@ Description:
 Parameters:
   Index - Zero based index of the string whose value you want to change.
   S - The new value for the string at the specified index.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.PutObject
 Summary:
@@ -1032,8 +1028,8 @@ Description:
 Parameters:
   Index - Zero based index of the string with which the specified object should be associated.
   AObject - The object with which to associate the string at the specified index.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.SetCapacity
 Summary:
@@ -1046,8 +1042,8 @@ Description:
   adding strings to the list.
 Parameters:
   NewCapacity - The new capacity for the list.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.SetUpdateState
 Summary:
@@ -1059,19 +1055,19 @@ Description:
   BeginUpdate or EndUpdate.
 Parameters:
   Updating - True if the list enters the update state (update count larger than 0) otherwise False.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.SetLanguage
 Summary:
-  TODO The property write method of Language property.
+  The property write method of Language property.
 Description:
-  TODO SetLanguage is the property write method of Language property. The TWideStringList
+  SetLanguage is the property write method of Language property. The TWideStringList
   implementation does nothing except store the new value and re-sort the list.
 Parameters:
   Value - The locale of the new language.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Duplicates
 Summary:
@@ -1079,17 +1075,15 @@ Summary:
 Description:
   Set Duplicates to specify what should happen when an attempt is made to add
   duplicate strings to the list. Duplicates can have the following values:
-    
     * dupIgnore Ignores attempts to add duplicate strings to the list.
     * dupAccept Permits duplicate strings in the list.
     * dupError Raises an exception when an attempt is made to add a string that already exists.
-    
   Note that setting Duplicates when the list is not empty does not affect those
   strings already in the list. Therefore you should set Duplicates before adding
   items or clear the list first. Also note that Duplicates has no effect on a list
   which is not sorted.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@TWideStringList.Sorted
 Summary:
@@ -1104,8 +1098,8 @@ Description:
 Notes:
   Do not use Insert to add an item into a sorted list.
   The order of the strings in a sorted list is determined using the Language property.
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@OnChange
 <GROUP Unicode.TWideStringList>
@@ -1120,8 +1114,8 @@ Notes:
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
 See also:
   OnChanging
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke
 --------------------------------------------------------------------------------
 @@OnChanging
 <GROUP Unicode.TWideStringList>
@@ -1136,5 +1130,5 @@ Notes:
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
 See also:
   OnChange
-Quick info:
-  Donator: Mike Lischke
+Donator:
+  Mike Lischke

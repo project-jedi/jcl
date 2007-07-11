@@ -24,7 +24,8 @@ Result:
   only some remaining keys.
   Think twice before using this function. It will happily delete vital parts
   of the registry without complaining.
-Donator: Charlie Calvert
+Donator:
+  Charlie Calvert
 --------------------------------------------------------------------------------
 @@RegCreateKey
 <GROUP RegistryandInifiles.Registry>
@@ -40,7 +41,8 @@ Result:
   If the function succeeds it returns ERROR_SUCCESS as defined in Windows.pas. If
   it fails it returns a non-zero error code. You can use the Windows FormatMessage
   API call to get a description for the error code.
-Donator: Charlie Calvert
+Donator:
+  Charlie Calvert
 --------------------------------------------------------------------------------
 @@RegReadBoolDef
 <GROUP RegistryandInifiles.Registry>
@@ -61,7 +63,8 @@ See also:
   RegReadIntegerDef
   RegReadStringDef
   RegReadBinaryDef
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RegReadIntegerDef
 <GROUP RegistryandInifiles.Registry>
@@ -82,8 +85,10 @@ See also:
   RegReadBoolDef
   RegReadStringDef
   RegReadBinaryDef
-Donator: Marcel van Brakel
-Contributor: Anonymous
+Donator:
+  Marcel van Brakel
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadStringDef
 <GROUP RegistryandInifiles.Registry>
@@ -104,8 +109,10 @@ See also:
   RegReadBoolDef
   RegReadIntegerDef
   RegReadBinaryDef
-Donator: Marcel van Brakel
-Contributor: Anonymous
+Donator:
+  Marcel van Brakel
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadBinaryDef
 <GROUP RegistryandInifiles.Registry>
@@ -121,7 +128,7 @@ Parameters:
   RootKey - The rootkey from which to read, one of the HKEY_XXX constants.
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to read.
-   - Destination for the data of any type.
+  Value - Destination for the data of any type.
   ValueSize - Size of Value in bytes.
   Def - Value to fill value with in case of failure.
 Result:
@@ -131,8 +138,10 @@ See also:
   RegReadBoolDef
   RegReadIntegerDef
   RegReadStringDef
-Donator: Stephane Fillon
-Contributor: Anonymous
+Donator:
+  Stephane Fillon
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegDeleteEntry
 <GROUP RegistryandInifiles.Registry>
@@ -148,7 +157,8 @@ Result:
   The function return True if it succeeds else False. The most probable
   failure reasons are a nonexistent key or name or insufficient permissions
   on Windows NT.
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@RegWriteBool
 <GROUP RegistryandInifiles.Registry>
@@ -167,7 +177,8 @@ See also:
   RegWriteInteger
   RegWriteString
   RegWriteBinary
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@RegWriteInteger
 <GROUP RegistryandInifiles.Registry>
@@ -185,8 +196,10 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: John C Molyneux
-Contributor: Anonymous
+Donator:
+  John C Molyneux
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegWriteCardinal
 <GROUP RegistryandInifiles.Registry>
@@ -204,7 +217,8 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegWriteInt64
 <GROUP RegistryandInifiles.Registry>
@@ -223,7 +237,8 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegWriteUInt64
 <GROUP RegistryandInifiles.Registry>
@@ -242,7 +257,8 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegWriteString
 <GROUP RegistryandInifiles.Registry>
@@ -260,13 +276,13 @@ See also:
   RegWriteBool
   RegWriteInteger
   RegWriteBinary
-Donator: John C Molyneux
-Contributor: Anonymous
-
+Donator:
+  John C Molyneux
+Contributor:
+  Anonymous
 @@RegWriteAnsiString
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegWriteString>
-
 @@RegWriteWideString
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegWriteString>
@@ -286,7 +302,8 @@ Parameters:
 See also:
   RegWriteString
   RegReadMultiString
-Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegWriteBinary
 <GROUP RegistryandInifiles.Registry>
@@ -299,14 +316,16 @@ Parameters:
   RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to write.
-   - Value of any type to write.
+  Value - Value of any type to write.
   ValueSize - Size of data to write.
 See also:
   RegWriteBool
   RegWriteInteger
   RegWriteString
-Donator: Stephane Fillon
-Contributor: Anonymous
+Donator:
+  Stephane Fillon
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadBool
 <GROUP RegistryandInifiles.Registry>
@@ -325,7 +344,8 @@ See also:
   RegReadInteger
   RegReadString
   RegReadBinary
-Donator: John C Molyneux
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@RegReadInteger
 <GROUP RegistryandInifiles.Registry>
@@ -344,8 +364,10 @@ See also:
   RegReadBool
   RegReadString
   RegReadBinary
-Donator: John C Molyneux
-Contributor: Anonymous
+Donator:
+  John C Molyneux
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadString
 <GROUP RegistryandInifiles.Registry>
@@ -364,8 +386,10 @@ See also:
   RegReadBool
   RegReadInteger
   RegReadBinary
-Donator: John C Molyneux
-Contributor: Anonymous
+Donator:
+  John C Molyneux
+Contributor:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadBinary
 <GROUP RegistryandInifiles.Registry>
@@ -380,7 +404,7 @@ Parameters:
   RootKey - The rootkey from which to read, one of the HKEY_XXX constants.
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to read.
-   - Destination for the data of any type.
+  Value - Destination for the data of any type.
   ValueSize - Size of Value in bytes.
 Result:
   The return value is not the data itself but the amount of data read.
@@ -389,26 +413,28 @@ See also:
   RegReadBool
   RegReadInteger
   RegReadString
-Donator: Stephane Fillon
-Contributor: Anonymous
-
+Donator:
+  Stephane Fillon
+Contributor:
+  Anonymous
 @@RegReadBinaryDef
 <GROUP RegistryandInifiles.Registry>
-Donator: Anonymous
+Donator:
+  Anonymous
 <COMBINE RegReadBinary>
 --------------------------------------------------------------------------------
 @@RegReadBinaryAsAnsiString
 <GROUP RegistryandInifiles.Registry>
-Donator: Anonymous
-
+Donator:
+  Anonymous
 @@RegReadBinaryAsAnsiStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadBinaryAsAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadBinaryAsWideString
 <GROUP RegistryandInifiles.Registry>
-Donator: Anonymous
-
+Donator:
+  Anonymous
 @@RegReadBinaryAsWideStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadBinaryAsWideString>
@@ -433,7 +459,8 @@ Result:
 See also:
   RegisterAutoExec
   TExecKind
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RegisterAutoExec
 <GROUP RegistryandInifiles.Registry>
@@ -462,7 +489,8 @@ Result:
 See also:
   UnregisterAutoExec
   TExecKind
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TExecKind
 <GROUP RegistryandInifiles.Registry>
@@ -473,7 +501,8 @@ Description:
 See also:
   UnregisterAutoExec
   RegisterAutoExec
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TExecKind.ekMachineRun
 <GROUP RegistryandInifiles.Registry>
   Register under HKLM\..\Run. This will execute the specified file each time at logon for each user, until it is unregistered.
@@ -511,7 +540,8 @@ Result:
   No values gives success not failure.
 See also:
   RegGetKeyNames
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@RegGetKeyNames
 <GROUP RegistryandInifiles.Registry>
@@ -532,7 +562,8 @@ Result:
 See also:
   RegGetValueNames
   RegHasSubKeys
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@RegHasSubKeys
 <GROUP RegistryandInifiles.Registry>
@@ -550,7 +581,8 @@ Result:
 See also:
   RegGetKeyNames
   RegGetValueNames
-Donator: Peter Friese
+Donator:
+  Peter Friese
 --------------------------------------------------------------------------------
 @@RegSaveList
 <GROUP RegistryandInifiles.Registry>
@@ -571,7 +603,8 @@ Result:
   created False otherwise.
 See also:
   RegLoadList
-Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@RegLoadList
 <GROUP RegistryandInifiles.Registry>
@@ -593,7 +626,8 @@ Result:
 See also:
   RegSaveList
   RegDelList
-Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@RegDelList
 <GROUP RegistryandInifiles.Registry>
@@ -616,145 +650,147 @@ Result:
 See also:
   RegSaveList
   RegLoadList
-Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@RegKeyExists
 <GROUP RegistryandInifiles.Registry>
-Description
-The function <B>RegKeyExists</B> checks if the specified
-registry key exists.
-
-Summary
-The function <B>RegKeyExists</B> checks if the specified
-registry key exists.
-
-Parameters
-Key :       Registry key (path) to be checked, relative to
-            RootKey.
-RootKey :   The rootkey from which to read, one of the HKEY_XXX
-            constants.
-
-Returns
-If the key specified the function returns <B>True</B>,
-\otherwise it returns <B>False</B>.
-
-QuickInfo
-  Category: Registry and Ini files
-Donator: Marcel van Brakel
+Summary:
+  The function RegKeyExists checks if the specified registry key exists.
+Description:
+  The function RegKeyExists checks if the specified registry key exists.
+Parameters:
+  Key - Registry key (path) to be checked, relative to RootKey.
+  RootKey - The rootkey from which to read, one of the HKEY_XXX constants.
+Result:
+  If the key specified the function returns True, otherwise it returns False.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EJclRegistryError
 <GROUP RegistryandInifiles.Registry>
-Description
-Error class, the instance of which is raised by functions
-from Registry.pas JCL unit.
-
-Summary
-Error class, the instance of which is raised by functions
-from Registry.pas JCL unit.
-
-Donator: Marcel van Brakel
-
-QuickInfo
-  Category: Registry and Ini files
-  Windows NT/2000: Requires Windows NT 3.1 or later.
+Summary:
+  Error class, the instance of which is raised by functions from Registry.pas JCL unit.
+Description:
+  Error class, the instance of which is raised by functions from Registry.pas JCL unit.
+Platforms:
+  Windows NT/2000/XP/Vista: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RegGetDataSize
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
+Description:
+  TODO
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegGetDataType
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
+Description:
+  TODO
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@RegReadCardinal
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadCardinalDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadCardinal>
 --------------------------------------------------------------------------------
 @@RegReadInt64
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadInt64Def
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadInt64>
 --------------------------------------------------------------------------------
 @@RegReadUInt64
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadUInt64Def
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadUInt64>
 --------------------------------------------------------------------------------
 @@RegReadAnsiString
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadAnsiStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadWideString
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description: 
+  TODO
+Donator:
+  Anonymous
 @@RegReadWideStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadWideString>
 --------------------------------------------------------------------------------
 @@RegReadMultiString
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadMultiStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiString>
 --------------------------------------------------------------------------------
 @@RegReadMultiAnsiString
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadMultiAnsiStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadMultiWideString
 <GROUP RegistryandInifiles.Registry>
-Description: TODO
-Donator: Anonymous
-
+Description:
+  TODO
+Donator:
+  Anonymous
 @@RegReadMultiWideStringDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiWideString>
 --------------------------------------------------------------------------------
 @@RegReadDWORD
 <GROUP RegistryandInifiles.Registry>
-This functions read invalid 8 byte REG_DWORD values.
-Obsolete, use RegReadInt64 instead.
-Contributor: Anonymous
-
+Summary:
+  This functions read invalid 8 byte REG_DWORD values.
+Notes:
+  Obsolete, use RegReadInt64 instead.
+Contributor:
+  Anonymous
 @@RegReadDWORDDef
 <GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadDWORD>
 --------------------------------------------------------------------------------
 @@RegWriteDWORD
 <GROUP RegistryandInifiles.Registry>
-Obsolete, RegWriteDWORD creates invalid 8 byte REG_DWORD keys.
-Use RegWriteInt64 instead (which creates REG_QWORD values).
-Donator: Unknown
+Summary:
+  RegWriteDWORD creates invalid 8 byte REG_DWORD keys.
+Notes:
+  Obsolete, use RegWriteInt64 instead (which creates REG_QWORD values).
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
-

@@ -1145,30 +1145,29 @@
 ------------------------------------------------------------------------------
 @@_FILE_ALLOCATED_RANGE_BUFFER
 <GROUP Windows.Win32API>
-Summary
-  The <B>FILE_ALLOCATED_RANGE_BUFFER </B>structure is used to
+Summary:
+  The FILE_ALLOCATED_RANGE_BUFFER structure is used to
   indicate a range of bytes in a file.
-Description
-  The <B>FILE_ALLOCATED_RANGE_BUFFER</B> structure is used with
-  the <U><COLOR Blue>FSCTL_QUERY_ALLOCATED_RANGES</U></COLOR>
+Description:
+  The FILE_ALLOCATED_RANGE_BUFFER structure is used with
+  the FSCTL_QUERY_ALLOCATED_RANGES
   control code to indicate a range of bytes in a file. On input
-  to the <B>FSCTL_QUERY_ALLOCATED_RANGES</B> control code, the
+  to the FSCTL_QUERY_ALLOCATED_RANGES control code, the
   structure indicates the range of the file to search. On
-  \output, the operation retrieves an array of <B>FILE_ALLOCATED_RANGE_BUFFER</B>
-  structures to indicate the allocated ranges within the search
-  range.
-Donator: Marcel van Brakel
-QuickInfo
-  Category: Windows
-  Windows NT/2000/XP: Included in Windows 2000 and later.
+  output, the operation retrieves an array of FILE_ALLOCATED_RANGE_BUFFER
+  structures to indicate the allocated ranges within the search range.
+Platforms:
+  Windows NT/2000/XP/Vista: Included in Windows 2000 and later.
   Windows 95/98/ME: Unsupported.
+Donator:
+  Marcel van Brakel
 ------------------------------------------------------------------------------
 @@_FILE_ALLOCATED_RANGE_BUFFER.Length
 <GROUP Windows.Win32API>
-Summary
-  Size, in bytes, of the range.
-Description
-  Size in bytes of the range
+Summary:
+  Size in bytes of the range.
+Description:
+  Size in bytes of the range.
 --------------------------------------------------------------------------------
 @@_DLLVERSIONINFO
 <GROUP Windows.Win32API>
@@ -1180,29 +1179,20 @@ See also:
   SHDllGetVersion
 Donator:
   Marcel van Brakel
-
 @@_DLLVERSIONINFO.cbSize
-Set to the size of this record. Initialize is done by SHDllGetVersion.
-
+  Set to the size of this record. Initialize is done by SHDllGetVersion.
 @@_DLLVERSIONINFO.dwMajorVersion
-Major version of the DLL
-
+  Major version of the DLL
 @@_DLLVERSIONINFO.dwMinorVersion
-Minor version of the DLL
-
+  Minor version of the DLL
 @@_DLLVERSIONINFO.dwBuildNumber
-Build number of the DLL
-
+  Build number of the DLL
 @@_DLLVERSIONINFO.dwPlatformId
-Identifies the platform for which this DLL was built. Can be
-DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate
-generic Windows and Windows NT respectively.
-
+  Identifies the platform for which this DLL was built. Can be
+  DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate
+  generic Windows and Windows NT respectively.
 @@DLLVERSIONINFO
 <COMBINE _DLLVERSIONINFO>
-
 @@TDllVersionInfo
 <COMBINE _DLLVERSIONINFO>
 --------------------------------------------------------------------------------
-
-

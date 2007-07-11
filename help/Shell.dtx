@@ -42,8 +42,8 @@ Result:
   Otherwise the result is an empty string.
 See also:
   OpenSpecialFolder
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@OpenFolder
 <GROUP Windows.Shell.FilesandFolders>
@@ -60,8 +60,8 @@ Result:
   GetLastError to get more detailed information about the reason of failure.
 See also:
   OpenSpecialFolder
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OpenSpecialFolder
 <GROUP Windows.Shell.FilesandFolders>
@@ -78,8 +78,8 @@ Result:
 See also:
   OpenFolder
   GetSpecialFolderLocation
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@SHDeleteFolder
 <GROUP Windows.Shell.FilesandFolders>
@@ -99,8 +99,8 @@ Result:
 See also:
   TSHDeleteOptions
   SHDeleteFiles
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHDeleteFiles
 <GROUP Windows.Shell.FilesandFolders>
@@ -121,8 +121,8 @@ Result:
 See also:
   TSHDeleteOptions
   SHDeleteFolder
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHRenameFile
 <GROUP Windows.Shell.FilesandFolders>
@@ -143,8 +143,8 @@ Notes:
   Use this function only to rename a single file.
 See also:
   TSHDeleteOptions
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TSHRenameOption
 <GROUP Windows.Shell.FilesandFolders>
@@ -154,8 +154,8 @@ Description:
   Enumeration used by SHRenameFile to specify the rename options.
 See also:
   SHRenameFile
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TSHRenameOption.roSilent
   Perform the operation without any user interface feedback, including errors.
 @@TSHRenameOption.roRenameOnCollision
@@ -173,8 +173,8 @@ Description:
 See also:
   SHDeleteFiles
   SHDeleteFolder
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TSHDeleteOption.doSilent
   Perform the operation without any user interface feedback, including errors.
 @@TSHDeleteOption.doAllowUndo
@@ -193,8 +193,8 @@ Description:
   The TEnumFolderRec is used to return information about an item that was found during the enumeration of a folder using the SHEnumFolderFirst and SHEnumFolderNext functions. It also holds data needed to perform the enumeration. Because of this you must always call SHEnumFolderClose to release these resources if SHEnumFolderFirst returned True.
 Notes:
   The returned icons are the 'plain' icons. You can use code such as below to transform them into how the shell displays them:   <P class="syntax">   if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then     OverlayIconShared(F.IconLarge, F.IconSmall);   </P> You can also use the Folder member to get additional info about the found item:   <P class="syntax">   S := GetItemInfoTip(F.Folder, F.Item);   </P>
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TEnumFolderRec.DisplayName
   The display name of the item
 @@TEnumFolderRec.Attributes
@@ -220,8 +220,8 @@ See also:
   SHEnumFolderFirst
   SHEnumFolderNext
   SHEnumFolderClose
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TEnumFolderFlag.efFolders
   include folder items in the enumeration
 @@TEnumFolderFlag.efNonFolders
@@ -267,8 +267,8 @@ See also:
   SHEnumFolderNext
   SHEnumFolderClose
   TEnumFolderRec
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHEnumFolderClose
 <GROUP Windows.Shell.FilesandFolders>
@@ -283,8 +283,8 @@ Parameters:
 See also:
   SHEnumFolderFirst
   SHEnumFolderNext
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHEnumFolderNext
 <GROUP Windows.Shell.FilesandFolders>
@@ -305,8 +305,8 @@ Result:
 See also:
   SHEnumFolderFirst
   SHEnumFolderClose
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayPropDialog
 <GROUP Windows.Shell.FilesandFolders>
@@ -323,8 +323,8 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayContextMenuPidl
 <GROUP Windows.Shell.FilesandFolders>
@@ -345,8 +345,8 @@ Result:
   If the function succeeds the result is True, if it fails the result is False.
 See also:
   DisplayContextMenu
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayContextMenu
 <GROUP Windows.Shell.FilesandFolders>
@@ -365,8 +365,8 @@ Result:
   If the function succeeds the result is True, if it fails the result is False.
 See also:
   DisplayContextMenuPidl
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIcon
 <GROUP Windows.Shell.Miscellaneous>
@@ -389,8 +389,8 @@ Notes:
 See also:
   OverlayIconShortcut
   OverlayIconShared
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIconShortCut
 <GROUP Windows.Shell.Miscellaneous>
@@ -408,8 +408,8 @@ Result:
 See also:
   OverlayIcon
   OverlayIconShared
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIconShared
 <GROUP Windows.Shell.Miscellaneous>
@@ -427,8 +427,8 @@ Result:
 See also:
   OverlayIcon
   OverlayIconShortCut
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetSystemIcon
 <GROUP Windows.Shell.Miscellaneous>
@@ -453,8 +453,8 @@ Result:
 Notes:
   If you assign the returned handle to the Handle property of a TIcon you don't have to explicitly destroy the icon any longer. TIcon does that for you.
   This function requires COM to be initialized. Delphi normally does that for you but you may have to call CoInitialize yourself depending on the circumstances.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHDllGetVersion
 <GROUP Windows.Shell.Miscellaneous>
@@ -476,8 +476,8 @@ Result:
   the Version record contains whatever it contained on entry.
 See also:
   TDllVersionInfo
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellExec
 <GROUP Windows.Shell.Miscellaneous>
@@ -499,8 +499,8 @@ Result:
   GetLastError to get more detailed information about the reason of failure.
 See also:
   ShellExecAndWait
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ShellExecAndWait
 <GROUP Windows.Shell.Miscellaneous>
@@ -525,8 +525,8 @@ Result:
   GetLastError to get more detailed information about the reason of failure.
 See also:
   ShellExec
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ShellOpenAs
 <GROUP Windows.Shell.Miscellaneous>
@@ -546,8 +546,8 @@ Result:
   the dialog likely is not on screen yet. The result therefore doesn't indicate
   whether or not the user selected an application but only whether or not the
   dialog can be shown in the first place.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ShellRasDial
 <GROUP Windows.Shell.Miscellaneous>
@@ -562,8 +562,8 @@ Result:
   If the function succeeds it returns True, otherwise it fails. Reasons for possible
   failure are an incorrect (non-existing) entry name, the user pressing the Cancel
   button in the dialog or failure to connect.
-Quick info:
-  Donator: Anonymous
+Donator:
+  Anonymous
 --------------------------------------------------------------------------------
 @@ShellRunControlPanel
 <GROUP Windows.Shell.Miscellaneous>
@@ -580,8 +580,8 @@ Result:
   so the application may not be running yet when the function returns. Note that
   passing an invalid index causes the function to return True (it only checks
   validity of the filename) but the applet will not be shown (obviously).
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclFileExeType
 <GROUP Windows.Shell.Miscellaneous>
@@ -589,8 +589,8 @@ Summary:
   Enumeration use by GetFileExeType representing a type of executable file.
 Description:
   Enumeration use by GetFileExeType representing a type of executable file.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 @@TJclFileExeType.etError
   Error, executable file type couldn't be determined.
 @@TJclFileExeType.etMsDos
@@ -613,8 +613,8 @@ Parameters:
 Result:
   If the function succeeds it returns the type of executable file represented by
   the TJclFileExeType type. If the function fails it returns etError.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ShellFindExecutable
 <GROUP Windows.Shell.Miscellaneous>
@@ -630,8 +630,8 @@ Parameters:
 Result:
   If the function succeeds it returns the name of the application associated with
   the specified file. If the function fails it returns an empty string.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@SHReallocMem
 <GROUP Windows.Shell.MemoryManagement>
@@ -651,8 +651,8 @@ See also:
   SHAllocMem
   SHGetMem
   SHFreeMem
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHGetMem
 <GROUP Windows.Shell.MemoryManagement>
@@ -673,8 +673,8 @@ Result:
 See also:
   SHAllocMem
   SHFreeMem
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHAllocMem
 <GROUP Windows.Shell.MemoryManagement>
@@ -694,8 +694,8 @@ Result:
 See also:
   SHGetMem
   SHFreeMem
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHFreeMem
 <GROUP Windows.Shell.MemoryManagement>
@@ -716,8 +716,8 @@ Result:
 See also:
   SHAllocMem
   SHGetMem
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TShellLink
 <GROUP Windows.Shell.Shortcuts>
@@ -733,8 +733,8 @@ See also:
   ShellLinkCreate
   ShellLinkCreateSystem
   ShellLinkResolve
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 @@TShellLink.Arguments
   Command line arguments associated with the shell link
 @@TShellLink.ShowCmd
@@ -772,8 +772,8 @@ See also:
   ShellLinkCreate
   ShellLinkCreateSystem
   TShellLink
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkResolve
 <GROUP Windows.Shell.Shortcuts>
@@ -822,8 +822,8 @@ See also:
   ShellLinkResolve
   ShellLinkFree
   TShellLink
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkCreateSystem
 <GROUP Windows.Shell.Shortcuts>
@@ -848,8 +848,8 @@ See also:
   ShellLinkResolve
   ShellLinkFree
   TShellLink
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkGetIcon
 <GROUP Windows.Shell.Shortcuts>
@@ -864,8 +864,8 @@ Parameters:
   Icon - TIcon instance which receives the icon associated with the shell link.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHGetItemInfoTip
 <GROUP Windows.Shell.Miscellaneous>
@@ -883,8 +883,8 @@ Result:
   The item's infotip or an empty string if the function fails.
 Notes:
   The returned string may contain multiple carriage return linefeed (#13#10) combinations
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRetFreeMem
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -895,14 +895,14 @@ Description:
   the memory associated with this record's pOleStr member. If the StrRet record
   is a different type this function does nothing.
 Parameters:
-   - The TStrRet record for which to free the memory associated with the pOleStr member.
+  StrRet - The TStrRet record for which to free the memory associated with the pOleStr member.
 Result:
   If the function releases the memory it returns True. If it fails to free the
   memory or the StrRet record is not of STRRET_WSTR type then the return value is False.
 See also:
   StrRetToString
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRetToString
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -925,8 +925,8 @@ Notes:
   Windows 2000 introduced StrRetToStr and StrRetToBuf which can be used instead.
 See also:
   StrRetFreeMem
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlToPath
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -944,8 +944,8 @@ Result:
 See also:
   PathToPidl
   PathToPidlBind
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathToPidl
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -967,8 +967,8 @@ Result:
 See also:
   PidlToPath
   PathToPidlBind
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathToPidlBind
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -993,8 +993,8 @@ See also:
   PathToPidl
   PidlToPath
   DriveToPidlBind
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DriveToPidlBind
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1015,8 +1015,8 @@ Result:
   pidl by calling PidlFree.
 See also:
   PathToPidlBind
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlBindToParent
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1036,8 +1036,8 @@ Result:
   False. In this latter case the Folder and Last parameter will contain nil on return.
 See also:
   PathToPidlBind
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlCompare
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1057,8 +1057,8 @@ Parameters:
 Result:
   If the two pidl's are equal the function returns True, if they are not equal it
   returns False.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlCopy
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1075,8 +1075,8 @@ Parameters:
   Dest - The item identifier that receives a copy of Source. Note that you must eventually free this item identifier by calling PidlFree
 Result:
   If the function succeeds then the return value is True, otherwise it is False.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlFree
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1094,8 +1094,8 @@ Result:
   If the function succeeds the return value is True and IdList is set to nil. If
   the function fails the return value is False and the IdList parameter will retain
   its value.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetDepth
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1112,8 +1112,8 @@ Result:
   MAX_PATH) the function returns -1.
 See also:
   PidlGetLength
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetLength
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1132,8 +1132,8 @@ Result:
   than MAX_PATH) the function returns -1.
 See also:
   PidlGetDepth
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetNext
 <GROUP Windows.Shell.PathsandPIDLs>
@@ -1151,5 +1151,5 @@ Result:
 See also:
   PidlGetDepth
   PidlGetLength
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel

@@ -29,8 +29,8 @@ Result:
   to the number of bits in the supplied value and each character in the string
   represents a single bit. The highest bit is placed in Result[1] and the lowest
   bit in Result[Length(Result)].
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@BitsHighest
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -47,8 +47,8 @@ Result:
 See also:
   BitsLowest
   CountBitsSet
-Quick info:
-  Donator: Michael Schnell
+Donator:
+  Michael Schnell
 --------------------------------------------------------------------------------
 @@BitsLowest
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -65,8 +65,8 @@ Result:
 See also:
   BitsHighest
   CountBitsSet
-Quick info:
-  Donator: Michael Schnell
+Donator:
+  Michael Schnell
 --------------------------------------------------------------------------------
 @@ClearBit
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -86,8 +86,8 @@ See also:
   TestBits
   ToggleBit
   SetBit
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CountBitsSet
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -105,8 +105,8 @@ Result:
 See also:
   BitsLowest
   BitsHighest
-Quick info:
-  Donator: Michael Schnell
+Donator:
+  Michael Schnell
 --------------------------------------------------------------------------------
 @@CountBitsCleared
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -124,8 +124,8 @@ Result:
 See also:
   BitsLowest
   BitsHighest
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@LRot
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -141,8 +141,8 @@ Result:
   The resulting integer after the rotation is performed.
 See also:
   RRot
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ReverseBits
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -163,12 +163,12 @@ Parameters:
 Result:
   Copy of Value with it's bits reversed.
 Notes:
-  <b>Warning</b> Keep in mind that some of the ReverseBits overloads accept signed integers as their argument but that reversing the bits of a signed integer is somewhat akward. Be sure that you understand the meaning of reversing the bits in a signed integer and that's what you want.
+  Warning Keep in mind that some of the ReverseBits overloads accept signed integers as their argument but that reversing the bits of a signed integer is somewhat akward. Be sure that you understand the meaning of reversing the bits in a signed integer and that's what you want.
   The pointer returned by the Pointer overload points to the same buffer passed in as it's argument, iow it's not a newly allocated buffer.
   The ReverseBits(Pointer, Integer) overload was originally written by Mike Lischke.
   Reversing is not the same as toggling. To toggle bits use the ToggleBit function.
-Quick info:
-  Donator: Team JCL
+Donator:
+  Team JCL
 --------------------------------------------------------------------------------
 @@RRot
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -184,8 +184,8 @@ Result:
   The resulting integer after the rotation is performed.
 See also:
   LRot
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Sar
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -200,8 +200,8 @@ Parameters:
   Count - Number of positions to right shift.
 Result:
   A copy of value after the arithmetic right shift operation.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SetBit
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -220,8 +220,8 @@ See also:
   ClearBit
   ToggleBit
   TestBits
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TestBit
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -241,8 +241,8 @@ See also:
   ClearBit
   ToggleBit
   SetBit
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TestBits
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -261,8 +261,8 @@ See also:
   ClearBit
   ToggleBit
   SetBit
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ToggleBit
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -282,8 +282,8 @@ See also:
   ClearBit
   TestBits
   SetBit
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@BooleansToBits
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -302,8 +302,8 @@ Parameters:
   B - The array of Booleans to pack into a set of bits. Note that the upper bound of this array must not be larger then the size of the Dest parameters, in bits. Thus, for the Byte variant this array must not be larger then 8 elements.
 See also:
   BitsToBooleans
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@BitsToBooleans
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -326,8 +326,8 @@ Parameters:
   AllBits - If set to True the number of elements in the resulting array equals the number of bits in the Bits parameter (ie 8 for Byte, 16 for Word, etc). If False the number of elements in the resulting array equals the position of the highest set bit.
 See also:
   BooleansToBits
-Quick info:
-  Donator: Robert Marquardt
+Donator:
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@BitsNeeded
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -341,8 +341,8 @@ Result:
   The number of bits needed to represent the value.
 See also:
   Digits
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@Digits
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -356,8 +356,8 @@ Result:
   The number of digits in the specified value.
 See also:
   BitsNeeded
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@ReverseBytes
 <GROUP OrdinalMathandLogic.BitManipulation>
@@ -377,8 +377,8 @@ Result:
 Notes:
   The pointer returned by the Pointer overload points to the same buffer passed in as it's argument, iow it's not a newly allocated buffer.
   The ReverseBytes function was inspired by code from Liran Shahar
-Quick info:
-  Donator: Team JCL
+Donator:
+  Team JCL
 --------------------------------------------------------------------------------
 @@SwapOrd
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -394,8 +394,8 @@ Parameters:
   J - Second of the two variables to swap.
 Result:
   At the end of this routine I will contain the original value of J and J will contain the original value of I.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IncLimit
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -418,8 +418,8 @@ See also:
   DecLimit
   DecLimitClamp
   IncLimitClamp
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@DecLimit
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -442,8 +442,8 @@ See also:
   IncLimit
   IncLimitClamp
   DecLimitClamp
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@DecLimitClamp
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -469,8 +469,8 @@ See also:
   IncLimit
   DecLimit
   IncLimitClamp
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IncLimitClamp
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -496,8 +496,8 @@ See also:
   DecLimit
   IncLimit
   DecLimitClamp
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Max
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -512,8 +512,8 @@ Result:
   The larger of the two values.
 See also:
   Min
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@Min
 <GROUP OrdinalMathandLogic.Arithmetic>
@@ -528,5 +528,5 @@ Result:
   The smaller of the two values.
 See also:
   Max
-Quick info:
-  Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
