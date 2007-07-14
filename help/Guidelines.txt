@@ -12,6 +12,9 @@ Result:
   This is a sample result description.
 Notes:
   This is a sample note.
+Exceptions:
+  E1 - E1 exception description.
+  E2 - E2 exception description.
 Example:
   This is a code sample.
 Platforms:
@@ -19,6 +22,9 @@ Platforms:
   Unix
 Requirements:
   This is a requirement sample.
+Visibility:
+  Public
+  Private
 See also:
   Seealso1
   Seealso2
