@@ -3020,15 +3020,14 @@ begin
 end;
 
 function TJclDistribution.GetVersion: string;
-var
-  DailyFileName, SvnEntriesFileName, RevisionText, StableText, Source: string;
-  TextFile: TJclMappedTextReader;
-  Revision, Index: Integer;
-begin
-  Revision := 0;
-
-  if JclVersionRelease = 0 then
+  function GetRevision: Integer;
+  var
+    DailyFileName, SvnEntriesFileName, RevisionText: string;
+    TextFile: TJclMappedTextReader;
+    Index: Integer;
   begin
+    Result := 0;
+
     DailyFileName := FJclPath + DailyRevisionFileName;
     if FileExists(DailyFileName) then
     begin
@@ -3041,14 +3040,14 @@ begin
           Index := Length(RevisionText) - 1; // skip the '.'
           while (Index > 1) and (RevisionText[Index] in AnsiDecDigits) do
             Dec(Index);
-          Revision := StrToIntDef(Copy(RevisionText, Index + 1, Length(RevisionText) - Index - 1), 0);
+          Result := StrToIntDef(Copy(RevisionText, Index + 1, Length(RevisionText) - Index - 1), 0);
         end;
       finally
         TextFile.Free;
       end;
     end;
 
-    if Revision = 0 then
+    if Result = 0 then
     begin
       SvnEntriesFileName := FJclPath + EntriesFileName1;
       if not FileExists(SvnEntriesFileName) then
@@ -3062,16 +3061,27 @@ begin
           TextFile.ReadLn;
           TextFile.ReadLn;
           RevisionText := TextFile.ReadLn;
-          Revision := StrToIntDef(RevisionText, 0);
+          Result := StrToIntDef(RevisionText, 0);
         finally
           TextFile.Free;
         end;
       end;
     end;
+  end;
+var
+  StableText, Source: string;
+  Revision: Integer;
+begin
+  if JclVersionRelease = 0 then
+  begin
+    Revision := GetRevision;
     StableText := RsJclVersionTesting;
   end
   else
+  begin
+    Revision := 0;
     StableText := RsJclVersionRelease;
+  end;
 
   if Revision = 0 then
   begin
