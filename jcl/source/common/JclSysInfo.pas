@@ -202,7 +202,9 @@ function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
 {$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 function GetIPAddress(const HostName: string): string;
+{$IFNDEF CLR}
 procedure GetIpAddresses(Results: TStrings);
+{$ENDIF ~CLR}
 function GetLocalComputerName: string;
 {$IFNDEF CLR}
 function GetLocalUserName: string;
@@ -2143,6 +2145,7 @@ end;
 { TODO -cDoc: Donator: twm }
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF CLR}
 procedure GetIpAddresses(Results: TStrings);
 type
   TaPInAddr = array[0..10] of PInAddr;
@@ -2175,6 +2178,7 @@ begin
     end;
   end;
 end;
+{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
