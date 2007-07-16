@@ -48,3 +48,5 @@ If one contributor only then spell "Contributor" instead of "Contributors".
 
 If a section is missing entries, use the TODO keyword.
 
+Exceptions, Example, Requirements and Visibility sections are rarely used.
+
