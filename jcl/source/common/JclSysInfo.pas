@@ -4359,11 +4359,11 @@ function CPUID: TCpuInfo;
     // check AMD extended
     if HiVal >= 1 then
     begin
-      CallCPUID(1, 0, Unused, VersionInfo, CPUInfo.AMDSpecific.Features2, CPUInfo.Features);
+      CallCPUID(1, 0, VersionInfo, AdditionalInfo, CPUInfo.AMDSpecific.Features2, CPUInfo.Features);
 
-      CPUInfo.AMDSpecific.BrandID := VersionInfo and $000000FF;
-      CPUInfo.AMDSpecific.FlushLineSize := (VersionInfo and $0000FF00) shr 8;
-      CPUInfo.AMDSpecific.APICID := (VersionInfo and $FF000000) shr 24;
+      CPUInfo.AMDSpecific.BrandID := AdditionalInfo and $000000FF;
+      CPUInfo.AMDSpecific.FlushLineSize := (AdditionalInfo and $0000FF00) shr 8;
+      CPUInfo.AMDSpecific.APICID := (AdditionalInfo and $FF000000) shr 24;
       CPUInfo.HyperThreadingTechnology := (CPUInfo.Features and AMD_HTT) <> 0;
       if CPUInfo.HyperThreadingTechnology then
       begin
