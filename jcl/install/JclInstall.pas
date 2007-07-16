@@ -75,6 +75,7 @@ type
           joMakeDebugVClx,
           joMakeDebugVCL,
         joCopyHppFiles,
+        joCheckHppFiles,
       joPackages,
         joDualPackages,
         joCopyPackagesHppFiles,
@@ -385,12 +386,13 @@ resourcestring
   RsCaptionEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
 
   // make units
-  RsCaptionMake         = 'Make library units';
-  RsCaptionMakeRelease  = 'Release';
-  RsCaptionMakeDebug    = 'Debug';
-  RsCaptionMakeVClx     = 'Visual CLX';
-  RsCaptionMakeVCL      = 'Visual Component Library';
-  RsCaptionCopyHppFiles = 'Copy HPP files to %s';
+  RsCaptionMake          = 'Make library units';
+  RsCaptionMakeRelease   = 'Release';
+  RsCaptionMakeDebug     = 'Debug';
+  RsCaptionMakeVClx      = 'Visual CLX';
+  RsCaptionMakeVCL       = 'Visual Component Library';
+  RsCaptionCopyHppFiles  = 'Copy HPP files to %s';
+  RsCaptionCheckHppFiles = 'Check HPP files';
 
   // packages
   RsCaptionPackages             = 'Packages';
@@ -487,6 +489,7 @@ resourcestring
   RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
   RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
   RsHintCopyHppFiles    = 'Copy .hpp files into C++Builder''s include path.';
+  RsHintCheckHppFiles   = 'Compile some C++ source files to verify JCL headers';
 
   // packages
   RsHintPackages             = 'Build and eventually install JCL runtime packages (RTL, VCL and Visual ' +
@@ -587,6 +590,7 @@ var
       (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeDebugVClx), // joMakeDebugVClx
       (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeDebugVCL), // joMakeDebugVCL
       (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
+      (Id: -1; Caption: RsCaptionCheckHppFiles; Hint: RsHintCheckHppFiles), // joCheckHppFiles
       (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
       (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
       (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
@@ -969,9 +973,12 @@ procedure TJclInstallation.Init;
       end;
 
       if bpBCBuilder32 in Target.Personalities then
+      begin
         AddOption(joCopyHppFiles, [goChecked], OptionData[joMake].Id,
           Format(OptionData[joCopyHppFiles].Caption, [Target.VclIncludeDir]),
           OptionData[joCopyHppFiles].Hint);
+        AddOption(joCheckHppFiles, [goChecked], joMake);
+      end;
     end;
   end;
 
@@ -1520,6 +1527,42 @@ function TJclInstallation.Install: Boolean;
   end;
 
   function MakeUnits: Boolean;
+    function CheckHppFiles: Boolean;
+    var
+      SaveDir, Options: string;
+    begin
+      SaveDir := GetCurrentDir;
+      SetCurrentDir(Distribution.JclPath + 'install\HeaderTest');
+      try
+        Target.BCC32.Options.Clear;
+        Target.BCC32.Options.Add('-c'); // compile only
+        Target.BCC32.Options.Add('-Ve'); // compatibility
+        Target.BCC32.Options.Add('-X'); // no autodependencies
+        Target.BCC32.Options.Add('-a8'); // data alignment
+        Target.BCC32.Options.Add('-b'); // enum to be at least 4 bytes
+        Target.BCC32.Options.Add('-k-'); // no standard stack frame
+        Target.BCC32.Options.Add('-tWM'); // code format
+        Target.BCC32.Options.Add('-w-par'); // warning
+        Target.BCC32.Options.Add('-w-aus'); // warning
+        Target.BCC32.AddPathOption('I', Format('%sinclude;%s%sinclude;%s', [Distribution.JclPath, Target.RootDir, DirDelimiter, Target.VclIncludeDir]));
+        Target.BCC32.Options.Add('-DTEST_COMMON');
+        {$IFDEF MSWINDOWS}
+        Target.BCC32.Options.Add('-DTEST_WINDOWS');
+        {$ENDIF MSWINDOWS}
+        {$IFDEF UNIX}
+        Target.BCC32.Options.Add('-DTEST_UNIX');
+        {$ENDIF UNIX}
+        if OptionChecked[joMakeReleaseVCL] or OptionChecked[joMakeDebugVCL] then
+          Target.BCC32.Options.Add('-DTEST_VCL');
+        if OptionChecked[joMakeReleaseVClx] or OptionChecked[joMakeDebugVClx] then
+          Target.BCC32.Options.Add('-DTEST_VISCLX');
+        Options := StringsToStr(Target.BCC32.Options, AnsiSpace);
+        Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
+          and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
+      finally
+        SetCurrentDir(SaveDir);
+      end;
+    end;
   var
     I: Integer;
   begin
@@ -1585,6 +1628,13 @@ function TJclInstallation.Install: Boolean;
             MarkOptionEnd(joMakeDebugVCL, Result);
         end;
         MarkOptionEnd(joMakeDebug, Result);
+      end;
+
+      if OptionChecked[joCheckHppFiles] then
+      begin
+        MarkOptionBegin(joCheckHppFiles);
+        WriteLog('Checking .hpp files');
+        Result := Result and CheckHppFiles;
       end;
 
       MarkOptionEnd(joMake, Result);
@@ -1982,6 +2032,7 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       end;
     end;
     //ioJclCopyHppFiles: ; // TODO : Delete copied files
+    //ioJclCheckHppFiles: ; // nothing to do
   end;
 
   procedure UninstallPackages;
