@@ -999,7 +999,7 @@ function LogBaseN(Base, X: Float): Float;
 begin
   DomainCheck((X <= 0.0) or (Base <= 0.0) or (Base = 1.0));
   {$IFDEF CLR}
-  Result := System.Math.Log(X);
+  Result := System.Math.Log(X, Base);
   {$ELSE}
   Result := FLogBaseN(Base, X);
   {$ENDIF CLR}
@@ -1303,7 +1303,7 @@ function ArcCosH(X: Float): Float;
 begin
   DomainCheck(X < 1.0);
   {$IFDEF CLR}
-  Result := System.Math.Log(X, 2);
+  Result := System.Math.Log(X + Sqrt(X * X - 1));
   {$ELSE}
   Result := FArcCosH(X);
   {$ENDIF CLR}
@@ -1342,7 +1342,7 @@ end;
 function ArcSinH(X: Float): Float;
 {$IFDEF CLR}
 begin
-  Result := System.Math.Log(X + Sqrt(1 + X * X));
+  Result := System.Math.Log(X + Sqrt(X * X + 1));
 end;
 {$ELSE}
 assembler;
