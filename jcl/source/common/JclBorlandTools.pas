@@ -918,7 +918,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSimpleXml;
+  JclFileUtils, JclLogic, JclResources, JclStrings, JclWideStrings, JclSysInfo, JclSimpleXml;
 
 // Internal
 
@@ -937,9 +937,6 @@ type
     VersionStr: string;
     Version: Integer;
     CoreIdeVersion: string;
-    ProjectsDirResId1: Integer;
-    ProjectsDirResId2: Integer;
-    CLRVersionResId: Integer;
     Supported: Boolean;
   end;
   {$ENDIF MSWINDOWS}
@@ -962,45 +959,30 @@ const
       VersionStr: '1.0';
       Version: 1;
       CoreIdeVersion: '71';
-      ProjectsDirResId1: 64507;
-      ProjectsDirResId2: 0;
-      CLRVersionResId: 0;  // no dccil.exe
       Supported: True),
     (
       Name: RsDelphiName;
       VersionStr: '8';
       Version: 8;
       CoreIdeVersion: '71';
-      ProjectsDirResId1: 64460;
-      ProjectsDirResId2: 0;
-      CLRVersionResId: 9499;
       Supported: True),
     (
       Name: RsDelphiName;
       VersionStr: '2005';
       Version: 9;
       CoreIdeVersion: '90';
-      ProjectsDirResId1: 64431;
-      ProjectsDirResId2: 0;
-      CLRVersionResId: 9499;
       Supported: True),
     (
       Name: RsBDSName;
       VersionStr: '2006';
       Version: 10;
       CoreIdeVersion: '100';
-      ProjectsDirResId1: 64719;
-      ProjectsDirResId2: 0;
-      CLRVersionResId: 9500;
       Supported: True),
     (
       Name: RsRSName;
       VersionStr: '2007';
       Version: 11;
       CoreIdeVersion: '100';
-      ProjectsDirResId1: 64396;
-      ProjectsDirResId2: 64398;
-      CLRVersionResId: 9500;
       Supported: True)
   );
   {$ENDIF MSWINDOWS}
@@ -1452,33 +1434,184 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+type
+  TFindResStartRec = record
+    StartStr: WideString;
+    MatchStr: WideString;
+  end;
+  PFindResStartRec = ^TFindResStartRec;
+
+// helper function to check strings starting "StartStr" in current string table
+function FindResStartCallBack(hModule: HMODULE; lpszType, lpszName: PChar;
+  lParam: PFindResStartRec): BOOL; stdcall;
+var
+  ResInfo, ResHData, ResSize, ResIndex: Cardinal;
+  ResData: PWord;
+  StrLength: Word;
+  MatchLen: Integer;
+begin
+  Result := True;
+  MatchLen := Length(lParam^.StartStr);
+
+  ResInfo := FindResource(hModule, lpszName, lpszType);
+  if ResInfo <> 0 then
+  begin
+    ResHData := LoadResource(hModule, ResInfo);
+    if ResHData <> 0 then
+    begin
+      ResData := LockResource(ResHData);
+      if Assigned(ResData) then
+      begin
+        // string tables are a concatenation of maximum 16 prefixed-length widestrings
+        ResSize := SizeofResource(hModule, ResInfo) div 2;
+        ResIndex := 0;
+        // iterate all concatenated strings
+        while ResIndex < ResSize do
+        begin
+          StrLength := ResData^;
+          Inc(ResData);
+          Inc(ResIndex);
+          if (StrLength >= MatchLen) and (StrLICompW(PWideChar(lParam^.StartStr), PWideChar(ResData), MatchLen) = 0) then
+          begin
+            // we have a match
+            SetLength(lParam^.MatchStr, StrLength);
+            Move(ResData^, lParam^.MatchStr[1], StrLength * SizeOf(lParam^.MatchStr[1]));
+            Result := False;
+            Break;
+          end;
+          Inc(ResData, StrLength);
+          Inc(ResIndex, StrLength);
+        end;
+      end;
+    end;
+  end;
+end;
+
+// find in specified module "FileName" a resourcestring starting with StartStr
+function FindResStart(const FileName: string;
+  const StartStr: WideString): WideString;
+var
+  H: HMODULE;
+  FindResRec: TFindResStartRec;
+begin
+  FindResRec.StartStr := StartStr;
+  FindResRec.MatchStr := '';
+
+  H := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+  if H <> 0 then
+  try
+    EnumResourceNames(H, RT_STRING, @FindResStartCallBack, Integer(@FindResRec));
+  finally
+    FreeLibrary(H);
+  end;
+
+  Result := FindResRec.MatchStr;
+end;
+
+type
+  WideStringArray = array of WideString;
+
+  TLoadResRec = record
+    EnglishStr: WideStringArray;
+    ResId: array of Integer;
+  end;
+  PLoadResRec = ^TLoadResRec;
+
+// helper function to find strings in current string table
+function LoadResCallBack(hModule: HMODULE; lpszType, lpszName: PChar;
+  lParam: PLoadResRec): BOOL; stdcall;
+var
+  ResInfo, ResHData, ResSize, ResIndex: Cardinal;
+  ResData: PWord;
+  StrLength: Word;
+  StrIndex, ResOffset, MatchCount, MatchLen: Integer;
+begin
+  Result := True;
+  MatchCount := 0;
+
+  ResInfo := FindResource(hModule, lpszName, lpszType);
+  if ResInfo <> 0 then
+  begin
+    ResHData := LoadResource(hModule, ResInfo);
+    if ResHData <> 0 then
+    begin
+      ResData := LockResource(ResHData);
+      if Assigned(ResData) then
+      begin
+        ResSize := SizeofResource(hModule, ResInfo) div 2;
+        ResIndex := 0;
+        ResOffset := 0;
+        while ResIndex < ResSize do
+        begin
+          StrLength := ResData^;
+          Inc(ResData);
+          Inc(ResIndex);
+          // for each requested strings
+          for StrIndex := Low(lParam^.EnglishStr) to High(lParam^.EnglishStr) do
+          begin
+            MatchLen := Length(lParam^.EnglishStr[StrIndex]);
+            if (lParam^.ResId[StrIndex] = 0) and (StrLength = MatchLen)
+              and (StrLICompW(PWideChar(lParam^.EnglishStr[StrIndex]), PWideChar(ResData), MatchLen) = 0) then
+            begin // http://support.microsoft.com/kb/q196774/
+              lParam^.ResId[StrIndex] := (PWord(@lpszName)^ - 1) * 16 + ResOffset;
+              Inc(MatchCount);
+              if MatchCount = Length(lParam^.EnglishStr) then
+              begin
+                Result := False;
+                Break; // all requests were translated to ResId
+              end;
+            end;
+          end;
+          Inc(ResOffset);
+          Inc(ResData, StrLength);
+          Inc(ResIndex, StrLength);
+        end;
+      end;
+    end;
+  end;
+end;
+
 function LoadResStrings(const BaseBinName: string;
-  const ResId: array of Integer): string;
+  const ResEn: array of WideString): WideStringArray;
 var
   H: HMODULE;
   LocaleName: array [0..4] of Char;
-  FileName, ResValue: string;
-  Index: Integer;
+  FileName: string;
+  Index, NbRes: Integer;
+  LoadResRec: TLoadResRec;
 begin
-  Result := '';
+  NbRes := Length(ResEn);
+  SetLength(LoadResRec.EnglishStr, NbRes);
+  SetLength(LoadResRec.ResId, NbRes);
+  SetLength(Result, NbRes);
 
-  FileName := BaseBinName;
-  if not FileExists(FileName) then
+  for Index := Low(ResEn) to High(ResEn) do
+    LoadResRec.EnglishStr[Index] := ResEn[Index];
+
+  H := LoadLibraryEx(PChar(ChangeFileExt(BaseBinName, BinaryExtensionPackage)), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+  if H <> 0 then
+  try
+    EnumResourceNames(H, RT_STRING, @LoadResCallBack, Integer(@LoadResRec));
+  finally
+    FreeLibrary(H);
+  end;
+
+  FileName := '';
+
+  FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+  GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+  if LocaleName[0] <> #0 then
   begin
-    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
-    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
-    if LocaleName[0] <> #0 then
+    FileName := BaseBinName;
+    if FileExists(FileName + LocaleName) then
+      FileName := FileName + LocaleName
+    else
     begin
+      LocaleName[2] := #0;
       if FileExists(FileName + LocaleName) then
         FileName := FileName + LocaleName
       else
-      begin
-        LocaleName[2] := #0;
-        if FileExists(FileName + LocaleName) then
-          FileName := FileName + LocaleName
-        else
-          FileName := '';
-      end;
+        FileName := '';
     end;
   end;
 
@@ -1487,19 +1620,17 @@ begin
     H := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
     if H <> 0 then
     try
-      for Index := Low(ResId) to High(ResId) do
+      for Index := 0 to NbRes - 1 do
       begin
-        SetLength(ResValue, 1024);
-        SetLength(ResValue, LoadString(H, ResId[Index], PChar(ResValue), Length(ResValue) - 1));
-        if Result <> '' then
-          Result := PathAddSeparator(Result) + ResValue
-        else
-          Result := ResValue;
+        SetLength(Result[Index], 1024);
+        SetLength(Result[Index], LoadStringW(H, LoadResRec.ResId[Index], PWideChar(Result[Index]), Length(Result[Index]) - 1));
       end;
     finally
       FreeLibrary(H);
     end;
-  end;
+  end
+  else
+    Result := LoadResRec.EnglishStr;
 end;
 
 function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -2740,8 +2871,7 @@ begin
     Exit;
   end;
 
-  Result := LoadResStrings(Installation.BinFolderName + GetExeName,
-    [BDSVersions[Installation.IDEVersionNumber].CLRVersionResId]);
+  Result := FindResStart(Installation.BinFolderName + GetExeName, '  --clrversion');
 
   StartPos := Pos(':', Result);
   if StartPos = 0 then
@@ -4799,10 +4929,7 @@ begin
   if IDEVersionNumber >= 5 then
   begin
     Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
-    [BDSVersions[IDEVersionNumber].ProjectsDirResId1]);
-
-    if Result = '' then
-      Result := 'RAD Studio';     // do not localize
+      ['RAD Studio'])[0];
 
     Result := Format('%s%s%d.0', [PathAddSeparator(GetCommonDocumentsFolder), PathAddSeparator(Result), IDEVersionNumber]);
   end
@@ -4860,18 +4987,16 @@ begin
 end;
 
 function TJclBDSInstallation.GetDefaultProjectsDir: string;
+var
+  LocStr: WideStringArray;
 begin
-  Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
-    [BDSVersions[IDEVersionNumber].ProjectsDirResId1, BDSVersions[IDEVersionNumber].ProjectsDirResId2]);
+  LocStr := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+    ['Borland Studio Projects', 'RAD Studio', 'Projects']);
 
-  if Result = '' then
-  begin
-    // Default values, just in case the resources are not found in the exe or localized file.
-    if IDEVersionNumber < 5 then
-      Result := 'Borland Studio Projects'  // do not localize
-    else
-      Result := 'RAD Studio\Projects';     // do not localize
-  end;
+  if IDEVersionNumber < 5 then
+    Result := LocStr[0]
+  else
+    Result := LocStr[1] + AnsiBackslash + LocStr[2];
 
   Result := PathAddSeparator(GetPersonalFolder) + Result;
 end;
