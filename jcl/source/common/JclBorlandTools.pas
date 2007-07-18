@@ -816,6 +816,8 @@ type
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     function GetDefaultProjectsDir: string; override;
     function GetCommonProjectsDir: string; override;
+    class function GetDefaultProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
+    class function GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
     {class }function RadToolName: string; override;
 
     function AddToCppSearchPath(const Path: string): Boolean;
@@ -4926,6 +4928,11 @@ end;
 
 function TJclBDSInstallation.GetCommonProjectsDir: string;
 begin
+  Result := GetCommonProjectsDirectory(RootDir, IDEVersionNumber);
+end;
+
+class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
+begin
   if IDEVersionNumber >= 5 then
   begin
     Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
@@ -4934,7 +4941,7 @@ begin
     Result := Format('%s%s%d.0', [PathAddSeparator(GetCommonDocumentsFolder), PathAddSeparator(Result), IDEVersionNumber]);
   end
   else
-    Result := DefaultProjectsDir;
+    Result := GetDefaultProjectsDirectory(RootDir, IDEVersionNumber);
 end;
 
 function TJclBDSInstallation.GetCppPathsKeyName: string;
@@ -4987,6 +4994,11 @@ begin
 end;
 
 function TJclBDSInstallation.GetDefaultProjectsDir: string;
+begin
+  Result := GetDefaultProjectsDirectory(RootDir, IDEVersionNumber);
+end;
+
+class function TJclBDSInstallation.GetDefaultProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
 var
   LocStr: WideStringArray;
 begin
