@@ -1,0 +1,435 @@
+
+@@TJclCRC16Stream
+The TJclCRC16Stream stores data in a protected stream.
+
+Every block of data is followed by a checksum computed by the
+Cyclic Redundancy Check algorithm on 16 bit. This checksum is
+able to repair errors in the stream. Current implementation
+can repair one damaged bit.
+
+All checksum computations and checks are transparent, this
+stream can be used as any other regular Stream. Use the Flush
+method to force data to be written from the internal buffer.
+Donator
+Florent Ouchet
+See Also
+TJclCRC32Stream
+
+@@TJclCRC16Stream.AfterBlockRead
+This function checks data after reading and eventually
+correct damaged bits in it.
+
+
+Donator
+Florent Ouchet
+
+
+See Also
+TJclCRC16Stream.BeforeBlockWrite
+
+@@TJclCRC16Stream.BeforeBlockWrite
+This function computes checksum before writing data to the
+storage stream.
+Donator
+Florent Ouchet
+See Also
+TJclCRC16Stream.AfterBlockRead
+
+@@TJclCRC16Stream.Create@TStream@Boolean
+Constructor for the TJclCRC16Stream class.
+Parameters
+AStorageStream :  Stream storing protected data and checksums.
+                  Data in this stream are larger than original
+                  ones because of checksums (2 bytes each)
+                  being inserted after each predefined\-length
+                  block.
+AOwnsStream :     If set, the stream will be freed when this
+                  instance of TJclCRC16Stream will be
+                  destroyed.
+Donator
+Florent Ouchet
+
+@@TJclCRC32Stream
+The TJclCRC32Stream stores data in a protected stream.
+
+Every block of data is followed by a checksum computed by the
+Cyclic Redundancy Check algorithm on 32 bits. This checksum
+is able to repair errors in the stream. Current
+implementation can repair one damaged bit.
+
+All checksum computations and checks are transparent, this
+stream can be used as any other regular Stream. Use the Flush
+method to force data to be written from the internal buffer.
+Donator
+Florent Ouchet
+See Also
+TJclCRC16Stream
+
+@@TJclCRC32Stream.AfterBlockRead
+This function checks data after reading and eventually
+correct damaged bits in it.
+Donator
+Florent Ouchet
+See Also
+TJclCRC32Stream.BeforeBlockWrite
+
+@@TJclCRC32Stream.BeforeBlockWrite
+This function computes checksum before writing data to the
+storage stream.
+Donator
+Florent Ouchet
+See Also
+TJclCRC16Stream.AfterBlockRead
+
+@@TJclCRC32Stream.Create@TStream@Boolean
+Constructor for the TJclCRC32Stream class.
+Parameters
+AStorageStream :  Stream storing protected data and checksums.
+                  Data in this stream are larger than original
+                  ones because of checksums (4 bytes each)
+                  being inserted after each predefined\-length
+                  block.
+AOwnsStream :     If set, the stream will be freed when this
+                  instance of TJclCRC32Stream will be
+                  destroyed.
+Donator
+Florent Ouchet
+
+@@TJclSectoredStream
+TJclSectoredStream organizes data and forces read and write
+\operations to storage stream to have a fixed size. Every
+smaller accesses are stored into a buffer which is flushed
+when full.
+
+Fixed size blocks are called "sector", each sector can
+contain a predefined number of bytes reserved to store a
+checksum or any other data (TJclCRC16Stream and
+TJclCRC32Stream classes use this feature). In order to set
+these bytes, this class has to be inherited and virtual
+methods TJclSectoredStream.BeforeBlockRead and
+TJclSectoredStream.AfterBlockWrite have to be overridden.
+Donator
+Florent Ouchet
+See Also
+TJclBufferedStream
+
+@@TJclSectoredStream.FSectorOverHead
+Private field to store the number of additional bytes of each
+sector.
+
+
+Donator
+Florent Ouchet
+
+
+See Also
+TJclSectoredStream.Create
+
+@@TJclSectoredStream.AfterBlockRead
+Virtual method called after a block of data is read from
+storage stream. As implemented in this class, this function
+does nothing. In order to check checksums and/or decrypt
+data, a class that inherits from TJclSectoredStream has to
+\override this procedure.
+
+When this function is called, bytes in FBuffer from 0 to
+FCurrentBufferSize+FBlockOverHead-1 were read from storage
+stream.
+
+After this function returns, bytes in FBuffer from 0 to
+FCurrentBufferSize-1 will contain data as passed to the
+caller or TStream.Read.
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.BeforeBlockWrite
+
+@@TJclSectoredStream.BeforeBlockWrite
+Virtual method called before a block of data is written to
+storage stream. As implemented in this class, this function
+does nothing. In order to compute checksums and/or crypt
+data, a class that inherits from TJclSectoredStream has to
+\override this procedure.
+
+When this function is called, bytes in FBuffer from 0 to
+FCurrentBufferSize-1 were written by calls to TStream.Write.
+
+When this function returns, bytes in FBuffer from 0 to
+FCurrentBufferSize+FBlockOverhead-1 will be written to
+storage stream.
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.AfterBlockRead
+
+@@TJclSectoredStream.Create@TStream@Boolean@Integer
+Constructor of the TJclSectoredStream class.
+
+
+Parameters
+AStorageStream :   Stream used to store data. They may be
+                   larger than raw data because of OverHead
+                   that can be specified for each sector.
+AOwnsStream :      If set, this stream will be destroyed when
+                   this instance is destroyed.
+ASectorOverHead :  Number of bytes to be added to each sector
+                   of the stream.
+
+Donator
+Florent Ouchet
+
+@@TJclSectoredStream.DoAfterStreamChange
+Overriden method of TJclStreamDecorator.DoAfterStreamChange
+to flush and invalidate current buffer.
+
+
+Donator
+Florent Ouchet
+
+@@TJclSectoredStream.FlatToSectored@Int64
+This function translates position from flat space to sectored
+space removing overhead for each sectors before this
+position.
+Parameters
+Position :  Position in flat space (ie in this stream space)
+Returns
+Position in sectored space (ie storage space)
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.SectoredToFlat
+TJclSectoredStream.GetCalcedSize
+
+@@TJclSectoredStream.Flush
+By calling this function, modified data (if any) contained in
+current buffer are written to storage stream. Note that this
+method is automatically called when current sector is
+changed.
+
+In order to force data to be written, you may call this
+function.
+
+
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.LoadBuffer
+
+@@TJclSectoredStream.GetCalcedSize
+This protected function computes the real size of data
+eliminating all sector overheads of storage stream.
+
+
+Returns
+Computed size
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.FlatToSectored
+TJclSectoredStream.SectoredToFlat
+
+@@TJclSectoredStream.LoadBuffer
+This protected function loads a sector from storage stream
+when needed. If some data were modified in previous sector,
+they are automatically written to storage stream.
+
+
+Returns
+\Returns true if any data were read
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.Flush
+
+@@TJclSectoredStream.SectoredToFlat@Int64
+This function translates position from sectored space to flat
+space adding overhead for each sectors before this position.
+Parameters
+Position :  Position in sectored space (ie storage space)
+Returns
+Position in flat space (ie in space exposed by this
+descendant of TStream)
+Donator
+Florent Ouchet
+See Also
+TJclSectoredStream.FlatToSectored
+TJclSectoredStream.GetCalcedSize
+
+@@TJclDelegatedStream
+This descendant of TStream translates all calls to SetSize,
+Seek, Read and Write methods to event handlers.
+
+
+See Also
+TJclEventStream
+
+
+Donator
+Florent Ocuhet
+
+@@TJclDelegatedStream.FOnRead
+Private field to store OnRead handler.
+See Also
+TJclDelegatedStream.OnSeek TJclDelegatedStream.OnSize
+TJclDelegatedStream.OnWrite
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.FOnSeek
+Private field to store OnSeek handler.
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSize
+TJclDelegatedStream.OnWrite
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.FOnSize
+Private field to store OnSize handler.
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSeek
+TJclDelegatedStream.OnWrite
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.FOnWrite
+Private field to store OnWrite handler.
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSeek
+TJclDelegatedStream.OnSize
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.OnRead
+<combine TJclStreamReadEvent>
+
+Event handler called when the Read method is called.
+
+
+See Also
+TJclDelegatedStream.OnSeek TJclDelegatedStream.OnSize
+TJclDelegatedStream.OnWrite
+
+
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.OnSeek
+<combine TJclStreamSeekEvent>
+
+Event handler called when the Seek method is called.
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSize
+TJclDelegatedStream.OnWrite
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.OnSize
+<combine TJclStreamSizeEvent>
+
+Event handler called when the SetSize method is called (on
+write of the Size property).
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSeek
+TJclDelegatedStream.OnWrite
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.OnWrite
+<combine TJclStreamWriteEvent>
+
+Event handler called when the Write method is called.
+See Also
+TJclDelegatedStream.OnRead TJclDelegatedStream.OnSeek
+TJclDelegatedStream.OnSize
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.Read@@Longint
+Overriden of TStream.Read, all calls to this methods are
+redirected to the OnRead event.
+
+
+See Also
+TJclDelegatedStream.OnRead
+
+
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.Seek@Int64@TSeekOrigin
+Overriden of TStream.Seek, all calls to this methods are
+redirected to the OnSeek event.
+
+
+See Also
+TJclDelegatedStream.OnSeek
+
+
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.SetSize@Int64
+Overriden of TStream.SetSize, all calls to this methods are
+redirected to the OnSize event.
+
+
+See Also
+TJclDelegatedStream.OnSize
+
+
+Donator
+Florent Ouchet
+
+@@TJclDelegatedStream.Write@@Longint
+Overriden of TStream.Write, all calls to this methods are
+redirected to the OnWrite event.
+
+
+See Also
+TJclDelegatedStream.OnWrite
+
+
+Donator
+Florent Ouchet
+
+@@TJclStreamReadEvent
+\ \ 
+Parameters
+Sender :  Object that triggers the event
+Buffer :  Buffer to store read data
+Count :   Number of byte to read
+
+Returns
+Number of bytes that were effectively read.
+Donator
+Florent Ouchet
+
+@@TJclStreamSeekEvent
+Parameters
+Sender :  Object that triggers the event
+Offset :  Number of bytes to seek from specified origin
+Count :   Origin (valid values are soBeginning, soCurrent or
+          soEnd)
+Returns
+New position from the beginning of the stream.
+Donator
+Florent Ouchet
+
+@@TJclStreamSizeEvent
+Parameters
+Sender :   Object that triggers the event
+NewSize :  Requested new size
+
+Donator
+Florent Ouchet
+
+@@TJclStreamWriteEvent
+Parameters
+Parameters
+Sender :  Object that triggers the event
+Buffer :  Buffer that contains data to be written
+Count :   Number of byte to write
+Returns
+Number of bytes that were effectively written.
+Donator
+Florent Ouchet
