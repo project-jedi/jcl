@@ -197,7 +197,6 @@ type
     FBufferSize: Longint;
     FBufferStart: Int64; // position of the first byte of the buffer in stream
     FPosition: Int64; // current position in stream
-    FSize: Int64;
     function BufferHit: Boolean;
     function GetCalcedSize: Int64;
     function LoadBuffer: Boolean;
@@ -874,7 +873,6 @@ end;
 constructor TJclBufferedStream.Create(AStream: TStream; AOwnsStream: Boolean = False);
 begin
   inherited Create(AStream, AOwnsStream);
-  FSize := -1;
   FPosition := Stream.Position;
   BufferSize := 4096;
 end;
@@ -894,6 +892,7 @@ procedure TJclBufferedStream.DoAfterStreamChange;
 begin
   inherited DoAfterStreamChange;
   FBufferCurrentSize := 0; // invalidate buffer after stream is changed
+  FBufferStart := 0;
   if Stream <> nil then
     FPosition := Stream.Position;
 end;
@@ -906,24 +905,22 @@ end;
 
 procedure TJclBufferedStream.Flush;
 begin
-  if Stream = nil then
-    Exit;
-  if FBufferMaxModifiedPos > 0 then
+  if (Stream <> nil) and (FBufferMaxModifiedPos > 0) then
   begin
     Stream.Position := FBufferStart;
     Stream.WriteBuffer(FBuffer[0], FBufferMaxModifiedPos);
-    FSize := Stream.Size;
     FBufferMaxModifiedPos := 0;
   end;
 end;
 
 function TJclBufferedStream.GetCalcedSize: Int64;
 begin
-  if FSize < 0 then
-    FSize := Stream.Size;
-  if FSize < FBufferMaxModifiedPos + FBufferStart then
-    FSize := FBufferMaxModifiedPos + FBufferStart;
-  Result := FSize;
+  if Assigned(Stream) then
+    Result := Stream.Size
+  else
+    Result := 0;
+  if Result < FBufferMaxModifiedPos + FBufferStart then
+    Result := FBufferMaxModifiedPos + FBufferStart;
 end;
 
 function TJclBufferedStream.LoadBuffer: Boolean;
@@ -931,8 +928,13 @@ begin
   Flush;
   if Length(FBuffer) <> FBufferSize then
     SetLength(FBuffer, FBufferSize);
-  FStream.Position := FPosition;
-  FBufferCurrentSize := FStream.Read(FBuffer[0], FBufferSize);
+  if Stream <> nil then
+  begin
+    Stream.Position := FPosition;
+    FBufferCurrentSize := Stream.Read(FBuffer[0], FBufferSize);
+  end
+  else
+    FBufferCurrentSize := 0;
   FBufferStart := FPosition;
   Result := (FBufferCurrentSize > 0);
 end;
