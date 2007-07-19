@@ -1649,6 +1649,7 @@ resourcestring
   RsStreamsCreateError = 'Cannot create file %s';
   RsStreamsOpenError = 'Cannot open file %s';
   RsStreamsSetSizeError = 'Error setting stream size';
+  RsStreamsCRCError = 'Cyclic Redundency Check (CRC) error: data are damaged';
 
 //=== JclStrHashMap ==========================================================
 resourcestring

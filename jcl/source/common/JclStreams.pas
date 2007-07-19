@@ -1,4 +1,4 @@
-﻿{**************************************************************************************************}
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -72,7 +72,7 @@ type
     procedure SetSize(NewSize: Longint); override;
     procedure SetSize(const NewSize: Int64); override;
   public
-    constructor Create(AHandle: THandle); virtual;
+    constructor Create(AHandle: THandle);
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
@@ -81,7 +81,7 @@ type
 
   TJclFileStream = class(TJclHandleStream)
   public
-    constructor Create(const FileName: string; Mode: Word; Rights: Cardinal = 0); reintroduce; virtual;
+    constructor Create(const FileName: string; Mode: Word; Rights: Cardinal = 0);
     destructor Destroy; override;
   end;
 
@@ -147,7 +147,7 @@ type
   protected
     procedure SetSize(const NewSize: Int64); override;
   public
-    constructor Create; virtual;
+    constructor Create;
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
@@ -177,7 +177,7 @@ type
     procedure SetSize(NewSize: Longint); overload; override;
     procedure SetSize(const NewSize: Int64); overload; override;
   public
-    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); virtual;
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; override;
@@ -190,7 +190,7 @@ type
   end;
 
   TJclBufferedStream = class(TJclStreamDecorator)
-  private
+  protected
     FBuffer: array of Byte;
     FBufferCurrentSize: Longint;
     FBufferMaxModifiedPos: Longint;
@@ -198,22 +198,21 @@ type
     FBufferStart: Int64; // position of the first byte of the buffer in stream
     FPosition: Int64; // current position in stream
     function BufferHit: Boolean;
-    function GetCalcedSize: Int64;
-    function LoadBuffer: Boolean;
-    procedure SetBufferSize(Value: Longint);
+    function GetCalcedSize: Int64; virtual;
+    function LoadBuffer: Boolean; virtual;
     function ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
     function WriteToBuffer(const Buffer; Count, Start: Longint): Longint;
   protected
     procedure DoAfterStreamChange; override;
     procedure DoBeforeStreamChange; override;
   public
-    constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
+    constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
-    procedure Flush;
+    procedure Flush; virtual;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    property BufferSize: Longint read FBufferSize write SetBufferSize;
+    property BufferSize: Longint read FBufferSize write FBufferSize;
   end;
 
   TStreamNotifyEvent = procedure(Sender: TObject; Position: Int64; Size: Int64) of object;
@@ -229,7 +228,7 @@ type
     procedure SetSize(const NewSize: Int64); overload; override;
   public
     constructor Create(AStream: TStream; ANotification: TStreamNotifyEvent = nil;
-      AOwnsStream: Boolean = False); reintroduce; virtual;
+      AOwnsStream: Boolean = False);
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; override;
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
@@ -276,7 +275,7 @@ type
     // scopedstream starting at the current position of the ParentStream
     //   if MaxSize is positive or null, read and write operations cannot overrun this size or the ParentStream limitation
     //   if MaxSize is negative, read and write operations are unlimited (up to the ParentStream limitation)
-    constructor Create(AParentStream: TStream; AMaxSize: Int64 = -1); reintroduce;
+    constructor Create(AParentStream: TStream; AMaxSize: Int64 = -1);
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function Write(const Buffer; Count: Longint): Longint; override;
@@ -310,6 +309,45 @@ type
     property OnSize: TJclStreamSizeEvent read FOnSize write FOnSize;
   end;
 
+  // ancestor classes for streams with checksums and encrypted streams
+  // data are stored in sectors: each BufferSize-d buffer is followed by FBlockOverHeader bytes
+  // containing the checksum. In case of an encrypted stream, there is no byte
+  // but sector is encrypted
+
+  // reusing some code from TJclBufferedStream
+  TJclSectoredStream = class(TJclBufferedStream)
+  protected
+    FSectorOverHead: Integer;
+    function FlatToSectored(const Position: Int64): Int64;
+    function SectoredToFlat(const Position: Int64): Int64;
+    function GetCalcedSize: Int64; override;
+    function LoadBuffer: Boolean; override;
+    procedure DoAfterStreamChange; override;
+    procedure AfterBlockRead; virtual;   // override to check protection
+    procedure BeforeBlockWrite; virtual; // override to compute protection
+  public
+    constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False;
+      ASectorOverHead: Integer = 0);
+
+    procedure Flush; override;
+  end;
+
+  TJclCRC16Stream = class(TJclSectoredStream)
+  protected
+    procedure AfterBlockRead; override;
+    procedure BeforeBlockWrite; override;
+  public
+    constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False);
+  end;
+
+  TJclCRC32Stream = class(TJclSectoredStream)
+  protected
+    procedure AfterBlockRead; override;
+    procedure BeforeBlockWrite; override;
+  public
+    constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False);
+  end;
+
 // call TStream.Seek(Int64,TSeekOrigin) if present (TJclStream or COMPILER6_UP)
 // otherwize call TStream.Seek(LongInt,Word) with range checking
 function StreamSeek(Stream: TStream; const Offset: Int64;
@@ -328,7 +366,7 @@ const
 implementation
 
 uses
-  JclResources;
+  JclResources, JclMath;
 
 {$IFDEF KYLIX}
 function __open(PathName: PChar; Flags: Integer; Mode: Integer): Integer; cdecl;
@@ -873,7 +911,8 @@ end;
 constructor TJclBufferedStream.Create(AStream: TStream; AOwnsStream: Boolean = False);
 begin
   inherited Create(AStream, AOwnsStream);
-  FPosition := Stream.Position;
+  if Stream <> nil then
+    FPosition := Stream.Position;
   BufferSize := 4096;
 end;
 
@@ -987,12 +1026,6 @@ begin
   else
     FPosition := NewPos;
   Result := NewPos;
-end;
-
-procedure TJclBufferedStream.SetBufferSize(Value: Longint);
-begin
-  if FBufferSize <> Value then
-    FBufferSize := Value;
 end;
 
 function TJclBufferedStream.Write(const Buffer; Count: Longint): Longint;
@@ -1388,6 +1421,152 @@ begin
     Result := FOnWrite(Self, Buffer, Count)
   else
     Result := -1;
+end;
+
+//=== { TJclSectoredStream } =================================================
+
+procedure TJclSectoredStream.AfterBlockRead;
+begin
+  // override to customize (checks of protection)
+end;
+
+procedure TJclSectoredStream.BeforeBlockWrite;
+begin
+  // override to customize (computation of protection)
+end;
+
+constructor TJclSectoredStream.Create(AStorageStream: TStream;
+  AOwnsStream: Boolean; ASectorOverHead: Integer);
+begin
+  inherited Create(AStorageStream, AOwnsStream);
+  FSectorOverHead := ASectorOverHead;
+  if Stream <> nil then
+    FPosition := SectoredToFlat(Stream.Position);
+end;
+
+procedure TJclSectoredStream.DoAfterStreamChange;
+begin
+  inherited DoAfterStreamChange;
+  if Stream <> nil then
+    FPosition := SectoredToFlat(Stream.Position);
+end;
+
+function TJclSectoredStream.FlatToSectored(const Position: Int64): Int64;
+begin
+  Result := (Position div BufferSize) * (BufferSize + FSectorOverHead) // add overheads of previous buffers
+    + Position mod BufferSize; // offset in sector
+end;
+
+procedure TJclSectoredStream.Flush;
+begin
+  if (Stream <> nil) and (FBufferMaxModifiedPos > 0) then
+  begin
+    BeforeBlockWrite;
+
+    Stream.Position := FlatToSectored(FBufferStart);
+    Stream.WriteBuffer(FBuffer[0], FBufferCurrentSize + FSectorOverHead);
+    FBufferMaxModifiedPos := 0;
+  end;
+end;
+
+function TJclSectoredStream.GetCalcedSize: Int64;
+var
+  VirtualSize: Int64;
+begin
+  if Assigned(Stream) then
+    Result := SectoredToFlat(Stream.Size)
+  else
+    Result := 0;
+  VirtualSize := FBufferMaxModifiedPos + FBufferStart;
+  if Result < VirtualSize then
+    Result := VirtualSize;
+end;
+
+function TJclSectoredStream.LoadBuffer: Boolean;
+var
+  TotalSectorSize: Integer;
+begin
+  Flush;
+  TotalSectorSize := FBufferSize + FSectorOverHead;
+  if Length(FBuffer) <> TotalSectorSize then
+    SetLength(FBuffer, TotalSectorSize);
+  FBufferStart := (FPosition div BufferSize) * BufferSize;
+  if Stream <> nil then
+  begin
+    Stream.Position := FlatToSectored(FBufferStart);
+    FBufferCurrentSize := Stream.Read(FBuffer[0], TotalSectorSize);
+    if FBufferCurrentSize > 0 then
+    begin
+      Dec(FBufferCurrentSize, FSectorOverHead);
+      AfterBlockRead;
+    end;
+  end
+  else
+    FBufferCurrentSize := 0;
+  Result := (FBufferCurrentSize > 0);
+end;
+
+function TJclSectoredStream.SectoredToFlat(const Position: Int64): Int64;
+var
+  TotalSectorSize: Int64;
+begin
+  TotalSectorSize := BufferSize + FSectorOverHead;
+  Result := (Position div TotalSectorSize) * BufferSize // remove previous overheads
+    + Position mod TotalSectorSize; // offset in sector
+end;
+
+//=== { TJclCRC16Stream } ====================================================
+
+procedure TJclCRC16Stream.AfterBlockRead;
+var
+  CRC: Word;
+begin
+  CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8);
+  if CheckCrc16(FBuffer, FBufferCurrentSize, CRC) < 0 then
+    raise EJclStreamError.CreateRes(@RsStreamsCRCError);
+end;
+
+procedure TJclCRC16Stream.BeforeBlockWrite;
+var
+  CRC: Word;
+begin
+  CRC := Crc16(FBuffer, FBufferCurrentSize);
+  FBuffer[FBufferCurrentSize] := CRC and $FF;
+  FBuffer[FBufferCurrentSize + 1] := CRC shr 8;
+end;
+
+constructor TJclCRC16Stream.Create(AStorageStream: TStream; AOwnsStream: Boolean);
+begin
+  inherited Create(AStorageStream, AOwnsStream, 2);
+end;
+
+//=== { TJclCRC32Stream } ====================================================
+
+procedure TJclCRC32Stream.AfterBlockRead;
+var
+  CRC: Cardinal;
+begin
+  CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
+    + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
+  if CheckCrc32(FBuffer, FBufferCurrentSize, CRC) < 0 then
+    raise EJclStreamError.CreateRes(@RsStreamsCRCError);
+end;
+
+procedure TJclCRC32Stream.BeforeBlockWrite;
+var
+  CRC: Cardinal;
+begin
+  CRC := Crc32(FBuffer, FBufferCurrentSize);
+  FBuffer[FBufferCurrentSize] := CRC and $FF;
+  FBuffer[FBufferCurrentSize + 1] := (CRC shr 8) and $FF;
+  FBuffer[FBufferCurrentSize + 2] := (CRC shr 16) and $FF;
+  FBuffer[FBufferCurrentSize + 3] := (CRC shr 24) and $FF;
+end;
+
+constructor TJclCRC32Stream.Create(AStorageStream: TStream;
+  AOwnsStream: Boolean);
+begin
+  inherited Create(AStorageStream, AOwnsStream, 4);
 end;
 
 {$IFDEF UNITVERSIONING}
