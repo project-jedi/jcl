@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -195,11 +195,11 @@ type
     FBufferCurrentSize: Longint;
     FBufferMaxModifiedPos: Longint;
     FBufferSize: Longint;
-    FBufferStart: Longint;
-    FPosition: Longint;
-    FSize: Longint;
+    FBufferStart: Int64; // position of the first byte of the buffer in stream
+    FPosition: Int64; // current position in stream
+    FSize: Int64;
     function BufferHit: Boolean;
-    function GetCalcedSize: Longint;
+    function GetCalcedSize: Int64;
     function LoadBuffer: Boolean;
     procedure SetBufferSize(Value: Longint);
     function ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
@@ -207,13 +207,12 @@ type
   protected
     procedure DoAfterStreamChange; override;
     procedure DoBeforeStreamChange; override;
-    procedure SetSize(NewSize: Longint); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False); override;
     destructor Destroy; override;
     procedure Flush;
     function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     property BufferSize: Longint read FBufferSize write SetBufferSize;
   end;
@@ -888,12 +887,13 @@ end;
 
 function TJclBufferedStream.BufferHit: Boolean;
 begin
-  Result := (FBufferStart <= FPosition) and (FPosition < FBufferCurrentSize);
+  Result := (FBufferStart <= FPosition) and (FPosition < (FBufferStart + FBufferCurrentSize));
 end;
 
 procedure TJclBufferedStream.DoAfterStreamChange;
 begin
   inherited DoAfterStreamChange;
+  FBufferCurrentSize := 0; // invalidate buffer after stream is changed
   if Stream <> nil then
     FPosition := Stream.Position;
 end;
@@ -917,7 +917,7 @@ begin
   end;
 end;
 
-function TJclBufferedStream.GetCalcedSize: Longint;
+function TJclBufferedStream.GetCalcedSize: Int64;
 begin
   if FSize < 0 then
     FSize := Stream.Size;
@@ -964,17 +964,18 @@ begin
   Inc(FPosition, Result);
 end;
 
-function TJclBufferedStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclBufferedStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 var
-  NewPos: Longint;
+  NewPos: Int64;
 begin
   NewPos := FPosition;
   case Origin of
-    soFromBeginning:
+    soBeginning:
       NewPos := Offset;
-    soFromCurrent:
+    soCurrent:
       Inc(NewPos, Offset);
-    soFromEnd:
+    soEnd:
       NewPos := GetCalcedSize + Offset;
   else
     NewPos := -1;
@@ -990,11 +991,6 @@ procedure TJclBufferedStream.SetBufferSize(Value: Longint);
 begin
   if FBufferSize <> Value then
     FBufferSize := Value;
-end;
-
-procedure TJclBufferedStream.SetSize(NewSize: Longint);
-begin
-  inherited SetSize(NewSize);
 end;
 
 function TJclBufferedStream.Write(const Buffer; Count: Longint): Longint;
