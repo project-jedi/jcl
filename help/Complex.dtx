@@ -73,7 +73,7 @@ Description:
 Parameters:
   X - The real part in the rectangular representation or radius in polar coordinates.
   Y - The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
-  ComplexType - <I>Optional.</I> Represents the type of the complex number to be create.
+  ComplexType - Optional. Represents the type of the complex number to be create.
 Notes:
   All the calculations with complex numbers are performed with their rectangular representation members, except those that requires polar coordinates instead like exponential functions for instance.
   The results of the calculations as well as the value of the complex number itself might be obtained in either rectangular or polar representation at any time using AsString or AsPolarString respectively.
@@ -143,10 +143,10 @@ Description:
   representation. FracLength property is used to determine the
   precision of float parts of the complex number. For example if your complex
   number is (5.2345355; -3.599) and FracLength=2 you will get the
-  following string as the result of calling AsString:<p align=center>5.23-3.60i</p>
+  following string as the result of calling AsString: 5.23-3.60i
   Also you might use this property to assign the value of a
   string to the complex number object like this:<p align=center>
-  MyComplex.AsString := '-5.3453-3.543i'</p> The string provided should represent
+  MyComplex.AsString := '-5.3453-3.543i' The string provided should represent
   a complex number in its canonical rectangular form like this: x+yi, where
   x and y are either positive or negative or zero floating values and i is the
   constant text part. If either x or y is equal to zero, the corresponding part
@@ -167,11 +167,11 @@ Description:
   representation. FracLength property is used to determine the
   precision of float parts of the complex number. For example if your complex
   number is (5.2345355; -3.599) and FracLength=2 you will get the
-  following string as the result of calling AsString:<p align=center>5.23-CIS(3.60)</p>
+  following string as the result of calling AsString: 5.23-CIS(3.60)
   Here CIS(theta) = COS(theta) + SIN(theta)*i
   Also you might use this property to assign the value of a
-  string to the complex number object like this:<p align=center>
-  MyComplex.AsPolarString := '-5.3453-CIS(3.543)'</p>
+  string to the complex number object like this:
+  MyComplex.AsPolarString := '-5.3453-CIS(3.543)'
   The string provided should represent
   a complex number in its canonical polar coordinates form like this: r+CIS(theta), where
   r and theta are either positive or negative or zero floating values.
@@ -194,7 +194,7 @@ Description:
 Parameters:
   X - The real part in the rectangular representation or radius in polar coordinates.
   Y - The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
-  ComplexType - <I>Optional.</I> Represents the type of the floating-point parameters above.
+  ComplexType - Optional. Represents the type of the floating-point parameters above.
 Result:
   Method Assign returns the complex number object itself.
 Notes:
@@ -268,11 +268,11 @@ Parameters:
   AddValue - The complex number that should be added to the value of the object.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that should be added to the value of the object.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that should be added to the value of the object.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CAdd returns the calling object with the changed value.
 Notes:
-  The addition of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+  The addition of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>).
   For leaving the value of the calling object intact use CNewAdd method to create a new resulting object of TJclComplex type.
 See also:
   CNewAdd
@@ -293,11 +293,11 @@ Parameters:
   DivValue - The complex number that is the denominator for the operation.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the denominator for the operation.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the denominator for the operation.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CDiv returns the calling object with the changed value.
 Notes:
-  The division of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+  The division of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)].
   For leaving the value of the calling object intact use CNewDiv method to create a new resulting object of TJclComplex type.
 See also:
   CNewDiv
@@ -319,12 +319,12 @@ Parameters:
   MulValue - The complex number that is the second multiplier.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the second multiplier.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the second multiplier.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CMul returns the calling object with the changed value.
 Notes:
-  The multiplication of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
-  Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I> give different results and cannot substitute each other.
+  The multiplication of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>).
+  Note that for complex numbers the operations Z<sub>1</sub>*Z<sub>2</sub> and Z<sub>2</sub>*Z<sub>1</sub> give different results and cannot substitute each other.
   For leaving the value of the calling object intact use CNewMul method to create a new resulting object of TJclComplex type.
 See also:
   CNewMul
@@ -346,11 +346,11 @@ Parameters:
   SubValue - The complex number that is the subtrahend.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the subtrahend.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the subtrahend.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CSub returns the calling object with the changed value.
 Notes:
-  The subtraction of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+  The subtraction of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>).
   For leaving the value of the calling object intact use CNewSub method to create a new resulting object of TJclComplex type.
 See also:
   CNewSub
@@ -371,12 +371,12 @@ Parameters:
   AddValue - The complex number that should be added to the value of the object.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that should be added to the value of the object.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that should be added to the value of the object.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CNewAdd returns a newly created object of TJclComplex type that contains
   the value of the addition.
 Notes:
-  The addition of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+  The addition of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>).
   For changing the value of the calling object instead of creating a new object of TJclComplex type use CAdd method.
 See also:
   CAdd
@@ -398,12 +398,12 @@ Parameters:
   DivValue - The complex number that is the denominator for the operation.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the denominator for the operation.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the denominator for the operation.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CNewDiv returns a newly created object of TJclComplex type that contains
   the value of the division.
 Notes:
-  The division of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+  The division of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub> *X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>); (Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/ (X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)].
   For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CDiv method.
 See also:
   CDiv
@@ -425,13 +425,13 @@ Parameters:
   MulValue - The complex number that is the second multiplier.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the second multiplier.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the second multiplier.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CNewMul returns a newly created object of TJclComplex type that contains
   the value of the multiplication.
 Notes:
-  The multiplication of the complex numbers is performed according to the following formula: <I> (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
-  Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I> give different results and cannot substitute each other.
+  The multiplication of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub> *X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>; X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>).
+  Note that for complex numbers the operations Z<sub>1</sub>*Z<sub>2</sub> and Z<sub>2</sub>*Z<sub>1</sub> give different results and cannot substitute each other.
   For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CMul method.
 See also:
   CMul
@@ -453,12 +453,12 @@ Parameters:
   SubValue - The complex number that is the subtrahend.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the subtrahend.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the subtrahend.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CNewSub returns a newly created object of TJclComplex type that contains
   the value of the subtraction.
 Notes:
-  The subtraction of the complex numbers is performed according to the following formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+  The subtraction of the complex numbers is performed according to the following formula: (X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>).
   For changing the value of the calling object instead of creating a resulting object of TJclComplex type use CSub method.
 See also:
   CSub
@@ -544,7 +544,7 @@ Description:
 Result:
   Method CLn returns the calling object with the changed value.
 Notes:
-  Complex number natural logarithm is evaluated according to the following formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
+  Complex number natural logarithm is evaluated according to the following formula: Ln(Z) = (Ln(r); theta), where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
   For creating a new resulting complex number object instead of changing the value of the current one use CNewLn method.
 See also:
   CNewLn
@@ -568,7 +568,7 @@ Result:
   Method CNewLn returns a newly created object of TJclComplex type that contains
   the value computed.
 Notes:
-  Complex number natural logarithm is evaluated according to the following formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
+  Complex number natural logarithm is evaluated according to the following formula: Ln(Z) = (Ln(r); theta), where Z = (r; theta). Please note that the calculation is performed using polar coordinates and all the transformations between rectangular and polar coordinates are performed automatically.
   For changing the value of the calling object instead of creating a new resulting object use CLn method.
 See also:
   CLn
@@ -591,7 +591,7 @@ Description:
 Result:
   Method CExp returns the calling object with the changed value.
 Notes:
-  Complex number exponential curve is evaluated according to the following formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+  Complex number exponential curve is evaluated according to the following formula: Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)], where Z = (x; y).
   For creating a new resulting complex number object instead of changing the value of the current one use CNewExp method.
 See also:
   CNewExp
@@ -615,7 +615,7 @@ Result:
   Method CNewExp returns a newly created object of TJclComplex type that contains
   the value computed.
 Notes:
-  Complex number exponential curve is evaluated according to the following formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+  Complex number exponential curve is evaluated according to the following formula: Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)], where Z = (x; y).
   For changing the value of the calling object instead of creating a new resulting object use CExp method.
 See also:
   CNewExp
@@ -641,7 +641,7 @@ Parameters:
   PwrValue - The complex number that is the exponent for the operation.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the exponent for the operation.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the exponent for the operation.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CPwr returns the calling object with the changed value.
 Notes:
@@ -670,7 +670,7 @@ Parameters:
   PwrValue - The complex number that is the exponent for the operation.
   X - The real part in the rectangular representation or radius in polar coordinates of the complex number that is the exponent for the operation.
   Y - The imaginary part in the rectangular representation or angle in polar coordinates of the complex number that is the exponent for the operation.
-  ComplexType - <I>Optional.</I> Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
+  ComplexType - Optional. Defines whether X and Y parameters are stated in rectangular representation or in polar coordinates.
 Result:
   Method CNewPwr returns a newly created object of TJclComplex type that contains
   the value computed.

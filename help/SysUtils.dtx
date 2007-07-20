@@ -231,9 +231,9 @@ Donator:
 Summary:
   Changes a virtual method to the given method.
 Description:
-  Changes a virtual method to the given method.<P><FONT color=red>Do <B>NOT</B>
-  use this function.</FONT> There should be no need to use this function
-  unless your implementing a very dirty hack. <P>There is no checking
+  Changes a virtual method to the given method. Do NOT
+  use this function. There should be no need to use this function
+  unless your implementing a very dirty hack. There is no checking
   performed that the Index is a valid virtual method index. The function only
   changes the pointer in the VMT of the specified class, not the static references
   to this method, which are made when an anchestor uses inherited to call the virtual
@@ -535,11 +535,11 @@ Donator:
 Summary:
   Modifies the class parent for the given class.
 Description:
-  Changes the parent of AClass to become NewClassParent. <P><FONT color=red>
-  Do <B>NOT</B> use this function.</FONT> There should be
-  no need to use this function unless you are implementing a very dirty hack.<P>
+  Changes the parent of AClass to become NewClassParent.
+  Do NOT use this function. There should be
+  no need to use this function unless you are implementing a very dirty hack.
   This procedure changes the executable code (with the risk of completly destroying
-  your application) and uses WriteProcessMemory for this.</P>
+  your application) and uses WriteProcessMemory for this.
   The function is multiprocessor safe.
 Parameters:
   AClass - The class whose parent to change.

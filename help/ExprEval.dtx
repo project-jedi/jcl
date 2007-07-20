@@ -339,8 +339,8 @@ Description:
   expression nodes (Compile).
   
   Because this class has state (properties like Lexer, EvalParser,
-  CompileParser, NodeFactory), <b>a symbol should never be used by
-  two threads simultaneously</b>. This design decision was taken to
+  CompileParser, NodeFactory), a symbol should never be used by
+  two threads simultaneously. This design decision was taken to
   maximize ease of creating new symbols.
   
   It is, however, safe to implement recursive symbols (i.e. a symbol
@@ -549,7 +549,7 @@ Summary:
   Resets the position of the lexer to the start of its
   input stream.
 Description:
-  Overridden implementations should call this at the <b>end</b> of
+  Overridden implementations should call this at the end of
   their implementations, because it calls NextTok by default.
 Donator:
   Barry Kelly
@@ -1670,7 +1670,7 @@ Summary:
   Adds a function.
 Description:
   Adds a function to the internal context. Multiple calls to the
-  same function with the same parameters <b>might</b> be resolved to
+  same function with the same parameters might be resolved to
   a single call during common sub-expression elimination (CSE)
   optimization. A possible workaround would be to add a fake extra
   parameter and pass in different constant for each distinct call.

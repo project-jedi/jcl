@@ -234,7 +234,7 @@ Description:
   remain coherent. Additionally you can create a filemapping object which is
   associated with the swap file as opposed to an actual disk file. Since multiple
   processes can open a handle to the same filemapping, this is an ideal way to
-  share data between multiple processes. <P>
+  share data between multiple processes.
   Unless you are opening a filemapping object as opposed to creating one, you should
   not use this class directly. Instead use the derived TJclFileMapping and
   TJclSwapFileMapping classes. These two classes only differ in their constructors
@@ -746,7 +746,7 @@ Contributor:
 Summary:
   Retrieves the path of the directory designated for temporary files.
 Description:
-  The <i>GetTempPath</i> function retrieves the path of the directory
+  The GetTempPath function retrieves the path of the directory
   designated for temporary files.
 Result:
   The path of the directory designated for temporary files.
@@ -761,7 +761,7 @@ Donator:
 Summary:
   Checks whether Path is a child of Base.
 Description:
-  The <i>PathIsChild</i> routine determines whether the directory specified by Path is
+  The PathIsChild routine determines whether the directory specified by Path is
   a child directory, either immediate or several levels deep, of the specified
   Base path. For example, 'c:\winnt\system32' is a child of 'c:\winnt'.
 Parameters:
@@ -1130,7 +1130,7 @@ Contributor:
 Summary:
   Copies a file.
 Description:
-  The <i>FileCopy</i> function copies an existing file to a new file.
+  The FileCopy function copies an existing file to a new file.
 Parameters:
   ExistingFileName - The existing file.
   NewFileName - Specifies the name of the new file, or name of a directory where the
@@ -1476,7 +1476,7 @@ Description:
   can be no open files on the volume (even a single open file, by whatever process,
   will cause the function to fail).
 Parameters:
-  Volume - The volume to lock this must be a string in the format:    * X: Where X is the volume to lock, for example 'a:'  * PHYSICALDRIVEX Where X is the 0 based hard disk number, for example 'PHYSICALDRIVE0'    <B>Note:</B> Do not prepend the Volume name with a '\\.\'. This is done by the function.
+  Volume - The volume to lock this must be a string in the format:    * X: Where X is the volume to lock, for example 'a:'  * PHYSICALDRIVEX Where X is the 0 based hard disk number, for example 'PHYSICALDRIVE0'. Note: Do not prepend the Volume name with a '\\.\'. This is done by the function.
   Handle - Receives a handle of the locked device upon successful return.
 Result:
   If the function succeeds in locking the volume it returns True and a handle to
@@ -2033,7 +2033,7 @@ VOS__PM32       The file was designed for 32-bit Presentation Manager.
 VOS_UNKNOWN     The operating system for which the file was designed is unknown to the system.
 </TABLE>
 
-    <P>An application can combine these values to indicate that the file was designed for one operating system running on another. The following <B>dwFileOS</B> values are examples of this, but are not a complete list:
+    An application can combine these values to indicate that the file was designed for one operating system running on another. The following dwFileOS values are examples of this, but are not a complete list:
     <TABLE>
 Flag               Description
 -----------------  -------------------------------------------------------------------------------------
@@ -2043,7 +2043,6 @@ VOS_NT_WINDOWS32   The file was designed for the Win32 API running on Windows&nb
 VOS_OS216_PM16     The file was designed for 16-bit Presentation Manager running on 16-bit OS/2.
 VOS_OS232_PM32     The file was designed for 32-bit Presentation Manager running on 32-bit OS/2.
 </TABLE>
-
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2053,8 +2052,9 @@ Summary:
 Description:
   FileSubType specifies the function of the file and serves as a further specification
   of the FileType. The possible values depend on the FileType property.
-    <P>If <B>dwFileType</B> is VFT_DRV, <B>dwFileSubtype</B> can be one of the following values:
-    <TABLE>
+
+  If dwFileType is VFT_DRV, dwFileSubtype can be one of the following values:
+<TABLE>
 Flag                  Description
 --------------------  ------------------------------------------
 VFT2_UNKNOWN          The driver type is unknown by the system.
@@ -2070,8 +2070,8 @@ VFT2_DRV_INSTALLABLE  The file contains an installable driver.
 VFT2_DRV_SOUND        The file contains a sound driver.
 </TABLE>
 
-    <P>If <B>dwFileType</B> is VFT_FONT, <B>dwFileSubtype</B> can be one of the following values:
-    <TABLE>
+  If dwFileType is VFT_FONT, dwFileSubtype can be one of the following values:
+<TABLE>
 Flag                Description
 ------------------  ---------------------------------------
 VFT2_UNKNOWN        The font type is unknown by the system.
@@ -2080,10 +2080,10 @@ VFT2_FONT_VECTOR    The file contains a vector font.
 VFT2_FONT_TRUETYPE  The file contains a TrueType font.
 </TABLE>
 
-    <P>If <B>dwFileType</B> is VFT_VXD, <B>dwFileSubtype</B> contains the virtual device identifier included in the virtual device control block.
-    <P>All <B>dwFileSubtype</B> values not listed here are reserved for future use by Microsoft.
-
-Donator: Marcel van Brakel
+  If dwFileType is VFT_VXD, dwFileSubtype contains the virtual device identifier included in the virtual device control block.
+  All dwFileSubtype values not listed here are reserved for future use by Microsoft.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileType
 Summary:
@@ -2091,20 +2091,19 @@ Summary:
 Description:
   FileType returns a constant which depicts the general type of file from which
   the version resource was read. This can be one of the following values:
-    <TABLE>
+<TABLE>
 Flag            Description
 --------------  --------------------------------------------------------------------------------------------------------------------------------------------
 VFT_UNKNOWN     The file type is unknown to the system.
 VFT_APP         The file contains an application.
 VFT_DLL         The file contains a dynamic-link library (DLL).
-VFT_DRV         The file contains a device driver. If <B>dwFileType</B> is VFT_DRV, <B>dwFileSubtype</B> contains a more specific description of the driver.
-VFT_FONT        The file contains a font. If <B>dwFileType</B> is VFT_FONT, <B>dwFileSubtype</B> contains a more specific description of the font file.
+VFT_DRV         The file contains a device driver. If dwFileType is VFT_DRV, dwFileSubtype contains a more specific description of the driver.
+VFT_FONT        The file contains a font. If dwFileType is VFT_FONT, dwFileSubtype contains a more specific description of the font file.
 VFT_VXD         The file contains a virtual device.
 VFT_STATIC_LIB  The file contains a static-link library.
 </TABLE>
 
-    <P>All other values are reserved for future use by Microsoft.</P>
-
+  All other values are reserved for future use by Microsoft.
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2280,7 +2279,7 @@ Description:
   MoveToRecycleBin parameter.
 Parameters:
   DirectoryName -    Directory to be deleted
-  MoveToRecycleBin - If <B>True</B> the directory will be moved to
+  MoveToRecycleBin - If True the directory will be moved to
                      the system Recycle Bin instead of being
                      deleted.
 Platforms:
@@ -2333,7 +2332,7 @@ Summary:
   Returns a file name that can be used for backup purposes.
 Description:
   Returns a file name that can be used for backup purposes.
-  Basically it prepends the file extention with a tilde (<B>~</B>).
+  Basically it prepends the file extention with a tilde (~).
   If file does not contain extension, the function does nothing.
 Parameters:
   FileName - File name that is used to construct file name of backup file.
@@ -2410,8 +2409,7 @@ Summary:
   Tries to unlock the volume represented by the handle passed.
 Description:
   Attempts to unlock the volume specified by the handle that
-  was previously locked by <LINK LockVolume, LockVolume>
-  function.
+  was previously locked by LockVolume function.
 Note:
   This function calls Windows API DeviceIOControl function.
   Although Microsoft provides the way to call this function in
@@ -2421,15 +2419,14 @@ Note:
 
   If the function succeedes the handle associated with the
   volume is getting freed and you should not use it again as
-  its value will be <B>INVALID_HANDLE_VALUE</B>. However the
+  its value will be INVALID_HANDLE_VALUE. However the
   handle remains valid if the function fails.
 Parameters:
   Handle - Handle of the volume to be unlocked previously obtained
-           calling <LINK LockVolume, LockVolume> function. Also this
-           handle can be obtained by calling CreateFile Windows API
-           function directly.
+           calling LockVolume function. Also this handle can be obtained
+           by calling CreateFile Windows API function directly.
 Result:
-  Returns <B>True </B>if the function succeeded, <B>False </B>otherwise.
+  Returns True if the function succeeded, False otherwise.
 Platforms:
   Windows NT/2000/Vista: Requires Windows NT 4 or later.
   Windows 95/98: Unsupported.
@@ -2514,7 +2511,7 @@ Summary:
   Retrieves the root block of version information resource from the specified
   file.
 Description:
-  The <B>VersionFixedFileInfo </B>function retrieves the root
+  The VersionFixedFileInfo function retrieves the root
   block of version information resource from the file specified
   by the FileName parameter.
 Parameters:
@@ -2523,8 +2520,8 @@ Parameters:
   FixedInfo - Output parameter. Contains the root block of version
               information resource if function succeedes.
 Result:
-  Function returns <B>True</B> if version information resources
-  was retrieved successfully, <B>False</B> otherwise.
+  Function returns True if version information resources
+  was retrieved successfully, False otherwise.
 See also:
   VersionResourceAvailable
   TJclFileVersionInfo

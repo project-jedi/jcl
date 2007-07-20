@@ -233,7 +233,7 @@ Description:
   True, if it is 0 the function returns False.
 Parameters:
   Value - The integer-typed variable for which to test a bit.
-  Bit - The 0 based bit position of the bit to test. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte then Bit position is interpreted as Bit mod 8. <b>Warning: </b> When calling this function you must cast a value passed to this parameter to a TBitRange as in: "TestBit(Value, TBitRange(1))" otherwise Delphi will incorrectly use the TestBit(Byte, TBitRange) overload instead of the correct overload. This is a known problem in the compiler, not an error in the JCL.
+  Bit - The 0 based bit position of the bit to test. This is a modulo N bit position where N is the number of bits in the Value parameter. For example, if Value is a Byte then Bit position is interpreted as Bit mod 8. Warning: When calling this function you must cast a value passed to this parameter to a TBitRange as in: "TestBit(Value, TBitRange(1))" otherwise Delphi will incorrectly use the TestBit(Byte, TBitRange) overload instead of the correct overload. This is a known problem in the compiler, not an error in the JCL.
 Result:
   True if the bit at the specified position is set, False if it is cleared.
 See also:

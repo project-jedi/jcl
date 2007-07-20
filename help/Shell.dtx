@@ -192,7 +192,7 @@ Summary:
 Description:
   The TEnumFolderRec is used to return information about an item that was found during the enumeration of a folder using the SHEnumFolderFirst and SHEnumFolderNext functions. It also holds data needed to perform the enumeration. Because of this you must always call SHEnumFolderClose to release these resources if SHEnumFolderFirst returned True.
 Notes:
-  The returned icons are the 'plain' icons. You can use code such as below to transform them into how the shell displays them:   <P class="syntax">   if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then     OverlayIconShared(F.IconLarge, F.IconSmall);   </P> You can also use the Folder member to get additional info about the found item:   <P class="syntax">   S := GetItemInfoTip(F.Folder, F.Item);   </P>
+  The returned icons are the 'plain' icons. You can use code such as below to transform them into how the shell displays them:   <P class="syntax">   if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then     OverlayIconShared(F.IconLarge, F.IconSmall);   You can also use the Folder member to get additional info about the found item:   <P class="syntax">   S := GetItemInfoTip(F.Folder, F.Item);   
 Donator:
   Marcel van Brakel
 @@TEnumFolderRec.DisplayName

@@ -14,7 +14,7 @@ Summary:
   An enumeration describing the set of available FPU exception masks.
 Description:
   An enumeration which describes the set of available FPU
-  exception masks. Note that you can use the <link All8087Exceptions>
+  exception masks. Note that you can use theAll8087Exceptions
   constant whenever you need a set which includes all exception
   flags.
 Donator:
@@ -65,7 +65,7 @@ Description:
   The GetPending8087Exceptions routine returns a set of flags
   representing the pending FPU exceptions. Note that the
   pending exceptions are not cleared. To get the pending
-  exceptions and clear them use the <link ClearPending8087Exceptions>
+  exceptions and clear them use the ClearPending8087Exceptions
   routine.
 Result:
   The result is the set of pending FPU exceptions.
@@ -123,7 +123,7 @@ Summary:
   Masks additional exceptions.
 Description:
   Mask8087Exceptions masks the exceptions specified by the
-  Exceptions parameter. Unlike <link SetMasked8087Exceptions>
+  Exceptions parameter. Unlike SetMasked8087Exceptions
   the original exception mask is left intact. For example, if
   the current exception mask equals [emInvalidOp,
   emDenormalizedOperand], and you call

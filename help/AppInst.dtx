@@ -14,7 +14,7 @@ Description:
 Summary:
   WParam field for instance creation notifications
 Description:
-  When an application instance is created <link TJclAppInstances>
+  When an application instance is created TJclAppInstances
   sends a notification message to all other running instances.
   The message value is determined by the MessageId property,
   the WParam field is set to AI_INSTANCECREATED, and the LParam
@@ -31,7 +31,7 @@ Donator:
 Summary:
   WParam field for instance destruction notifications
 Description:
-  When an application instance is destroyed <link TJclAppInstances>
+  When an application instance is destroyed TJclAppInstances
   sends a notification message to all other running instances.
   The message value is determined by the MessageId property,
   the WParam field is set to AI_INSTANCEDESTROYED, and the
@@ -48,7 +48,7 @@ Donator:
 Summary:
   WParam field for user-defined notification messages.
 Description:
-  When an application uses the UserNotify method of <link TJclAppInstances>
+  When an application uses the UserNotify method of TJclAppInstances
   the class sends a message to all running instances with a
   message value determined by the MessageID property, WParam
   set to AI_USERMSG and LParam set to the parameter specified
@@ -302,10 +302,10 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SwitchTo
 Summary:
-  SwitchTo brings the application determined by <link TJclAppInstances.ProcessIDs, ProcessIDs>[Index]
+  SwitchTo brings the application determined by TJclAppInstances.ProcessIDs[Index]
   to the foreground.
 Description:
-  SwitchTo brings the application determined by <link TJclAppInstances.ProcessIDs, ProcessIDs>[Index]
+  SwitchTo brings the application determined by TJclAppInstances.ProcessIDs[Index]
   to the foreground.
 Parameters:
   Index - Zero based index into the TJclAppInstances.ProcessIDs
@@ -334,8 +334,8 @@ Description:
   Use the AppWnds property to determine the handle of the
   invisible window created by one of the application instances.
   Index is zero based and determines for which application
-  instance a handle is returned. It can be at most <link TJclAppInstances.InstanceCount, InstanceCount>
-  - 1 and selects one of the application instances from the <link TJclAppInstances.ProcessIDs, ProcessIDs>
+  instance a handle is returned. It can be at most TJclAppInstances.InstanceCount
+  - 1 and selects one of the application instances from the TJclAppInstances.ProcessIDs
   property.
 See also:
   TJclAppInstances.InstanceCount
@@ -345,8 +345,7 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclAppInstances.InstanceIndex
 Summary:
-  Returns the index into the <link TJclAppInstances.ProcessIDs, ProcessIDs>
-  array for a process.
+  Returns the index into the TJclAppInstances.ProcessIDs array for a process.
 Description:
   Read the InstanceIndex property to determine the zero based
   index into the TJclAppInstances.ProcessIDs
@@ -363,10 +362,9 @@ Summary:
   Returns the number of application instances.
 Description:
   The InstanceCount property returns the number of application
-  instances that registered with the <link TJclAppInstances>.
+  instances that registered with theTJclAppInstances.
   Among others you can use this to determine the highest valid
-  index into the <link TJclAppInstances.ProcessIDs, ProcessIDs>
-  array property.
+  index into the TJclAppInstances.ProcessIDs array property.
 See also:
   TJclAppInstances.ProcessIDs
   TJclAppInstances.AppWnds
@@ -547,7 +545,7 @@ Summary:
   Create a new instance of the TJclAppInstances class.
 Notes:
   Do not use this constructor directly to avoid multiples
-  instance for this object type. The <link JclAppInstances>
+  instance for this object type. The JclAppInstances
   function return a reference to a unique instance for this
   application.
 See also:

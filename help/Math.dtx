@@ -7,6 +7,7 @@
 <TITLE CRC>
 <GROUP MathRoutines>
 <TOPICORDER 300>
+Description:
   The CRC method used here is a quite "native" translation of a
   hardware CRC generator to software. The data array is
   interpreted as a bit stream with Byte 0 Bit 7 sent first.
@@ -88,8 +89,8 @@ Parameters:
   I - The value for which to calculate ISqrt(I). Must be greater than or equal to zero.
 Result:
   The integral part of the square root of the argument.
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@ModFloat
 <GROUP MathRoutines.Floatsupport>
@@ -99,14 +100,14 @@ Description:
   ModFloat calculates the modulus (remainder) of the two floating point numbers.
   For floating point numbers the modulus is calculated as: X - Floor(X / Y) * Y.
 Parameters:
-  X - The first float
-  Y - The second float
+  X - The first float.
+  Y - The second float.
 Result:
   Modulus of the two floating point numbers.
 See also:
   RemainderFloat
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@RemainderFloat
 <GROUP MathRoutines.Floatsupport>
@@ -116,14 +117,14 @@ Description:
   RemainderFloat calculates the remainder of the two floating point numbers. For
   floating point numbers the remainder is calculated as: X - Int(X / Y) * Y
 Parameters:
-  X - The first float
-  Y - The second float
+  X - The first float.
+  Y - The second float.
 Result:
   The remainder of the two floating point numbers.
 See also:
   ModFloat
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@DegMinSecToFloat
 <GROUP MathRoutines.Conversion>
@@ -133,9 +134,9 @@ Description:
   DegMinSecToFloat converts, or packs, the supplied degrees, minutes and seconds
   to a float.
 Parameters:
-  Degs - Degrees
-  Min - Minutes
-  Sec - Seconds
+  Degs - Degrees.
+  Min - Minutes.
+  Sec - Seconds.
 Result:
   Degrees, Minutes and Seconds converted to a float.
 Notes:
@@ -146,8 +147,8 @@ See also:
   DmsToRad
   DegToDms
   DegToDmsStr
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatToDegMinSec
 <GROUP MathRoutines.Conversion>
@@ -168,8 +169,8 @@ See also:
   DmsToRad
   DegToDms
   DegToDmsStr
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatIsZero
 <GROUP MathRoutines.Floatsupport>
@@ -187,8 +188,8 @@ Result:
   global variable, the function returns True, otherwise it returns False.
 See also:
   FloatsEqual
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@FloatsEqual
 <GROUP MathRoutines.Floatsupport>
@@ -200,16 +201,16 @@ Description:
   global variable. Thus the two values are considered to be equal if the absolute
   difference between them is smaller than the value defined by PrecisionTolerance.
 Parameters:
-  X1 - First value to compare
-  X2 - Second value to compare
+  X1 - First value to compare.
+  X2 - Second value to compare.
 Result:
   If the two supplied values are equal within the precision defined by
   the PrecisionTolerance
   global variable, the function returns True, otherwise it returns False.
 See also:
   FloatIsZero
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@SwapFloats
 <GROUP MathRoutines.Floatsupport>
@@ -219,10 +220,10 @@ Description:
   SwapFloat swaps the two supplied floating point values. That is, at return from
   this subroutine X contains the value of Y and Y contains the value of X.
 Parameters:
-  X - First float
-  Y - Second float
-
-Donator: Marcel van Brakel
+  X - First float.
+  Y - Second float.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Pythagoras
 <GROUP MathRoutines.Miscellaneous>
@@ -231,12 +232,12 @@ Summary:
 Description:
   Computes Sqrt(X^2 + Y^2) without destructive underflow or overflow.
 Parameters:
-  X - First float
-  Y - Second float
+  X - First float.
+  Y - Second float.
 Result:
   Sqrt(X^2 + Y^2)
-
-Donator: J. Debord
+Donator:
+  J. Debord
 --------------------------------------------------------------------------------
 @@NormalizeAngle
 <GROUP MathRoutines.Miscellaneous>
@@ -249,8 +250,8 @@ Parameters:
   Angle - The angle to normalize.
 Result:
   The normalized angle.
-
-Donator: J. Debord
+Donator:
+  J. Debord
 --------------------------------------------------------------------------------
 @@TenToY
 <GROUP MathRoutines.Exponential>
@@ -266,8 +267,8 @@ See also:
   Power
   PowerInt
   TwoToY
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@TwoToY
 <GROUP MathRoutines.Exponential>
@@ -283,8 +284,8 @@ See also:
   Power
   PowerInt
   TenToY
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@PowerInt
 <GROUP MathRoutines.Exponential>
@@ -296,16 +297,16 @@ Description:
   formal formula for Power (which uses Exp and Ln) and therefore you should favor
   this function over Power when the exponent is an integer.
 Parameters:
-  X - Base value
-  N - Exponent
+  X - Base value.
+  N - Exponent.
 Result:
-  X to the power N
+  X to the power N.
 See also:
   Power
   TenToY
   TwoToY
-
-Donator: J. Debord
+Donator:
+  J. Debord
 --------------------------------------------------------------------------------
 @@IsRelativePrime
 <GROUP MathRoutines.Miscellaneous>
@@ -324,8 +325,8 @@ Result:
 See also:
   GCD
   LCM
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@LCM
 <GROUP MathRoutines.Miscellaneous>
@@ -342,8 +343,8 @@ Result:
 See also:
   GCD
   IsRelativePrime
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@GCD
 <GROUP MathRoutines.Miscellaneous>
@@ -361,8 +362,8 @@ Result:
 See also:
   LCM
   IsRelativePrime
-
-Donator: ESB Consultancy
+Donator:
+  ESB Consultancy
 --------------------------------------------------------------------------------
 @@CycleToGrad
 <GROUP MathRoutines.Conversion>
@@ -374,8 +375,8 @@ Parameters:
   Cycles - The angle, in cycles, to convert.
 Result:
   The angle in cycles.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DegToGrad
 <GROUP MathRoutines.Conversion>
@@ -387,8 +388,8 @@ Parameters:
   Degrees - The angle, in degrees, to convert.
 Result:
   The angle in grads.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GradToCycle
 <GROUP MathRoutines.Conversion>
@@ -400,8 +401,8 @@ Parameters:
   Grads - The angle, in grads, to convert.
 Result:
   The angle in cycles.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GradToDeg
 <GROUP MathRoutines.Conversion>
@@ -413,8 +414,8 @@ Parameters:
   Grads - The angle, in grads, to convert.
 Result:
   The angle in degrees.
-
-Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LogBaseN
 <GROUP MathRoutines.Logarithmic>
@@ -430,8 +431,8 @@ Result:
 See also:
   LogBase2
   LogBase10
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@LogBase2
 <GROUP MathRoutines.Logarithmic>
@@ -446,8 +447,8 @@ Result:
 See also:
   LogBase10
   LogBaseN
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@LogBase10
 <GROUP MathRoutines.Logarithmic>
@@ -462,8 +463,8 @@ Result:
 See also:
   LogBase2
   LogBaseN
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCos
 <GROUP MathRoutines.Transcendental>
@@ -476,8 +477,8 @@ Parameters:
   X - Value for which to calculate the inverse cosine. Absolute value of X must be smaller than 1.0.
 Result:
   The inverse cosine of X in radians.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCosH
 <GROUP MathRoutines.Hyperbolic>
@@ -490,8 +491,8 @@ Parameters:
   X - Value for which to calculate the inverse hyperbolic cosine. Must be greater than or equal to 1.0.
 Result:
   The inverse hyperbolic cosine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCot
 <GROUP MathRoutines.Transcendental>
@@ -504,8 +505,8 @@ Parameters:
   X - Value whose ArcCot to calculate
 Result:
   The angle whose cotangent equals X in radians.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCotH
 <GROUP MathRoutines.Hyperbolic>
@@ -518,8 +519,8 @@ Parameters:
   X - The value whose ArcCotH to calculate. Absolute value of X must be inequal to 1.0.
 Result:
   ArcCoth of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCsc
 <GROUP MathRoutines.Transcendental>
@@ -532,8 +533,8 @@ Parameters:
   X - Value whose ArcCsc to calculate. Absolute value of X must be smaller than 1.0.
 Result:
   The angle, in radians, whose cosecant equals X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcCscH
 <GROUP MathRoutines.Hyperbolic>
@@ -546,8 +547,8 @@ Parameters:
   X - Value whose ArcCscH to calculate, cannot be 0.0.
 Result:
   ArcCscH of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSec
 <GROUP MathRoutines.Transcendental>
@@ -560,8 +561,8 @@ Parameters:
   X - Value whose ArcSec to calculate. Absolute value of X must be smaller than 1.0.
 Result:
   ArcSec of X in radians.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSecH
 <GROUP MathRoutines.Hyperbolic>
@@ -574,28 +575,23 @@ Parameters:
   X - Value whose ArcSecH to calculate. X must be smaller than or equal to 1.0.
 Result:
   Inverse hyperbolic secant of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSin
 <GROUP MathRoutines.Transcendental>
-
-Description
-ArcSin calculates the inverse sine. Meaning it returns the
-angle whose sine equals X.
-
-Summary
-Calculates the inverse sine.
-
-Parameters
-X :   The value whose inverse sine to calculate. X must be
+Summary:
+  Calculates the inverse sine.
+Description:
+  ArcSin calculates the inverse sine. Meaning it returns the
+  angle whose sine equals X.
+Parameters:
+  X - The value whose inverse sine to calculate. X must be
       smaller than or equal to 1.0.
-
-Returns
-ArcSin of X in radians.
-
-QuickInfo:
-Donator: Clayton Collie
+Result:
+  ArcSin of X in radians.
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcSinH
 <GROUP MathRoutines.Hyperbolic>
@@ -607,14 +603,14 @@ Description:
 Parameters:
   X - Value whose ArcSinH to calculate.
 Result:
-  ArcSinH of X
-
-Donator: Clayton Collie
+  ArcSinH of X.
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTan
 <GROUP MathRoutines.Transcendental>
 Summary:
-  Calculates the inverse tangent
+  Calculates the inverse tangent.
 Description:
   ArcTan calculates the inverse tangent of X. Meaning it returns the angle whose
   tangent equals X.
@@ -622,13 +618,13 @@ Parameters:
   X - Value whose inverse tangent to calculate.
 Result:
   Inverse tangent of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTan2
 <GROUP MathRoutines.Transcendental>
 Summary:
-  Calculates the inverse tangent of Y / X
+  Calculates the inverse tangent of Y / X.
 Description:
   ArcTan2 calculates the inverse tangent of Y / X. Meaning it returns the angle
   whose tangent equals Y / X.
@@ -637,34 +633,34 @@ Parameters:
   X - The value of X in Y / X.
 Result:
   The inverse tangent of Y / X in radians.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@ArcTanH
 <GROUP MathRoutines.Hyperbolic>
 Summary:
-  Returns the inverse hyperbolic tangent of X
+  Returns the inverse hyperbolic tangent of X.
 Description:
   Returns the inverse hyperbolic tangent of X.
 Parameters:
   X - Value whose inverse hyperbolic tangent to calculate.
 Result:
   Inverse hyperbolic tangent of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Cos
 <GROUP MathRoutines.Transcendental>
 Summary:
-  Calculates the cosine of X
+  Calculates the cosine of X.
 Description:
   Calculates the cosine of X.
 Parameters:
   X - Angle, in radians, whose cosine to calculate.
 Result:
   Cosine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@CosH
 <GROUP MathRoutines.Hyperbolic>
@@ -676,8 +672,8 @@ Parameters:
   X - Value whose CosH to calculate.
 Result:
   Hyperbolic cosine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Cot
 <GROUP MathRoutines.Transcendental>
@@ -689,8 +685,8 @@ Parameters:
   X - Angle, in radians, whose cotangent to calculate.
 Result:
   Cotangent of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@CotH
 <GROUP MathRoutines.Hyperbolic>
@@ -701,8 +697,8 @@ Description:
   cosh(x) / sinh(x).
 Parameters:
   X - Value whose hyperbolic cotangent to calculate.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Csc
 <GROUP MathRoutines.Transcendental>
@@ -714,8 +710,8 @@ Parameters:
   X - Angle, in radians, whose Csc to calculate.
 Result:
   Cosecant of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@CscH
 <GROUP MathRoutines.Hyperbolic>
@@ -727,8 +723,8 @@ Parameters:
   X - Value whose hyperbolic cosecant to calculate.
 Result:
   Hyperbolic cosecant of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Sec
 <GROUP MathRoutines.Transcendental>
@@ -740,8 +736,8 @@ Parameters:
   X - Angle, in radians, whose Sec to calculate.
 Result:
   Secant of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@SecH
 <GROUP MathRoutines.Hyperbolic>
@@ -753,8 +749,8 @@ Parameters:
   X - Value whose hyperbolic secant to calculate.
 Result:
   Hyperbolic secant of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Haversine
 <GROUP MathRoutines.Transcendental>
@@ -766,8 +762,8 @@ Parameters:
   X - Angle, in radians, whose haversine to calculate.
 Result:
   Haversine of X.
-
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@Coversine
 <GROUP MathRoutines.Transcendental>
@@ -779,8 +775,8 @@ Parameters:
   X - Angle, in radians, whose coversine to calculate.
 Result:
   Coersine of X.
-
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@Versine
 <GROUP MathRoutines.Transcendental>
@@ -792,8 +788,8 @@ Parameters:
   X - Angle, in radians, whose versine to calculate.
 Result:
   Versine of X.
-
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@Sin
 <GROUP MathRoutines.Transcendental>
@@ -805,8 +801,8 @@ Parameters:
   X - Angle, in radians, whose sine to calculate.
 Result:
   Sine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@SinCos
 <GROUP MathRoutines.Transcendental>
@@ -819,8 +815,8 @@ Parameters:
   X - The angle, in radians, whose sine and cosine to calculate.
   Sin - Sine of X.
   Cos - Cosine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@SinH
 <GROUP MathRoutines.Hyperbolic>
@@ -832,8 +828,8 @@ Parameters:
   X - Value whose hyperbolic sine to calculate.
 Result:
   Hyperbolic sine of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Tan
 <GROUP MathRoutines.Transcendental>
@@ -845,8 +841,8 @@ Parameters:
   X - Angle, in radians, whose tangent to calculate.
 Result:
   Tangent of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@TanH
 <GROUP MathRoutines.Hyperbolic>
@@ -859,8 +855,8 @@ Parameters:
   X - Value whose hyperbolic tangent to calculate.
 Result:
   Hyperbolic tangent of X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Power
 <GROUP MathRoutines.Exponential>
@@ -879,8 +875,8 @@ See also:
   PowerInt
   TenToY
   TwoToY
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Ceiling
 <GROUP MathRoutines.Miscellaneous>
@@ -892,8 +888,8 @@ Parameters:
   X - The value to return the ceiling of.
 Result:
   Nearest integer value above X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@CommercialRound
 <GROUP MathRoutines.Miscellaneous>
@@ -907,8 +903,8 @@ Parameters:
   X - The value to round.
 Result:
   The rounded value.
-
-Donator: Ernesto Benestante
+Donator:
+  Ernesto Benestante
 --------------------------------------------------------------------------------
 @@Floor
 <GROUP MathRoutines.Miscellaneous>
@@ -920,8 +916,8 @@ Parameters:
   X - The value to floor.
 Result:
   Nearest integer value below X.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Factorial
 <GROUP MathRoutines.Miscellaneous>
@@ -935,8 +931,8 @@ Parameters:
   X - The value whose factorial to calculate. N must be smaller than 14.
 Result:
   Factorial of N.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@MinFloat
 <GROUP MathRoutines.Floatsupport>
@@ -950,8 +946,8 @@ Parameters:
   Y - Value 2.
 Result:
   The smaller of the two arguments.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@MaxFloat
 <GROUP MathRoutines.Floatsupport>
@@ -965,8 +961,8 @@ Parameters:
   Y - Value 2.
 Result:
   The larger of the two arguments.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Sgn
 <GROUP MathRoutines.Miscellaneous>
@@ -979,8 +975,8 @@ Parameters:
   X - Value whose sign to determine.
 Result:
   Sign of X expressed as -1, 0 or +1.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 @@Signe
 <GROUP MathRoutines.Miscellaneous>
@@ -993,8 +989,8 @@ Parameters:
   Y - The value that has the desired sign to assign to X.
 Result:
   The value of X with the sign (positive or negative) of Y.
-
-Donator: Clayton Collie
+Donator:
+  Clayton Collie
 --------------------------------------------------------------------------------
 
 @@CheckCrc32
@@ -1012,26 +1008,20 @@ Parameters:
   N - The number of elements in X. CheckCrc32_A uses all bytes in the array X.
   Crc - Transmitted CRC value to check the data against.
 Result:
-   
    * 0 No CRC error.
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
    * -1 Uncorrectable error (more than one false bit).
-   
 See also:
   Crc32
   InitCrc32
   CheckCrc16
-
-Donator: Michael Schnell
-
+Donator:
+  Michael Schnell
 @@CheckCrc32_A
 <COMBINE CheckCrc32>
-
 @@CheckCrc32_P
 <COMBINE CheckCrc32>
-
 --------------------------------------------------------------------------------
-
 @@Crc32
 <GROUP MathRoutines.CRC>
 Summary:
@@ -1052,27 +1042,20 @@ Parameters:
   N - The number of elements in X. Crc32_A calculates the checksum of all bytes in the array X.
   Crc - (optional) if not defined or = 0: Crc32 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
 Result:
-   
    * If on input CRC not defined or = 0: The result is the created CRC.
    * If on input CRC is defined: The result is 0 if the CRC was OK,
   otherwise the function
     returns the residuum for the correction function.
-
 See also:
   CheckCrc32
   InitCrc32
   Crc16
-
-  Category: Math Routines
-Donator: Michael Schnell
-
-
+Donator:
+  Michael Schnell
 @@Crc32_A
 <COMBINE Crc32>
-
 @@Crc32_P
 <COMBINE Crc32>
-
 --------------------------------------------------------------------------------
 @@InitCrc32
 <GROUP MathRoutines.CRC>
@@ -1096,8 +1079,8 @@ See also:
   Crc32
   CheckCrc32
   InitCrc16
-
-Donator: Michael Schnell
+Donator:
+  Michael Schnell
 --------------------------------------------------------------------------------
 @@CheckCrc16
 <GROUP MathRoutines.CRC>
@@ -1114,24 +1097,19 @@ Parameters:
   N - The number of elements in X. CheckCrc16_A uses all bytes in the array X.
   Crc - Transmitted CRC value to check the data against.
 Result:
-   
    * 0 No CRC error.
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
    * -1 Uncorrectable error (more than one false bit).
-   
 See also:
   Crc16
   InitCrc16
   CheckCrc32
-
-Donator: Michael Schnell
-
+Donator:
+  Michael Schnell
 @@CheckCrc16_A
 <COMBINE CheckCrc16>
-
 @@CheckCrc16_P
 <COMBINE CheckCrc16>
-
 --------------------------------------------------------------------------------
 @@Crc16
 <GROUP MathRoutines.CRC>
@@ -1153,25 +1131,19 @@ Parameters:
   N - The number of elements in X. Crc16_A calculates the checksum of all bytes in the array X.
   Crc - (optional) if not defined or = 0: Crc16 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
 Result:
-   
    * If on input CRC not defined or = 0: The result is the created CRC.
    * If on input CRC is defined: The result is 0 if the CRC was OK,
-  otherwise the function
-    returns the residuum for the correction function.
-   
+     otherwise the function returns the residuum for the correction function.
 See also:
   CheckCrc16
   InitCrc16
   Crc32
-
-Donator: Michael Schnell
-
+Donator:
+  Michael Schnell
 @@Crc16_A
 <COMBINE Crc16>
-
 @@Crc16_P
 <COMBINE Crc16>
-
 --------------------------------------------------------------------------------
 @@InitCrc16
 <GROUP MathRoutines.CRC>
@@ -1186,16 +1158,16 @@ Description:
   of the CRC.
   The starting value can by anything. $FFFF and 0 are usual definitions.
 Parameters:
-  polynomial - Generator polynomial to be used with subsequent calls to 16 bit CRC functions. The polynomial is given without the highest bit (bit x^16)
-  Start - 16 bit starting value to be used with subsequent calls to 16 bit CRC functions
+  Polynomial - Generator polynomial to be used with subsequent calls to 16 bit CRC functions. The polynomial is given without the highest bit (bit x^16).
+  Start - 16 bit starting value to be used with subsequent calls to 16 bit CRC functions.
 Notes:
   As a standard in the JEDI Code Library the compiler option {$J-} is set to prevent modifying typed constants. So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, which temporarily sets {$J+} for the CRC functions.
 See also:
   Crc16
   CheckCrc16
   InitCrc32
-
-Donator: Michael Schnell
+Donator:
+  Michael Schnell
 --------------------------------------------------------------------------------
 @@TFloatingPointClass
 <GROUP MathRoutines.Floatsupport>
@@ -1204,22 +1176,20 @@ Summary:
 Description:
   Enumeration which describes the classes into which floating point encodings can
   be divided. Their relations are as follows: A floating point encoding can be
-  either supported by the hardware or unsupported (<I>fpInvalid</I>). Supported
+  either supported by the hardware or unsupported (fpInvalid). Supported
   encodings subdivide into numbers and non-numbers, denoted by the term NaN
-  (<U>N</U>ot <U>a</U> <U>N</U>umber, <I>fpNaN</I>).  A number is either
-  finite or infinite (<I>fpInfinite</I>).  If finite, it is either denormal
-  (<I>fpDenormal</I>) or normal. If normal, it is either non-zero (<I>fpNormal</I>)
-  or zero (<I>fpZero</I>).
-   <P>
-   <B>Remarks</B>
+  (Not a Number, fpNaN).  A number is either
+  finite or infinite (fpInfinite).  If finite, it is either denormal
+  (fpDenormal) or normal. If normal, it is either non-zero (fpNormal)
+  or zero (fpZero).
+  Remarks
    * Only the Extended data type allows for unsupported encodings.
    * What separates NaNs from numbers is that the former are unordered. That is,
    the result of relational operations (<, <=, =, >=, >) is not defined for NaNs.
    * Certain classes of floating point values may result from an exception
-   condition if the corresponding FPU exception is
-   masked out.
+   condition if the corresponding FPU exception is masked out.
    See table below.
-   <TABLE>
+<TABLE>
 Exception class  Result on masked exception  Result class
 ---------------  --------------------------  ------------
 EInvalidOp       NaN (real indefinite)       fpNaN
@@ -1227,26 +1197,24 @@ EZeroDivide      Infinity/NegInfinity        fpInfinite
 EOverflow        Infinity/NegInfinity        fpInfinite
 EUnderflow       Denormal number             fpDenormal
 </TABLE>
-
-   </P>
 See also:
   FloatingPointClass
   IsNaN
   IsInfinite
-
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 @@TFloatingPointClass.fpZero
-  zero
+  Zero.
 @@TFloatingPointClass.fpNormal
-  non-zero normal finite number
+  Non-zero normal finite number.
 @@TFloatingPointClass.fpDenormal
-  denormalized finite
+  Denormalized finite.
 @@TFloatingPointClass.fpInfinite
-  infinite
+  Infinite.
 @@TFloatingPointClass.fpNaN
-  not a number
+  Not a number.
 @@TFloatingPointClass.fpInvalid
-  unsupported floating point format
+  Unsupported floating point format.
 --------------------------------------------------------------------------------
 @@FloatingPointClass
 <GROUP MathRoutines.Floatsupport>
@@ -1257,43 +1225,46 @@ Description:
 Parameters:
   Value - The value to classify.
 Result:
-  The result is the class to which <I>Value</I> belongs.
+  The result is the class to which Value belongs.
 See also:
   TFloatingPointClass
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsInfinite
 <GROUP MathRoutines.Floatsupport>
 Summary:
-  Determines whether <I>Value</I> is infinite.
+  Determines whether Value is infinite.
 Description:
-  Determines whether <I>Value</I> is infinite.
+  Determines whether Value is infinite.
 Parameters:
   Value - The floating point value to examine.
 Result:
-  The result is True when <I>Value</I> is infinite, False otherwise.
+  The result is True when Value is infinite, False otherwise.
 See also:
   TFloatingPointClass
   FloatingPointClass
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@IsNaN
 <GROUP MathRoutines.Floatsupport>
 Summary:
-  Determines whether <I>Value</I> is a NaN.
+  Determines whether Value is a NaN.
 Description:
-  Determines whether <I>Value</I> is a NaN.
+  Determines whether Value is a NaN.
 Parameters:
   Value - The floating point value to examine.
 Result:
-  The result is True when <I>Value</I> is a NaN, False otherwise.
+  The result is True when Value is a NaN, False otherwise.
 See also:
   TFloatingPointClass
   FloatingPointClass
   MakeQuietNaN
   MakeSignalingNaN
   TNaNTag
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@TNaNTag
 <GROUP MathRoutines.Floatsupport>
@@ -1305,7 +1276,8 @@ See also:
   GetNaNTag
   MakeQuietNaN
   MakeSignalingNaN
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetNaNTag
 <GROUP MathRoutines.Floatsupport>
@@ -1321,7 +1293,8 @@ See also:
   TNaNTag
   MakeQuietNaN
   MakeSignalingNaN
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@MakeQuietNaN
 <GROUP MathRoutines.Floatsupport>
@@ -1340,7 +1313,8 @@ See also:
   TNaNTag
   MakeSignalingNaN
   GetNaNTag
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@MakeSignalingNaN
 <GROUP MathRoutines.Floatsupport>
@@ -1362,7 +1336,8 @@ See also:
   TNaNTag
   MakeQuietNaN
   GetNaNTag
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@MineSingleBuffer
 <GROUP MathRoutines.Floatsupport>
@@ -1384,7 +1359,8 @@ See also:
   GetNaNTag
   MineDoubleBuffer
   MakeSignalingNaN
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@MineDoubleBuffer
 <GROUP MathRoutines.Floatsupport>
@@ -1406,7 +1382,8 @@ See also:
   GetNaNTag
   MineSingleBuffer
   MakeSignalingNaN
-Donator: Robert Rossmair
+Donator:
+  Robert Rossmair
 --------------------------------------------------------------------------------
 @@CalcMachineEps
 <GROUP MathRoutines.Floatsupport>
@@ -1414,9 +1391,9 @@ Summary:
   Calculates the Machine Epsilon value for the current precision.
 Description:
   This procedure calculates the Machine Epsilon value for the current precision
-  and stores it in the variable <i>Epsilon</i>. Nontheless <i>Epsilon</i> is not used
+  and stores it in the variable Epsilon. Nontheless Epsilon is not used
   for any calculations. Per definition, all JCL functions which need a specific epsilon
-  use the PrecisionTolerance variable instead. Therefor you need to call either
+  use the PrecisionTolerance variable instead. Therefore you need to call either
   SetPrecisionTolerance or SetPrecisionToleranceToEpsilon.
 See also:
   CalcMachineEpsSingle
@@ -1424,7 +1401,8 @@ See also:
   CalcMachineEpsExtended
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsSingle
 <GROUP MathRoutines.Floatsupport>
@@ -1432,7 +1410,7 @@ Summary:
   Calculates the Machine Epsilon value for single precision.
 Description:
   This procedure calculates the Machine Epsilon value for single precision
-  and stores it within the variable <i>EpsSingle</i>. Both, the variable Epsilon as well as the variable
+  and stores it within the variable EpsSingle. Both, the variable Epsilon as well as the variable
   PrecisionTolerance stay untouched.
 See also:
   CalcMachineEps
@@ -1440,7 +1418,8 @@ See also:
   CalcMachineEpsExtended
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsDouble
 <GROUP MathRoutines.Floatsupport>
@@ -1448,7 +1427,7 @@ Summary:
   Calculates the Machine Epsilon value for double precision.
 Description:
   This procedure calculates the Machine Epsilon value for double precision
-  and stores it within the variable <i>EpsDouble</i>. Both, the variable Epsilon as well as the variable
+  and stores it within the variable EpsDouble. Both, the variable Epsilon as well as the variable
   PrecisionTolerance stay untouched.
 See also:
   CalcMachineEps
@@ -1456,7 +1435,8 @@ See also:
   CalcMachineEpsExtended
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@CalcMachineEpsExtended
 <GROUP MathRoutines.Floatsupport>
@@ -1464,7 +1444,7 @@ Summary:
   Calculates the Machine Epsilon value for extended precision.
 Description:
   This procedure calculates the Machine Epsilon value for extended precision
-  and stores it within the variable <i>EpsExtended</i>. Both, the variable Epsilon as well as the variable
+  and stores it within the variable EpsExtended. Both, the variable Epsilon as well as the variable
   PrecisionTolerance stay untouched.
 See also:
   CalcMachineEps
@@ -1472,8 +1452,8 @@ See also:
   CalcMachineEpsDouble
   SetPrecisionTolerance
   SetPrecisionToleranceToEpsilon
-
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@Exp
 <GROUP MathRoutines.Exponential>
@@ -1483,7 +1463,8 @@ Description:
   Calculates e raised to a power x.
 Parameters:
   X - Value for which to calculate the exp.
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@IsFloatZero
 <GROUP MathRoutines.Floatsupport>
@@ -1498,7 +1479,8 @@ See also:
   IsNaN
   IsInfinite
   IsSpecialValue
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeFactor
 <GROUP MathRoutines.Miscellaneous>
@@ -1516,7 +1498,8 @@ See also:
   IsPrimeRM
   IsPrimeTD
   IsRelativePrime
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeRM
 <GROUP MathRoutines.Miscellaneous>
@@ -1533,13 +1516,13 @@ Parameters:
 See also:
   SetPrimalityTest
   IsPrime
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@IsPrimeTD
 <GROUP MathRoutines.Miscellaneous>
 Summary:
-  Determines whether a Value is a prime number according the Trial Division primality
-  test.
+  Determines whether a Value is a prime number according the Trial Division primality test.
 Description:
   Determines whether the value <i>N</I> is a prime number according the Trial Division
   Primality Test. Instead of using this function directly you should set the Primality Test
@@ -1547,7 +1530,8 @@ Description:
   prime.
 Parameters:
   N - The value to test.
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@IsSpecialValue
 <GROUP MathRoutines.Floatsupport>
@@ -1561,7 +1545,8 @@ Parameters:
 See also:
   IsNaN
   IsInfinite
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@PrimeFactors
 <GROUP MathRoutines.Miscellaneous>
@@ -1572,8 +1557,9 @@ Description:
 Parameters:
   N - The number for which the prime factors should be determined.
 See also:
-
-Donator: Unknown
+  TODO
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@SetPrecisionTolerance
 <GROUP MathRoutines.Floatsupport>
@@ -1581,13 +1567,13 @@ Summary:
   Set the precision tolerance to a new value.
 Description:
   This function sets the PrecisionTolerance variable to
-  a new value <i>NewTolerance</i>.
+  a new value NewTolerance.
 Parameters:
   NewTolerance - The new tolerance to use.
 See also:
   SetPrecisionToleranceToEpsilon
-
-Donator: Unknown
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@SetPrecisionToleranceToEpsilon
 <GROUP MathRoutines.Floatsupport>
@@ -1598,8 +1584,9 @@ Description:
   Epsilon. Epsilon is (re-) calaculated using the
   CalcMachineEps function.
 Parameters:
-
-Donator: Unknown
+  TODO
+Donator:
+  Unknown
 --------------------------------------------------------------------------------
 @@SetPrimalityTest
 <GROUP MathRoutines.Miscellaneous>
@@ -1648,13 +1635,13 @@ Description
 
   Now you are done. Anyway, please consider to donate your
   function to the main JCL branch.
-
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@MathConstants
 <TITLE Constants used in JclMath>
 <GROUP MathRoutines>
-Description
+Description:
   The JCL provides many mathematical constants. Some to speed
   up a function and some just because they are common within
   math calculations. All these constants are provided with the
@@ -1696,7 +1683,7 @@ Description
   MaxFloatingPoint                             Depends on selected float data type.
   MinFloatingPoint                             Depends on selected float data type.
 </TABLE>
-
+--------------------------------------------------------------------------------
 @@Cbrt2
 <ALIAS MathConstants>
 --------------------------------------------------------------------------------
@@ -1801,14 +1788,14 @@ Description
 Summary:
   Determines whether a value is a prime number.
 Description:
-  Determines whether the value <i>N</I> is a prime number according the currently active
+  Determines whether the value N is a prime number according the currently active
   Primality Test. You should set the Primality Test using the SetPrimalityTest function.
 Parameters:
   N - The value to test.
 See also:
   SetPrimalityTest
-
-Donator: Matthias Thoma
+Donator:
+  Matthias Thoma
 --------------------------------------------------------------------------------
 @@Epsilon
 <GROUP MathRoutines.Floatsupport>
@@ -1817,8 +1804,8 @@ Summary:
 Description:
   Epsilon holds the calculated machine Epsilon. If no Epsilon has been calaculated
   by the CalcMachineEps procedure the value of Epsilon is undetermined.
-  <P>
-  Nontheless <i>Epsilon</i> is not used for any calculations. Per definition,
+  
+  Nontheless Epsilon is not used for any calculations. Per definition,
   all JCL functions which need a specific epsilon use the PrecisionTolerance
   variable instead. Therefor you need to call either SetPrecisionTolerance or
   SetPrecisionToleranceToEpsilon.
@@ -1846,275 +1833,265 @@ Description:
   Several JCL functions and procedures are using PrecisionTolerance. For example,
   IsFloatZero uses this variable to determine if a value is zero or near by zero.
 --------------------------------------------------------------------------------
-
 @@TJclASet
-Ancestor class for different implementations of bit fields.
+Description:
+  Ancestor class for different implementations of bit fields.
 
+  Do not use this class directly, it doesn't implement anything
+  but exposes abstract functions to manage the field of bits.
 
-
-Do not use this class directly, it doesn't implement anything
-but exposes abstract functions to manage the field of bits.
-
-
-
-Depending on your data, you should use TJclFlatSet or
-TJclSparseFlatSet.
-
-
-See Also
-TJclFlatSet
-
-TJclSparseFlatSet
-
+  Depending on your data, you should use TJclFlatSet or
+  TJclSparseFlatSet.
+See also:
+  TJclFlatSet
+  TJclSparseFlatSet
+--------------------------------------------------------------------------------
 @@TJclASet.Clear
-Clear the field of bits. After a call to this function, the
-number of stored bits is set to 0.
-Parameters
-This function has no parameter.
-Returns
-This function returns nothing.
-
+Summary:
+  Clear the field of bits. After a call to this function, the
+  number of stored bits is set to 0.
+Parameters:
+  This function has no parameter.
+Result:
+  This function returns nothing.
+--------------------------------------------------------------------------------
 @@TJclASet.GetBit@Integer
-This function returns the state for the indexed bit. To set
-the value of this bit, use TJclASet.SetBit.
-Parameters
-Idx :  Index of the bit
-Returns
-The return value is the value of the indexed bit.
-See Also
-TJclASet.SetBit
-
+Summary:
+  This function returns the state for the indexed bit. To set
+  the value of this bit, use TJclASet.SetBit.
+Parameters:
+  Idx - Index of the bit.
+Result:
+  The return value is the value of the indexed bit.
+See also:;
+  TJclASet.SetBit
+--------------------------------------------------------------------------------
 @@TJclASet.GetRange@Integer@Integer@Boolean
-This function returns true if all bits in the specified range
-are equal to the Value.
+Summary:
+  This function returns true if all bits in the specified range
+  are equal to the Value.
 
-
-
-To set a range of bits to a predefined value, use
-TJclASet.SetRange.
-Parameters
-Low :    Lower bound of the range
-High :   Higher bound of the range
-Value :  Value for reference
-Returns
-This function returns true if all bits are equals to the
-reference value, false otherwise.
-See Also
-TJclASet.SetRange
-
+  To set a range of bits to a predefined value, use
+  TJclASet.SetRange.
+Parameters:
+  Low -  Lower bound of the range.
+  High - Higher bound of the range.
+  Value - Value for reference.
+Result:
+  This function returns true if all bits are equals to the
+  reference value, false otherwise.
+See also:
+  TJclASet.SetRange
+--------------------------------------------------------------------------------
 @@TJclASet.Invert
-This function invert the value of all bits in the stored
-field.
+Summary:
+  This function invert the value of all bits in the stored field.
 
-To set the value of one bit, use the TJclASet.SetBit
-function.To set a range of bits to a predefined value, use
-the TJclASet.SetRange function.
-Returns
-This function returns nothing.
-See Also
-TJclASet.SetBit
-
-TJclASet.SetRange
-Parameters
-
+  To set the value of one bit, use the TJclASet.SetBit
+  function.To set a range of bits to a predefined value, use
+  the TJclASet.SetRange function.
+Parameters:
+  TODO
+Result:
+  This function returns nothing.
+See also:
+  TJclASet.SetBit
+  TJclASet.SetRange
+--------------------------------------------------------------------------------
 @@TJclASet.SetBit@Integer@Boolean
-This function sets the value for the indexed bit.
+Summary:
+  This function sets the value for the indexed bit.
 
-To set a range a bits to a predefined value, use the
-TJclASet.SetRange function.
+  To set a range a bits to a predefined value, use the
+  TJclASet.SetRange function.
 
-To get the value of a bit, use the TJclASet.GetBit function.
-Parameters
-Idx :    Index of the bit
-Value :  New value for this bit
-
-Returns
-This function returns nothing.
-See Also
-TJclASet.SetRange
-
-TJclASet.GetBit
-
+  To get the value of a bit, use the TJclASet.GetBit function.
+Parameters:
+  Idx - Index of the bit.
+  Value - New value for this bit.
+Result:
+  This function returns nothing.
+See also:
+  TJclASet.SetRange
+  TJclASet.GetBit
+--------------------------------------------------------------------------------
 @@TJclASet.SetRange@Integer@Integer@Boolean
-This function sets a range of bits to a predefined value.
+Summary:
+  This function sets a range of bits to a predefined value.
 
-To set a value to a single bit, use the TJclASet.SetBit
-function.
+  To set a value to a single bit, use the TJclASet.SetBit
+  function.
 
-To test the value of a range of bits, use the
-TJclASet.GetRange function.
-Parameters
-Low :    Lower bound of the range
-High :   Higher bound of the range
-Value :  New value for all bits in the range
-
-Returns
-This function returns nothing.
-See Also
-TJclASet.SetBit
-
-TJclASet.GetRange
-
+  To test the value of a range of bits, use the
+  TJclASet.GetRange function.
+Parameters:
+  Low - Lower bound of the range.
+  High - Higher bound of the range.
+  Value -New value for all bits in the range.
+Result:
+  This function returns nothing.
+See also:
+  TJclASet.SetBit
+  TJclASet.GetRange
+--------------------------------------------------------------------------------
 @@TJclFlatSet
-This class implements functions to handle a field of
-contiguous bits. It inherits from TJclASet and implements all
-the abstract functions defined in its ancestor.
+Summary:
+  This class implements functions to handle a field of
+  contiguous bits. It inherits from TJclASet and implements all
+  the abstract functions defined in its ancestor.
 
-the TJclSparseFlatSet class is preferred to handle a field of
-sparse bits (not contiguous).
-
-
-See Also
-TJclASet
-
-TJclSparseFlatSet
-
+  the TJclSparseFlatSet class is preferred to handle a field of
+  sparse bits (not contiguous).
+See also:
+  TJclASet
+  TJclSparseFlatSet
+--------------------------------------------------------------------------------
 @@TJclFlatSet.Create
-Create an empty field of contiguous bits.
-
+Summary:
+  Create an empty field of contiguous bits.
+--------------------------------------------------------------------------------
 @@TJclFlatSet.Destroy
-Destroy the array of contiguous bits.
-
+Summary:
+  Destroy the array of contiguous bits.
+--------------------------------------------------------------------------------
 @@TJclSparseFlatSet
-This class implements functions to handle a field of
-discontinuous bits. It inherits from TJclASet and implements
-all the abstract functions defined in its ancestor.
+Summary:
+  This class implements functions to handle a field of
+  discontinuous bits. It inherits from TJclASet and implements
+  all the abstract functions defined in its ancestor.
 
-A sparse field lowers the memory usage when some ranges of
-bits are not needed.
+  A sparse field lowers the memory usage when some ranges of
+  bits are not needed.
 
-The TJclFlatSet class is preferred to handle a field of
-contiguous bits.
-See Also
-TJclASet
-
-TJclFlatSet
-
+  The TJclFlatSet class is preferred to handle a field of
+  contiguous bits.
+See also:
+  TJclASet
+  TJclFlatSet
+--------------------------------------------------------------------------------
 @@TJclSparseFlatSet.Destroy
-Destroy the field of bits.
-
+Summary:
+  Destroy the field of bits.
+--------------------------------------------------------------------------------
 @@TJclRational
-This class handles operations for rational numbers.
+Summary:
+  This class handles operations for rational numbers.
 
-A rational number is represented as a fraction
-numerator/denominator where both numerator and denominator
-are signed integers.
+  A rational number is represented as a fraction
+  numerator/denominator where both numerator and denominator
+  are signed integers.
 
-This format can be used to represent integer number as well
-as floating point numbers (which are approximated as a
-fraction).
+  This format can be used to represent integer number as well
+  as floating point numbers (which are approximated as a
+  fraction).
 
-All basic operations (addition, subtraction, multiplication,
-division, power, square root) are exposed as functions as
-well as equality test.
-
+  All basic operations (addition, subtraction, multiplication,
+  division, power, square root) are exposed as functions as
+  well as equality test.
+--------------------------------------------------------------------------------
 @@TJclRational.AsFloat
-This property converts the rational number from/to a floating
-point representation.
+Summary:
+  This property converts the rational number from/to a floating
+  point representation.
 
-Some rational numbers cannot be exactly represented as
-floating point numbers (such as 1/3), they are represented as
-the nearest floating point value.
+  Some rational numbers cannot be exactly represented as
+  floating point numbers (such as 1/3), they are represented as
+  the nearest floating point value.
 
-To have a string representation of the rational number, use
-the TJclRational.AsString property.
-See Also
-TJclRational.AsString
-
+  To have a string representation of the rational number, use
+  the TJclRational.AsString property.
+See also:
+  TJclRational.AsString
+--------------------------------------------------------------------------------
 @@TJclRational.AsString
-This property converts the rational number from/to a string
-representation.
+Summary:
+  This property converts the rational number from/to a string
+  representation.
 
-On read, the string format is always 'Numerator/Denominator',
-\on write this property accepts a floating point
-representation of a number as well as the
-'Numerator/Denominator' representation.
+  On read, the string format is always 'Numerator/Denominator',
+  on write this property accepts a floating point
+  representation of a number as well as the
+  'Numerator/Denominator' representation.
 
-To have a floating point representation of the rational
-number, use the TJclRational.AsFloat property.
-See Also
-TJclRational.AsFloat
-
+  To have a floating point representation of the rational
+  number, use the TJclRational.AsFloat property.
+See also:
+  TJclRational.AsFloat
+--------------------------------------------------------------------------------
 @@TJclRational.Denominator
-This property is a read-only access to the denominator of the
-rational number.
-
-
-See Also
-TJclRational.Numerator
-
+Summary:
+  This property is a read-only access to the denominator of the
+  rational number.
+See also:
+  TJclRational.Numerator
+--------------------------------------------------------------------------------
 @@TJclRational.Numerator
-This property is a read-only access to the numerator of the
-rational number.
-
-
-See Also
-TJclRational.Denominator
-
+Summary:
+  This property is a read-only access to the numerator of the
+  rational number.
+See also:
+  TJclRational.Denominator
+--------------------------------------------------------------------------------
 @@TJclRational.Abs
-This function replaces the rational number by its absolute
-value: a positive number is not changed, a negative number is
-changed to its opposite value.
+Summary:
+  This function replaces the rational number by its absolute
+  value: a positive number is not changed, a negative number is
+  changed to its opposite value.
 
-To get the sign of the number, use the Sgn property. To
-change the sign of the number, use the Negate method.
-Parameters
-This function has no parameter.
-Returns
-This function returns nothing.
-See Also
-TJclRational.Sgn
-
-TJclRational.Negate
-
+  To get the sign of the number, use the Sgn property. To
+  change the sign of the number, use the Negate method.
+Parameters:
+  This function has no parameter.
+Result:
+  This function returns nothing.
+See also:
+  TJclRational.Sgn
+  TJclRational.Negate
+--------------------------------------------------------------------------------
 @@TJclRational.Add@Float
-Add the specified floating point number to this number.
+Summary:
+  Add the specified floating point number to this number.
 
-The current value is converted to a float, then added to the
-argument. The result of this addition is converted back to a
-rational number.
-
-
-Parameters
-V :  Floating point number to be added
-
-Returns
-This function returns nothing.
-See Also
-TJclRational.Subtract
-
+  The current value is converted to a float, then added to the
+  argument. The result of this addition is converted back to a
+  rational number.
+Parameters:
+  V - Floating point number to be added.
+Result:
+  This function returns nothing.
+See also:
+  TJclRational.Subtract
+--------------------------------------------------------------------------------
 @@TJclRational.Add@Integer
-Add the specified integer number to this rational number.
-Parameters
-V :  Integer number to be added
-Returns
-This function returns nothing.
-See Also
-TJclRational.Subtract
-
+Summary:
+  Add the specified integer number to this rational number.
+Parameters:
+  V - Integer number to be added.
+Result:
+  This function returns nothing.
+See also:
+  TJclRational.Subtract
+--------------------------------------------------------------------------------
 @@TJclRational.Add@TJclRational
-Add the rational number to this number.
-Parameters
-V :  Rational number to be added
-Returns
-This function returns nothing.
-See Also
-TJclRational.Subtract
-
+Summary:
+  Add the rational number to this number.
+Parameters:
+V - Rational number to be added.
+Result:
+  This function returns nothing.
+See also:
+  TJclRational.Subtract
+--------------------------------------------------------------------------------
 @@!!OVERLOADED_Add_TJclRational
-These overloaded functions add a number to this number.
+Summary:
+  These overloaded functions add a number to this number.
 
-This operation is implemented with three different versions
-depending on the type of the number to added:
-
-\- to add a floating point number: <link TJclRational.Add@Float, TJclRational.Add Method (Float)>
-
-\- to add an integer number: <link TJclRational.Add@Integer, TJclRational.Add Method (Integer)>
-
-\- to add a rational number: <link TJclRational.Add@TJclRational, TJclRational.Add Method (TJclRational)>
-See Also
-<link TJclRational.Add@Float>
-
-<link TJclRational.Add@Integer>
-
-<link TJclRational.Add@TJclRational>
+  This operation is implemented with three different versions
+  depending on the type of the number to added:
+  - to add a floating point number: TJclRational.Add Method (Float)
+  - to add an integer number: TJclRational.Add Method (Integer)
+  - to add a rational number: TJclRational.Add Method (TJclRational)
+See also:
+  TJclRational.Add@Float
+  TJclRational.Add@Integer
+  TJclRational.Add@TJclRational

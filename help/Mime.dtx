@@ -132,8 +132,8 @@ Summary:
   The primary Mime encoding routine.
 Description:
   MimeEncode is the primary MIME-encoding routine and is used by MimeEncodeString
-  and MimeEncodeStream but can also be used directly.<B>
-  CAUTION:</B> OutputBuffer must have enough memory allocated to take all encoded
+  and MimeEncodeStream but can also be used directly.
+  CAUTION: OutputBuffer must have enough memory allocated to take all encoded
   output. MimeEncodedSize(InputBytesCount) calculates this amount in bytes.
   MimeEncode will then fill the entire OutputBuffer, so there is no
   OutputBytesCount result for this procedure. Preallocating all memory at once (as
@@ -155,8 +155,8 @@ Donator:
 Summary:
   The primary Mime decoding routine.
 Description:
-  MimeDecode is the primary MIME-decoding routine and can also be used directly.<B>
-  CAUTION:</B> OutputBuffer must have enough memory allocated to take all
+  MimeDecode is the primary MIME-decoding routine and can also be used directly.
+  CAUTION: OutputBuffer must have enough memory allocated to take all
   output. MimeDecodedSize(InputBytesCount) calculates this amount in bytes. There is no
   guarantee that all output will be filled after decoding. MimeDecode therefore
   returns the actual number of bytes written to OutputBuffer. Preallocating all

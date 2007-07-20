@@ -366,7 +366,7 @@ Description:
   actual dynamic array or a simulated dynamic array. The tables below show the
   declaration of the dynamic array types. When the compiler natively supports
   dynamic arrays you can work with types just as if they were declared using the
-  array of Type syntax. <P>If the compiler doesn't support dynamic arrays you
+  array of Type syntax. If the compiler doesn't support dynamic arrays you
   must use the various DynArrayXxx routines. Before you can use a TDynArray you
   must initialize it using DynArrayInitialize.
   To query or change the length of the array you use DynArrayLength
@@ -374,7 +374,7 @@ Description:
   reference an element of the array you use MyArray^[Index] where Index is the index
   of the element between 0 and the length of the array minus 1. When you are done
   with the array you must release it's memory by calling DynArrayFinalize.
-  Compiler supports dynamic arrays</B> (Note that routines that take a TDynArray
+  Compiler supports dynamic arrays (Note that routines that take a TDynArray
   as a parameter need an actual TDynArray so you can't declare the parameter using
   the "array of Type" syntax):
 <TABLE>
@@ -393,7 +393,7 @@ TDynDoubleArray    array of Double
 TDynSingleArray    array of Single
 </TABLE>
 
-  Compiler does not support dynamic arrays</B> (See the various DynArrayXxx routines).
+  Compiler does not support dynamic arrays (See the various DynArrayXxx routines).
   The TDynXxxArray types are declared as a pointer to PDynXxxArray types. The
   use of the 'P' and 'T' prefix are reversed here to maintain consistency with
   the situation where dynamic arrays are supported. As an example the full
@@ -735,7 +735,7 @@ Summary:
 --------------------------------------------------------------------------------
 @@PFloat
 Summary:
-  Type for a pointer to a <link Float> value.
+  Type for a pointer to a Float value.
 --------------------------------------------------------------------------------
 @@PPointer
 Summary:
@@ -743,11 +743,11 @@ Summary:
 --------------------------------------------------------------------------------
 @@PLargeInteger
 Summary:
-  Type for pointer to a <link TLargeInteger> value.
+  Type for pointer to a TLargeInteger value.
 --------------------------------------------------------------------------------
 @@PULargeInteger
 Summary:
-  Type for a pointer to a <link TULargeInteger> value.
+  Type for a pointer to a TULargeInteger value.
 --------------------------------------------------------------------------------
 @@TLargeInteger
 Summary:
@@ -771,7 +771,7 @@ Summary:
 --------------------------------------------------------------------------------
 @@PJclByteArray
 Summary:
-  Type for a pointer to a <link TJclByteArray> value.
+  Type for a pointer to a TJclByteArray value.
 --------------------------------------------------------------------------------
 @@TDynByteArray
 Summary:
@@ -795,7 +795,7 @@ Summary:
 --------------------------------------------------------------------------------
 @@TDynFloatArray
 Summary:
-  Type for a dynamic array of <link Float>.
+  Type for a dynamic array of Float.
 --------------------------------------------------------------------------------
 @@TDynIInterfaceArray
 Summary:

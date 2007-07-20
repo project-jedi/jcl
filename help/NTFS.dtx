@@ -535,7 +535,7 @@ Result:
   being incorrect. You can call GetLastError but this will usually simply return
   the error "parameter is incorrect".
 Notes:
-  Internally this function has to temporarily create a symbolic link for the specified device. This link is deleted as soon as possible. Although very unlikely, it is possible that deleting this link will fail. If so, the function raises an EJclNtfsError exception and exits <B>without</B> mounting the device. If this happens you should try to delete the symbolic link at a later time and retry. See the implementation of this function for how to achieve this.
+  Internally this function has to temporarily create a symbolic link for the specified device. This link is deleted as soon as possible. Although very unlikely, it is possible that deleting this link will fail. If so, the function raises an EJclNtfsError exception and exits without mounting the device. If this happens you should try to delete the symbolic link at a later time and retry. See the implementation of this function for how to achieve this.
 See also:
   NtfsIsFolderMountPoint
   NtfsMountVolume
@@ -644,8 +644,8 @@ Summary:
   Sets the compression state for all files specified by Path.
 Description:
   NtfsSetPathCompression sets the compression state for all files in the directory
-  specified by <I>Path</I> which match the file name implied by <I>Path</I>.
-  When <I>Recursive</I> is set, subdirectories are processed as well.
+  specified by Path which match the file name implied by Path.
+  When Recursive is set, subdirectories are processed as well.
   The underlying filesystem must support per stream compression or this function
   will fail. Currently only LZNT1 is supported as the compression format but this
   may change in future releases of the Windows operating system.
@@ -654,7 +654,7 @@ Parameters:
   State - The desired compression state.
   Recursive - Determines whether subdirectories are affected.
 Notes:
-  The file compression default (compare NtfsSetDefaultFileCompression) for the involved directories is affected only if <I>Path</I> denotes a directory. If, in addition, <I>Recursive</I> is set, NtfsSetPathCompression will work exactly like NtfsSetDirectoryTreeCompression(Path, State).
+  The file compression default (compare NtfsSetDefaultFileCompression) for the involved directories is affected only if Path denotes a directory. If, in addition, Recursive is set, NtfsSetPathCompression will work exactly like NtfsSetDirectoryTreeCompression(Path, State).
   The underlying filesystem must support per stream compression. Currently that means the specified file or directory must reside on an NTFS formatted partition. The FAT filesystem does not support compression.
 See also:
   TFileCompressionState

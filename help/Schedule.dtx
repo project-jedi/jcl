@@ -132,25 +132,25 @@ Donator:
 @@TScheduleIndexKind.sikNone
   No indexing.
 @@TScheduleIndexKind.sikDay
-  The index specifies the <I>n</I>th day.
+  The index specifies the nth day.
 @@TScheduleIndexKind.sikWeekDay
-  The index specifies the <I>n</I>th week day (monday - friday).
+  The index specifies the nth week day (monday - friday).
 @@TScheduleIndexKind.sikWeekendDay
-  The index specifies the <I>n</I>th weekend day (saturday and sunday).
+  The index specifies the nth weekend day (saturday and sunday).
 @@TScheduleIndexKind.sikMonday
-  The index specifies the <I>n</I>th monday.
+  The index specifies the nth monday.
 @@TScheduleIndexKind.sikTuesday
-  The index specifies the <I>n</I>th tuesday.
+  The index specifies the nth tuesday.
 @@TScheduleIndexKind.sikWednesday
-  The index specifies the <I>n</I>th wednesday.
+  The index specifies the nth wednesday.
 @@TScheduleIndexKind.sikThursday
-  The index specifies the <I>n</I>th thursday.
+  The index specifies the nth thursday.
 @@TScheduleIndexKind.sikFriday
-  The index specifies the <I>n</I>th friday.
+  The index specifies the nth friday.
 @@TScheduleIndexKind.sikSaturday
-  The index specifies the <I>n</I>th saturday.
+  The index specifies the nth saturday.
 @@TScheduleIndexKind.sikSunday
-  The index specifies the <I>n</I>th sunday.
+  The index specifies the nth sunday.
 ----------------------------------------------------------------------------------------------------
 @@ESchedule
 <GROUP DateandTime.Scheduling.Types>
@@ -552,8 +552,7 @@ Description:
   IJclDailySchedule is the interface to the daily schedule. With the daily schedule you can specify
   the number of days to skip between events or that events only occur on weekdays.
   
-  This interface is supported for schedule with <LINK IJclSchedule.RecurringType, RecurringType> set
-  to srkDaily.
+  This interface is supported for schedule with IJclSchedule.RecurringType set to srkDaily.
 Donator:
   Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
@@ -567,7 +566,7 @@ Description:
   Setting EveryWeekDay to True will generate events on every weekday. Reading Interval will return
   0 (zero), but the original value is preserved.
   
-  Setting EveryWeekDay to False will generate events every <I>n</I> days, where <I>n</I> is
+  Setting EveryWeekDay to False will generate events every n days, where n is
   specified by Interval. Setting Interval will also result in EveryWeekDay being set to False.
 See also:
   Interval
@@ -595,8 +594,7 @@ Description:
   IJclWeeklySchedule is the interface to the weekly schedule. With the weekly schedule you can
   specify the days of a week and the number of weeks to skip between events.
   
-  This interface is supported for schedule with <LINK IJclSchedule.RecurringType, RecurringType> set
-  to srkWeekly.
+  This interface is supported for schedule with IJclSchedule.RecurringType set to srkWeekly.
 Donator:
   Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
