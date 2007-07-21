@@ -84,7 +84,7 @@ Description:
   To receive notifications you must override the WndProc of
   your main form and include the following code (or something
   along those lines):
-  <pre>
+  
   procedure TForm1.WndProc(var Msg: TMessage);
   begin
     if Msg.Msg = JclAppInstances.MessageId then
@@ -95,7 +95,7 @@ Description:
       end;
     inherited WndProc(Msg);
   end;
-  </pre>
+  
   Note that in both instance creation and instance destruction
   the Msg.LParam field contains the process ID of the affected
   instance (which could be the instance itself). Also,

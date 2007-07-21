@@ -92,7 +92,7 @@ Description:
   the kind of event and whether it is signaled.
 Parameters:
   Handle - Handle of the event object for which you want information.
-  Info - Received information about the event. TEventInfo is defined as:   <PRE class=syntax>   TEventInfo = <B>record</B>     EventType: Longint;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>
+  Info - Received information about the event. TEventInfo is defined as:   TEventInfo = record     EventType: Longint;     Signaled: LongBool;   end;   The following table describes the members of this record:   <TABLE>
 Member     Type      Description
 ---------  --------  -------------------------------------------------------------------------------------------------------------------
 EventType  Longint   If the event is a manual-reset event this member is 0. If the event is an auto-reset event this member is non-zero.
@@ -119,7 +119,7 @@ Description:
   signaled.
 Parameters:
   Handle - Handle of the timer object for which you want information.
-  Info - Received information about the timer. TTimerInfo is defined as:   <PRE class=syntax>   TTimerInfo = <B>record</B>     Remaining: TLargeInteger;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>
+  Info - Received information about the timer. TTimerInfo is defined as:   TTimerInfo = record     Remaining: TLargeInteger;     Signaled: LongBool;   end;   The following table describes the members of this record:   <TABLE>
 Member     Type           Description
 ---------  -------------  ----------------------------------------------------------------
 Remaining  TLargeInteger  The time, in 100 ns intervals, until the timer becomes signaled.
@@ -145,7 +145,7 @@ Description:
   the semaphores' current and maximum count.
 Parameters:
   Handle - Handle of the semaphore object for which you want information.
-  Info - Received information about the event. TSemaphoreInfo is defined as:   <PRE class=syntax>   TSemaphoreCounts = <B>record</B>     CurrentCount: Longint;     MaximumCount: Longint;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>
+  Info - Received information about the event. TSemaphoreInfo is defined as:   TSemaphoreCounts = record     CurrentCount: Longint;     MaximumCount: Longint;   end;    The following table describes the members of this record:   <TABLE>
 Member        Type     Description
 ------------  -------  -------------------------------------------------------------------------------
 CurrentCount  Longint  The current count of the semaphore object.
@@ -172,7 +172,7 @@ Description:
   whether the mutex is signaled and owned.
 Parameters:
   Handle - Handle of the mutex object for which you want information.
-  Info - Received information about the mutex. TMutexInfo is defined as:   <PRE class=syntax>   TMutexInfo = <B>record</B>     SignalState: Longint;     Owned: Boolean;     Abandoned: Boolean;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>
+  Info - Received information about the mutex. TMutexInfo is defined as:   TMutexInfo = record     SignalState: Longint;     Owned: Boolean;     Abandoned: Boolean;   end;   The following table describes the members of this record:   <TABLE>
 Member       Type     Description
 -----------  -------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 SignalState  Longint  Indicates the state of the mutex. If this member is greater than 0 the mutex is signaled. A value smaller than 0 indicates the number of times the mutex was recursively acquired.
@@ -205,13 +205,13 @@ Description:
   The distinction between readers and writers is made based on how the threads
   request access to the resource. Readers use the BeginRead and EndRead methods
   while Writers use BeginWrite and EndWrite. It is up to the application to define
-  what readers and writers really are.<P>
+  what readers and writers really are.
   In addition to the above, the class allows readers to be promoted to writers and
   it allows the application to tune the access. If you so wish you can have the
   class favor readers over writers, vice versa or treat them equally. Note that
   if you have the class favor one over the other than the 'other' may never get
   access to the resource depending on the details of your application and pure
-  coincidence (due to timing issues which are beyond control of the class).<P>
+  coincidence (due to timing issues which are beyond control of the class).
   Note that the implementation of this class was inspired mainly by Jeffrey Richters
   CMREW class presented in his book "Programming applications for Microsoft Windows,
   4th edition".
@@ -328,7 +328,7 @@ Description:
   written by Jeffrey Richter and is presented, and fully explained, in his excellent,
   must-have book "Programming applications for Microsoft Windows, 4th edition".
   This book was formerly titled "Advanced Windows". The Object Pascal class that
-  is included in the JCL is <U>almost</U> a straight port from that code. Any bugs
+  is included in the JCL is almost a straight port from that code. Any bugs
   in this class were most likely introduced by these modifications or an incorrect
   port.
 Donator:
@@ -579,7 +579,7 @@ Value               Meaning
 TIMER_ALL_ACCESS    Specifies all possible access rights for the timer object.
 TIMER_MODIFY_STATE  Enables use of the timer handle in the SetTimer and Cancel methods to modify the timer's state.
 TIMER_QUERY_STATE   Reserved for future use.
-SYNCHRONIZE         <B>Windows NT/2000:</B> Enables use of the timer handle in any of the wait methods to wait for the timer's state to be signaled.
+SYNCHRONIZE         Windows NT/2000: Enables use of the timer handle in any of the wait methods to wait for the timer's state to be signaled.
 </TABLE>
 
   Inheritable - Specifies whether the Handle of the waitable timer object can be inherited by child processes.
@@ -659,7 +659,7 @@ Access                  Description
 ----------------------  ----------------------------------------------------------------------------------------------------------------------------------------
 SEMAPHORE_ALL_ACCESS    Specifies all possible access flags for the semaphore object.
 SEMAPHORE_MODIFY_STATE  Enables use of the semaphore handle in the Release method to modify the semaphore's count.
-SYNCHRONIZE             <B>Windows NT/2000:</B> Enables use of the semaphore handle in any of the wait methods to wait for the semaphore's state to be signaled.
+SYNCHRONIZE             Windows NT/2000: Enables use of the semaphore handle in any of the wait methods to wait for the semaphore's state to be signaled.
 </TABLE>
 
    - Specifies whether the Handle of the semaphore object can be inherited by child processes.
@@ -702,7 +702,7 @@ Parameters:
 Access            Description
 ----------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MUTEX_ALL_ACCESS  Specifies all possible access flags for the mutex object.
-SYNCHRONIZE       <B>Windows NT/2000:</B> Enables use of the mutex handle in any of the wait functions to acquire ownership of the mutex, or in the ReleaseMutex function to release ownership.
+SYNCHRONIZE       Windows NT/2000: Enables use of the mutex handle in any of the wait functions to acquire ownership of the mutex, or in the ReleaseMutex function to release ownership.
 </TABLE>
 
   Inheritable - Specifies whether the Handle of the Mutex object can be inherited by child processes.
@@ -769,7 +769,7 @@ Result:
   If ownership of the critical section object is acquired the function returns
   True. If ownership could not be acquired because the critical section was already
   owned by a different thread the function returns False. In this latter case you
-  must take care <u>not</U> to call Release.
+  must take care not to call Release.
 Donator:
   Marcel van Brakel
 Contributor:
@@ -988,7 +988,7 @@ Access              Description
 ------------------  ----------------------------------------------------------------------------------------------------------------------------------
 EVENT_ALL_ACCESS    Specifies all possible access flags for the event object.
 EVENT_MODIFY_STATE  Enables modification of the event's state with the SetEvent and ResetEvent methods.
-SYNCHRONIZE         <B>Windows NT/2000:</B> Enables use of the event handle in any of the wait functions to wait for the event's state to be signaled.
+SYNCHRONIZE         Windows NT/2000: Enables use of the event handle in any of the wait functions to wait for the event's state to be signaled.
 </TABLE>
 
   Inheritable - Specifies whether the Handle of the Event object can be inherited by child processes.
@@ -1476,7 +1476,7 @@ Description:
   TJclMeteredSection is basically nothing more than a semaphore kernel object except
   that it is much faster. Its speed comes from the fact that unless the calling
   thread has to enter a wait state, all code is executed in user mode. This in
-  opposition to a semaphore which always requires a transition to kernel mode.<P>
+  opposition to a semaphore which always requires a transition to kernel mode.
   This class is (almost) a straight port from the metered section object as presented
   in the article "A Quick and Versatile Synchronization Object", Dan Chou which is
   available from the MSDN Library (Technical Articles\Windows Platform\MultiThreading).
@@ -1528,7 +1528,7 @@ Description:
 Parameters:
   InitialCount - Specifies an initial count of open slots for the metered section. This value must be greater than or equal to zero and less than or equal to MaxCount. A slot is available when the count is greater than zero and none is available when it is zero. The count is decreased by one whenever the EnterMeteredSection function releases a thread that was waiting for the metered section. The count is increased by a specified amount by calling the LeaveMeteredSection function.
   MaxCount - Specifies the maximum number of available slots for the metered section. This value must be greater than zero.
-  Name - String specifying the name of the metered section. The name is limited to MAX_METSECT_NAMELEN characters, and can contain any character except the backslash path-separator character (\). Name comparison is case sensitive.<P> If Name matches the name of an existing named metered section, the InitialCount and MaxCount parameters are ignored because they have already been set by the process that originally created the metered section.<P> If Name is empty, the metered section is created without a name.
+  Name - String specifying the name of the metered section. The name is limited to MAX_METSECT_NAMELEN characters, and can contain any character except the backslash path-separator character (\). Name comparison is case sensitive. If Name matches the name of an existing named metered section, the InitialCount and MaxCount parameters are ignored because they have already been set by the process that originally created the metered section. If Name is empty, the metered section is created without a name.
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------

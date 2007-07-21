@@ -64,8 +64,8 @@ Parameters:
 Result:
   If the specified handle is valid the function returns True. If the specified
   handle is invalid the function returns False.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsDebuggerAttached
 <GROUP Debugging.Miscellanuous>
@@ -78,8 +78,8 @@ Description:
 Result:
   If the current process is running in the context of a debugger, the return value is True.
   If the current process is not running in the context of a debugger, the return value is False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@EnableCrashOnCtrlScroll
 <GROUP Debugging.Miscellanuous>
@@ -95,8 +95,8 @@ Parameters:
   Enable - If set to True the crash on ctrl scroll 'feature' is enabled, if set to False it is disabled.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@AssertKindOf
 <GROUP Debugging.Diagnostics>
@@ -110,8 +110,8 @@ Description:
 Parameters:
   ClassName - Name of the class to test Obj for.
   Obj - The object to test.
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Trace
 <GROUP Debugging.Diagnostics>
@@ -124,11 +124,11 @@ Parameters:
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
 See also:
-  <link TraceFmt>
-  <link TraceLoc>
-  <link TraceLocFmt>
-Quick info:
-  Donator: Marcel van Brakel
+  TraceFmt
+  TraceLoc
+  TraceLocFmt
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TraceFmt
 <GROUP Debugging.Diagnostics>
@@ -145,11 +145,11 @@ Parameters:
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
 See also:
-  <link Trace>
-  <link TraceLoc>
-  <link TraceLocFmt>
-Quick info:
-  Donator: Marcel van Brakel
+  Trace
+  TraceLoc
+  TraceLocFmt
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TraceLoc
 <GROUP Debugging.Diagnostics>
@@ -168,11 +168,11 @@ Parameters:
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
 See also:
-  <link Trace>
-  <link TraceFmt>
-  <link TraceLocFmt>
-Quick info:
-  Donator: Marcel van Brakel
+  Trace
+  TraceFmt
+  TraceLocFmt
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TraceLocFmt
 <GROUP Debugging.Diagnostics>
@@ -191,11 +191,11 @@ Parameters:
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
 See also:
-  <link Trace>
-  <link TraceFmt>
-  <link TraceLoc>
-Quick info:
-  Donator: Marcel van Brakel
+  Trace
+  TraceFmt
+  TraceLoc
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMapAddress
 <GROUP Debugging.SourceLocations.MapParsers>
@@ -203,8 +203,8 @@ Summary:
   Holds location information.
 Description:
   TJclMapAddress holds location information in notifiers of the map parsers.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 @@TJclMapAddress.Segment
   Segment number of item.
 @@TJclMapAddress.Offset
@@ -213,39 +213,39 @@ Quick info:
 @@PJclMapString
 <GROUP Debugging.SourceLocations.MapParsers>
 Summary:
-  A map-file string
+  A map-file string.
 Description:
   PJclMapString holds a map-file specific string. Use the MapStringToString class
   function to convert it to a normal string.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser
 <GROUP Debugging.SourceLocations.MapParsers>
 Summary:
-  Abstract Map parser
+  Abstract Map parser.
 Description:
   TJclAbstractMapParser is an abstract base class for a MAP-file parser.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.ClassTableItem
 Summary:
-  Handler for a class item
+  Handler for a class item.
 Description:
   ClassTableItem is a handler for a class item (eg. CODE, DATA or BSS class) in
   the map file. It get's called by the Parse method when it finds a class table item.
 Parameters:
   Address - Address of the class item.
   Len - Length of the class item.
-   - Section name of the class item (eg. ".text").
-   - Class name of the class item (eg. "CODE").
-Quick info:
-  Donator: Petr Vones
+  SectionName - Section name of the class item (eg. ".text").
+  GroupName - Class name of the class item (eg. "CODE").
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.SegmentItem
 Summary:
-  Handler for a segment item (i.e.. a Delphi unit)
+  Handler for a segment item (i.e.. a Delphi unit).
 Description:
   SegmentItem is a handler for a segment item (i.e.. a Delphi unit) in the map file.
   It gets called by the Parse method when it finds a segment item.
@@ -254,36 +254,36 @@ Parameters:
   Len - Length of the segment item.
   GroupName - Class name of the segment item (eg. "CODE").
   UnitName - Delphi unit name of the segment item (eg. "System").
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.PublicsByNameItem
 Summary:
   Handler for a public item in the publics by name section.
 Description:
   PublicsByNameItem is a handler for a public item (eg. a procedure) in the "Publics
-  By Name"-section of the map file.
+  By Name" section of the map file.
   It gets called by the Parse method when it finds a public item in the "Publics
-  By Name"-section.
+  By Name" section.
 Parameters:
   Address - Address of the public item.
   Name - Name of the public item.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.PublicsByValueItem
 Summary:
   Handler for a public item in the publics by value section.
 Description:
   PublicsByValueItem is a handler for a public item (eg. a procedure) in the "Publics
-  By Value"-section of the map file.
+  By Value" section of the map file.
   It gets called by the Parse method when it finds a public item in the "Publics
-  By Value"-section.
+  By Value" section.
 Parameters:
   Address - Address of the public item.
   Name - Name of the public item.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LineNumberUnitItem
 Summary:
@@ -295,8 +295,8 @@ Description:
 Parameters:
   UnitName - Name of the unit.
   UnitFileName - Name of the source file.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LineNumbersItem
 Summary:
@@ -308,78 +308,78 @@ Description:
 Parameters:
   LineNumber - Line number for the item.
   Address - Starting address for the line number.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Create
 Summary:
-  Creates an instance of TJclAbstractMapParser
+  Creates an instance of TJclAbstractMapParser.
 Description:
   The Create method instantiates a map-parser object. Since TJclAbstractMapParser
   is an abstract base class, you should not Create an instance of
-  TJclAbstractMapParser directly, but rather of a descendant.</P><P>
+  TJclAbstractMapParser directly, but rather of a descendant.
   If the specified file exists, a TJclFileMappingStream will be assigned to
   the Stream property, referencing the map file.
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Destroy
 Summary:
-  Destroys an instance of TJclAbstractMapParser
+  Destroys an instance of TJclAbstractMapParser.
 Description:
   Destroy frees up all internal objects before freeing this instance.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Parse
 Summary:
-  Parses the map file
+  Parses the map file.
 Description:
   Parse parses the map file specified referenced by the Stream property. It calls
   different methods for items found in the file. Descendants override these methods
   to store it in an internal structure.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.MapStringToStr
 Summary:
   Translates map file specific strings to a normal string.
 Description:
-  MapStringToStr translates map file specific strings to a normal string.</P><P>
+  MapStringToStr translates map file specific strings to a normal string.
   If MapString points to an opening bracket, it returns the text starting
   at the next character up to the closing bracket or a Carriage Return, whichever
   comes first.
   If MapString does not point to an opening bracket, it returns the text from
   the current location up to the next space, a carriage return or a closing bracket.
 Parameters:
-  MapString - String to translate
+  MapString - String to translate.
 Result:
   If MapString = nil the function returns an empty string, otherwise it returns
   translated version of the string.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Stream
 Summary:
-  A stream referencing the map file
+  A stream referencing the map file.
 Description:
   Stream holds the a reference to the map file assigned by the Create method.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LinkerBug
 Summary:
-  Is the linker bug found in the map
+  Is the linker bug found in the map.
 Description:
   LinkerBug holds a flag to determine if the linker bug is found in the map file.
   The bug appears if a unit has >64K of data after the code and another unit
   follows. The solution is to move the data to a separate unit.
 See also:
-  <link LinkerBugUnit>
-Quick info:
-  Donator: Petr Vones
+  LinkerBugUnit
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LinkerBugUnitName
 Summary:
@@ -388,19 +388,19 @@ Description:
   LinkerBugUnit holds the name of the unit containing the linker bug. If there's
   no linker bug present (ie. LinkerBug = False) LinkerBugUnit is empty.
 See also:
-  <link LinkerBug>
-Quick info:
-  Donator: Petr Vones
+  LinkerBug
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser
 <GROUP Debugging.SourceLocations.MapParsers>
 Summary:
-  Generic map file parser
+  Generic map file parser.
 Description:
   TJclMapParser is a class for a generic MAP-file parser. Items are reported to
   the user through event calls.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnClassTable
 Summary:
@@ -408,39 +408,39 @@ Summary:
 Description:
   OnClassTable is the event handler for a class item in the map file. It get's called by
   the ClassTableItem method when the parser finds a class table item.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnSegment
 Summary:
-  Event handler for a segment item (i.e.. a Delphi unit)
+  Event handler for a segment item (i.e.. a Delphi unit).
 Description:
   OnSegment is the event handler for a segment item (i.e.. a Delphi unit) in the map file.
   It gets called by the SegmentItem method when the parser finds a segment item.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnPublicsByName
 Summary:
   Event handler for a public item in the publics by name section.
 Description:
   OnPublicsByName is the event handler for a public item (eg. a procedure) in the "Publics
-  By Name"-section of the map file.
+  By Name" section of the map file.
   It gets called by the PublicsByNameItem method when the parser finds a public item in
-  the "Publics By Name"-section.
-Quick info:
-  Donator: Petr Vones
+  the "Publics By Name" section.
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnPublicsByValue
 Summary:
   Event handler for a public item in the publics by value section.
 Description:
   OnPublicsByValue is the event handler for a public item (eg. a procedure) in the "Publics
-  By Value"-section of the map file.
+  By Value" section of the map file.
   It gets called by the PublicsByValueItem method when the parser finds a public item in
-  the "Publics By Value"-section.
-Quick info:
-  Donator: Petr Vones
+  the "Publics By Value" section.
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnLineNumberUnit
 Summary:
@@ -449,8 +449,8 @@ Description:
   OnLineNumberUnit is the event handler for a unit declaration in the lines section
   of the map file. It gets called by the LineNumberUnitItem method when the parser
   finds a unit declaration in the lines section.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnLineNumbers
 Summary:
@@ -459,18 +459,18 @@ Description:
   OnLineNumbers is the event handler for a line declaration in the lines section
   of the map file. It gets called by the LineNumbers method when the parser finds
   a unit declaration in the lines section.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner
 <GROUP Debugging.SourceLocations.MapParsers>
 Summary:
-  Generic map file parser
+  Generic map file parser.
 Description:
   TJclMapScanner is a map file scanner. The class scans the map file and holds the
   result for later reference.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.Scan
 Summary:
@@ -478,20 +478,20 @@ Summary:
 Description:
   Scan scans the map file specified by Create and stores the result for later
   reference.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.Create
 Summary:
-  Creates an instance of TJclMapScanner
+  Creates an instance of TJclMapScanner.
 Description:
   The Create method instantiates a map-file scanner object. After calling the
   inherited Create from TJclAbstractMapParser,
   the scan method will be called to scan the file.
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.LineNumberFromAddr
 Summary:
@@ -503,12 +503,12 @@ Parameters:
 Result:
   The line number for the specified address.
 See also:
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ModuleNameFromAddr
 Summary:
@@ -520,12 +520,12 @@ Parameters:
 Result:
   The Delphi unit name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ModuleStartFromAddr
 Summary:
@@ -538,12 +538,12 @@ Parameters:
 Result:
   The starting address of the Delphi unit that contains the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ProcNameFromAddr
 Summary:
@@ -555,12 +555,12 @@ Parameters:
 Result:
   The procedure name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclMapScanner.SourceNameFromAddr
 Summary:
@@ -572,39 +572,39 @@ Parameters:
 Result:
   The source file name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@JclDbgDataSignature
 <GROUP Debugging.SourceLocations.BinaryDebugData>
 Summary:
-  Signature of Jcl Binary Debug Data
+  Signature of Jcl Binary Debug Data.
 Description:
-  JclDbgDataSignature is the signature of the Jcl Binary Debug Data
-Quick info:
-  Donator: Petr Vones
+  JclDbgDataSignature is the signature of the Jcl Binary Debug Data.
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@JclDbgDataResName
 <GROUP Debugging.SourceLocations.BinaryDebugData>
 Summary:
-  Resource name for binary debug data
+  Resource name for binary debug data.
 Description:
   JclDbgDataResName is the resource name for Jcl Binary Debug Data.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@JclDbgFileExtension
 <GROUP Debugging.SourceLocations.BinaryDebugData>
 Summary:
-  File extension for a Jcl Binary Debug File
+  File extension for a Jcl Binary Debug File.
 Description:
   JclDbgFileExtension is the extension for Jcl Binary Debug Data File.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -613,26 +613,26 @@ Summary:
 Description:
   TJclBinDebugGenerator translates the text based map file created by the linker into
   a smaller, binary version. The result is saved in a memory stream.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.CreateData
 Summary:
-  Translates the map file
+  Translates the map file.
 Description:
   CreateData translates the text based map file into a binary version and stores it
   in a memorystream, referenced by the DataStream
-  property. CreateData gets called by the Create method automatically.</P><P>
+  property. CreateData gets called by the Create method automatically.
   Literal strings are compressed into a 6-bit character, which results in a compression of
   3:4. Furthermore, it doesn't store spaces and integers are stored as integer values (always
   4 bytes instead of 8-byte hex-string). This results in a considerable savings on
   needed space.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.Create
 Summary:
-  Creates an instance of TJclBinDebugGenerator
+  Creates an instance of TJclBinDebugGenerator.
 Description:
   The Create method instantiates a binary debug generator object. After calling the
   inherited Create from TJclMapScanner,
@@ -640,8 +640,8 @@ Description:
   binary version.
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.CalculateCheckSum
 Summary:
@@ -651,16 +651,16 @@ Description:
 Result:
   If the checksum could be calculated the function returns True, otherwise it returns
   False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.DataStream
 Summary:
   A memory stream holding the translation result.
 Description:
   DataStream holds the result of the translation.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -671,12 +671,12 @@ Description:
   file. The binary file can be generated from a text-based map file by instantiating
   a TJclBinDebugGenerator-object
   and saving the DataStream to a file.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.Create
 Summary:
-  Creates an instance of TJclBinDebugScanner
+  Creates an instance of TJclBinDebugScanner.
 Description:
   The Create method instantiates a binary debug scanner object. After instantiating
   and assigning the stream, the format is checked. You can use the ValidFormat-property
@@ -684,8 +684,8 @@ Description:
 Parameters:
   AStream - Stream with binary debug data.
   CacheData - If set to true, data read from the stream is internally cached.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.IsModuleNameValid
 Summary:
@@ -693,12 +693,12 @@ Summary:
 Description:
   IsModuleNameValid checks if the given filename is a valid name for the module.
 Parameters:
-  Name - Filename to check
+  Name - Filename to check.
 Result:
   If the specified filename belongs to this module the function returns True,
   otherwise it returns False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.LineNumberFromAddr
 Summary:
@@ -710,12 +710,12 @@ Parameters:
 Result:
   The line number for the specified address.
 See also:
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ModuleNameFromAddr
 Summary:
@@ -727,12 +727,12 @@ Parameters:
 Result:
   The Delphi unit name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ModuleStartFromAddr
 Summary:
@@ -745,12 +745,12 @@ Parameters:
 Result:
   The starting address of the Delphi unit that contains the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ProcNameFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ProcNameFromAddr
 Summary:
@@ -762,12 +762,12 @@ Parameters:
 Result:
   The procedure name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link SourceNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  SourceNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.SourceNameFromAddr
 Summary:
@@ -777,20 +777,20 @@ Description:
 Result:
   The source file name for the specified address.
 See also:
-  <link LineNumberFromAddr>
-  <link ModuleNameFromAddr>
-  <link ModuleStartFromAddr>
-  <link ProcNameFromAddr>
-Quick info:
-  Donator: Petr Vones
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ValidFormat
 Summary:
-  Flag to check validity of data
+  Flag to check validity of data.
 Description:
   ValidFormat is true if the data in the specified stream is valid binary debug data.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ConvertMapFileToJdbgFile
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -799,18 +799,18 @@ Summary:
 Description:
   ConvertMapFileToJdbgFile convert the specified text based map file to a Jcl binary
   debug file.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclLocationInfo
 <GROUP Debugging.SourceLocations>
 Summary:
-  Location info structure
+  Location info structure.
 Description:
   TJclLocationInfo is the structure returned in various routines and methods that
   request location info for a specific address.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 @@TJclLocationInfo.Address
   Nearest address of the request.
 @@TJclLocationInfo.UnitName
@@ -830,11 +830,11 @@ Summary:
   Debug info location item.
 Description:
   TJclDebugInfoSource is an abstract base class to hold location information.
-  Instances of descendants are created by the TJclDebugInfoList-object.</P><P>
+  Instances of descendants are created by the TJclDebugInfoList-object.
   Descendants should override the InitializeSource
   and GetLocationInfo methods.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.InitializeSource
 Summary:
@@ -843,8 +843,8 @@ Description:
   InitializeSource initializes the object.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.Create
 Summary:
@@ -855,8 +855,8 @@ Description:
   instantiate a TJclDebugSource directly, but rather a descendant.
 Parameters:
   AModule - Module handle to create debug info for.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.GetLocationInfo
 Summary:
@@ -871,24 +871,24 @@ Result:
   If the specified address exists within the module represented by this object the
   function returns True and Info will hold the information for the specified address.
   If the address does not exist within the module, the function returns False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.Module
 Summary:
   Module referenced by this object.
 Description:
   Module holds the module handle this instance has been created for.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.FileName
 Summary:
   File name for the module referenced by this object.
 Description:
   FileName holds the file name of the module this instance has been created for.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList
 <GROUP Debugging.SourceLocations>
@@ -897,12 +897,12 @@ Summary:
 Description:
   TJclDebugInfoList holds a list of TJclDebugInfoSource
   items requested. Items are created when needed, not when the list is created.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.CreateDebugInfo
 Summary:
-  Creates a TJclDebugInfoSource descendant for a module
+  Creates a TJclDebugInfoSource descendant for a module.
 Description:
   CreateDebugInfo will atempt to create a TJclDebugInfoSource
   for the given module and initializes it. The method tries to obtain the following types in order:
@@ -918,8 +918,8 @@ Parameters:
 Result:
   If debug info could be obtained for the specified module, a TJclDebugInfoSource
   descendant will be returned, otherwise it returns nil.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.GetLocationInfo
 Summary:
@@ -928,14 +928,14 @@ Description:
   GetLocationInfo retreives information for the address specified by the Addr
   parameter and returns it through the Info parameter.
 Parameters:
-  Addr - Address to get information on
+  Addr - Address to get information on.
   Info - Structure that holds information on the address, if address belongs to any module in the current process.
 Result:
   If the specified address exists within the curent process the function returns True
   and Info will hold the information for the specified address. If the address does
   not exist within the current process, the function returns False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@DebugInfoAvailable
 <GROUP Debugging.SourceLocations>
@@ -948,8 +948,8 @@ Parameters:
 Result:
   If the specified module has debug information the function returns True, otherwise
   False will be returned.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.ItemFromModule
 Summary:
@@ -957,16 +957,16 @@ Summary:
 Description:
   ItemFromModule returns a TJclDebugInfoSource-item for the specified module. If the item
   hasn't been created, it will try to do so.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.Items
 Summary:
-  Returns the debug info item at the specified index
+  Returns the debug info item at the specified index.
 Description:
   Items returns the TJclDebugInfoSource-item at the specified index.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoMap
 <GROUP Debugging.SourceLocations>
@@ -975,8 +975,8 @@ Summary:
 Description:
   TJclDebugInfoMap is the class to hold location information by scanning
   a text-based map file. It uses a TJclMapScanner object to do so.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoBinary
 <GROUP Debugging.SourceLocations>
@@ -985,8 +985,8 @@ Summary:
 Description:
   TJclDebugInfoBinary is the class to hold location information by scanning
   a Jcl binary debug data resource. It uses a TJclBinDebugScanner object to do so.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclDebugInfoExports
 <GROUP Debugging.SourceLocations>
@@ -995,8 +995,8 @@ Summary:
 Description:
   TJclDebugInfoExports is the class to hold location information by scanning
   a Borland export header for the PE-image. It uses a TJclPeBorImage object to do so.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ModuleFromAddr
 <GROUP Debugging.SourceLocations>
@@ -1009,13 +1009,13 @@ Parameters:
 Result:
   If the Addr parameter points to an address in code-segment, it returns the
   handle of the module at at that address, otherwise it returns 0.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@IsSystemModule
 <GROUP Debugging.SourceLocations>
 Summary:
-  Determines if a module belongs to the current application
+  Determines if a module belongs to the current application.
 Description:
   IsSystemModule checks if the specified module is part of the current application.
   It does so by searching the list at LibModuleList (see Delphi Help).
@@ -1024,8 +1024,8 @@ Parameters:
 Result:
   If the module belongs to the application, the function returns True, otherwise it
   returns False.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@Caller
 <GROUP Debugging.SourceLocations>
@@ -1042,8 +1042,8 @@ Parameters:
 Result:
   The address of the instruction of the routine specified by Level at which execution
   resumes when the function(s) return.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetLocationInfo
 <GROUP Debugging.SourceLocations>
@@ -1056,8 +1056,8 @@ Parameters:
 Result:
   This function returns a TJclLocationInfo record filled with any information it
   could find.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@GetLocationInfoStr
 <GROUP Debugging.SourceLocations>
@@ -1065,17 +1065,17 @@ Summary:
   Returns location info in a formatted string, given an address.
 Description:
   GetLocationInfoStr returns location info in a formatted string. The string is
-  formatted as: [<I>Address</I>] <I>UnitName</I>.<I>ProcedureName</I> (Line <I>linenumber</I>, "<I>source file name</I>"
-  or [<I>Address</I>] {<I>ModuleName</I>} <I>UnitName</I>.<I>ProcedureName</I> (Line <I>linenumber</I>, "<I>source file name</I>", depending
+  formatted as: [Address] UnitName.>ProcedureName (Line linenumber, "source file name"
+  or [Address] {ModuleName} UnitName.ProcedureName (Line linenumber, "source file name", depending
   on the value of IncludeModuleName parameter.
 Parameters:
   Addr - Address to obtain information on.
   IncludeModuleName - Should the module name be included in the string. If this parameter is set to True, the module name is inserted right after the address.
 Result:
   If location info was found, the function returns the formatted info string,
-  otherwise it returns a string formatted as <B>[</B><I>Address</I><B>]</B>.
-Quick info:
-  Donator: Petr Vones
+  otherwise it returns a string formatted as [Address].
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ClearLocationData
 <GROUP Debugging.SourceLocations>
@@ -1087,45 +1087,42 @@ Description:
   different modules have been made, this could consume a lot of memory. By clearing
   the list, the memory is release, but items will be added for any location request
   made later on.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__FILE__
-
-Summary
-\Returns the name of the file.
-Description
-__FILE__ returns the name of the source file in which the
-routine specified by Level exists. Level 0 denotes the
-currently executing routine, 1 denotes the caller of the
-routine, 2 the caller of the caller, etc.
-Parameters
-Level :  Caller level for which you want to know the source
-         file in which it resides. 0 is the currently
-         executing routine, 1 is the caller, 2 is the caller
-         of the caller, etc.
-Returns
-Filename of the source file in which the routine specified by
-Level exists.
-Note
-Usage of this function requires building the module with a
-detailed map file. Use the Linker tab in the Project Options
-dialog to enable creation of a map file. This function is
-\obsolete. Use <link FileByLevel> instead.
-See Also
-<link __MODULE__>
-<link __PROC__>
-<link __LINE__>
-<link __MAP__>
-<link __FILE_OF_ADDR__>
-<link __MODULE_OF_ADDR__>
-<link __PROC_OF_ADDR__>
-<link __LINE_OF_ADDR__>
-<link __MAP_OF_ADDR__>
-QuickInfo
-Donator
-Petr Vones
-
+Summary:
+  Returns the name of the file.
+Description:
+  __FILE__ returns the name of the source file in which the
+  routine specified by Level exists. Level 0 denotes the
+  currently executing routine, 1 denotes the caller of the
+  routine, 2 the caller of the caller, etc.
+Parameters:
+  Level - Caller level for which you want to know the source
+          file in which it resides. 0 is the currently
+          executing routine, 1 is the caller, 2 is the caller
+          of the caller, etc.
+Result:
+  Returns the filename of the source file in which the routine specified by Level exists.
+Notes:
+  Usage of this function requires building the module with a
+  detailed map file. Use the Linker tab in the Project Options
+  dialog to enable creation of a map file. This function is
+  obsolete. Use FileByLevel> instead.
+See also:
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
+--------------------------------------------------------------------------------
 @@__MODULE__
 <GROUP Debugging.SourceLocations>
 Summary:
@@ -1142,17 +1139,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ModuleByLevel instead.
 See also:
-  <link __FILE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__PROC__
 <GROUP Debugging.SourceLocations>
@@ -1170,17 +1167,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ProcByLevel instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__LINE__
 <GROUP Debugging.SourceLocations>
@@ -1198,17 +1195,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use LineByLevel instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__MAP__
 <GROUP Debugging.SourceLocations>
@@ -1229,51 +1226,48 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use MapByLevel instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__FILE_OF_ADDR__
-
-Summary
-\Returns the filename for an address.
+Summary:
+  Returns the filename for an address.
 Description
-__FILE_OF_ADDR__ returns the name of the source code file
-given an address.
-Parameters
-Addr :  The address for which you want to know the source code
-        file.
-Returns
-Name of the source code file in which the specified address
-is defined.
-Note
-Usage of this function requires building the module with a
-detailed map file. Use the Linker tab in the Project Options
-dialog to enable creation of a map file. This function is
-\obsolete. Use <link FileOfAddr> instead.
-See Also
-<link __FILE__>
-<link __MODULE__>
-<link __PROC__>
-<link __LINE__>
-<link __MAP__>
-<link __MODULE_OF_ADDR__>
-<link __PROC_OF_ADDR__>
-<link __LINE_OF_ADDR__>
-<link __MAP_OF_ADDR__>
-QuickInfo
-Donator
-Petr Vones
-
+  __FILE_OF_ADDR__ returns the name of the source code file
+  given an address.
+Parameters:
+  Addr - The address for which you want to know the source code file.
+Result:
+  Returns the name of the source code file in which the specified address
+  is defined.
+Notes:
+  Usage of this function requires building the module with a
+  detailed map file. Use the Linker tab in the Project Options
+  dialog to enable creation of a map file. This function is
+  obsolete. Use FileOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 @@__MODULE_OF_ADDR__
+--------------------------------------------------------------------------------
 <GROUP Debugging.SourceLocations>
 Summary:
   Returns the module name for an address.
@@ -1287,17 +1281,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ModuleOfAddr instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__PROC_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1313,17 +1307,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ProcOfAddr instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__LINE_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1339,17 +1333,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use LineOfAddr instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __MAP_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __MAP_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@__MAP_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1370,17 +1364,17 @@ Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use MapOfAddr instead.
 See also:
-  <link __FILE__>
-  <link __MODULE__>
-  <link __PROC__>
-  <link __LINE__>
-  <link __MAP__>
-  <link __FILE_OF_ADDR__>
-  <link __MODULE_OF_ADDR__>
-  <link __PROC_OF_ADDR__>
-  <link __LINE_OF_ADDR__>
-Quick info:
-  Donator: Petr Vones
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@FileByLevel
 <GROUP Debugging.SourceLocations>
@@ -1397,17 +1391,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ModuleByLevel
 <GROUP Debugging.SourceLocations>
@@ -1424,20 +1418,20 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ProcByLevel
-<GROUP Debugging.SourceLocations>
+<GROUP Debugging.SourceLocations
 Summary:
   Returns the name of the routine at a specified level.
 Description:
@@ -1451,17 +1445,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@LineByLevel
 <GROUP Debugging.SourceLocations>
@@ -1478,17 +1472,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link MapByLevel>
-  <link FileOFAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  MapByLevel
+  FileOFAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@MapByLevel
 <GROUP Debugging.SourceLocations>
@@ -1508,17 +1502,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link FileOFAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  FileOFAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@FileOfAddr
 <GROUP Debugging.SourceLocations>
@@ -1533,17 +1527,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ModuleOfAddr
 <GROUP Debugging.SourceLocations>
@@ -1558,17 +1552,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ProcOfAddr
 <GROUP Debugging.SourceLocations>
@@ -1583,17 +1577,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link LineOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  LineOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@LineOfAddr
 <GROUP Debugging.SourceLocations>
@@ -1608,17 +1602,17 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link MapOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  MapOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@MapOfAddr
 <GROUP Debugging.SourceLocations>
@@ -1638,26 +1632,26 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
 See also:
-  <link FileByLevel>
-  <link ModuleByLevel>
-  <link ProcByLevel>
-  <link LineByLevel>
-  <link MapByLevel>
-  <link FileOfAddr>
-  <link ModuleOfAddr>
-  <link ProcOfAddr>
-  <link LineOfAddr>
-Quick info:
-  Donator: Petr Vones
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TStackFrame
 <GROUP Debugging.Stackinforoutines>
 Summary:
-  Stack frame information
+  Stack frame information.
 Description:
   TStackFrame holds stack frame information.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 @@TStackFrame.CallersEBP
   Callers EBP register
 @@TStackFrame.CallerAdr
@@ -1669,11 +1663,11 @@ Quick info:
 @@TStackInfo
 <GROUP Debugging.Stackinforoutines>
 Summary:
-  Stack information
+  Stack information.
 Description:
   TStackInfo holds stack information.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 @@TStackInfo.CallerAdr
   Return address  (the address of the caller)
 @@TStackInfo.Level
@@ -1694,64 +1688,64 @@ Quick info:
 @@TJclStackInfoItem
 <GROUP Debugging.Stackinforoutines>
 Summary:
-  Stack information item
+  Stack information item.
 Description:
   TStackInfoItem holds stack information.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoItem.LogicalAddress
 Summary:
-  Retreives the logical address for the caller
+  Retreives the logical address for the caller.
 Description:
   LogicalAddress retreives teh logical address for the caller. It does so by
   subtracting the caller's module base address from the caller's address.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoItem.StackInfo
 Summary:
   Stack information.
 Description:
   StackInfo holds the actual stack information.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackBaseList
 <GROUP Debugging.Trackingroutines>
 Summary:
-  Base stack information list
+  Base stack information list.
 Description:
   TJclStackBaseList is the base class for the track list's (TJclStackInfoList and
   TJclExceptFrameList). It provides properties that hold information on the thread
   and timestamp of the info list.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@TJclStackBaseList.ThreadID
 Summary:
   ID of thread that made the trace.
 Description:
   ThreadID is ID of the thread that executed the trace.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackBaseList.TimeStamp
 Summary:
-  Time stamp of list creation
+  Time stamp of list creation.
 Description:
   TimeStamp holds the date and time of creation of the list.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator: 
+ Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoList
 <GROUP Debugging.Stackinforoutines>
 Summary:
-  Stack information list
+  Stack information list.
 Description:
   TStackInfoList holds a list of stack information items ().
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.Create
 Summary:
@@ -1762,8 +1756,8 @@ Parameters:
   Raw - When set to False, the stack is traced by means of the EBP frame, when set to True, all DWORDs are checked for valid caller addresses.
   AIgnoreLevels - Number of callers to ignore upon tracing.
   FirstCaller - If not nil, an explicit TJclStackInfoItem is added to the list, pointing to the FirstCaller.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.AddToStrings
 Summary:
@@ -1775,28 +1769,26 @@ Description:
 Parameters:
   String - TStrings descendant to retreive the stack trace in.
   IncludeModuleName - Should the module name be included in each string. If this parameter is set to True, the module name is inserted right after the address.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.Items
 Summary:
-  List of stack info items
+  List of stack info items.
 Description:
   Items is a reference to all stack info items obtained during the trace.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.IgnoreLevels
 Summary:
-  Number of levels ignored in the trace
+  Number of levels ignored in the trace.
 Description:
   IgnoreLevels is the number of levels that were ignored when the trace started. This
   number was given upon creation of the list.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
-
-
 @@JclCreateStackList
 <GROUP Debugging.Stackinforoutines>
 Summary:
@@ -1812,8 +1804,8 @@ Result:
   A reference to the stack list.
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@JclLastExceptStackList
 <GROUP Debugging.Stackinforoutines>
@@ -1827,19 +1819,19 @@ Result:
   A reference to the last generated stack list.
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
-Quick info:
-  Donator: Hallvard Vassbotn
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJmpInstruction
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
-  Disected jump instruction
+  Disected jump instruction.
 Description:
   JmpInstruction represents a assembler JMP instruction.
 Notes:
   This type is copied from System.pas
-Quick info:
-  Donator: Borland
+Donator:
+  Borland
 @@TJmpInstruction.OpCode
   OpCode for the JMP instruction.
 @@TJmpInstruction.Distance
@@ -1851,13 +1843,13 @@ Quick info:
 @@TExcDescEntry
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
-  Except on... handler item
+  Except on... handler item.
 Description:
   TExcDescEntry represents an item in an except on... handler.
 Notes:
-  This type is copied from System.pas
-Quick info:
-  Donator: Borland
+  This type is copied from System.pas.
+Donator:
+  Borland
 @@TExcDescEntry.VTable
   Pointer to the Virtual Method table of an Exception class.
 @@TExcDescEntry.Handler
@@ -1869,18 +1861,18 @@ Quick info:
 @@TExcDesc
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
-  Except frame descriptor
+  Except frame descriptor.
 Description:
   TExcDesc is an except frame descriptor.For Borland modules this usually means
   a JMP instruction to either HandleFinally, HandleAnyException, HandleOnException or
   HandleAutoException. Incase of an HandleOnException, the JMP is followed by a table
   containing the Exception classes to handle and their handlers. In other cases
-  the JMP is followed by the code to execute.<P>For non-Borland modules, the frame
+  the JMP is followed by the code to execute.For non-Borland modules, the frame
   descriptor is undefined (but it always starts with executable code).
 Notes:
-  This type is copied from System.pas
-Quick info:
-  Donator: Borland
+  This type is copied from System.pas.
+Donator:
+  Borland
 @@TExcDesc.JMP
   Holds the JMP-instruction incase of Borland code
 @@TExcDesc.Instructions
@@ -1896,7 +1888,7 @@ Quick info:
 @@TExcFrame
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
-  Except frame
+  Except frame.
 Description:
   TExcFrame is an except frame. It holds a reference to the next frame (if any), the
   location of the frame (which should always start with executable code) and the
@@ -1904,9 +1896,9 @@ Description:
   the object being constructed (this is the case for the implicit except frame for
   constructors) or a reference to Self of the method containing the handler.
 Notes:
-  This type is copied from System.pas
-Quick info:
-  Donator: Borland
+  This type is copied from System.pas.
+Donator:
+  Borland
 @@TExcFrame.Next
   Link to next except frame or -1(!) if there is no next frame.
 @@TExcFrame.Desc
@@ -1929,8 +1921,8 @@ Description:
   TExceptFrameKind determines the exception frame type. Note that the compiler
   often inserts implicit frames around a method, function or procedure. For these
   frames source code location routines can be of by 1 line.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 @@TExceptFrameKind.efkUnknown
   Unknown exception frame (most likely an exception frame inside a non-Borland library.
 @@TExceptFrameKind.efkFinally
@@ -1948,8 +1940,8 @@ Summary:
   Except frame item.
 Description:
   TJclExceptFrame holds information on an except frame.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.Create
 Summary:
@@ -1959,8 +1951,8 @@ Description:
   and determines it's type.
 Parameters:
   AExcFrame - Reference to the except frame on the stack to create this item for.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.Handles
 Summary:
@@ -1976,8 +1968,8 @@ Parameters:
 Result:
   If the frame will handle the exception the function returns True, otherwise it
   returns False.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.HandlerInfo
 Summary:
@@ -1996,8 +1988,8 @@ Result:
   If the frame will handle the exception the function returns True and the HandlerAt
   parameter will contain the address of the handler. If the frame won't handle the
   exception the function returns False and HandlerAt will be undefined.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.CodeLocation
 Summary:
@@ -2011,8 +2003,8 @@ Result:
   If there's a JMP instruction at the "official" location, the function will
   return the destination of that address, otherwise the function just returns
   the "official" location.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.ExcFrame
 Summary:
@@ -2020,8 +2012,8 @@ Summary:
 Description:
   ExcFrame is a reference to except frame on the stack. It is not wise to modify
   the memory pointed to by ExcFrame
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.FrameKind
 Summary:
@@ -2030,8 +2022,8 @@ Description:
   FrameKind holds the kind of except frame this object references. The type is
   determined when the object is created by checking the code and see if it jumps
   to any of the known Borland handlers.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2040,9 +2032,9 @@ Summary:
 Description:
   TJclExceptFrameList holds a list of except frame items.
 See also:
-  <link TJclExceptFrame>
-Quick info:
-  Donator: Marcel Bestebroer
+  TJclExceptFrame>
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.Create
 Summary:
@@ -2052,16 +2044,16 @@ Description:
   the IgnoreLevels-property and starts the trace by calling TraceExceptionFrames.
 Parameters:
   AIgnoreLevels - Number of levels to ignore on tracing.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.TraceExceptionFrames
 Summary:
   Traces the except frames.
 Description:
   TraceExceptionFrames clears the current list and traces the except frames stack.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.Items
 Summary:
@@ -2069,8 +2061,8 @@ Summary:
 Description:
   Items is a reference to the list of except frame object found during the last
   trace.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.IgnoreLevels
 Summary:
@@ -2078,8 +2070,8 @@ Summary:
 Description:
   IgnoreLevels shows the number of levels ignored on the last trace or sets the
   number of levels to ignore on the next trace.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 
 
@@ -2097,8 +2089,8 @@ Result:
   A reference to the exception frame list.
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@JclLastExceptFrameList
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2114,8 +2106,8 @@ Result:
   A reference to the last generated exception frame list.
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
-Quick info:
-  Donator: Marcel Bestebroer
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TJclExceptNotifyProc
 <GROUP Debugging.Exceptionhooking>
@@ -2124,15 +2116,15 @@ Summary:
 Description:
   TJclExceptNotifyProc is the exception notify procedure type.
 Parameters:
-  ExceptObj - Exception object
-  ExceptAddr - Address where exception occured
+  ExceptObj - Exception object.
+  ExceptAddr - Address where exception occured.
   OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
 See also:
-  <link TJclExceptNotifyMethod>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-Quick info:
-  Donator: Hallvard Vassbotn
+  TJclExceptNotifyMethod
+  ExceptNotifyProc
+  ExceptNotifyMethod
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@TJclExceptNotifyMethod
 <GROUP Debugging.Exceptionhooking>
@@ -2141,15 +2133,15 @@ Summary:
 Description:
   TJclExceptNotifyMethod is the exception notify method type.
 Parameters:
-  ExceptObj - Exception object
-  ExceptAddr - Address where exception occured
+  ExceptObj - Exception object.
+  ExceptAddr - Address where exception occured.
   OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
 See also:
-  <link TJclExceptNotifyProc>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-Quick info:
-  Donator: Marcel Bestebroer
+  TJclExceptNotifyProc
+  ExceptNotifyProc
+  ExceptNotifyMethod
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@JclHookExceptions
 <GROUP Debugging.Exceptionhooking>
@@ -2164,13 +2156,13 @@ Description:
 Result:
   If the hook was succesful, the function returns True, otherwise it returns False.
 See also:
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-  <link ExceptionFrameTrackingEnable>
-Quick info:
-  Donator: Hallvard Vassbotn
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@JclUnhookExceptions
 <GROUP Debugging.Exceptionhooking>
@@ -2182,13 +2174,13 @@ Result:
   If exceptions where hooked and the function succeeded in unhooking them, the
   function returns True, otherwise it returns False.
 See also:
-  <link JclHookExceptions>
-  <link JclExceptionsHooked>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-  <link ExceptionFrameTrackingEnable>
-Quick info:
-  Donator: Hallvard Vassbotn
+  JclHookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@JclExceptionsHooked
 <GROUP Debugging.Exceptionhooking>
@@ -2199,13 +2191,13 @@ Description:
 Result:
   If exceptions are hooked, the function returns True, otherwise it returns False.
 See also:
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-  <link ExceptionFrameTrackingEnable>
-Quick info:
-  Donator: Hallvard Vassbotn
+  JclHookExceptions
+  JclUnhookExceptions
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@ExceptNotifyProc
 <GROUP Debugging.Exceptionhooking>
@@ -2216,13 +2208,13 @@ Description:
   which gets called when an exception occurs and exceptions are hooked through a
   previous call to JclHookExceptions.
 See also:
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-  <link ExceptNotifyMethod>
-  <link ExceptionFrameTrackingEnable>
-Quick info:
-  Donator: Hallvard Vassbotn
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@ExceptNotifyMethod
 <GROUP Debugging.Exceptionhooking>
@@ -2233,13 +2225,13 @@ Description:
   which gets called when an exception occurs and exceptions are hooked through a
   previous call to JclHookExceptions.
 See also:
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-  <link ExceptNotifyProc>
-  <link ExceptionFrameTrackingEnable>
-Quick info:
-  Donator: Marcel Bestebroer
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptionFrameTrackingEnable
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@StackTrackingEnable
 <GROUP Debugging.Exceptionhooking>
@@ -2249,13 +2241,13 @@ Description:
   StackTrackingEnable is a flag that enables or disables automatic stack tracking
   when exception hooking is on.
 See also:
-  <link ExceptionFrameTrackingEnable>
-  <link RawStackTracking>
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-Quick info:
-  Donator: Hallvard Vassbotn
+  ExceptionFrameTrackingEnable
+  RawStackTracking
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@RawStackTracking
 <GROUP Debugging.Exceptionhooking>
@@ -2265,12 +2257,12 @@ Description:
   RawStackTracking is a flag that enables or disables raw stack tracking
   when exception hooking is on and stack tracking is enabled.
 See also:
-  <link StackTrackingEnable>
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-Quick info:
-  Donator: Hallvard Vassbotn
+  StackTrackingEnable
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+Donator:
+  Hallvard Vassbotn
 --------------------------------------------------------------------------------
 @@ExceptionFrameTrackingEnable
 <GROUP Debugging.Exceptionhooking>
@@ -2280,14 +2272,14 @@ Description:
   ExceptionFrameTrackingEnable is a flag that enables or disables exception frame
   tracking when exception hooking is on.
 See also:
-  <link JclHookExceptions>
-  <link JclUnhookExceptions>
-  <link JclExceptionsHooked>
-  <link ExceptNotifyProc>
-  <link ExceptNotifyMethod>
-  <link StackTrackingEnable>
-Quick info:
-  Donator: Marcel Bestebroer
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  StackTrackingEnable
+Donator:
+  Marcel Bestebroer
 --------------------------------------------------------------------------------
 @@TrackAllModules
 <GROUP Debugging.Exceptionhooking>
@@ -2298,8 +2290,8 @@ Description:
   when exception hooking is on and stack tracking is enabled. When set to True all
   modules are reported in the stack list, otherwise only addresses that are within
   a Borland module are reported.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@InsertDebugDataIntoExecutableFile
 <GROUP Debugging.Helpers>
@@ -2323,8 +2315,8 @@ Result:
   function returns True, otherwise it returns False. In addition to the function
   result, it will also return the unit for the linker bug (if any found), the map
   file size and the binary debug data size.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ExtractClassName
 <GROUP Debugging.SourceLocations>
@@ -2339,8 +2331,8 @@ Parameters:
 Result:
   If the given procedure name contains a '.', the string before the '.' will be
   returned, otherwise an empty string is returned.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones
 --------------------------------------------------------------------------------
 @@ExtractMethodName
 <GROUP Debugging.SourceLocations>
@@ -2355,5 +2347,5 @@ Parameters:
 Result:
   If the given procedure name contains a '.', the string after the '.' is returned,
   otherwise the entire string is returned.
-Quick info:
-  Donator: Petr Vones
+Donator:
+  Petr Vones

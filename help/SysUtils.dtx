@@ -610,7 +610,7 @@ Description:
   Since a safeguard is an interface and Delphi ensures that interfaces are released
   even when an exception is raised, you can use a safeguard to ensure that a resource
   always gets freed without having to explicitly code it. For example: 
-   <PRE class=syntax>
+
    var
      SafeGuard: ISafeGuard;
      Strings: TStrings;
@@ -620,7 +620,7 @@ Description:
      // code to manipulate strings goes here
      Strings.SaveToFile('d:\delphi\jcl\source\JclBase.pas');
    end;
-   </PRE>
+   
   In the above code, the TStrings object is associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the TStrings object is
   destroyed. Usually you will simply store the returned safeguard interface pointer
@@ -691,7 +691,7 @@ Description:
   that interfaces are released even when an exception is raised, you can use a
   safeguard to ensure that a resource always gets freed without having to explicitly
   code it. For example: 
-   <PRE class=syntax>
+
    var
      SafeGuard: IMultiSafeGuard;
      O1, O2: TObject;
@@ -700,7 +700,7 @@ Description:
      O2 := Guard(TObject.Create, SafeGuard);
      // use O1 and O2 here
    end;
-   </PRE>
+   
   In the above code, the objects are associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the objects are
   destroyed. Usually you will simply store the returned safeguard interface pointer
@@ -780,7 +780,7 @@ Description:
   an interface and Delphi ensures that interfaces are released even when an exception
   is raised, you can use a safeguard to ensure that a resource always gets freed
   without having to explicitly code it. For example: 
-   <PRE class=syntax>
+
    var
      SafeGuard: ISafeGuard;
      Strings: TStrings;
@@ -790,7 +790,7 @@ Description:
      // code to manipulate strings goes here
      Strings.SaveToFile('d:\delphi\jcl\source\JclBase.pas');
    end;
-   </PRE>
+   
   In the above code, the TStrings object is associated with the SafeGuard. No matter
   how the function terminates, the safeguard ensures that the TStrings object is
   destroyed. Usually you will simply store the returned safeguard interface pointer
