@@ -451,6 +451,8 @@ Description:
   TJclScopedStream.MaxSize).
 See also:
   TJclScopedStream.MaxSize
+Donator:
+  Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclScopedStream.FCurrentPos
 Description:
@@ -461,7 +463,7 @@ Donator:
 @@TJclScopedStream.FMaxSize
 Description:
   Private field to store maximum position available (if any).
-See Also:
+See also:
   TJclScopedStream.MaxSize
 Donator:
   Florent Ouchet
@@ -470,18 +472,18 @@ Donator:
 Description:
   Private field to store a reference to the stream containing
   the data.
+See also:
+  TJclScopedStream.ParentStream
 Donator:
   Florent Ouchet
-See Also:
-  TJclScopedStream.ParentStream
 --------------------------------------------------------------------------------
 @@TJclScopedStream.FStartPos
 Description:
   Private field to store the original position of ParentStream
-  \on creation of this object
+  on creation of this object
 Donator:
   Florent Ouchet
-See Also:
+See also:
   TJclScopedStream.StartPos TJclScopedStream.ParentStream
 --------------------------------------------------------------------------------
 @@TJclScopedStream.MaxSize
@@ -495,10 +497,11 @@ Description:
 
   If not set (=0), every bytes following position StartPos will
   be available in data stream.
+See also:
+  TJclScopedStream.ParentStream
+  TJclScopedStream.StartPos
 Donator:
   Florent Ouchet
-See Also:
-  TJclScopedStream.ParentStream TJclScopedStream.StartPos
 --------------------------------------------------------------------------------
 @@TJclScopedStream.ParentStream
 Summary:
@@ -506,10 +509,11 @@ Summary:
 Description:
   This property exposes the stream providing and storing data
   for this virtual stream.
+See also:
+  TJclScopedStream.StartPos
+  TJclScopedStream.MaxSize
 Donator:
   Florent Ouchet
-See Also:
-  TJclScopedStream.StartPos TJclScopedStream.MaxSize
 --------------------------------------------------------------------------------
 @@TJclScopedStream.StartPos
 Summary:
@@ -517,10 +521,11 @@ Summary:
 Description:
   This property exposes the initial position of the data stream
   when this virtual stream was created.
+See also:
+  TJclScopedStream.ParentStream
+  TJclScopedStream.MaxSize
 Donator:
   Florent Ouchet
-See Also:
-  TJclScopedStream.ParentStream TJclScopedStream.MaxSize
 --------------------------------------------------------------------------------
 @@TJclScopedStream.Create@TStream@Int64
 Summary:
@@ -538,33 +543,44 @@ Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclScopedStream.Read@@Longint
+Summary:
+  TODO
 Description:
   Overridden method of TStream.Read, all calls to this methods
   are redirected to the ParentStream.Read.
-See Also:
-TJclScopedStream.Seek TJclScopedStream.Write
+See also:
+  TJclScopedStream.Seek
+  TJclScopedStream.Write
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclScopedStream.Seek@Int64@TSeekOrigin
+Summary:
+  TODO
 Description:
   Overridden method of TStream.Seek, all calls to this methods
   are redirected to the ParentStream.Seek.
-See Also:
-  TJclScopedStream.Read TJclScopedStream.Write
+See also:
+  TJclScopedStream.Read
+  TJclScopedStream.Write
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclScopedStream.Write@@Longint
+Summary:
+  TODO
 Description:
   Overridden method of TStream.Write, all calls to this methods
   are redirected to the ParentStream.Write.
-See Also:
-  TJclScopedStream.Read TJclScopedStream.Seek
+See also:
+  TJclScopedStream.Read
+  TJclScopedStream.Seek
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclEasyStream
+Summary:
+  TODO
 Description:
   The TJclEasyStream class helps read and write operations of
   common data types to stream.
@@ -572,407 +588,538 @@ Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.IsEqual@TStream
+Summary:
+  TODO
 Description:
   The IsEqual method compares data of this instance to data of
   reference stream for difference. Result is set accordingly.
+Parameters:
+  Stream - Reference stream for comparisons.
+Result:
+  Returns true if streams are equal, false otherwise.
 Donator:
   Heinz Zastrau
-Parameters:
-  Stream - Reference stream for comparisons
-Returns:
-  \Returns true if streams are equal, false otherwise.
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadBoolean
 Description:
   The ReadBoolean method reads a boolean value from this stream (1 byte length).
+Result:
+  Boolean value.
+See also:
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteBoolean TJclEasyStream.ReadChar
-  TJclEasyStream.ReadCString TJclEasyStream.ReadCurrency
-  TJclEasyStream.ReadDateTime TJclEasyStream.ReadDouble
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns
-  Boolean value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadChar
 Description:
   The ReadChar method reads a character value from this stream (1 byte length).
+See also:
+  TJclEasyStream.WriteChar
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  Character value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteChar TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadCString TJclEasyStream.ReadCurrency
-  TJclEasyStream.ReadDateTime TJclEasyStream.ReadDouble
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  Character value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadCString
 Description:
   The ReadCString method reads a C-like string (null terminated) from this stream.
+See also:
+  TJclEasyStream.WriteCString
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  String value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteCString TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCurrency
-  TJclEasyStream.ReadDateTime TJclEasyStream.ReadDouble
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  String value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadCurrency
 Description:
-  The ReadCurrency method reads a currency value from this stream
-  (8 bytes length).
+  The ReadCurrency method reads a currency value from this stream (8 bytes length).
+See also:
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  Currency value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteCurrency TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadDateTime TJclEasyStream.ReadDouble
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  Currency value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadDateTime
 Description:
-  The ReadDateTime method reads a TDateTime value from this stream
-  (8 bytes length).
+  The ReadDateTime method reads a TDateTime value from this stream (8 bytes length).
+See also:
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  TDateTime value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteDateTime TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDouble
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  TDateTime value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadDouble
 Description:
   The ReadDouble method reads a double precision floating point
   value from this stream (8 bytes length).
+See also:
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  Double precision floating point value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteDouble TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadExtended TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  Double precision floating point value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadExtended
 Description:
   The ReadExtended method reads an extended precision floating
   point value from this stream (10 bytes length).
+Result:
+  Extended precision floating point value.
+See also:
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteExtended TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadInt64
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  Extended precision floating point value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadInt64
 Description:
-  The ReadInt64 method reads a 64-bit integer value from this stream
-  (8 bytes length).
+  The ReadInt64 method reads a 64-bit integer value from this stream (8 bytes length).
+See also:
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  64 bit integer value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteInt64 TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadExtended
-  TJclEasyStream.ReadInteger TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  64 bit integer value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadInteger
 Description:
-  The ReadInteger method reads a 32 bit integer value from this stream
-  (4 bytes length).
+  The ReadInteger method reads a 32 bit integer value from this stream (4 bytes length).
+See also:
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  32 bit integer value.
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteInteger TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadExtended
-  TJclEasyStream.ReadInt64 TJclEasyStream.ReadShortString
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  32 bit integer value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadShortString
 Description:
   The ReadShortString method reads a short string value from this stream
   (max 255 characters).
+See also:
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.ReadSizedString
+Result:
+  Short string value
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteShortString TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadExtended
-  TJclEasyStream.ReadInt64 TJclEasyStream.ReadInteger
-  TJclEasyStream.ReadSingle TJclEasyStream.ReadSizedString
-Returns:
-  \Short string value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadSingle
 Description:
   The ReadSingle method reads a single precision floating point
   value from this stream (4 bytes length).
+Result:
+  Single precision floating point value.
+See also:
+  TJclEasyStream.WriteSingle
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSizedString
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteSingle TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadExtended
-  TJclEasyStream.ReadInt64 TJclEasyStream.ReadInteger
-  TJclEasyStream.ReadShortString TJclEasyStream.ReadSizedString
-Returns:
-  Single precision floating point value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.ReadSizedString
 Description:
   The ReadSizedString method reads a prefixed length string
   value from this stream (max 2G characters).
+Result:
+  String value.
+See also:
+  TJclEasyStream.WriteSizedString
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.ReadChar
+  TJclEasyStream.ReadCString
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.ReadSingle
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.WriteSizedString TJclEasyStream.ReadBoolean
-  TJclEasyStream.ReadChar TJclEasyStream.ReadCString
-  TJclEasyStream.ReadCurrency TJclEasyStream.ReadDateTime
-  TJclEasyStream.ReadDouble TJclEasyStream.ReadExtended
-  TJclEasyStream.ReadInt64 TJclEasyStream.ReadInteger
-  TJclEasyStream.ReadShortString TJclEasyStream.ReadSingle
-Returns:
-  String value
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteBoolean@Boolean
 Description:
   The WriteBoolean method writes a boolean value to this stream
   (1 byte length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadBoolean TJclEasyStream.WriteChar
-  TJclEasyStream.WriteCurrency TJclEasyStream.WriteDateTime
-  TJclEasyStream.WriteDouble TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - Boolean value.
+See also:
+  TJclEasyStream.ReadBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Boolean value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteChar@Char
 Description:
   The WriteChar method writes a character value to this stream
   (1 byte length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadChar TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteCurrency TJclEasyStream.WriteDateTime
-  TJclEasyStream.WriteDouble TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - Character value.
+See also:
+  TJclEasyStream.ReadChar
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Character value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteCurrency@Currency
 Description:
   The WriteCurrency method writes a currency value to this
   stream (8 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadCurrency TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteDateTime
-  TJclEasyStream.WriteDouble TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - Currency value.
+See also:
+  TJclEasyStream.ReadCurrency
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Currency value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteDateTime@TDateTime
 Description:
   The WriteDateTime method writes a TDateTime value to this
   stream (8 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadDateTime TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDouble TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - TDateTime value.
+See also:
+  TJclEasyStream.ReadDateTime
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - TDateTime value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteDouble@Double
 Description:
   The WriteDouble method writes a double precision floating
   point value to this stream (8 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadDouble TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - Double precision floating point value.
+See also:
+  TJclEasyStream.ReadDouble
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Double precision floating point value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteExtended@Extended
 Description:
   The WriteExtended method writes an extended precision
   floating point value to this stream (10 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadExtended TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteInt64 TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - Extended precision floating point value.
+See also:
+  TJclEasyStream.ReadExtended
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Extended precision floating point value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteInt64@Int64
 Description:
   The WriteInt64 method writes a 64 bit integer value to this
   stream (8 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadInt64 TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - 64 bit integer value.
+See also:
+  TJclEasyStream.ReadInt64
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - 64 bit integer value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteInteger@Integer
 Description:
   The WriteInteger method writes a 32 bit integer value to this
   stream (4 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadInteger TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteShortString TJclEasyStream.WriteSingle
+Parameters:
+  Value - 32 bit integer value.
+See also:
+  TJclEasyStream.ReadInteger
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - 32 bit integer value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteShortString@ShortString
 Description:
   The WriteShortString method writes a short string value to
   this stream (max 255 characters).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadShortString TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteInteger TJclEasyStream.WriteSingle
+Parameters:
+  Value - Short string value.
+See also:
+  TJclEasyStream.ReadShortString
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteSingle
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Short string value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteSingle@Single
 Description:
   The WriteSingle method writes a single precision floating
   point value to this stream (4 bytes length).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadSingle TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteInteger TJclEasyStream.WriteShortString
+Parameters:
+  Value - Single precision floating point value.
+See also:
+  TJclEasyStream.ReadSingle
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
   TJclEasyStream.WriteSizedString
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters:
-  Value - Single precision floating point value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteSizedString@string
 Description:
   The WriteSizedString method writes a prefixed length string
   value to this stream (max 2G characters).
-Donator:
-  Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadSizedString TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteInteger TJclEasyStream.WriteShortString
+Parameters
+  Value - String value.
+See also:
+  TJclEasyStream.ReadSizedString
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
   TJclEasyStream.WriteSingle
   TJclEasyStream.WriteStringDelimitedByNull
-Parameters
-  Value - String value
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEasyStream.WriteStringDelimitedByNull@string
 Description:
   The WriteStringDelimitedByNull method writes a C-like string
   value to this stream (max 2G characters).
+Parameters:
+  Value - String value.
+See also:
+  TJclEasyStream.ReadCString
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
+  TJclEasyStream.WriteSizedString
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEasyStream.ReadCString TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteInteger TJclEasyStream.WriteShortString
-  TJclEasyStream.WriteSingle TJclEasyStream.WriteSizedString
-Parameters:
-  Value - String value
 --------------------------------------------------------------------------------
 @@TJclEventStream
 Summary:
@@ -985,15 +1132,15 @@ Description:
 
   All operations use data from stream passed as a parameter to
   the constructor.
+See also:
+  TJclDelegatedStream
 Donator:
   Heinz Zastrau
-See Also:
-  TJclDelegatedStream
 --------------------------------------------------------------------------------
 @@TJclEventStream.FNotification
 Description:
   Private field to store event handler
-See Also:
+See also:
   TJclEventStream.OnNotification
 Donator:
   Heinz Zastrau
@@ -1004,17 +1151,23 @@ Summary:
 Description:
   The OnNotification event is fired on every operations on the
   stream (read/write/seek).
+See also:
+  TJclEventStream.Read
+  TJclEventStream.Seek
+  TJclEventStream.SetSize
+  TJclEventStream.Write
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEventStream.Read TJclEventStream.Seek
-  TJclEventStream.SetSize TJclEventStream.Write
 --------------------------------------------------------------------------------
 @@TStreamNotifyEvent
+Summary:
+  TODO
 Parameters:
-  Sender - The instance that fired the event
-  Position - Position of the stream after latest operation
-  Size - Size of the stream after latest operation
+  Sender - The instance that fired the event.
+  Position - Position of the stream after latest operation.
+  Size - Size of the stream after latest operation.
+Donator:
+  Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEventStream.Create@TStream@TStreamNotifyEvent@Boolean
 Summary:
@@ -1022,111 +1175,115 @@ Summary:
 Description:
   Create a new instance of the TJclEventStream class.
 Parameters:
-  AStream - Stream where data are written/read
+  AStream       - Stream where data are written/read
   ANotification - Notification handler
-  AOwnsStream - if set, current stream is destroyed when this
-                instance is destroyed
+  AOwnsStream   - if set, current stream is destroyed when this
+                  instance is destroyed
+See also:
+  TJclEventStream.OnNotification
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEventStream.OnNotification
 --------------------------------------------------------------------------------
 @@TJclEventStream.DoAfterStreamChange
 Description:
   Overridden method to notify that data stream is changed. This
   method sends new position and size.
+See also:
+  TJclEventStream.DoBeforeStreamChange
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEventStream.DoBeforeStreamChange
 --------------------------------------------------------------------------------
 @@TJclEventStream.DoBeforeStreamChange
 Description:
   Overridden method to notify that data stream is about to
   change. This method sends old position and size.
+See also:
+  TJclEventStream.DoAfterStreamChange
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEventStream.DoAfterStreamChange
 --------------------------------------------------------------------------------
 @@TJclEventStream.DoNotification
 Description:
   Internal help to trigger the OnNotification event.
+See also:
+  TJclEventStream.OnNotification
 Donator:
   Heinz Zastrau
-See Also:
-  TJclEventStream.OnNotification
 --------------------------------------------------------------------------------
 @@TJclEventStream.Read@@Longint
 Description:
   Overridden method of TStream.Read, all calls to this methods
   are redirected to data stream and notified to event handler.
-See Also:
-  TJclEventStream.OnNotification TJclEventStream.Seek
-  TJclEventStream.SetSize TJclEventStream.Write
+Parameters:
+  Buffer - Reference to a buffer to store data.
+  Count - Number of bytes to be read.
+Result:
+  Effective number of bytes that were read.
+See also:
+  TJclEventStream.OnNotification
+  TJclEventStream.Seek
+  TJclEventStream.SetSize
+  TJclEventStream.Write
 Donator:
   Heinz Zastrau
-Parameters:
-  Buffer - Reference to a buffer to store data
-  Count - Number of bytes to be read
-Returns:
-  Effective number of bytes that were read.
 --------------------------------------------------------------------------------
 @@!!OVERLOADED_Seek_TJclEventStream
 Description:
   Overridden method of TStream.Seek, all calls to this methods
   are redirected to data stream and notified to event handler.
-See Also:
-  TJclEventStream.OnNotification TJclEventStream.Read
-  TJclEventStream.SetSize TJclEventStream.Write
+Parameters:
+  Offset - Number of bytes to seek from the origin.
+  Origin - Origin to seek from (soBeginning, soCurrent, soEnd).
+Result:
+  New position in stream.
+See also:
+  TJclEventStream.OnNotification
+  TJclEventStream.Read
+  TJclEventStream.SetSize
+  TJclEventStream.Write
 Donator:
   Heinz Zastrau
-Parameters:
-  Offset - Number of bytes to seek from the origin
-  Origin - Origin to seek from (soBeginning, soCurrent, soEnd)
-Returns:
-  New position in stream.
 --------------------------------------------------------------------------------
 @@TJclEventStream.Seek@Int64@TSeekOrigin
 <combinewith !!OVERLOADED_Seek_TJclEventStream>
-
 --------------------------------------------------------------------------------
 @@TJclEventStream.Seek@Longint@Word
 <combinewith !!OVERLOADED_Seek_TJclEventStream>
-
 --------------------------------------------------------------------------------
 @@!!OVERLOADED_SetSize_TJclEventStream
 Description:
   Overridden method of TStream.SetSize, all calls to this
   methods are redirected to data stream and notified to event
   handler.
-See Also:
-  TJclEventStream.OnNotification TJclEventStream.Read
-  TJclEventStream.Seek TJclEventStream.Write
+Parameters:
+  NewSize - Requested new size of the stream.
+See also:
+  TJclEventStream.OnNotification
+  TJclEventStream.Read
+  TJclEventStream.Seek
+  TJclEventStream.Write
 Donator:
   Heinz Zastrau
-Parameters:
-  NewSize - Requested new size of the stream
 --------------------------------------------------------------------------------
 @@TJclEventStream.SetSize@Int64
 <combinewith !!OVERLOADED_SetSize_TJclEventStream>
-
 --------------------------------------------------------------------------------
 @@TJclEventStream.SetSize@Longint
 <combinewith !!OVERLOADED_SetSize_TJclEventStream>
-
 --------------------------------------------------------------------------------
 @@TJclEventStream.Write@@Longint
 Description:
   Overridden method of TStream.Write, all calls to this methods
   are redirected to data stream and notified to event handler.
-See Also:
-  TJclEventStream.OnNotification TJclEventStream.Read
-  TJclEventStream.Seek TJclEventStream.SetSize
+Parameters:
+  Buffer - Reference to a buffer to retrieve data.
+  Count - Number of bytes to be written.
+Result:
+  Effective number of bytes that were written.
+See also:
+  TJclEventStream.OnNotification
+  TJclEventStream.Read
+  TJclEventStream.Seek
+  TJclEventStream.SetSize
 Donator:
   Heinz Zastrau
-Parameters:
-  Buffer - Reference to a buffer to retrieve data
-  Count - Number of bytes to be written
-Returns:
-  Effective number of bytes that were written.
