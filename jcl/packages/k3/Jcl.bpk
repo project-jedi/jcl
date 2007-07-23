@@ -58,6 +58,7 @@
       ..\..\lib\k3\obj\JclVectors.obj
       ..\..\lib\k3\obj\JclWideStrings.obj
       ..\..\lib\k3\obj\pcre.obj
+      ..\..\lib\k3\obj\zlibh.obj
     "/>
     <RESFILES value="Jcl.res"/>
     <DEFFILE value=""/>
@@ -157,6 +158,7 @@
       <FILE FILENAME="../../source/common/JclVectors.pas" FORMNAME="" UNITNAME="JclVectors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclWideStrings.pas" FORMNAME="" UNITNAME="JclWideStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/pcre.pas" FORMNAME="" UNITNAME="pcre" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/unix/zlibh.pas" FORMNAME="" UNITNAME="zlibh" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>

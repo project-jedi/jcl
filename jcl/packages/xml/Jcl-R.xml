@@ -111,5 +111,6 @@
     <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="c5,d5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclFont.pas" Targets="c5,d5" Formname="" Condition=""/>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="c5,d5" Formname="" Condition=""/>
+    <File Name="..\..\source\unix\zlibh.pas" Targets="Kylix" Formname="" Condition=""/>
   </Contains>
 </Package>
