@@ -5,12 +5,18 @@
 // objbase.h line 390
 const
   STGFMT_STORAGE  = 0;
+  {$EXTERNALSYM STGFMT_STORAGE}
   STGFMT_NATIVE   = 1;
+  {$EXTERNALSYM STGFMT_NATIVE}
   STGFMT_FILE     = 3;
+  {$EXTERNALSYM STGFMT_FILE}
   STGFMT_ANY      = 4;
+  {$EXTERNALSYM STGFMT_ANY}
   STGFMT_DOCFILE  = 5;
+  {$EXTERNALSYM STGFMT_DOCFILE}
 // This is a legacy define to allow old component to builds
   STGFMT_DOCUMENT = 0;
+  {$EXTERNALSYM STGFMT_DOCUMENT}
 
 // objbase.h line 913
 

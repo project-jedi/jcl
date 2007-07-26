@@ -82,29 +82,31 @@ uses
 {$HPPEMIT '#define LONG64 System::LONG64'}
 {$HPPEMIT ''}
 {$ENDIF COMPILER5}
-{$HPPEMIT '#include "WinDef.h"'}
-{$HPPEMIT '#include "WinNT.h"'}
-{$HPPEMIT '#include "WinBase.h"'}
-{$HPPEMIT '#include "BaseTsd.h"'}
-{$HPPEMIT '#include "ImageHlp.h"'}
-{$HPPEMIT '#include "lm.h"'}
-{$HPPEMIT '#include "Nb30.h"'}
-{$HPPEMIT '#include "RasDlg.h"'}
+{$HPPEMIT '#include <WinDef.h>'}
+{$HPPEMIT '#include <WinNT.h>'}
+{$HPPEMIT '#include <WinBase.h>'}
+{$HPPEMIT '#include <BaseTsd.h>'}
+{$HPPEMIT '#include <ImageHlp.h>'}
+{$HPPEMIT '#include <lm.h>'}
+{$HPPEMIT '#include <Nb30.h>'}
+{$HPPEMIT '#include <RasDlg.h>'}
 {$IFDEF COMPILER6_UP}
-{$HPPEMIT '#include "Reason.h"'}
+{$HPPEMIT '#include <Reason.h>'}
 {$ENDIF COMPILER6_UP}
-{$HPPEMIT '#include "ShlWApi.h"'}
-{$HPPEMIT '#include "WinError.h"'}
-{$HPPEMIT '#include "WinIoCtl.h"'}
-{$HPPEMIT '#include "WinUser.h"'}
-{$HPPEMIT '#include "Powrprof.h"}
+{$HPPEMIT '#include <ShlWApi.h>'}
+{$HPPEMIT '#include <WinError.h>'}
+{$HPPEMIT '#include <WinIoCtl.h>'}
+{$HPPEMIT '#include <WinUser.h>'}
+//{$HPPEMIT '#include <Powrprof.h>'}
 {$HPPEMIT '#include <delayimp.h>'}
-{$HPPEMIT '#include "propidl.h"'}
-{$HPPEMIT '#include "msidefs.h"'}
-{$HPPEMIT '#include "shlguid.h"'}
-{$HPPEMIT '#include "imgguids.h"'}
-{$HPPEMIT '#include "objbase.h"'}
-{$HPPEMIT '#include "ntsecapi.h"'}
+{$HPPEMIT '#include <propidl.h>'}
+{$HPPEMIT '#include <msidefs.h>'}
+{$HPPEMIT '#include <shlguid.h>'}
+{$IFDEF COMPILER6_UP}
+{$HPPEMIT '#include <imgguids.h>'}
+{$ENDIF COMPILER6_UP}
+{$HPPEMIT '#include <objbase.h>'}
+{$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
 
 {$IFDEF CLR}

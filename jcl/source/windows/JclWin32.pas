@@ -77,29 +77,31 @@ uses
 {$HPPEMIT '#define LONG64 System::LONG64'}
 {$HPPEMIT ''}
 {$ENDIF COMPILER5}
-{$HPPEMIT '#include "WinDef.h"'}
-{$HPPEMIT '#include "WinNT.h"'}
-{$HPPEMIT '#include "WinBase.h"'}
-{$HPPEMIT '#include "BaseTsd.h"'}
-{$HPPEMIT '#include "ImageHlp.h"'}
-{$HPPEMIT '#include "lm.h"'}
-{$HPPEMIT '#include "Nb30.h"'}
-{$HPPEMIT '#include "RasDlg.h"'}
+{$HPPEMIT '#include <WinDef.h>'}
+{$HPPEMIT '#include <WinNT.h>'}
+{$HPPEMIT '#include <WinBase.h>'}
+{$HPPEMIT '#include <BaseTsd.h>'}
+{$HPPEMIT '#include <ImageHlp.h>'}
+{$HPPEMIT '#include <lm.h>'}
+{$HPPEMIT '#include <Nb30.h>'}
+{$HPPEMIT '#include <RasDlg.h>'}
 {$IFDEF COMPILER6_UP}
-{$HPPEMIT '#include "Reason.h"'}
+{$HPPEMIT '#include <Reason.h>'}
 {$ENDIF COMPILER6_UP}
-{$HPPEMIT '#include "ShlWApi.h"'}
-{$HPPEMIT '#include "WinError.h"'}
-{$HPPEMIT '#include "WinIoCtl.h"'}
-{$HPPEMIT '#include "WinUser.h"'}
-{$HPPEMIT '#include "Powrprof.h"}
+{$HPPEMIT '#include <ShlWApi.h>'}
+{$HPPEMIT '#include <WinError.h>'}
+{$HPPEMIT '#include <WinIoCtl.h>'}
+{$HPPEMIT '#include <WinUser.h>'}
+//{$HPPEMIT '#include <Powrprof.h>'}
 {$HPPEMIT '#include <delayimp.h>'}
-{$HPPEMIT '#include "propidl.h"'}
-{$HPPEMIT '#include "msidefs.h"'}
-{$HPPEMIT '#include "shlguid.h"'}
-{$HPPEMIT '#include "imgguids.h"'}
-{$HPPEMIT '#include "objbase.h"'}
-{$HPPEMIT '#include "ntsecapi.h"'}
+{$HPPEMIT '#include <propidl.h>'}
+{$HPPEMIT '#include <msidefs.h>'}
+{$HPPEMIT '#include <shlguid.h>'}
+{$IFDEF COMPILER6_UP}
+{$HPPEMIT '#include <imgguids.h>'}
+{$ENDIF COMPILER6_UP}
+{$HPPEMIT '#include <objbase.h>'}
+{$HPPEMIT '#include <ntsecapi.h>'}
 {$HPPEMIT ''}
 
 {$IFDEF CLR}
@@ -7123,12 +7125,18 @@ const
 // objbase.h line 390
 const
   STGFMT_STORAGE  = 0;
+  {$EXTERNALSYM STGFMT_STORAGE}
   STGFMT_NATIVE   = 1;
+  {$EXTERNALSYM STGFMT_NATIVE}
   STGFMT_FILE     = 3;
+  {$EXTERNALSYM STGFMT_FILE}
   STGFMT_ANY      = 4;
+  {$EXTERNALSYM STGFMT_ANY}
   STGFMT_DOCFILE  = 5;
+  {$EXTERNALSYM STGFMT_DOCFILE}
 // This is a legacy define to allow old component to builds
   STGFMT_DOCUMENT = 0;
+  {$EXTERNALSYM STGFMT_DOCUMENT}
 
 // objbase.h line 913
 
@@ -7207,18 +7215,31 @@ type
 
 const
   POLICY_VIEW_LOCAL_INFORMATION = $00000001;
+  {$EXTERNALSYM POLICY_VIEW_LOCAL_INFORMATION}
   POLICY_VIEW_AUDIT_INFORMATION = $00000002;
+  {$EXTERNALSYM POLICY_VIEW_AUDIT_INFORMATION}
   POLICY_GET_PRIVATE_INFORMATION = $00000004;
+  {$EXTERNALSYM POLICY_GET_PRIVATE_INFORMATION}
   POLICY_TRUST_ADMIN = $00000008;
+  {$EXTERNALSYM POLICY_TRUST_ADMIN}
   POLICY_CREATE_ACCOUNT = $00000010;
+  {$EXTERNALSYM POLICY_CREATE_ACCOUNT}
   POLICY_CREATE_SECRET = $00000020;
+  {$EXTERNALSYM POLICY_CREATE_SECRET}
   POLICY_CREATE_PRIVILEGE = $00000040;
+  {$EXTERNALSYM POLICY_CREATE_PRIVILEGE}
   POLICY_SET_DEFAULT_QUOTA_LIMITS = $00000080;
+  {$EXTERNALSYM POLICY_SET_DEFAULT_QUOTA_LIMITS}
   POLICY_SET_AUDIT_REQUIREMENTS = $00000100;
+  {$EXTERNALSYM POLICY_SET_AUDIT_REQUIREMENTS}
   POLICY_AUDIT_LOG_ADMIN = $00000200;
+  {$EXTERNALSYM POLICY_AUDIT_LOG_ADMIN}
   POLICY_SERVER_ADMIN = $00000400;
+  {$EXTERNALSYM POLICY_SERVER_ADMIN}
   POLICY_LOOKUP_NAMES = $00000800;
+  {$EXTERNALSYM POLICY_LOOKUP_NAMES}
   POLICY_NOTIFICATION = $00001000;
+  {$EXTERNALSYM POLICY_NOTIFICATION}
 
   POLICY_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED or
                                POLICY_VIEW_LOCAL_INFORMATION or
@@ -7233,10 +7254,12 @@ const
                                POLICY_AUDIT_LOG_ADMIN or
                                POLICY_SERVER_ADMIN or
                                POLICY_LOOKUP_NAMES);
+  {$EXTERNALSYM POLICY_ALL_ACCESS}
 
   POLICY_READ = (STANDARD_RIGHTS_READ or
                                POLICY_VIEW_AUDIT_INFORMATION or
                                POLICY_GET_PRIVATE_INFORMATION);
+  {$EXTERNALSYM POLICY_READ}
 
   POLICY_WRITE = (STANDARD_RIGHTS_WRITE or
                                POLICY_TRUST_ADMIN or
@@ -7247,10 +7270,12 @@ const
                                POLICY_SET_AUDIT_REQUIREMENTS or
                                POLICY_AUDIT_LOG_ADMIN or
                                POLICY_SERVER_ADMIN);
+  {$EXTERNALSYM POLICY_WRITE}
 
   POLICY_EXECUTE = (STANDARD_RIGHTS_EXECUTE or
                                POLICY_VIEW_LOCAL_INFORMATION or
                                POLICY_LOOKUP_NAMES);
+  {$EXTERNALSYM POLICY_EXECUTE}
 
 // NtSecApi.h line 914
 type
@@ -7269,10 +7294,15 @@ type
     PolicyAuditFullQueryInformation,
     PolicyDnsDomainInformation,
     PolicyDnsDomainInformationInt);
+  {$EXTERNALSYM _POLICY_INFORMATION_CLASS}
   POLICY_INFORMATION_CLASS = _POLICY_INFORMATION_CLASS;
+  {$EXTERNALSYM POLICY_INFORMATION_CLASS}
   PPOLICY_INFORMATION_CLASS = ^POLICY_INFORMATION_CLASS;
+  {$EXTERNALSYM PPOLICY_INFORMATION_CLASS}
   TPolicyInformationClass = POLICY_INFORMATION_CLASS;
+  {$EXTERNALSYM TPolicyInformationClass}
   PPolicyInformationClass = PPOLICY_INFORMATION_CLASS;
+  {$EXTERNALSYM PPolicyInformationClass}
 
 // NtSecApi.h line 1031
 //
@@ -7410,7 +7440,7 @@ begin
     ModuleHandle := GetModuleHandle(PChar(ModuleName));
     if ModuleHandle = 0 then
     begin
-      ModuleHandle := SafeLoadLibrary(ModuleName);
+      ModuleHandle := SafeLoadLibrary(PChar(ModuleName));
       if ModuleHandle = 0 then
         raise EJclError.CreateResFmt(@RsELibraryNotFound, [ModuleName]);
     end;
