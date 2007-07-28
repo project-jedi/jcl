@@ -72,7 +72,7 @@ Description:
   of the namespace (root of the lefthand treeview).
 Parameters:
   FolderID - Special folder ID to open. One of the CSIDL_XXX constants must be specified here (see ShlObj.pas for the full list).
-  Parent - Handle of the window to serve as the parent of any dialogs displayed
+  Parent - Handle of the window to serve as the parent of any dialogs displayed.
 Result:
   If the function succeeds the result is True, otherwise it is False.
 See also:
@@ -235,7 +235,7 @@ Donator:
 @@SHEnumFolderFirst
 <GROUP Windows.Shell.FilesandFolders>
 Summary:
-  Begins the enumeration of the items in a folder
+  Begins the enumeration of the items in a folder.
 Description:
   SHEnumFolderFirst begins the enumeration of all items in the specified folder that
   match the specified Flags. If the function succeeds then the return value is True
@@ -963,7 +963,7 @@ Result:
   If the function succeeds the return value is the item identifier list of the
   specified path, relative to the specified Folder. If the function fails the
   return value is nil. Note that the caller is responsible for eventually releasing
-  the memory associated with the returned pidl by calling PidlFree
+  the memory associated with the returned pidl by calling PidlFree.
 See also:
   PidlToPath
   PathToPidlBind
@@ -1072,7 +1072,7 @@ Description:
   return value is False.
 Parameters:
   Source - The item identifier to copy.
-  Dest - The item identifier that receives a copy of Source. Note that you must eventually free this item identifier by calling PidlFree
+  Dest - The item identifier that receives a copy of Source. Note that you must eventually free this item identifier by calling PidlFree.
 Result:
   If the function succeeds then the return value is True, otherwise it is False.
 Donator:
@@ -1089,7 +1089,7 @@ Description:
   assumes that the memory associated with the item identifier was allocated by the
   Shell's memory allocator and will fail if this is not the case.
 Parameters:
-  IdList - The item identifier list whose associated memory shall be freed
+  IdList - The item identifier list whose associated memory shall be freed.
 Result:
   If the function succeeds the return value is True and IdList is set to nil. If
   the function fails the return value is False and the IdList parameter will retain

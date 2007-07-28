@@ -271,7 +271,7 @@ Summary:
 See also:
   TJclEventStream
 Donator:
-  Florent Ocuhet
+  Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclDelegatedStream.FOnRead
 Summary:
@@ -412,7 +412,7 @@ Summary:
 Parameters:
   Sender - Object that triggers the event.
   Offset - Number of bytes to seek from specified origin.
-  Count - Origin (valid values are soBeginning, soCurrent or soEnd)
+  Count - Origin (valid values are soBeginning, soCurrent or soEnd).
 Result:
   Returns the new position from the beginning of the stream.
 Donator:
@@ -480,11 +480,12 @@ Donator:
 @@TJclScopedStream.FStartPos
 Description:
   Private field to store the original position of ParentStream
-  on creation of this object
+  on creation of this object.
+See also:
+  TJclScopedStream.StartPos
+  TJclScopedStream.ParentStream
 Donator:
   Florent Ouchet
-See also:
-  TJclScopedStream.StartPos TJclScopedStream.ParentStream
 --------------------------------------------------------------------------------
 @@TJclScopedStream.MaxSize
 Summary:
@@ -517,7 +518,7 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclScopedStream.StartPos
 Summary:
-  Origin of the translation in position
+  Origin of the translation in position.
 Description:
   This property exposes the initial position of the data stream
   when this virtual stream was created.
@@ -537,8 +538,8 @@ Description:
 Parameters:
   AParentStream - Data stream storing data that can be
                   read/written by this virtual stream.
-  AMaxSize - Maximum size of this virtual stream (set 0
-             not to limit).
+  AMaxSize      - Maximum size of this virtual stream (set 0
+                  not to limit).
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
@@ -1139,7 +1140,7 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclEventStream.FNotification
 Description:
-  Private field to store event handler
+  Private field to store event handler.
 See also:
   TJclEventStream.OnNotification
 Donator:
@@ -1147,7 +1148,7 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclEventStream.OnNotification
 Summary:
-  Notification event
+  Notification event.
 Description:
   The OnNotification event is fired on every operations on the
   stream (read/write/seek).
@@ -1175,10 +1176,10 @@ Summary:
 Description:
   Create a new instance of the TJclEventStream class.
 Parameters:
-  AStream       - Stream where data are written/read
-  ANotification - Notification handler
+  AStream       - Stream where data are written/read.
+  ANotification - Notification handler.
   AOwnsStream   - if set, current stream is destroyed when this
-                  instance is destroyed
+                  instance is destroyed.
 See also:
   TJclEventStream.OnNotification
 Donator:
@@ -1304,11 +1305,11 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclBufferedStream.BufferHit
 Summary:
-  Test if data at current position is in buffer
+  Test if data at current position is in buffer.
 Description:
   This internal helper tests if data at current position are stored in buffer.
 Returns:
-  True if data is in buffer
+  True if data is in buffer.
 See also:
   TJclBufferedStream.LoadBuffer
 Donator:
@@ -1392,7 +1393,7 @@ Description:
   This field stores the number of bytes valid in buffer. This number may be
   different of BufferSize on the following situation: end of stream is reached
   or data are being appended to the end of the stream. FbufferCurrentSize is
-  always less or equal to Buffersize
+  always less or equal to Buffersize.
 See also:
   TJclBufferedStream.FBuffer
   TJclBufferedStream.BufferSize
@@ -1440,10 +1441,10 @@ Summary:
   Flush modifications in buffer to data stream.
 Description:
   By calling this function, all modifications made to bytes in buffer (by calls
-  to TJclBufferedStream.Write@@Longint) are written to data stream.
+  to TJclBufferedStream.Write) are written to data stream.
 See also:
   TJclBufferedStream.FBufferMaxModifiedPos
-  TJclBufferedStream.Write@@Longint
+  TJclBufferedStream.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1454,9 +1455,9 @@ Description:
   This field stores current position of this stream. Its value is updated on
   every accesses (Read/Write/Seek).
 See also:
-  TJclBufferedStream.Read@@Longint
-  TJclBufferedStream.Seek@Int64@TSeekOrigin
-  TJclBufferedStream.Write@@Longint
+  TJclBufferedStream.Read
+  TJclBufferedStream.Seek
+  TJclBufferedStream.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1468,7 +1469,7 @@ Description:
   and eventually data that will be appended to this stream on next time the
   buffer is flushed.
 See also:
-  TJclBufferedStream.Seek@Int64@TSeekOrigin
+  TJclBufferedStream.Seek
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1520,13 +1521,13 @@ Returns:
   Effective number of bytes that were read.
 See also:
   TJclBufferedStream.WriteToBuffer
-  TJclBufferedStream.Read@@Longint
+  TJclBufferedStream.Read
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclBufferedStream.Seek@Int64@TSeekOrigin
 Summary:
-  Overridden function of TStream.Seek
+  Overridden function of TStream.Seek.
 Description:
   This function seeks current position in stream. For a more complete
   description, refer to TStream.Seek documentation.
@@ -1536,14 +1537,14 @@ Parameters
 Returns:
   New position in stream from beginning.
 See also:
-  TJclBufferedStream.Read@@Longint
-  TJclBufferedStream.Write@@Longint
+  TJclBufferedStream.Read
+  TJclBufferedStream.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclBufferedStream.Write@@Longint
 Summary:
-  Overriden function of TStream.Write
+  Overriden function of TStream.Write.
 Description:
   This funtion writes data to cache buffer. If it is too small, it is flushed
   until all requested data are written. For a more complete description, refer
@@ -1554,8 +1555,8 @@ Parameters:
 Returns:
   Effective number of written bytes.
 See also:
-  TJclBufferedStream.Read@@Longint
-  TJclBufferedStream.Seek@Int64@TSeekOrigin
+  TJclBufferedStream.Read
+  TJclBufferedStream.Seek
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1564,8 +1565,7 @@ Summary:
   Write data to cache buffer.
 Description:
   This function tries to write Count bytes to cache buffer. It is called in a
-  loop by TJclBufferedStream.Write@@Longint to have the requested number of
-  bytes.
+  loop by TJclBufferedStream.Write to have the requested number of bytes.
 Parameters:
   Buffer - Memory location that contains data to be written.
   Count  - Number of requested bytes.
@@ -1574,7 +1574,7 @@ Returns:
   Effective number of bytes that were written.
 See also:
   TJclBufferedStream.WriteToBuffer
-  TJclBufferedStream.Read@@Longint
+  TJclBufferedStream.Read
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1603,8 +1603,8 @@ Parameters:
 Returns:
   New position in stream relative to beginning. -1 in case of error.
 See also:
-  TJclStreamDecorator.Read@@Longint
-  TJclStreamDecorator.Write@@Longint
+  TJclStreamDecorator.Read
+  TJclStreamDecorator.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1623,9 +1623,9 @@ Description:
 Parameters:
   NewSize - requested new size in bytes.
 See also:
-  TJclStreamDecorator.Read@@Longint
-  TJclStreamDecorator.Seek@Int64@Longint
-  TJclStreamDecorator.Write@@Longint
+  TJclStreamDecorator.Read
+  TJclStreamDecorator.Seek
+  TJclStreamDecorator.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1665,8 +1665,8 @@ Summary:
 Description:
   This constructor creates a new instance of the TJclStreamDecorator class.
 Parameters:
-  AStream     - attached stream.
-  AOwnsStream - attached stream will be freed when this instance is destroyed.
+  AStream     - Attached stream.
+  AOwnsStream - Attached stream will be freed when this instance is destroyed.
 See also:
   TJclStreamDecorator.Destroy
   TJclStreamDecorator.Stream
@@ -1680,7 +1680,7 @@ Description:
   This overridden destructor destroys this instance and all its associated
   resources.
 See also:
-  TJclStreamDecorator.Create@TStream@Boolean
+  TJclStreamDecorator.Create
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1773,8 +1773,8 @@ Parameters:
 Returns:
   Number of bytes that were effectively placed in the buffer.
 See also:
-  TJclStreamDecorator.Seek@Int64@TSeekOrigin
-  TJclStreamDecorator.Write@@Longint
+  TJclStreamDecorator.Seek
+  TJclStreamDecorator.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1783,9 +1783,9 @@ Summary:
   Setter of the Stream property.
 Description:
   This function executes required operations to change attached stream:
-    - calling DoBeforeStreamChange internal notifier.
-    - eventually free attached stream if OwnsStream is set.
-    - calling DoAfterStreamchanged internal notifier.
+    - Calling DoBeforeStreamChange internal notifier.
+    - Eventually free attached stream if OwnsStream is set.
+    - Calling DoAfterStreamchanged internal notifier.
 Parameters:
   Value - new stream to attach.
 See also:
@@ -1804,7 +1804,7 @@ Description:
   this instance owns attached streams which will be freed when no more needed
   (when changed or when this instance is destroyed).
 See also:
-  TJclStreamDecorator.SetStream@TStream
+  TJclStreamDecorator.SetStream
   TJclStreamDecorator.OwnsStream
 Donator:
   Heinz Zastrau
@@ -1821,8 +1821,8 @@ Parameters:
 Returns:
   Number of bytes that were effectively written.
 See also:
-  TJclStreamDecorator.Read@@Longint
-  TJclStreamDecorator.Seek@Int64@TSeekOrigin
+  TJclStreamDecorator.Read
+  TJclStreamDecorator.Seek
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1952,7 +1952,7 @@ Description:
 Returns:
   Random data on 8 bits.
 See also:
-  TJclRandomStream.Read@@Longint
+  TJclRandomStream.Read
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -1979,7 +1979,7 @@ Donator:
 --------------------------------------------------------------------------------
 @@TJclRandomStream.Read@@Longint
 Summary:
-  Overridden function of TStream.Read
+  Overridden function of TStream.Read.
 Description:
   This function fills specified buffer with the requested number of bytes of
   random data. For a more complete description of this function, refer to
@@ -2002,7 +2002,7 @@ Description:
   It sets the random seed value to a specified value.
   This function is a wrapper around System.RandomSeed.
 Parameters:
-  Value - new value for the random seed.
+  Value - New value for the random seed.
 See also:
   TJclRandomStream.RandSeed
 Donator:
@@ -2028,7 +2028,7 @@ Description:
   This field contains current position of the stream. This value is updated
   after every operations.
 See also:
-  TJclNullStream.Seek@Int64@TSeekOrigin
+  TJclNullStream.Seek
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2039,7 +2039,7 @@ Description:
   This field contains current size of the stream. This value is updated after
   every operations.
 See also:
-  TJclNullStream.Seek@Int64@TSeekOrigin
+  TJclNullStream.Seek
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2057,9 +2057,9 @@ Parameters:
 Returns:
   Number of bytes that were effectively read.
 See also:
-  TJclNullStream.Seek@Int64@TSeekOrigin
-  TJclNullStream.SetSize@Int64
-  TJclNullStream.Write@@Longint
+  TJclNullStream.Seek
+  TJclNullStream.SetSize
+  TJclNullStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2077,9 +2077,9 @@ Returns:
   New position in the stream relative to the beginning. This function returns
   -1 in case of error.
 See also:
-  TJclNullStream.Read@@Longint
-  TJclNullStream.SetSize@Int64
-  TJclNullStream.Write@@Longint
+  TJclNullStream.Read
+  TJclNullStream.SetSize
+  TJclNullStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2090,11 +2090,11 @@ Description:
   This procedure sets a new size for the stream. For a more complete
   description of this procedure, refer to the documentation of TStream.SetSize.
 Parameters:
-  Value - new size in bytes.
+  Value - New size in bytes.
 See also:
-  TJclNullStream.Read@@Longint
-  TJclNullStream.Seek@Int64@TSeekOrigin
-  TJclNullStream.Write@@Longint
+  TJclNullStream.Read
+  TJclNullStream.Seek
+  TJclNullStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2112,9 +2112,9 @@ Parameters:
 Returns:
   Number of bytes that were effectively written.
 See also:
-  TJclNullStream.Read@@Longint
-  TJclNullStream.Seek@Int64@TSeekOrigin
-  TJclNullStream.SetSize@Int64
+  TJclNullStream.Read
+  TJclNullStream.Seek
+  TJclNullStream.SetSize
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2138,11 +2138,11 @@ Description:
   description of this procedure, refer to the documentation of TStream.SetSize.
   As implemented, this function does nothing to keep stream size to 0.
 Parameters:
-  Value - new size in bytes.
+  Value - New size in bytes.
 See also:
-  TJclEmptyStream.Read@@Longint
-  TJclEmptyStream.Seek@Int64@TSeekOrigin
-  TJclEmptyStream.Write@@Longint
+  TJclEmptyStream.Read
+  TJclEmptyStream.Seek
+  TJclEmptyStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2165,9 +2165,9 @@ Parameters:
 Returns:
   Number of bytes that were effectively read (in this case 0).
 See also:
-  TJclEmptyStream.Seek@Int64@TSeekOrigin
-  TJclEmptyStream.SetSize@Int64
-  TJclEmptyStream.Write@@Longint
+  TJclEmptyStream.Seek
+  TJclEmptyStream.SetSize
+  TJclEmptyStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2187,9 +2187,9 @@ Returns:
   New position in the stream relative to the beginning (always 0). This
   function returns -1 in case of error.
 See also:
-  TJclEmptyStream.Read@@Longint
-  TJclEmptyStream.SetSize@Int64
-  TJclEmptyStream.Write@@Longint
+  TJclEmptyStream.Read
+  TJclEmptyStream.SetSize
+  TJclEmptyStream.Write
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2207,9 +2207,9 @@ Parameters:
 Returns:
   Number of bytes that were effectively written (0).
 See also:
-  TJclEmptyStream.Read@@Longint
-  TJclEmptyStream.Seek@Int64@TSeekOrigin
-  TJclEmptyStream.SetSize@Int64
+  TJclEmptyStream.Read
+  TJclEmptyStream.Seek
+  TJclEmptyStream.SetSize
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2248,7 +2248,7 @@ Summary:
 Description:
   This destructor destroys current instance and all its associated resources.
 See also:
-  TJclFileStream.Create@string@Word@Cardinal
+  TJclFileStream.Create
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
@@ -2291,7 +2291,7 @@ Summary:
 Description:
   Private field to store the value of the Handle property.
 See also:
-  TJclHandleStream.Hande
+  TJclHandleStream.Handle
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
