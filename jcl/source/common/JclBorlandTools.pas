@@ -5501,7 +5501,8 @@ var
             PersonalitiesList := TStringList.Create;
             try
               PersonalitiesKeyName := VersionKeyName + '\Personalities';
-              if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName) then
+              if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName)
+                and RegKeyExists(HKEY_CURRENT_USER, PersonalitiesKeyName) then // IDE was launched one time at least
                 RegGetValueNames(HKEY_LOCAL_MACHINE, PersonalitiesKeyName, PersonalitiesList);
                 
               for J := Low(Personalities) to High(Personalities) do
