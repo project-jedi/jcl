@@ -19,7 +19,5 @@
   <Contains>
     <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="Clx" Formname="" Condition=""/>
     <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="Clx" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="ClxDev" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="ClxDev" Formname="" Condition=""/>
   </Contains>
 </Package>
