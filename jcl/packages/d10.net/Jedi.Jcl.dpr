@@ -40,14 +40,14 @@ uses
 [assembly: AssemblyTitle('JEDI Code Library')]
 [assembly: AssemblyDescription('JEDI Code Library RTL package')]
 [assembly: AssemblyConfiguration('')]
-[assembly: AssemblyCompany('')]
-[assembly: AssemblyProduct('JCL')]
-[assembly: AssemblyCopyright('')]
+[assembly: AssemblyCompany('Project JEDI')]
+[assembly: AssemblyProduct('JEDI Code Library')]
+[assembly: AssemblyCopyright('Copyright (C) 1999, 2007 Project JEDI')]
 [assembly: AssemblyTrademark('')]
 [assembly: AssemblyCulture('')]
 
 // MajorVersion.MinorVersion.BuildNumber.Revision
-[assembly: AssemblyVersion('1.0.*')]
+[assembly: AssemblyVersion('1.101.0.2647')]
 
 // Package signature
 [assembly: AssemblyDelaySign(false)]
