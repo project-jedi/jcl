@@ -968,6 +968,32 @@ procedure PathListSetItem(var List: string; const Index: Integer; const Value: s
 // return the index of an item
 function PathListItemIndex(const List, Item: string): Integer;
 
+
+// additional functions to access the commandline parameters of an application
+
+// returns the name of the command line parameter at position index, which is
+// separated by the given separator, if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamName  (Index : Integer; const Separator : string = '=';
+             const AllowedPrefixCharacters : string = '-/'; TrimName : Boolean = true) : string;
+// returns the value of the command line parameter at position index, which is
+// separated by the given separator
+function ParamValue (Index : Integer; const Separator : string = '='; TrimValue : Boolean = true) : string; overload;
+// seaches a command line parameter where the namepart is the searchname
+// and returns the value which is which by the given separator.
+// CaseSensitive defines the search type. if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamValue (const SearchName : string; const Separator : string = '=';
+             CaseSensitive : Boolean = False;
+             const AllowedPrefixCharacters : string = '-/'; TrimValue : Boolean = true) : string; overload;
+// seaches a command line parameter where the namepart is the searchname
+// and returns the position index. if no separator is defined, the full paramstr is compared.
+// CaseSensitive defines the search type. if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamPos (const SearchName : string; const Separator : string = '=';
+             CaseSensitive : Boolean = False;
+             const AllowedPrefixCharacters : string = '-/'): Integer;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -6256,6 +6282,100 @@ begin
     StrList.Free;
   end;
 end;
+
+
+// additional functions to access the commandline parameters of an application
+
+// returns the name of the command line parameter at position index, which is
+// separated by the given separator, if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamName  (Index : Integer; const Separator : string = '=';
+             const AllowedPrefixCharacters : string = '-/'; TrimName : Boolean = true) : string;
+var s: string;
+    p: Integer;
+begin
+  if (index > 0) and (index <= ParamCount) then
+  begin
+    s := ParamStr(index);
+    if Pos(Copy(s, 1, 1), AllowedPrefixCharacters) > 0 then
+      s := Copy (s, 2, Length(s)-1);
+    p := Pos(Separator, s);
+    if p > 0 then
+      s := Copy (s, 1, p-1);
+    if TrimName then
+      s := Trim(s);
+    Result := s;
+  end
+  else
+    Result := '';
+end;
+
+// returns the value of the command line parameter at position index, which is
+// separated by the given separator
+function ParamValue (Index : Integer; const Separator : string = '='; TrimValue : Boolean = true) : string;
+var s: string;
+    p: Integer;
+begin
+  if (index > 0) and (index <= ParamCount) then
+  begin
+    s := ParamStr(index);
+    p := Pos(Separator, s);
+    if p > 0 then
+      s := Copy (s, p+1, Length(s)-p);
+    if TrimValue then
+      s := Trim(s);
+    Result := s;
+  end
+  else
+    Result := '';
+end;
+
+// seaches a command line parameter where the namepart is the searchname
+// and returns the value which is which by the given separator.
+// CaseSensitive defines the search type. if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamValue (const SearchName : string; const Separator : string = '=';
+             CaseSensitive : Boolean = False;
+             const AllowedPrefixCharacters : string = '-/'; TrimValue : Boolean = true) : string;
+var pName : string;
+    i : Integer;
+begin
+  Result := '';
+  for i  := 1 to ParamCount do
+  begin
+    pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
+    if (CaseSensitive and (pName = Trim(SearchName))) or
+       (UpperCase(pName) = Trim(UpperCase(SearchName))) then
+    begin
+      Result := ParamValue (i, Separator, TrimValue);
+      exit;
+    end;
+  end;
+end;
+
+// seaches a command line parameter where the namepart is the searchname
+// and returns the position index. if no separator is defined, the full paramstr is compared.
+// CaseSensitive defines the search type. if the first character of the name part
+// is one of the AllowedPrefixCharacters, this character will be deleted.
+function ParamPos (const SearchName : string; const Separator : string = '=';
+             CaseSensitive : Boolean = False;
+             const AllowedPrefixCharacters : string = '-/'): Integer;
+var pName : string;
+    i : Integer;
+begin
+  Result := -1;
+  for i  := 1 to ParamCount do
+  begin
+    pName := ParamName(i, Separator, AllowedPrefixCharacters, True);
+    if (CaseSensitive and (pName = SearchName)) or
+       (UpperCase(pName) = UpperCase(SearchName)) then
+    begin
+      Result := i;
+      Exit;
+    end;
+  end;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
