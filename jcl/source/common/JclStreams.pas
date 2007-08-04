@@ -202,6 +202,7 @@ type
   protected
     procedure DoAfterStreamChange; override;
     procedure DoBeforeStreamChange; override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
@@ -267,6 +268,8 @@ type
     FStartPos: Int64;
     FCurrentPos: Int64;
     FMaxSize: Int64;
+  protected
+    procedure SetSize(const NewSize: Int64); override;
   public
     // scopedstream starting at the current position of the ParentStream
     //   if MaxSize is positive or null, read and write operations cannot overrun this size or the ParentStream limitation
@@ -321,6 +324,7 @@ type
     procedure DoAfterStreamChange; override;
     procedure AfterBlockRead; virtual;   // override to check protection
     procedure BeforeBlockWrite; virtual; // override to compute protection
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStorageStream: TStream; AOwnsStream: Boolean = False;
       ASectorOverHead: Integer = 0);
@@ -1008,6 +1012,23 @@ begin
   Result := NewPos;
 end;
 
+procedure TJclBufferedStream.SetSize(const NewSize: Int64);
+begin
+  inherited SetSize(NewSize);
+  if NewSize < (FBufferStart + FBufferMaxModifiedPos) then
+  begin
+    FBufferMaxModifiedPos := NewSize - FBufferStart;
+    if FBufferMaxModifiedPos < 0 then
+      FBufferMaxModifiedPos := 0;
+  end;
+  if NewSize < (FBufferStart + FBufferCurrentSize) then
+  begin
+    FBufferCurrentSize := NewSize - FBufferStart;
+    if FBufferCurrentSize < 0 then
+      FBufferCurrentSize := 0;
+  end;
+end;
+
 function TJclBufferedStream.Write(const Buffer; Count: Longint): Longint;
 begin
   Result := Count;
@@ -1351,6 +1372,17 @@ begin
     FCurrentPos := Result;
 end;
 
+procedure TJclScopedStream.SetSize(const NewSize: Int64);
+var
+  ScopedNewSize: Int64;
+begin
+  if (FMaxSize >= 0) and (NewSize >= (FStartPos + FMaxSize)) then
+    ScopedNewSize := FMaxSize + FStartPos
+  else
+    ScopedNewSize := NewSize;
+  inherited SetSize(ScopedNewSize);
+end;
+
 function TJclScopedStream.Write(const Buffer; Count: Longint): Longint;
 begin
   if (MaxSize >= 0) and ((FCurrentPos + Count) > MaxSize) then
@@ -1487,6 +1519,11 @@ begin
   TotalSectorSize := BufferSize + FSectorOverHead;
   Result := (Position div TotalSectorSize) * BufferSize // remove previous overheads
     + Position mod TotalSectorSize; // offset in sector
+end;
+
+procedure TJclSectoredStream.SetSize(const NewSize: Int64);
+begin
+  inherited SetSize(FlatToSectored(NewSize));
 end;
 
 //=== { TJclCRC16Stream } ====================================================
