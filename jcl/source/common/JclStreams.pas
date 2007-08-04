@@ -69,7 +69,6 @@ type
   private
     FHandle: THandle;
   protected
-    procedure SetSize(NewSize: Longint); override;
     procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AHandle: THandle);
@@ -103,8 +102,7 @@ type
 
   TJclEmptyStream = class(TJclStream)
   protected
-    procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64); overload; override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
@@ -174,8 +172,7 @@ type
   protected
     procedure DoAfterStreamChange; virtual;
     procedure DoBeforeStreamChange; virtual;
-    procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64); overload; override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
@@ -224,8 +221,7 @@ type
   protected
     procedure DoBeforeStreamChange; override;
     procedure DoAfterStreamChange; override;
-    procedure SetSize(NewSize: Longint); overload; override;
-    procedure SetSize(const NewSize: Int64); overload; override;
+    procedure SetSize(const NewSize: Int64); override;
   public
     constructor Create(AStream: TStream; ANotification: TStreamNotifyEvent = nil;
       AOwnsStream: Boolean = False);
@@ -494,11 +490,6 @@ begin
 end;
 {$ENDIF LINUX}
 
-procedure TJclHandleStream.SetSize(NewSize: Longint);
-begin
-  SetSize(Int64(NewSize));
-end;
-
 procedure TJclHandleStream.SetSize(const NewSize: Int64);
 begin
   Seek(NewSize, soBeginning);
@@ -568,11 +559,6 @@ end;
 
 // a stream which stays empty no matter what you do
 // so it is a Unix /dev/null equivalent
-
-procedure TJclEmptyStream.SetSize(NewSize: Longint); 
-begin
-  // nothing
-end;
 
 procedure TJclEmptyStream.SetSize(const NewSize: Int64);
 begin
@@ -873,12 +859,6 @@ begin
     Result := -1;
 end;
 
-procedure TJclStreamDecorator.SetSize(NewSize: Longint);
-begin
-  if Assigned(FStream) then
-    Stream.Size := NewSize;
-end;
-
 procedure TJclStreamDecorator.SetSize(const NewSize: Int64);
 begin
   if Assigned(FStream) then
@@ -1101,12 +1081,6 @@ end;
 function TJclEventStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   Result := inherited Seek(Offset, Origin);
-  DoNotification;
-end;
-
-procedure TJclEventStream.SetSize(NewSize: Longint);
-begin
-  inherited SetSize(NewSize);
   DoNotification;
 end;
 
