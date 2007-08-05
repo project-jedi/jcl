@@ -14,7 +14,7 @@ Summary:
   An enumeration describing the set of available FPU exception masks.
 Description:
   An enumeration which describes the set of available FPU
-  exception masks. Note that you can use theAll8087Exceptions
+  exception masks. Note that you can use the All8087Exceptions
   constant whenever you need a set which includes all exception
   flags.
 Donator:
@@ -104,7 +104,7 @@ Description
   masked are cleared if they do not appear in the Exception
   parameter.
 Parameters:
-  Exceptions - Set of exceptions to mask.
+  Exceptions  - Set of exceptions to mask.
   ClearBefore - If set to True the routine clears pending exceptions, if any, before modifying the
                 exception mask. This is the default behavior. If set to False the routine does not
                 clear pending exceptions.
@@ -153,7 +153,7 @@ Description:
   not included in the Exceptions parameter are left unchanged,
   unlike SetMasked8087Exceptions which modifies the entire mask.
 Parameters:
-  Exceptions - Exceptions to be unmasked.
+  Exceptions  - Exceptions to be unmasked.
   ClearBefore - If set to True any pending exceptions are
                 cleared before the routine returns, if set to
                 False pending exceptions are not cleared.
@@ -178,13 +178,13 @@ Description:
 Donator:
   Marcel van Brakel
 @@T8087Precision.pcSingle
-  Single precision (short)
+  Single precision (short).
 @@T8087Precision.pcReserved
-  Reserved, never actually used (convenience)
+  Reserved, never actually used (convenience).
 @@T8087Precision.pcDouble
-  Double precision (long)
+  Double precision (long).
 @@T8087Precision.pcExtended
-  Extended precision (temporary)
+  Extended precision (temporary).
 --------------------------------------------------------------------------------
 @@T8087Rounding
 <GROUP MathRoutines.Hardware>
@@ -198,13 +198,13 @@ See also:
 Donator:
   Marcel van Brakel
 @@T8087Rounding.rcNearestOrEven
-  Rounds to the nearest or even
+  Rounds to the nearest or even.
 @@T8087Rounding.rcDownInfinity
-  Rounds down towards negative infinity
+  Rounds down towards negative infinity.
 @@T8087Rounding.rcUpInfinity
-  Rounds up towards positive infinity
+  Rounds up towards positive infinity.
 @@T8087Rounding.rcChopOrTruncate
-  Chops or truncates towards zero
+  Chops or truncates towards zero.
 --------------------------------------------------------------------------------
 @@T8087Infinity
 <GROUP MathRoutines.Hardware>
@@ -235,8 +235,8 @@ Notes:
   version x87 FPU coprocessors or 32 bit Intel architecture
   processors.
 Parameters:
-  Infinity -  New value for the infinity control of the FPU. See
-              T8087Infinity for the possible values and their meaning.
+  Infinity - New value for the infinity control of the FPU. See
+             T8087Infinity for the possible values and their meaning.
 Result:
   Returns the previous infinity setting of the FPU.
 See also:
@@ -257,9 +257,9 @@ Description:
   Set8087Precision adjusts the precision control setting of the
   mathematical coprocessor.
 Parameters:
-  Precision -  New value for the precision control of the FPU.
-               See T8087Precision for the possible values
-               and their meaning.
+  Precision - New value for the precision control of the FPU.
+              See T8087Precision for the possible values
+              and their meaning.
 Result:
   Returns the previous precision setting of the FPU.
 See also:
@@ -280,9 +280,9 @@ Description:
   Set8087Rounding adjusts the rounding control setting of the
   mathematical coprocessor.
 Parameters:
-  Rounding -  New value for the rounding control of the FPU.
-              See T8087Rounding for the possible values and
-              their meaning.
+  Rounding - New value for the rounding control of the FPU.
+             See T8087Rounding for the possible values and
+             their meaning.
 Result:
   Returns the previous rounding setting of the FPU.
 See also:
@@ -387,7 +387,7 @@ Description:
   and Get8087Rounding functions are preferred as they
   shield you from the low level bit manipulation.
 <TABLE>
-Bit(s)       \Description
+Bit(s)       Description
 -----------  ----------------------------------------------------
 0 (IM)       Invalid operation mask
 1 (DM)       Denormalized operand mask
@@ -426,9 +426,9 @@ Result:
 Bit(s)               Description
 -------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------
 0 (IE)               Invalid error such as stack overflow/underflow.
-1 (DE)               Denormalized error meaning at least one operand was denormalized
-2 (ZE)               Zero error indicates the divisor was 0 while the dividend was non-zero or non-infinity
-3 (OE)               Overflow error indicating the result of an operation was too large to be represented. If overflow error is masked a result of infinity was returned
+1 (DE)               Denormalized error meaning at least one operand was denormalized.
+2 (ZE)               Zero error indicates the divisor was 0 while the dividend was non-zero or non-infinity.
+3 (OE)               Overflow error indicating the result of an operation was too large to be represented. If overflow error is masked a result of infinity was returned.
 4 (UE)               Underflow error indicating the result of an operation was too small to be represented.
 5 (PE)               Precision error indicating an operand or the result exceeds the selected precision.
 6 (SF)               Used in some newer coprocessors to denote overflow or underflow.

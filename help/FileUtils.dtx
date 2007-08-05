@@ -471,9 +471,9 @@ Donator:
 @@TJclTempFileStream
 <GROUP FilesandIO.Streams>
 Summary:
-  Implements a temporary file-stream.
+  Implements a temporary file stream.
 Description:
-  TJclTempFileStream implements a temporary file-stream. The stream is created
+  TJclTempFileStream implements a temporary file stream. The stream is created
   in a system defined folder reserved for temporary files and is automatically
   deleted when the object is freed. The stream object is opened with full access
   rights and in such manner that the stream cannot be opened by another thread.
@@ -484,6 +484,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclTempFileStream.FileName
+<GROUP FilesandIO.Streams>
 Summary:
   The fully qualified name of the temporary file.
 Description:
@@ -494,6 +495,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclTempFileStream.Create
+<GROUP FilesandIO.Streams>
 Summary:
   Creates an instance of TJclTempFileStream.
 Description:
@@ -525,8 +527,6 @@ Result:
   String that describes the file type.
 Platform:
   Windows
-See also:
-  PathGetDisplayName
 Donator:
   Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
@@ -583,7 +583,7 @@ Description:
   is not necessarily always true.
 Parameters:
   FileName - The name of the file for which you want to know the display name. The file must
-              physically exist on the drive or the function fails.
+             physically exist on the drive or the function fails.
 Result:
   If the function succeeds it returns the display name of the supplied file. If the
   function fails the result is a copy of the supplied filename.
@@ -642,7 +642,7 @@ Contributor:
 --------------------------------------------------------------------------------
 @@PathCanonicalize
 Summary:
-  If possible, shortens a path by resolving relative path elements ('.', '..')
+  If possible, shortens a path by resolving relative path elements ('.', '..').
 Description:
   Canonicalizes a path. Meaning, it parses the specified path for the character
   sequences '.' and '..' where '.' means skip over the next path part and '..'
@@ -724,7 +724,6 @@ Platform:
   Windows
 See also:
   PathGetLongName
-  PathGetDisplayName
 Donator:
   Rudy Velthuis
 --------------------------------------------------------------------------------
@@ -1111,6 +1110,7 @@ Description:
   Backup file by creating a copy of the file with a backup file extension (*.~*).
 Parameters:
   FileName - The name of the file to backup.
+  Move - If set to True, the original file is renamed to the backup file. Default is False.
 Result:
   True on success, False otherwise. If the function fails, call GetLastError to
   to get extended error information, or RaiseLastOSError to pass the information
@@ -1133,13 +1133,13 @@ Description:
   The FileCopy function copies an existing file to a new file.
 Parameters:
   ExistingFileName - The existing file.
-  NewFileName - Specifies the name of the new file, or name of a directory where the
-    copy will be created.
-  ReplaceExisting - Specifies how to proceed if a file of the same name as that
-    specified by NewFileName already exists. If this parameter is False and the
-    new file already exists, the function fails. If this parameter is True and
-    the new file already exists, the function overwrites the existing file and
-    succeeds.
+  NewFileName      - Specifies the name of the new file, or name of a directory where the
+                     copy will be created.
+  ReplaceExisting  - Specifies how to proceed if a file of the same name as that
+                     specified by NewFileName already exists. If this parameter is False and the
+                     new file already exists, the function fails. If this parameter is True and
+                     the new file already exists, the function overwrites the existing file and
+                     succeeds.
 Result:
   If the function succeeds, the return value is True; False otherwise
 Platforms:
@@ -1155,10 +1155,10 @@ Summary:
 Description:
   Delete file with the option to send it to recycle bin.
 Parameters:
-  FileName - The name of the file to delete.
+  FileName         - The name of the file to delete.
   MoveToRecycleBin - If True, the file is move to the recycle bin/trash can (and
-  still might be restored later); if False, it is to be deleted, allowing no
-  recovery later.
+                     still might be restored later); if False, it is to be deleted,
+                     allowing no recovery later.
 Result:
   If the file has been successfully deleted the function returns True, otherwise
   it returns False.
@@ -1614,7 +1614,7 @@ Donator:
 Summary:
   Returns the date/time that the file was last written to.
 Description:
-  FileLastWrite returns the date/time that the specified file was last written to.
+  GetFileLastWrite returns the date/time that the specified file was last written to.
   The return value is a UTC based TFileTime value which can be converted to the
   familiar TDateTime by using FileTimeToDateTime function.
 Parameters:
@@ -1634,7 +1634,7 @@ Donator:
 Summary:
   Returns the date/time that the file was last accessed.
 Description:
-  FileLastAccess returns the date/time that the specified file was last accessed.
+  GetFileLastAccess returns the date/time that the specified file was last accessed.
   The return value is a UTC based TFileTime value which can be converted to the
   familiar TDateTime by using the FileTimeToDateTime function.
 Parameters:
@@ -1653,7 +1653,7 @@ Donator:
 Summary:
   Returns the date/time that the file was created.
 Description:
-  FileCreation returns the date/time that the specified file was created.
+  GetFileCreation returns the date/time that the specified file was created.
   The return value is a UTC based TFileTime value which can be converted to the
   familiar TDateTime by using the FileTimeToDateTime function.
 Parameters:
@@ -1716,17 +1716,17 @@ Donator:
 <GROUP FilesandIO.FilesandDirectories>
 
 <TABLE>
-Options                \Description
+Options                Description
 -------------------    ------------------------------------------------------
 flFullNames            If this flag is included, then filenames are added to
-                        the list including the complete path, otherwise just
-                        the filenames are added to the list. For example:
-                        "C:WindowsNOTEPAD.EXE" when using flFullNames,
-                        "NOTEPAD.EXE" when not using it.
-flRecursive            search the specified path and subfolders for files to
-                        include in the list.
+                       the list including the complete path, otherwise just
+                       the filenames are added to the list. For example:
+                       "C:WindowsNOTEPAD.EXE" when using flFullNames,
+                       "NOTEPAD.EXE" when not using it.
+flRecursive            Search the specified path and subfolders for files to
+                       include in the list.
 flMaskedSubfolders     Only search folders than match the SubfoldersMask
-                        parameter (currently broken).
+                       parameter (currently broken).
 </TABLE>
 
 Summary:
@@ -1924,6 +1924,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageCount
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Number of languages in the version resource.
 Description:
@@ -1937,6 +1938,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageIndex
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Index into the LanguageIds array of the 'active' language.
 Description:
@@ -1950,6 +1952,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageIds
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   List of supported languages.
 Description:
@@ -1965,6 +1968,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageNames
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   List of supported languages.
 Description:
@@ -1979,6 +1983,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Comments
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the comment string.
 Description:
@@ -1987,6 +1992,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.CompanyName
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the company name string.
 Description:
@@ -1995,6 +2001,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileDescription
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the file description string.
 Description:
@@ -2003,6 +2010,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileFlags
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Set of flags that specify the attributes of the file.
 Description:
@@ -2013,6 +2021,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileOS
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Depicts the OS for which this file was designed.
 Description:
@@ -2047,6 +2056,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileSubType
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Specifies the function of the file.
 Description:
@@ -2086,6 +2096,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileType
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Depicts the general type of the file.
 Description:
@@ -2108,6 +2119,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.FileVersion
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the FileVersion string.
 Description:
@@ -2116,6 +2128,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.InternalName
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the internal name string.
 Description:
@@ -2124,6 +2137,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.VersionLanguageId
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the language identifier of the version resource.
 Description:
@@ -2132,6 +2146,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.VersionLanguageName
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the language name of the version resource.
 Description:
@@ -2140,6 +2155,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LegalCopyright
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the legal copyright string.
 Description:
@@ -2148,6 +2164,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LegalTradeMarks
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the LegalTradeMarks string.
 Description:
@@ -2156,6 +2173,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.OriginalFilename
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   OriginalFileName returns the value of the original filename string key.
 Description:
@@ -2164,6 +2182,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.ProductName
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the product name string.
 Description:
@@ -2172,6 +2191,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.ProductVersion
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the product version string.
 Description:
@@ -2180,6 +2200,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.SpecialBuild
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the special build module attribute.
 Description:
@@ -2192,6 +2213,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.PrivateBuild
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the private build module attribute.
 Description:
@@ -2204,6 +2226,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Items
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Allows for reading user defined keys.
 Description:
@@ -2215,6 +2238,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinFileVersion
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the binary file version string.
 Description:
@@ -2223,6 +2247,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.BinProductVersion
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Returns the binary product string.
 Description:
@@ -2231,6 +2256,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Attach
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Creates an instance of TJclFileVersionInfo using the supplied buffer.
 Description:
@@ -2247,7 +2273,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.Create
-<GROUP FilesandIO.FilesandDirectories>
+<GROUP FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Creates an instance of TJclFileVersionInfo.
 Description:
@@ -2278,7 +2304,7 @@ Description:
   recycle bin. The behaviour depends on the value of
   MoveToRecycleBin parameter.
 Parameters:
-  DirectoryName -    Directory to be deleted
+  DirectoryName    - Directory to be deleted.
   MoveToRecycleBin - If True the directory will be moved to
                      the system Recycle Bin instead of being
                      deleted.
@@ -2299,8 +2325,8 @@ Description
   If the new directory name does not exist then the existing directory is copied
   as the new directory.
 Parameters:
-  ExistingDirectoryName - Source directory
-  NewDirectoryName -      Destination directory
+  ExistingDirectoryName - Source directory.
+  NewDirectoryName      - Destination directory.
 Platforms:
   Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
@@ -2318,8 +2344,8 @@ Description:
   If the new directory name does not exist then the existing directory is moved
   (renamed) as the new directory.
 Parameters:
-  ExistingDirectoryName -      Source directory
-  NewDirectoryName -           Destination directory
+  ExistingDirectoryName - Source directory.
+  NewDirectoryName      - Destination directory.
 Platforms:
   Windows NT/2000/Vista: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
@@ -2380,7 +2406,8 @@ Summary:
   Returns Depth parts of the path excluding drive.
 Description
   Returns first Depth parts of the specified path excluding drive letter
-  and colon. Example:
+  and colon.
+Example:
   PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
 Parameters:
   Depth - Specifies the maximum of path parts to return.
@@ -2436,15 +2463,21 @@ Donator:
 @@Win32DeleteFile
 <GROUP FilesandIO.FilesandDirectories>
 Summary:
-  TODO
+  Delete file with the option to send it to recycle bin.
 Description:
-  TODO
+  Delete file with the option to send it to recycle bin.
 Parameters:
-  FileName -
-  MoveToRecycleBin -
+  FileName         - The name of the file to delete.
+  MoveToRecycleBin - If True, the file is move to the recycle bin/trash can (and
+                     still might be restored later); if False, it is to be deleted,
+                     allowing no recovery later.
 Result:
+  If the file has been successfully deleted the function returns True, otherwise
+  it returns False.
 Note:
   Obsolete. Use FileDelete instead.
+See also:
+   FileDelete
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -2469,29 +2502,29 @@ Donator:
 @@Win32BackupFile
 <GROUP FilesandIO.FilesandDirectories>
 Summary:
-  TODO
+  Backup file by creating a copy of the file with a backup file extension (*.~*).
 Description:
-  TODO
+  Backup file by creating a copy of the file with a backup file extension (*.~*).
 Parameters:
-  FileName -
-  Move -
+  FileName - The name of the file to backup.
+  Move - If set to True, the original file is renamed to the backup file. Default is False.
 Result:
   True on success, False otherwise. If the function fails, call GetLastError to
   to get extended error information, or RaiseLastOSError to pass the information
   on to the user.
 Note:
   Obsolete. Use FileBackup instead.
-Platform:
-  Windows
+See also:
+  FileBackup
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@Win32RestoreFile
 <GROUP FilesandIO.FilesandDirectories>
 Summary:
-  TODO
+  Restore file by renaming the backup filename to original filename.
 Description:
-  TODO
+  Restore file by renaming the backup filename to original filename.
 Parameters:
   FileName - The name of the file to restore.
 Result:
@@ -2500,8 +2533,8 @@ Result:
   on to the user.
 Note:
   Obsolete. Use FileRestore instead.
-Platform:
-  Windows
+See also:
+  FileRestore
 Donator:
   Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -2515,7 +2548,7 @@ Description:
   block of version information resource from the file specified
   by the FileName parameter.
 Parameters:
-  FileName -  The fully qualified file name, the version information
+  FileName  - The fully qualified file name, the version information
               resource of which should be retrieved.
   FixedInfo - Output parameter. Contains the root block of version
               information resource if function succeedes.
@@ -2569,7 +2602,7 @@ Donator:
   Robert Rossmair
 --------------------------------------------------------------------------------
 @@TAttributeInterest.aiIgnored
-File search matching is not affected by this attribute
+File search matching is not affected by this attribute.
 --------------------------------------------------------------------------------
 @@TAttributeInterest.aiRequired
 The attribute is required for a file to be included in the search result set.

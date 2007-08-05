@@ -314,7 +314,7 @@ Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclDelegatedStream.OnRead
-<combine TJclStreamReadEvent>
+<COMBINE TJclStreamReadEvent>
 Summary:
   Event handler called when the Read method is called.
 See also:
@@ -325,7 +325,7 @@ Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclDelegatedStream.OnSeek
-<combine TJclStreamSeekEvent>
+<COMBINE TJclStreamSeekEvent>
 Summary:
   Event handler called when the Seek method is called.
 See also:
@@ -336,7 +336,7 @@ Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclDelegatedStream.OnSize
-<combine TJclStreamSizeEvent>
+<COMBINE TJclStreamSizeEvent>
 Summary:
   Event handler called when the SetSize method is called (on
   write of the Size property).
@@ -348,7 +348,7 @@ Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
 @@TJclDelegatedStream.OnWrite
-<combine TJclStreamWriteEvent>
+<COMBINE TJclStreamWriteEvent>
 Summary:
   Event handler called when the Write method is called.
 See also:
@@ -902,6 +902,25 @@ See also:
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
+@@TJclEasyStream.WriteCString
+Description:
+  The WriteCString method writes a C-like string (null terminated) to this stream.
+See also:
+  TJclEasyStream.ReadCString
+  TJclEasyStream.WriteBoolean
+  TJclEasyStream.WriteChar
+  TJclEasyStream.WriteCurrency
+  TJclEasyStream.WriteDateTime
+  TJclEasyStream.WriteDouble
+  TJclEasyStream.WriteExtended
+  TJclEasyStream.WriteInt64
+  TJclEasyStream.WriteInteger
+  TJclEasyStream.WriteShortString
+  TJclEasyStream.WriteSingle
+  TJclEasyStream.WriteSizedString
+Donator:
+  Heinz Zastrau
+--------------------------------------------------------------------------------
 @@TJclEasyStream.WriteCurrency@Currency
 Description:
   The WriteCurrency method writes a currency value to this
@@ -1246,10 +1265,10 @@ Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEventStream.Seek@Int64@TSeekOrigin
-<combinewith !!OVERLOADED_Seek_TJclEventStream>
+<COMBINEWITH !!OVERLOADED_Seek_TJclEventStream>
 --------------------------------------------------------------------------------
 @@TJclEventStream.Seek@Longint@Word
-<combinewith !!OVERLOADED_Seek_TJclEventStream>
+<COMBINEWITH !!OVERLOADED_Seek_TJclEventStream>
 --------------------------------------------------------------------------------
 @@!!OVERLOADED_SetSize_TJclEventStream
 Description:
@@ -1267,10 +1286,10 @@ Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclEventStream.SetSize@Int64
-<combinewith !!OVERLOADED_SetSize_TJclEventStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclEventStream>
 --------------------------------------------------------------------------------
 @@TJclEventStream.SetSize@Longint
-<combinewith !!OVERLOADED_SetSize_TJclEventStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclEventStream>
 --------------------------------------------------------------------------------
 @@TJclEventStream.Write@@Longint
 Description:
@@ -1335,7 +1354,7 @@ Description:
   This constructor creates a new instance of the TJclBufferedStream class.
   An instance is constructed based on a source stream that holds data.
 Parameters:
-  AStream - stream used to store data read and written to this instance.
+  AStream     - Stream used to store data read and written to this instance.
   AOwnsStream - Current data stream will be freed when this instance is
                 destroyed.
 See also:
@@ -1349,7 +1368,7 @@ Summary:
 Description:
   Destroy curent instance and its associated resources.
 See also:
-  TJclBufferedStream.Create@Stream@Boolean
+  TJclBufferedStream.Create
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1409,7 +1428,7 @@ Description:
   If equal to 0, no data were changed.
 See also:
   TJclBufferedStream.Flush
-  TJclBufferedStream.Write@@Longint
+  TJclBufferedStream.Write
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1609,10 +1628,10 @@ Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.Seek@Int64@TSeekOrigin
-<combinewith !!OVERLOADED_Seek_TJclStreamDecorator>
+<COMBINEWITH !!OVERLOADED_Seek_TJclStreamDecorator>
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.Seek@Longint@Word
-<combinewith !!OVERLOADED_Seek_TJclStreamDecorator>
+<COMBINEWITH !!OVERLOADED_Seek_TJclStreamDecorator>
 --------------------------------------------------------------------------------
 @@!!OVERLOADED_SetSize_TJclStreamDecorator
 Summary:
@@ -1630,10 +1649,10 @@ Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.SetSize@Int64
-<combinewith !!OVERLOADED_SetSize_TJclStreamDecorator>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclStreamDecorator>
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.SetSize@Longint
-<combinewith !!OVERLOADED_SetSize_TJclStreamDecorator>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclStreamDecorator>
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.AfterStreamChange
 Summary:
@@ -1690,10 +1709,10 @@ Summary:
 Description:
   This protected procedure is called just after attached stream is changed.
   It may be overridden to customize its behaviour, as presently implemented,
-  it calls the AfterStreamChange event.
+  it calls the TJclStreamDecorator.AfterStreamChange event.
 See also:
   TJclStreamDecorator.AfterStreamChange
-  TJclStreamDecorator.DoBeforeStreamchange
+  TJclStreamDecorator.DoBeforeStreamChange
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
@@ -1703,9 +1722,9 @@ Summary:
 Description:
   This protected procedure is called before attached stream is changed.
   It may be overridden to customize its behaviour, as presently implemented,
-  it calls the BeforeStreamChange event.
+  it calls the TJclStreamDecorator.BeforeStreamChange event.
 See also:
-  TJclStreamDecorator.BeforeStreamchange
+  TJclStreamDecorator.BeforeStreamChange
   TJclStreamDecorator.DoAfterStreamChange
 Donator:
   Heinz Zastrau
@@ -1714,7 +1733,7 @@ Donator:
 Summary:
   Private field storing handler of the AfterStreamChange event.
 Description:
-  This field stores a reference to the handler of the AfterStreamChange event.
+  This field stores a reference to the handler of the TJclStreamDecorator.AfterStreamChange event.
 See also:
   TJclStreamDecorator.AfterStreamChange
 Donator:
@@ -1724,7 +1743,7 @@ Donator:
 Summary:
   Private field storing handler of the BeforeStreamChange event.
 Description:
-  This field stores a reference to the handler of the BeforeStreamChange event.
+  This field stores a reference to the handler of the TJclStreamDecorator.BeforeStreamChange event.
 See also:
   TJclStreamDecorator.BeforeStreamChange
 Donator:
@@ -2147,10 +2166,10 @@ Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
 @@TJclEmptyStream.SetSize@Int64
-<combinewith !!OVERLOADED_SetSize_TJclEmptyStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclEmptyStream>
 --------------------------------------------------------------------------------
 @@TJclEmptyStream.SetSize@Longint
-<combinewith !!OVERLOADED_SetSize_TJclEmptyStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclEmptyStream>
 --------------------------------------------------------------------------------
 @@TJclEmptyStream.Read@@Longint
 Summary:
@@ -2268,10 +2287,10 @@ Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
 @@TJclHandleStream.SetSize@Int64
-<combinewith !!OVERLOADED_SetSize_TJclHandleStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclHandleStream>
 --------------------------------------------------------------------------------
 @@TJclHandleStream.SetSize@Longint
-<combinewith !!OVERLOADED_SetSize_TJclHandleStream>
+<COMBINEWITH !!OVERLOADED_SetSize_TJclHandleStream>
 --------------------------------------------------------------------------------
 @@TJclHandleStream.Create@THandle
 Summary:
