@@ -55,27 +55,27 @@ type
     function Clone: IInterface;
   public
     { IJclIntfCollection }
-    function Add(AInterface: IInterface): Boolean; overload;
-    function AddAll(ACollection: IJclIntfCollection): Boolean; overload;
+    function Add(const AInterface: IInterface): Boolean; overload;
+    function AddAll(const ACollection: IJclIntfCollection): Boolean; overload;
     procedure Clear;
-    function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
-    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
+    function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
+    function Equals(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(AInterface: IInterface): Boolean; overload;
-    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
-    function RetainAll(ACollection: IJclIntfCollection): Boolean;
+    function Remove(const AInterface: IInterface): Boolean; overload;
+    function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
     { IJclIntfList }
-    procedure Insert(Index: Integer; AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean; overload;
+    procedure Insert(Index: Integer; const AInterface: IInterface); overload;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
-    function IndexOf(AInterface: IInterface): Integer;
-    function LastIndexOf(AInterface: IInterface): Integer;
+    function IndexOf(const AInterface: IInterface): Integer;
+    function LastIndexOf(const AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
-    procedure SetObject(Index: Integer; AInterface: IInterface);
+    procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
 
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
@@ -100,21 +100,21 @@ type
     function Clone: TObject;
     { IJclStrCollection }
     function Add(const AString: string): Boolean; overload; override;
-    function AddAll(ACollection: IJclStrCollection): Boolean; overload; override;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; overload; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean; override;
-    function Equals(ACollection: IJclStrCollection): Boolean; override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; overload; override;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(ACollection: IJclStrCollection): Boolean; override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
     function Size: Integer; override;
     { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -144,21 +144,21 @@ type
     procedure FreeObject(var AObject: TObject);
     { IJclCollection }
     function Add(AObject: TObject): Boolean; overload;
-    function AddAll(ACollection: IJclCollection): Boolean; overload;
+    function AddAll(const ACollection: IJclCollection): Boolean; overload;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: IJclCollection): Boolean;
-    function Equals(ACollection: IJclCollection): Boolean;
+    function ContainsAll(const ACollection: IJclCollection): Boolean;
+    function Equals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean; overload;
-    function RemoveAll(ACollection: IJclCollection): Boolean;
-    function RetainAll(ACollection: IJclCollection): Boolean;
+    function RemoveAll(const ACollection: IJclCollection): Boolean;
+    function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
     { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -205,7 +205,7 @@ type
     FSize: Integer;
   protected
     { IJclIntfIterator}
-    procedure Add(AInterface: IInterface);
+    procedure Add(const AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -214,7 +214,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AInterface: IInterface);
+    procedure SetObject(const AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfVector);
     {$IFNDEF CLR}
@@ -242,7 +242,7 @@ begin
 end;
 {$ENDIF ~CLR}
 
-procedure TIntfItr.Add(AInterface: IInterface);
+procedure TIntfItr.Add(const AInterface: IInterface);
 begin
   FOwnList.Insert(FCursor, AInterface);
   Inc(FSize);
@@ -300,7 +300,7 @@ begin
   Dec(FSize);
 end;
 
-procedure TIntfItr.SetObject(AInterface: IInterface);
+procedure TIntfItr.SetObject(const AInterface: IInterface);
 begin
   FOwnList.Items[FCursor] := AInterface;
 end;
@@ -554,7 +554,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
+procedure TJclIntfVector.Insert(Index: Integer; const AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
     {$IFDEF CLR}
@@ -569,7 +569,7 @@ begin
   Inc(FCount);
 end;
 
-function TJclIntfVector.Add(AInterface: IInterface): Boolean;
+function TJclIntfVector.Add(const AInterface: IInterface): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
@@ -578,7 +578,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   Size: Integer;
@@ -609,7 +609,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.AddAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -640,7 +640,7 @@ begin
   Result := NewList;
 end;
 
-function TJclIntfVector.Contains(AInterface: IInterface): Boolean;
+function TJclIntfVector.Contains(const AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
@@ -655,7 +655,7 @@ begin
     end;
 end;
 
-function TJclIntfVector.ContainsAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -667,7 +667,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclIntfVector.Equals(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.Equals(const ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
   It: IJclIntfIterator;
@@ -706,7 +706,7 @@ begin
   SetLength(FItems, FCapacity);
 end;
 
-function TJclIntfVector.IndexOf(AInterface: IInterface): Integer;
+function TJclIntfVector.IndexOf(const AInterface: IInterface): Integer;
 var
   I: Integer;
 begin
@@ -741,7 +741,7 @@ begin
   Result := NewIterator;
 end;
 
-function TJclIntfVector.LastIndexOf(AInterface: IInterface): Integer;
+function TJclIntfVector.LastIndexOf(const AInterface: IInterface): Integer;
 var
   I: Integer;
 begin
@@ -770,7 +770,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclIntfVector.Remove(AInterface: IInterface): Boolean;
+function TJclIntfVector.Remove(const AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
@@ -787,7 +787,7 @@ begin
     end;
 end;
 
-function TJclIntfVector.RemoveAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -799,7 +799,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclIntfVector.RetainAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
 begin
@@ -811,7 +811,7 @@ begin
       Remove(I);
 end;
 
-procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
+procedure TJclIntfVector.SetObject(Index: Integer; const AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
     {$IFDEF CLR}
@@ -893,7 +893,7 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.AddAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.AddAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -906,7 +906,8 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.InsertAll(Index: Integer;
+  const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   Size: Integer;
@@ -980,7 +981,7 @@ begin
     end;
 end;
 
-function TJclStrVector.ContainsAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.ContainsAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -992,7 +993,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclStrVector.Equals(ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.Equals(const ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
   It: IJclStrIterator;
@@ -1112,7 +1113,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclStrVector.RemoveAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.RemoveAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -1124,7 +1125,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclStrVector.RetainAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.RetainAll(const ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1210,7 +1211,8 @@ begin
   Result := True;
 end;
 
-function TJclVector.InsertAll(Index: Integer; ACollection: IJclCollection): Boolean;
+function TJclVector.InsertAll(Index: Integer;
+  const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   Size: Integer;
@@ -1241,7 +1243,7 @@ begin
   Result := True;
 end;
 
-function TJclVector.AddAll(ACollection: IJclCollection): Boolean;
+function TJclVector.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -1287,7 +1289,7 @@ begin
     end;
 end;
 
-function TJclVector.ContainsAll(ACollection: IJclCollection): Boolean;
+function TJclVector.ContainsAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -1299,7 +1301,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclVector.Equals(ACollection: IJclCollection): Boolean;
+function TJclVector.Equals(const ACollection: IJclCollection): Boolean;
 var
   I: Integer;
   It: IJclIterator;
@@ -1428,7 +1430,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclVector.RemoveAll(ACollection: IJclCollection): Boolean;
+function TJclVector.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -1440,7 +1442,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclVector.RetainAll(ACollection: IJclCollection): Boolean;
+function TJclVector.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   I: Integer;
 begin

@@ -44,23 +44,23 @@ type
     FMap: IJclIntfIntfMap;
   protected
     { IJclIntfCollection }
-    function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IJclIntfCollection): Boolean;
+    function Add(const AInterface: IInterface): Boolean;
+    function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
-    function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
-    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
+    function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
+    function Equals(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(AInterface: IInterface): Boolean;
-    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
-    function RetainAll(ACollection: IJclIntfCollection): Boolean;
+    function Remove(const AInterface: IInterface): Boolean;
+    function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
     { IJclIntfSet }
-    procedure Intersect(ACollection: IJclIntfCollection);
-    procedure Subtract(ACollection: IJclIntfCollection);
-    procedure Union(ACollection: IJclIntfCollection);
+    procedure Intersect(const ACollection: IJclIntfCollection);
+    procedure Subtract(const ACollection: IJclIntfCollection);
+    procedure Union(const ACollection: IJclIntfCollection);
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
@@ -75,22 +75,22 @@ type
   protected
     { IJclStrCollection }
     function Add(const AString: string): Boolean; override;
-    function AddAll(ACollection: IJclStrCollection): Boolean; override;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean; override;
-    function Equals(ACollection: IJclStrCollection): Boolean; override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; override;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(ACollection: IJclStrCollection): Boolean; override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
     function Size: Integer; override;
     { IJclIntfSet }
-    procedure Intersect(ACollection: IJclStrCollection);
-    procedure Subtract(ACollection: IJclStrCollection);
-    procedure Union(ACollection: IJclStrCollection);
+    procedure Intersect(const ACollection: IJclStrCollection);
+    procedure Subtract(const ACollection: IJclStrCollection);
+    procedure Union(const ACollection: IJclStrCollection);
     { IJclIntfCloneable }
     function Clone: TObject;
   public
@@ -104,22 +104,22 @@ type
   protected
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: IJclCollection): Boolean;
+    function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: IJclCollection): Boolean;
-    function Equals(ACollection: IJclCollection): Boolean;
+    function ContainsAll(const ACollection: IJclCollection): Boolean;
+    function Equals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean;
-    function RemoveAll(ACollection: IJclCollection): Boolean;
-    function RetainAll(ACollection: IJclCollection): Boolean;
+    function RemoveAll(const ACollection: IJclCollection): Boolean;
+    function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
     { IJclSet }
-    procedure Intersect(ACollection: IJclCollection);
-    procedure Subtract(ACollection: IJclCollection);
-    procedure Union(ACollection: IJclCollection);
+    procedure Intersect(const ACollection: IJclCollection);
+    procedure Subtract(const ACollection: IJclCollection);
+    procedure Union(const ACollection: IJclCollection);
     { IJclCloneable }
     function Clone: TObject;
   public
@@ -178,14 +178,14 @@ begin
   inherited Destroy;
 end;
 
-function TJclIntfHashSet.Add(AInterface: IInterface): Boolean;
+function TJclIntfHashSet.Add(const AInterface: IInterface): Boolean;
 begin
   Result := not FMap.ContainsKey(AInterface);
   if Result then
     FMap.PutValue(AInterface, IRefUnique);
 end;
 
-function TJclIntfHashSet.AddAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -212,12 +212,12 @@ begin
   Result := NewSet;
 end;
 
-function TJclIntfHashSet.Contains(AInterface: IInterface): Boolean;
+function TJclIntfHashSet.Contains(const AInterface: IInterface): Boolean;
 begin
   Result := FMap.ContainsKey(AInterface);
 end;
 
-function TJclIntfHashSet.ContainsAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -229,7 +229,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclIntfHashSet.Equals(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.Equals(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   ItMap: IJclIntfIterator;
@@ -252,7 +252,7 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclIntfHashSet.Intersect(ACollection: IJclIntfCollection);
+procedure TJclIntfHashSet.Intersect(const ACollection: IJclIntfCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -267,12 +267,12 @@ begin
   Result := FMap.KeySet.Last;
 end;
 
-function TJclIntfHashSet.Remove(AInterface: IInterface): Boolean;
+function TJclIntfHashSet.Remove(const AInterface: IInterface): Boolean;
 begin
   Result := FMap.Remove(AInterface) = IInterface(IRefUnique);
 end;
 
-function TJclIntfHashSet.RemoveAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -284,7 +284,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfHashSet.RetainAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   ItMap: IJclIntfIterator;
 begin
@@ -302,12 +302,12 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclIntfHashSet.Subtract(ACollection: IJclIntfCollection);
+procedure TJclIntfHashSet.Subtract(const ACollection: IJclIntfCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclIntfHashSet.Union(ACollection: IJclIntfCollection);
+procedure TJclIntfHashSet.Union(const ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
 end;
@@ -334,7 +334,7 @@ begin
     FMap.PutValue(AString, RefUnique);
 end;
 
-function TJclStrHashSet.AddAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.AddAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -365,7 +365,7 @@ begin
   Result := FMap.ContainsKey(AString);
 end;
 
-function TJclStrHashSet.ContainsAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.ContainsAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -377,7 +377,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclStrHashSet.Equals(ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.Equals(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   ItMap: IJclStrIterator;
@@ -400,7 +400,7 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclStrHashSet.Intersect(ACollection: IJclStrCollection);
+procedure TJclStrHashSet.Intersect(const ACollection: IJclStrCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -420,7 +420,7 @@ begin
   Result := FMap.Remove(AString) = RefUnique;
 end;
 
-function TJclStrHashSet.RemoveAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.RemoveAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -432,7 +432,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrHashSet.RetainAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.RetainAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -450,12 +450,12 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclStrHashSet.Subtract(ACollection: IJclStrCollection);
+procedure TJclStrHashSet.Subtract(const ACollection: IJclStrCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclStrHashSet.Union(ACollection: IJclStrCollection);
+procedure TJclStrHashSet.Union(const ACollection: IJclStrCollection);
 begin
   AddAll(ACollection);
 end;
@@ -483,7 +483,7 @@ begin
     FMap.PutValue(AObject, RefUnique);
 end;
 
-function TJclHashSet.AddAll(ACollection: IJclCollection): Boolean;
+function TJclHashSet.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -514,7 +514,7 @@ begin
   Result := FMap.ContainsKey(AObject);
 end;
 
-function TJclHashSet.ContainsAll(ACollection: IJclCollection): Boolean;
+function TJclHashSet.ContainsAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -526,7 +526,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclHashSet.Equals(ACollection: IJclCollection): Boolean;
+function TJclHashSet.Equals(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   ItMap: IJclIterator;
@@ -549,7 +549,7 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TJclHashSet.Intersect(ACollection: IJclCollection);
+procedure TJclHashSet.Intersect(const ACollection: IJclCollection);
 begin
   RetainAll(ACollection);
 end;
@@ -569,7 +569,7 @@ begin
   Result := FMap.Remove(AObject) = RefUnique;
 end;
 
-function TJclHashSet.RemoveAll(ACollection: IJclCollection): Boolean;
+function TJclHashSet.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
 begin
@@ -581,7 +581,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclHashSet.RetainAll(ACollection: IJclCollection): Boolean;
+function TJclHashSet.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   ItMap: IJclIterator;
 begin
@@ -599,12 +599,12 @@ begin
   Result := FMap.Size;
 end;
 
-procedure TJclHashSet.Subtract(ACollection: IJclCollection);
+procedure TJclHashSet.Subtract(const ACollection: IJclCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclHashSet.Union(ACollection: IJclCollection);
+procedure TJclHashSet.Union(const ACollection: IJclCollection);
 begin
   AddAll(ACollection);
 end;

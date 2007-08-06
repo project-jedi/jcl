@@ -57,7 +57,7 @@ type
 
   IJclIntfIterator = interface
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
-    procedure Add(AInterface: IInterface);
+    procedure Add(const AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -66,7 +66,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AInterface: IInterface);
+    procedure SetObject(const AInterface: IInterface);
   end;
 
   IJclStrIterator = interface
@@ -99,35 +99,35 @@ type
 
   IJclIntfCollection = interface
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
-    function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IJclIntfCollection): Boolean;
+    function Add(const AInterface: IInterface): Boolean;
+    function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
-    function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
-    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
+    function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
+    function Equals(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(AInterface: IInterface): Boolean;
-    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
-    function RetainAll(ACollection: IJclIntfCollection): Boolean;
+    function Remove(const AInterface: IInterface): Boolean;
+    function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
   end;
 
   IJclStrCollection = interface
     ['{3E3CFC19-E8AF-4DD7-91FA-2DF2895FC7B9}']
     function Add(const AString: string): Boolean;
-    function AddAll(ACollection: IJclStrCollection): Boolean;
+    function AddAll(const ACollection: IJclStrCollection): Boolean;
     procedure Clear;
     function Contains(const AString: string): Boolean;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean;
-    function Equals(ACollection: IJclStrCollection): Boolean;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean;
+    function Equals(const ACollection: IJclStrCollection): Boolean;
     function First: IJclStrIterator;
     function IsEmpty: Boolean;
     function Last: IJclStrIterator;
     function Remove(const AString: string): Boolean;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean;
-    function RetainAll(ACollection: IJclStrCollection): Boolean;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean;
     function Size: Integer;
     //Daniele Teti 27/12/2004
     procedure LoadFromStrings(Strings: TStrings);
@@ -143,36 +143,36 @@ type
   IJclCollection = interface
     ['{58947EF1-CD21-4DD1-AE3D-225C3AAD7EE5}']
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: IJclCollection): Boolean;
+    function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: IJclCollection): Boolean;
-    function Equals(ACollection: IJclCollection): Boolean;
+    function ContainsAll(const ACollection: IJclCollection): Boolean;
+    function Equals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean;
-    function RemoveAll(ACollection: IJclCollection): Boolean;
-    function RetainAll(ACollection: IJclCollection): Boolean;
+    function RemoveAll(const ACollection: IJclCollection): Boolean;
+    function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
   end;
 
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
-    procedure Insert(Index: Integer; AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; ACollection: IJclIntfCollection): Boolean; overload;
+    procedure Insert(Index: Integer; const AInterface: IInterface); overload;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
-    function IndexOf(AInterface: IInterface): Integer;
-    function LastIndexOf(AInterface: IInterface): Integer;
+    function IndexOf(const AInterface: IInterface): Integer;
+    function LastIndexOf(const AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
-    procedure SetObject(Index: Integer; AInterface: IInterface);
+    procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
   end;
 
   IJclStrList = interface(IJclStrCollection)
     ['{07DD7644-EAC6-4059-99FC-BEB7FBB73186}']
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; ACollection: IJclStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -186,7 +186,7 @@ type
   IJclList = interface(IJclCollection)
     ['{8ABC70AC-5C06-43EA-AFE0-D066379BCC28}']
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -201,7 +201,7 @@ type
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
     {$IFDEF CLR}
     function GetObject(Index: Integer): IInterface;
-    procedure SetObject(Index: Integer; AInterface: IInterface);
+    procedure SetObject(Index: Integer; const AInterface: IInterface);
     {$ENDIF CLR}
     property Items[Index: Integer]: IInterface read GetObject write SetObject; default;
   end;
@@ -226,23 +226,23 @@ type
 
   IJclIntfSet = interface(IJclIntfCollection)
     ['{E2D28852-9774-49B7-A739-5DBA2B705924}']
-    procedure Intersect(ACollection: IJclIntfCollection);
-    procedure Subtract(ACollection: IJclIntfCollection);
-    procedure Union(ACollection: IJclIntfCollection);
+    procedure Intersect(const ACollection: IJclIntfCollection);
+    procedure Subtract(const ACollection: IJclIntfCollection);
+    procedure Union(const ACollection: IJclIntfCollection);
   end;
 
   IJclStrSet = interface(IJclStrCollection)
     ['{72204D85-2B68-4914-B9F2-09E5180C12E9}']
-    procedure Intersect(ACollection: IJclStrCollection);
-    procedure Subtract(ACollection: IJclStrCollection);
-    procedure Union(ACollection: IJclStrCollection);
+    procedure Intersect(const ACollection: IJclStrCollection);
+    procedure Subtract(const ACollection: IJclStrCollection);
+    procedure Union(const ACollection: IJclStrCollection);
   end;
 
   IJclSet = interface(IJclCollection)
     ['{0B7CDB90-8588-4260-A54C-D87101C669EA}']
-    procedure Intersect(ACollection: IJclCollection);
-    procedure Subtract(ACollection: IJclCollection);
-    procedure Union(ACollection: IJclCollection);
+    procedure Intersect(const ACollection: IJclCollection);
+    procedure Subtract(const ACollection: IJclCollection);
+    procedure Union(const ACollection: IJclCollection);
   end;
 
   TJclTraverseOrder = (toPreOrder, toOrder, toPostOrder);
@@ -271,36 +271,36 @@ type
   IJclIntfIntfMap = interface
     ['{01D05399-4A05-4F3E-92F4-0C236BE77019}']
     procedure Clear;
-    function ContainsKey(Key: IInterface): Boolean;
-    function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IJclIntfIntfMap): Boolean;
-    function GetValue(Key: IInterface): IInterface;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function Equals(const AMap: IJclIntfIntfMap): Boolean;
+    function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeySet: IJclIntfSet;
-    procedure PutAll(AMap: IJclIntfIntfMap);
-    procedure PutValue(Key, Value: IInterface);
-    function Remove(Key: IInterface): IInterface;
+    procedure PutAll(const AMap: IJclIntfIntfMap);
+    procedure PutValue(const Key, Value: IInterface);
+    function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
   end;
 
   IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
     ['{497775A5-D3F1-49FC-A641-15CC9E77F3D0}']
-    function GetValues(Key: IInterface): IJclIntfIterator;
-    function Count(Key: IInterface): Integer;
+    function GetValues(const Key: IInterface): IJclIntfIterator;
+    function Count(const Key: IInterface): Integer;
   end;
 
   IJclStrIntfMap = interface
     ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
-    function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IJclStrIntfMap): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function Equals(const AMap: IJclStrIntfMap): Boolean;
     function GetValue(const Key: string): IInterface;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrIntfMap);
-    procedure PutValue(const Key: string; Value: IInterface);
+    procedure PutAll(const AMap: IJclStrIntfMap);
+    procedure PutValue(const Key: string; const Value: IInterface);
     function Remove(const Key: string): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
@@ -311,11 +311,11 @@ type
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(const Value: string): Boolean;
-    function Equals(AMap: IJclStrStrMap): Boolean;
+    function Equals(const AMap: IJclStrStrMap): Boolean;
     function GetValue(const Key: string): string;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrStrMap);
+    procedure PutAll(const AMap: IJclStrStrMap);
     procedure PutValue(const Key, Value: string);
     function Remove(const Key: string): string;
     function Size: Integer;
@@ -331,11 +331,11 @@ type
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IJclStrMap): Boolean;
+    function Equals(const AMap: IJclStrMap): Boolean;
     function GetValue(const Key: string): TObject;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrMap);
+    procedure PutAll(const AMap: IJclStrMap);
     procedure PutValue(const Key: string; Value: TObject);
     function Remove(const Key: string): TObject;
     function Size: Integer;
@@ -349,11 +349,11 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IJclMap): Boolean;
+    function Equals(const AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeySet: IJclSet;
-    procedure PutAll(AMap: IJclMap);
+    procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key, Value: TObject);
     function Remove(Key: TObject): TObject;
     function Size: Integer;
@@ -364,10 +364,10 @@ type
 
   IJclIntfQueue = interface
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
-    function Contains(AInterface: IInterface): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
-    procedure Enqueue(AInterface: IInterface);
+    procedure Enqueue(const AInterface: IInterface);
     function Size: Integer;
   end;
 
@@ -392,10 +392,10 @@ type
   IJclStrStrSortedMap = interface(IJclStrStrMap)
     ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
     function FirstKey: string;
-    function HeadMap(ToKey: string): IJclStrStrSortedMap;
+    function HeadMap(const ToKey: string): IJclStrStrSortedMap;
     function LastKey: string;
-    function SubMap(FromKey, ToKey: string): IJclStrStrSortedMap;
-    function TailMap(FromKey: string): IJclStrStrSortedMap;
+    function SubMap(const FromKey, ToKey: string): IJclStrStrSortedMap;
+    function TailMap(const FromKey: string): IJclStrStrSortedMap;
   end;
 
   IJclSortedMap = interface(IJclMap)
@@ -409,9 +409,9 @@ type
 
   IJclIntfSortedSet = interface(IJclIntfSet)
     ['{159BE5A7-7349-42FF-BE55-9CA1B9DBA991}']
-    function HeadSet(AEndObject: IInterface): IJclIntfSortedSet;
-    function SubSet(Start, Finish: IInterface): IJclIntfSortedSet;
-    function TailSet(AStartObject: IInterface): IJclIntfSortedSet;
+    function HeadSet(const AEndObject: IInterface): IJclIntfSortedSet;
+    function SubSet(const Start, Finish: IInterface): IJclIntfSortedSet;
+    function TailSet(const AStartObject: IInterface): IJclIntfSortedSet;
   end;
 
   IJclSortedSet = interface(IJclSet)
@@ -423,10 +423,10 @@ type
 
   IJclIntfStack = interface
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
-    function Contains(AInterface: IInterface): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
-    procedure Push(AInterface: IInterface);
+    procedure Push(const AInterface: IInterface);
     function Size: Integer;
   end;
 

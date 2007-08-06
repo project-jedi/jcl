@@ -71,17 +71,17 @@ type
   protected
     { IJclStrCollection }
     function Add(const AString: string): Boolean; virtual; abstract;
-    function AddAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     procedure Clear; virtual; abstract;
     function Contains(const AString: string): Boolean; virtual; abstract;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
-    function Equals(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function Equals(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     function First: IJclStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclStrIterator; virtual; abstract;
     function Remove(const AString: string): Boolean; overload; virtual; abstract;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
-    function RetainAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
     procedure LoadFromStrings(Strings: TStrings);
     procedure SaveToStrings(Strings: TStrings);

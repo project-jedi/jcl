@@ -149,15 +149,15 @@ type
     procedure GrowEntries(BucketIndex: Integer); virtual;
     { IJclIntfIntfMap }
     procedure Clear;
-    function ContainsKey(Key: IInterface): Boolean;
-    function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IJclIntfIntfMap): Boolean;
-    function GetValue(Key: IInterface): IInterface;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function Equals(const AMap: IJclIntfIntfMap): Boolean;
+    function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
     function KeySet: IJclIntfSet;
-    procedure PutAll(AMap: IJclIntfIntfMap);
-    procedure PutValue(Key, Value: IInterface);
-    function Remove(Key: IInterface): IInterface;
+    procedure PutAll(const AMap: IJclIntfIntfMap);
+    procedure PutValue(const Key, Value: IInterface);
+    function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
     { IJclIntfCloneable }
@@ -182,13 +182,13 @@ type
     { IJclIntfMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
-    function ContainsValue(Value: IInterface): Boolean;
-    function Equals(AMap: IJclStrIntfMap): Boolean;
+    function ContainsValue(const Value: IInterface): Boolean;
+    function Equals(const AMap: IJclStrIntfMap): Boolean;
     function GetValue(const Key: string): IInterface;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrIntfMap);
-    procedure PutValue(const Key: string; Value: IInterface);
+    procedure PutAll(const AMap: IJclStrIntfMap);
+    procedure PutValue(const Key: string; const Value: IInterface);
     function Remove(const Key: string): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
@@ -215,11 +215,11 @@ type
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(const Value: string): Boolean;
-    function Equals(AMap: IJclStrStrMap): Boolean;
+    function Equals(const AMap: IJclStrStrMap): Boolean;
     function GetValue(const Key: string): string;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrStrMap);
+    procedure PutAll(const AMap: IJclStrStrMap);
     procedure PutValue(const Key, Value: string);
     function Remove(const Key: string): string;
     function Size: Integer;
@@ -251,11 +251,11 @@ type
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IJclStrMap): Boolean;
+    function Equals(const AMap: IJclStrMap): Boolean;
     function GetValue(const Key: string): TObject;
     function IsEmpty: Boolean;
     function KeySet: IJclStrSet;
-    procedure PutAll(AMap: IJclStrMap);
+    procedure PutAll(const AMap: IJclStrMap);
     procedure PutValue(const Key: string; Value: TObject);
     function Remove(const Key: string): TObject;
     function Size: Integer;
@@ -292,11 +292,11 @@ type
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
     function ContainsValue(Value: TObject): Boolean;
-    function Equals(AMap: IJclMap): Boolean;
+    function Equals(const AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
     function KeySet: IJclSet;
-    procedure PutAll(AMap: IJclMap);
+    procedure PutAll(const AMap: IJclMap);
     procedure PutValue(Key, Value: TObject);
     function Remove(Key: TObject): TObject;
     function Size: Integer;
@@ -502,7 +502,7 @@ begin
   Result := NewMap;
 end;
 
-function TJclIntfIntfHashMap.ContainsKey(Key: IInterface): Boolean;
+function TJclIntfIntfHashMap.ContainsKey(const Key: IInterface): Boolean;
 var
   I: Integer;
   Bucket: PJclIntfIntfBucket;
@@ -525,7 +525,7 @@ begin
     end;
 end;
 
-function TJclIntfIntfHashMap.ContainsValue(Value: IInterface): Boolean;
+function TJclIntfIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
   Bucket: PJclIntfIntfBucket;
@@ -551,7 +551,7 @@ begin
   end;
 end;
 
-function TJclIntfIntfHashMap.Equals(AMap: IJclIntfIntfMap): Boolean;
+function TJclIntfIntfHashMap.Equals(const AMap: IJclIntfIntfMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -585,7 +585,7 @@ begin
       end;
 end;
 
-function TJclIntfIntfHashMap.GetValue(Key: IInterface): IInterface;
+function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
   Bucket: PJclIntfIntfBucket;
@@ -648,7 +648,7 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclIntfIntfHashMap.PutAll(AMap: IJclIntfIntfMap);
+procedure TJclIntfIntfHashMap.PutAll(const AMap: IJclIntfIntfMap);
 var
   It: IJclIntfIterator;
   Key: IInterface;
@@ -669,7 +669,7 @@ begin
   end;
 end;
 
-procedure TJclIntfIntfHashMap.PutValue(Key, Value: IInterface);
+procedure TJclIntfIntfHashMap.PutValue(const Key, Value: IInterface);
 var
   Index: Integer;
   Bucket: PJclIntfIntfBucket;
@@ -701,7 +701,7 @@ begin
   Inc(FCount);
 end;
 
-function TJclIntfIntfHashMap.Remove(Key: IInterface): IInterface;
+function TJclIntfIntfHashMap.Remove(const Key: IInterface): IInterface;
 var
   Bucket: PJclIntfIntfBucket;
   I: Integer;
@@ -846,7 +846,7 @@ begin
     end;
 end;
 
-function TJclStrIntfHashMap.ContainsValue(Value: IInterface): Boolean;
+function TJclStrIntfHashMap.ContainsValue(const Value: IInterface): Boolean;
 var
   I, J: Integer;
   Bucket: PJclStrIntfBucket;
@@ -872,7 +872,7 @@ begin
   end;
 end;
 
-function TJclStrIntfHashMap.Equals(AMap: IJclStrIntfMap): Boolean;
+function TJclStrIntfHashMap.Equals(const AMap: IJclStrIntfMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -986,7 +986,7 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrIntfHashMap.PutAll(AMap: IJclStrIntfMap);
+procedure TJclStrIntfHashMap.PutAll(const AMap: IJclStrIntfMap);
 var
   It: IJclStrIterator;
   Key: string;
@@ -1007,7 +1007,7 @@ begin
   end;
 end;
 
-procedure TJclStrIntfHashMap.PutValue(const Key: string; Value: IInterface);
+procedure TJclStrIntfHashMap.PutValue(const Key: string; const Value: IInterface);
 var
   Index: Integer;
   Bucket: PJclStrIntfBucket;
@@ -1210,7 +1210,7 @@ begin
   end;
 end;
 
-function TJclStrStrHashMap.Equals(AMap: IJclStrStrMap): Boolean;
+function TJclStrStrHashMap.Equals(const AMap: IJclStrStrMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1337,7 +1337,7 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrStrHashMap.PutAll(AMap: IJclStrStrMap);
+procedure TJclStrStrHashMap.PutAll(const AMap: IJclStrStrMap);
 var
   It: IJclStrIterator;
   Key: string;
@@ -1579,7 +1579,7 @@ begin
   end;
 end;
 
-function TJclStrHashMap.Equals(AMap: IJclStrMap): Boolean;
+function TJclStrHashMap.Equals(const AMap: IJclStrMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -1703,7 +1703,7 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclStrHashMap.PutAll(AMap: IJclStrMap);
+procedure TJclStrHashMap.PutAll(const AMap: IJclStrMap);
 var
   It: IJclStrIterator;
   Key: string;
@@ -1931,7 +1931,7 @@ begin
   end;
 end;
 
-function TJclHashMap.Equals(AMap: IJclMap): Boolean;
+function TJclHashMap.Equals(const AMap: IJclMap): Boolean;
 var
   I, J: Integer;
   {$IFDEF THREADSAFE}
@@ -2039,7 +2039,7 @@ begin
       Result.Add(FBuckets[I].Entries[J].Key);
 end;
 
-procedure TJclHashMap.PutAll(AMap: IJclMap);
+procedure TJclHashMap.PutAll(const AMap: IJclMap);
 var
   It: IJclIterator;
   Key: TObject;

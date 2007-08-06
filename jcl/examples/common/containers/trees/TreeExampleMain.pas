@@ -62,7 +62,7 @@ begin
   FValue := AValue;
 end;
 
-function IntfIntegerComparator(AIntf1, AIntf2: IInterface): Integer;
+function IntfIntegerComparator(const AIntf1, AIntf2: IInterface): Integer;
 begin
   Result := (AIntf1 as IIntfInteger).Value - (AIntf2 as IIntfInteger).Value;
 end;
@@ -82,7 +82,8 @@ begin
     Tree.Add(Obj);
   end;
 
-  if Tree.Contains(TIntfInteger.Create(15)) then
+  Obj := TIntfInteger.Create(15);
+  if Tree.Contains(Obj) then
     memoResult.Lines.Add('contains 15');
 
   Tree.TraverseOrder := toPostOrder;

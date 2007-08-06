@@ -45,10 +45,10 @@ type
   protected
     procedure Grow; virtual;
     { IJclIntfStack }
-    function Contains(AInterface: IInterface): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
-    procedure Push(AInterface: IInterface);
+    procedure Push(const AInterface: IInterface);
     function Size: Integer;
   public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
@@ -113,7 +113,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TJclIntfStack.Contains(AInterface: IInterface): Boolean;
+function TJclIntfStack.Contains(const AInterface: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -163,7 +163,7 @@ begin
   Result := FElements[FCount];
 end;
 
-procedure TJclIntfStack.Push(AInterface: IInterface);
+procedure TJclIntfStack.Push(const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;

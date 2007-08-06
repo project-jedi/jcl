@@ -45,10 +45,10 @@ type
     FTail: Integer;
   protected
     { IJclIntfQueue }
-    function Contains(AInterface: IInterface): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
-    procedure Enqueue(AInterface: IInterface);
+    procedure Enqueue(const AInterface: IInterface);
     function Size: Integer;
   public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity);
@@ -120,7 +120,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TJclIntfQueue.Contains(AInterface: IInterface): Boolean;
+function TJclIntfQueue.Contains(const AInterface: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -167,7 +167,7 @@ begin
   Result := FTail = FHead;
 end;
 
-procedure TJclIntfQueue.Enqueue(AInterface: IInterface);
+procedure TJclIntfQueue.Enqueue(const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;

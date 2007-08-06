@@ -98,18 +98,18 @@ type
     procedure RotateRight(Node: PJclIntfBinaryNode);
   protected
     { IJclIntfCollection }
-    function Add(AInterface: IInterface): Boolean;
-    function AddAll(ACollection: IJclIntfCollection): Boolean;
+    function Add(const AInterface: IInterface): Boolean;
+    function AddAll(const ACollection: IJclIntfCollection): Boolean;
     procedure Clear;
-    function Contains(AInterface: IInterface): Boolean;
-    function ContainsAll(ACollection: IJclIntfCollection): Boolean;
-    function Equals(ACollection: IJclIntfCollection): Boolean;
+    function Contains(const AInterface: IInterface): Boolean;
+    function ContainsAll(const ACollection: IJclIntfCollection): Boolean;
+    function Equals(const ACollection: IJclIntfCollection): Boolean;
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(AInterface: IInterface): Boolean;
-    function RemoveAll(ACollection: IJclIntfCollection): Boolean;
-    function RetainAll(ACollection: IJclIntfCollection): Boolean;
+    function Remove(const AInterface: IInterface): Boolean;
+    function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
     { IJclIntfTree }
     function GetTraverseOrder: TJclTraverseOrder;
@@ -136,17 +136,17 @@ type
   protected
     { IJclStrCollection }
     function Add(const AString: string): Boolean; override;
-    function AddAll(ACollection: IJclStrCollection): Boolean; override;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(ACollection: IJclStrCollection): Boolean; override;
-    function Equals(ACollection: IJclStrCollection): Boolean; override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; override;
-    function RemoveAll(ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(ACollection: IJclStrCollection): Boolean; override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
     function Size: Integer; override;
     { IJclStrTree }
     function GetTraverseOrder: TJclTraverseOrder;
@@ -170,17 +170,17 @@ type
   protected
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: IJclCollection): Boolean;
+    function AddAll(const ACollection: IJclCollection): Boolean;
     procedure Clear;
     function Contains(AObject: TObject): Boolean;
-    function ContainsAll(ACollection: IJclCollection): Boolean;
-    function Equals(ACollection: IJclCollection): Boolean;
+    function ContainsAll(const ACollection: IJclCollection): Boolean;
+    function Equals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
     function Remove(AObject: TObject): Boolean;
-    function RemoveAll(ACollection: IJclCollection): Boolean;
-    function RetainAll(ACollection: IJclCollection): Boolean;
+    function RemoveAll(const ACollection: IJclCollection): Boolean;
+    function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
     { IJclTree }
     function GetTraverseOrder: TJclTraverseOrder;
@@ -219,7 +219,7 @@ type
     FOwnList: IJclIntfCollection;
   protected
     { IJclIntfIterator }
-    procedure Add(AInterface: IInterface);
+    procedure Add(const AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -228,19 +228,19 @@ type
     function Previous: IInterface; virtual;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AInterface: IInterface);
+    procedure SetObject(const AInterface: IInterface);
   public
-    constructor Create(OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
+    constructor Create(const OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
   end;
 
-constructor TIntfItr.Create(OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
+constructor TIntfItr.Create(const OwnList: IJclIntfCollection; Start: PJclIntfBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
   FOwnList := OwnList;
 end;
 
-procedure TIntfItr.Add(AInterface: IInterface);
+procedure TIntfItr.Add(const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -314,7 +314,7 @@ begin
   FOwnList.Remove(Next);
 end;
 
-procedure TIntfItr.SetObject(AInterface: IInterface);
+procedure TIntfItr.SetObject(const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -546,10 +546,10 @@ type
     procedure Remove;
     procedure SetString(const AString: string);
   public
-    constructor Create(OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
+    constructor Create(const OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
   end;
 
-constructor TStrItr.Create(OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
+constructor TStrItr.Create(const OwnList: IJclStrCollection; Start: PJclStrBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
@@ -862,10 +862,10 @@ type
     procedure Remove;
     procedure SetObject(AObject: TObject);
   public
-    constructor Create(OwnList: IJclCollection; Start: PJclBinaryNode);
+    constructor Create(const OwnList: IJclCollection; Start: PJclBinaryNode);
   end;
 
-constructor TItr.Create(OwnList: IJclCollection; Start: PJclBinaryNode);
+constructor TItr.Create(const OwnList: IJclCollection; Start: PJclBinaryNode);
 begin
   inherited Create;
   FCursor := Start;
@@ -1179,7 +1179,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclIntfBinaryTree.Add(AInterface: IInterface): Boolean;
+function TJclIntfBinaryTree.Add(const AInterface: IInterface): Boolean;
 var
   NewNode: PJclIntfBinaryNode;
   Current, Save: PJclIntfBinaryNode;
@@ -1276,7 +1276,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfBinaryTree.AddAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1409,7 +1409,7 @@ begin
   Result := NewTree;
 end;
 
-function TJclIntfBinaryTree.Contains(AInterface: IInterface): Boolean;
+function TJclIntfBinaryTree.Contains(const AInterface: IInterface): Boolean;
 var
   {$IFDEF THREADSAFE}
   CS: IInterface;
@@ -1466,7 +1466,7 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclIntfBinaryTree.ContainsAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1484,7 +1484,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclIntfBinaryTree.Equals(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.Equals(const ACollection: IJclIntfCollection): Boolean;
 var
   It, ItSelf: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1623,7 +1623,7 @@ begin
   Node.Parent := TempNode;
 end;
 
-function TJclIntfBinaryTree.Remove(AInterface: IInterface): Boolean;
+function TJclIntfBinaryTree.Remove(const AInterface: IInterface): Boolean;
 var
   Current: PJclIntfBinaryNode;
   Node: PJclIntfBinaryNode;
@@ -1800,7 +1800,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclIntfBinaryTree.RemoveAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1818,7 +1818,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfBinaryTree.RetainAll(ACollection: IJclIntfCollection): Boolean;
+function TJclIntfBinaryTree.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1962,7 +1962,7 @@ begin
   Result := True;
 end;
 
-function TJclStrBinaryTree.AddAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrBinaryTree.AddAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -2222,7 +2222,7 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclStrBinaryTree.ContainsAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrBinaryTree.ContainsAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -2240,7 +2240,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclStrBinaryTree.Equals(ACollection: IJclStrCollection): Boolean;
+function TJclStrBinaryTree.Equals(const ACollection: IJclStrCollection): Boolean;
 var
   It, ItSelf: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -2510,7 +2510,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclStrBinaryTree.RemoveAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrBinaryTree.RemoveAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -2528,7 +2528,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrBinaryTree.RetainAll(ACollection: IJclStrCollection): Boolean;
+function TJclStrBinaryTree.RetainAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -2718,7 +2718,7 @@ begin
   Result := True;
 end;
 
-function TJclBinaryTree.AddAll(ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.AddAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   {$IFDEF THREADSAFE}
@@ -2908,7 +2908,7 @@ begin
   {$ENDIF RECURSIVE}
 end;
 
-function TJclBinaryTree.ContainsAll(ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.ContainsAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   {$IFDEF THREADSAFE}
@@ -2926,7 +2926,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclBinaryTree.Equals(ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.Equals(const ACollection: IJclCollection): Boolean;
 var
   It, ItSelf: IJclIterator;
   {$IFDEF THREADSAFE}
@@ -3196,7 +3196,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclBinaryTree.RemoveAll(ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.RemoveAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   {$IFDEF THREADSAFE}
@@ -3214,7 +3214,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclBinaryTree.RetainAll(ACollection: IJclCollection): Boolean;
+function TJclBinaryTree.RetainAll(const ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
   {$IFDEF THREADSAFE}
