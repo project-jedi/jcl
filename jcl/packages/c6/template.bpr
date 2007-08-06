@@ -22,9 +22,9 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="%NAME%C60%BINEXTENSION%"/>
     <OBJFILES value="
-      ..\..\lib\c6\obj\%NAME%.obj
+      ..\..\lib\c6\%NAME%.obj
 <%%% START FILES %%%>
-      ..\..\lib\c6\obj\%UNITNAME%.obj
+      ..\..\lib\c6\%UNITNAME%.obj
 <%%% END FILES %%%>
     "/>
     <RESFILES value=""/>
@@ -59,13 +59,13 @@
     <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="%PATHLIB%..\..\lib\c6;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="%PATHLIB%..\..\lib\c6;..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-WD -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -tWD -tWM -c"/>
-    <PFLAGS value="-U..\..\lib\c6 -N2..\..\lib\c6\obj -N0..\..\lib\c6 -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M
+    <PFLAGS value="-U..\..\lib\c6 -N2..\..\lib\c6 -N0..\..\lib\c6 -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M
                    %C6PFLAGS%
                   "/>
     <RFLAGS value=""/>

@@ -161,6 +161,10 @@ const
   DOFPackagesKey        = 'Packages';
   DOFCompilerSection    = 'Compiler';
   DOFPackageNoLinkKey   = 'PackageNoLink';
+  // injection of new compiler options to workaround L1496 internal error of Delphi 5 and C++Builder 5
+  // adding -B switch to the compiler command line forces units to be built
+  DOFAdditionalSection  = 'Additional';
+  DOFOptionsKey         = 'Options';
 
   {$IFDEF KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
@@ -427,15 +431,11 @@ type
   end;
 
   TJclDCC32 = class(TJclBorlandCommandLineTool)
-  private
-    FOnBeforeSaveOptionsToFile: TNotifyEvent;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
-    procedure SaveOptionsToFile(const ConfigFileName: string);
     procedure AddProjectOptions(const ProjectFileName, DCPPath: string);
     function Compile(const ProjectFileName: string): Boolean;
-    function GetConfigFileName: string; virtual;
   public
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string; ExtraOptions: string = ''): Boolean;
@@ -444,8 +444,6 @@ type
     {$IFDEF KEEP_DEPRECATED}
     function SupportsLibSuffix: Boolean;
     {$ENDIF KEEP_DEPRECATED}
-    property OnBeforeSaveOptionsToFile: TNotifyEvent read FOnBeforeSaveOptionsToFile write FOnBeforeSaveOptionsToFile;
-    property ConfigFileName: string read GetConfigFileName;
   end;
   {$IFDEF KEEP_DEPRECATED}
   TJclDCC = TJclDCC32;
@@ -761,7 +759,6 @@ type
     FMaxCLRVersion: string;
   protected
     function GetExeName: string; override;
-    function GetConfigFileName: string; override;
     function GetMaxCLRVersion: string;
   public
     function MakeProject(const ProjectName, OutputDir, ExtraOptions: string): Boolean; reintroduce;
@@ -1056,13 +1053,6 @@ const
   HelpProjectFileName        = '%s\Help\%s%d.ohp';
   HelpGidFileName            = '%s\Help\%s%d.gid';      
   {$ENDIF MSWINDOWS}
-
-  {$IFDEF MSWINDOWS}
-  DCC32ConfigurationFile = 'DCC32.CFG';
-  {$ELSE MSWINDOWS}
-  DCC32ConfigurationFile = 'dcc.conf';
-  {$ENDIF MSWINDOWS}
-  DCCILConfigurationFile = 'DCCIL.CFG';
 
   {$IFDEF KYLIX}
   IDs: array [TKylixVersion] of Integer = (60, 65, 69);
@@ -2494,8 +2484,8 @@ end;
 procedure TJclDCC32.AddProjectOptions(const ProjectFileName, DCPPath: string);
 var
   ConfigurationFileName, OptionsFileName, BDSProjFileName, DProjFileName,
-  ProjectConfiguration, ProjectPlatform: string;
-  PersonalityName, UnitOutputDir, SearchPath, DynamicPackages, SearchDcpPath, Conditionals: string;
+  ProjectConfiguration, ProjectPlatform, PersonalityName, UnitOutputDir,
+  SearchPath, DynamicPackages, SearchDcpPath, AdditionalOptions, Conditionals: string;
   OptionsFile: TIniFile;
   OptionsXmlFile: TJclSimpleXML;
   PersonalityInfoNode, OptionNode, ChildNode, PersonalityNode, DirectoriesNode,
@@ -2515,6 +2505,7 @@ begin
   DynamicPackages := '';
   SearchDcpPath := '';
   Conditionals := '';
+  AdditionalOptions := '';
 
   DProjFileName := ChangeFileExt(ProjectFileName, SourceExtensionDProject);
   if FileExists(DProjFileName) and (Installation.IDEVersionNumber >= 5) and (Installation.RadToolKind = brBorlandDevStudio) then
@@ -2658,6 +2649,7 @@ begin
       Conditionals := OptionsFile.ReadString(DOFDirectoriesSection, DOFConditionals, '');
       UsePackages := OptionsFile.ReadString(DOFCompilerSection,DOFPackageNoLinkKey,'') = '1';
       DynamicPackages := OptionsFile.ReadString(DOFLinkerSection, DOFPackagesKey, '');
+      AdditionalOptions := OptionsFile.ReadString(DOFAdditionalSection, DOFOptionsKey, '');
     finally
       OptionsFile.Free;
     end;
@@ -2679,6 +2671,8 @@ begin
   AddPathOption('U', StrEnsureSuffix(PathSep, SearchDcpPath) + SearchPath);
   if UsePackages and (DynamicPackages <> '') then
     Options.Add(Format('-LU"%s"',[DynamicPackages]));
+  if AdditionalOptions <> '' then
+    Options.Add(AdditionalOptions);
 end;
 
 function TJclDCC32.Compile(const ProjectFileName: string): Boolean;
@@ -2696,30 +2690,10 @@ begin
 end;
 
 function TJclDCC32.Execute(const CommandLine: string): Boolean;
-begin
-  FOutput := '';
-  SaveOptionsToFile(ConfigFileName);
-  Result := inherited Execute(CommandLine);
-  FileDelete(ConfigFileName);
-end;
-
-function TJclDCC32.GetConfigFileName: string;
-begin
-  Result := DCC32ConfigurationFile;
-end;
-
-procedure TJclDCC32.SaveOptionsToFile(const ConfigFileName: string);
-{$IFDEF MSWINDOWS}
-var
-  I, J: Integer;
-  List: TStringList;
-  S: string;
-  F: TextFile;
-
   function IsPathOption(const S: string; out Len: Integer): Boolean;
   begin
     Result := False;
-    if Length(S) >= 2 then
+    if (Length(S) >= 2) and (S[1] = '-') then
       case UpCase(S[2]) of
         'E', 'I', 'O', 'R', 'U':
           begin
@@ -2735,53 +2709,47 @@ var
         'N':
           begin
             Result := True;
-            if (Length(S) >= 3) and (S[3] in ['0'..'9']) then
+            if (Length(S) >= 3) and (S[3] in ['0'..'9', 'H', 'O', 'B']) then
               Len := 3
             else
               Len := 2;
           end;
       end;
   end;
-
+var
+  OptionIndex, PathIndex, SwitchLen: Integer;
+  PathList: TStrings;
+  Option, Arguments, CurrentFolder: string;
 begin
-  if Assigned(FOnBeforeSaveOptionsToFile) then
-    FOnBeforeSaveOptionsToFile(Self);
-  AssignFile(F, ConfigFileName);
-  Rewrite(F);
-  List := TStringList.Create;
+  FOutput := '';
+  Arguments := '';
+  CurrentFolder := GetCurrentFolder;
+
+  PathList := TStringList.Create;
   try
-    for I := 0 to Options.Count - 1 do
+    for OptionIndex := 0 to Options.Count - 1 do
     begin
-      S := Options[I];
-      if IsPathOption(S, J) then
+      Option := Options.Strings[OptionIndex];
+      if IsPathOption(Option, SwitchLen) then
       begin
-        Write(F, Copy(S, 1, J), '"');
-        StrToStrings(StrTrimQuotes(PChar(@S[J + 1])), PathSep, List);
+
+        StrToStrings(StrTrimQuotes(Copy(Option, SwitchLen+1, Length(Option) - SwitchLen)), PathSep, PathList);
         // change to relative paths to avoid DCC32 126 character path limit
-        for J := 0 to List.Count - 1 do
-          List[J] := PathGetRelativePath(GetCurrentFolder, ExpandFileName(List[J]));
-        if List.Count > 0 then
-        begin
-          for J := 0 to List.Count - 2 do
-            Write(F, List[J], PathSep);
-          Write(F, List[List.Count - 1]);
-        end;
-        Writeln(F, '"');
+        for PathIndex := 0 to PathList.Count - 1 do
+          PathList.Strings[PathIndex] := PathGetRelativePath(CurrentFolder, ExpandFileName(PathList[PathIndex]));
+        if PathList.Count > 0 then
+          Arguments := Format('%s %s"%s"', [Arguments, Copy(Option, 1, SwitchLen),
+            StringsToStr(PathList, PathSep)]);
       end
       else
-        Writeln(F, S);
+        Arguments := Format('%s %s', [Arguments, Option]);
     end;
   finally
-    List.Free;
+    PathList.Free;
   end;
-  CloseFile(F);
+
+  Result := inherited Execute(CommandLine + Arguments);
 end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
-  FOptions.SaveToFile(ConfigFileName);
-end;
-{$ENDIF UNIX}
 
 function TJclDCC32.GetExeName: string;
 begin
@@ -2829,6 +2797,8 @@ end;
 procedure TJclDCC32.SetDefaultOptions;
 begin
   Options.Clear;
+  if (Installation.RadToolKind = brBorlandDevStudio) and (Installation.VersionNumber >= 3) then
+    Options.Add('--no-config');
   AddPathOption('U', Installation.LibFolderName);
   if Installation.RadToolKind = brCppBuilder then
   begin
@@ -2853,11 +2823,6 @@ end;
 {$IFDEF MSWINDOWS}
 //=== { TJclDCCIL } ==========================================================
                                          
-function TJclDCCIL.GetConfigFileName: string;
-begin
-  Result := DCCILConfigurationFile;
-end;
-
 function TJclDCCIL.GetExeName: string;
 begin
   Result := DCCILExeName;
@@ -5501,8 +5466,7 @@ var
             PersonalitiesList := TStringList.Create;
             try
               PersonalitiesKeyName := VersionKeyName + '\Personalities';
-              if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName)
-                and RegKeyExists(HKEY_CURRENT_USER, PersonalitiesKeyName) then // IDE was launched one time at least
+              if RegKeyExists(HKEY_LOCAL_MACHINE, PersonalitiesKeyName) then
                 RegGetValueNames(HKEY_LOCAL_MACHINE, PersonalitiesKeyName, PersonalitiesList);
                 
               for J := Low(Personalities) to High(Personalities) do
@@ -5563,7 +5527,7 @@ begin
   {$IFDEF MSWINDOWS}
   S := LowerCase(S); // file names are case insensitive
   {$ENDIF MSWINDOWS}
-  S := Format('-%s"%s"', [Option, S]);
+  S := Format('-%s%s', [Option, S]);
   // avoid duplicate entries (note that search is case sensitive)
   if GetOptions.IndexOf(S) = -1 then
     GetOptions.Add(S);

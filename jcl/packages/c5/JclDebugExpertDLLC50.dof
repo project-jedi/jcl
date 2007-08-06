@@ -2,6 +2,8 @@
 UnitOutputDir=..\..\lib\c5
 SearchPath=..\..\source
 Conditionals=BCB
+[Additional]
+Options=-B
 [Compiler]
 PackageNoLink=1
 [Linker]

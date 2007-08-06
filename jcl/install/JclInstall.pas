@@ -120,9 +120,8 @@ type
     FGUI: IJediInstallGUI;
     FGUIBPLPathIndex: Integer;
     FGUIDCPPathIndex: Integer;
-    FDebugDcuDir: string;
-    FLibDir: string;
-    FLibObjDir: string;
+    FLibDebugDir: string;
+    FLibReleaseDir: string;
     FJclDcpPath: string;
     FDemoList: TStringList;
     FLogLines: TJclSimpleLog;
@@ -187,9 +186,8 @@ type
   private
     FJclPath: string;
     FJclBinDir: string;
-    FLibDirMask: string;
+    FLibReleaseDirMask: string;
     FLibDebugDirMask: string;
-    FLibObjDirMask: string;
     FJclSourceDir: string;
     FJclSourcePath: string;
     FJclExamplesDir: string;
@@ -279,9 +277,8 @@ type
 
     property JclPath: string read FJclPath;
     property JclBinDir: string read FJclBinDir;
-    property LibDirMask: string read FLibDirMask;
+    property LibReleaseDirMask: string read FLibReleaseDirMask;
     property LibDebugDirMask: string read FLibDebugDirMask;
-    property LibObjDirMask: string read FLibObjDirMask;
     property JclSourceDir: string read FJclSourceDir;
     property JclSourcePath: string read FJclSourcePath;
     property JclExamplesDir: string read FJclExamplesDir;
@@ -798,11 +795,10 @@ begin
       end;
   end;
 
-  FLibDir := MakePath(Distribution.LibDirMask);
-  FJclDcpPath := PathAddSeparator(MakePath(Distribution.LibDirMask));
-  FDebugDcuDir := MakePath(Distribution.FLibDebugDirMask);
-  if InstallTarget is TJclBCBInstallation then
-    FLibObjDir := MakePath(Distribution.FLibObjDirMask);
+  FLibReleaseDir := MakePath(Distribution.LibReleaseDirMask);
+  FLibDebugDir := MakePath(Distribution.LibDebugDirMask);
+  FJclDcpPath := PathAddSeparator(MakePath(Distribution.LibReleaseDirMask)); // packages are release
+
   FDemoSectionName := Target.Name + ' demos';
   FLogFileName := Format('%sbin%s%s.log', [Distribution.JclPath, DirDelimiter, TargetName]);
   FLogLines := TJclSimpleLog.Create(FLogFileName);
@@ -1450,19 +1446,19 @@ function TJclInstallation.Install: Boolean;
       if OptionChecked[joEnvLibPath] then
       begin
         MarkOptionBegin(joEnvLibPath);
-        Result := Target.AddToLibrarySearchPath(FLibDir) and Target.AddToLibrarySearchPath(Distribution.JclSourceDir);
+        Result := Target.AddToLibrarySearchPath(FLibReleaseDir) and Target.AddToLibrarySearchPath(Distribution.JclSourceDir);
         if Result then
         begin
-          WriteLog(Format('Added "%s;%s" to library search path.', [FLibDir, Distribution.JclSourceDir]));
+          WriteLog(Format('Added "%s;%s" to library search path.', [FLibReleaseDir, Distribution.JclSourceDir]));
           {$IFDEF MSWINDOWS}
           if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities)
             and OptionChecked[joDualPackages] then
             with TJclBDSInstallation(Target) do
           begin
-            Result := AddToCppSearchPath(FLibDir) and AddToCppSearchPath(Distribution.JclSourceDir) and 
-                      ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibDir));
+            Result := AddToCppSearchPath(FLibReleaseDir) and AddToCppSearchPath(Distribution.JclSourceDir) and
+                      ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibReleaseDir));
             if Result then
-              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibDir, Distribution.JclSourceDir]))
+              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
             else
               WriteLog('Failed to add cpp search paths.');
           end;
@@ -1514,9 +1510,9 @@ function TJclInstallation.Install: Boolean;
       if Result and OptionChecked[joEnvDebugDCUPath] then
       begin
         MarkOptionBegin(joEnvDebugDCUPath);
-        Result := Target.AddToDebugDCUPath(FDebugDcuDir);
+        Result := Target.AddToDebugDCUPath(FLibDebugDir);
         if Result then
-          WriteLog(Format('Added "%s" to Debug DCU Path.', [FDebugDcuDir]))
+          WriteLog(Format('Added "%s" to Debug DCU Path.', [FLibDebugDir]))
         else
           WriteLog('Failed to add debug DCU path');
         MarkOptionEnd(joEnvDebugDCUPath, Result);
@@ -1962,17 +1958,17 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     //ioJclEnvLibPath
     if CLRVersion = '' then
     begin
-      if Target.RemoveFromLibrarySearchPath(FLibDir) and Target.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
-        WriteLog(Format('Removed "%s;%s" from library search path.', [FLibDir, Distribution.JclSourceDir]))
+      if Target.RemoveFromLibrarySearchPath(FLibReleaseDir) and Target.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
+        WriteLog(Format('Removed "%s;%s" from library search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
       else
         WriteLog('Failed to remove library search path.');
       {$IFDEF MSWINDOWS}
       if (Target.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in Target.Personalities) then
         with TJclBDSInstallation(Target) do
       begin
-        if RemoveFromCppSearchPath(FLibDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
-           ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibDir)) then
-          WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibDir, Distribution.JclSourceDir]))
+        if RemoveFromCppSearchPath(FLibReleaseDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
+           ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibReleaseDir)) then
+          WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
         else
           WriteLog('Failed to remove cpp search path.');
       end;
@@ -1995,8 +1991,8 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       {$ENDIF MSWINDOWS}
 
       //ioJclEnvDebugDCUPath
-      if Target.RemoveFromDebugDCUPath(FDebugDcuDir) then
-        WriteLog(Format('Removed "%s" from Debug DCU Path.', [FDebugDcuDir]));
+      if Target.RemoveFromDebugDCUPath(FLibDebugDir) then
+        WriteLog(Format('Removed "%s" from Debug DCU Path.', [FLibDebugDir]));
     end;
   end;
 
@@ -2018,17 +2014,17 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
   begin
     if CLRVersion <> '' then
     begin
-      RemoveFileMask(FLibDir, '.dcuil');
-      RemoveFileMask(FDebugDcuDir, '.dcuil');
+      RemoveFileMask(FLibReleaseDir, '.dcuil');
+      RemoveFileMask(FLibDebugDir, '.dcuil');
     end
     else
     begin
-      RemoveFileMask(FLibDir, '.dcu');
-      RemoveFileMask(FDebugDcuDir, '.dcuil');
+      RemoveFileMask(FLibReleaseDir, '.dcu');
+      RemoveFileMask(FLibDebugDir, '.dcu');
       if bpBCBuilder32 in Target.Personalities then
       begin
-        RemoveFileMask(FLibDir, '.obj');
-        RemoveFileMask(FDebugDcuDir, '.obj');
+        RemoveFileMask(FLibReleaseDir, '.obj'); // compatibility
+        RemoveFileMask(FLibDebugDir, '.obj'); // compatibility
       end;
     end;
     //ioJclCopyHppFiles: ; // TODO : Delete copied files
@@ -2347,7 +2343,7 @@ begin
   UnitList := TStringList.Create;
   try
     BuildFileList(PathAddSeparator(Path) + '*.pas', faAnyFile, UnitList);
-    ExclusionFileName := PathAddSeparator(FLibDir) + SubDir + '.exc';
+    ExclusionFileName := PathAddSeparator(FLibReleaseDir) + SubDir + '.exc';
     if FileExists(ExclusionFileName) then
     begin
       Exclusions := TStringList.Create;
@@ -2377,63 +2373,74 @@ begin
     Compiler.SetDefaultOptions;
     //Options.Add('-D' + StringsToStr(Defines, ';'));
     Compiler.Options.Add('-M');
-    if Target.RADToolKind = brCppBuilder then
+    if Debug then
+    begin
+      Compiler.Options.Add('-$C+'); // assertions
+      Compiler.Options.Add('-$D+'); // debug informations
+      Compiler.Options.Add('-$I+'); // I/O checking
+      Compiler.Options.Add('-$L+'); // local debugging symbols
+      Compiler.Options.Add('-$O-'); // optimizations
+      Compiler.Options.Add('-$Q+'); // overflow checking
+      Compiler.Options.Add('-$R+'); // range checking
+      if CLRVersion = '' then
+        Compiler.Options.Add('-$W+'); // stack frames
+      Compiler.Options.Add('-$Y+'); // symbol reference info
+    end
+    else
+    begin
+      Compiler.Options.Add('-$C-'); // assertions
+      Compiler.Options.Add('-$D-'); // debug informations
+      Compiler.Options.Add('-$I-'); // I/O checking
+      Compiler.Options.Add('-$L-'); // local debugging symbols
+      Compiler.Options.Add('-$O+'); // optimizations
+      Compiler.Options.Add('-$Q-'); // overflow checking
+      Compiler.Options.Add('-$R-'); // range checking
+      if CLRVersion = '' then
+        Compiler.Options.Add('-$W-'); // stack frames
+      Compiler.Options.Add('-$Y-'); // symbol reference info
+    end;
+
+    if (bpBCBuilder32 in Target.Personalities) and (CLRVersion = '') then
     begin
       Compiler.Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
       if Debug then
+        UnitOutputDir := FLibDebugDir
+      else
+        UnitOutputDir := FLibReleaseDir;
+
+      if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
       begin
-        Compiler.Options.Add('-$Y+');
-        Compiler.Options.Add('-$W');
-        Compiler.Options.Add('-$O-');
-        Compiler.Options.Add('-v');
-        UnitOutputDir := FLibDir;
-        Compiler.AddPathOption('N2', FLibObjDir); // .obj files
+        Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
+        //Compiler.AddPathOption('NH', FIncludeDir);   // .hpp files
+        Compiler.AddPathOption('NO', UnitOutputDir); // .obj files
       end
       else
       begin
-        Compiler.Options.Add('-$YD');
-        Compiler.Options.Add('-$W+');
-        Compiler.Options.Add('-$O+');
-        UnitOutputDir := FLibDir;
-        Compiler.AddPathOption('N2', FLibObjDir); // .obj files
+        Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
+        //Compiler.AddPathOption('N1', FIncludeDir);   // .hpp files
+        Compiler.AddPathOption('N2', UnitOutputDir); // .obj files
       end;
-      Compiler.Options.Add('-v');
       Compiler.Options.Add('-JPHNE');
       Compiler.Options.Add('--BCB');
-      Compiler.AddPathOption('N0', UnitOutputDir); // .dcu files
-      Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
-      Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
+      //Compiler.AddPathOption('O', Format(BCBIncludePath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
+      //Compiler.AddPathOption('U', Format(BCBObjectPath, [Distribution.JclSourceDir, Distribution.JclSourcePath]));
     end
     else // Delphi
     begin
       if Debug then
-      begin
-        Compiler.Options.Add('-$O-');
-        if CLRVersion = '' then
-          Compiler.Options.Add('-$W+');
-        Compiler.Options.Add('-$R+');
-        Compiler.Options.Add('-$Q+');
-        Compiler.Options.Add('-$D+');
-        Compiler.Options.Add('-$L+');
-        Compiler.Options.Add('-$Y+');
-        UnitOutputDir := FDebugDcuDir;
-      end
+        UnitOutputDir := FLibDebugDir
       else
-      begin
-        Compiler.Options.Add('-$O+');
-        Compiler.Options.Add('-$R-');
-        Compiler.Options.Add('-$Q-');
-        Compiler.Options.Add('-$C-');
-        Compiler.Options.Add('-$D-');
-        UnitOutputDir := FLibDir;
-      end;
-      Compiler.AddPathOption('N', UnitOutputDir);
+        UnitOutputDir := FLibReleaseDir;
+
+      Compiler.AddPathOption('N', UnitOutputDir); // .dcu files
       if CLRVersion <> '' then
         Compiler.Options.Add('--default-namespace:Jedi.Jcl');
-      Compiler.AddPathOption('U', Distribution.JclSourcePath);
-      Compiler.AddPathOption('R', Distribution.JclSourcePath);
+
     end;
     Compiler.AddPathOption('I', Distribution.JclSourceDir);
+    Compiler.AddPathOption('U', Distribution.JclSourcePath);
+    Compiler.AddPathOption('R', Distribution.JclSourcePath);
+    
     SaveDir := GetCurrentDir;
     Result := SetCurrentDir(Path);
     {$IFDEF WIN32}
@@ -2570,7 +2577,7 @@ begin
     '-n.' + AnsiLineBreak +    // Unit output dir
     '-u%s;%s' + AnsiLineBreak + // Unit directories
     '-i%s',                     // Include path
-    [Distribution.JclBinDir, FLibDir, Distribution.JclSourcePath, Distribution.JclSourceDir]));
+    [Distribution.JclBinDir, FLibReleaseDir, Distribution.JclSourcePath, Distribution.JclSourceDir]));
   Result := Target.DCC32.Execute(FileName);
   FileDelete(CfgFileName);
 end;
@@ -3158,9 +3165,8 @@ procedure TJclDistribution.Init;
     {$IFDEF MSWINDOWS}
     FJclPath := PathGetShortName(FJclPath);
     {$ENDIF MSWINDOWS}
-    FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
-    FLibDebugDirMask := FLibDirMask + DirDelimiter + 'debug';
-    FLibObjDirMask := FLibDirMask + DirDelimiter + 'obj';
+    FLibReleaseDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
+    FLibDebugDirMask := FLibReleaseDirMask + DirDelimiter + 'debug';
     FJclBinDir := FJclPath + 'bin';
     FJclSourceDir := FJclPath + 'source';
     FJclExamplesDir := FJclPath + 'examples';

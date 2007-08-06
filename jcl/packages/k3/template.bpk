@@ -6,7 +6,7 @@
     <PROJECT value="bpl%NAME%69.so.%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%"/>
     <OBJFILES value="
 <%%% START FILES %%%>
-      ..\..\lib\k3\obj\%UNITNAME%.obj
+      ..\..\lib\k3\%UNITNAME%.obj
 <%%% END FILES %%%>
     "/>
     <RESFILES value="%NAME%.res"/>
@@ -39,17 +39,17 @@
     <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
     <MAINSOURCE value="%NAME%.bpf"/>
     <INCLUDEPATH value="../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
-    <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
+    <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
       -c"/>
-    <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N0../../lib/k3 -N2../../lib/k3 -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3 -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;
       -b:0x%IMAGE_BASE% -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>

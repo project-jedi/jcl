@@ -56,7 +56,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\vcl;..\..\source\common;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="%PATHLIB%..\..\lib\c5\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="%PATHLIB%..\..\lib\c5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -65,13 +65,13 @@
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\lib\c5\obj -N0..\..\lib\c5\obj -$YD -$W -$O- -$A8 -v -JPHNE -M
+    <PFLAGS value="-N0..\..\lib\c5 -N2..\..\lib\c5 -$YD -$W -$O- -$A8 -v -JPHNE -M
                    %C5PFLAGS%
                    -U$(BCB)\Projects\Lib -U..\..\lib\c5
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;%DESCRIPTION% for C++Builder 5&quot;
+    <LFLAGS value="-I..\..\lib\c5 -D&quot;%DESCRIPTION% for C++Builder 5&quot;
       -b:0x%IMAGE_BASE% -aa -Tpp -Gp%type% -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
