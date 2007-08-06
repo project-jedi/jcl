@@ -3531,7 +3531,7 @@ begin
     begin
       AInstallation := TargetInstalls[I];
       AInstallation.Silent := False;
-      if AInstallation.Enabled and (not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True) then
+      if AInstallation.Enabled and ((not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True)) then
         Success := False;
     end;
 
