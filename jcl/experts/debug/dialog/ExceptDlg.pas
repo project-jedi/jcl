@@ -565,7 +565,7 @@ end;
 class procedure TExceptionDialog.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
   if ExceptionDialog = nil then
-    ExceptionDialog := TExceptionDialogClass.Create(Application);
+    ExceptionDialog := ExceptionDialogClass.Create(Application);
   try
     with ExceptionDialog do
     begin

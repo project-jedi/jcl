@@ -621,7 +621,7 @@ end;
 class procedure T%FORMNAME%.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
   if %FORMNAME% = nil then
-    %FORMNAME% := T%FORMNAME%Class.Create(Application);
+    %FORMNAME% := %FORMNAME%Class.Create(Application);
   try
     with %FORMNAME% do
     begin

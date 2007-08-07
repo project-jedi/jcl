@@ -585,7 +585,7 @@ end;
 class procedure TExceptionDialogMail.ShowException(E: TObject; Thread: TJclDebugThread);
 begin
   if ExceptionDialogMail = nil then
-    ExceptionDialogMail := TExceptionDialogMailClass.Create(Application);
+    ExceptionDialogMail := ExceptionDialogMailClass.Create(Application);
   try
     with ExceptionDialogMail do
     begin
