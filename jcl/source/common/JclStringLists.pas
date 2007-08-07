@@ -47,7 +47,8 @@ type
 
   TJclStringListObjectsMode = (omNone, omObjects, omVariants, omInterfaces);
 
-  TJclStringListSortCompare = function(List: IJclStringList; Index1, Index2: Integer): Integer;
+  TJclStringListSortCompare = function(List: IJclStringList;
+    Index1, Index2: Integer): Integer;
 
   IJclStringList = interface(IInterface)
     ['{8DC5B71C-4756-404D-8636-7872CD299796}']
@@ -71,7 +72,7 @@ type
     function GetSorted: Boolean;
     function Equals(Strings: TStrings): Boolean;
     function IndexOfName(const Name: string): Integer;
-    function IndexOfObject(AObject: TObject): Integer; 
+    function IndexOfObject(AObject: TObject): Integer;
     function LoadFromFile(const FileName: string): IJclStringList;
     function LoadFromStream(Stream: TStream): IJclStringList;
     function SaveToFile(const FileName: string): IJclStringList;
@@ -152,8 +153,10 @@ type
     function FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
     function Clone: IJclStringList;
     function Insert(Index: Integer; const S: string): IJclStringList;
-    function InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList;
-    function Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
+    function InsertObject(Index: Integer; const S: string;
+      AObject: TObject): IJclStringList;
+    function Sort(ACompareFunction: TJclStringListSortCompare = nil):
+      IJclStringList;
     function SortAsInteger: IJclStringList;
     function SortByName: IJclStringList;
     function Delete(AIndex: Integer): IJclStringList; overload;
@@ -165,16 +168,22 @@ type
     function EndUpdate: IJclStringList;
     function Trim: IJclStringList;
     function Join(const ASeparator: string = ''): string;
-    function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function Split(const AText, ASeparator: string;
+      AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string;
+      const ADelims: TSetOfAnsiChar = [#0..' '];
+      AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
     function LastIndex: Integer;
     function Clear: IJclStringList;
     function DeleteRegEx(const APattern: string): IJclStringList;
     function KeepRegEx(const APattern: string): IJclStringList;
-    function Files(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
-    function Directories(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+    function Files(const APattern: string = '*'; ARecursive: Boolean = False;
+      const ARegExPattern: string = ''): IJclStringList;
+    function Directories(const APattern: string = '*';
+      ARecursive: Boolean = False;
+      const ARegExPattern: string = ''): IJclStringList;
     function GetStringsRef: TStrings;
     function ConfigAsSet: IJclStringList;
     function Delimit(const ADelimiter: string): IJclStringList;
@@ -193,19 +202,27 @@ type
     procedure SetKeyObject(const AKey: string; const Value: TObject);
     procedure SetKeyVariant(const AKey: string; const Value: Variant);
     procedure SetKeyList(const AKey: string; const Value: IJclStringList);
-    property Interfaces[Index: Integer]: IInterface read GetInterfaceByIndex write SetInterfaceByIndex;
-    property Lists[Index: Integer]: IJclStringList read GetLists write SetLists;
-    property Variants[Index: Integer]: Variant read GetVariants write SetVariants;
-    property KeyList[const AKey: string]: IJclStringList read GetKeyList write SetKeyList;
-    property KeyObject[const AKey: string]: TObject read GetKeyObject write SetKeyObject;
-    property KeyInterface[const AKey: string]: IInterface read GetKeyInterface write SetKeyInterface;
-    property KeyVariant[const AKey: string]: Variant read GetKeyVariant write SetKeyVariant;
+    property Interfaces[Index: Integer]: IInterface
+      read GetInterfaceByIndex write SetInterfaceByIndex;
+    property Lists[Index: Integer]: IJclStringList
+      read GetLists write SetLists;
+    property Variants[Index: Integer]: Variant
+      read GetVariants write SetVariants;
+    property KeyList[const AKey: string]: IJclStringList
+      read GetKeyList write SetKeyList;
+    property KeyObject[const AKey: string]: TObject
+      read GetKeyObject write SetKeyObject;
+    property KeyInterface[const AKey: string]: IInterface
+      read GetKeyInterface write SetKeyInterface;
+    property KeyVariant[const AKey: string]: Variant
+      read GetKeyVariant write SetKeyVariant;
     property ObjectsMode: TJclStringListObjectsMode read GetObjectsMode;
   end;
 
 function JclStringList: IJclStringList; overload;
 function JclStringListStrings(AStrings: TStrings): IJclStringList; overload;
-function JclStringListStrings(const A: array of string): IJclStringList; overload;
+function JclStringListStrings(const A: array of string): IJclStringList;
+  overload;
 function JclStringList(const A: array of const): IJclStringList; overload;
 function JclStringList(const AText: string): IJclStringList; overload;
 
@@ -336,15 +353,19 @@ type
     function ReleaseInterfaces: IJclStringList;
     function FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
     function Clone: IJclStringList;
-    function Add(const A: array of const): IJclStringList; reintroduce; overload;
-    function AddStrings(const A: array of string): IJclStringList; reintroduce; overload;
+    function Add(const A: array of const): IJclStringList;
+      reintroduce; overload;
+    function AddStrings(const A: array of string): IJclStringList;
+      reintroduce; overload;
     function BeginUpdate: IJclStringList;
     function EndUpdate: IJclStringList;
     function Trim: IJclStringList;
     function Delimit(const ADelimiter: string): IJclStringList;
     function Join(const ASeparator: string = ''): string;
-    function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' '];
+    function Split(const AText, ASeparator: string;
+      AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string;
+      const ADelims: TSetOfAnsiChar = [#0..' '];
       AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
@@ -354,18 +375,23 @@ type
     function KeepRegEx(const APattern: string): IJclStringList;
     function Files(const APattern: string = '*'; ARecursive: Boolean = False;
       const ARegExPattern: string = ''): IJclStringList;
-    function Directories(const APattern: string = '*'; ARecursive: Boolean = False;
+    function Directories(const APattern: string = '*';
+      ARecursive: Boolean = False;
       const ARegExPattern: string = ''): IJclStringList;
     function GetStringsRef: TStrings;
     function ConfigAsSet: IJclStringList;
     function Delete(AIndex: Integer): IJclStringList; reintroduce; overload;
-    function Delete(const AString: string): IJclStringList; reintroduce; overload;
+    function Delete(const AString: string): IJclStringList;
+      reintroduce; overload;
     function Exchange(Index1, Index2: Integer): IJclStringList; reintroduce;
-    function Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList; reintroduce;
+    function Sort(ACompareFunction: TJclStringListSortCompare = nil):
+      IJclStringList; reintroduce;
     function SortAsInteger: IJclStringList;
     function SortByName: IJclStringList;
-    function Insert(Index: Integer; const S: string): IJclStringList; reintroduce;
-    function InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList; reintroduce;
+    function Insert(Index: Integer; const S: string): IJclStringList;
+      reintroduce;
+    function InsertObject(Index: Integer; const S: string;
+      AObject: TObject): IJclStringList; reintroduce;
     function LoadFromFile(const FileName: string): IJclStringList; reintroduce;
     function LoadFromStream(Stream: TStream): IJclStringList; reintroduce;
     function SaveToFile(const FileName: string): IJclStringList; reintroduce;
@@ -395,13 +421,20 @@ type
     property OnChanging: TNotifyEvent read GetOnChanging write SetOnChanging;
     { New }
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
-    property Interfaces[Index: Integer]: IInterface read GetInterfaceByIndex write SetInterfaceByIndex;
-    property Lists[Index: Integer]: IJclStringList read GetLists write SetLists;
-    property Variants[Index: Integer]: Variant read GetVariants write SetVariants;
-    property KeyList[const AKey: string]: IJclStringList read GetKeyList write SetKeyList;
-    property KeyObject[const AKey: string]: TObject read GetKeyObject write SetKeyObject;
-    property KeyInterface[const AKey: string]: IInterface read GetKeyInterface write SetKeyInterface;
-    property KeyVariant[const AKey: string]: Variant read GetKeyVariant write SetKeyVariant;
+    property Interfaces[Index: Integer]: IInterface
+      read GetInterfaceByIndex write SetInterfaceByIndex;
+    property Lists[Index: Integer]: IJclStringList
+      read GetLists write SetLists;
+    property Variants[Index: Integer]: Variant
+      read GetVariants write SetVariants;
+    property KeyList[const AKey: string]: IJclStringList
+      read GetKeyList write SetKeyList;
+    property KeyObject[const AKey: string]: TObject
+      read GetKeyObject write SetKeyObject;
+    property KeyInterface[const AKey: string]: IInterface
+      read GetKeyInterface write SetKeyInterface;
+    property KeyVariant[const AKey: string]: Variant
+      read GetKeyVariant write SetKeyVariant;
     property ObjectsMode: TJclStringListObjectsMode read GetObjectsMode;
   end;
 
@@ -472,7 +505,8 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.AddStrings(const A: array of string): IJclStringList;
+function TJclStringListImpl.AddStrings(
+  const A: array of string): IJclStringList;
 var
   I: Integer;
 begin
@@ -507,7 +541,8 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar;
+function TJclStringListImpl.ExtractWords(const AText: string;
+  const ADelims: TSetOfAnsiChar;
   AClearBeforeAdd: Boolean): IJclStringList;
 var
   L, I, X: Integer;
@@ -614,7 +649,8 @@ begin
     Destroy;
 end;
 
-function TJclStringListImpl.DeleteRegEx(const APattern: string): IJclStringList;
+function TJclStringListImpl.DeleteRegEx(
+  const APattern: string): IJclStringList;
 var
   I: Integer;
 begin
@@ -664,7 +700,8 @@ begin
 end;
 
 function TJclStringListImpl.Directories(const APattern: string = '*';
-  ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+  ARecursive: Boolean = False;
+  const ARegExPattern: string = ''): IJclStringList;
 
   procedure DoDirectories(const APattern: string);
   var
@@ -677,13 +714,14 @@ function TJclStringListImpl.Directories(const APattern: string = '*';
       try
         repeat
           if (LSearchRec.Attr and faDirectory = 0) or
-             (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
+            (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
             Continue;
           LFullName := LPath + LSearchRec.Name;
           if (ARegExPattern = '') or MatchRegEx(LFullName, ARegExPattern) then
             Add(LFullName);
           if ARecursive then
-            DoDirectories(PathAddSeparator(LFullName) + ExtractFileName(APattern));
+            DoDirectories(PathAddSeparator(LFullName) +
+              ExtractFileName(APattern));
         until FindNext(LSearchRec) <> 0;
       finally
         FindClose(LSearchRec);
@@ -700,7 +738,8 @@ begin
 end;
 
 function TJclStringListImpl.Files(const APattern: string = '*';
-  ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+  ARecursive: Boolean = False;
+  const ARegExPattern: string = ''): IJclStringList;
 
   procedure DoFiles(const APattern: string);
   var
@@ -716,7 +755,7 @@ function TJclStringListImpl.Files(const APattern: string = '*';
       try
         repeat
           if (LSearchRec.Attr and faDirectory <> 0) or
-             (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
+            (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
             Continue;
           LFullName := LPath + LSearchRec.Name;
           if (ARegExPattern = '') or MatchRegEx(LFullName, ARegExPattern) then
@@ -772,7 +811,8 @@ begin
   end;
 end;
 
-procedure TJclStringListImpl.SetLists(Index: Integer; const Value: IJclStringList);
+procedure TJclStringListImpl.SetLists(Index: Integer;
+  const Value: IJclStringList);
 begin
   Interfaces[Index] := Value;
 end;
@@ -804,17 +844,19 @@ begin
     Result := nil;
 end;
 
-procedure TJclStringListImpl.SetKeyInterface(const AKey: string; const Value: IInterface);
+procedure TJclStringListImpl.SetKeyInterface(const AKey: string;
+  const Value: IInterface);
 var
   I: Integer;
 begin
   I := IndexOf(AKey);
   if I < 0 then
     I := Add(AKey);
-  Interfaces[I] := Value
+  Interfaces[I] := Value;
 end;
 
-procedure TJclStringListImpl.SetKeyObject(const AKey: string; const Value: TObject);
+procedure TJclStringListImpl.SetKeyObject(const AKey: string;
+  const Value: TObject);
 var
   I: Integer;
 begin
@@ -843,14 +885,15 @@ begin
     Result := Unassigned;
 end;
 
-procedure TJclStringListImpl.SetKeyVariant(const AKey: string; const Value: Variant);
+procedure TJclStringListImpl.SetKeyVariant(const AKey: string;
+  const Value: Variant);
 var
   I: Integer;
 begin
   I := IndexOf(AKey);
   if I < 0 then
     I := Add(AKey);
-  Variants[I] := Value
+  Variants[I] := Value;
 end;
 
 function TJclStringListImpl.GetValue(const Name: string): string;
@@ -876,7 +919,8 @@ begin
     Result := V.FValue;
 end;
 
-procedure TJclStringListImpl.SetInterfaceByIndex(Index: Integer; const Value: IInterface);
+procedure TJclStringListImpl.SetInterfaceByIndex(Index: Integer;
+  const Value: IInterface);
 var
   V: TInterfaceWrapper;
 begin
@@ -933,13 +977,15 @@ begin
   V.FValue := Value;
 end;
 
-procedure TJclStringListImpl.EnsureObjectsMode(AMode: TJclStringListObjectsMode);
+procedure TJclStringListImpl.EnsureObjectsMode(
+  AMode: TJclStringListObjectsMode);
 begin
   if FObjectsMode <> AMode then
   begin
     if FObjectsMode <> omNone then
     begin
-      raise Exception.CreateFmt('Objects cannot be used as "%s" because it has been used as "%s".',
+      raise Exception.CreateFmt(
+        'Objects cannot be used as "%s" because it has been used as "%s".',
         [GetEnumName(TypeInfo(TJclStringListObjectsMode), Ord(AMode)),
         GetEnumName(TypeInfo(TJclStringListObjectsMode), Ord(FObjectsMode))]);
     end;
@@ -957,7 +1003,8 @@ begin
   end;
 end;
 
-procedure TJclStringListImpl.SetKeyList(const AKey: string; const Value: IJclStringList);
+procedure TJclStringListImpl.SetKeyList(const AKey: string;
+  const Value: IJclStringList);
 begin
   KeyInterface[AKey] := Value;
 end;
@@ -981,7 +1028,8 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare = nil): IJclStringList;
+function TJclStringListImpl.Sort(ACompareFunction: TJclStringListSortCompare =
+  nil): IJclStringList;
 
   function LocalSort(List: TStringList; Index1, Index2: Integer): Integer;
   begin
@@ -998,7 +1046,8 @@ end;
 
 function TJclStringListImpl.SortAsInteger: IJclStringList;
 
-  function LocalSortAsInteger(List: TStringList; Index1, Index2: Integer): Integer;
+  function LocalSortAsInteger(List: TStringList;
+    Index1, Index2: Integer): Integer;
   begin
     Result := StrToInt(List[Index1]) - StrToInt(List[Index2]);
   end;
@@ -1017,9 +1066,11 @@ end;
 
 function TJclStringListImpl.SortByName: IJclStringList;
 
-  function LocalSortByName(List: TStringList; Index1, Index2: Integer): Integer;
+  function LocalSortByName(List: TStringList;
+    Index1, Index2: Integer): Integer;
   begin
-    Result := TJclStringListImpl(List).CompareStrings(List.Names[Index1], List.Names[Index2]);
+    Result := TJclStringListImpl(List).CompareStrings(List.Names[Index1],
+      List.Names[Index2]);
   end;
 
 begin
@@ -1027,13 +1078,15 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.Insert(Index: Integer; const S: string): IJclStringList;
+function TJclStringListImpl.Insert(Index: Integer;
+  const S: string): IJclStringList;
 begin
   inherited Insert(Index, S);
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.InsertObject(Index: Integer; const S: string; AObject: TObject): IJclStringList;
+function TJclStringListImpl.InsertObject(Index: Integer;
+  const S: string; AObject: TObject): IJclStringList;
 begin
   inherited InsertObject(Index, S, AObject);
   Result := FSelfAsInterface;
@@ -1093,7 +1146,8 @@ begin
   inherited Sorted := Value;
 end;
 
-function TJclStringListImpl.LoadFromFile(const FileName: string): IJclStringList;
+function TJclStringListImpl.LoadFromFile(
+  const FileName: string): IJclStringList;
 begin
   inherited LoadFromFile(FileName);
   Result := FSelfAsInterface;
@@ -1272,7 +1326,8 @@ begin
   Result := FSelfAsInterface;
 end;
 
-function TJclStringListImpl.FreeObjects(AFreeAndNil: Boolean = False): IJclStringList;
+function TJclStringListImpl.FreeObjects(AFreeAndNil: Boolean = False):
+IJclStringList;
 var
   I: Integer;
 begin

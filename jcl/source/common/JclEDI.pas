@@ -93,7 +93,7 @@ type
   TEDIObjectListItem = class;
   TEDIObjectList = class;
   TEDIDataObjectListItem = class;
-  TEDIDataObjectList = class;  
+  TEDIDataObjectList = class;
 
   //  EDI Delimiters Object
   TEDIDelimiters = class(TEDIObject)
@@ -121,7 +121,7 @@ type
 
   //  EDI Data Object
   TEDIDataObjectType =
-   (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
+    (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
     ediTransactionSet, ediMessage, ediFunctionalGroup,
     ediInterchangeControl, ediFile, ediCustom);
 
@@ -179,7 +179,8 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; virtual; abstract;
     function InternalCreateEDIDataObject: TEDIDataObject; virtual; abstract;
   public
-    constructor Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer = 0); reintroduce;
+    constructor Create(Parent: TEDIDataObject;
+      EDIDataObjectCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     function IndexIsValid(Index: Integer): Boolean;
     //
@@ -192,8 +193,10 @@ type
     procedure DeleteEDIDataObject(EDIDataObject: TEDIDataObject); overload;
     //
     function AddEDIDataObjects(Count: Integer): Integer;
-    function AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
-    function InsertEDIDataObjects(InsertIndex, Count: Integer): Integer; overload;
+    function AppendEDIDataObjects(EDIDataObjectArray:
+      TEDIDataObjectArray): Integer;
+    function InsertEDIDataObjects(InsertIndex, Count: Integer): Integer;
+      overload;
     function InsertEDIDataObjects(InsertIndex: Integer;
       EDIDataObjectArray: TEDIDataObjectArray): Integer; overload;
     procedure DeleteEDIDataObjects; overload;
@@ -201,7 +204,8 @@ type
     //
     function GetIndexPositionFromParent: Integer; virtual;
     //
-    property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
+    property EDIDataObject[Index: Integer]: TEDIDataObject
+      read GetEDIDataObject
       write SetEDIDataObject; default;
     property EDIDataObjects: TEDIDataObjectList read FEDIDataObjects;
   published
@@ -255,17 +259,23 @@ type
     constructor Create(OwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure Add(Item: TEDIObjectListItem; Name: string = ''); overload;
-    function Add(EDIObject: TEDIObject; Name: string = ''): TEDIObjectListItem; overload;
+    function Add(EDIObject: TEDIObject; Name: string = ''): TEDIObjectListItem;
+      overload;
     function Find(Item: TEDIObjectListItem): TEDIObjectListItem; overload;
     function Find(EDIObject: TEDIObject): TEDIObjectListItem; overload;
     function FindEDIObject(EDIObject: TEDIObject): TEDIObject;
-    function Extract(Item: TEDIObjectListItem): TEDIObjectListItem; overload; virtual;
+    function Extract(Item: TEDIObjectListItem): TEDIObjectListItem;
+      overload; virtual;
     function Extract(EDIObject: TEDIObject): TEDIObject; overload; virtual;
     procedure Remove(Item: TEDIObjectListItem); overload;
     procedure Remove(EDIObject: TEDIObject); overload;
-    function Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem; overload;
-    function Insert(EDIObject, BeforeEDIObject: TEDIObject): TEDIObjectListItem; overload;
-    function Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem; overload;
+    function Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+      overload;
+    function Insert(EDIObject, BeforeEDIObject: TEDIObject):
+      TEDIObjectListItem;
+      overload;
+    function Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+      overload;
     function Insert(BeforeEDIObject: TEDIObject): TEDIObjectListItem; overload;
     procedure Clear;
     function First(Index: Integer = 0): TEDIObjectListItem; virtual;
@@ -293,7 +303,7 @@ type
     property Count: Integer read FCount;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
     property Options: TEDIDataObjectListOptions read FOptions write FOptions;
-    property CurrentItem: TEDIObjectListItem read FCurrentItem;    
+    property CurrentItem: TEDIObjectListItem read FCurrentItem;
   end;
 
   TEDIDataObjectListItem = class(TEDIObjectListItem)
@@ -301,7 +311,8 @@ type
     function GetEDIDataObject: TEDIDataObject;
     procedure SetEDIDataObject(const Value: TEDIDataObject);
   published
-    property EDIDataObject: TEDIDataObject read GetEDIDataObject write SetEDIDataObject;
+    property EDIDataObject: TEDIDataObject
+      read GetEDIDataObject write SetEDIDataObject;
   end;
 
   TEDIDataObjectList = class(TEDIObjectList)
@@ -310,8 +321,9 @@ type
     procedure SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
   public
     function CreateListItem(PriorItem: TEDIObjectListItem;
-      EDIObject: TEDIObject = nil): TEDIObjectListItem; override;  
-    property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
+      EDIObject: TEDIObject = nil): TEDIObjectListItem; override;
+    property EDIDataObject[Index: Integer]: TEDIDataObject
+      read GetEDIDataObject
       write SetEDIDataObject; default;
   end;
 
@@ -322,7 +334,7 @@ type
     OwnerLoopId: string;
     ParentLoopId: string;
     EDIObject: TEDIObject;
-    EDISpecObject: TEDIObject;    
+    EDISpecObject: TEDIObject;
   end;
 
   TEDILoopStackArray = array of TEDILoopStackRecord;
@@ -332,7 +344,8 @@ type
   TEDILoopStackFlagSet = set of TEDILoopStackFlags;
 
   TEDILoopStackOnAddLoopEvent = procedure(StackRecord: TEDILoopStackRecord;
-    SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject) of object;
+    SegmentId, OwnerLoopId, ParentLoopId: string;
+    var EDIObject: TEDIObject) of object;
 
   TEDILoopStack = class(TEDIObject)
   private
@@ -351,16 +364,19 @@ type
     function Peek: TEDILoopStackRecord; overload;
     function Peek(Index: Integer): TEDILoopStackRecord; overload;
     procedure Pop(Index: Integer);
-    function Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+    function Push(SegmentId, OwnerLoopId, ParentLoopId: string;
+      StartIndex: Integer;
       EDIObject: TEDIObject): Integer;
     // Extended Stack Routines
     function GetSafeStackIndex(Index: Integer): Integer;
     function SetStackPointer(OwnerLoopId, ParentLoopId: string): Integer;
     procedure UpdateStackObject(EDIObject: TEDIObject);
-    procedure UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+    procedure UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string;
+      StartIndex: Integer;
       EDIObject: TEDIObject);
     // Extended Stack Routines
-    function ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+    function ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string;
+      StartIndex: Integer;
       EDIObject: TEDIObject): TEDILoopStackRecord;
     function Debug: string;
     //
@@ -368,13 +384,15 @@ type
   published
     property Size: Integer read GetSize;
     property Flags: TEDILoopStackFlagSet read FFlags write FFlags;
-    property OnAddLoop: TEDILoopStackOnAddLoopEvent read FOnAddLoop write FOnAddLoop;
+    property OnAddLoop: TEDILoopStackOnAddLoopEvent
+      read FOnAddLoop write FOnAddLoop;
   end;
 
 //  Other
 // Compatibility functions
 function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
-function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
+function StringReplace(const S, OldPattern, NewPattern: string;
+  Flags: TReplaceFlags): string;
 
 {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
 {$IFDEF UNITVERSIONING}
@@ -441,7 +459,7 @@ begin
     else
     begin
       Result[I] := #0;
-      SetLength(Result, I-1);
+      SetLength(Result, I - 1);
       Break;
     end;
 
@@ -453,7 +471,8 @@ begin
   end;
 end;
 
-function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
+function StringReplace(const S, OldPattern, NewPattern: string;
+  Flags: TReplaceFlags): string;
 var
   SearchString, SearchPattern: string;
   I, SearchIndex, ReplaceIndex: Integer;
@@ -485,26 +504,31 @@ begin
       SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
     end
   else
-    if SearchResult <> 0 then
-      Inc(ReplaceCount);
-  SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
+  if SearchResult <> 0 then
+    Inc(ReplaceCount);
+  SetLength(Result, Length(S) +
+    ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
   // Copy the characters by looping through the result and source at the same time
   ReplaceCount := 0;
   ReplaceIndex := 1;
   SearchIndex := 1;
   // Loop while the indexes are still in range
-  while (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) do
+  while (ReplaceIndex <= Length(Result)) and (SearchIndex <=
+      Length(SearchString)) do
   begin
     // Enter algorithm if replacing a pattern or there have been no replacements yet
-    if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and (ReplaceCount = 0)) then
+    if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and
+      (ReplaceCount = 0)) then
       // Replace the pattern (including repeating patterns)
-      while Copy(SearchString, SearchIndex, SearchPatternLength) = SearchPattern do
+      while Copy(SearchString, SearchIndex, SearchPatternLength) =
+        SearchPattern do
       begin
         // Move forward in the search string
         SearchIndex := SearchIndex + Length(SearchPattern);
         // Replace an old pattern by writing the new pattern to the result
         I := 1;
-        while (ReplaceIndex <= Length(Result)) and (I <= ReplacePatternLength) do
+        while (ReplaceIndex <= Length(Result)) and
+          (I <= ReplacePatternLength) do
         begin
           Result[ReplaceIndex] := NewPattern[I];
           Inc(I);
@@ -518,7 +542,8 @@ begin
       end;
 
     // Copy character
-    if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
+    if (ReplaceIndex <= Length(Result)) and (SearchIndex <=
+      Length(SearchString)) then
       Result[ReplaceIndex] := S[SearchIndex];
 
     // Set indexes for next copy
@@ -613,7 +638,8 @@ end;
 
 //=== { TEDIDataObjectGroup } ================================================
 
-constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
+constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject;
+  EDIDataObjectCount: Integer);
 begin
   inherited Create(Parent);
   FCreateObjectType := ediUnknown;
@@ -638,7 +664,8 @@ begin
   FEDIDataObjects.Add(InternalCreateEDIDataObject);
 end;
 
-function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
+function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject:
+  TEDIDataObject): Integer;
 begin
   Result := FEDIDataObjects.Count; // Return position
   FEDIDataObjects.Add(EDIDataObject);
@@ -646,7 +673,8 @@ begin
     EDIDataObject.Parent := Self;
 end;
 
-function TEDIDataObjectGroup.AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
+function TEDIDataObjectGroup.AppendEDIDataObjects(
+  EDIDataObjectArray: TEDIDataObjectArray): Integer;
 var
   I: Integer;
 begin
@@ -659,7 +687,8 @@ begin
   end;
 end;
 
-procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIDataObject);
+procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject:
+  TEDIDataObject);
 begin
   if loAutoUpdateIndexes in FEDIDataObjects.Options then
     FEDIDataObjects.Delete(EDIDataObject)
@@ -673,7 +702,8 @@ begin
     FEDIDataObjects.Delete(Index)
   else
     {$IFNDEF CLR}
-    raise EJclEDIError.CreateResFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateResFmt(@RsEDIError010,
+      [Self.ClassName, IntToStr(Index)]);
     {$ELSE}
     raise EJclEDIError.CreateFmt(RsEDIError010, [Self.ClassName, IntToStr(Index)]);
     {$ENDIF ~CLR}
@@ -695,7 +725,8 @@ begin
       for I := 1 to Count do
         DeleteEDIDataObject(Index);
     finally
-      FEDIDataObjects.Options := FEDIDataObjects.Options + [loAutoUpdateIndexes];
+      FEDIDataObjects.Options :=
+        FEDIDataObjects.Options + [loAutoUpdateIndexes];
     end;
   end
   else
@@ -720,15 +751,19 @@ begin
       if Index <= FEDIDataObjects.Count - 1 then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateFmt(RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+          raise EJclEDIError.CreateFmt(RsEDIError006,
+            [Self.ClassName, IntToStr(Index)]);
         Result := FEDIDataObjects[Index];
       end
       else
-        raise EJclEDIError.CreateFmt(RsEDIError005, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateFmt(RsEDIError005,
+          [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateFmt(RsEDIError004, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateFmt(RsEDIError004,
+        [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateFmt(RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateFmt(RsEDIError003,
+      [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
@@ -736,7 +771,8 @@ begin
   Result := FEDIDataObjects.IndexIsValid(Index);
 end;
 
-function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
+function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex:
+  Integer): Integer;
 begin
   Result := InsertIndex; // Return position
   if IndexIsValid(InsertIndex) then
@@ -778,7 +814,8 @@ begin
     Result := AppendEDIDataObjects(EDIDataObjectArray);
 end;
 
-function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex, Count: Integer): Integer;
+function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex,
+  Count: Integer): Integer;
 var
   I: Integer;
 begin
@@ -792,7 +829,8 @@ begin
     Result := AddEDIDataObjects(Count);
 end;
 
-procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
+procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer;
+  EDIDataObject: TEDIDataObject);
 begin
   if FEDIDataObjects.Count > 0 then
     if Index >= 0 then
@@ -804,11 +842,14 @@ begin
           FEDIDataObjects[Index].Parent := Self;
       end
       else
-        raise EJclEDIError.CreateFmt(RsEDIError009, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateFmt(RsEDIError009,
+          [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateFmt(RsEDIError008, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateFmt(RsEDIError008,
+        [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateFmt(RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateFmt(RsEDIError007,
+      [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
@@ -947,7 +988,8 @@ begin
   Result := FCurrentItem;
 end;
 
-function TEDIObjectList.Add(EDIObject: TEDIObject; Name: string): TEDIObjectListItem;
+function TEDIObjectList.Add(EDIObject: TEDIObject;
+  Name: string): TEDIObjectListItem;
 begin
   Result := CreateListItem(FLastItem, EDIObject);
   Result.Name := Name;
@@ -1017,7 +1059,8 @@ begin
   Result := nil;
   if FCurrentItem <> nil then // Attempt to search from the current item.
   begin
-    if Index = FCurrentItem.ItemIndex then // The index already points to the current item.
+    if Index = FCurrentItem.ItemIndex then
+ // The index already points to the current item.
       Result := FCurrentItem
     else
     if Index > FCurrentItem.ItemIndex then // Search forward in the list.
@@ -1082,7 +1125,8 @@ begin
     Remove(ListItem);
     // Update the indexes starting at the current item.
     if loAutoUpdateIndexes in FOptions then
-      UpdateIndexes(FCurrentItem.PriorItem); //Pass nil to force update of all items
+      UpdateIndexes(FCurrentItem.PriorItem);
+ //Pass nil to force update of all items
   end;
 end;
 
@@ -1347,7 +1391,8 @@ begin
     Result := True;
 end;
 
-function TEDIObjectList.Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+function TEDIObjectList.Insert(Item, BeforeItem: TEDIObjectListItem):
+TEDIObjectListItem;
 begin
   Result := Item;
   if Result = nil then
@@ -1376,7 +1421,8 @@ begin
   Inc(FCount);
 end;
 
-function TEDIObjectList.Insert(EDIObject, BeforeEDIObject: TEDIObject): TEDIObjectListItem;
+function TEDIObjectList.Insert(EDIObject, BeforeEDIObject: TEDIObject):
+TEDIObjectListItem;
 var
   BeforeItem: TEDIObjectListItem;
 begin
@@ -1385,13 +1431,15 @@ begin
   Insert(Result, BeforeItem);
 end;
 
-function TEDIObjectList.Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+function TEDIObjectList.Insert(BeforeItem: TEDIObjectListItem):
+TEDIObjectListItem;
 begin
   Result := CreateListItem(BeforeItem, nil);
   Insert(Result, BeforeItem);
 end;
 
-function TEDIObjectList.Insert(BeforeEDIObject: TEDIObject): TEDIObjectListItem;
+function TEDIObjectList.Insert(BeforeEDIObject: TEDIObject):
+TEDIObjectListItem;
 begin
   Result := Insert(nil, BeforeEDIObject);
 end;
@@ -1421,7 +1469,8 @@ begin
   Result := TEDIDataObject(GetEDIObject(Index));
 end;
 
-procedure TEDIDataObjectList.SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
+procedure TEDIDataObjectList.SetEDIDataObject(Index: Integer;
+  const Value: TEDIDataObject);
 begin
   SetEDIObject(Index, Value);
 end;
@@ -1526,7 +1575,8 @@ begin
   end;
 end;
 
-function TEDILoopStack.Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+function TEDILoopStack.Push(SegmentId, OwnerLoopId, ParentLoopId: string;
+  StartIndex: Integer;
   EDIObject: TEDIObject): Integer;
 begin
   // Add to loop stack
@@ -1574,7 +1624,8 @@ begin
   end;
 end;
 
-procedure TEDILoopStack.UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string;
+procedure TEDILoopStack.UpdateStackData(SegmentId, OwnerLoopId,
+  ParentLoopId: string;
   StartIndex: Integer; EDIObject: TEDIObject);
 begin
   FStack[High(FStack)].SegmentId := SegmentId;
@@ -1589,7 +1640,8 @@ begin
   FStack[High(FStack)].EDIObject := EDIObject;
 end;
 
-function TEDILoopStack.ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string;
+function TEDILoopStack.ValidateLoopStack(SegmentId, OwnerLoopId,
+  ParentLoopId: string;
   StartIndex: Integer; EDIObject: TEDIObject): TEDILoopStackRecord;
 var
   I: Integer;
@@ -1606,10 +1658,11 @@ begin
       if ediLoopRepeated in FFlags then
       begin
         // Get the previous stack record so the repeated loop will not be nested
-        StackRecord := Peek(I-1);
+        StackRecord := Peek(I - 1);
         // In event handler add loop to external data structure since it repeated
         // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
-        DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+        DoAddLoop(StackRecord, SegmentId, OwnerLoopId,
+          ParentLoopId, EDIObject);
         // Update stack object only
         UpdateStackObject(EDIObject);
         // Debug
@@ -1620,12 +1673,14 @@ begin
       begin
         // Get the previous stack record because the loop
         // is not to be nested at the current stack pointer
-        StackRecord := Peek(I-1);
+        StackRecord := Peek(I - 1);
         // In event handler add loop to external data structure since it is new
         // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
-        DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+        DoAddLoop(StackRecord, SegmentId, OwnerLoopId,
+          ParentLoopId, EDIObject);
         // Update stack entry
-        UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
+        UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId,
+          StartIndex, EDIObject);
         // Debug
         // ShowMessage('AltStackPointer');
       end

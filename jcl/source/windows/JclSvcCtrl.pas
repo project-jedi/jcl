@@ -58,7 +58,7 @@ uses
 // Service Types
 type
   TJclServiceType =
-   (stKernelDriver,        // SERVICE_KERNEL_DRIVER
+    (stKernelDriver,        // SERVICE_KERNEL_DRIVER
     stFileSystemDriver,    // SERVICE_FILE_SYSTEM_DRIVER
     stAdapter,             // SERVICE_ADAPTER
     stRecognizerDriver,    // SERVICE_RECOGNIZER_DRIVER
@@ -71,12 +71,13 @@ type
 const
   stDriverService = [stKernelDriver, stFileSystemDriver, stRecognizerDriver];
   stWin32Service = [stWin32OwnProcess, stWin32ShareProcess];
-  stAllTypeService = stDriverService + stWin32Service + [stAdapter, stInteractiveProcess];
+  stAllTypeService = stDriverService + stWin32Service +
+    [stAdapter, stInteractiveProcess];
 
 // Service State
 type
   TJclServiceState =
-   (ssUnknown,         // Just fill the value 0
+    (ssUnknown,         // Just fill the value 0
     ssStopped,         // SERVICE_STOPPED
     ssStartPending,    // SERVICE_START_PENDING
     ssStopPending,     // SERVICE_STOP_PENDING
@@ -88,12 +89,13 @@ type
   TJclServiceStates = set of TJclServiceState;
 
 const
-  ssPendingStates = [ssStartPending, ssStopPending, ssContinuePending, ssPausePending];
+  ssPendingStates = [ssStartPending, ssStopPending, ssContinuePending,
+    ssPausePending];
 
 // Start Type
 type
   TJclServiceStartType =
-   (sstBoot,      // SERVICE_BOOT_START
+    (sstBoot,      // SERVICE_BOOT_START
     sstSystem,    // SERVICE_SYSTEM_START
     sstAuto,      // SERVICE_AUTO_START
     sstDemand,    // SERVICE_DEMAND_START
@@ -102,7 +104,7 @@ type
 // Error control type
 type
   TJclServiceErrorControlType =
-   (ectIgnore,    // SSERVICE_ERROR_IGNORE
+    (ectIgnore,    // SSERVICE_ERROR_IGNORE
     ectNormal,    // SSERVICE_ERROR_NORMAL
     ectSevere,    // SSERVICE_ERROR_SEVERE
     ectCritical); // SERVICE_ERROR_CRITICAL
@@ -111,7 +113,7 @@ type
 // Controls Accepted
 type
   TJclServiceControlAccepted =
-   (caStop,          // SERVICE_ACCEPT_STOP
+    (caStop,          // SERVICE_ACCEPT_STOP
     caPauseContinue, // SERVICE_ACCEPT_PAUSE_CONTINUE
     caShutdown);     // SERVICE_ACCEPT_SHUTDOWN
 
@@ -120,7 +122,7 @@ type
 // Service sort type
 type
   TJclServiceSortOrderType =
-   (sotServiceName,
+    (sotServiceName,
     sotDisplayName,
     sotDescription,
     sotFileName,
@@ -151,7 +153,7 @@ const
 
 // Service description
 const
-  SERVICE_CONFIG_DESCRIPTION     = 1;
+  SERVICE_CONFIG_DESCRIPTION = 1;
   {$EXTERNALSYM SERVICE_CONFIG_DESCRIPTION}
   SERVICE_CONFIG_FAILURE_ACTIONS = 2;
   {$EXTERNALSYM SERVICE_CONFIG_FAILURE_ACTIONS}
@@ -168,7 +170,8 @@ type
 
 type
   TQueryServiceConfig2A = function(hService: SC_HANDLE; dwInfoLevel: DWORD;
-    lpBuffer: PByte; cbBufSize: DWORD; var pcbBytesNeeded: DWORD): BOOL; stdcall;
+    lpBuffer: PByte; cbBufSize: DWORD; var pcbBytesNeeded: DWORD): BOOL;
+    stdcall;
 
 // Service related classes
 type
@@ -194,7 +197,7 @@ type
     FWin32ExitCode: DWORD;
     FGroup: TJclServiceGroup;
     FControlsAccepted: TJclServiceControlAccepteds;
-    FCommitNeeded:Boolean;
+    FCommitNeeded: Boolean;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
     function GetDependentService(const Idx: Integer): TJclNtService;
@@ -204,7 +207,8 @@ type
     function GetDependentByService(const Idx: Integer): TJclNtService;
     function GetDependentByServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
+    constructor Create(const ASCManager: TJclSCManager;
+      const SvcStatus: TEnumServiceStatus);
     procedure Open(const ADesiredAccess: DWORD = DefaultSvcDesiredAccess);
     procedure Close;
     function GetServiceStatus: TServiceStatus;
@@ -219,13 +223,16 @@ type
     procedure Refresh;
     procedure Commit;
     procedure Delete;
-    function Controls(const ControlType: DWORD; const ADesiredAccess: DWORD = DefaultSvcDesiredAccess): TServiceStatus;
-    procedure Start(const Args: array of string; const Sync: Boolean = True); overload;
+    function Controls(const ControlType: DWORD;
+      const ADesiredAccess: DWORD = DefaultSvcDesiredAccess): TServiceStatus;
+    procedure Start(const Args: array of string; const Sync: Boolean = True);
+      overload;
     procedure Start(const Sync: Boolean = True); overload;
     procedure Stop(const Sync: Boolean = True);
     procedure Pause(const Sync: Boolean = True);
     procedure Continue(const Sync: Boolean = True);
-    function WaitFor(const State: TJclServiceState; const TimeOut: DWORD = INFINITE): Boolean;
+    function WaitFor(const State: TJclServiceState;
+      const TimeOut: DWORD = INFINITE): Boolean;
     property SCManager: TJclSCManager read FSCManager;
     property Active: Boolean read GetActive write SetActive;
     property Handle: SC_HANDLE read FHandle;
@@ -234,19 +241,25 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Description: string read FDescription; // Win2K or later
     property FileName: TFileName read FFileName;
-    property DependentServices[const Idx: Integer]: TJclNtService read GetDependentService;
+    property DependentServices[const Idx: Integer]: TJclNtService
+      read GetDependentService;
     property DependentServiceCount: Integer read GetDependentServiceCount;
-    property DependentGroups[const Idx: Integer]: TJclServiceGroup read GetDependentGroup;
+    property DependentGroups[const Idx: Integer]: TJclServiceGroup
+      read GetDependentGroup;
     property DependentGroupCount: Integer read GetDependentGroupCount;
-    property DependentByServices[const Idx: Integer]: TJclNtService read GetDependentByService;
+    property DependentByServices[const Idx: Integer]: TJclNtService
+      read GetDependentByService;
     property DependentByServiceCount: Integer read GetDependentByServiceCount;
     property ServiceTypes: TJclServiceTypes read FServiceTypes;
     property ServiceState: TJclServiceState read FServiceState;
-    property StartType: TJclServiceStartType read FStartType write SetStartType;
-    property ErrorControlType: TJclServiceErrorControlType read FErrorControlType;
+    property StartType: TJclServiceStartType
+      read FStartType write SetStartType;
+    property ErrorControlType: TJclServiceErrorControlType
+      read FErrorControlType;
     property Win32ExitCode: DWORD read FWin32ExitCode;
     property Group: TJclServiceGroup read FGroup;
-    property ControlsAccepted: TJclServiceControlAccepteds read FControlsAccepted;
+    property ControlsAccepted: TJclServiceControlAccepteds
+      read FControlsAccepted;
   end;
 
   TJclServiceGroup = class(TObject)
@@ -258,7 +271,8 @@ type
     function GetService(const Idx: Integer): TJclNtService;
     function GetServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
+    constructor Create(const ASCManager: TJclSCManager;
+      const AName: string; const AOrder: Integer);
     function Add(const AService: TJclNtService): Integer;
     function Remove(const AService: TJclNtService): Integer;
   public
@@ -300,7 +314,8 @@ type
     function AddGroup(const AGroup: TJclServiceGroup): Integer;
     function GetServiceLockStatus: PQueryServiceLockStatus;
     property AdvApi32Handle: TModuleHandle read GetAdvApi32Handle;
-    property QueryServiceConfig2A: TQueryServiceConfig2A read GetQueryServiceConfig2A;
+    property QueryServiceConfig2A: TQueryServiceConfig2A
+      read GetQueryServiceConfig2A;
   public
     constructor Create(const AMachineName: string = '';
       const ADesiredAccess: DWORD = DefaultSCMDesiredAccess;
@@ -314,10 +329,13 @@ type
       StartType: TJclServiceStartType = sstDemand;
       ErrorControlType: TJclServiceErrorControlType = ectNormal;
       DesiredAccess: DWORD = DefaultSvcDesiredAccess;
-      const LoadOrderGroup: TJclServiceGroup = nil; const Dependencies: PChar = nil;
+      const LoadOrderGroup: TJclServiceGroup = nil;
+      const Dependencies: PChar = nil;
       const Account: PChar = nil; const Password: PChar = nil): TJclNtService;
-    procedure Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean = True);
-    function FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
+    procedure Sort(const AOrderType: TJclServiceSortOrderType;
+      const AOrderAsc: Boolean = True);
+    function FindService(const SvcName: string;
+      var NtSvc: TJclNtService): Boolean;
     function FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
       const AutoAdd: Boolean = True): Boolean;
     procedure Lock;
@@ -325,10 +343,14 @@ type
     function IsLocked: Boolean;
     function LockOwner: string;
     function LockDuration: DWORD;
-    class function ServiceType(const SvcType: TJclServiceTypes): DWORD; overload;
-    class function ServiceType(const SvcType: DWORD): TJclServiceTypes; overload;
-    class function ControlAccepted(const CtrlAccepted: TJclServiceControlAccepteds): DWORD; overload;
-    class function ControlAccepted(const CtrlAccepted: DWORD): TJclServiceControlAccepteds; overload;
+    class function ServiceType(const SvcType: TJclServiceTypes): DWORD;
+      overload;
+    class function ServiceType(const SvcType: DWORD): TJclServiceTypes;
+      overload;
+    class function ControlAccepted(
+      const CtrlAccepted: TJclServiceControlAccepteds): DWORD; overload;
+    class function ControlAccepted(
+      const CtrlAccepted: DWORD): TJclServiceControlAccepteds; overload;
     property MachineName: string read FMachineName;
     property DatabaseName: string read FDatabaseName;
     property DesiredAccess: DWORD read FDesiredAccess;
@@ -338,7 +360,8 @@ type
     property ServiceCount: Integer read GetServiceCount;
     property Groups[const Idx: Integer]: TJclServiceGroup read GetGroup;
     property GroupCount: Integer read GetGroupCount;
-    property OrderType: TJclServiceSortOrderType read FOrderType write SetOrderType;
+    property OrderType: TJclServiceSortOrderType
+      read FOrderType write SetOrderType;
     property OrderAsc: Boolean read FOrderAsc write SetOrderAsc;
   end;
 
@@ -346,9 +369,10 @@ type
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 
-function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
-function StopServiceByName(const AServer, AServiceName: String):Boolean;
-function StartServiceByName(const AServer,AServiceName: String):Boolean;
+function GetServiceStatusByName(
+  const AServer, AServiceName: string): TJclServiceState;
+function StopServiceByName(const AServer, AServiceName: String): Boolean;
+function StartServiceByName(const AServer, AServiceName: String): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -377,15 +401,17 @@ const
 
   ServiceTypeMapping: array [TJclServiceType] of DWORD =
     (SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER, SERVICE_ADAPTER,
-     SERVICE_RECOGNIZER_DRIVER, SERVICE_WIN32_OWN_PROCESS,
-     SERVICE_WIN32_SHARE_PROCESS, SERVICE_INTERACTIVE_PROCESS);
+    SERVICE_RECOGNIZER_DRIVER, SERVICE_WIN32_OWN_PROCESS,
+    SERVICE_WIN32_SHARE_PROCESS, SERVICE_INTERACTIVE_PROCESS);
 
   ServiceControlAcceptedMapping: array [TJclServiceControlAccepted] of DWORD =
-    (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN);
+    (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE,
+    SERVICE_ACCEPT_SHUTDOWN);
 
 //=== { TJclNtService } ======================================================
 
-constructor TJclNtService.Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
+constructor TJclNtService.Create(const ASCManager: TJclSCManager;
+  const SvcStatus: TEnumServiceStatus);
 begin
   Assert(Assigned(ASCManager));
   inherited Create;
@@ -416,20 +442,21 @@ var
   PSvcDesc: PServiceDescriptionA;
 begin
   if Assigned(SCManager.QueryServiceConfig2A) then
-  try
-    PSvcDesc := nil;
-    BytesNeeded := 4096;
-    repeat
-      ReallocMem(PSvcDesc, BytesNeeded);
-      Ret := SCManager.QueryServiceConfig2A(FHandle, SERVICE_CONFIG_DESCRIPTION,
-        PByte(PSvcDesc), BytesNeeded, BytesNeeded);
-    until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
-    Win32Check(Ret);
+    try
+      PSvcDesc := nil;
+      BytesNeeded := 4096;
+      repeat
+        ReallocMem(PSvcDesc, BytesNeeded);
+        Ret := SCManager.QueryServiceConfig2A(FHandle,
+          SERVICE_CONFIG_DESCRIPTION,
+          PByte(PSvcDesc), BytesNeeded, BytesNeeded);
+      until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
+      Win32Check(Ret);
 
-    FDescription := PSvcDesc.lpDescription;
-  finally
-    FreeMem(PSvcDesc);
-  end;
+      FDescription := PSvcDesc.lpDescription;
+    finally
+      FreeMem(PSvcDesc);
+    end;
 end;
 
 function TJclNtService.GetActive: Boolean;
@@ -480,7 +507,8 @@ begin
       repeat
         ReallocMem(PBuf, BytesNeeded);
         Ret := EnumDependentServices(FHandle, SERVICE_STATE_ALL,
-          PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
+          PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF},
+          BytesNeeded, BytesNeeded, ServicesReturned);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
@@ -520,11 +548,12 @@ begin
   Result := FDependentGroups.Count;
 end;
 
-function TJclNtService.GetDependentByService(const Idx: Integer): TJclNtService;
+function TJclNtService.GetDependentByService(
+  const Idx: Integer): TJclNtService;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
-  Result := TJclNtService(FDependentByServices.Items[Idx])
+  Result := TJclNtService(FDependentByServices.Items[Idx]);
 end;
 
 function TJclNtService.GetDependentByServiceCount: Integer;
@@ -578,18 +607,18 @@ procedure TJclNtService.UpdateConfig(const SvcConfig: TQueryServiceConfig);
     FDependentServices.Clear;
     FDependentGroups.Clear;
     if Assigned(P) then
-    while P^ <> #0 do
-    begin
-      if P^ = SC_GROUP_IDENTIFIER then
+      while P^ <> #0 do
       begin
-        SCManager.FindGroup(P + 1, SvcGrp);
-        FDependentGroups.Add(SvcGrp);
-      end
-      else
-      if SCManager.FindService(P, NtSvc) then
-        FDependentServices.Add(NtSvc);
-      Inc(P, StrLen(P) + 1);
-    end;
+        if P^ = SC_GROUP_IDENTIFIER then
+        begin
+          SCManager.FindGroup(P + 1, SvcGrp);
+          FDependentGroups.Add(SvcGrp);
+        end
+        else
+        if SCManager.FindService(P, NtSvc) then
+          FDependentServices.Add(NtSvc);
+        Inc(P, StrLen(P) + 1);
+      end;
   end;
 
 begin
@@ -646,7 +675,8 @@ begin
       BytesNeeded := 4096;
       repeat
         ReallocMem(PQrySvcCnfg, BytesNeeded);
-        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded, BytesNeeded);
+        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded,
+          BytesNeeded);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
@@ -666,9 +696,9 @@ var
   BytesNeeded: DWORD;
   PQrySvcCnfg: PQueryServiceConfig;
 begin
- if not FCommitNeeded then
-   Exit;
- FCommitNeeded := False;
+  if not FCommitNeeded then
+    Exit;
+  FCommitNeeded := False;
 
   Open(SERVICE_CHANGE_CONFIG or SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
@@ -679,7 +709,8 @@ begin
       BytesNeeded := 4096;
       repeat
         ReallocMem(PQrySvcCnfg, BytesNeeded);
-        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded, BytesNeeded);
+        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded,
+          BytesNeeded);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
@@ -717,7 +748,8 @@ begin
   end;
 end;
 
-procedure TJclNtService.Start(const Args: array of string; const Sync: Boolean);
+procedure TJclNtService.Start(const Args: array of string;
+  const Sync: Boolean);
 type
   PStrArray = ^TStrArray;
   TStrArray = array [0..32767] of PChar;
@@ -732,7 +764,7 @@ begin
         PServiceArgVectors := nil
       else
       begin
-        GetMem(PServiceArgVectors, SizeOf(PChar)*Length(Args));
+        GetMem(PServiceArgVectors, SizeOf(PChar) * Length(Args));
         for I := 0 to Length(Args) - 1 do
           PStrArray(PServiceArgVectors)^[I] := PChar(Args[I]);
       end;
@@ -752,7 +784,8 @@ begin
   Start([], Sync);
 end;
 
-function TJclNtService.Controls(const ControlType: DWORD; const ADesiredAccess: DWORD): TServiceStatus;
+function TJclNtService.Controls(const ControlType: DWORD;
+  const ADesiredAccess: DWORD): TServiceStatus;
 begin
   Open(ADesiredAccess);
   try
@@ -783,7 +816,8 @@ begin
     WaitFor(ssRunning);
 end;
 
-function TJclNtService.WaitFor(const State: TJclServiceState; const TimeOut: DWORD): Boolean;
+function TJclNtService.WaitFor(const State: TJclServiceState;
+  const TimeOut: DWORD): Boolean;
 var
   SvcStatus: TServiceStatus;
   WaitedState, StartTickCount, OldCheckPoint, WaitTime: DWORD;
@@ -807,7 +841,8 @@ begin
       begin
         if TimeOut <> INFINITE then
           { TODO : Do we need to disable RangeCheck? }
-          if (GetTickCount - StartTickCount) > Max(SvcStatus.dwWaitHint, TimeOut) then
+          if (GetTickCount - StartTickCount) >
+            Max(SvcStatus.dwWaitHint, TimeOut) then
             Break;
       end;
       WaitTime := SvcStatus.dwWaitHint div 10;
@@ -957,7 +992,8 @@ procedure TJclSCManager.Open;
 begin
   if not Active then
   begin
-    FHandle := OpenSCManager(Pointer(FMachineName), Pointer(FDatabaseName), FDesiredAccess);
+    FHandle := OpenSCManager(Pointer(FMachineName), Pointer(FDatabaseName),
+      FDesiredAccess);
     Win32Check(FHandle <> INVALID_SCM_HANDLE);
   end;
 end;
@@ -1058,7 +1094,8 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   { TODO -cHelp : }
   procedure EnumServiceGroups;
   const
-    cKeyServiceGroupOrder = 'SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
+    cKeyServiceGroupOrder =
+      'SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
     cValList = 'List';
   var
     List: TStringList;
@@ -1067,7 +1104,8 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     // Get the service groups
     List := TStringList.Create;
     try
-      RegReadMultiSz(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, List);
+      RegReadMultiSz(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder,
+        cValList, List);
       for I := 0 to List.Count - 1 do
         AddGroup(TJclServiceGroup.Create(Self, List[I], GetGroupCount));
     finally
@@ -1114,26 +1152,29 @@ begin
     sotStartType:
       Result := Integer(Svc1.StartType) - Integer(Svc2.StartType);
     sotErrorControlType:
-      Result := Integer(Svc1.ErrorControlType) - Integer(Svc2.ErrorControlType);
+      Result := Integer(Svc1.ErrorControlType) -
+        Integer(Svc2.ErrorControlType);
     sotLoadOrderGroup:
       Result := Svc1.Group.Order - Svc2.Group.Order;
     sotWin32ExitCode:
       Result := Svc1.Win32ExitCode - Svc2.Win32ExitCode;
-  else
-    Result := 0;
+    else
+      Result := 0;
   end;
   if not Svc1.SCManager.FOrderAsc then
     Result := -Result;
 end;
 
-procedure TJclSCManager.Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean);
+procedure TJclSCManager.Sort(const AOrderType: TJclServiceSortOrderType;
+  const AOrderAsc: Boolean);
 begin
   FOrderType := AOrderType;
   FOrderAsc := AOrderAsc;
   FServices.Sort(ServiceSortFunc);
 end;
 
-function TJclSCManager.FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
+function TJclSCManager.FindService(const SvcName: string;
+  var NtSvc: TJclNtService): Boolean;
 var
   I: Integer;
 begin
@@ -1150,7 +1191,8 @@ begin
   NtSvc := nil;
 end;
 
-function TJclSCManager.FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
+function TJclSCManager.FindGroup(const GrpName: string;
+  var SvcGrp: TJclServiceGroup;
   const AutoAdd: Boolean): Boolean;
 var
   I: Integer;
@@ -1187,7 +1229,8 @@ begin
     BytesNeeded := 10240;
     repeat
       ReallocMem(Result, BytesNeeded);
-      Ret := QueryServiceLockStatus(FHandle, Result{$IFNDEF FPC}^{$ENDIF FPC}, BytesNeeded, BytesNeeded);
+      Ret := QueryServiceLockStatus(FHandle, Result{$IFNDEF FPC}^{$ENDIF FPC},
+        BytesNeeded, BytesNeeded);
     until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     Win32Check(Ret);
   except
@@ -1245,12 +1288,14 @@ const
 begin
   // Win2K or later
   if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
-    FQueryServiceConfig2A := GetModuleSymbol(AdvApi32Handle, cQueryServiceConfig2);
+    FQueryServiceConfig2A :=
+      GetModuleSymbol(AdvApi32Handle, cQueryServiceConfig2);
 
   Result := FQueryServiceConfig2A;
 end;
 
-function TJclSCManager.Install(const ServiceName, DisplayName, ImageName, Description: string;
+function TJclSCManager.Install(
+  const ServiceName, DisplayName, ImageName, Description: string;
   ServiceTypes: TJclServiceTypes; StartType: TJclServiceStartType;
   ErrorControlType: TJclServiceErrorControlType; DesiredAccess: DWORD;
   const LoadOrderGroup: TJclServiceGroup;
@@ -1281,7 +1326,8 @@ begin
   CloseServiceHandle(Svc);
 
   if (Description <> '') and (IsWin2K or IsWinXP) then
-    RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName,
+    RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES +
+      '\' + ServiceName,
       'Description', Description);
 
   EnumServiceStatus.lpServiceName := PChar(ServiceName);
@@ -1291,7 +1337,8 @@ begin
   Result.Refresh;
 end;
 
-class function TJclSCManager.ServiceType(const SvcType: TJclServiceTypes): DWORD;
+class function TJclSCManager.ServiceType(
+  const SvcType: TJclServiceTypes): DWORD;
 var
   AType: TJclServiceType;
 begin
@@ -1301,7 +1348,8 @@ begin
       Result := Result or ServiceTypeMapping[AType];
 end;
 
-class function TJclSCManager.ServiceType(const SvcType: DWORD): TJclServiceTypes;
+class function TJclSCManager.ServiceType(
+  const SvcType: DWORD): TJclServiceTypes;
 var
   AType: TJclServiceType;
 begin
@@ -1311,95 +1359,103 @@ begin
       Include(Result, AType);
 end;
 
-class function TJclSCManager.ControlAccepted(const CtrlAccepted: TJclServiceControlAccepteds): DWORD;
+class function TJclSCManager.ControlAccepted(
+  const CtrlAccepted: TJclServiceControlAccepteds): DWORD;
 var
   ACtrl: TJclServiceControlAccepted;
 begin
   Result := 0;
-  for ACtrl := Low(TJclServiceControlAccepted) to High(TJclServiceControlAccepted) do
+  for ACtrl := Low(TJclServiceControlAccepted)
+    to High(TJclServiceControlAccepted) do
     if ACtrl in CtrlAccepted then
       Result := Result or ServiceControlAcceptedMapping[ACtrl];
 end;
 
-class function TJclSCManager.ControlAccepted(const CtrlAccepted: DWORD): TJclServiceControlAccepteds;
+class function TJclSCManager.ControlAccepted(
+  const CtrlAccepted: DWORD): TJclServiceControlAccepteds;
 var
   ACtrl: TJclServiceControlAccepted;
 begin
   Result := [];
-  for ACtrl := Low(TJclServiceControlAccepted) to High(TJclServiceControlAccepted) do
+  for ACtrl := Low(TJclServiceControlAccepted)
+    to High(TJclServiceControlAccepted) do
     if (CtrlAccepted and ServiceControlAcceptedMapping[ACtrl]) <> 0 then
       Include(Result, ACtrl);
 end;
 
-function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
+function GetServiceStatusByName(
+  const AServer, AServiceName: string): TJclServiceState;
 var
   ServiceHandle,
   SCMHandle: DWORD;
-  SCMAccess,Access:DWORD;
+  SCMAccess, Access: DWORD;
   ServiceStatus: TServiceStatus;
 begin
-  Result:=ssUnknown;
+  Result := ssUnknown;
 
-  SCMAccess:=SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
-  Access:=SERVICE_INTERROGATE or GENERIC_READ;
+  SCMAccess := SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or
+    SC_MANAGER_QUERY_LOCK_STATUS;
+  Access := SERVICE_INTERROGATE or GENERIC_READ;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), Nil, SCMAccess);
+  SCMHandle := OpenSCManager(PChar(AServer), Nil, SCMAccess);
   if SCMHandle <> 0 then
-  try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
-    if ServiceHandle <> 0 then
     try
-      if QueryServiceStatus(ServiceHandle,ServiceStatus) then
-        Result:=TJclServiceState(ServiceStatus.dwCurrentState);
+      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), Access);
+      if ServiceHandle <> 0 then
+        try
+          if QueryServiceStatus(ServiceHandle, ServiceStatus) then
+            Result := TJclServiceState(ServiceStatus.dwCurrentState);
+        finally
+          CloseServiceHandle(ServiceHandle);
+        end;
     finally
-      CloseServiceHandle(ServiceHandle);
+      CloseServiceHandle(SCMHandle);
     end;
-  finally
-    CloseServiceHandle(SCMHandle);
-  end;
 end;
 
-function StartServiceByName(const AServer,AServiceName: String):Boolean;
+function StartServiceByName(const AServer, AServiceName: String): Boolean;
 var
   ServiceHandle,
   SCMHandle: DWORD;
   p: PChar;
 begin
-  p:=nil;
-  Result:=False;
+  p := nil;
+  Result := False;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
-  try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
-    if ServiceHandle <> 0 then
-      Result:=StartService(ServiceHandle,0,p);
+    try
+      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName),
+        SERVICE_ALL_ACCESS);
+      if ServiceHandle <> 0 then
+        Result := StartService(ServiceHandle, 0, p);
 
-    CloseServiceHandle(ServiceHandle);
-  finally
-    CloseServiceHandle(SCMHandle);
-  end;
+      CloseServiceHandle(ServiceHandle);
+    finally
+      CloseServiceHandle(SCMHandle);
+    end;
 end;
 
-function StopServiceByName(const AServer, AServiceName: String):Boolean;
+function StopServiceByName(const AServer, AServiceName: String): Boolean;
 var
   ServiceHandle,
   SCMHandle: DWORD;
   SS: _Service_Status;
 begin
-  Result:=False;
+  Result := False;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
-  try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
-    if ServiceHandle <> 0 then
-      Result:=ControlService(ServiceHandle,SERVICE_CONTROL_STOP,SS);
+    try
+      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName),
+        SERVICE_ALL_ACCESS);
+      if ServiceHandle <> 0 then
+        Result := ControlService(ServiceHandle, SERVICE_CONTROL_STOP, SS);
 
-    CloseServiceHandle(ServiceHandle);
-  finally
-    CloseServiceHandle(SCMHandle);
-  end;
+      CloseServiceHandle(ServiceHandle);
+    finally
+      CloseServiceHandle(SCMHandle);
+    end;
 end;
 
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;

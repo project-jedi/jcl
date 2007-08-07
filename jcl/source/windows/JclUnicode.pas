@@ -4572,7 +4572,7 @@ procedure TWideStrings.Error(const Msg: string; Data: Integer);
 
   function ReturnAddr: Pointer;
   asm
-          MOV     EAX, [EBP + 4]
+    MOV     EAX, [EBP + 4]
   end;
 
 begin
@@ -5435,144 +5435,142 @@ end;
 function StrLenW(Str: PWideChar): Cardinal;
 // returns number of characters in a string excluding the null terminator
 asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       MOV     EAX, 0FFFFFFFEH
-       SUB     EAX, ECX
-       MOV     EDI, EDX
+  MOV     EDX, EDI
+  MOV     EDI, EAX
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  MOV     EAX, 0FFFFFFFEH
+  SUB     EAX, ECX
+  MOV     EDI, EDX
 end;
 
 function StrEndW(Str: PWideChar): PWideChar;
 // returns a pointer to the end of a null terminated string
 asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       LEA     EAX, [EDI - 2]
-       MOV     EDI, EDX
+  MOV     EDX, EDI
+  MOV     EDI, EAX
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  LEA     EAX, [EDI - 2]
+  MOV     EDI, EDX
 end;
 
 function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
 // Copies the specified number of characters to the destination string and returns Dest
 // also as result. Dest must have enough room to store at least Count characters.
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EDX
-       MOV     EDI, EAX
-       MOV     EDX, ECX
-       CMP     EDI, ESI
-       JG      @@1
-       JE      @@2
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       JMP     @@2
+  PUSH    ESI
+  PUSH    EDI
+  MOV     ESI, EDX
+  MOV     EDI, EAX
+  MOV     EDX, ECX
+  CMP     EDI, ESI
+  JG      @@1
+  JE      @@2
+  SHR     ECX, 1
+  REP     MOVSD
+  MOV     ECX, EDX
+  AND     ECX, 1
+  REP     MOVSW
+  JMP     @@2
 @@1:
-       LEA     ESI, [ESI + 2 * ECX - 2]
-       LEA     EDI, [EDI + 2 * ECX - 2]
-       STD
-       AND     ECX, 1
-       REP     MOVSW
-       SUB     EDI, 2
-       SUB     ESI, 2
-       MOV     ECX, EDX
-       SHR     ECX, 1
-       REP     MOVSD
-       CLD
+  LEA     ESI, [ESI + 2 * ECX - 2]
+  LEA     EDI, [EDI + 2 * ECX - 2]
+  STD
+  AND     ECX, 1
+  REP     MOVSW
+  SUB     EDI, 2
+  SUB     ESI, 2
+  MOV     ECX, EDX
+  SHR     ECX, 1
+  REP     MOVSD
+  CLD
 @@2:
-       POP EDI
-       POP ESI
+  POP EDI
+  POP ESI
 end;
 
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
 // copies Source to Dest and returns Dest
 asm
-       PUSH    EDI
-       PUSH    ESI
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, ECX
-       MOV     EAX, EDI
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       POP     ESI
-       POP     EDI
-
+  PUSH    EDI
+  PUSH    ESI
+  MOV     ESI, EAX
+  MOV     EDI, EDX
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  NOT     ECX
+  MOV     EDI, ESI
+  MOV     ESI, EDX
+  MOV     EDX, ECX
+  MOV     EAX, EDI
+  SHR     ECX, 1
+  REP     MOVSD
+  MOV     ECX, EDX
+  AND     ECX, 1
+  REP     MOVSW
+  POP     ESI
+  POP     EDI
 end;
 
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
 // copies Source to Dest and returns a pointer to the null character ending the string
 asm
-       PUSH    EDI
-       PUSH    ESI
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, ECX
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       LEA     EAX, [EDI - 2]
-       POP     ESI
-       POP     EDI
-
+  PUSH    EDI
+  PUSH    ESI
+  MOV     ESI, EAX
+  MOV     EDI, EDX
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  NOT     ECX
+  MOV     EDI, ESI
+  MOV     ESI, EDX
+  MOV     EDX, ECX
+  SHR     ECX, 1
+  REP     MOVSD
+  MOV     ECX, EDX
+  AND     ECX, 1
+  REP     MOVSW
+  LEA     EAX, [EDI - 2]
+  POP     ESI
+  POP     EDI
 end;
 
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 // copies a specified maximum number of characters from Source to Dest
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     EBX, ECX
-       XOR     AX, AX
-       TEST    ECX, ECX
-       JZ      @@1
-       REPNE   SCASW
-       JNE     @@1
-       INC     ECX
+  PUSH    EDI
+  PUSH    ESI
+  PUSH    EBX
+  MOV     ESI, EAX
+  MOV     EDI, EDX
+  MOV     EBX, ECX
+  XOR     AX, AX
+  TEST    ECX, ECX
+  JZ      @@1
+  REPNE   SCASW
+  JNE     @@1
+  INC     ECX
 @@1:
-       SUB     EBX, ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, EDI
-       MOV     ECX, EBX
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EBX
-       AND     ECX, 1
-       REP     MOVSW
-       STOSW
-       MOV     EAX, EDX
-       POP     EBX
-       POP     ESI
-       POP     EDI
+  SUB     EBX, ECX
+  MOV     EDI, ESI
+  MOV     ESI, EDX
+  MOV     EDX, EDI
+  MOV     ECX, EBX
+  SHR     ECX, 1
+  REP     MOVSD
+  MOV     ECX, EBX
+  AND     ECX, 1
+  REP     MOVSW
+  STOSW
+  MOV     EAX, EDX
+  POP     EBX
+  POP     ESI
+  POP     EDI
 end;
 
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
@@ -5597,19 +5595,20 @@ end;
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
-       PUSH EDI
-       PUSH ESI
-       MOV EDI, EAX
-       MOV ESI, EDX
-       MOV EDX, EAX
-       XOR AX, AX
-@@1:   LODSB
-       STOSW
-       DEC ECX
-       JNZ @@1
-       MOV EAX, EDX
-       POP ESI
-       POP EDI
+  PUSH EDI
+  PUSH ESI
+  MOV EDI, EAX
+  MOV ESI, EDX
+  MOV EDX, EAX
+  XOR AX, AX
+@@1:
+  LODSB
+  STOSW
+  DEC ECX
+  JNZ @@1
+  MOV EAX, EDX
+  POP ESI
+  POP EDI
 end;
 
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
@@ -5623,26 +5622,26 @@ end;
 
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       MOV     EDI, Dest
-       MOV     ESI, Source
-       MOV     EBX, MaxLen
-       SHL     EBX, 1
-       CALL    StrEndW
-       MOV     ECX, EDI
-       ADD     ECX, EBX
-       SUB     ECX, EAX
-       JBE     @@1
-       MOV     EDX, ESI
-       SHR     ECX, 1
-       CALL    StrLCopyW
+  PUSH    EDI
+  PUSH    ESI
+  PUSH    EBX
+  MOV     EDI, Dest
+  MOV     ESI, Source
+  MOV     EBX, MaxLen
+  SHL     EBX, 1
+  CALL    StrEndW
+  MOV     ECX, EDI
+  ADD     ECX, EBX
+  SUB     ECX, EAX
+  JBE     @@1
+  MOV     EDX, ESI
+  SHR     ECX, 1
+  CALL    StrLCopyW
 @@1:
-       MOV     EAX, EDI
-       POP     EBX
-       POP     ESI
-       POP     EDI
+  MOV     EAX, EDI
+  POP     EBX
+  POP     ESI
+  POP     EDI
 end;
 
 const
@@ -5867,22 +5866,22 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
-        PUSH    EDI
-        PUSH    EAX
-        MOV     EDI, Str
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        POP     EDI
-        MOV     AX, Chr
-        REPNE   SCASW
-        MOV     EAX, 0
-        JNE     @@1
-        MOV     EAX, EDI
-        SUB     EAX, 2
+  PUSH    EDI
+  PUSH    EAX
+  MOV     EDI, Str
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  NOT     ECX
+  POP     EDI
+  MOV     AX, Chr
+  REPNE   SCASW
+  MOV     EAX, 0
+  JNE     @@1
+  MOV     EAX, EDI
+  SUB     EAX, 2
 @@1:
-        POP     EDI
+  POP     EDI
 end;
 
 // Returns a pointer to first occurrence of a specified character in a string
@@ -5896,16 +5895,16 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
-       TEST    EAX, EAX
-       JZ      @@Exit        // get out if the string is nil or StrLen is 0
-       JCXZ    @@Exit
+  TEST    EAX, EAX
+  JZ      @@Exit        // get out if the string is nil or StrLen is 0
+  JCXZ    @@Exit
 @@Loop:
-       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
-       JE      @@Exit        // than REP SCASW
-       ADD     EAX, 2
-       DEC     ECX
-       JNZ     @@Loop
-       XOR     EAX, EAX
+  CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
+  JE      @@Exit        // than REP SCASW
+  ADD     EAX, 2
+  DEC     ECX
+  JNZ     @@Loop
+  XOR     EAX, EAX
 @@Exit:
 end;
 
@@ -5913,73 +5912,73 @@ end;
 
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
-       PUSH    EDI
-       MOV     EDI, Str
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       STD
-       SUB     EDI, 2
-       MOV     AX, Chr
-       REPNE   SCASW
-       MOV     EAX, 0
-       JNE     @@1
-       MOV     EAX, EDI
-       ADD     EAX, 2
+  PUSH    EDI
+  MOV     EDI, Str
+  MOV     ECX, 0FFFFFFFFH
+  XOR     AX, AX
+  REPNE   SCASW
+  NOT     ECX
+  STD
+  SUB     EDI, 2
+  MOV     AX, Chr
+  REPNE   SCASW
+  MOV     EAX, 0
+  JNE     @@1
+  MOV     EAX, EDI
+  ADD     EAX, 2
 @@1:
-       CLD
-       POP     EDI
+  CLD
+  POP     EDI
 end;
 
 // returns a pointer to the first occurance of SubStr in Str
 
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       OR      EAX, EAX
-       JZ      @@2
-       OR      EDX, EDX
-       JZ      @@2
-       MOV     EBX, EAX
-       MOV     EDI, EDX
-       XOR     AX, AX
-       MOV     ECX, 0FFFFFFFFH
-       REPNE   SCASW
-       NOT     ECX
-       DEC     ECX
-       JZ      @@2
-       MOV     ESI, ECX
-       MOV     EDI, EBX
-       MOV     ECX, 0FFFFFFFFH
-       REPNE   SCASW
-       NOT     ECX
-       SUB     ECX, ESI
-       JBE     @@2
-       MOV     EDI, EBX
-       LEA     EBX, [ESI - 1]
+  PUSH    EDI
+  PUSH    ESI
+  PUSH    EBX
+  OR      EAX, EAX
+  JZ      @@2
+  OR      EDX, EDX
+  JZ      @@2
+  MOV     EBX, EAX
+  MOV     EDI, EDX
+  XOR     AX, AX
+  MOV     ECX, 0FFFFFFFFH
+  REPNE   SCASW
+  NOT     ECX
+  DEC     ECX
+  JZ      @@2
+  MOV     ESI, ECX
+  MOV     EDI, EBX
+  MOV     ECX, 0FFFFFFFFH
+  REPNE   SCASW
+  NOT     ECX
+  SUB     ECX, ESI
+  JBE     @@2
+  MOV     EDI, EBX
+  LEA     EBX, [ESI - 1]
 @@1:
-       MOV     ESI, EDX
-       LODSW
-       REPNE   SCASW
-       JNE     @@2
-       MOV     EAX, ECX
-       PUSH    EDI
-       MOV     ECX, EBX
-       REPE    CMPSW
-       POP     EDI
-       MOV     ECX, EAX
-       JNE     @@1
-       LEA     EAX, [EDI - 2]
-       JMP     @@3
+  MOV     ESI, EDX
+  LODSW
+  REPNE   SCASW
+  JNE     @@2
+  MOV     EAX, ECX
+  PUSH    EDI
+  MOV     ECX, EBX
+  REPE    CMPSW
+  POP     EDI
+  MOV     ECX, EAX
+  JNE     @@1
+  LEA     EAX, [EDI - 2]
+  JMP     @@3
 @@2:
-       XOR     EAX, EAX
+  XOR     EAX, EAX
 @@3:
-       POP     EBX
-       POP     ESI
-       POP     EDI
+  POP     EBX
+  POP     ESI
+  POP     EDI
 end;
 
 function StrAllocW(WideSize: Cardinal): PWideChar;
@@ -6049,21 +6048,21 @@ end;
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EAX
-       MOV     EDI, ESI
-       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
+  PUSH    ESI
+  PUSH    EDI
+  MOV     ESI, EAX
+  MOV     EDI, ESI
+  XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
 @@1:
-       LODSW
-       OR      EAX, EAX
-       JZ      @@2
-       XCHG    AL, AH
-       STOSW
-       JMP     @@1
+  LODSW
+  OR      EAX, EAX
+  JZ      @@2
+  XCHG    AL, AH
+  STOSW
+  JMP     @@1
 @@2:
-       POP     EDI
-       POP     ESI
+  POP     EDI
+  POP     ESI
 end;
 
 function WideAdjustLineBreaks(const S: WideString): WideString;
@@ -6258,38 +6257,38 @@ end;
 
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
 asm
-       TEST    EAX,EAX        // make sure we are not null
-       JZ      @@StrIsNil
-       DEC     ECX            // make index zero based
-       JL      @@IdxIsSmall
-       PUSH    EBX
-       PUSH    EDI
-       MOV     EDI, EAX       // EDI := S
-       XOR     EAX, EAX
-       MOV     AX, DX         // AX := Ch
-       MOV     EDX, [EDI - 4] // EDX := Length(S) * 2
-       SHR     EDX, 1         // EDX := EDX div 2
-       MOV     EBX, EDX       // save the length to calc. result
-       SUB     EDX, ECX       // EDX = EDX - Index = # of chars to scan
-       JLE     @@IdxIsBig
-       SHL     ECX, 1         // two bytes per char
-       ADD     EDI, ECX       // point to index'th char
-       MOV     ECX, EDX       // loop counter
-       REPNE   SCASW
-       JNE     @@NoMatch
-       MOV     EAX, EBX       // result := saved length -
-       SUB     EAX, ECX       // loop counter value
-       POP     EDI
-       POP     EBX
-       RET
+  TEST    EAX,EAX        // make sure we are not null
+  JZ      @@StrIsNil
+  DEC     ECX            // make index zero based
+  JL      @@IdxIsSmall
+  PUSH    EBX
+  PUSH    EDI
+  MOV     EDI, EAX       // EDI := S
+  XOR     EAX, EAX
+  MOV     AX, DX         // AX := Ch
+  MOV     EDX, [EDI - 4] // EDX := Length(S) * 2
+  SHR     EDX, 1         // EDX := EDX div 2
+  MOV     EBX, EDX       // save the length to calc. result
+  SUB     EDX, ECX       // EDX = EDX - Index = # of chars to scan
+  JLE     @@IdxIsBig
+  SHL     ECX, 1         // two bytes per char
+  ADD     EDI, ECX       // point to index'th char
+  MOV     ECX, EDX       // loop counter
+  REPNE   SCASW
+  JNE     @@NoMatch
+  MOV     EAX, EBX       // result := saved length -
+  SUB     EAX, ECX       // loop counter value
+  POP     EDI
+  POP     EBX
+  RET
 @@IdxIsBig:
 @@NoMatch:
-       XOR     EAX,EAX
-       POP     EDI
-       POP     EBX
-       RET
+  XOR     EAX,EAX
+  POP     EDI
+  POP     EBX
+  RET
 @@IdxIsSmall:
-       XOR     EAX, EAX
+  XOR     EAX, EAX
 @@StrIsNil:
 end;
 
@@ -8390,18 +8389,18 @@ end;
 
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
 asm
-       JECXZ   @@Finish           // go out if there is nothing to do
-       PUSH    ESI
-       MOV     ESI, EAX
-       XOR     EAX, EAX
+  JECXZ   @@Finish           // go out if there is nothing to do
+  PUSH    ESI
+  MOV     ESI, EAX
+  XOR     EAX, EAX
 @@1:
-       MOV     AL, [ESI]
-       INC     ESI
-       MOV     [EDX], AX
-       ADD     EDX, 2
-       DEC     ECX
-       JNZ     @@1
-       POP     ESI
+  MOV     AL, [ESI]
+  INC     ESI
+  MOV     [EDX], AX
+  ADD     EDX, 2
+  DEC     ECX
+  JNZ     @@1
+  POP     ESI
 @@Finish:
 end;
 

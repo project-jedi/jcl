@@ -60,7 +60,8 @@ uses
   ClipBrd, ToolsUtils, JclSysInfo;
 
 resourcestring
-  sWrongWindowsVersion = 'This application is intended for Windows 95/98/2000 only';
+  sWrongWindowsVersion =
+    'This application is intended for Windows 95/98/2000 only';
 
 procedure CheckWindowsVersion;
 begin
@@ -88,7 +89,8 @@ begin
   end;
 end;
 
-procedure TGlobalModule.ListViewToFile(ListView: TListView; const FileName: TFileName);
+procedure TGlobalModule.ListViewToFile(ListView: TListView;
+  const FileName: TFileName);
 var
   S: TStringList;
 begin
@@ -111,7 +113,8 @@ function TGlobalModule.ExecuteSaveDialog(var FileName: TFileName): Boolean;
 begin
   SaveDialog.FileName := ChangeFileExt(FileName, '');
   Result := SaveDialog.Execute;
-  if Result then FileName := SaveDialog.FileName;
+  if Result then
+    FileName := SaveDialog.FileName;
 end;
 
 procedure TGlobalModule.DataModuleCreate(Sender: TObject);

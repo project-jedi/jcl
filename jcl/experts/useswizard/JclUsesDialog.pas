@@ -47,7 +47,8 @@ type
     FErrors: TList;
     function ToggleNode(Node: TTreeNode): Boolean;
   public
-    constructor Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList); reintroduce;
+    constructor Create(AOwner: TComponent; AChangeList: TStrings;
+      Errors: TList); reintroduce;
   end;
 
 implementation
@@ -58,7 +59,8 @@ uses
 
 {$R *.dfm}
 
-constructor TFormUsesConfirm.Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList);
+constructor TFormUsesConfirm.Create(AOwner: TComponent;
+  AChangeList: TStrings; Errors: TList);
 const
   ActionStrings: array [TWizardAction] of string =
     (RsActionSkip, RsActionAdd, RsActionAdd, RsActionMove);
@@ -74,13 +76,14 @@ begin
   for I := 0 to FChangeList.Count - 1 do
   begin
     Node := TreeViewChanges.Items.AddChildObject(nil, Format('%d. %s %s %s',
-      [I + 1, ActionStrings[TWizardAction(FChangeList.Objects[I])], FChangeList[I],
+      [I + 1, ActionStrings[TWizardAction(FChangeList.Objects[I])],
+      FChangeList[I],
       SectionStrings[TWizardAction(FChangeList.Objects[I])]]), Pointer(I));
     for J := 0 to FErrors.Count - 1 do
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then
           with TreeViewChanges.Items.AddChild(Node, Format(RsUndeclIdent,
-            [UnitName, LineNumber, Identifier, UsesName])) do
+              [UnitName, LineNumber, Identifier, UsesName])) do
           begin
             ImageIndex := -1;
             SelectedIndex := -1;
@@ -143,7 +146,8 @@ begin
   end;
 end;
 
-procedure TFormUsesConfirm.TreeViewChangesKeyPress(Sender: TObject; var Key: Char);
+procedure TFormUsesConfirm.TreeViewChangesKeyPress(Sender: TObject;
+  var Key: Char);
 var
   Node: TTreeNode;
 begin

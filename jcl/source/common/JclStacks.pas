@@ -102,7 +102,8 @@ implementation
 
 //=== { TJclIntfStack } ======================================================
 
-constructor TJclIntfStack.Create(ACapacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfStack.Create(ACapacity: Integer =
+  DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;

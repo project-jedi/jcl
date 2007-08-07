@@ -41,12 +41,12 @@ uses
 // Demonstrates creating custom resource item classes
 
 type
-  TJclPeResourceStringItem = class (TJclPeResourceItem)
+  TJclPeResourceStringItem = class(TJclPeResourceItem)
   public
     function GetItemIDString(const ItemID: Word): string;
   end;
 
-  TJclDemoPeBorImage = class (TJclPeBorImage)
+  TJclDemoPeBorImage = class(TJclPeBorImage)
   protected
     function ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
       AParentItem: TJclPeResourceItem): TJclPeResourceItem; override;
@@ -78,7 +78,8 @@ begin
         Exit;
       end;
       Inc(P, Len);
-    end else
+    end
+    else
       Inc(P);
     Inc(Cnt);
   end;
@@ -86,10 +87,12 @@ end;
 
 { TJclDemoPeBorImage }
 
-function TJclDemoPeBorImage.ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
+function TJclDemoPeBorImage.ResourceItemCreate(AEntry:
+  PImageResourceDirectoryEntry;
   AParentItem: TJclPeResourceItem): TJclPeResourceItem;
 begin
-  if (AParentItem <> nil) and (AParentItem.Level = 1) and (AParentItem.ResourceType = rtString) then
+  if (AParentItem <> nil) and (AParentItem.Level = 1) and
+    (AParentItem.ResourceType = rtString) then
     Result := TJclPeResourceStringItem.Create(Self, AParentItem, AEntry)
   else
     Result := inherited ResourceItemCreate(AEntry, AParentItem);
@@ -147,7 +150,8 @@ begin
   if BorImage.IsPackage then
   begin
     LabelCaptionParam(PackageDescrLabel, BorImage.PackageInfo.Description);
-    LabelCaptionParam(PackageVerLabel, IntToStr(BorImage.PackageCompilerVersion));
+    LabelCaptionParam(PackageVerLabel,
+      IntToStr(BorImage.PackageCompilerVersion));
   end
   else
   begin
@@ -172,37 +176,45 @@ begin
     if Res = urOk then
     begin
       Caption := Unmangled;
-      S := Copy(GetEnumName(TypeInfo(TJclBorUmSymbolKind), Integer(Descr.Kind)), 3, 255);
-      if smQualified in Descr.Modifiers then S := S + ' [Q]';
-      if smLinkProc in Descr.Modifiers then S := S + ' [L]';
+      S := Copy(GetEnumName(TypeInfo(TJclBorUmSymbolKind),
+        Integer(Descr.Kind)), 3, 255);
+      if smQualified in Descr.Modifiers then
+        S := S + ' [Q]';
+      if smLinkProc in Descr.Modifiers then
+        S := S + ' [L]';
       SubItems.Add(S);
       case Descr.Kind of
         skRTTI:
-          begin
-            TI := BorImage.ExportList[Index].MappedAddress;
-            SubItems.Add(Copy(GetEnumName(TypeInfo(TTypeKind), Integer(TI^.Kind)), 3, 255));
-            SubItems.Add(TI^.Name);
-            TD := GetTypeData(TI);
-            case TI^.Kind of
-              tkInterface:
-                SubItems.Add(GUIDToString(TD^.Guid));
-              tkMethod:
-                SubItems.Add(GetEnumName(TypeInfo(TMethodKind), Integer(TD^.MethodKind)));
-            end;
+        begin
+          TI := BorImage.ExportList[Index].MappedAddress;
+          SubItems.Add(Copy(GetEnumName(TypeInfo(TTypeKind),
+            Integer(TI^.Kind)), 3, 255));
+          SubItems.Add(TI^.Name);
+          TD := GetTypeData(TI);
+          case TI^.Kind of
+            tkInterface:
+              SubItems.Add(GUIDToString(TD^.Guid));
+            tkMethod:
+              SubItems.Add(GetEnumName(TypeInfo(TMethodKind),
+                Integer(TD^.MethodKind)));
           end;
+        end;
         skData:
-          begin
-            SectionName := BorImage.ExportList[Index].SectionName;
-            SubItems.Add(SectionName);
-            if (smQualified in Descr.Modifiers) and (SectionName = 'CODE') then
-            begin // Exported data in CODE section are resourcestrings
-              ResString := BorImage.ExportList[Index].MappedAddress;
-              SubItems.Add(Format('ResString ID: %d', [ResString^.Identifier]));
-              SubItems.Add(TJclDemoPeBorImage(BorImage).ResourceStringValue(ResString^.Identifier));
-            end;
+        begin
+          SectionName := BorImage.ExportList[Index].SectionName;
+          SubItems.Add(SectionName);
+          if (smQualified in Descr.Modifiers) and (SectionName = 'CODE') then
+          begin // Exported data in CODE section are resourcestrings
+            ResString := BorImage.ExportList[Index].MappedAddress;
+            SubItems.Add(Format('ResString ID: %d',
+              [ResString^.Identifier]));
+            SubItems.Add(TJclDemoPeBorImage(BorImage).ResourceStringValue(
+              ResString^.Identifier));
           end;
+        end;
       end;
-    end else
+    end
+    else
     begin // Not mangled or Microsoft compiler
       PeUnmangleName(OriginalName, Unmangled);
       Caption := Unmangled;
@@ -211,7 +223,8 @@ begin
   end;
 end;
 
-class procedure TForm1.LabelCaptionParam(Lbl: TLabel; const StringParam: string);
+class procedure TForm1.LabelCaptionParam(Lbl: TLabel;
+  const StringParam: string);
 var
   I: Integer;
 begin

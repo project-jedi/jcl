@@ -98,7 +98,8 @@ begin
       if Exponent = 0 then
         S := Mantissa
       else
-        S := Format('%s %s %d^%d', [Mantissa, FNumFormat.Multiplier, Base, Exponent]);
+        S := Format('%s %s %d^%d', [Mantissa, FNumFormat.Multiplier,
+          Base, Exponent]);
       Output.Lines.Add(Format('Base %2d: %s', [Base, S]));
     end;
     C.Line := 0;
@@ -116,7 +117,7 @@ end;
 
 procedure TMainForm.RandBtnClick(Sender: TObject);
 begin
-  ValueEdit.Text := FloatToStr(Power(Random * 4 -2, Random(400)));
+  ValueEdit.Text := FloatToStr(Power(Random * 4 - 2, Random(400)));
   EvalBtn.Enabled := False;
   Display;
 end;

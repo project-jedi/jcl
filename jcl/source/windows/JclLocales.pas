@@ -68,7 +68,8 @@ type
     FValidDateFormatLists: set of TJclLocaleDateFormats;
     FValidTimeFormatLists: Boolean;
     function GetCalendars: TStrings;
-    function GetCalendarIntegerInfo(Calendar: CALID; InfoType: Integer): Integer;
+    function GetCalendarIntegerInfo(Calendar: CALID;
+      InfoType: Integer): Integer;
     function GetCalendarStringInfo(Calendar: CALID; InfoType: Integer): string;
     function GetIntegerInfo(InfoType: Integer): Integer;
     function GetStringInfo(InfoType: Integer): string;
@@ -92,9 +93,12 @@ type
   public
     constructor Create(ALocaleID: LCID = LOCALE_SYSTEM_DEFAULT);
     destructor Destroy; override;
-    property CharInfo[InfoType: Integer]: Char read GetCharInfo write SetCharInfo;
-    property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo write SetIntegerInfo;
-    property StringInfo[InfoType: Integer]: string read GetStringInfo write SetStringInfo; default;
+    property CharInfo[InfoType: Integer]: Char
+      read GetCharInfo write SetCharInfo;
+    property IntegerInfo[InfoType: Integer]: Integer
+      read GetIntegerInfo write SetIntegerInfo;
+    property StringInfo[InfoType: Integer]: string
+      read GetStringInfo write SetStringInfo; default;
     property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
     property FontCharset: Byte read GetFontCharset;
     property LangID: LANGID read GetLangID;
@@ -102,97 +106,171 @@ type
     property LangIDPrimary: Word read GetLangIDPrimary;
     property LangIDSub: Word read GetLangIDSub;
     property SortID: Word read GetSortID;
-    property DateFormats[Format: TJclLocaleDateFormats]: TStrings read GetDateFormats;
+    property DateFormats[Format: TJclLocaleDateFormats]: TStrings
+      read GetDateFormats;
     property TimeFormats: TStrings read GetTimeFormats;
     // Languages
-    property LanguageIndentifier: string index LOCALE_ILANGUAGE read GetStringInfo;
-    property LocalizedLangName: string index LOCALE_SLANGUAGE read GetStringInfo;
-    property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
-    property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME read GetStringInfo;
-    property NativeLangName: string index LOCALE_SNATIVELANGNAME read GetStringInfo;
-    property ISOAbbreviatedLangName: string index LOCALE_SISO639LANGNAME read GetStringInfo;
+    property LanguageIndentifier: string index LOCALE_ILANGUAGE
+      read GetStringInfo;
+    property LocalizedLangName: string index LOCALE_SLANGUAGE
+      read GetStringInfo;
+    property EnglishLangName: string index LOCALE_SENGLANGUAGE
+      read GetStringInfo;
+    property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME
+      read GetStringInfo;
+    property NativeLangName: string index LOCALE_SNATIVELANGNAME
+      read GetStringInfo;
+    property ISOAbbreviatedLangName: string index LOCALE_SISO639LANGNAME
+      read GetStringInfo;
     // Countries
     property CountryCode: Integer index LOCALE_ICOUNTRY read GetIntegerInfo;
-    property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
-    property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
-    property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
-    property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
-    property ISOAbbreviatedCountryName: string index LOCALE_SISO3166CTRYNAME read GetStringInfo;
+    property LocalizedCountryName: string index LOCALE_SCOUNTRY
+      read GetStringInfo;
+    property EnglishCountryName: string index LOCALE_SENGCOUNTRY
+      read GetStringInfo;
+    property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME
+      read GetStringInfo;
+    property NativeCountryName: string index LOCALE_SNATIVECTRYNAME
+      read GetStringInfo;
+    property ISOAbbreviatedCountryName: string index LOCALE_SISO3166CTRYNAME
+      read GetStringInfo;
     // Codepages
-    property DefaultLanguageId: Integer index LOCALE_IDEFAULTLANGUAGE read GetIntegerInfo;
-    property DefaultCountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
-    property DefaultCodePageEBCDIC: Integer index LOCALE_IDEFAULTEBCDICCODEPAGE read GetIntegerInfo;
-    property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
-    property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE read GetIntegerInfo;
-    property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE read GetIntegerInfo;
+    property DefaultLanguageId: Integer index LOCALE_IDEFAULTLANGUAGE
+      read GetIntegerInfo;
+    property DefaultCountryCode: Integer index LOCALE_IDEFAULTCOUNTRY
+      read GetIntegerInfo;
+    property DefaultCodePageEBCDIC: Integer index
+      LOCALE_IDEFAULTEBCDICCODEPAGE
+      read GetIntegerInfo;
+    property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE
+      read GetIntegerInfo;
+    property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE
+      read GetIntegerInfo;
+    property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE
+      read GetIntegerInfo;
     // Digits
-    property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo write SetCharInfo;
-    property Measure: Integer index LOCALE_IMEASURE read GetIntegerInfo write SetIntegerInfo;
-    property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo write SetCharInfo;
-    property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo write SetCharInfo;
-    property DigitGrouping: string index LOCALE_SGROUPING read GetStringInfo write SetStringInfo;
-    property NumberOfFractionalDigits: Integer index LOCALE_IDIGITS read GetIntegerInfo write SetIntegerInfo;
-    property LeadingZeros: Integer index LOCALE_ILZERO read GetIntegerInfo write SetIntegerInfo;
-    property NegativeNumberMode: Integer index LOCALE_INEGNUMBER read GetIntegerInfo write SetIntegerInfo;
-    property NativeDigits: string index LOCALE_SNATIVEDIGITS read GetStringInfo;
-    property DigitSubstitution: Integer index LOCALE_IDIGITSUBSTITUTION read GetIntegerInfo;
+    property ListItemSeparator: Char index LOCALE_SLIST
+      read GetCharInfo write SetCharInfo;
+    property Measure: Integer index LOCALE_IMEASURE
+      read GetIntegerInfo write SetIntegerInfo;
+    property DecimalSeparator: Char index LOCALE_SDECIMAL
+      read GetCharInfo write SetCharInfo;
+    property ThousandSeparator: Char index LOCALE_STHOUSAND
+      read GetCharInfo write SetCharInfo;
+    property DigitGrouping: string index LOCALE_SGROUPING
+      read GetStringInfo write SetStringInfo;
+    property NumberOfFractionalDigits: Integer index LOCALE_IDIGITS
+      read GetIntegerInfo write SetIntegerInfo;
+    property LeadingZeros: Integer index LOCALE_ILZERO
+      read GetIntegerInfo write SetIntegerInfo;
+    property NegativeNumberMode: Integer index LOCALE_INEGNUMBER
+      read GetIntegerInfo write SetIntegerInfo;
+    property NativeDigits: string index LOCALE_SNATIVEDIGITS
+      read GetStringInfo;
+    property DigitSubstitution: Integer index LOCALE_IDIGITSUBSTITUTION
+      read GetIntegerInfo;
     // Monetary
-    property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo write SetStringInfo;
-    property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL read GetStringInfo;
-    property MonetaryDecimalSeparator: Char index LOCALE_SMONDECIMALSEP read GetCharInfo write SetCharInfo;
-    property MonetaryThousandsSeparator: Char index LOCALE_SMONTHOUSANDSEP read GetCharInfo write SetCharInfo;
-    property MonetaryGrouping: string index LOCALE_SMONGROUPING read GetStringInfo write SetStringInfo;
-    property NumberOfLocalMonetaryDigits: Integer index LOCALE_ICURRDIGITS read GetIntegerInfo write SetIntegerInfo;
-    property NumberOfIntlMonetaryDigits: Integer index LOCALE_IINTLCURRDIGITS read GetIntegerInfo;
-    property PositiveCurrencyMode: string index LOCALE_ICURRENCY read GetStringInfo write SetStringInfo;
-    property NegativeCurrencyMode: string index LOCALE_INEGCURR read GetStringInfo write SetStringInfo;
-    property EnglishCurrencyName: string index LOCALE_SENGCURRNAME read GetStringInfo;
-    property NativeCurrencyName: string index LOCALE_SNATIVECURRNAME read GetStringInfo;
+    property MonetarySymbolLocal: string index LOCALE_SCURRENCY
+      read GetStringInfo write SetStringInfo;
+    property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL
+      read GetStringInfo;
+    property MonetaryDecimalSeparator: Char index LOCALE_SMONDECIMALSEP
+      read GetCharInfo write SetCharInfo;
+    property MonetaryThousandsSeparator: Char index LOCALE_SMONTHOUSANDSEP
+      read GetCharInfo write SetCharInfo;
+    property MonetaryGrouping: string index LOCALE_SMONGROUPING
+      read GetStringInfo write SetStringInfo;
+    property NumberOfLocalMonetaryDigits: Integer index LOCALE_ICURRDIGITS
+      read GetIntegerInfo write SetIntegerInfo;
+    property NumberOfIntlMonetaryDigits: Integer index LOCALE_IINTLCURRDIGITS
+      read GetIntegerInfo;
+    property PositiveCurrencyMode: string index LOCALE_ICURRENCY
+      read GetStringInfo write SetStringInfo;
+    property NegativeCurrencyMode: string index LOCALE_INEGCURR
+      read GetStringInfo write SetStringInfo;
+    property EnglishCurrencyName: string index LOCALE_SENGCURRNAME
+      read GetStringInfo;
+    property NativeCurrencyName: string index LOCALE_SNATIVECURRNAME
+      read GetStringInfo;
     // Date and time
-    property DateSeparator: Char index LOCALE_SDATE read GetCharInfo write SetCharInfo;
-    property TimeSeparator: Char index LOCALE_STIME read GetCharInfo write SetCharInfo;
-    property ShortDateFormat: string index LOCALE_SSHORTDATE read GetStringInfo write SetStringInfo;
-    property LongDateFormat: string index LOCALE_SLONGDATE read GetStringInfo write SetStringInfo;
-    property TimeFormatString: string index LOCALE_STIMEFORMAT read GetStringInfo write SetStringInfo;
+    property DateSeparator: Char index LOCALE_SDATE
+      read GetCharInfo write SetCharInfo;
+    property TimeSeparator: Char index LOCALE_STIME
+      read GetCharInfo write SetCharInfo;
+    property ShortDateFormat: string index LOCALE_SSHORTDATE
+      read GetStringInfo write SetStringInfo;
+    property LongDateFormat: string index LOCALE_SLONGDATE
+      read GetStringInfo write SetStringInfo;
+    property TimeFormatString: string index LOCALE_STIMEFORMAT
+      read GetStringInfo write SetStringInfo;
     property ShortDateOrdering: Integer index LOCALE_IDATE read GetIntegerInfo;
     property LongDateOrdering: Integer index LOCALE_ILDATE read GetIntegerInfo;
-    property TimeFormatSpecifier: Integer index LOCALE_ITIME read GetIntegerInfo write SetIntegerInfo;
-    property TimeMarkerPosition: Integer index LOCALE_ITIMEMARKPOSN read GetIntegerInfo;
-    property CenturyFormatSpecifier: Integer index LOCALE_ICENTURY read GetIntegerInfo;
+    property TimeFormatSpecifier: Integer index LOCALE_ITIME
+      read GetIntegerInfo write SetIntegerInfo;
+    property TimeMarkerPosition: Integer index LOCALE_ITIMEMARKPOSN
+      read GetIntegerInfo;
+    property CenturyFormatSpecifier: Integer index LOCALE_ICENTURY
+      read GetIntegerInfo;
     property LeadZerosInTime: Integer index LOCALE_ITLZERO read GetIntegerInfo;
-    property LeadZerosInDay: Integer index LOCALE_IDAYLZERO read GetIntegerInfo;
-    property LeadZerosInMonth: Integer index LOCALE_IMONLZERO read GetIntegerInfo;
-    property AMDesignator: string index LOCALE_S1159 read GetStringInfo write SetStringInfo;
-    property PMDesignator: string index LOCALE_S2359 read GetStringInfo write SetStringInfo;
-    property YearMonthFormat: string index LOCALE_SYEARMONTH read GetStringInfo write SetStringInfo;
+    property LeadZerosInDay: Integer index LOCALE_IDAYLZERO
+      read GetIntegerInfo;
+    property LeadZerosInMonth: Integer index LOCALE_IMONLZERO
+      read GetIntegerInfo;
+    property AMDesignator: string index LOCALE_S1159
+      read GetStringInfo write SetStringInfo;
+    property PMDesignator: string index LOCALE_S2359
+      read GetStringInfo write SetStringInfo;
+    property YearMonthFormat: string index LOCALE_SYEARMONTH
+      read GetStringInfo write SetStringInfo;
     // Calendar
-    property CalendarType: Integer index LOCALE_ICALENDARTYPE read GetIntegerInfo write SetIntegerInfo;
-    property AdditionalCaledarTypes: Integer index LOCALE_IOPTIONALCALENDAR read GetIntegerInfo;
-    property FirstDayOfWeek: Integer index LOCALE_IFIRSTDAYOFWEEK read GetIntegerInfo write SetIntegerInfo;
-    property FirstWeekOfYear: Integer index LOCALE_IFIRSTWEEKOFYEAR read GetIntegerInfo write SetIntegerInfo;
+    property CalendarType: Integer index LOCALE_ICALENDARTYPE
+      read GetIntegerInfo write SetIntegerInfo;
+    property AdditionalCaledarTypes: Integer index LOCALE_IOPTIONALCALENDAR
+      read GetIntegerInfo;
+    property FirstDayOfWeek: Integer index LOCALE_IFIRSTDAYOFWEEK
+      read GetIntegerInfo write SetIntegerInfo;
+    property FirstWeekOfYear: Integer index LOCALE_IFIRSTWEEKOFYEAR
+      read GetIntegerInfo write SetIntegerInfo;
     // Day and month names
     property LongDayNames[Day: TJclLocalesDays]: string read GetLongDayNames;
-    property AbbreviatedDayNames[Day: TJclLocalesDays]: string read GetAbbreviatedDayNames;
-    property LongMonthNames[Month: TJclLocalesMonths]: string read GetLongMonthNames;
-    property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string read GetAbbreviatedMonthNames;
+    property AbbreviatedDayNames[Day: TJclLocalesDays]: string
+      read GetAbbreviatedDayNames;
+    property LongMonthNames[Month: TJclLocalesMonths]: string
+      read GetLongMonthNames;
+    property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string
+      read GetAbbreviatedMonthNames;
     // Sign
-    property PositiveSign: string index LOCALE_SPOSITIVESIGN read GetStringInfo write SetStringInfo;
-    property NegativeSign: string index LOCALE_SNEGATIVESIGN read GetStringInfo write SetStringInfo;
-    property PositiveSignPos: Integer index LOCALE_IPOSSIGNPOSN read GetIntegerInfo;
-    property NegativeSignPos: Integer index LOCALE_INEGSIGNPOSN read GetIntegerInfo;
-    property PosOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSYMPRECEDES read GetIntegerInfo;
-    property SepOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSEPBYSPACE read GetIntegerInfo;
-    property PosOfNegativeMonetarySymbol: Integer index LOCALE_INEGSYMPRECEDES read GetIntegerInfo;
-    property SepOfNegativeMonetarySymbol: Integer index LOCALE_INEGSEPBYSPACE read GetIntegerInfo;
+    property PositiveSign: string index LOCALE_SPOSITIVESIGN
+      read GetStringInfo write SetStringInfo;
+    property NegativeSign: string index LOCALE_SNEGATIVESIGN
+      read GetStringInfo write SetStringInfo;
+    property PositiveSignPos: Integer index LOCALE_IPOSSIGNPOSN
+      read GetIntegerInfo;
+    property NegativeSignPos: Integer index LOCALE_INEGSIGNPOSN
+      read GetIntegerInfo;
+    property PosOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSYMPRECEDES
+      read GetIntegerInfo;
+    property SepOfPositiveMonetarySymbol: Integer index LOCALE_IPOSSEPBYSPACE
+      read GetIntegerInfo;
+    property PosOfNegativeMonetarySymbol: Integer index LOCALE_INEGSYMPRECEDES
+      read GetIntegerInfo;
+    property SepOfNegativeMonetarySymbol: Integer index LOCALE_INEGSEPBYSPACE
+      read GetIntegerInfo;
     // Misc
-    property DefaultPaperSize: Integer index LOCALE_IPAPERSIZE read GetIntegerInfo;
-    property FontSignature: string index LOCALE_FONTSIGNATURE read GetStringInfo;
-    property LocalizedSortName: string index LOCALE_SSORTNAME read GetStringInfo;
+    property DefaultPaperSize: Integer index LOCALE_IPAPERSIZE
+      read GetIntegerInfo;
+    property FontSignature: string index LOCALE_FONTSIGNATURE
+      read GetStringInfo;
+    property LocalizedSortName: string index LOCALE_SSORTNAME
+      read GetStringInfo;
     // Calendar Info
     property Calendars: TStrings read GetCalendars;
-    property CalendarIntegerInfo[Calendar: CALID; InfoType: Integer]: Integer read GetCalendarIntegerInfo;
-    property CalendarStringInfo[Calendar: CALID; InfoType: Integer]: string read GetCalendarStringInfo;
-    property CalTwoDigitYearMax[Calendar: CALID]: Integer read GetCalTwoDigitYearMax;
+    property CalendarIntegerInfo[Calendar: CALID;
+      InfoType: Integer]: Integer read GetCalendarIntegerInfo;
+    property CalendarStringInfo[Calendar: CALID;
+      InfoType: Integer]: string read GetCalendarStringInfo;
+    property CalTwoDigitYearMax[Calendar: CALID]: Integer
+      read GetCalTwoDigitYearMax;
   end;
 
   TJclLocalesKind = (lkInstalled, lkSupported);
@@ -213,9 +291,12 @@ type
     destructor Destroy; override;
     procedure FillStrings(Strings: TStrings; InfoType: Integer);
     property CodePages: TStrings read GetCodePages;
-    property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
-    property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
-    property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo read GetItemFromLocaleID;
+    property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo
+      read GetItemFromLangID;
+    property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo
+      read GetItemFromLangIDPrimary;
+    property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo
+      read GetItemFromLocaleID;
     property Items[Index: Integer]: TJclLocaleInfo read GetItems; default;
     property Kind: TJclLocalesKind read FKind;
   end;
@@ -288,22 +369,28 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
-    function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
-    function LoadLayout(const LayoutName: string; LoadFlags: TJclKeybLayoutFlags): Boolean;
+    function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags =
+      []): Boolean;
+    function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags =
+      []): Boolean;
+    function LoadLayout(const LayoutName: string;
+      LoadFlags: TJclKeybLayoutFlags): Boolean;
     procedure Refresh;
     property ActiveLayout: TJclKeyboardLayout read GetActiveLayout;
-    property AvailableLayouts[Index: Integer]: TJclAvailableKeybLayout read GetAvailableLayouts;
+    property AvailableLayouts[Index: Integer]: TJclAvailableKeybLayout
+      read GetAvailableLayouts;
     property AvailableLayoutCount: Integer read GetAvailableLayoutCount;
     property Count: Integer read GetCount;
     property ItemFromHKL[Layout: HKL]: TJclKeyboardLayout read GetItemFromHKL;
     property Items[Index: Integer]: TJclKeyboardLayout read GetItems; default;
-    property LayoutFromLocaleID[LocaleID: Word]: TJclKeyboardLayout read GetLayoutFromLocaleID;
+    property LayoutFromLocaleID[LocaleID: Word]: TJclKeyboardLayout
+      read GetLayoutFromLocaleID;
     property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
   end;
 
 // Various routines
-procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE_SENGCOUNTRY);
+procedure JclLocalesInfoList(const Strings: TStrings;
+  InfoType: Integer = LOCALE_SENGCOUNTRY);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -381,7 +468,8 @@ begin
   Result := GetStringInfo(LOCALE_SABBREVDAYNAME1 + Day - 1);
 end;
 
-function TJclLocaleInfo.GetAbbreviatedMonthNames(Month: TJclLocalesMonths): string;
+function TJclLocaleInfo.GetAbbreviatedMonthNames(
+  Month: TJclLocalesMonths): string;
 var
   Param: DWORD;
 begin
@@ -390,20 +478,24 @@ begin
       Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
     13:
       Param := LOCALE_SABBREVMONTHNAME13;
-  else
-    raise ERangeError.CreateRes(@SRangeError);
+    else
+      raise ERangeError.CreateRes(@SRangeError);
   end;
   Result := GetStringInfo(Param);
 end;
 
-function TJclLocaleInfo.GetCalendarIntegerInfo(Calendar: CALID; InfoType: Integer): Integer;
+function TJclLocaleInfo.GetCalendarIntegerInfo(Calendar: CALID;
+  InfoType: Integer): Integer;
 var
   Ret: DWORD;
 begin
-  InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]) or CAL_RETURN_NUMBER;
-  Ret := JclWin32.RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+  InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]) or
+    CAL_RETURN_NUMBER;
+  Ret := JclWin32.RtdlGetCalendarInfoW(FLocaleID, Calendar,
+    InfoType, nil, 0, @Result);
   if Ret = 0 then
-    Ret := JclWin32.RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+    Ret := JclWin32.RtdlGetCalendarInfoA(FLocaleID, Calendar,
+      InfoType, nil, 0, @Result);
   if Ret = 0 then
     Result := 0;
 end;
@@ -413,7 +505,8 @@ begin
   Result := GetCalendarIntegerInfo(Calendar, CAL_ITWODIGITYEARMAX);
 end;
 
-function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar;
+  Calendar: CALID): BOOL; stdcall;
 begin
   ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
   Result := True;
@@ -439,8 +532,10 @@ begin
     ProcessedLocaleInfoList := FCalendars;
     try
       C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
-      if not JclWin32.RtdlEnumCalendarInfoExA(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
-        Windows.EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
+      if not JclWin32.RtdlEnumCalendarInfoExA(EnumCalendarInfoProcEx,
+        FLocaleID, ENUM_ALL_CALENDARS, C) then
+        Windows.EnumCalendarInfo(@EnumCalendarInfoProcName,
+          FLocaleID, ENUM_ALL_CALENDARS, C);
       FValidCalendars := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -449,7 +544,8 @@ begin
   Result := FCalendars;
 end;
 
-function TJclLocaleInfo.GetCalendarStringInfo(Calendar: CALID; InfoType: Integer): string;
+function TJclLocaleInfo.GetCalendarStringInfo(Calendar: CALID;
+  InfoType: Integer): string;
 var
   Buffer: Pointer;
   BufferSize: Integer;
@@ -462,9 +558,11 @@ begin
     BufferSize := 128;
     repeat
       ReallocMem(Buffer, BufferSize);
-      Ret := RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+      Ret := RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType,
+        Buffer, BufferSize, nil);
       if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
-        BufferSize := RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, 0, nil) * 2;
+        BufferSize := RtdlGetCalendarInfoW(FLocaleID, Calendar,
+          InfoType, Buffer, 0, nil) * 2;
     until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     if Ret > 0 then
       Result := PWideChar(Buffer)
@@ -473,9 +571,11 @@ begin
       BufferSize := 64;
       repeat
         ReallocMem(Buffer, BufferSize);
-        Ret := RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+        Ret := RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType,
+          Buffer, BufferSize, nil);
         if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
-          BufferSize := RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, 0, nil);
+          BufferSize := RtdlGetCalendarInfoA(FLocaleID, Calendar,
+            InfoType, Buffer, 0, nil);
       until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       if Ret > 0 then
         Result := PChar(Buffer);
@@ -496,7 +596,8 @@ begin
     Result := ' ';
 end;
 
-function TJclLocaleInfo.GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
+function TJclLocaleInfo.GetDateFormats(Format: TJclLocaleDateFormats):
+TStrings;
 const
   DateFormats: array [TJclLocaleDateFormats] of DWORD =
     (DATE_SHORTDATE, DATE_LONGDATE, DATE_YEARMONTH);
@@ -516,7 +617,8 @@ begin
       FDateFormats[Format].Clear;
     ProcessedLocaleInfoList := FDateFormats[Format];
     try
-      Windows.EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
+      Windows.EnumDateFormats(@EnumDateFormatsProc, FLocaleID,
+        DateFormats[Format] or
         LocaleUseAcp[FUseSystemACP]);
       Include(FValidDateFormatLists, Format);
     finally
@@ -534,7 +636,7 @@ type
   end;
 const
   CharsetTable: array [1..10] of TCharsetEntry =
-   (
+    (
     (CodePage: 1252; Charset: ANSI_CHARSET),
     (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
     (CodePage: 1251; Charset: RUSSIAN_CHARSET),
@@ -543,9 +645,9 @@ const
     (CodePage: 1255; Charset: HEBREW_CHARSET),
     (CodePage: 1256; Charset: ARABIC_CHARSET),
     (CodePage: 1257; Charset: BALTIC_CHARSET),
-    (CodePage:  874; Charset: THAI_CHARSET),
-    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-   );
+    (CodePage: 874; Charset: THAI_CHARSET),
+    (CodePage: 932; Charset: SHIFTJIS_CHARSET)
+    );
 var
   I, CpANSI: Integer;
 begin
@@ -648,7 +750,8 @@ begin
       FTimeFormats.Clear;
     ProcessedLocaleInfoList := FTimeFormats;
     try
-      Windows.EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
+      Windows.EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID,
+        LocaleUseAcp[FUseSystemACP]);
       FValidTimeFormatLists := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -662,7 +765,8 @@ begin
   SetStringInfo(InfoType, Value);
 end;
 
-procedure TJclLocaleInfo.SetIntegerInfo(InfoType: Integer; const Value: Integer);
+procedure TJclLocaleInfo.SetIntegerInfo(InfoType: Integer;
+  const Value: Integer);
 begin
   SetStringInfo(InfoType, IntToStr(Value));
 end;
@@ -715,7 +819,8 @@ const
 
   function EnumCodePagesProc(lpCodePageString: LPSTR): BOOL; stdcall;
   begin
-    ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
+    ProcessedLocalesList.CodePages.AddObject(lpCodePageString,
+      Pointer(StrToIntDef(lpCodePageString, 0)));
     DWORD(Result) := 1;
   end;
 
@@ -761,7 +866,8 @@ begin
     end;
 end;
 
-function TJclLocalesList.GetItemFromLangIDPrimary(LangIDPrimary: Word): TJclLocaleInfo;
+function TJclLocalesList.GetItemFromLangIDPrimary(LangIDPrimary: Word):
+TJclLocaleInfo;
 var
   I: Integer;
 begin
@@ -804,14 +910,16 @@ begin
   Result := FileExists(PathAddSeparator(GetWindowsSystemFolder) + LayoutFile);
 end;
 
-function TJclAvailableKeybLayout.Load(const LoadFlags: TJclKeybLayoutFlags): Boolean;
+function TJclAvailableKeybLayout.Load(
+  const LoadFlags: TJclKeybLayoutFlags): Boolean;
 begin
   Result := FOwner.LoadLayout(IdentifierName, LoadFlags);
 end;
 
 //=== { TJclKeyboardLayout } =================================================
 
-constructor TJclKeyboardLayout.Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
+constructor TJclKeyboardLayout.Create(AOwner: TJclKeyboardLayoutList;
+  ALayout: HKL);
 begin
   inherited Create;
   FLayout := ALayout;
@@ -824,9 +932,11 @@ begin
   inherited Destroy;
 end;
 
-function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
+function TJclKeyboardLayout.Activate(ActivateFlags:
+  TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(FLayout,
+    KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 function TJclKeyboardLayout.GetDeviceHandle: Word;
@@ -866,7 +976,8 @@ begin
   with FOwner do
     for I := 0 to AvailableLayoutCount - 1 do
       with AvailableLayouts[I] do
-        if (LoWord(Identifier) = LoWord(Ident)) and (LayoutID = HiWord(Ident)) then
+        if (LoWord(Identifier) = LoWord(Ident)) and
+          (LayoutID = HiWord(Ident)) then
         begin
           Result := Name;
           Break;
@@ -897,15 +1008,18 @@ begin
   inherited Destroy;
 end;
 
-function TJclKeyboardLayoutList.ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags): Boolean;
+function TJclKeyboardLayoutList.ActivateNextLayout(ActivateFlags:
+  TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(HKL_NEXT,
+    KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(HKL_PREV,
+    KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 // Documentation:
@@ -939,9 +1053,12 @@ begin
       Item := TJclAvailableKeybLayout.Create;
       Item.FOwner := Self;
       Item.FIdentifier := StrToIntDef('$' + KeyNames[I], 0);
-      Item.FName := RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout Text', '');
-      Item.FLayoutFile := RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout File', '');
-      Item.FLayoutID := StrToIntDef('$' + RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout Id', ''), 0);
+      Item.FName := RegReadStringDef(HKEY_LOCAL_MACHINE, Layout,
+        'Layout Text', '');
+      Item.FLayoutFile := RegReadStringDef(HKEY_LOCAL_MACHINE,
+        Layout, 'Layout File', '');
+      Item.FLayoutID := StrToIntDef('$' +
+        RegReadStringDef(HKEY_LOCAL_MACHINE, Layout, 'Layout Id', ''), 0);
       FAvailableLayouts.Add(Item);
     end;
   finally
@@ -965,7 +1082,8 @@ begin
   Result := FAvailableLayouts.Count;
 end;
 
-function TJclKeyboardLayoutList.GetAvailableLayouts(Index: Integer): TJclAvailableKeybLayout;
+function TJclKeyboardLayoutList.GetAvailableLayouts(Index: Integer):
+TJclAvailableKeybLayout;
 begin
   Result := TJclAvailableKeybLayout(FAvailableLayouts[Index]);
 end;
@@ -975,7 +1093,8 @@ begin
   Result := FList.Count;
 end;
 
-function TJclKeyboardLayoutList.GetItemFromHKL(Layout: HKL): TJclKeyboardLayout;
+function TJclKeyboardLayoutList.GetItemFromHKL(Layout: HKL):
+TJclKeyboardLayout;
 var
   I: Integer;
 begin
@@ -993,7 +1112,8 @@ begin
   Result := TJclKeyboardLayout(FList[Index]);
 end;
 
-function TJclKeyboardLayoutList.GetLayoutFromLocaleID(LocaleID: Word): TJclKeyboardLayout;
+function TJclKeyboardLayoutList.GetLayoutFromLocaleID(LocaleID: Word):
+TJclKeyboardLayout;
 var
   I: Integer;
 begin
@@ -1039,11 +1159,11 @@ end;
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
   with TJclLocalesList.Create(lkInstalled) do
-  try
-    FillStrings(Strings, InfoType);
-  finally
-    Free;
-  end;
+    try
+      FillStrings(Strings, InfoType);
+    finally
+      Free;
+    end;
 end;
 
 {$IFDEF UNITVERSIONING}

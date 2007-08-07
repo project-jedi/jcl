@@ -31,7 +31,7 @@ uses
   JclQGraphics,
   {$ENDIF VisualCLX}
   {$IFDEF HasShellCtrls}
-    {$WARN UNIT_PLATFORM OFF} 
+    {$WARN UNIT_PLATFORM OFF}
   ShellCtrls,
   {$ENDIF HasShellCtrls}
   JclFileUtils;
@@ -101,8 +101,10 @@ type
     FStretchTime: LongWord;
     FPreserveAspectRatio: Boolean;
     FResamplingFilter: TResamplingFilter;
-    procedure AddToFileList(const Directory: string; const FileInfo: TSearchRec);
-    procedure FileSearchTerminated(const ID: TFileSearchTaskID; const Aborted: Boolean);
+    procedure AddToFileList(const Directory: string;
+      const FileInfo: TSearchRec);
+    procedure FileSearchTerminated(const ID: TFileSearchTaskID;
+      const Aborted: Boolean);
     function ChangeDirectory: Boolean;
     procedure DoStretch;
     procedure LoadFile(const AFileName: string);
@@ -118,7 +120,8 @@ type
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DropFiles;
     {$ENDIF VCL}
   protected
-    property FileListIndex: Integer read GetFileListIndex write SetFileListIndex;
+    property FileListIndex: Integer read GetFileListIndex
+      write SetFileListIndex;
     property FileName: string read FFileName write SetFileName;
   end;
 
@@ -139,9 +142,10 @@ var
 
 {$IFDEF MSWINDOWS}
 type
-  TWMDropFilesCallback = procedure (const FileName: string) of object;
+  TWMDropFilesCallback = procedure(const FileName: string) of object;
 
-procedure ProcessWMDropFiles(var Msg: TWMDropFiles; Callback: TWMDropFilesCallback; DropPoint: PPoint = nil); overload;
+procedure ProcessWMDropFiles(var Msg: TWMDropFiles;
+  Callback: TWMDropFilesCallback; DropPoint: PPoint = nil); overload;
 var
   i: Integer;
   FileName: array[0..MAX_PATH] of Char;
@@ -162,7 +166,8 @@ begin
   end;
 end;
 
-procedure ProcessWMDropFiles(var Msg: TWMDropFiles; FileNames: TStrings; DropPoint: PPoint = nil); overload;
+procedure ProcessWMDropFiles(var Msg: TWMDropFiles; FileNames: TStrings;
+  DropPoint: PPoint = nil); overload;
 begin
   ProcessWMDropFiles(Msg, FileNames.Append, DropPoint);
 end;
@@ -176,7 +181,8 @@ begin
   Result := (Pos(Ext, FileMask) > 0);
 end;
 
-function IsGraphicFile(const Attr: Integer; const FileInfo: TSearchRec): Boolean; overload;
+function IsGraphicFile(const Attr: Integer;
+  const FileInfo: TSearchRec): Boolean; overload;
 begin
   Result := IsGraphicFile(FileInfo.Name);
 end;
@@ -201,23 +207,23 @@ begin
     WatchSubTree := False;
     OnChange := ShellChange;
     NotifyFilters := [
-        nfFileNameChange,
-        nfDirNameChange,
+      nfFileNameChange,
+      nfDirNameChange,
         //nfSizeChange,
-        nfWriteChange,
-        nfSecurityChange];
+      nfWriteChange,
+      nfSecurityChange];
   end;
   {$ENDIF HasShellCtrls}
   {$IFDEF VCL}
   DragAcceptFiles(Handle, True);
   {$ENDIF VCL}
   if ParamCount > 0 then
-  with OpenDialog do
-  begin
-    FileName := ParamStr(1);
-    InitialDir := ExtractFileDir(FileName);
-    LoadFile(FileName);
-  end;
+    with OpenDialog do
+    begin
+      FileName := ParamStr(1);
+      InitialDir := ExtractFileDir(FileName);
+      LoadFile(FileName);
+    end;
 end;
 
 {$IFDEF VCL}
@@ -252,7 +258,8 @@ begin
   end;
 end;
 
-procedure TStretchDemoForm.AddToFileList(const Directory: string; const FileInfo: TSearchRec);
+procedure TStretchDemoForm.AddToFileList(const Directory: string;
+  const FileInfo: TSearchRec);
 begin
   with FileListView.Items.Add do
   begin
@@ -260,7 +267,8 @@ begin
   end;
 end;
 
-procedure TStretchDemoForm.FileSearchTerminated(const ID: TFileSearchTaskID; const Aborted: Boolean);
+procedure TStretchDemoForm.FileSearchTerminated(const ID: TFileSearchTaskID;
+  const Aborted: Boolean);
 begin
   with FileListView do
     Selected := FindCaption(0, FileName, False, True, False);
@@ -302,7 +310,7 @@ begin
       PageControl.ActivePage := OriginalPage
     else
     {$ENDIF VCL}
-      PageControl.ActivePage := FLastImagePage;
+    PageControl.ActivePage := FLastImagePage;
     FocusControl(PageControl);
   end;
 end;
@@ -331,8 +339,8 @@ begin
   with OriginalImage.Picture do
     if (Graphic = nil) {$IFDEF VCL} or (Graphic is TMetafile) {$ENDIF} then
       Exit;
-  W := StretchedPage.Width-2;
-  H := StretchedPage.Height-2;
+  W := StretchedPage.Width - 2;
+  H := StretchedPage.Height - 2;
   if FPreserveAspectRatio then
     with OriginalImage.Picture.Graphic do
     begin
@@ -345,7 +353,8 @@ begin
   begin
     T := GetTickCount;
     StretchedImage.Picture.Graphic := nil;
-    JclGraphics.Stretch(W, H, FResamplingFilter, 0, OriginalImage.Picture.Graphic,
+    JclGraphics.Stretch(W, H, FResamplingFilter, 0,
+      OriginalImage.Picture.Graphic,
       StretchedImage.Picture.Bitmap);
     with OriginalImage.Picture do
       StatusBar.Panels[0].Text := Format('Original: %d x %d', [Width, Height]);
@@ -355,7 +364,8 @@ begin
     FHeight := H;
     FStretchTime := GetTickCount - T;
     with StretchedImage.Picture do
-      StatusBar.Panels[2].Text := Format('Resize time: %d msec', [FStretchTime]);
+      StatusBar.Panels[2].Text :=
+        Format('Resize time: %d msec', [FStretchTime]);
   end;
 end;
 
@@ -379,14 +389,14 @@ end;
 procedure TStretchDemoForm.PrevFile(Sender: TObject);
 begin
   if FileListIndex > 0 then
-    FileListIndex  := FileListIndex - 1;
+    FileListIndex := FileListIndex - 1;
   LoadSelected;
 end;
 
 procedure TStretchDemoForm.NextFile(Sender: TObject);
 begin
   if FileListIndex < FileListView.Items.Count - 1 then
-    FileListIndex  := FileListIndex + 1;
+    FileListIndex := FileListIndex + 1;
   LoadSelected;
 end;
 
@@ -419,15 +429,15 @@ const
 begin
   case Key of
     Key_Prior:
-      begin
-        PrevFile(Self);
-        Key := 0;
-      end;
+    begin
+      PrevFile(Self);
+      Key := 0;
+    end;
     Key_Next:
-      begin
-        NextFile(Self);
-        Key := 0;
-      end;
+    begin
+      NextFile(Self);
+      Key := 0;
+    end;
   end;
 end;
 

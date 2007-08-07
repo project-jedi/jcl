@@ -191,7 +191,8 @@ type
   IManagedObject = interface(IUnknown)
     ['{C3FCC19E-A970-11D2-8B5A-00A0C9B7C9C4}']
     function GetSerializedBuffer(out pBSTR: WideString): HResult; stdcall;
-    function GetObjectIdentity(out pBSTRGUID: WideString; out AppDomainID: SYSINT; out pCCW: SYSINT): HResult; stdcall;
+    function GetObjectIdentity(out pBSTRGUID: WideString;
+      out AppDomainID: SYSINT; out pCCW: SYSINT): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -212,15 +213,23 @@ type
 // *********************************************************************//
   IMarshal = interface(IUnknown)
     ['{00000003-0000-0000-C000-000000000046}']
-    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pCid: TGUID): HResult; stdcall;
-    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pSize: LongWord): HResult; stdcall;
-    function MarshalInterface(var pstm: ISequentialStream; var riid: TGUID; var pv: Pointer; 
-                              dwDestContext: LongWord; var pvDestContext: Pointer; 
-                              mshlflags: LongWord): HResult; stdcall;
-    function UnmarshalInterface(const pstm: ISequentialStream; var riid: TGUID; out ppv: Pointer): HResult; stdcall;
-    function ReleaseMarshalData(const pstm: ISequentialStream): HResult; stdcall;
+    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer;
+      dwDestContext: LongWord;
+      var pvDestContext: Pointer;
+      mshlflags: LongWord; out pCid: TGUID): HResult; stdcall;
+    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer;
+      dwDestContext: LongWord;
+      var pvDestContext: Pointer;
+      mshlflags: LongWord; out pSize: LongWord): HResult; stdcall;
+    function MarshalInterface(var pstm: ISequentialStream;
+      var riid: TGUID; var pv: Pointer;
+      dwDestContext: LongWord;
+      var pvDestContext: Pointer;
+      mshlflags: LongWord): HResult; stdcall;
+    function UnmarshalInterface(const pstm: ISequentialStream;
+      var riid: TGUID; out ppv: Pointer): HResult; stdcall;
+    function ReleaseMarshalData(const pstm: ISequentialStream): HResult;
+      stdcall;
     function DisconnectObject(dwReserved: LongWord): HResult; stdcall;
   end;
 
@@ -231,10 +240,14 @@ type
 // *********************************************************************//
   ISequentialStream = interface(IUnknown)
     ['{0C733A30-2A1C-11CE-ADE5-00AA0044773D}']
-    function Read(out pv: Pointer; cb: LongWord; out pcbRead: LongWord): HResult; stdcall;
-    function RemoteRead(out pv: Byte; cb: LongWord; out pcbRead: LongWord): HResult; stdcall;
-    function Write(var pv: Pointer; cb: LongWord; out pcbWritten: LongWord): HResult; stdcall;
-    function RemoteWrite(var pv: Byte; cb: LongWord; out pcbWritten: LongWord): HResult; stdcall;
+    function Read(out pv: Pointer; cb: LongWord;
+      out pcbRead: LongWord): HResult; stdcall;
+    function RemoteRead(out pv: Byte; cb: LongWord;
+      out pcbRead: LongWord): HResult; stdcall;
+    function Write(var pv: Pointer; cb: LongWord;
+      out pcbWritten: LongWord): HResult; stdcall;
+    function RemoteWrite(var pv: Byte; cb: LongWord;
+      out pcbWritten: LongWord): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -244,19 +257,26 @@ type
 // *********************************************************************//
   IStream = interface(ISequentialStream)
     ['{0000000C-0000-0000-C000-000000000046}']
-    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
-    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; 
-                        out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
+    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord;
+      out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
+    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord;
+      out plibNewPosition: _ULARGE_INTEGER): HResult;
+      stdcall;
     function SetSize(libNewSize: _ULARGE_INTEGER): HResult; stdcall;
-    function CopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
-                    out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
-    function RemoteCopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
-                          out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
+    function CopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER;
+      out pcbRead: _ULARGE_INTEGER;
+      out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
+    function RemoteCopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER;
+      out pcbRead: _ULARGE_INTEGER;
+      out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
     function Commit(grfCommitFlags: LongWord): HResult; stdcall;
     function Revert: HResult; stdcall;
-    function LockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
-    function UnlockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
-    function Stat(out pstatstg: tagSTATSTG; grfStatFlag: LongWord): HResult; stdcall;
+    function LockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER;
+      dwLockType: LongWord): HResult; stdcall;
+    function UnlockRegion(libOffset: _ULARGE_INTEGER;
+      cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
+    function Stat(out pstatstg: tagSTATSTG;
+      grfStatFlag: LongWord): HResult; stdcall;
     function Clone(out ppstm: ISequentialStream): HResult; stdcall;
   end;
   {$EXTERNALSYM IStream}
@@ -270,22 +290,31 @@ type
     ['{CB2F6722-AB3A-11D2-9C40-00C04FA30A3E}']
     function CreateLogicalThreadState: HResult; stdcall;
     function DeleteLogicalThreadState: HResult; stdcall;
-    function SwitchInLogicalThreadState(var pFiberCookie: LongWord): HResult; stdcall;
-    function SwitchOutLogicalThreadState(out pFiberCookie: PUINT1): HResult; stdcall;
+    function SwitchInLogicalThreadState(var pFiberCookie: LongWord): HResult;
+      stdcall;
+    function SwitchOutLogicalThreadState(out pFiberCookie: PUINT1): HResult;
+      stdcall;
     function LocksHeldByLogicalThread(out pCount: LongWord): HResult; stdcall;
-    function MapFile(var hFile: Pointer; out hMapAddress: Pointer): HResult; stdcall;
-    function GetConfiguration(out pConfiguration: ICorConfiguration): HResult; stdcall;
+    function MapFile(var hFile: Pointer; out hMapAddress: Pointer): HResult;
+      stdcall;
+    function GetConfiguration(out pConfiguration: ICorConfiguration): HResult;
+      stdcall;
     function Start: HResult; stdcall;
     function Stop: HResult; stdcall;
-    function CreateDomain(pwzFriendlyName: PWideChar; const pIdentityArray: IUnknown; 
-                          out pAppDomain: IUnknown): HResult; stdcall;
+    function CreateDomain(pwzFriendlyName: PWideChar;
+      const pIdentityArray: IUnknown;
+      out pAppDomain: IUnknown): HResult; stdcall;
     function GetDefaultDomain(out pAppDomain: IUnknown): HResult; stdcall;
     function EnumDomains(out hEnum: Pointer): HResult; stdcall;
-    function NextDomain(hEnum: Pointer; out pAppDomain: IUnknown): HResult; stdcall;
+    function NextDomain(hEnum: Pointer; out pAppDomain: IUnknown): HResult;
+      stdcall;
     function CloseEnum(hEnum: Pointer): HResult; stdcall;
-    function CreateDomainEx(pwzFriendlyName: PWideChar; const pSetup: IUnknown; 
-                            const pEvidence: IUnknown; out pAppDomain: IUnknown): HResult; stdcall;
-    function CreateDomainSetup(out pAppDomainSetup: IUnknown): HResult; stdcall;
+    function CreateDomainEx(pwzFriendlyName: PWideChar;
+      const pSetup: IUnknown;
+      const pEvidence: IUnknown;
+      out pAppDomain: IUnknown): HResult; stdcall;
+    function CreateDomainSetup(out pAppDomainSetup: IUnknown): HResult;
+      stdcall;
     function CreateEvidence(out pEvidence: IUnknown): HResult; stdcall;
     function UnloadDomain(const pAppDomain: IUnknown): HResult; stdcall;
     function CurrentDomain(out pAppDomain: IUnknown): HResult; stdcall;
@@ -298,11 +327,14 @@ type
 // *********************************************************************//
   IGCHost = interface(IUnknown)
     ['{FAC34F6E-0DCD-47B5-8021-531BC5ECCA63}']
-    function SetGCStartupLimits(SegmentSize: LongWord; MaxGen0Size: LongWord): HResult; stdcall;
+    function SetGCStartupLimits(SegmentSize: LongWord;
+      MaxGen0Size: LongWord): HResult; stdcall;
     function Collect(Generation: Integer): HResult; stdcall;
     function GetStats(var pStats: _COR_GC_STATS): HResult; stdcall;
-    function GetThreadStats(var pFiberCookie: LongWord; var pStats: _COR_GC_THREAD_STATS): HResult; stdcall;
-    function SetVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR): HResult; stdcall;
+    function GetThreadStats(var pFiberCookie: LongWord;
+      var pStats: _COR_GC_THREAD_STATS): HResult; stdcall;
+    function SetVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR): HResult;
+      stdcall;
   end;
 
 // *********************************************************************//
@@ -312,10 +344,14 @@ type
 // *********************************************************************//
   ICorConfiguration = interface(IUnknown)
     ['{5C2B07A5-1E98-11D3-872F-00C04F79ED0D}']
-    function SetGCThreadControl(const pGCThreadControl: IGCThreadControl): HResult; stdcall;
-    function SetGCHostControl(const pGCHostControl: IGCHostControl): HResult; stdcall;
-    function SetDebuggerThreadControl(const pDebuggerThreadControl: IDebuggerThreadControl): HResult; stdcall;
-    function AddDebuggerSpecialThread(dwSpecialThreadId: LongWord): HResult; stdcall;
+    function SetGCThreadControl(
+      const pGCThreadControl: IGCThreadControl): HResult; stdcall;
+    function SetGCHostControl(const pGCHostControl: IGCHostControl): HResult;
+      stdcall;
+    function SetDebuggerThreadControl(
+      const pDebuggerThreadControl: IDebuggerThreadControl): HResult; stdcall;
+    function AddDebuggerSpecialThread(dwSpecialThreadId: LongWord): HResult;
+      stdcall;
   end;
 
 // *********************************************************************//
@@ -337,8 +373,9 @@ type
 // *********************************************************************//
   IGCHostControl = interface(IUnknown)
     ['{5513D564-8374-4CB9-AED9-0083F4160A1D}']
-    function RequestVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR; 
-                                    var psztNewMaxVirtualMemMB: ULONG_PTR): HResult; stdcall;
+    function RequestVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR;
+      var psztNewMaxVirtualMemMB: ULONG_PTR):
+      HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -360,11 +397,15 @@ type
 // *********************************************************************//
   IValidator = interface(IUnknown)
     ['{63DF8730-DC81-4062-84A2-1FF943F59FAC}']
-    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown; ulFlags: LongWord; 
-                      ulMaxError: LongWord; Token: LongWord; fileName: PWideChar; var pe: Byte; 
-                      ulSize: LongWord): HResult; stdcall;
-    function FormatEventInfo(hVECode: HResult; Context: tag_VerError; msg: PWideChar; 
-                             ulMaxLength: LongWord; psa: PSafeArray): HResult; stdcall;
+    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown;
+      ulFlags: LongWord;
+      ulMaxError: LongWord; Token: LongWord;
+      fileName: PWideChar; var pe: Byte;
+      ulSize: LongWord): HResult; stdcall;
+    function FormatEventInfo(hVECode: HResult; Context: tag_VerError;
+      msg: PWideChar;
+      ulMaxLength: LongWord;
+      psa: PSafeArray): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -384,7 +425,8 @@ type
 // *********************************************************************//
   IVEHandler = interface(IUnknown)
     ['{856CA1B2-7DAB-11D3-ACEC-00C04F86C309}']
-    function VEHandler(VECode: HResult; Context: tag_VerError; psa: PSafeArray): HResult; stdcall;
+    function VEHandler(VECode: HResult; Context: tag_VerError;
+      psa: PSafeArray): HResult; stdcall;
     function SetReporterFtn(lFnPtr: Int64): HResult; stdcall;
   end;
 
@@ -421,9 +463,11 @@ begin
   Result := CreateComObject(CLASS_ComCallUnmarshal) as IMarshal;
 end;
 
-class function CoComCallUnmarshal.CreateRemote(const MachineName: string): IMarshal;
+class function CoComCallUnmarshal.CreateRemote(
+  const MachineName: string): IMarshal;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ComCallUnmarshal) as IMarshal;
+  Result := CreateRemoteComObject(MachineName, CLASS_ComCallUnmarshal) as
+    IMarshal;
 end;
 
 class function CoCorRuntimeHost.Create: ICorRuntimeHost;
@@ -431,9 +475,11 @@ begin
   Result := CreateComObject(CLASS_CorRuntimeHost) as ICorRuntimeHost;
 end;
 
-class function CoCorRuntimeHost.CreateRemote(const MachineName: string): ICorRuntimeHost;
+class function CoCorRuntimeHost.CreateRemote(
+  const MachineName: string): ICorRuntimeHost;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CorRuntimeHost) as ICorRuntimeHost;
+  Result := CreateRemoteComObject(MachineName, CLASS_CorRuntimeHost) as
+    ICorRuntimeHost;
 end;
 
 end.

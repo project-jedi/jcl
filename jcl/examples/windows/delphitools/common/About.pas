@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date$                                                      } 
+{ Last modified: $Date$                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -73,15 +73,15 @@ var
   I: Integer;
 begin
   with TAboutBox.Create(Application) do
-  try
-    SetLength(FLinks, High(Links) + 1);
-    for I := Low(Links) to High(Links) do
-      FLinks[I] := Links[I];
-    FURLSpacing := Spacing;
-    ShowModal;
-  finally
-    Free;
-  end;
+    try
+      SetLength(FLinks, High(Links) + 1);
+      for I := Low(Links) to High(Links) do
+        FLinks[I] := Links[I];
+      FURLSpacing := Spacing;
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 { TAboutBox }
@@ -106,13 +106,13 @@ begin
     Height := GetSystemMetrics(SM_CYICON);
   end;
   with TJclFileVersionInfo.Create(Application.ExeName) do
-  try
-    ProductNameLabel.Caption := ProductName;
-    VersionLabel.Caption := Format('Version: %s', [ProductVersion]);
-    CompanyLabel.Caption := LegalCopyright;
-  finally
-    Free;
-  end;
+    try
+      ProductNameLabel.Caption := ProductName;
+      VersionLabel.Caption := Format('Version: %s', [ProductVersion]);
+      CompanyLabel.Caption := LegalCopyright;
+    finally
+      Free;
+    end;
 end;
 
 procedure TAboutBox.FormShow(Sender: TObject);
@@ -120,12 +120,14 @@ var
   I: Integer;
 begin
   I := Length(FLinks) * FURLSpacing - 20;
-  if I > 0 then Height := Height + I;
+  if I > 0 then
+    Height := Height + I;
   for I := 0 to Length(FLinks) - 1 do
     with TLabel.Create(Self) do
     begin
       Parent := Self;
-      SetBounds(CompanyLabel.Left, I * FURLSpacing + CompanyLabel.Top + 25, 0, 0);
+      SetBounds(CompanyLabel.Left, I * FURLSpacing +
+        CompanyLabel.Top + 25, 0, 0);
       Caption := GetLinkCaption(I);
       Cursor := crHandPoint;
       Font.Color := clBlue;
@@ -169,7 +171,8 @@ procedure TAboutBox.UpdateLinkLabel(L: LPARAM; Activate: Boolean);
 begin
   if (TObject(L) is TLabel) and (TLabel(L).Tag > 0) then
     with TLabel(L).Font do
-      if Activate then Color := clPurple else Color := clBlue;
+      if Activate then
+        Color := clPurple else Color := clBlue;
 end;
 
 procedure TAboutBox.UrlLinkLabelClick(Sender: TObject);

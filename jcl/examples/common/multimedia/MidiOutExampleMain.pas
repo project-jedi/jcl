@@ -153,13 +153,15 @@ begin
   begin
     MIDIKey.Value := KeyMenu.PopupComponent.Tag;
     if ShowModal = mrOK then
-      FMidiOut.SendSingleNoteTuningChange(0, 0, [MidiSingleNoteTuningData(MIDIKey.Value, MIDIFrequency)]);
+      FMidiOut.SendSingleNoteTuningChange(0, 0,
+        [MidiSingleNoteTuningData(MIDIKey.Value, MIDIFrequency)]);
   end;
 end;
 
 procedure TKeyboard.PitchBenderChange(Sender: TObject);
 begin
-  FMidiOut.SendPitchWheelChange(FChannel, PitchBender.Position + MidiPitchWheelCenter);
+  FMidiOut.SendPitchWheelChange(FChannel, PitchBender.Position +
+    MidiPitchWheelCenter);
 end;
 
 procedure TKeyboard.ModWheelChange(Sender: TObject);
@@ -191,4 +193,3 @@ begin
 end;
 
 end.
-

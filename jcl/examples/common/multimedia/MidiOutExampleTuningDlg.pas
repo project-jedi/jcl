@@ -52,8 +52,8 @@ implementation
 
 const
   HalftonesPerOctave = 12;
-  MiddleA            = 440.0; // Hertz
-  MidiMiddleA        = 69;    // A3 = 440 Hertz
+  MiddleA = 440.0; // Hertz
+  MidiMiddleA = 69;    // A3 = 440 Hertz
   Digits = 6;
   MIDIFreqMax = 127.99993896;
   FreqHertzMin = 8.17579892;

@@ -49,25 +49,26 @@ begin
 
     if VersionResourceAvailable(FileName) then
       with TJclFileVersionInfo.Create(FileName) do
-      try
-        for I := 0 to LanguageCount - 1 do
-        begin
-          LanguageIndex := I;
-          Memo1.Lines.Add(Format('[%s] %s', [LanguageIds[I], LanguageNames[I]]));
-          Memo1.Lines.Add(StringOfChar('-', 80));
-          Memo1.Lines.AddStrings(Items);
-          Memo1.Lines.Add(BinFileVersion);
-          Memo1.Lines.Add(OSIdentToString(FileOS));
-          Memo1.Lines.Add(OSFileTypeToString(FileType, FileSubType));
-          Memo1.Lines.Add('');
+        try
+          for I := 0 to LanguageCount - 1 do
+          begin
+            LanguageIndex := I;
+            Memo1.Lines.Add(Format('[%s] %s', [LanguageIds[I],
+              LanguageNames[I]]));
+            Memo1.Lines.Add(StringOfChar('-', 80));
+            Memo1.Lines.AddStrings(Items);
+            Memo1.Lines.Add(BinFileVersion);
+            Memo1.Lines.Add(OSIdentToString(FileOS));
+            Memo1.Lines.Add(OSFileTypeToString(FileType, FileSubType));
+            Memo1.Lines.Add('');
+          end;
+          Memo1.Lines.Add('Translations:');
+          for I := 0 to TranslationCount - 1 do
+            Memo1.Lines.Add(VersionLanguageId(Translations[I]));
+          Memo1.Lines.Add(BooleanToStr(TranslationMatchesLanguages));
+        finally
+          Free;
         end;
-        Memo1.Lines.Add('Translations:');
-        for I := 0 to TranslationCount - 1 do
-          Memo1.Lines.Add(VersionLanguageId(Translations[I]));
-        Memo1.Lines.Add(BooleanToStr(TranslationMatchesLanguages));
-      finally
-        Free;
-      end;
 
   finally
     Memo1.Lines.EndUpdate;

@@ -57,23 +57,28 @@ uses
 
 // Files and Folders
 type
-  TSHDeleteOption  = (doSilent, doAllowUndo, doFilesOnly);
+  TSHDeleteOption = (doSilent, doAllowUndo, doFilesOnly);
   TSHDeleteOptions = set of TSHDeleteOption;
-  TSHRenameOption  = (roSilent, roRenameOnCollision);
+  TSHRenameOption = (roSilent, roRenameOnCollision);
   TSHRenameOptions = set of TSHRenameOption;
-  TSHCopyOption    = (coSilent, coAllowUndo, coFilesOnly, coNoConfirmation);
-  TSHCopyOptions   = set of TSHCopyOption;
-  TSHMoveOption    = (moSilent, moAllowUndo, moFilesOnly, moNoConfirmation);
-  TSHMoveOptions   = set of TSHMoveOption;
+  TSHCopyOption = (coSilent, coAllowUndo, coFilesOnly, coNoConfirmation);
+  TSHCopyOptions = set of TSHCopyOption;
+  TSHMoveOption = (moSilent, moAllowUndo, moFilesOnly, moNoConfirmation);
+  TSHMoveOptions = set of TSHMoveOption;
 
-  TUnicodePath     = array [0..MAX_PATH-1] of WideChar;
-  TAnsiPath        = array [0..MAX_PATH-1] of char;
+  TUnicodePath = array [0..MAX_PATH - 1] of WideChar;
+  TAnsiPath = array [0..MAX_PATH - 1] of char;
 
-function SHDeleteFiles(Parent: THandle; const Files: string; Options: TSHDeleteOptions): Boolean;
-function SHDeleteFolder(Parent: THandle; const Folder: string; Options: TSHDeleteOptions): Boolean;
-function SHRenameFile(const Src, Dest: string; Options: TSHRenameOptions): Boolean;
-function SHCopy(Parent: THandle; const Src, Dest: string; Options: TSHCopyOptions): Boolean;
-function SHMove(Parent: THandle; const Src, Dest: string; Options: TSHMoveOptions): Boolean;
+function SHDeleteFiles(Parent: THandle; const Files: string;
+  Options: TSHDeleteOptions): Boolean;
+function SHDeleteFolder(Parent: THandle; const Folder: string;
+  Options: TSHDeleteOptions): Boolean;
+function SHRenameFile(const Src, Dest: string;
+  Options: TSHRenameOptions): Boolean;
+function SHCopy(Parent: THandle; const Src, Dest: string;
+  Options: TSHCopyOptions): Boolean;
+function SHMove(Parent: THandle; const Src, Dest: string;
+  Options: TSHMoveOptions): Boolean;
 
 type
   TEnumFolderFlag = (efFolders, efNonFolders, efIncludeHidden);
@@ -91,23 +96,29 @@ type
 
 function SHEnumFolderFirst(const Folder: string; Flags: TEnumFolderFlags;
   var F: TEnumFolderRec): Boolean;
-function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
+function SHEnumSpecialFolderFirst(SpecialFolder: DWORD;
+  Flags: TEnumFolderFlags;
   var F: TEnumFolderRec): Boolean;
 procedure SHEnumFolderClose(var F: TEnumFolderRec);
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 
 function GetSpecialFolderLocation(const FolderID: Integer): string;
 
-function DisplayPropDialog(const Handle: THandle; const FileName: string): Boolean; overload;
-function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean; overload;
+function DisplayPropDialog(const Handle: THandle;
+  const FileName: string): Boolean; overload;
+function DisplayPropDialog(const Handle: THandle; Item: PItemIdList): Boolean;
+  overload;
 
-function DisplayContextMenuPidl(const Handle: THandle; const Folder: IShellFolder;
+function DisplayContextMenuPidl(const Handle: THandle;
+  const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
 function DisplayContextMenu(const Handle: THandle; const FileName: string;
   Pos: TPoint): Boolean;
 
-function OpenFolder(const Path: string; Parent: THandle = 0; Explore: Boolean = False): Boolean;
-function OpenSpecialFolder(FolderID: Integer; Parent: THandle = 0; Explore: Boolean = False): Boolean;
+function OpenFolder(const Path: string; Parent: THandle = 0;
+  Explore: Boolean = False): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle = 0;
+  Explore: Boolean = False): Boolean;
 
 // Memory Management
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
@@ -116,10 +127,13 @@ function SHGetMem(var P: Pointer; Count: Integer): Boolean;
 function SHFreeMem(var P: Pointer): Boolean;
 
 // Paths and PIDLs
-function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
+function DriveToPidlBind(const DriveName: string;
+  out Folder: IShellFolder): PItemIdList;
 function PathToPidl(const Path: string; Folder: IShellFolder): PItemIdList;
-function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
-function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
+function PathToPidlBind(const FileName: string;
+  out Folder: IShellFolder): PItemIdList;
+function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder;
+  out Last: PItemIdList): Boolean;
 function PidlCompare(Pidl1, Pidl2: PItemIdList): Boolean;
 function PidlCopy(Source: PItemIdList; out Dest: PItemIdList): Boolean;
 function PidlFree(var IdList: PItemIdList): Boolean;
@@ -129,7 +143,8 @@ function PidlGetNext(Pidl: PItemIdList): PItemIdList;
 function PidlToPath(IdList: PItemIdList): string;
 
 function StrRetFreeMem(StrRet: TStrRet): Boolean;
-function StrRetToString(IdList: PItemIdList; StrRet: TStrRet; Free: Boolean): string;
+function StrRetToString(IdList: PItemIdList; StrRet: TStrRet;
+  Free: Boolean): string;
 
 // Shortcuts / Shell link
 type
@@ -147,32 +162,42 @@ type
   end;
 
 procedure ShellLinkFree(var Link: TShellLink);
-function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT; overload;
+function ShellLinkResolve(const FileName: string;
+  var Link: TShellLink): HRESULT; overload;
 function ShellLinkResolve(const FileName: string; var Link: TShellLink;
   const ResolveFlags: Cardinal): HRESULT; overload;
-function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
-function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
+function ShellLinkCreate(const Link: TShellLink;
+  const FileName: string): HRESULT;
+function ShellLinkCreateSystem(const Link: TShellLink;
+  const Folder: Integer; const FileName: string): HRESULT;
 function ShellLinkIcon(const Link: TShellLink): HICON; overload;
 function ShellLinkIcon(const FileName: string): HICON; overload;
 
 // Miscellaneous
-function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
+function SHDllGetVersion(const FileName: string;
+  var Version: TDllVersionInfo): Boolean;
 
 function GetSystemIcon(IconIndex: Integer; Flags: Cardinal): HICON;
 function OverlayIcon(var Icon: HICON; Overlay: HICON; Large: Boolean): Boolean;
 function OverlayIconShortCut(var Large, Small: HICON): Boolean;
 function OverlayIconShared(var Large, Small: HICON): Boolean;
-function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
+function SHGetItemInfoTip(const Folder: IShellFolder;
+  Item: PItemIdList): string;
 
-function ShellExecEx(const FileName: string; const Parameters: string = ''; const Verb: string = '';
+function ShellExecEx(const FileName: string; const Parameters: string = '';
+  const Verb: string = '';
   CmdShow: Integer = SW_SHOWNORMAL): Boolean;
-function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
-function ShellExecAndWait(const FileName: string; const Parameters: string = ''; const Verb: string = '';
+function ShellExec(Wnd: Integer;
+  const Operation, FileName, Parameters, Directory: string;
+  ShowCommand: Integer): Boolean;
+function ShellExecAndWait(const FileName: string;
+  const Parameters: string = ''; const Verb: string = '';
   CmdShow: Integer = SW_SHOWNORMAL; const Directory: string = ''): Boolean;
 
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
-function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
+function ShellRunControlPanel(const NameOrFileName: string;
+  AppletNumber: Integer = 0): Boolean;
 
 function GetFileNameIcon(const FileName: string; Flags: Cardinal = 0): HICON;
 
@@ -190,11 +215,12 @@ const
   MSILIB = 'msi.dll';
 var
   RtdlMsiLibHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-  RtdlMsiGetShortcutTarget: function(szShortcutPath: LPCSTR; szProductCode: LPSTR;
-    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT stdcall = nil;
+  RtdlMsiGetShortcutTarget: function(szShortcutPath: LPCSTR;
+  szProductCode: LPSTR;
+  szFeatureId: LPSTR; szComponentCode: LPSTR): UINT stdcall = nil;
 
   RtdlMsiGetComponentPath: function(szProduct: LPCSTR; szComponent: LPCSTR;
-    lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE stdcall = nil;
+  lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE stdcall = nil;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -220,13 +246,14 @@ const
   cVerbProperties = 'properties';
   cVerbOpen = 'open';
   cVerbExplore = 'explore';
-  
+
 //=== Files and Folders ======================================================
 
 // Helper function and constant to map a TSHDeleteOptions set to a Cardinal
 
 const
-  FOF_COMPLETELYSILENT = FOF_SILENT or FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_NOCONFIRMMKDIR;
+  FOF_COMPLETELYSILENT = FOF_SILENT or FOF_NOCONFIRMATION or
+    FOF_NOERRORUI or FOF_NOCONFIRMMKDIR;
 
 function DeleteOptionsToCardinal(Options: TSHDeleteOptions): Cardinal;
 begin
@@ -285,7 +312,8 @@ begin
     Result := Result or FOF_COMPLETELYSILENT;
 end;
 
-function SHRenameFile(const Src, Dest: string; Options: TSHRenameOptions): Boolean;
+function SHRenameFile(const Src, Dest: string;
+  Options: TSHRenameOptions): Boolean;
 var
   FileOp: TSHFileOpStruct;
   Source, Destination: string;
@@ -325,12 +353,13 @@ begin
     Result := Result or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR;
 end;
 
-function SHCopy(Parent: THandle; const Src, Dest: string; Options: TSHCopyOptions): Boolean;
+function SHCopy(Parent: THandle; const Src, Dest: string;
+  Options: TSHCopyOptions): Boolean;
 var
   FileOp: TSHFileOpStruct;
   Source, Destination: string;
 begin
-  FillChar(FileOp,SizeOf(FileOp),0);
+  FillChar(FileOp, SizeOf(FileOp), 0);
   {$IFDEF FPC}
   FileOp.THandle := Parent;
   {$ELSE}
@@ -362,12 +391,13 @@ begin
     Result := Result or FOF_NOCONFIRMATION;
 end;
 
-function SHMove(Parent: THandle; const Src, Dest: string; Options: TSHMoveOptions): Boolean;
+function SHMove(Parent: THandle; const Src, Dest: string;
+  Options: TSHMoveOptions): Boolean;
 var
   FileOp: TSHFileOpStruct;
   Source, Destination: string;
 begin
-  FillChar(FileOp,SizeOf(FileOp),0);
+  FillChar(FileOp, SizeOf(FileOp), 0);
   {$IFDEF FPC}
   FileOp.THandle := Parent;
   {$ELSE}
@@ -397,7 +427,8 @@ begin
     Result := Result or SHCONTF_INCLUDEHIDDEN;
 end;
 
-procedure ClearEnumFolderRec(var F: TEnumFolderRec; const Free, Release: Boolean);
+procedure ClearEnumFolderRec(var F: TEnumFolderRec;
+  const Free, Release: Boolean);
 begin
   if Release then
   begin
@@ -423,7 +454,8 @@ end;
 
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 const
-  Attr = Cardinal(SFGAO_CAPABILITYMASK or SFGAO_DISPLAYATTRMASK or SFGAO_CONTENTSMASK);
+  Attr = Cardinal(SFGAO_CAPABILITYMASK or SFGAO_DISPLAYATTRMASK or
+    SFGAO_CONTENTSMASK);
 var
   DisplayNameRet: TStrRet;
   ItemsFetched: ULONG;
@@ -447,22 +479,24 @@ begin
     Flags := 0;
     F.IconLarge := 0;
     F.IconSmall := 0;
-    
+
     if Assigned(ExtractIcon) then
     begin
       ExtractIcon.GetIconLocation(0, @IconFile, MAX_PATH, IconIndex, Flags);
-      if (IconIndex < 0) and ((Flags and GIL_NOTFILENAME) = GIL_NOTFILENAME) then
+      if (IconIndex < 0) and ((Flags and GIL_NOTFILENAME) =
+        GIL_NOTFILENAME) then
         ExtractIconEx(@IconFile, IconIndex, F.IconLarge, F.IconSmall, 1)
       else
         ExtractIcon.Extract(@IconFile, IconIndex, F.IconLarge, F.IconSmall,
           MakeLong(32, 16));
     end;
-          
+
     Result := True;
   end;
 end;
 
-function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
+function SHEnumSpecialFolderFirst(SpecialFolder: DWORD;
+  Flags: TEnumFolderFlags;
   var F: TEnumFolderRec): Boolean;
 var
   DesktopFolder: IShellFolder;
@@ -476,7 +510,8 @@ begin
   begin
     SHGetSpecialFolderLocation(0, SpecialFolder, FolderPidl);
     try
-      DesktopFolder.BindToObject(FolderPidl, nil, IID_IShellFolder, Pointer(F.Folder));
+      DesktopFolder.BindToObject(FolderPidl, nil, IID_IShellFolder,
+        Pointer(F.Folder));
     finally
       PidlFree(FolderPidl);
     end;
@@ -497,7 +532,8 @@ begin
   SHGetDesktopFolder(DesktopFolder);
   FolderPidl := PathToPidl(PathAddSeparator(Folder), DesktopFolder);
   try
-    DesktopFolder.BindToObject(FolderPidl, nil, IID_IShellFolder, Pointer(F.Folder));
+    DesktopFolder.BindToObject(FolderPidl, nil, IID_IShellFolder,
+      Pointer(F.Folder));
     F.Folder.EnumObjects(0, EnumFolderFlagsToCardinal(Flags), F.EnumIdList);
     Result := SHEnumFolderNext(F);
     if not Result then
@@ -520,7 +556,8 @@ begin
     Result := '';
 end;
 
-function DisplayPropDialog(const Handle: THandle; const FileName: string): Boolean;
+function DisplayPropDialog(const Handle: THandle;
+  const FileName: string): Boolean;
 var
   Info: TShellExecuteInfo;
 begin
@@ -560,31 +597,32 @@ end;
 // note: storing the IContextMenu2 pointer in the window's user data was
 // 'inspired' by (read: copied from) code by Brad Stowers.
 
-function MenuCallback(Wnd: THandle; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+function MenuCallback(Wnd: THandle; Msg: UINT; wParam: WPARAM;
+  lParam: LPARAM): LRESULT; stdcall;
 var
   ContextMenu2: IContextMenu2;
 begin
   case Msg of
     WM_CREATE:
-      begin
-        ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
-        SetWindowLong(Wnd, GWL_USERDATA, Longint(ContextMenu2));
-        Result := DefWindowProc(Wnd, Msg, wParam, lParam);
-      end;
+    begin
+      ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
+      SetWindowLong(Wnd, GWL_USERDATA, Longint(ContextMenu2));
+      Result := DefWindowProc(Wnd, Msg, wParam, lParam);
+    end;
     WM_INITMENUPOPUP:
-      begin
-        ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-        ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
-        Result := 0;
-      end;
+    begin
+      ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
+      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
+      Result := 0;
+    end;
     WM_DRAWITEM, WM_MEASUREITEM:
-      begin
-        ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-        ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
-        Result := 1;
-      end;
-  else
-    Result := DefWindowProc(Wnd, Msg, wParam, lParam);
+    begin
+      ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
+      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
+      Result := 1;
+    end;
+    else
+      Result := DefWindowProc(Wnd, Msg, wParam, lParam);
   end;
 end;
 
@@ -605,7 +643,8 @@ begin
     0, 0, 0, 0, 0, HInstance, Pointer(ContextMenu));
 end;
 
-function DisplayContextMenuPidl(const Handle: THandle; const Folder: IShellFolder;
+function DisplayContextMenuPidl(const Handle: THandle;
+  const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
 var
   Cmd: Cardinal;
@@ -625,16 +664,19 @@ begin
     Menu := CreatePopupMenu;
     if Menu <> 0 then
     begin
-      if Succeeded(ContextMenu.QueryContextMenu(Menu, 0, 1, $7FFF, CMF_EXPLORE)) then
+      if Succeeded(ContextMenu.QueryContextMenu(Menu, 0, 1,
+        $7FFF, CMF_EXPLORE)) then
       begin
         CallbackWindow := 0;
-        if Succeeded(ContextMenu.QueryInterface(IContextMenu2, ContextMenu2)) then
+        if Succeeded(ContextMenu.QueryInterface(IContextMenu2,
+          ContextMenu2)) then
         begin
           CallbackWindow := CreateMenuCallbackWnd(ContextMenu2);
         end;
         ClientToScreen(Handle, Pos);
         Cmd := Cardinal(TrackPopupMenu(Menu, TPM_LEFTALIGN or TPM_LEFTBUTTON or
-          TPM_RIGHTBUTTON or TPM_RETURNCMD, Pos.X, Pos.Y, 0, CallbackWindow, nil));
+          TPM_RIGHTBUTTON or TPM_RETURNCMD, Pos.X, Pos.Y, 0,
+          CallbackWindow, nil));
         if Cmd <> 0 then
         begin
           FillChar(CommandInfo, SizeOf(CommandInfo), #0);
@@ -667,7 +709,8 @@ begin
   end;
 end;
 
-function OpenFolder(const Path: string; Parent: THandle; Explore: Boolean): Boolean;
+function OpenFolder(const Path: string; Parent: THandle;
+  Explore: Boolean): Boolean;
 var
   Sei: TShellExecuteInfo;
 begin
@@ -690,7 +733,8 @@ begin
   end;
 end;
 
-function OpenSpecialFolder(FolderID: Integer; Parent: THandle; Explore: Boolean): Boolean;
+function OpenSpecialFolder(FolderID: Integer; Parent: THandle;
+  Explore: Boolean): Boolean;
 var
   Malloc: IMalloc;
   Pidl: PItemIDList;
@@ -789,7 +833,8 @@ end;
 
 //=== Paths and PIDLs ========================================================
 
-function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
+function DriveToPidlBind(const DriveName: string;
+  out Folder: IShellFolder): PItemIdList;
 var
   Attr: ULONG;
   Eaten: ULONG;
@@ -805,8 +850,10 @@ begin
       if Succeeded(DesktopFolder.BindToObject(Drives, nil, IID_IShellFolder,
         Pointer(Folder))) then
       begin
-        MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(PathAddSeparator(DriveName)), -1, Path, MAX_PATH);
-        if Failed(Folder.ParseDisplayName(0, nil, Path, Eaten, Result, Attr)) then
+        MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED,
+          PChar(PathAddSeparator(DriveName)), -1, Path, MAX_PATH);
+        if Failed(Folder.ParseDisplayName(0, nil, Path, Eaten,
+          Result, Attr)) then
         begin
           Folder := nil;
           // Failure probably means that this is not a drive. However, do not
@@ -825,15 +872,18 @@ var
   WidePath: TUnicodePath;
 begin
   Result := nil;
-  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WidePath, MAX_PATH);
+  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1,
+    WidePath, MAX_PATH);
   if Folder <> nil then
     Folder.ParseDisplayName(0, nil, WidePath, CharsParsed, Result, Attr)
   else
   if Succeeded(SHGetDesktopFolder(DesktopFolder)) then
-    DesktopFolder.ParseDisplayName(0, nil, WidePath, CharsParsed, Result, Attr);
+    DesktopFolder.ParseDisplayName(0, nil, WidePath, CharsParsed,
+      Result, Attr);
 end;
 
-function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
+function PathToPidlBind(const FileName: string;
+  out Folder: IShellFolder): PItemIdList;
 var
   Attr, Eaten: ULONG;
   PathIdList: PItemIdList;
@@ -841,17 +891,22 @@ var
   Path, ItemName: TUnicodePath;
 begin
   Result := nil;
-  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(ExtractFilePath(FileName)), -1, Path, MAX_PATH);
-  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(ExtractFileName(FileName)), -1, ItemName, MAX_PATH);
+  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(ExtractFilePath(FileName)),
+    -1, Path, MAX_PATH);
+  MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(ExtractFileName(FileName)),
+    -1, ItemName, MAX_PATH);
   if Succeeded(SHGetDesktopFolder(DesktopFolder)) then
   begin
-    if Succeeded(DesktopFolder.ParseDisplayName(0, nil, Path, Eaten, PathIdList,
+    if Succeeded(DesktopFolder.ParseDisplayName(0, nil, Path,
+      Eaten, PathIdList,
       Attr)) then
     begin
-      if Succeeded(DesktopFolder.BindToObject(PathIdList, nil, IID_IShellFolder,
+      if Succeeded(DesktopFolder.BindToObject(PathIdList, nil,
+        IID_IShellFolder,
         Pointer(Folder))) then
       begin
-        if Failed(Folder.ParseDisplayName(0, nil, ItemName, Eaten, Result, Attr)) then
+        if Failed(Folder.ParseDisplayName(0, nil, ItemName,
+          Eaten, Result, Attr)) then
         begin
           Folder := nil;
           Result := DriveToPidlBind(FileName, Folder);
@@ -864,7 +919,8 @@ begin
   end;
 end;
 
-function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
+function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder;
+  out Last: PItemIdList): Boolean;
 var
   Path: string;
 begin
@@ -987,15 +1043,16 @@ begin
     Result := SHFreeMem(Pointer(StrRet.pOleStr));
 end;
 
-function StrRetToString(IdList: PItemIdList; StrRet: TStrRet; Free: Boolean): string;
+function StrRetToString(IdList: PItemIdList; StrRet: TStrRet;
+  Free: Boolean): string;
 begin
   case StrRet.uType of
     STRRET_WSTR:
-      begin
-        Result := WideCharToString(StrRet.pOleStr);
-        if Free then
-          SHFreeMem(Pointer(StrRet.pOleStr));
-      end;
+    begin
+      Result := WideCharToString(StrRet.pOleStr);
+      if Free then
+        SHFreeMem(Pointer(StrRet.pOleStr));
+    end;
     STRRET_OFFSET:
       if IdList <> nil then
         Result := PChar(IdList) + StrRet.uOffset
@@ -1003,8 +1060,8 @@ begin
         Result := '';
     STRRET_CSTR:
       Result := StrRet.cStr;
-  else
-    Result := '';
+    else
+      Result := '';
   end;
 end;
 
@@ -1017,7 +1074,7 @@ end;
 
 const
   IID_IShellLink: TGUID = { IID_IShellLinkA }
-    (D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+    (D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
@@ -1038,7 +1095,8 @@ begin
   end;
 end;
 
-function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
+function ShellLinkCreate(const Link: TShellLink;
+  const FileName: string): HRESULT;
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
@@ -1062,22 +1120,26 @@ begin
   end;
 end;
 
-function RtdlLoadMsiFuncs:Boolean;
+function RtdlLoadMsiFuncs: Boolean;
 begin
-  Result:=False;
-  if LoadModule(rtdlMsiLibHandle,MSILIB) then
+  Result := False;
+  if LoadModule(rtdlMsiLibHandle, MSILIB) then
   begin
     if not Assigned(RtdlMsiGetShortcutTarget) then
-      RtdlMsiGetShortcutTarget:=GetModuleSymbol(rtdlMsiLibHandle,'MsiGetShortcutTargetA');
+      RtdlMsiGetShortcutTarget :=
+        GetModuleSymbol(rtdlMsiLibHandle, 'MsiGetShortcutTargetA');
 
     if not Assigned(RtdlMsiGetComponentPath) then
-      RtdlMsiGetComponentPath:=GetModuleSymbol(rtdlMsiLibHandle,'MsiGetComponentPathA');
+      RtdlMsiGetComponentPath :=
+        GetModuleSymbol(rtdlMsiLibHandle, 'MsiGetComponentPathA');
 
-    Result:=(Assigned(RtdlMsiGetShortcutTarget)) and (Assigned(RtdlMsiGetComponentPath));
+    Result := (Assigned(RtdlMsiGetShortcutTarget)) and
+      (Assigned(RtdlMsiGetComponentPath));
   end;
 end;
 
-function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
+function ShellLinkResolve(const FileName: string;
+  var Link: TShellLink): HRESULT;
 begin
   Result := ShellLinkResolve(FileName, Link, SLR_ANY_MATCH);
 end;
@@ -1116,10 +1178,12 @@ begin
       FillChar(ComponentGuid, SizeOf(ComponentGuid), #0);
       FillChar(TargetFile, SizeOf(TargetFile), #0);
 
-      if RtdlMsiGetShortcutTarget(PAnsiChar(FileName), ProductGuid, FeatureID, ComponentGuid) = ERROR_SUCCESS then
+      if RtdlMsiGetShortcutTarget(PAnsiChar(FileName), ProductGuid,
+        FeatureID, ComponentGuid) = ERROR_SUCCESS then
       begin
         PathSize := MAX_PATH + 1;
-        RtdlMsiGetComponentPath(ProductGuid, ComponentGuid, TargetFile, @PathSize);
+        RtdlMsiGetComponentPath(ProductGuid, ComponentGuid,
+          TargetFile, @PathSize);
 
         if TargetFile <> '' then
         begin
@@ -1132,7 +1196,8 @@ begin
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
     FullPath := ExpandFileName(FileName);
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1, LinkName, MAX_PATH);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath),
+      -1, LinkName, MAX_PATH);
     Result := PersistFile.Load(LinkName, STGM_READ);
 
     if Succeeded(Result) then
@@ -1145,7 +1210,8 @@ begin
 
         if not TargetResolved then
         begin
-          ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_SHORTPATH);
+          ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData,
+            SLGP_SHORTPATH);
           Link.Target := PChar(Buffer);
         end;
 
@@ -1195,7 +1261,8 @@ begin
     if Link.IdList <> nil then
     begin
       FillChar(Info, SizeOf(Info), 0);
-      if SHGetFileInfo(PChar(Link.IdList), 0, Info, SizeOf(Info), SHGFI_PIDL or SHGFI_ICON) <> 0 then
+      if SHGetFileInfo(PChar(Link.IdList), 0, Info, SizeOf(Info),
+        SHGFI_PIDL or SHGFI_ICON) <> 0 then
         Result := Info.hIcon;
     end;
   end;
@@ -1216,7 +1283,8 @@ end;
 
 //=== Miscellaneous ==========================================================
 
-function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
+function SHGetItemInfoTip(const Folder: IShellFolder;
+  Item: PItemIdList): string;
 var
   QueryInfo: IQueryInfo;
   InfoTip: PWideChar;
@@ -1235,9 +1303,10 @@ begin
   end;
 end;
 
-function SHDllGetVersion(const FileName: string; var Version: TDllVersionInfo): Boolean;
+function SHDllGetVersion(const FileName: string;
+  var Version: TDllVersionInfo): Boolean;
 type
-  TDllGetVersionProc = function (var pdvi: TDllVersionInfo): HRESULT; stdcall;
+  TDllGetVersionProc = function(var pdvi: TDllVersionInfo): HRESULT; stdcall;
 var
   _DllGetVersion: TDllGetVersionProc;
   LibHandle: HINST;
@@ -1346,9 +1415,12 @@ end;
 
 { TODO -cHelp : author Jean-Fabien Connault note, ShellExecEx() above used to be ShellExec()... }
 
-function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
+function ShellExec(Wnd: Integer;
+  const Operation, FileName, Parameters, Directory: string;
+  ShowCommand: Integer): Boolean;
 begin
-  Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName), PChar(Parameters),
+  Result := ShellExecute(Wnd, PChar(Operation), PChar(FileName),
+    PChar(Parameters),
     PChar(Directory), ShowCommand) > 32;
 end;
 
@@ -1361,7 +1433,8 @@ var
 begin
   FillChar(Sei, SizeOf(Sei), #0);
   Sei.cbSize := SizeOf(Sei);
-  Sei.fMask := SEE_MASK_DOENVSUBST  or SEE_MASK_FLAG_NO_UI  or SEE_MASK_NOCLOSEPROCESS or
+  Sei.fMask := SEE_MASK_DOENVSUBST or SEE_MASK_FLAG_NO_UI or
+    SEE_MASK_NOCLOSEPROCESS or
     SEE_MASK_FLAG_DDEWAIT;
   Sei.lpFile := PChar(FileName);
   Sei.lpParameters := PCharOrNil(Parameters);
@@ -1387,13 +1460,15 @@ end;
 
 function ShellOpenAs(const FileName: string): Boolean;
 begin
-  Result := ShellExecEx('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
+  Result := ShellExecEx('rundll32',
+    Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
 end;
 
 { TODO: Dynamic linking - move TRasDialDlgA to JclWin32}
 
 type
-  TRasDialDlgA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
+  TRasDialDlgA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar;
+    lpInfo: PRasDialDlg): BOOL; stdcall;
 
 function ShellRasDial(const EntryName: string): Boolean;
 var
@@ -1401,25 +1476,26 @@ var
   RasDlg: HModule;
   RasDialDlgA: TRasDialDlgA;
 begin
-   if IsWinNT then
-   begin
-     Result := False;
-     RasDlg := SafeLoadLibrary('rasdlg.dll');
-     if RasDlg <> 0 then
-     try
-       @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));
-       if @RasDialDlgA <> nil then
-       begin
-         FillChar(Info, SizeOf(Info), 0);
-         Info.dwSize := SizeOf(Info);
-         Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
-       end;   
-     finally   
-       FreeLibrary(RasDlg);
-     end;   
-   end 
-   else
-     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
+  if IsWinNT then
+  begin
+    Result := False;
+    RasDlg := SafeLoadLibrary('rasdlg.dll');
+    if RasDlg <> 0 then
+      try
+        @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));
+        if @RasDialDlgA <> nil then
+        begin
+          FillChar(Info, SizeOf(Info), 0);
+          Info.dwSize := SizeOf(Info);
+          Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
+        end;
+      finally
+        FreeLibrary(RasDlg);
+      end;
+  end
+  else
+    Result := ShellExecEx('rundll32',
+      Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
 end;
 
 // You can pass simple name of standard system control panel (e.g. 'timedate')
@@ -1427,22 +1503,26 @@ end;
 // MT: Added support for Windows 98..XP. Have no win95 anymore so I have to
 //     trust that the original version works on Windows 95 and Windows 95OSR2.
 
-function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer): Boolean;
+function ShellRunControlPanel(const NameOrFileName: string;
+  AppletNumber: Integer): Boolean;
 var
   FileName: TFileName;
 begin
   if ExtractFilePath(NameOrFileName) = '' then
-    FileName := ChangeFileExt(PathAddSeparator(GetWindowsSystemFolder) + NameOrFileName, '.cpl')
+    FileName := ChangeFileExt(PathAddSeparator(GetWindowsSystemFolder) +
+      NameOrFileName, '.cpl')
   else
     FileName := NameOrFileName;
   if FileExists(FileName) then
   begin
     if (IsWin95 or IsWin95OSR2) then
-      Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
+      Result := ShellExecEx('rundll32',
+        Format('shell32.dll,Control_RunDLL "%s", @%d',
         [FileName, AppletNumber]), '', SW_SHOWNORMAL)
     else
-      Result := ShellExecEx('rundll32', Format('shell32.dll,Control_RunDLL "%s",,%d',
-        [FileName, AppletNumber]), '', SW_SHOWNORMAL)
+      Result := ShellExecEx('rundll32',
+        Format('shell32.dll,Control_RunDLL "%s",,%d',
+        [FileName, AppletNumber]), '', SW_SHOWNORMAL);
   end
   else
   begin
@@ -1456,7 +1536,8 @@ var
   FileInfo: TSHFileInfo;
   R: DWORD;
 begin
-  R := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_EXETYPE);
+  R := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo),
+    SHGFI_EXETYPE);
   case LoWord(R) of
     IMAGE_DOS_SIGNATURE:
       Result := etMsDos;
@@ -1467,8 +1548,8 @@ begin
         Result := etWin32Con
       else
         Result := etWin32Gui;
-  else
-    Result := etError;
+    else
+      Result := etError;
   end;
 end;
 
@@ -1523,5 +1604,3 @@ finalization
   UnloadModule(rtdlMsiLibHandle);
 
 end.
-
-

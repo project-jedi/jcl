@@ -52,8 +52,10 @@ uses
 //
 // Routines to manipulate simple typed variables in a thread safe manner
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
-function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
-function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; overload;
+function LockedCompareExchange(var Target: Integer;
+  Exch, Comp: Integer): Integer; overload;
+function LockedCompareExchange(var Target: Pointer;
+  Exch, Comp: Pointer): Pointer; overload;
 function LockedDec(var Target: Integer): Integer;
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
@@ -67,7 +69,8 @@ function LockedSub(var Target: Integer; Value: Integer): Integer;
 //
 // Base class for operating system provided synchronisation primitives
 type
-  TJclWaitResult = (wrAbandoned, wrError, wrIoCompletion, wrSignaled, wrTimeout);
+  TJclWaitResult = (wrAbandoned, wrError, wrIoCompletion,
+    wrSignaled, wrTimeout);
 
   TJclDispatcherObject = class(TObject)
   private
@@ -95,7 +98,8 @@ type
 // opposed to handles) mostly for convenience
 function WaitForMultipleObjects(const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
-function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
+function WaitAlertableForMultipleObjects(
+  const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 
 type
@@ -126,8 +130,10 @@ type
 
   TJclEvent = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; Manual, Signaled: Boolean; const Name: string);
-    constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    constructor Create(SecAttr: PSecurityAttributes;
+      Manual, Signaled: Boolean; const Name: string);
+    constructor Open(Access: Cardinal; Inheritable: Boolean;
+      const Name: string);
     function Pulse: Boolean;
     function ResetEvent: Boolean;
     function SetEvent: Boolean;
@@ -137,31 +143,41 @@ type
   private
     FResume: Boolean;
   public
-    constructor Create(SecAttr: PSecurityAttributes; Manual: Boolean; const Name: string);
-    constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    constructor Create(SecAttr: PSecurityAttributes; Manual: Boolean;
+      const Name: string);
+    constructor Open(Access: Cardinal; Inheritable: Boolean;
+      const Name: string);
     function Cancel: Boolean;
-    function SetTimer(const DueTime: Int64; Period: Longint; Resume: Boolean): Boolean;
-    function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
+    function SetTimer(const DueTime: Int64; Period: Longint;
+      Resume: Boolean): Boolean;
+    function SetTimerApc(const DueTime: Int64; Period: Longint;
+      Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
   end;
 
   TJclSemaphore = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; Initial, Maximum: Longint; const Name: string);
-    constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    constructor Create(SecAttr: PSecurityAttributes;
+      Initial, Maximum: Longint; const Name: string);
+    constructor Open(Access: Cardinal; Inheritable: Boolean;
+      const Name: string);
     function Release(ReleaseCount: Longint): Boolean;
-    function ReleasePrev(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
+    function ReleasePrev(ReleaseCount: Longint;
+      var PrevCount: Longint): Boolean;
   end;
 
   TJclMutex = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
-    constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    constructor Create(SecAttr: PSecurityAttributes;
+      InitialOwner: Boolean; const Name: string);
+    constructor Open(Access: Cardinal; Inheritable: Boolean;
+      const Name: string);
     function Release: Boolean;
   end;
 
   POptexSharedInfo = ^TOptexSharedInfo;
   TOptexSharedInfo = record
-    SpinCount: Integer;      // number of times to try and enter the optex before
+    SpinCount: Integer;
+      // number of times to try and enter the optex before
                              // waiting on kernel event, 0 on single processor
     LockCount: Integer;      // count of enter attempts
     ThreadId: Longword;      // id of thread that owns the optex, 0 if free
@@ -244,9 +260,12 @@ type
   private
     FMetSect: PMeteredSection;
     procedure CloseMeteredSection;
-    function InitMeteredSection(InitialCount, MaxCount: Longint; const Name: string; OpenOnly: Boolean): Boolean;
-    function CreateMetSectEvent(const Name: string; OpenOnly: Boolean): Boolean;
-    function CreateMetSectFileView(InitialCount, MaxCount: Longint; const Name: string; OpenOnly: Boolean): Boolean;
+    function InitMeteredSection(InitialCount, MaxCount: Longint;
+      const Name: string; OpenOnly: Boolean): Boolean;
+    function CreateMetSectEvent(const Name: string;
+      OpenOnly: Boolean): Boolean;
+    function CreateMetSectFileView(InitialCount, MaxCount: Longint;
+      const Name: string; OpenOnly: Boolean): Boolean;
   protected
     procedure AcquireLock;
     procedure ReleaseLock;
@@ -256,7 +275,8 @@ type
     destructor Destroy; override;
     function Enter(TimeOut: Longword): TJclWaitResult;
     function Leave(ReleaseCount: Longint): Boolean; overload;
-    function Leave(ReleaseCount: Longint; var PrevCount: Longint): Boolean; overload;
+    function Leave(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
+      overload;
   end;
 
 // Debugging
@@ -272,7 +292,8 @@ type
   end;
 
   TMutexInfo = record
-    SignalState: Longint;     // >0 = signaled, <0 = |SignalState| recurs. acquired
+    SignalState: Longint;
+     // >0 = signaled, <0 = |SignalState| recurs. acquired
     Owned: ByteBool;          // owned by thread
     Abandoned: ByteBool;      // is abandoned?
   end;
@@ -287,7 +308,8 @@ type
     Signaled: ByteBool;       // is signaled?
   end;
 
-function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
+function QueryCriticalSection(CS: TJclCriticalSection;
+  var Info: TRTLCriticalSection): Boolean;
 { TODO -cTest : Test these 4 functions }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
@@ -322,89 +344,95 @@ uses
   JclLogic, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 const
-  RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
+  RegSessionManager = {HKLM\}
+    'SYSTEM\CurrentControlSet\Control\Session Manager';
   RegCritSecTimeout = {RegSessionManager\} 'CriticalSectionTimeout';
 
 // Locked Integer manipulation
 function LockedAdd(var Target: Integer; Value: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
-        ADD     EAX, EDX
+  MOV     ECX, EAX
+  MOV     EAX, EDX
+  LOCK XADD [ECX], EAX
+  ADD     EAX, EDX
 end;
 
-function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; assembler;
+function LockedCompareExchange(var Target: Integer;
+  Exch, Comp: Integer): Integer; assembler;
 asm
-        XCHG    EAX, ECX
-        LOCK CMPXCHG [ECX], EDX
+  XCHG    EAX, ECX
+  LOCK CMPXCHG [ECX], EDX
 end;
 
-function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; assembler;
+function LockedCompareExchange(var Target: Pointer;
+  Exch, Comp: Pointer): Pointer; assembler;
 asm
-        XCHG    EAX, ECX
-        LOCK CMPXCHG [ECX], EDX
+  XCHG    EAX, ECX
+  LOCK CMPXCHG [ECX], EDX
 end;
 
 function LockedDec(var Target: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, -1
-        LOCK XADD [ECX], EAX
-        DEC     EAX
+  MOV     ECX, EAX
+  MOV     EAX, -1
+  LOCK XADD [ECX], EAX
+  DEC     EAX
 end;
 
-function LockedExchange(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchange(var Target: Integer; Value: Integer): Integer;
+  assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XCHG [ECX], EAX
+  MOV     ECX, EAX
+  MOV     EAX, EDX
+  LOCK XCHG [ECX], EAX
 end;
 
-function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
+  assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
+  MOV     ECX, EAX
+  MOV     EAX, EDX
+  LOCK XADD [ECX], EAX
 end;
 
 function LockedExchangeDec(var Target: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, -1
-        LOCK XADD [ECX], EAX
+  MOV     ECX, EAX
+  MOV     EAX, -1
+  LOCK XADD [ECX], EAX
 end;
 
 function LockedExchangeInc(var Target: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, 1
-        LOCK XADD [ECX], EAX
+  MOV     ECX, EAX
+  MOV     EAX, 1
+  LOCK XADD [ECX], EAX
 end;
 
-function LockedExchangeSub(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
+  assembler;
 asm
-        MOV     ECX, EAX
-        NEG     EDX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
+  MOV     ECX, EAX
+  NEG     EDX
+  MOV     EAX, EDX
+  LOCK XADD [ECX], EAX
 end;
 
 function LockedInc(var Target: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, 1
-        LOCK XADD [ECX], EAX
-        INC     EAX
+  MOV     ECX, EAX
+  MOV     EAX, 1
+  LOCK XADD [ECX], EAX
+  INC     EAX
 end;
 
 function LockedSub(var Target: Integer; Value: Integer): Integer; assembler;
 asm
-        MOV     ECX, EAX
-        NEG     EDX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
-        ADD     EAX, EDX
+  MOV     ECX, EAX
+  NEG     EDX
+  MOV     EAX, EDX
+  LOCK XADD [ECX], EAX
+  ADD     EAX, EDX
 end;
 
 //=== { TJclDispatcherObject } ===============================================
@@ -422,8 +450,8 @@ begin
       Result := wrIoCompletion;
     WAIT_FAILED:
       Result := wrError;
-  else
-    Result := wrError;
+    else
+      Result := wrError;
   end;
 end;
 
@@ -446,12 +474,15 @@ function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
   // Note: Do not make this method virtual! It's only available on NT 4 up...
-  Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
+  Result := MapSignalResult(
+    Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
 end;
 
-function TJclDispatcherObject.WaitAlertable(const TimeOut: Cardinal): TJclWaitResult;
+function TJclDispatcherObject.WaitAlertable(
+  const TimeOut: Cardinal): TJclWaitResult;
 begin
-  Result := MapSignalResult(Windows.WaitForSingleObjectEx(FHandle, TimeOut, True));
+  Result := MapSignalResult(Windows.WaitForSingleObjectEx(FHandle,
+    TimeOut, True));
 end;
 
 function TJclDispatcherObject.WaitFor(const TimeOut: Cardinal): TJclWaitResult;
@@ -475,10 +506,12 @@ begin
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
-  Result := Windows.WaitForMultipleObjects(Count, @Handles[0], WaitAll, TimeOut);
+  Result := Windows.WaitForMultipleObjects(Count, @Handles[0],
+    WaitAll, TimeOut);
 end;
 
-function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
+function WaitAlertableForMultipleObjects(
+  const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 var
   Handles: array of THandle;
@@ -488,7 +521,8 @@ begin
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
-  Result := Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
+  Result := Windows.WaitForMultipleObjectsEx(Count, @Handles[0],
+    WaitAll, TimeOut, True);
 end;
 
 //=== { TJclCriticalSection } ================================================
@@ -505,7 +539,8 @@ begin
   inherited Destroy;
 end;
 
-class procedure TJclCriticalSection.CreateAndEnter(var CS: TJclCriticalSection);
+class procedure TJclCriticalSection.CreateAndEnter(
+  var CS: TJclCriticalSection);
 var
   NewCritSect: TJclCriticalSection;
 begin
@@ -547,7 +582,8 @@ begin
   if NoFailEnter then
     SpinCount := SpinCount or Cardinal($80000000);
 
-  if not InitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
+  if not InitializeCriticalSectionAndSpinCount(FCriticalSection,
+    SpinCount) then
     raise EJclCriticalSectionError.CreateRes(@RsSynchInitCriticalSection);
 end;
 
@@ -716,7 +752,8 @@ end;
 
 //=== { TJclMutex } ==========================================================
 
-constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
+constructor TJclMutex.Create(SecAttr: PSecurityAttributes;
+  InitialOwner: Boolean; const Name: string);
 begin
   FName := Name;
   FHandle := JclWin32.CreateMutex(SecAttr, Ord(InitialOwner), PChar(Name));
@@ -725,7 +762,8 @@ begin
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
-constructor TJclMutex.Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+constructor TJclMutex.Open(Access: Cardinal; Inheritable: Boolean;
+  const Name: string);
 begin
   FName := Name;
   FExisted := True;
@@ -759,10 +797,12 @@ begin
     // if another process already created it.
     FEvent := TJclEvent.Create(nil, False, False, 'Optex_Event_' + Name);
     FExisted := FEvent.Existed;
-    FFileMapping := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+    FFileMapping := Windows.CreateFileMapping(INVALID_HANDLE_VALUE,
+      nil, PAGE_READWRITE,
       0, SizeOf(TOptexSharedInfo), PChar('Optex_MMF_' + Name));
     Assert(FFileMapping <> 0);
-    FSharedInfo := Windows.MapViewOfFile(FFileMapping, FILE_MAP_WRITE, 0, 0, 0);
+    FSharedInfo := Windows.MapViewOfFile(FFileMapping,
+      FILE_MAP_WRITE, 0, 0, 0);
     Assert(FSharedInfo <> nil);
   end;
   SetSpinCount(SpinCount);
@@ -799,7 +839,7 @@ begin
     if FSharedInfo^.ThreadId = ThreadId then
     begin
       // We already owned it, increase ownership count
-      Inc(FSharedInfo^.RecursionCount)
+      Inc(FSharedInfo^.RecursionCount);
     end
     else
     begin
@@ -1111,17 +1151,17 @@ begin
   end;
   case ToRelease of
     mpReaders:
-      begin
-        FState := FWaitingReaders;
-        FWaitingReaders := 0;
-        FSemReaders.Release(FState);
-      end;
+    begin
+      FState := FWaitingReaders;
+      FWaitingReaders := 0;
+      FSemReaders.Release(FState);
+    end;
     mpWriters:
-      begin
-        FState := -1;
-        Dec(FWaitingWriters);
-        FSemWriters.Release(1);
-      end;
+    begin
+      FState := -1;
+      Dec(FWaitingWriters);
+      FSemWriters.Release(1);
+    end;
     mpEqual:
       // no waiters
   end;
@@ -1133,7 +1173,8 @@ var
 begin
   // Caller must Lock
   L := Length(FThreads);
-  Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
+  Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) *
+    (L - Index - 1));
   SetLength(FThreads, L - 1);
 end;
 
@@ -1142,7 +1183,8 @@ end;
 const
   MAX_METSECT_NAMELEN = 128;
 
-constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Name: string);
+constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer;
+  const Name: string);
 begin
   if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
     (Length(Name) > MAX_METSECT_NAMELEN) then
@@ -1200,7 +1242,8 @@ begin
   end;
 end;
 
-function TJclMeteredSection.CreateMetSectEvent(const Name: string; OpenOnly: Boolean): Boolean;
+function TJclMeteredSection.CreateMetSectEvent(const Name: string;
+  OpenOnly: Boolean): Boolean;
 var
   FullName: string;
 begin
@@ -1208,16 +1251,18 @@ begin
     FMetSect^.Event := Windows.CreateEvent(nil, False, False, nil)
   else
   begin
-    FullName :=  'JCL_MSECT_EVT_' + Name;
+    FullName := 'JCL_MSECT_EVT_' + Name;
     if OpenOnly then
       FMetSect^.Event := Windows.OpenEvent(0, False, PChar(FullName))
     else
-      FMetSect^.Event := Windows.CreateEvent(nil, False, False, PChar(FullName));
+      FMetSect^.Event := Windows.CreateEvent(nil, False, False,
+        PChar(FullName));
   end;
   Result := FMetSect^.Event <> 0;
 end;
 
-function TJclMeteredSection.CreateMetSectFileView(InitialCount, MaxCount: Longint;
+function TJclMeteredSection.CreateMetSectFileView(InitialCount,
+  MaxCount: Longint;
   const Name: string; OpenOnly: Boolean): Boolean;
 var
   FullName: string;
@@ -1225,30 +1270,36 @@ var
 begin
   Result := False;
   if Name = '' then
-    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
+    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE,
+      nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
   else
   begin
     FullName := 'JCL_MSECT_MMF_' + Name;
     if OpenOnly then
       FMetSect^.FileMap := Windows.OpenFileMapping(0, False, PChar(FullName))
     else
-      FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
+      FMetSect^.FileMap :=
+        Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+        0, SizeOf(TMetSectSharedInfo), PChar(FullName));
   end;
   if FMetSect^.FileMap <> 0 then
   begin
     LastError := GetLastError;
-    FMetSect^.SharedInfo := Windows.MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
+    FMetSect^.SharedInfo :=
+      Windows.MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
     if FMetSect^.SharedInfo <> nil then
     begin
       if LastError = ERROR_ALREADY_EXISTS then
-        while not FMetSect^.SharedInfo^.Initialized do Sleep(0)
+        while not FMetSect^.SharedInfo^.Initialized do
+          Sleep(0)
       else
       begin
         FMetSect^.SharedInfo^.SpinLock := 0;
         FMetSect^.SharedInfo^.ThreadsWaiting := 0;
         FMetSect^.SharedInfo^.AvailableCount := InitialCount;
         FMetSect^.SharedInfo^.MaximumCount := MaxCount;
-        Windows.InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
+        Windows.InterlockedExchange(
+          Integer(FMetSect^.SharedInfo^.Initialized), 1);
       end;
       Result := True;
     end;
@@ -1273,7 +1324,8 @@ begin
     finally
       ReleaseLock;
     end;
-    Result := MapSignalResult(Windows.WaitForSingleObject(FMetSect^.Event, TimeOut));
+    Result := MapSignalResult(Windows.WaitForSingleObject(
+      FMetSect^.Event, TimeOut));
   end;
 end;
 
@@ -1285,7 +1337,8 @@ begin
     Result := CreateMetSectFileView(InitialCount, MaxCount, Name, OpenOnly);
 end;
 
-function TJclMeteredSection.Leave(ReleaseCount: Integer; var PrevCount: Integer): Boolean;
+function TJclMeteredSection.Leave(ReleaseCount: Integer;
+  var PrevCount: Integer): Boolean;
 var
   Count: Integer;
 begin
@@ -1294,7 +1347,8 @@ begin
   try
     PrevCount := FMetSect^.SharedInfo^.AvailableCount;
     if (ReleaseCount < 0) or
-      (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount > FMetSect^.SharedInfo^.MaximumCount) then
+      (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount >
+      FMetSect^.SharedInfo^.MaximumCount) then
     begin
       Windows.SetLastError(ERROR_INVALID_PARAMETER);
       Exit;
@@ -1329,7 +1383,8 @@ end;
 
 //=== Debugging ==============================================================
 
-function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
+function QueryCriticalSection(CS: TJclCriticalSection;
+  var Info: TRTLCriticalSection): Boolean;
 begin
   Result := CS <> nil;
   if Result then
@@ -1342,53 +1397,58 @@ end;
 { TODO: RTLD version }
 
 type
- TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
-     Len: Longint; ResLen: PLongint): Longint; stdcall;
+  TNtQueryProc = function(Handle: THandle; InfoClass: Byte; Info: Pointer;
+    Len: Longint; ResLen: PLongint): Longint; stdcall;
 
- var
-   _QueryEvent: TNtQueryProc = nil;
-   _QueryMutex: TNtQueryProc = nil;
-   _QuerySemaphore: TNtQueryProc = nil;
-   _QueryTimer: TNtQueryProc = nil;
+var
+  _QueryEvent: TNtQueryProc = nil;
+  _QueryMutex: TNtQueryProc = nil;
+  _QuerySemaphore: TNtQueryProc = nil;
+  _QueryTimer: TNtQueryProc = nil;
 
- function CallQueryProc(var P: TNtQueryProc; const Name: string; Handle: THandle;
-   Info: Pointer; InfoSize: Longint): Boolean;
- var
-   NtDll: THandle;
-   Status: Longint;
- begin
-   Result := False;
-   if @P = nil then
-   begin
-     NtDll := GetModuleHandle(PChar('ntdll.dll'));
-     if NtDll <> 0 then
-       @P := GetProcAddress(NtDll, PChar(Name));
-   end;
-   if @P <> nil then
-   begin
-     Status := P(Handle, 0, Info, InfoSize, nil);
-     Result := (Status and $80000000) = 0;
-   end;
- end;
+function CallQueryProc(var P: TNtQueryProc; const Name: string;
+  Handle: THandle;
+  Info: Pointer; InfoSize: Longint): Boolean;
+var
+  NtDll: THandle;
+  Status: Longint;
+begin
+  Result := False;
+  if @P = nil then
+  begin
+    NtDll := GetModuleHandle(PChar('ntdll.dll'));
+    if NtDll <> 0 then
+      @P := GetProcAddress(NtDll, PChar(Name));
+  end;
+  if @P <> nil then
+  begin
+    Status := P(Handle, 0, Info, InfoSize, nil);
+    Result := (Status and $80000000) = 0;
+  end;
+end;
 
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 begin
-  Result := CallQueryProc(_QueryEvent, 'NtQueryEvent', Handle, @Info, SizeOf(Info));
+  Result := CallQueryProc(_QueryEvent, 'NtQueryEvent', Handle,
+    @Info, SizeOf(Info));
 end;
 
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 begin
-  Result := CallQueryProc(_QueryMutex, 'NtQueryMutex', Handle, @Info, SizeOf(Info));
+  Result := CallQueryProc(_QueryMutex, 'NtQueryMutex', Handle,
+    @Info, SizeOf(Info));
 end;
 
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
 begin
-  Result := CallQueryProc(_QuerySemaphore, 'NtQuerySemaphore', Handle, @Info, SizeOf(Info));
+  Result := CallQueryProc(_QuerySemaphore, 'NtQuerySemaphore',
+    Handle, @Info, SizeOf(Info));
 end;
 
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 begin
-  Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
+  Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle,
+    @Info, SizeOf(Info));
 end;
 
 {$IFDEF UNITVERSIONING}

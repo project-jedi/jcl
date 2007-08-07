@@ -123,7 +123,8 @@ begin
       ProcessNext := Process32First(SnapProcHandle, ProcessEntry);
       while ProcessNext do
       begin
-        SnapModuleHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessEntry.th32ProcessID);
+        SnapModuleHandle :=
+          CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessEntry.th32ProcessID);
         if SnapModuleHandle <> THandle(-1) then
         begin
           ModuleEntry.dwSize := Sizeof(ModuleEntry);
@@ -133,7 +134,8 @@ begin
             I := ML.Add(ModuleEntry.szExePath);
             PD := TProcessData(ML.Objects[I]);
             Inc(PD.UsageCnt);
-            if GetImageBase(ModuleEntry.szExePath) <> DWORD(ModuleEntry.modBaseAddr) then
+            if GetImageBase(ModuleEntry.szExePath) <>
+              DWORD(ModuleEntry.modBaseAddr) then
               Inc(PD.RelocateCnt);
             ML.Objects[I] := Pointer(PD);
             ModuleNext := Module32Next(SnapModuleHandle, ModuleEntry);
@@ -157,16 +159,17 @@ begin
           if PD.RelocateCnt = 0 then
             ImageIndex := 20
           else
-            ImageIndex := 19;  
+            ImageIndex := 19;
           with SubItems do
           begin
             Add(IntToStr(PD.UsageCnt));
-            if PD.RelocateCnt = 0 then Add('-') else Add(IntToStr(PD.RelocateCnt));
+            if PD.RelocateCnt = 0 then
+              Add('-') else Add(IntToStr(PD.RelocateCnt));
             Add(ML[I]);
-          end;  
+          end;
         end;
-       AlphaSort;
-       Items.EndUpdate;
+      AlphaSort;
+      Items.EndUpdate;
     end;
 
     with StatusBar do
@@ -182,7 +185,8 @@ begin
   end;
 end;
 
-procedure TModulesDumpForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TModulesDumpForm.FormClose(Sender: TObject;
+  var Action: TCloseAction);
 begin
   inherited;
   ModulesDumpForm := nil;
@@ -239,7 +243,8 @@ end;
 
 procedure TModulesDumpForm.DumpPe1Update(Sender: TObject);
 begin
-  DumpPe1.Enabled := GlobalModule.PeViewerRegistred and Assigned(ModulesListView.Selected)
+  DumpPe1.Enabled := GlobalModule.PeViewerRegistred and
+    Assigned(ModulesListView.Selected);
 end;
 
 end.

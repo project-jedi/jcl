@@ -40,7 +40,7 @@ const
 
 type
   TJclRegisterType = (rtXMM, rtMM);
-  
+
   TJclSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
     ComboBoxFormat: TComboBox;
@@ -82,7 +82,8 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   public
     constructor Create(AOwner: TComponent;
-      ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings); reintroduce;
+      ADebuggerServices: IOTADebuggerServices; ASettings: TJclOTASettings);
+      reintroduce;
     destructor Destroy; override;
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
@@ -90,7 +91,8 @@ type
     function Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
       AFormat: TJclSIMDFormat; var ARegister: TJclMMRegister;
       const ACpuInfo: TCpuInfo): Boolean; overload;
-    procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     procedure UpdateDisplay;
     procedure UpdateFormat;
     procedure LoadHistory;
@@ -110,10 +112,10 @@ implementation
 
 const
   NbEdits: array [TJclRegisterType, TJclXMMContentType] of Byte =
-   (
+    (
     (16, 8, 4, 2, 4, 2),
-    ( 8, 4, 2, 1, 2, 1)
-   );
+    (8, 4, 2, 1, 2, 1)
+    );
 
   Texts: array [TJclXMMContentType] of string =
     ('Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double');
@@ -147,7 +149,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -163,7 +166,8 @@ begin
   inherited Destroy;
 end;
 
-function TJclSIMDModifyFrm.Execute(AThread: IOTAThread; ADisplay: TJclXMMContentType;
+function TJclSIMDModifyFrm.Execute(AThread: IOTAThread;
+  ADisplay: TJclXMMContentType;
   AFormat: TJclSIMDFormat; var ARegister: TJclXMMRegister;
   const ACPUInfo: TCPUInfo): Boolean;
 begin
@@ -302,13 +306,14 @@ begin
           xt4Singles:
             Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
           xt2Doubles:
-            begin
-              ALabel.Caption := '';
-              Break;
-            end;
+          begin
+            ALabel.Caption := '';
+            Break;
+          end;
         end;
     end;
-    ALabel.Caption := SysUtils.Format('%s%d = %s', [Texts[Display], Index, FormatValue(Value, Format)]);
+    ALabel.Caption := SysUtils.Format('%s%d = %s',
+      [Texts[Display], Index, FormatValue(Value, Format)]);
   end;
 end;
 
@@ -357,7 +362,8 @@ var
 begin
   Settings.SaveInteger(CountPropertyName, History.Count);
   for Index := 0 to History.Count - 1 do
-    Settings.SaveString(SysUtils.Format(ItemFormat, [Index]), History.Strings[Index]);
+    Settings.SaveString(SysUtils.Format(ItemFormat, [Index]),
+      History.Strings[Index]);
 end;
 
 procedure TJclSIMDModifyFrm.MergeHistory;
@@ -368,13 +374,14 @@ begin
   for I := 0 to PanelModify.ControlCount - 1 do
     if PanelModify.Controls[I] is TComboBox then
       with TComboBox(PanelModify.Controls[I]) do
-  begin
-    for J := 0 to Items.Count - 1 do
-      if (Items.Strings[J] <> '') and (History.IndexOf(Items.Strings[J]) = -1) then
-        History.Add(Items.Strings[J]);
-    if (Text <> '') and (History.IndexOf(Text) = -1) then
-      History.Add(Text);
-  end;
+      begin
+        for J := 0 to Items.Count - 1 do
+          if (Items.Strings[J] <> '') and
+            (History.IndexOf(Items.Strings[J]) = -1) then
+            History.Add(Items.Strings[J]);
+        if (Text <> '') and (History.IndexOf(Text) = -1) then
+          History.Add(Text);
+      end;
   while History.Count > HistoryListSize do
     History.Delete(0);
 end;
@@ -407,7 +414,7 @@ var
   EvaluateResult: TOTAEvaluateResult;
   AValue: TJclSIMDValue;
   AComboBox: TComboBox;
-  ResultBuffer: array [0..ResultBufferSize-1] of Char;
+  ResultBuffer: array [0..ResultBufferSize - 1] of Char;
   ResultAddr, ResultSize: Cardinal;
   CanModify: Boolean;
   VectorFrame: TJclVectorFrame;
@@ -422,7 +429,7 @@ begin
   begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
     begin
-      if (ParseValue(FResultStr,AValue,Format)) then
+      if (ParseValue(FResultStr, AValue, Format)) then
         case RegisterType of
           rtXMM:
             case AValue.Display of
@@ -471,9 +478,11 @@ begin
         begin
           if not ParseValue(FExprStr, AValue, Format) then
           begin
-            if ReplaceSIMDRegisters(FExprStr, FCPUInfo.Is64Bits, VectorFrame) then
+            if ReplaceSIMDRegisters(FExprStr, FCPUInfo.Is64Bits,
+              VectorFrame) then
               EvaluateResult := Thread.Evaluate(FExprStr, ResultBuffer,
-                ResultBufferSize, CanModify, True, '', ResultAddr, ResultSize, FReturnCode)
+                ResultBufferSize, CanModify, True, '', ResultAddr,
+                ResultSize, FReturnCode)
             else
               EvaluateResult := erError;
             if (EvaluateResult <> erDeferred) and (FReturnCode <> 0) then
@@ -518,7 +527,8 @@ begin
   end;
 end;
 
-procedure TJclSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
+procedure TJclSIMDModifyFrm.ThreadEvaluate(const ExprStr, ResultStr: string;
+  ReturnCode: Integer);
 begin
   if CompareText(FExprStr, ExprStr) = 0 then
   begin

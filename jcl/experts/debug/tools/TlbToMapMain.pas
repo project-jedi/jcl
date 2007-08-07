@@ -95,7 +95,7 @@ resourcestring
 // http://msdn.microsoft.com/library/periodic/period99/comtype.htm
 
 type
-  TJclTypeLibScanner = class (TObject)
+  TJclTypeLibScanner = class(TObject)
   private
     FMembersList: TStrings;
     FModuleFileName: TFileName;
@@ -107,7 +107,7 @@ type
     constructor Create(const FileName: TFileName);
     destructor Destroy; override;
     property MembersList: TStrings read FMembersList;
-    property ModuleFileName: TFileName read FModuleFileName; 
+    property ModuleFileName: TFileName read FModuleFileName;
     property ValidFormat: Boolean read FValidFormat;
   end;
 
@@ -116,7 +116,8 @@ type
 constructor TJclTypeLibScanner.Create(const FileName: TFileName);
 begin
   FMembersList := TStringList.Create;
-  FValidFormat := Succeeded(LoadTypeLib(PWideChar(WideString(FileName)), FTypeLib));
+  FValidFormat := Succeeded(LoadTypeLib(PWideChar(WideString(FileName)),
+    FTypeLib));
   if FValidFormat then
     Scan;
 end;
@@ -141,7 +142,7 @@ var
     if Succeeded(TI.GetDocumentation(MemID, @Name, nil, nil, nil)) then
       Result := Name
     else
-      Result := '';  
+      Result := '';
   end;
 
   procedure EnumTypeInfoMembers(MemTypeInfo: ITypeInfo; MemTypeAttr: PTypeAttr;
@@ -189,7 +190,8 @@ var
     if Succeeded(TypeInfo.GetRefTypeInfo(RefType, RefTypeInfo)) and
       Succeeded(RefTypeInfo.GetTypeAttr(RefTypeAttr)) then
     begin
-      R := CoCreateInstance(TypeAttr.guid, nil, CLSCTX_INPROC_SERVER or CLSCTX_INPROC_HANDLER,
+      R := CoCreateInstance(TypeAttr.guid, nil, CLSCTX_INPROC_SERVER or
+        CLSCTX_INPROC_HANDLER,
         RefTypeAttr.guid, Unknown);
       if Succeeded(R) and (Unknown <> nil) then
         EnumTypeInfoMembers(RefTypeInfo, RefTypeAttr, Unknown);
@@ -240,7 +242,8 @@ begin
   end;
 end;
 
-function SortPublicsByValue(List: TStringList; Index1, Index2: Integer): Integer;
+function SortPublicsByValue(List: TStringList;
+  Index1, Index2: Integer): Integer;
 begin
   Result := DWORD(List.Objects[Index1]) - DWORD(List.Objects[Index2]);
 end;
@@ -259,7 +262,8 @@ var
   begin
     for I := 0 to FMembersList.Count - 1 do
       MapList.Add(Format(' 0001:%.8x       %s',
-        [DWORD(FMembersList.Objects[I]) - CodeSection.VirtualAddress, FMembersList[I]]));
+        [DWORD(FMembersList.Objects[I]) - CodeSection.VirtualAddress,
+        FMembersList[I]]));
   end;
 
 begin
@@ -277,13 +281,14 @@ begin
     MapList.Add('');
     MapList.Add(' Start         Length     Name                   Class');
     MapList.Add(Format(' %.4x:%.8x %.8xH  %s                  CODE',
-       [1, CodeSection.VirtualAddress, CodeSection.Misc.VirtualSize,
-        PeImage.ImageSectionNames[0]]));
+      [1, CodeSection.VirtualAddress, CodeSection.Misc.VirtualSize,
+      PeImage.ImageSectionNames[0]]));
     MapList.Add('');
     MapList.Add('');
     MapList.Add('Detailed map of segments');
     MapList.Add('');
-    MapList.Add(Format(' 0001:00000000 %.8xH C=CODE     S=.text    G=(none)   M=%s',
+    MapList.Add(Format(
+      ' 0001:00000000 %.8xH C=CODE     S=.text    G=(none)   M=%s',
       [HiAddress, PathExtractFileNameNoExt(FFileName)]));
     MapList.Add('');
     MapList.Add('');
@@ -340,7 +345,8 @@ begin
     StatusBar1.Repaint;
     TypeLibScanner := TJclTypeLibScanner.Create(FileName);
     try
-      if TypeLibScanner.ValidFormat and (TypeLibScanner.MembersList.Count > 0) then
+      if TypeLibScanner.ValidFormat and
+        (TypeLibScanner.MembersList.Count > 0) then
       begin
         FMembersList.Assign(TypeLibScanner.MembersList);
         FMembersList.Sort;
@@ -375,11 +381,11 @@ begin
   VersionMemo.Lines.Clear;
   if VersionResourceAvailable(Value) then
     with TJclFileVersionInfo.Create(Value) do
-    try
-      VersionMemo.Lines.Assign(Items);
-    finally
-      Free;
-    end;
+      try
+        VersionMemo.Lines.Assign(Items);
+      finally
+        Free;
+      end;
   DisableAlign;
   VersionMemo.Visible := VersionMemo.Lines.Count > 0;
   Splitter1.Visible := VersionMemo.Visible;

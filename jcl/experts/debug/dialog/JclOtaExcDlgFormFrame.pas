@@ -54,7 +54,8 @@ type
   protected
     function GetSupportsNext: Boolean; override;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams);
+      reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
@@ -93,7 +94,8 @@ end;
 
 function TJclOtaExcDlgFormPage.GetSupportsNext: Boolean;
 begin
-  Result := (not CheckBoxMail.Checked) or ((EditEMail.Text <> '') and (EditSubject.Text <> ''));
+  Result := (not CheckBoxMail.Checked) or
+    ((EditEMail.Text <> '') and (EditSubject.Text <> ''));
 end;
 
 procedure TJclOtaExcDlgFormPage.PageActivated(Direction: TJclWizardDirection);

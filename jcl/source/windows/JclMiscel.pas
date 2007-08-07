@@ -48,10 +48,12 @@ uses
 // StrLstLoadSave
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 
-function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+function CreateDOSProcessRedirected(
+  const CommandLine, InputFile, OutputFile: string): Boolean;
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
-function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean = False): Cardinal;
+function WinExec32AndRedirectOutput(const Cmd: string;
+  var Output: string; RawOutput: Boolean = False): Cardinal;
 
 type
   TJclKillLevel = (klNormal, klNoSignal, klTimeOut);
@@ -70,23 +72,26 @@ function SuspendOS(Force, DisableWakeEvents: Boolean): Boolean;
 
 function ShutDownDialog(const DialogMessage: string; TimeOut: DWORD;
   Force, Reboot: Boolean): Boolean; overload;
-function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD;
+function ShutDownDialog(const MachineName, DialogMessage: string;
+  TimeOut: DWORD;
   Force, Reboot: Boolean): Boolean; overload;
 function AbortShutDown: Boolean; overload;
 function AbortShutDown(const MachineName: string): Boolean; overload;
 
-type                                              
+type
   TJclAllowedPowerOperation = (apoHibernate, apoShutdown, apoSuspend);
   TJclAllowedPowerOperations = set of TJclAllowedPowerOperation;
-  
+
 function GetAllowedPowerOperations: TJclAllowedPowerOperations;
 
 // CreateProcAsUser
 type
   EJclCreateProcessError = class(EJclWin32Error);
 
-procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
-procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
+procedure CreateProcAsUser(
+  const UserDomain, UserName, PassWord, CommandLine: string);
+procedure CreateProcAsUserEx(
+  const UserDomain, UserName, Password, CommandLine: string;
   const Environment: PChar);
 
 {$IFDEF SUPPORTS_EXTSYM}
@@ -125,7 +130,8 @@ begin
   end;
 end;
 
-function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
+function CreateDOSProcessRedirected(
+  const CommandLine, InputFile, OutputFile: string): Boolean;
 var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -206,7 +212,8 @@ begin
   end;
 end;
 
-function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOutput: Boolean): Cardinal;
+function WinExec32AndRedirectOutput(const Cmd: string;
+  var Output: string; RawOutput: Boolean): Cardinal;
 begin
   Result := Execute(Cmd, Output, RawOutput);
 end;
@@ -258,10 +265,12 @@ end;
 function ExitWindows(ExitCode: Cardinal): Boolean;
 begin
   { TODO -cTest : Check for Win9x }
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) and not EnableProcessPrivilege(True, SE_SHUTDOWN_NAME) then
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and not
+    EnableProcessPrivilege(True, SE_SHUTDOWN_NAME) then
     Result := False
   else
-    Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
+    Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or
+      SHTDN_REASON_MINOR_OTHER);
 end;
 
 function HibernateOS(Force, DisableWakeEvents: Boolean): Boolean;
@@ -308,7 +317,8 @@ begin
   Result := ShutDownDialog('', DialogMessage, TimeOut, Force, Reboot);
 end;
 
-function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD;
+function ShutDownDialog(const MachineName, DialogMessage: string;
+  TimeOut: DWORD;
   Force, Reboot: Boolean): Boolean;
 var
   OldShutdownPrivilege: Boolean;
@@ -325,7 +335,7 @@ begin
     try
       Result := EnableProcessPrivilege(True, PrivilegeName)
         and InitiateSystemShutdown(PChar(MachineName), PChar(DialogMessage),
-          TimeOut, Force, Reboot);
+        TimeOut, Force, Reboot);
     finally
       EnableProcessPrivilege(OldShutdownPrivilege, PrivilegeName);
     end;
@@ -390,19 +400,21 @@ begin
     raise EJclError.CreateRes(@RsCreateProcBuild1057Error);
 end;
 
-procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
+procedure CreateProcAsUser(
+  const UserDomain, UserName, PassWord, CommandLine: string);
 begin
   CreateProcAsUserEx(UserDomain, UserName, Password, CommandLine, nil);
 end;
 
 { TODO -cTest : Check for Win9x }
-procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
+procedure CreateProcAsUserEx(
+  const UserDomain, UserName, Password, CommandLine: string;
   const Environment: PChar);
 const
   // default values for window stations and desktops
   CreateProcDEFWINSTATION = 'WinSta0';
-  CreateProcDEFDESKTOP    = 'Default';
-  CreateProcDOMUSERSEP    = '\';
+  CreateProcDEFDESKTOP = 'Default';
+  CreateProcDOMUSERSEP = '\';
 var
   ConsoleTitle: string;
   Help: string;
@@ -424,19 +436,20 @@ begin
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
-        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegeMissing,
+        raise EJclCreateProcessError.CreateResFmt(
+          @RsCreateProcPrivilegeMissing,
           [GetPrivilegeDisplayName(SE_TCB_NAME), SE_TCB_NAME]);
       ERROR_LOGON_FAILURE:
         raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonUserError);
       ERROR_ACCESS_DENIED:
         raise EJclCreateProcessError.CreateRes(@RsCreateProcAccessDenied);
-    else
-      raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
+      else
+        raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
     end;
   end;
 
   // Step 3: give the new user access to the current WindowStation and Desktop
-  hWindowStation:= GetProcessWindowStation;
+  hWindowStation := GetProcessWindowStation;
   WinStaName := GetUserObjectName(hWindowStation);
   if WinStaName = '' then
     WinStaName := CreateProcDEFWINSTATION;
@@ -444,7 +457,8 @@ begin
   if not SetUserObjectFullAccess(hWindowStation) then
   begin
     CloseHandle(hUserToken);
-    raise EJclCreateProcessError.CreateResFmt(@RsCreateProcSetStationSecurityError, [WinStaName]);
+    raise EJclCreateProcessError.CreateResFmt(
+      @RsCreateProcSetStationSecurityError, [WinStaName]);
   end;
 
   hDesktop := GetThreadDesktop(GetCurrentThreadId);
@@ -455,7 +469,8 @@ begin
   if not SetUserObjectFullAccess(hDesktop) then
   begin
     CloseHandle(hUserToken);
-    raise EJclCreateProcessError.CreateResFmt(@RsCreateProcSetDesktopSecurityError, [DesktopName]);
+    raise EJclCreateProcessError.CreateResFmt(
+      @RsCreateProcSetDesktopSecurityError, [DesktopName]);
   end;
 
   // Step 4: set the startup info for the new process
@@ -463,10 +478,10 @@ begin
   FillChar(StartUpInfo, SizeOf(StartUpInfo), #0);
   with StartUpInfo do
   begin
-    cb:= SizeOf(StartUpInfo);
-    lpTitle:= PChar(ConsoleTitle);
+    cb := SizeOf(StartUpInfo);
+    lpTitle := PChar(ConsoleTitle);
     Help := WinStaName + '\' + DeskTopName;
-    lpDesktop:= PChar(Help);
+    lpDesktop := PChar(Help);
   end;
 
   // Step 5: create the child process
@@ -480,11 +495,15 @@ begin
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
-        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegesMissing,
-          [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
-           GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
+        raise EJclCreateProcessError.CreateResFmt(
+          @RsCreateProcPrivilegesMissing,
+          [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME),
+          SE_ASSIGNPRIMARYTOKEN_NAME,
+          GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME),
+          SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
-        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound, [CommandLine]);
+        raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound,
+          [CommandLine]);
       else
         raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
     end;

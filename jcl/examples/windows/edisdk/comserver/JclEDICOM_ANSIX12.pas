@@ -45,7 +45,8 @@ type
     procedure SetInternalEDIObjectRef(EDIObject: TEDIObject);
   end;
 
-  TEDICOMDelimiters = class(TAutoObject, IEDICOMInternalInterface, IEDICOMDelimiters)
+  TEDICOMDelimiters = class(TAutoObject, IEDICOMInternalInterface,
+    IEDICOMDelimiters)
   private
     FDelimiters: TEDIDelimiters;
   protected
@@ -106,7 +107,8 @@ type
     function InsertElement(InsertIndex: Integer): Integer; safecall;
     procedure DeleteElement(Index: Integer); safecall;
     function AddElements(Count: Integer): Integer; safecall;
-    function InsertElements(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function InsertElements(InsertIndex: Integer; Count: Integer): Integer;
+      safecall;
     procedure DeleteElements; safecall;
 
     function Get_Element(Index: Integer): IEDICOMElement; safecall;
@@ -126,7 +128,8 @@ type
     procedure SetInternalEDIObjectRef(EDIObject: TEDIObject);
   end;
 
-  TEDICOMTransactionSet = class(TAutoObject, IEDICOMInternalInterface, IEDICOMTransactionSet)
+  TEDICOMTransactionSet = class(TAutoObject, IEDICOMInternalInterface,
+    IEDICOMTransactionSet)
   private
     FDelimitersIntf: TEDICOMDelimiters;
     FSegmentIntf: TEDICOMSegment;
@@ -146,7 +149,8 @@ type
     function InsertSegment(InsertIndex: Integer): Integer; safecall;
     procedure DeleteSegment(Index: Integer); safecall;
     function AddSegments(Count: Integer): Integer; safecall;
-    function InsertSegments(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function InsertSegments(InsertIndex: Integer; Count: Integer): Integer;
+      safecall;
     procedure DeleteSegments; safecall;
 
     function Get_SegmentST: IEDICOMSegment; safecall;
@@ -167,7 +171,8 @@ type
     procedure SetInternalEDIObjectRef(EDIObject: TEDIObject);
   end;
 
-  TEDICOMFunctionalGroup = class(TAutoObject, IEDICOMInternalInterface, IEDICOMFunctionalGroup)
+  TEDICOMFunctionalGroup = class(TAutoObject, IEDICOMInternalInterface,
+    IEDICOMFunctionalGroup)
   private
     FDelimitersIntf: TEDICOMDelimiters;
     FSegmentIntf: TEDICOMSegment;
@@ -188,12 +193,14 @@ type
     function InsertTransactionSet(InsertIndex: Integer): Integer; safecall;
     procedure DeleteTransactionSet(Index: Integer); safecall;
     function AddTransactionSets(Count: Integer): Integer; safecall;
-    function InsertTransactionSets(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function InsertTransactionSets(InsertIndex: Integer;
+      Count: Integer): Integer; safecall;
     procedure DeleteTransactionSets; safecall;
 
     function Get_SegmentGS: IEDICOMSegment; safecall;
     function Get_SegmentGE: IEDICOMSegment; safecall;
-    function Get_TransactionSet(Index: Integer): IEDICOMTransactionSet; safecall;
+    function Get_TransactionSet(Index: Integer): IEDICOMTransactionSet;
+      safecall;
 
     function Get_TransactionSetCount: Integer; safecall;
     property TransactionSetCount: Integer read Get_TransactionSetCount;
@@ -202,14 +209,16 @@ type
     property Delimiters: IEDICOMDelimiters read Get_Delimiters;
     property SegmentGS: IEDICOMSegment read Get_SegmentGS;
     property SegmentGE: IEDICOMSegment read Get_SegmentGE;
-    property TransactionSet[Index: Integer]: IEDICOMTransactionSet read Get_TransactionSet;
+    property TransactionSet[Index: Integer]: IEDICOMTransactionSet
+      read Get_TransactionSet;
   public
     procedure Initialize; override;
     destructor Destroy; override;
     procedure SetInternalEDIObjectRef(EDIObject: TEDIObject);
   end;
 
-  TEDICOMInterchangeControl = class(TAutoObject, IEDICOMInternalInterface, IEDICOMInterchangeControl)
+  TEDICOMInterchangeControl = class(TAutoObject, IEDICOMInternalInterface,
+    IEDICOMInterchangeControl)
   private
     FDelimitersIntf: TEDICOMDelimiters;
     FSegmentIntf: TEDICOMSegment;
@@ -226,18 +235,21 @@ type
     property Data: WideString read Get_Data write Set_Data;
     property DataLength: Integer read Get_DataLength;
     //
-    procedure SetDelimiters(const SD: WideString; const ED: WideString; const SS: WideString); safecall;
+    procedure SetDelimiters(const SD: WideString; const ED: WideString;
+      const SS: WideString); safecall;
 
     function AddFunctionalGroup: Integer; safecall;
     function InsertFunctionalGroup(InsertIndex: Integer): Integer; safecall;
     procedure DeleteFunctionalGroup(Index: Integer); safecall;
     function AddFunctionalGroups(InsertIndex: Integer): Integer; safecall;
-    function InsertFunctionalGroups(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function InsertFunctionalGroups(InsertIndex: Integer;
+      Count: Integer): Integer; safecall;
     procedure DeleteFunctionalGroups; safecall;
 
     function Get_SegmentISA: IEDICOMSegment; safecall;
     function Get_SegmentIEA: IEDICOMSegment; safecall;
-    function Get_FunctionalGroup(Index: Integer): IEDICOMFunctionalGroup; safecall;
+    function Get_FunctionalGroup(Index: Integer): IEDICOMFunctionalGroup;
+      safecall;
 
     function Get_FunctionalGroupCount: Integer; safecall;
     property FunctionalGroupCount: Integer read Get_FunctionalGroupCount;
@@ -246,7 +258,8 @@ type
     property Delimiters: IEDICOMDelimiters read Get_Delimiters;
     property SegmentISA: IEDICOMSegment read Get_SegmentISA;
     property SegmentIEA: IEDICOMSegment read Get_SegmentIEA;
-    property FunctionalGroup[Index: Integer]: IEDICOMFunctionalGroup read Get_FunctionalGroup;
+    property FunctionalGroup[Index: Integer]: IEDICOMFunctionalGroup
+      read Get_FunctionalGroup;
   public
     procedure Initialize; override;
     destructor Destroy; override;
@@ -275,7 +288,8 @@ type
     procedure SaveAsToFile(const FileName: WideString); safecall;
     function Get_FileName: WideString; safecall;
     procedure Set_FileName(const Value: WideString); safecall;
-    function Get_Interchange(Index: Integer): IEDICOMInterchangeControl; safecall;
+    function Get_Interchange(Index: Integer): IEDICOMInterchangeControl;
+      safecall;
     function Get_Options: Byte; safecall;
     procedure Set_Options(Value: Byte); safecall;
 
@@ -283,7 +297,8 @@ type
     function InsertInterchange(InsertIndex: Integer): Integer; safecall;
     procedure DeleteInterchange(Index: Integer); safecall;
     function AddInterchanges(Count: Integer): Integer; safecall;
-    function InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer;
+      safecall;
     procedure DeleteInterchanges; safecall;
 
     function Get_InterchangeCount: Integer; safecall;
@@ -292,7 +307,8 @@ type
     function Get_Delimiters: IEDICOMDelimiters; safecall;
     property Delimiters: IEDICOMDelimiters read Get_Delimiters;
     property FileName: WideString read Get_FileName write Set_FileName;
-    property Interchange[Index: Integer]: IEDICOMInterchangeControl read Get_Interchange;
+    property Interchange[Index: Integer]: IEDICOMInterchangeControl
+      read Get_Interchange;
     property Options: Byte read Get_Options write Set_Options;
   public
     procedure Initialize; override;
@@ -444,7 +460,7 @@ procedure TEDICOMSegment.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;  
+  FDelimitersIntf.ObjAddRef;
   FElementIntf := TEDICOMElement.Create;
   FElementIntf.ObjAddRef;
   FSegment := nil;
@@ -565,9 +581,9 @@ procedure TEDICOMTransactionSet.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;  
+  FDelimitersIntf.ObjAddRef;
   FSegmentIntf := TEDICOMSegment.Create;
-  FSegmentIntf.ObjAddRef;  
+  FSegmentIntf.ObjAddRef;
   FTransactionSet := nil;
 end;
 
@@ -576,7 +592,8 @@ begin
   Result := FTransactionSet.InsertSegment(InsertIndex);
 end;
 
-function TEDICOMTransactionSet.InsertSegments(InsertIndex, Count: Integer): Integer;
+function TEDICOMTransactionSet.InsertSegments(InsertIndex, Count:
+  Integer): Integer;
 begin
   Result := FTransactionSet.InsertSegments(InsertIndex, Count);
 end;
@@ -668,7 +685,8 @@ begin
   Result := Integer(FFunctionalGroup.State);
 end;
 
-function TEDICOMFunctionalGroup.Get_TransactionSet(Index: Integer): IEDICOMTransactionSet;
+function TEDICOMFunctionalGroup.Get_TransactionSet(Index: Integer):
+IEDICOMTransactionSet;
 begin
   FTransactionSetIntf.SetInternalEDIObjectRef(FFunctionalGroup[Index]);
   Result := FTransactionSetIntf;
@@ -683,7 +701,7 @@ procedure TEDICOMFunctionalGroup.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;  
+  FDelimitersIntf.ObjAddRef;
   FSegmentIntf := TEDICOMSegment.Create;
   FSegmentIntf.ObjAddRef;
   FTransactionSetIntf := TEDICOMTransactionSet.Create;
@@ -691,17 +709,20 @@ begin
   FFunctionalGroup := nil;
 end;
 
-function TEDICOMFunctionalGroup.InsertTransactionSet(InsertIndex: Integer): Integer;
+function TEDICOMFunctionalGroup.InsertTransactionSet(
+  InsertIndex: Integer): Integer;
 begin
   Result := FFunctionalGroup.InsertTransactionSet(InsertIndex);
 end;
 
-function TEDICOMFunctionalGroup.InsertTransactionSets(InsertIndex, Count: Integer): Integer;
+function TEDICOMFunctionalGroup.InsertTransactionSets(
+  InsertIndex, Count: Integer): Integer;
 begin
   Result := FFunctionalGroup.InsertTransactionSets(InsertIndex, Count);
 end;
 
-procedure TEDICOMFunctionalGroup.SetInternalEDIObjectRef(EDIObject: TEDIObject);
+procedure TEDICOMFunctionalGroup.SetInternalEDIObjectRef(
+  EDIObject: TEDIObject);
 begin
   FFunctionalGroup := TEDIFunctionalGroup(EDIObject);
 end;
@@ -745,7 +766,8 @@ begin
   Result := FInterchangeControl.DataLength;
 end;
 
-function TEDICOMInterchangeControl.Get_FunctionalGroup(Index: Integer): IEDICOMFunctionalGroup;
+function TEDICOMInterchangeControl.Get_FunctionalGroup(Index: Integer):
+IEDICOMFunctionalGroup;
 begin
   FFunctionalGroupIntf.SetInternalEDIObjectRef(FInterchangeControl[Index]);
   Result := FFunctionalGroupIntf;
@@ -772,7 +794,7 @@ procedure TEDICOMInterchangeControl.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;  
+  FDelimitersIntf.ObjAddRef;
   FSegmentIntf := TEDICOMSegment.Create;
   FSegmentIntf.ObjAddRef;
   FFunctionalGroupIntf := TEDICOMFunctionalGroup.Create;
@@ -785,7 +807,8 @@ begin
   FInterchangeControl.Data := Value;
 end;
 
-procedure TEDICOMInterchangeControl.SetInternalEDIObjectRef(EDIObject: TEDIObject);
+procedure TEDICOMInterchangeControl.SetInternalEDIObjectRef(
+  EDIObject: TEDIObject);
 begin
   FInterchangeControl := TEDIInterchangeControl(EDIObject);
 end;
@@ -795,7 +818,8 @@ begin
   Result := FInterchangeControl.AddFunctionalGroup;
 end;
 
-function TEDICOMInterchangeControl.AddFunctionalGroups(InsertIndex: Integer): Integer;
+function TEDICOMInterchangeControl.AddFunctionalGroups(
+  InsertIndex: Integer): Integer;
 begin
   Result := FInterchangeControl.InsertFunctionalGroup(InsertIndex);
 end;
@@ -810,12 +834,14 @@ begin
   FInterchangeControl.DeleteFunctionalGroups;
 end;
 
-function TEDICOMInterchangeControl.InsertFunctionalGroup(InsertIndex: Integer): Integer;
+function TEDICOMInterchangeControl.InsertFunctionalGroup(
+  InsertIndex: Integer): Integer;
 begin
   Result := FInterchangeControl.InsertFunctionalGroup(InsertIndex);
 end;
 
-function TEDICOMInterchangeControl.InsertFunctionalGroups(InsertIndex, Count: Integer): Integer;
+function TEDICOMInterchangeControl.InsertFunctionalGroups(
+  InsertIndex, Count: Integer): Integer;
 begin
   Result := FInterchangeControl.InsertFunctionalGroups(InsertIndex, Count);
 end;
@@ -826,7 +852,8 @@ begin
   Result := FDelimitersIntf;
 end;
 
-procedure TEDICOMInterchangeControl.SetDelimiters(const SD, ED, SS: WideString);
+procedure TEDICOMInterchangeControl.SetDelimiters(
+  const SD, ED, SS: WideString);
 begin
   FInterchangeControl.Delimiters := TEDIDelimiters.Create(SD, ED, SS);
 end;
@@ -900,7 +927,8 @@ begin
   Result := FEDIFile.FileName;
 end;
 
-function TEDICOMFile.Get_Interchange(Index: Integer): IEDICOMInterchangeControl;
+function TEDICOMFile.Get_Interchange(Index: Integer):
+IEDICOMInterchangeControl;
 begin
   FInterchangeControlIntf.SetInternalEDIObjectRef(FEDIFile[Index]);
   Result := FInterchangeControlIntf;
@@ -925,7 +953,7 @@ procedure TEDICOMFile.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;  
+  FDelimitersIntf.ObjAddRef;
   FInterchangeControlIntf := TEDICOMInterchangeControl.Create;
   FInterchangeControlIntf.ObjAddRef;
   FEDIFile := TEDIFile.Create(nil);
@@ -1041,17 +1069,21 @@ begin
 end;
 
 initialization
-  TAutoObjectFactory.Create(ComServer, TEDICOMDelimiters, CLASS_EDICOMDelimiters,
+  TAutoObjectFactory.Create(ComServer, TEDICOMDelimiters,
+    CLASS_EDICOMDelimiters,
     ciMultiInstance, tmApartment);
   TAutoObjectFactory.Create(ComServer, TEDICOMElement, Class_EDICOMElement,
     ciMultiInstance, tmApartment);
   TAutoObjectFactory.Create(ComServer, TEDICOMSegment, Class_EDICOMSegment,
     ciMultiInstance, tmApartment);
-  TAutoObjectFactory.Create(ComServer, TEDICOMTransactionSet, Class_EDICOMTransactionSet,
+  TAutoObjectFactory.Create(ComServer, TEDICOMTransactionSet,
+    Class_EDICOMTransactionSet,
     ciMultiInstance, tmApartment);
-  TAutoObjectFactory.Create(ComServer, TEDICOMFunctionalGroup, Class_EDICOMFunctionalGroup,
+  TAutoObjectFactory.Create(ComServer, TEDICOMFunctionalGroup,
+    Class_EDICOMFunctionalGroup,
     ciMultiInstance, tmApartment);
-  TAutoObjectFactory.Create(ComServer, TEDICOMInterchangeControl, Class_EDICOMInterchangeControl,
+  TAutoObjectFactory.Create(ComServer, TEDICOMInterchangeControl,
+    Class_EDICOMInterchangeControl,
     ciMultiInstance, tmApartment);
   TAutoObjectFactory.Create(ComServer, TEDICOMFile, Class_EDICOMFile,
     ciMultiInstance, tmApartment);

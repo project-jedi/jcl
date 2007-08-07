@@ -25,11 +25,12 @@
 unit JclDebugIdeImpl;
 
 {$I jcl.inc}
-                              
+
 interface
 
 uses
-  Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs, Controls, Forms, ToolsAPI,
+  Windows, Classes, Menus, ActnList, SysUtils, Graphics, Dialogs,
+  Controls, Forms, ToolsAPI,
   JclOtaUtils, JclDebugIdeConfigFrame;
 
 type
@@ -65,8 +66,10 @@ type
     procedure InsertDataExecute(Sender: TObject);
     procedure LoadExpertValues;
     procedure SaveExpertValues;
-    procedure BuildAllProjects(Sender: TObject);       // (New) Build All Projects command hook
-    procedure BuildProject(Sender: TObject);           // (New) Build Project command hook
+    procedure BuildAllProjects(Sender: TObject);
+       // (New) Build All Projects command hook
+    procedure BuildProject(Sender: TObject);
+           // (New) Build Project command hook
     procedure BeginStoreResults;
     procedure DisplayResults;
     procedure EndStoreResults;
@@ -78,21 +81,27 @@ type
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
+    procedure ConfigurationClosed(AControl: TControl;
+      SaveChanges: Boolean); override;
     property GenerateJdbg: Boolean read FGenerateJdbg write FGenerateJdbg;
     property InsertJdbg: Boolean read FInsertJdbg write FInsertJdbg;
     property EnableExpert: Boolean read FEnableExpert write SetEnableExpert;
   end;
 
-  TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
+  TIdeNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier,
+    IOTAIDENotifier50)
   private
     FDebugExtension: TJclDebugExtension;
   protected
     procedure AfterCompile(Succeeded: Boolean); overload;
-    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
-    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean);
+      overload;
+    procedure BeforeCompile(const Project: IOTAProject;
+      var Cancel: Boolean); overload;
+    procedure BeforeCompile(const Project: IOTAProject;
+      IsCodeInsight: Boolean; var Cancel: Boolean); overload;
+    procedure FileNotification(NotifyCode: TOTAFileNotification;
+      const FileName: string; var Cancel: Boolean);
   public
     constructor Create(ADebugExtension: TJclDebugExtension);
   end;
@@ -151,8 +160,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -212,7 +221,8 @@ end;
 
 procedure TJclDebugExtension.AfterCompile(Succeeded: Boolean);
 var
-  ProjectFileName, MapFileName, DrcFileName, ExecutableFileName, JdbgFileName: string;
+  ProjectFileName, MapFileName, DrcFileName, ExecutableFileName,
+  JdbgFileName: string;
   OutputDirectory, LinkerBugUnit: string;
   ProjOptions: IOTAProjectOptions;
   Succ: Boolean;
@@ -263,15 +273,18 @@ begin
 
         Succ := FileExists(MapFileName);
         if not Succ then
-          OutputToolMessage(Format(RsEMapFileNotFound, [MapFileName, ProjectFileName]));
+          OutputToolMessage(Format(RsEMapFileNotFound,
+            [MapFileName, ProjectFileName]));
 
         // creation of .jdbg
         if Succ and GenerateJdbg then
         begin
-          Succ := ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit, LineNumberErrors,
+          Succ := ConvertMapFileToJdbgFile(MapFileName,
+            LinkerBugUnit, LineNumberErrors,
             MapFileSize, JclDebugDataSize);
           if Succ then
-            OutputToolMessage(Format(RsConvertedMapToJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+            OutputToolMessage(Format(RsConvertedMapToJdbg,
+              [MapFileName, MapFileSize, JclDebugDataSize]))
           else
             OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
         end;
@@ -279,18 +292,22 @@ begin
         // insertion of JEDI Debug Information into the binary
         if Succ and InsertJdbg then
         begin
-          Succ := FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
+          Succ := FindExecutableName(MapFileName, OutputDirectory,
+            ExecutableFileName);
           if Succ then
           begin
-            Succ := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName,
+            Succ := InsertDebugDataIntoExecutableFile(
+              ExecutableFileName, MapFileName,
               LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
             if Succ then
-              OutputToolMessage(Format(RsInsertedJdbg, [MapFileName, MapFileSize, JclDebugDataSize]))
+              OutputToolMessage(Format(RsInsertedJdbg,
+                [MapFileName, MapFileSize, JclDebugDataSize]))
             else
               OutputToolMessage(Format(RsEMapConversion, [MapFileName]));
           end
           else
-            OutputToolMessage(Format(RsEExecutableNotFound, [ProjectFileName]));
+            OutputToolMessage(Format(RsEExecutableNotFound,
+              [ProjectFileName]));
         end;
         Screen.Cursor := crDefault;
       except
@@ -322,7 +339,8 @@ begin
   end;
 end;
 
-procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
+procedure TJclDebugExtension.BeforeCompile(const Project: IOTAProject;
+  var Cancel: Boolean);
 var
   ProjOptions: IOTAProjectOptions;
 begin
@@ -330,7 +348,8 @@ begin
   begin
     if IsInstalledPackage(Project) then
     begin
-      if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]), mtError, [mbYes, mbNo], 0) = mrYes then
+      if MessageDlg(Format(RsCantInsertToInstalledPackage, [Project.FileName]),
+        mtError, [mbYes, mbNo], 0) = mrYes then
         EnableExpert := False
       else
       begin
@@ -405,39 +424,40 @@ begin
   if FBuildError or (Length(FResultInfo) = 0) then
     Exit;
   with TJclDebugResultForm.Create(Application, Settings) do
-  try
-    for I := 0 to Length(FResultInfo) - 1 do
-      with ResultListView.Items.Add, FResultInfo[I] do
-      begin
-        Caption := ProjectName;
-        if Success then
+    try
+      for I := 0 to Length(FResultInfo) - 1 do
+        with ResultListView.Items.Add, FResultInfo[I] do
         begin
-          SubItems.Add(IntToStr(MapFileSize));
-          SubItems.Add(IntToStr(JclDebugDataSize));
-          SubItems.Add(Format('%3.1f', [JclDebugDataSize * 100 / MapFileSize]));
-          SubItems.Add(ExecutableFileName);
-          SubItems.Add(LinkerBugUnit);
-          if LineNumberErrors > 0 then
-            SubItems.Add(IntToStr(LineNumberErrors))
+          Caption := ProjectName;
+          if Success then
+          begin
+            SubItems.Add(IntToStr(MapFileSize));
+            SubItems.Add(IntToStr(JclDebugDataSize));
+            SubItems.Add(Format('%3.1f', [JclDebugDataSize * 100 /
+              MapFileSize]));
+            SubItems.Add(ExecutableFileName);
+            SubItems.Add(LinkerBugUnit);
+            if LineNumberErrors > 0 then
+              SubItems.Add(IntToStr(LineNumberErrors))
+            else
+              SubItems.Add('');
+            ImageIndex := 0;
+          end
           else
+          begin
             SubItems.Add('');
-          ImageIndex := 0;
-        end
-        else
-        begin
-          SubItems.Add('');
-          SubItems.Add('');
-          SubItems.Add('');
-          SubItems.Add(ExecutableFileName);
-          SubItems.Add(LinkerBugUnit);
-          SubItems.Add('');
-          ImageIndex := 1;
+            SubItems.Add('');
+            SubItems.Add('');
+            SubItems.Add(ExecutableFileName);
+            SubItems.Add(LinkerBugUnit);
+            SubItems.Add('');
+            ImageIndex := 1;
+          end;
         end;
-      end;
-    ShowModal;
-  finally
-    Free;
-  end;
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 procedure TJclDebugExtension.EndStoreResults;
@@ -509,9 +529,11 @@ begin
   IDEMainMenu := NTAServices.MainMenu;
   ImageBmp := TBitmap.Create;
   try
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLDEBUG');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance),
+      'JCLDEBUG');
     FImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'JCLNODEBUG');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance),
+      'JCLNODEBUG');
     FDisabledImageIndex := NTAServices.AddMasked(ImageBmp, clPurple);
     FInsertDataAction := TAction.Create(nil);
     FInsertDataAction.Caption := RsInsertDataCaption;
@@ -546,12 +568,13 @@ begin
       if Items[I].Name = 'ProjectOptionsItem' then
       begin
         if Assigned(Items[I].Action) then
-          FInsertDataAction.Category := TContainedAction(Items[I].Action).Category;
+          FInsertDataAction.Category :=
+            TContainedAction(Items[I].Action).Category;
         IDEProjectItem.Insert(I + 1, FInsertDataItem);
         System.Break;
       end;
   if not Assigned(FInsertDataItem.Parent) then
-     raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
+    raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
 
   FSaveBuildProject := nil;
   with IDEActionList do
@@ -563,7 +586,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildProject) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAction);
+    raise EJclExpertException.CreateTrace(RsENoBuildAction);
 
   FSaveBuildAllProjects := nil;
   with IDEActionList do
@@ -575,7 +598,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildProject) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
+    raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
 end;
 
 procedure TJclDebugExtension.UnregisterCommands;
@@ -616,7 +639,8 @@ begin
   end;
 end;
 
-procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean);
+procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject;
+  IsCodeInsight: Boolean; var Cancel: Boolean);
 begin
   try
     if not IsCodeInsight then
@@ -630,7 +654,8 @@ begin
   end;
 end;
 
-procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
+procedure TIdeNotifier.BeforeCompile(const Project: IOTAProject;
+  var Cancel: Boolean);
 begin
 end;
 

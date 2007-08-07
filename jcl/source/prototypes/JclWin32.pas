@@ -158,13 +158,15 @@ type
 {$IFNDEF CLR}
 
 const
-  RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
+  RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR;
+    ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
     pDacl, pSacl: PACL): DWORD stdcall = SetNamedSecurityInfoW;
 
   RtdlSetWaitableTimer: function(hTimer: THandle; var lpDueTime: TLargeInteger;
     lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
-    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL stdcall = SetWaitableTimer;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL stdcall =
+    SetWaitableTimer;
 
   RtdlNetUserAdd: function(servername: LPCWSTR; level: DWORD;
     buf: PByte; parm_err: PDWord): NET_API_STATUS stdcall = NetUserAdd;
@@ -192,25 +194,31 @@ const
   RtdlNetLocalGroupDel: function(servername: LPCWSTR;
     groupname: LPCWSTR): NET_API_STATUS stdcall = NetLocalGroupDel;
 
-  RtdlNetLocalGroupAddMembers: function(servername: LPCWSTR; groupname: LPCWSTR;
+  RtdlNetLocalGroupAddMembers: function(servername: LPCWSTR;
+    groupname: LPCWSTR;
     level: DWORD; buf: PByte;
     totalentries: DWORD): NET_API_STATUS stdcall = NetLocalGroupAddMembers;
 
-  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS stdcall = NetApiBufferFree;
+  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS stdcall =
+    NetApiBufferFree;
 
-  RtdlGetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  RtdlGetCalendarInfoA: function(Locale: LCID; Calendar: CALID;
+    CalType: CALTYPE;
     lpCalData: PAnsiChar; cchData: Integer;
     lpValue: PDWORD): Integer stdcall = GetCalendarInfoA;
 
-  RtdlGetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  RtdlGetCalendarInfoW: function(Locale: LCID; Calendar: CALID;
+    CalType: CALTYPE;
     lpCalData: PWideChar; cchData: Integer;
     lpValue: PDWORD): Integer stdcall = GetCalendarInfoW;
 
   RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall = EnumCalendarInfoExA;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL stdcall =
+    EnumCalendarInfoExA;
 
   RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall = GetVolumeNameForVolumeMountPoint;
+    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL stdcall =
+    GetVolumeNameForVolumeMountPoint;
 
   RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
     lpszVolumeName: LPCSTR): BOOL stdcall = SetVolumeMountPoint;
@@ -246,7 +254,8 @@ const
   {$ENDIF ~UNICODE}
 
 {$IFNDEF CLR}
-procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
+procedure GetProcedureAddress(var P: Pointer;
+  const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
 begin
@@ -261,7 +270,8 @@ begin
     end;
     P := GetProcAddress(ModuleHandle, PChar(ProcName));
     if not Assigned(P) then
-      raise EJclError.CreateResFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
+      raise EJclError.CreateResFmt(@RsEFunctionNotFound,
+        [ModuleName, ProcName]);
   end;
 end;
 {$ENDIF ~CLR}
@@ -287,6 +297,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
-
-

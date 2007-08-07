@@ -80,7 +80,8 @@ type
     procedure ActionDeleteItemUpdate(Sender: TObject);
     procedure TreeViewMenuEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
-    procedure TreeViewMenuEdited(Sender: TObject; Node: TTreeNode; var S: string);
+    procedure TreeViewMenuEdited(Sender: TObject; Node: TTreeNode;
+      var S: string);
   private
     FMenuTree: TStrings;
     function GetActOnTopSandbox: Boolean;
@@ -101,12 +102,15 @@ type
     destructor Destroy; override;
     procedure SetIconTypeNames(const Names: TStrings);
     procedure SetActions(const Actions: array of TCustomAction);
-    property ActOnTopSandbox: Boolean read GetActOnTopSandbox write SetActOnTopSandbox;
-    property DisableActions: Boolean read GetDisableActions write SetDisableActions;
+    property ActOnTopSandbox: Boolean read GetActOnTopSandbox
+      write SetActOnTopSandbox;
+    property DisableActions: Boolean read GetDisableActions
+      write SetDisableActions;
     property HideActions: Boolean read GetHideActions write SetHideActions;
     property IconType: Integer read GetIconType write SetIconType;
     property MenuTree: TStrings read GetMenuTree write SetMenuTree;
-    property SaveConfirmation: Boolean read GetSaveConfirmation write SetSaveConfirmation;
+    property SaveConfirmation: Boolean
+      read GetSaveConfirmation write SetSaveConfirmation;
   end;
 
 implementation
@@ -183,7 +187,8 @@ begin
     BTreeNode.MoveTo(ATreeNode, naInsert);
 end;
 
-procedure TJclVersionCtrlOptionsFrame.ActionMoveItemDownUpdate(Sender: TObject);
+procedure TJclVersionCtrlOptionsFrame.ActionMoveItemDownUpdate(
+  Sender: TObject);
 var
   ATreeNode: TTreeNode;
 begin
@@ -238,7 +243,8 @@ begin
     ATreeNode := ATreeNode.Parent;
 
   if Assigned(ATreeNode) and (ATreeNode.getNextSibling <> nil) then
-    NewTreeNode := TreeViewMenu.Items.Insert(ATreeNode.getNextSibling, RsNewItem)
+    NewTreeNode := TreeViewMenu.Items.Insert(ATreeNode.getNextSibling,
+      RsNewItem)
   else
     NewTreeNode := TreeViewMenu.Items.Add(ATreeNode, RsNewItem);
 
@@ -254,7 +260,8 @@ begin
   TAction(Sender).Enabled := True;
 end;
 
-procedure TJclVersionCtrlOptionsFrame.ActionNewSeparatorExecute(Sender: TObject);
+procedure TJclVersionCtrlOptionsFrame.ActionNewSeparatorExecute(
+  Sender: TObject);
 var
   ATreeNode, NewTreeNode: TTreeNode;
 begin
@@ -270,7 +277,8 @@ begin
   NewTreeNode.Data := nil;
 end;
 
-procedure TJclVersionCtrlOptionsFrame.ActionNewSeparatorUpdate(Sender: TObject);
+procedure TJclVersionCtrlOptionsFrame.ActionNewSeparatorUpdate(
+  Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(TreeViewMenu.Selected);
 end;
@@ -309,7 +317,7 @@ begin
   Supports(BorlandIDEServices, INTAServices, NTAServices);
   if not Assigned(NTAServices) then
     raise EJclExpertException.CreateTrace(RsENoNTAServices);
-    
+
   TreeViewMenu.Images := NTAServices.ImageList;
   PopupMenuActions.Images := NTAServices.ImageList;
 
@@ -372,7 +380,8 @@ begin
     ItemName := '';
     if Assigned(AAction) then
       for Index := 0 to PopupMenuActions.Items.Count - 1 do
-        if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) = AAction then
+        if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) =
+          AAction then
           ItemName := GetEnumName(TypeInfo(TJclVersionControlAction), Index);
 
     if ItemName = '' then
@@ -387,13 +396,15 @@ begin
       ItemName := '';
       if Assigned(AAction) then
         for Index := 0 to PopupMenuActions.Items.Count - 1 do
-          if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) = AAction then
+          if TCustomAction(PopupMenuActions.Items.Items[Index].Tag) =
+            AAction then
             ItemName := GetEnumName(TypeInfo(TJclVersionControlAction), Index);
 
       if ItemName = '' then
         ItemName := BTreeNode.Text;
 
-      FMenuTree.Add(Format('%d%s%d', [ATreeNode.Index, ItemName, BTreeNode.Index]));
+      FMenuTree.Add(Format('%d%s%d', [ATreeNode.Index, ItemName,
+        BTreeNode.Index]));
 
       BTreeNode := BTreeNode.getNextSibling;
     end;
@@ -418,13 +429,15 @@ begin
   if Assigned(ATreeNode.Data) or (ATreeNode.Text = '-') then
   begin
     if Assigned(ATreeNode) and (ATreeNode.getNextSibling <> nil) then
-      NewTreeNode := TreeViewMenu.Items.Insert(ATreeNode.getNextSibling, AAction.Caption)
+      NewTreeNode := TreeViewMenu.Items.Insert(ATreeNode.getNextSibling,
+        AAction.Caption)
     else
       NewTreeNode := TreeViewMenu.Items.Add(ATreeNode, AAction.Caption);
   end
   else
   begin
-    NewTreeNode := TreeViewMenu.Items.AddChildFirst(ATreeNode, AAction.Caption);
+    NewTreeNode := TreeViewMenu.Items.AddChildFirst(ATreeNode,
+      AAction.Caption);
     ATreeNode.Expand(False);
   end;
 
@@ -507,8 +520,10 @@ begin
       end
       else
       begin
-        ControlAction := TCustomAction(PopupMenuActions.Items.Items[AAction].Tag);
-        ATreeNode := TreeViewMenu.Items.Add(nil, StrRemoveChars(ControlAction.Caption, ['&']));
+        ControlAction := TCustomAction(
+          PopupMenuActions.Items.Items[AAction].Tag);
+        ATreeNode := TreeViewMenu.Items.Add(nil,
+          StrRemoveChars(ControlAction.Caption, ['&']));
         ATreeNode.Data := ControlAction;
         ATreeNode.ImageIndex := ControlAction.ImageIndex;
         ATreeNode.SelectedIndex := ControlAction.ImageIndex;
@@ -529,8 +544,10 @@ begin
       end
       else
       begin
-        ControlAction := TCustomAction(PopupMenuActions.Items.Items[AAction].Tag);
-        BTreeNode := TreeViewMenu.Items.AddChild(ATreeNode, StrRemoveChars(ControlAction.Caption, ['&']));
+        ControlAction := TCustomAction(
+          PopupMenuActions.Items.Items[AAction].Tag);
+        BTreeNode := TreeViewMenu.Items.AddChild(ATreeNode,
+          StrRemoveChars(ControlAction.Caption, ['&']));
         BTreeNode.ImageIndex := ControlAction.ImageIndex;
         BTreeNode.SelectedIndex := ControlAction.ImageIndex;
         BTreeNode.Data := ControlAction;
@@ -540,7 +557,8 @@ begin
   end;
 end;
 
-procedure TJclVersionCtrlOptionsFrame.SetSaveConfirmation(const Value: Boolean);
+procedure TJclVersionCtrlOptionsFrame.SetSaveConfirmation(
+  const Value: Boolean);
 begin
   CheckBoxSaveConfirmation.Checked := Value;
 end;
@@ -558,7 +576,8 @@ end;
 procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
-  AllowEdit := Assigned(Node) and (Node.Text <> '-') and not Assigned(Node.Data);
+  AllowEdit := Assigned(Node) and (Node.Text <> '-') and not
+    Assigned(Node.Data);
 end;
 
 end.

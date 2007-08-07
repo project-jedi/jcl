@@ -69,7 +69,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -90,7 +91,8 @@ end;
 
 procedure TJclExpertExceptionForm.LabelURLClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(RsReportURL), '', '', SW_SHOW);    // do not localize
+  ShellExecute(Handle, 'open', PChar(RsReportURL), '', '', SW_SHOW);
+    // do not localize
 end;
 
 procedure TJclExpertExceptionForm.ShowException(AExceptionObj: TObject);
@@ -101,19 +103,21 @@ begin
 
   try
     if Assigned(AExceptionObj) then
-      MemoCallStack.Lines.Add(RsDetailsExceptionName + AExceptionObj.ClassName);
+      MemoCallStack.Lines.Add(RsDetailsExceptionName +
+        AExceptionObj.ClassName);
 
     if AExceptionObj is Exception then
     begin
-      MemoCallStack.Lines.Add(RsDetailsExceptionMessage + Exception(AExceptionObj).Message);
+      MemoCallStack.Lines.Add(RsDetailsExceptionMessage +
+        Exception(AExceptionObj).Message);
 {$IFDEF MSWINDOWS}
       if (AExceptionObj is EJclExpertException) then
         with EJclExpertException(AExceptionObj) do
           if Assigned(StackInfo) then
-      begin
-        StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
-        Exit;
-      end;
+          begin
+            StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
+            Exit;
+          end;
 {$ENDIF MSWINDOWS}
     end;
 

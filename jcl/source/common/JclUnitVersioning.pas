@@ -81,8 +81,10 @@ type
     constructor Create(AInstance: THandle);
     destructor Destroy; override;
 
-    function IndexOf(const RCSfile: string; const LogPath: string = '*'): Integer;
-    function FindUnit(const RCSfile: string; const LogPath: string = '*'): TUnitVersion;
+    function IndexOf(const RCSfile: string;
+      const LogPath: string = '*'): Integer;
+    function FindUnit(const RCSfile: string;
+      const LogPath: string = '*'): TUnitVersion;
 
     property Instance: THandle read FInstance;
     property Count: Integer read GetCount;
@@ -122,8 +124,10 @@ type
     procedure RegisterProvider(AProviderClass: TUnitVersioningProviderClass);
     procedure LoadModuleUnitVersioningInfo(Instance: THandle);
 
-    function IndexOf(const RCSfile: string; const LogPath: string = '*'): Integer;
-    function FindUnit(const RCSfile: string; const LogPath: string = '*'): TUnitVersion;
+    function IndexOf(const RCSfile: string;
+      const LogPath: string = '*'): Integer;
+    function FindUnit(const RCSfile: string;
+      const LogPath: string = '*'): TUnitVersion;
 
     // units by modules
     property ModuleCount: Integer read GetModuleCount;
@@ -336,7 +340,8 @@ begin
   Result := -1;
 end;
 
-function TUnitVersioningModule.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
+function TUnitVersioningModule.FindUnit(const RCSfile: string;
+  const LogPath: string): TUnitVersion;
 var
   Index: Integer;
 begin
@@ -347,7 +352,8 @@ begin
     Result := nil;
 end;
 
-function TUnitVersioningModule.IndexOf(const RCSfile: string; const LogPath: string): Integer;
+function TUnitVersioningModule.IndexOf(const RCSfile: string;
+  const LogPath: string): Integer;
 begin
   for Result := 0 to FItems.Count - 1 do
     if CompareFilenames(Items[Result].RCSfile, RCSfile) = 0 then
@@ -366,12 +372,14 @@ begin
   inherited Create;
 end;
 
-procedure TCustomUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
+procedure TCustomUnitVersioningProvider.LoadModuleUnitVersioningInfo(
+  Instance: THandle);
 begin
 //
 end;
 
-procedure TCustomUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
+procedure TCustomUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(
+  Instance: THandle);
 begin
 //
 end;
@@ -420,8 +428,9 @@ begin
       FModules.Delete(I);
       Break;
     end;
-  for I := 0 to FProviders.Count -1 do
-    TCustomUnitVersioningProvider(FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
+  for I := 0 to FProviders.Count - 1 do
+    TCustomUnitVersioningProvider(
+      FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
 end;
 
 procedure TUnitVersioning.UnregisterModule(Module: TUnitVersioningModule);
@@ -483,7 +492,8 @@ begin
   end;
 end;
 
-function TUnitVersioning.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
+function TUnitVersioning.FindUnit(const RCSfile: string;
+  const LogPath: string): TUnitVersion;
 var
   I: Integer;
 begin
@@ -496,7 +506,8 @@ begin
   Result := nil;
 end;
 
-function TUnitVersioning.IndexOf(const RCSfile: string; const LogPath: string): Integer;
+function TUnitVersioning.IndexOf(const RCSfile: string;
+  const LogPath: string): Integer;
 var
   I, Cnt, Index: Integer;
 begin
@@ -514,7 +525,8 @@ begin
   end;
 end;
 
-procedure TUnitVersioning.RegisterProvider(AProviderClass: TUnitVersioningProviderClass);
+procedure TUnitVersioning.RegisterProvider(AProviderClass:
+  TUnitVersioningProviderClass);
 var
   I, Idx: Integer;
 begin
@@ -534,10 +546,12 @@ var
   I: Integer;
 begin
   for I := 0 to FProviders.Count - 1 do
-    TCustomUnitVersioningProvider(FProviders[I]).LoadModuleUnitVersioningInfo(Instance);
+    TCustomUnitVersioningProvider(
+      FProviders[I]).LoadModuleUnitVersioningInfo(Instance);
 end;
 
-function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer; forward;
+function GetNamedProcessAddress(const Id: ShortString;
+  out RefCount: Integer): Pointer; forward;
   // Returns a 3820 Bytes large block [= 4096 - 276 = 4096 - (8+256+4+8)]
   // max 20 blocks can be allocated
 function ReleaseNamedProcessAddress(P: Pointer): Integer; forward;
@@ -562,7 +576,8 @@ type
     Data: record end;
   end;
 
-function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer;
+function GetNamedProcessAddress(const Id: ShortString;
+  out RefCount: Integer): Pointer;
 const
   MaxPages = 20;
 var
@@ -598,7 +613,8 @@ begin
     Dec(Cardinal(Requested), Pages * $10000);
     Requested := Pointer((Cardinal(Requested) div PageSize) * PageSize);
     {$IFDEF MSWINDOWS}
-    Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or MEM_COMMIT, PAGE_READWRITE);
+    Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or
+      MEM_COMMIT, PAGE_READWRITE);
     if Assigned(Allocated) and (Requested <> Allocated) then
     begin
       // We got relocated (should not happen at all)
@@ -730,7 +746,8 @@ begin
   end
   else
   if UnitVersioningNPA <> nil then
-    GlobalUnitVersioning := UnitVersioningNPA^; // update (maybe the owner has destroyed the instance)
+    GlobalUnitVersioning := UnitVersioningNPA^;
+ // update (maybe the owner has destroyed the instance)
   Result := GlobalUnitVersioning;
 end;
 
@@ -779,7 +796,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -788,4 +805,3 @@ finalization
   FinalizeUnitVersioning;
 
 end.
-

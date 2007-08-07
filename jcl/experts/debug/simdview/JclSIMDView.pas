@@ -27,7 +27,7 @@
 unit JclSIMDView;
 
 {$I jcl.inc}
-                     
+
 interface
 
 uses
@@ -77,18 +77,19 @@ type
     procedure UnregisterCommands; override;
     procedure RefreshThreadContext(WriteOldContext: Boolean);
     procedure CloseForm;
-    procedure ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier,
     IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
     FThreadList: TList;
-    function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
-    function FindThreadReference(AThread:IOTAThread): PThreadReference;
+    function FindProcessReference(AProcess: IOTAProcess): PProcessReference;
+    function FindThreadReference(AThread: IOTAThread): PThreadReference;
   public
     constructor Create(AOwner: TJclSIMDWizard); reintroduce;
     destructor Destroy; override;
@@ -105,8 +106,10 @@ type
     // IOTAThreadNotifier
     procedure ThreadNotify(Reason: TOTANotifyReason);
     procedure EvaluteComplete(const ExprStr, ResultStr: string;
-      CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
-    procedure ModifyComplete(const ExprStr, ResultStr: string; ReturnCode: Integer);
+      CanModify: Boolean; ResultAddress, ResultSize: LongWord;
+      ReturnCode: Integer);
+    procedure ModifyComplete(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     property Owner: TJclSIMDWizard read FOwner;
   end;
 
@@ -121,7 +124,7 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 uses
-  JclOtaConsts, JclOtaResources, 
+  JclOtaConsts, JclOtaResources,
   JclSIMDUtils;
 
 procedure Register;
@@ -162,8 +165,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -297,7 +300,8 @@ begin
 
   Category := '';
   for I := 0 to NTAServices.ActionList.ActionCount - 1 do
-    if CompareText(NTAServices.ActionList.Actions[I].Name, 'DebugCPUCommand') = 0 then
+    if CompareText(NTAServices.ActionList.Actions[I].Name,
+      'DebugCPUCommand') = 0 then
       Category := NTAServices.ActionList.Actions[I].Category;
 
   FIcon := TIcon.Create;
@@ -401,7 +405,8 @@ begin
       FForm.GetThreadValues;
 end;
 
-procedure TJclSIMDWizard.ThreadEvaluate(const ExprStr, ResultStr: string; ReturnCode: Integer);
+procedure TJclSIMDWizard.ThreadEvaluate(const ExprStr, ResultStr: string;
+  ReturnCode: Integer);
 begin
   if Assigned(FForm) then
     FForm.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
@@ -453,8 +458,10 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.EvaluteComplete(const ExprStr, ResultStr: string;
-  CanModify: Boolean; ResultAddress, ResultSize: LongWord; ReturnCode: Integer);
+procedure TJclDebuggerNotifier.EvaluteComplete(
+  const ExprStr, ResultStr: string;
+  CanModify: Boolean; ResultAddress, ResultSize: LongWord;
+  ReturnCode: Integer);
 begin
   try
     Owner.ThreadEvaluate(ExprStr, ResultStr, ReturnCode);
@@ -467,7 +474,8 @@ begin
   end;
 end;
 
-function TJclDebuggerNotifier.FindProcessReference(AProcess: IOTAProcess): PProcessReference;
+function TJclDebuggerNotifier.FindProcessReference(AProcess: IOTAProcess):
+PProcessReference;
 var
   Index: Integer;
 begin
@@ -480,7 +488,8 @@ begin
   Result := nil;
 end;
 
-function TJclDebuggerNotifier.FindThreadReference(AThread: IOTAThread): PThreadReference;
+function TJclDebuggerNotifier.FindThreadReference(AThread: IOTAThread):
+PThreadReference;
 var
   Index: Integer;
 begin
@@ -493,7 +502,8 @@ begin
   Result := nil;
 end;
 
-procedure TJclDebuggerNotifier.ModifyComplete(const ExprStr, ResultStr: string; ReturnCode: Integer);
+procedure TJclDebuggerNotifier.ModifyComplete(const ExprStr, ResultStr: string;
+  ReturnCode: Integer);
 begin
 
 end;

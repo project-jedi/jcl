@@ -112,7 +112,8 @@ type
     procedure LoadClientLib;
     procedure UnloadClientLib;
     property AnyClientInstalled: Boolean read FAnyClientInstalled;
-    property ClientConnectKind: TJclMapiClientConnect read FClientConnectKind write SetClientConnectKind;
+    property ClientConnectKind: TJclMapiClientConnect
+      read FClientConnectKind write SetClientConnectKind;
     property ClientCount: Integer read GetClientCount;
     property Clients[Index: Integer]: TJclMapiClient read GetClients; default;
     property CurrentClientName: string read GetCurrentClientName;
@@ -122,9 +123,11 @@ type
     property MapiVersion: string read FMapiVersion;
     property ProfileCount: Integer read GetProfileCount;
     property Profiles[Index: Integer]: string read GetProfiles;
-    property SelectedClientIndex: Integer read FSelectedClientIndex write SetSelectedClientIndex;
+    property SelectedClientIndex: Integer
+      read FSelectedClientIndex write SetSelectedClientIndex;
     property SimpleMapiInstalled: Boolean read FSimpleMapiInstalled;
-    property BeforeUnloadClient: TNotifyEvent read FBeforeUnloadClient write FBeforeUnloadClient;
+    property BeforeUnloadClient: TNotifyEvent
+      read FBeforeUnloadClient write FBeforeUnloadClient;
     // Simple MAPI functions
     property MapiAddress: TFNMapiAddress read FMapiAddress;
     property MapiDeleteMail: TFNMapiDeleteMail read FMapiDeleteMail;
@@ -143,8 +146,8 @@ type
 const
   // Simple email classes
   MapiAddressTypeSMTP = 'SMTP';
-  MapiAddressTypeFAX  = 'FAX';
-  MapiAddressTypeTLX  = 'TLX';
+  MapiAddressTypeFAX = 'FAX';
+  MapiAddressTypeTLX = 'TLX';
 
 type
   TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
@@ -231,16 +234,20 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Address(const Caption: string = ''; EditFields: Integer = 3): Boolean;
+    function Address(const Caption: string = '';
+      EditFields: Integer = 3): Boolean;
     procedure Clear;
     function Delete(const MessageID: string): Boolean;
     function FindFirstMessage: Boolean;
     function FindNextMessage: Boolean;
     procedure LogOff;
-    procedure LogOn(const ProfileName: string = ''; const Password: string = '');
-    function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
+    procedure LogOn(const ProfileName: string = '';
+      const Password: string = '');
+    function MessageReport(Strings: TStrings; MaxWidth: Integer = 80;
+      IncludeAddresses: Boolean = False): Integer;
     function Read(const Options: TJclEmailReadOptions = []): Boolean;
-    function ResolveName(var Name, Address: string; ShowDialog: Boolean = False): Boolean;
+    function ResolveName(var Name, Address: string;
+      ShowDialog: Boolean = False): Boolean;
     procedure RestoreTaskWindows;
     function Save: Boolean;
     procedure SaveTaskWindows;
@@ -249,9 +256,11 @@ type
     property Attachments: TStrings read GetAttachments;
     property AttachmentFiles: TStrings read GetAttachmentFiles;
     property Body: string read FBody write SetBody;
-    property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
+    property FindOptions: TJclEmailFindOptions
+      read FFindOptions write FFindOptions;
     property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
-    property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
+    property LogonOptions: TJclEmailLogonOptions
+      read FLogonOptions write FLogonOptions;
     property ParentWnd: THandle read GetParentWnd write SetParentWnd;
     property ReadMsg: TJclEmailReadMsg read FReadMsg;
     property Recipients: TJclEmailRecips read FRecipients;
@@ -263,11 +272,13 @@ type
 
 // Simple email send function
 function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
-  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: THandle = 0;
+  const Attachment: string = ''; ShowDialog: Boolean = True;
+  ParentWND: THandle = 0;
   const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
-  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: THandle = 0;
+  const Attachment: string = ''; ShowDialog: Boolean = True;
+  ParentWND: THandle = 0;
   const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
@@ -292,7 +303,8 @@ const
 implementation
 
 uses
-  JclFileUtils, JclLogic, JclRegistry, JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclRegistry, JclResources, JclStrings,
+  JclSysInfo, JclSysUtils;
 
 const
   MapiDll = 'mapi32.dll';
@@ -317,11 +329,13 @@ function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean): DWORD;
 var
   Error: EJclMapiError;
 begin
-  if (Res = SUCCESS_SUCCESS) or (IgnoreUserAbort and (Res = MAPI_E_USER_ABORT)) then
+  if (Res = SUCCESS_SUCCESS) or (IgnoreUserAbort and
+    (Res = MAPI_E_USER_ABORT)) then
     Result := Res
   else
   begin
-    Error := EJclMapiError.CreateResFmt(@RsMapiError, [Res, MapiErrorMessage(Res)]);
+    Error := EJclMapiError.CreateResFmt(@RsMapiError,
+      [Res, MapiErrorMessage(Res)]);
     Error.FErrorCode := Res;
     raise Error;
   end;
@@ -329,67 +343,68 @@ end;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 begin
-   case ErrorCode of
-     MAPI_E_USER_ABORT:
-       Result := RsMapiErrUSER_ABORT;
-     MAPI_E_FAILURE:
-       Result := RsMapiErrFAILURE;
-     MAPI_E_LOGIN_FAILURE:
-       Result := RsMapiErrLOGIN_FAILURE;
-     MAPI_E_DISK_FULL:
-       Result := RsMapiErrDISK_FULL;
-     MAPI_E_INSUFFICIENT_MEMORY:
-       Result := RsMapiErrINSUFFICIENT_MEMORY;
-     MAPI_E_ACCESS_DENIED:
-       Result := RsMapiErrACCESS_DENIED;
-     MAPI_E_TOO_MANY_SESSIONS:
-       Result := RsMapiErrTOO_MANY_SESSIONS;
-     MAPI_E_TOO_MANY_FILES:
-       Result := RsMapiErrTOO_MANY_FILES;
-     MAPI_E_TOO_MANY_RECIPIENTS:
-       Result := RsMapiErrTOO_MANY_RECIPIENTS;
-     MAPI_E_ATTACHMENT_NOT_FOUND:
-       Result := RsMapiErrATTACHMENT_NOT_FOUND;
-     MAPI_E_ATTACHMENT_OPEN_FAILURE:
-       Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
-     MAPI_E_ATTACHMENT_WRITE_FAILURE:
-       Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
-     MAPI_E_UNKNOWN_RECIPIENT:
-       Result := RsMapiErrUNKNOWN_RECIPIENT;
-     MAPI_E_BAD_RECIPTYPE:
-       Result := RsMapiErrBAD_RECIPTYPE;
-     MAPI_E_NO_MESSAGES:
-       Result := RsMapiErrNO_MESSAGES;
-     MAPI_E_INVALID_MESSAGE:
-       Result := RsMapiErrINVALID_MESSAGE;
-     MAPI_E_TEXT_TOO_LARGE:
-       Result := RsMapiErrTEXT_TOO_LARGE;
-     MAPI_E_INVALID_SESSION:
-       Result := RsMapiErrINVALID_SESSION;
-     MAPI_E_TYPE_NOT_SUPPORTED:
-       Result := RsMapiErrTYPE_NOT_SUPPORTED;
-     MAPI_E_AMBIGUOUS_RECIPIENT:
-       Result := RsMapiErrAMBIGUOUS_RECIPIENT;
-     MAPI_E_MESSAGE_IN_USE:
-       Result := RsMapiErrMESSAGE_IN_USE;
-     MAPI_E_NETWORK_FAILURE:
-       Result := RsMapiErrNETWORK_FAILURE;
-     MAPI_E_INVALID_EDITFIELDS:
-       Result := RsMapiErrINVALID_EDITFIELDS;
-     MAPI_E_INVALID_RECIPS:
-       Result := RsMapiErrINVALID_RECIPS;
-     MAPI_E_NOT_SUPPORTED:
-       Result := RsMapiErrNOT_SUPPORTED;
-   else
-     Result := '';
-   end;
+  case ErrorCode of
+    MAPI_E_USER_ABORT:
+      Result := RsMapiErrUSER_ABORT;
+    MAPI_E_FAILURE:
+      Result := RsMapiErrFAILURE;
+    MAPI_E_LOGIN_FAILURE:
+      Result := RsMapiErrLOGIN_FAILURE;
+    MAPI_E_DISK_FULL:
+      Result := RsMapiErrDISK_FULL;
+    MAPI_E_INSUFFICIENT_MEMORY:
+      Result := RsMapiErrINSUFFICIENT_MEMORY;
+    MAPI_E_ACCESS_DENIED:
+      Result := RsMapiErrACCESS_DENIED;
+    MAPI_E_TOO_MANY_SESSIONS:
+      Result := RsMapiErrTOO_MANY_SESSIONS;
+    MAPI_E_TOO_MANY_FILES:
+      Result := RsMapiErrTOO_MANY_FILES;
+    MAPI_E_TOO_MANY_RECIPIENTS:
+      Result := RsMapiErrTOO_MANY_RECIPIENTS;
+    MAPI_E_ATTACHMENT_NOT_FOUND:
+      Result := RsMapiErrATTACHMENT_NOT_FOUND;
+    MAPI_E_ATTACHMENT_OPEN_FAILURE:
+      Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
+    MAPI_E_ATTACHMENT_WRITE_FAILURE:
+      Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
+    MAPI_E_UNKNOWN_RECIPIENT:
+      Result := RsMapiErrUNKNOWN_RECIPIENT;
+    MAPI_E_BAD_RECIPTYPE:
+      Result := RsMapiErrBAD_RECIPTYPE;
+    MAPI_E_NO_MESSAGES:
+      Result := RsMapiErrNO_MESSAGES;
+    MAPI_E_INVALID_MESSAGE:
+      Result := RsMapiErrINVALID_MESSAGE;
+    MAPI_E_TEXT_TOO_LARGE:
+      Result := RsMapiErrTEXT_TOO_LARGE;
+    MAPI_E_INVALID_SESSION:
+      Result := RsMapiErrINVALID_SESSION;
+    MAPI_E_TYPE_NOT_SUPPORTED:
+      Result := RsMapiErrTYPE_NOT_SUPPORTED;
+    MAPI_E_AMBIGUOUS_RECIPIENT:
+      Result := RsMapiErrAMBIGUOUS_RECIPIENT;
+    MAPI_E_MESSAGE_IN_USE:
+      Result := RsMapiErrMESSAGE_IN_USE;
+    MAPI_E_NETWORK_FAILURE:
+      Result := RsMapiErrNETWORK_FAILURE;
+    MAPI_E_INVALID_EDITFIELDS:
+      Result := RsMapiErrINVALID_EDITFIELDS;
+    MAPI_E_INVALID_RECIPS:
+      Result := RsMapiErrINVALID_RECIPS;
+    MAPI_E_NOT_SUPPORTED:
+      Result := RsMapiErrNOT_SUPPORTED;
+    else
+      Result := '';
+  end;
 end;
 
 procedure RestoreTaskWindowsList(const List: TJclTaskWindowsList);
 var
   I: Integer;
 
-  function RestoreTaskWnds(Wnd: THandle; List: TJclTaskWindowsList): BOOL; stdcall;
+  function RestoreTaskWnds(Wnd: THandle;
+    List: TJclTaskWindowsList): BOOL; stdcall;
   var
     I: Integer;
     EnableIt: Boolean;
@@ -420,7 +435,8 @@ end;
 
 function SaveTaskWindowsList: TJclTaskWindowsList;
 
-  function SaveTaskWnds(Wnd: THandle; var Data: TJclTaskWindowsList): BOOL; stdcall;
+  function SaveTaskWnds(Wnd: THandle; var Data: TJclTaskWindowsList): BOOL;
+  stdcall;
   var
     C: Integer;
   begin
@@ -542,7 +558,8 @@ begin
     if P = nil then
     begin
       UnloadClientLib;
-      raise EJclMapiError.CreateResFmt(@RsMapiMissingExport, [MapiExportNames[I]]);
+      raise EJclMapiError.CreateResFmt(@RsMapiMissingExport,
+        [MapiExportNames[I]]);
     end
     else
       FFunctions[I]^ := P;
@@ -571,11 +588,12 @@ var
     I: Integer;
     LibHandle: THandle;
   begin
-    LibHandle := LoadLibraryEx(PChar(Client.ClientPath), 0, DONT_RESOLVE_DLL_REFERENCES);
+    LibHandle := LoadLibraryEx(PChar(Client.ClientPath), 0,
+      DONT_RESOLVE_DLL_REFERENCES);
     Result := (LibHandle <> 0);
     if Result then
     begin
-       for I := Low(MapiExportNames) to High(MapiExportNames) do
+      for I := Low(MapiExportNames) to High(MapiExportNames) do
         if GetProcAddress(LibHandle, PChar(MapiExportNames[I])) = nil then
         begin
           Result := False;
@@ -595,14 +613,18 @@ begin
   try
     if RegKeyExists(HKEY_LOCAL_MACHINE, MessageSubsytemKey) then
     begin
-      FMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIX', '') = '1';
-      FSimpleMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPI', '') = '1';
-      FMapiVersion := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIXVER', '');
+      FMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE,
+        MessageSubsytemKey, 'MAPIX', '') = '1';
+      FSimpleMapiInstalled :=
+        RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPI', '') = '1';
+      FMapiVersion := RegReadStringDef(HKEY_LOCAL_MACHINE,
+        MessageSubsytemKey, 'MAPIXVER', '');
     end;
     FAnyClientInstalled := FMapiInstalled;
     if RegKeyExists(HKEY_LOCAL_MACHINE, MailClientsKey) then
     begin
-      DefaultValue := RegReadStringDef(HKEY_LOCAL_MACHINE, MailClientsKey, '', '');
+      DefaultValue := RegReadStringDef(HKEY_LOCAL_MACHINE,
+        MailClientsKey, '', '');
       if RegGetKeyNames(HKEY_LOCAL_MACHINE, MailClientsKey, SL) then
       begin
         SetLength(FClients, SL.Count);
@@ -613,10 +635,13 @@ begin
           ClientKey := MailClientsKey + '\' + SL[I];
           if RegKeyExists(HKEY_LOCAL_MACHINE, ClientKey) then
           begin
-            FClients[I].ClientName := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, '', '');
-            FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPathEx', '');
+            FClients[I].ClientName :=
+              RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, '', '');
+            FClients[I].ClientPath :=
+              RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPathEx', '');
             if FClients[I].ClientPath = '' then
-              FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
+              FClients[I].ClientPath :=
+                RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
             ExpandEnvironmentVar(FClients[I].ClientPath);
             if CheckValid(FClients[I]) then
               FAnyClientInstalled := True;
@@ -628,7 +653,8 @@ begin
     end;
     if RegKeyExists(HKEY_CURRENT_USER, ProfilesRegKey) then
     begin
-      FDefaultProfileName := RegReadStringDef(HKEY_CURRENT_USER, ProfilesRegKey, 'DefaultProfile', '');
+      FDefaultProfileName :=
+        RegReadStringDef(HKEY_CURRENT_USER, ProfilesRegKey, 'DefaultProfile', '');
       if RegGetKeyNames(HKEY_CURRENT_USER, ProfilesRegKey, SL) then
       begin
         SetLength(FProfiles, SL.Count);
@@ -641,7 +667,8 @@ begin
   end;
 end;
 
-procedure TJclSimpleMapi.SetClientConnectKind(const Value: TJclMapiClientConnect);
+procedure TJclSimpleMapi.SetClientConnectKind(
+  const Value: TJclMapiClientConnect);
 begin
   if FClientConnectKind <> Value then
   begin
@@ -669,7 +696,7 @@ begin
     BeforeUnloadClientLib;
     FreeLibrary(FClientLibHandle);
     FClientLibHandle := 0;
-     for I := 0 to Length(FFunctions) - 1 do
+    for I := 0 to Length(FFunctions) - 1 do
       FFunctions[I]^ := nil;
   end;
 end;
@@ -683,8 +710,8 @@ begin
       UseMapi := True;
     ctDirect:
       UseMapi := False;
-  else
-    UseMapi := True;
+    else
+      UseMapi := True;
   end;
 end;
 
@@ -701,21 +728,22 @@ begin
   Result := Format('"%s" <%s>', [N, Address]);
 end;
 
-class function TJclEmailRecip.RecipKindToString(const AKind: TJclEmailRecipKind): string;
+class function TJclEmailRecip.RecipKindToString(
+  const AKind: TJclEmailRecipKind): string;
 const
   Idents: array [TJclEmailRecipKind] of string = (
     RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
 begin
   case AKind of
-     rkOriginator:
-       Result := RsMapiMailORIG;
-     rkTO:
-       Result := RsMapiMailTO;
-     rkCC:
-       Result := RsMapiMailCC;
-     rkBCC:
-       Result := RsMapiMailBCC;
-   end;
+    rkOriginator:
+      Result := RsMapiMailORIG;
+    rkTO:
+      Result := RsMapiMailTO;
+    rkCC:
+      Result := RsMapiMailCC;
+    rkBCC:
+      Result := RsMapiMailBCC;
+  end;
 end;
 
 procedure TJclEmailRecip.SetAddress(Value: string);
@@ -817,7 +845,8 @@ begin
   inherited Destroy;
 end;
 
-function TJclEmail.Address(const Caption: string; EditFields: Integer): Boolean;
+function TJclEmail.Address(const Caption: string;
+  EditFields: Integer): Boolean;
 var
   NewRecipCount: ULONG;
   NewRecips: PMapiRecipDesc;
@@ -827,15 +856,16 @@ begin
   LoadClientLib;
   NewRecips := nil;
   NewRecipCount := 0;
-  Res := MapiAddress(FSessionHandle, ParentWnd, PChar(Caption), EditFields, nil,
+  Res := MapiAddress(FSessionHandle, ParentWnd, PChar(Caption),
+    EditFields, nil,
     0, Recips, LogonOptionsToFlags(False), 0, @NewRecipCount, NewRecips);
   Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
   if Result then
-  try
-    DecodeRecips(NewRecips, NewRecipCount);
-  finally
-    MapiFreeBuffer(NewRecips);
-  end;
+    try
+      DecodeRecips(NewRecips, NewRecipCount);
+    finally
+      MapiFreeBuffer(NewRecips);
+    end;
 end;
 
 procedure TJclEmail.BeforeUnloadClientLib;
@@ -871,25 +901,26 @@ begin
     with RecipDesc^ do
     begin
       case ulRecipClass of
-         MAPI_ORIG:
-           Kind := rkOriginator;
-         MAPI_TO:
-           Kind := rkTO;
-         MAPI_CC:
-           Kind := rkCC;
-         MAPI_BCC:
-           Kind := rkBCC;
+        MAPI_ORIG:
+          Kind := rkOriginator;
+        MAPI_TO:
+          Kind := rkTO;
+        MAPI_CC:
+          Kind := rkCC;
+        MAPI_BCC:
+          Kind := rkBCC;
         $FFFFFFFF:  // Eudora client version 5.2.0.9 bug
           Kind := rkOriginator;
-      else
-        MapiCheck(MAPI_E_INVALID_MESSAGE, True);
+        else
+          MapiCheck(MAPI_E_INVALID_MESSAGE, True);
       end;
       S := lpszAddress;
       N := Pos(AddressTypeDelimiter, S);
       if N = 0 then
         Recipients.Add(S, lpszName, Kind)
       else
-        Recipients.Add(Copy(S, N + 1, Length(S)), lpszName, Kind, Copy(S, 1, N - 1));
+        Recipients.Add(Copy(S, N + 1, Length(S)), lpszName,
+          Kind, Copy(S, 1, N - 1));
     end;
     Inc(RecipDesc);
   end;
@@ -898,7 +929,8 @@ end;
 function TJclEmail.Delete(const MessageID: string): Boolean;
 begin
   LoadClientLib;
-  Result := MapiCheck(MapiDeleteMail(FSessionHandle, 0, PChar(MessageID), 0, 0),
+  Result := MapiCheck(MapiDeleteMail(FSessionHandle, 0,
+    PChar(MessageID), 0, 0),
     False) = SUCCESS_SUCCESS;
 end;
 
@@ -921,7 +953,8 @@ begin
     Inc(Flags, MAPI_GUARANTEE_FIFO);
   if foUnreadOnly in FFindOptions then
     Inc(Flags, MAPI_UNREAD_ONLY);
-  Res := MapiFindNext(FSessionHandle, 0, nil, PChar(FSeedMessageID), Flags, 0, MsgId);
+  Res := MapiFindNext(FSessionHandle, 0, nil, PChar(FSeedMessageID),
+    Flags, 0, MsgId);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then
     SeedMessageID := MsgID
@@ -962,7 +995,8 @@ const
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
 type
   TSetDllDirectory = function(lpPathName: PAnsiChar): LONGBOOL; stdcall;
-  TGetDllDirectory = function(nBufferLength: DWord; lpPathName: PAnsiChar): LONGBOOL; stdcall;
+  TGetDllDirectory = function(nBufferLength: DWord;
+      lpPathName: PAnsiChar): LONGBOOL; stdcall;
 var
   AttachArray: packed array of TMapiFileDesc;
   RecipArray: packed array of TMapiRecipDesc;
@@ -982,8 +1016,10 @@ begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateRes(@RsMapiMailNoClient);
 
-  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'GetDllDirectoryA');
-  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32), 'SetDllDirectoryA');
+  @GetDllDirectory := GetProcAddress(GetModuleHandle(kernel32),
+    'GetDllDirectoryA');
+  @SetDllDirectory := GetProcAddress(GetModuleHandle(kernel32),
+    'SetDllDirectoryA');
   if Assigned(@GetDllDirectory) and Assigned(@SetDllDirectory) then
   begin
     GetDllDirectory(SizeOf(DllDirectoryBuffer), @DllDirectoryBuffer);
@@ -994,7 +1030,9 @@ begin
     try
       if FHtmlBody then
       begin
-        HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
+        HtmlBodyFileName :=
+          FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) +
+          'JclMapi', 'htm', 'Temp');
         Attachments.Insert(0, HtmlBodyFileName);
         AttachmentFiles.Insert(0, '');
         StringToFile(HtmlBodyFileName, Body);
@@ -1048,12 +1086,14 @@ begin
             else
               RealNames[I] := FName;
             if FAddressType <> '' then
-              RealAddresses[I] := FAddressType + AddressTypeDelimiter + FAddress
+              RealAddresses[I] :=
+                FAddressType + AddressTypeDelimiter + FAddress
             else
-              if Recipients.AddressesType <> '' then
-                RealAddresses[I] := Recipients.AddressesType + AddressTypeDelimiter + FAddress
-              else
-                RealAddresses[I] := FAddress;
+            if Recipients.AddressesType <> '' then
+              RealAddresses[I] :=
+                Recipients.AddressesType + AddressTypeDelimiter + FAddress
+            else
+              RealAddresses[I] := FAddress;
             lpszName := PAnsiChar(RealNames[I]);
             lpszAddress := PAnsiChar(RealAddresses[I]);
           end;
@@ -1085,7 +1125,8 @@ begin
       if Save then
       begin
         StrPLCopy(MsgID, SeedMessageID, SizeOf(MsgID));
-        Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
+        Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage,
+          Flags, 0, MsgID);
         if Res = SUCCESS_SUCCESS then
           SeedMessageID := MsgID;
       end
@@ -1147,7 +1188,8 @@ begin
     Inc(Result, MAPI_DIALOG);
 end;
 
-function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer; IncludeAddresses: Boolean): Integer;
+function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer;
+  IncludeAddresses: Boolean): Integer;
 const
   NameDelimiter = ', ';
 var
@@ -1162,7 +1204,8 @@ begin
   for ReportKind := Low(ReportKind) to High(ReportKind) do
   begin
     NamesList[ReportKind] := '';
-    LabelsWidth := Max(LabelsWidth, Length(TJclEmailRecip.RecipKindToString(ReportKind)));
+    LabelsWidth := Max(LabelsWidth,
+      Length(TJclEmailRecip.RecipKindToString(ReportKind)));
   end;
   BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
   for I := 0 to Recipients.Count - 1 do
@@ -1180,8 +1223,10 @@ begin
     for ReportKind := Low(ReportKind) to High(ReportKind) do
       if NamesList[ReportKind] <> '' then
       begin
-        S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, AnsiSpace) + ': ' +
-          Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
+        S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind),
+          LabelsWidth, AnsiSpace) + ': ' +
+          Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) -
+          Length(NameDelimiter));
         Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
       end;
     S := RsMapiMailSubject + ': ' + Subject;
@@ -1217,8 +1262,9 @@ var
       wMonth := CopyAndStrToInt(S, 6, 2);
       wDay := CopyAndStrToInt(S, 9, 2);
       wHour := CopyAndStrToInt(S, 12, 2);
-      wMinute := CopyAndStrToInt(S, 15,2);
-      Result := EncodeDate(wYear, wMonth, wDay) + EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
+      wMinute := CopyAndStrToInt(S, 15, 2);
+      Result := EncodeDate(wYear, wMonth, wDay) +
+        EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
     end;
   end;
 
@@ -1234,35 +1280,37 @@ begin
     Inc(Flags, MAPI_PEEK);
   if not (roAttachments in Options) then
     Inc(Flags, MAPI_SUPPRESS_ATTACH);
-  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID), Flags, 0, Msg), True);
+  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID),
+    Flags, 0, Msg), True);
   if Msg <> nil then
-  try
-    DecodeRecips(Msg^.lpOriginator, 1);
-    DecodeRecips(Msg^.lpRecips, Msg^.nRecipCount);
-    FSubject := Msg^.lpszSubject;
-    Body := AdjustLineBreaks(Msg^.lpszNoteText);
-    Files := Msg^.lpFiles;
-    if Files <> nil then
-      for I := 0 to Msg^.nFileCount - 1 do
-      begin
-        if Files^.lpszPathName <> nil then
-          Attachments.Add(Files^.lpszPathName)
-        else
-          Attachments.Add(Files^.lpszFileName);
-        Inc(Files);
-      end;
-    FReadMsg.MessageType := Msg^.lpszMessageType;
-    if Msg^.lpszDateReceived <> nil then
-      FReadMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
-    FReadMsg.ConversationID := Msg^.lpszConversationID;
-    FReadMsg.Flags := Msg^.flFlags;
-    Result := True;
-  finally
-    MapiFreeBuffer(Msg);
-  end;
+    try
+      DecodeRecips(Msg^.lpOriginator, 1);
+      DecodeRecips(Msg^.lpRecips, Msg^.nRecipCount);
+      FSubject := Msg^.lpszSubject;
+      Body := AdjustLineBreaks(Msg^.lpszNoteText);
+      Files := Msg^.lpFiles;
+      if Files <> nil then
+        for I := 0 to Msg^.nFileCount - 1 do
+        begin
+          if Files^.lpszPathName <> nil then
+            Attachments.Add(Files^.lpszPathName)
+          else
+            Attachments.Add(Files^.lpszFileName);
+          Inc(Files);
+        end;
+      FReadMsg.MessageType := Msg^.lpszMessageType;
+      if Msg^.lpszDateReceived <> nil then
+        FReadMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
+      FReadMsg.ConversationID := Msg^.lpszConversationID;
+      FReadMsg.Flags := Msg^.flFlags;
+      Result := True;
+    finally
+      MapiFreeBuffer(Msg);
+    end;
 end;
 
-function TJclEmail.ResolveName(var Name, Address: string; ShowDialog: Boolean): Boolean;
+function TJclEmail.ResolveName(var Name, Address: string;
+  ShowDialog: Boolean): Boolean;
 var
   Recip: PMapiRecipDesc;
   Res, Flags: DWORD;
@@ -1270,7 +1318,8 @@ begin
   LoadClientLib;
   Flags := LogonOptionsToFlags(ShowDialog) or MAPI_AB_NOMODIFY;
   Recip := nil;
-  Res := MapiResolveName(FSessionHandle, ParentWnd, PChar(Name), Flags, 0, Recip);
+  Res := MapiResolveName(FSessionHandle, ParentWnd, PChar(Name),
+    Flags, 0, Recip);
   Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS) and (Recip <> nil);
   if Result then
   begin
@@ -1351,32 +1400,35 @@ end;
 
 //=== Simple email send function =============================================
 
-function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: string; const AAttachment: string;
-  AShowDialog: Boolean; AParentWND: THandle; const AProfileName, APassword, AAddressType: string): Boolean;
+function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: string;
+  const AAttachment: string;
+  AShowDialog: Boolean; AParentWND: THandle;
+  const AProfileName, APassword, AAddressType: string): Boolean;
 begin
   with TJclEmail.Create do
-  try
-    if AParentWND <> 0 then
-      ParentWnd := AParentWND;
-    if ARecipient <> '' then
-      Recipients.Add(ARecipient, AName, rkTO, AAddressType);
-    Subject := ASubject;
-    Body := ABody;
-    if AAttachment <> '' then
-      Attachments.Add(AAttachment);
-    if AProfileName <> '' then
-      LogOn(AProfileName, APassword);
-    Result := Send(AShowDialog);
-  finally
-    Free;
-  end;
+    try
+      if AParentWND <> 0 then
+        ParentWnd := AParentWND;
+      if ARecipient <> '' then
+        Recipients.Add(ARecipient, AName, rkTO, AAddressType);
+      Subject := ASubject;
+      Body := ABody;
+      if AAttachment <> '' then
+        Attachments.Add(AAttachment);
+      if AProfileName <> '' then
+        LogOn(AProfileName, APassword);
+      Result := Send(AShowDialog);
+    finally
+      Free;
+    end;
 end;
 
 function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
   const Attachment: string; ShowDialog: Boolean; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
-  Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
+  Result := SimpleSendHelper(Recipient, Name, Subject, Body,
+    Attachment, ShowDialog, ParentWND,
     ProfileName, Password, MapiAddressTypeSMTP);
 end;
 
@@ -1384,7 +1436,8 @@ function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
   const Attachment: string; ShowDialog: Boolean; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
-  Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
+  Result := SimpleSendHelper(Recipient, Name, Subject, Body,
+    Attachment, ShowDialog, ParentWND,
     ProfileName, Password, MapiAddressTypeFAX);
 end;
 
@@ -1392,7 +1445,8 @@ function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
   const Attachment: string; ParentWND: THandle;
   const ProfileName: string; const Password: string): Boolean;
 begin
-  Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
+  Result := SimpleSendHelper('', '', Subject, Body, Attachment,
+    True, ParentWND,
     ProfileName, Password, MapiAddressTypeSMTP);
 end;
 

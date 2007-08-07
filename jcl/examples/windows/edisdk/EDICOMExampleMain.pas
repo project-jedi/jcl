@@ -39,18 +39,23 @@ begin
   F.Options := F.Options or foRemoveLf;
   F.Options := F.Options or foIgnoreGarbageAtEndOfFile;
   F.LoadFromFile(ExtractFileDir(Application.ExeName) + '\sample.edi');
-  Memo1.Lines.Add( F.Data );
+  Memo1.Lines.Add(F.Data);
   F.Disassemble;
   Memo1.Lines.Add(F.Interchange[0].SegmentISA.SegmentId);
   Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].SegmentGS.SegmentId);
-  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet[0].SegmentST.SegmentId);
-  for I := 0 to F.Interchange[0].FunctionalGroup[0].TransactionSet[0].SegmentCount - 1 do
+  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet
+    [0].SegmentST.SegmentId);
+  for I := 0 to F.Interchange[0].FunctionalGroup[0].TransactionSet
+    [0].SegmentCount - 1 do
   begin
     F.Interchange[0].FunctionalGroup[0].TransactionSet[0].Segment[I].Assemble;
-    Memo1.Lines.Add( F.Interchange[0].FunctionalGroup[0].TransactionSet[0].Segment[I].Data );
+    Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[
+      0].TransactionSet[0].Segment[I].Data);
   end;
-  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet[0].Segment[0].Data);
-  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet[0].SegmentSE.SegmentId);
+  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet
+    [0].Segment[0].Data);
+  Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].TransactionSet
+    [0].SegmentSE.SegmentId);
   Memo1.Lines.Add(F.Interchange[0].FunctionalGroup[0].SegmentGE.SegmentId);
   Memo1.Lines.Add(F.Interchange[0].SegmentIEA.SegmentId);
 end;
@@ -104,7 +109,7 @@ begin
     Element[6].Data := 'data';
     Element[7].Data := 'data';
   end;
-  
+
   T := C.Interchange[I].FunctionalGroup[F].AddTransactionSet;
   with C.Interchange[I].FunctionalGroup[F].TransactionSet[T].SegmentST do
   begin
@@ -114,7 +119,7 @@ begin
     Element[0].Data := 'data';
     Element[1].Data := 'data';
   end;
-  
+
   S := C.Interchange[I].FunctionalGroup[F].TransactionSet[T].AddSegment;
   with C.Interchange[I].FunctionalGroup[F].TransactionSet[T].Segment[S] do
   begin
@@ -151,7 +156,7 @@ begin
     Element[1].Data := 'data';
   end;
 
-  Memo1.Lines.Add( C.Assemble );
+  Memo1.Lines.Add(C.Assemble);
 end;
 
 end.

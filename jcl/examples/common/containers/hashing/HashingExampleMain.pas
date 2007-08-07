@@ -164,7 +164,8 @@ begin
     It := Map.Values.First;
     while It.HasNext do
       memResult.Items.Add(TMyObject(It.Next).Str);
-    memResult.Items.Add('--------------------------------------------------------');
+    memResult.Items.Add(
+      '--------------------------------------------------------');
   finally
     // MyObject.Free;  // Free in the map (Default: OwnsObject = True)
     // KeyObject.Free;
@@ -332,4 +333,3 @@ begin
 end;
 
 end.
-

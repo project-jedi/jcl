@@ -105,14 +105,16 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    constructor Create(AOwner: TComponent; ASettings: TJclOtaSettings); reintroduce;
+    constructor Create(AOwner: TComponent; ASettings: TJclOtaSettings);
+      reintroduce;
     destructor Destroy; override;
     procedure ClearContent;
     function FindPackageForUnitName(const UnitName: string): string;
     procedure ShowDfms;
     procedure ShowDetails;
     procedure ShowSummary;
-    procedure SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
+    procedure SetFileName(const FileName, MapFileName: TFileName;
+      const ProjectName: string);
     property StatusBarText: string write SetStatusBarText;
     property Settings: TJclOtaSettings read FSettings;
     property View: TProjectAnalyserView read FView;
@@ -154,7 +156,8 @@ begin
   end;
 end;
 
-procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem; var Compare: Integer);
+procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem;
+  var Compare: Integer);
 var
   ColIndex: Integer;
 
@@ -180,14 +183,16 @@ begin
       if ColIndex = -1 then
         Compare := AnsiCompareText(Item1.Caption, Item2.Caption)
       else
-        Compare := AnsiCompareText(Item1.SubItems[ColIndex], Item2.SubItems[ColIndex]);
+        Compare := AnsiCompareText(Item1.SubItems[ColIndex],
+          Item2.SubItems[ColIndex]);
     end
     else
     begin
       if ColIndex = -1 then
         Compare := FmtStrToInt(Item1.Caption) - FmtStrToInt(Item2.Caption)
       else
-        Compare := FmtStrToInt(Item1.SubItems[ColIndex]) - FmtStrToInt(Item2.SubItems[ColIndex]);
+        Compare := FmtStrToInt(Item1.SubItems[ColIndex]) -
+          FmtStrToInt(Item2.SubItems[ColIndex]);
     end;
     if (Tag and $100) <> 0 then
       Compare := -Compare;
@@ -228,7 +233,8 @@ begin
       begin
         ColWidths[0] := Max(ColWidths[0], Length(Trim(Items[R].Caption)));
         for C := 0 to Items[R].SubItems.Count - 1 do
-          ColWidths[C + 1] := Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
+          ColWidths[C + 1] :=
+            Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
       end;
     Strings.BeginUpdate;
     try
@@ -246,13 +252,13 @@ begin
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
-        with Items[R] do
-        begin
-          S := MakeCellStr(Caption, 0);
-          for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-            S := S + MakeCellStr(SubItems[C], C + 1);
-          AddLine;
-        end;
+          with Items[R] do
+          begin
+            S := MakeCellStr(Caption, 0);
+            for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
+              S := S + MakeCellStr(SubItems[C], C + 1);
+            AddLine;
+          end;
     finally
       Strings.EndUpdate;
     end;
@@ -275,15 +281,17 @@ begin
   FUnitsSum.Duplicates := dupIgnore;
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-            Settings.LoadInteger(JclTop, Top),
-            Settings.LoadInteger(JclWidth, Width),
-            Settings.LoadInteger(JclHeight, Height));
+    Settings.LoadInteger(JclTop, Top),
+    Settings.LoadInteger(JclWidth, Width),
+    Settings.LoadInteger(JclHeight, Height));
 
-  FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
+  FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName,
+    Integer(pavDetails)));
 
   with UnitListView.Columns do
     for Index := 0 to Count - 1 do
-      Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
+      Items[Index].Width :=
+        Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 end;
 
 procedure TProjectAnalyzerForm.FormDestroy(Sender: TObject);
@@ -302,7 +310,8 @@ begin
   FreeAndNil(FUnitsSum);
 end;
 
-procedure TProjectAnalyzerForm.SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
+procedure TProjectAnalyzerForm.SetFileName(
+  const FileName, MapFileName: TFileName; const ProjectName: string);
 var
   MapParser: TJclMapParser;
   BorImage: TJclPeBorImage;
@@ -356,7 +365,8 @@ begin
     PackagesList.Free;
   end;
   StatusBarMain.Panels[0].Text := Format(RsStatusText,
-    [FUnitsSum.Count, Length(FDfms), FCodeSize, FDataSize, FBssSize, ResourcesSize]);
+    [FUnitsSum.Count, Length(FDfms), FCodeSize, FDataSize,
+    FBssSize, ResourcesSize]);
   case View of
     pavDetails:
       ShowDetails;
@@ -388,8 +398,8 @@ begin
             ImageIndex := 3;
           'B':
             ImageIndex := 4;
-        else
-          ImageIndex := 2;
+          else
+            ImageIndex := 2;
         end;
       end;
     AlphaSort;
@@ -443,7 +453,8 @@ begin
   end;
 end;
 
-procedure TProjectAnalyzerForm.OnMapSegmentEvent(Sender: TObject; const Address: TJclMapAddress;
+procedure TProjectAnalyzerForm.OnMapSegmentEvent(Sender: TObject;
+  const Address: TJclMapAddress;
   Length: Integer; const ClassName, UnitName: string);
 var
   C: Integer;
@@ -460,10 +471,10 @@ begin
   FUnits[C].Group := ClassName;
   case ClassName1 of
     'B':
-      begin
-        Inc(FBssSize, Length);
-        Length := 0;
-      end;
+    begin
+      Inc(FBssSize, Length);
+      Length := 0;
+    end;
     'C':
       Inc(FCodeSize, Length);
     'D':
@@ -476,7 +487,8 @@ begin
     FUnitsSum.Objects[C] := Pointer(Integer(FUnitsSum.Objects[C]) + Length);
 end;
 
-procedure TProjectAnalyzerForm.UnitListViewColumnClick(Sender: TObject; Column: TListColumn);
+procedure TProjectAnalyzerForm.UnitListViewColumnClick(Sender: TObject;
+  Column: TListColumn);
 begin
   JvListViewSortClick(Column, 0, 1);
   TListView(Sender).AlphaSort;
@@ -571,7 +583,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -603,7 +616,8 @@ begin
   end;
 end;
 
-function TProjectAnalyzerForm.FindPackageForUnitName(const UnitName: string): string;
+function TProjectAnalyzerForm.FindPackageForUnitName(
+  const UnitName: string): string;
 var
   I: Integer;
 begin

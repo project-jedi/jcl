@@ -48,7 +48,8 @@ type
     FParams: TJclOtaExcDlgParams;
     procedure UpdateControls;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams);
+      reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
@@ -83,7 +84,8 @@ begin
   LabelIgnoredExceptions.Caption := RsIgnoredExceptions;
 end;
 
-procedure TJclOtaExcDlgIgnorePage.PageActivated(Direction: TJclWizardDirection);
+procedure TJclOtaExcDlgIgnorePage.PageActivated(Direction:
+  TJclWizardDirection);
 begin
   inherited PageActivated(Direction);
 

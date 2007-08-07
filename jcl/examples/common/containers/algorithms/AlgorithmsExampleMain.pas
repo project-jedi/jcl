@@ -130,7 +130,8 @@ var
   Value: Integer;
 begin
   Value := StrToIntDef(edtFind.Text, 0);
-  It := JclAlgorithms.Find(List.First, List.Size, TObject(Value), SimpleCompare);
+  It := JclAlgorithms.Find(List.First, List.Size, TObject(Value),
+    SimpleCompare);
   if It = nil then
     lblFound.Caption := 'Not found'
   else
@@ -158,7 +159,8 @@ var
   Value: Integer;
 begin
   Value := StrToIntDef(edtCount.Text, 0);
-  Count := JclAlgorithms.CountObject(List.First, List.Size, TObject(Value), SimpleCompare);
+  Count := JclAlgorithms.CountObject(List.First, List.Size,
+    TObject(Value), SimpleCompare);
   lblCount.Caption := IntToStr(Count);
 end;
 
@@ -243,4 +245,3 @@ begin
 end;
 
 end.
-

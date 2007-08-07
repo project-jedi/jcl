@@ -84,7 +84,8 @@ const
   IID_IShellUIHelper: TGUID = '{729FE2F8-1EA8-11D1-8F85-00C04FC2FBE1}';
   CLASS_ShellUIHelper: TGUID = '{64AB4BB7-111E-11D1-8F79-00C04FC2FBE1}';
   DIID_DShellNameSpaceEvents: TGUID = '{55136806-B2DE-11D1-B9F2-00A0C98BC547}';
-  IID_IShellFavoritesNameSpace: TGUID = '{55136804-B2DE-11D1-B9F2-00A0C98BC547}';
+  IID_IShellFavoritesNameSpace: TGUID =
+    '{55136804-B2DE-11D1-B9F2-00A0C98BC547}';
   IID_IShellNameSpace: TGUID = '{E572D3C9-37BE-4AE2-825D-D521763E3108}';
   CLASS_ShellNameSpace: TGUID = '{55136805-B2DE-11D1-B9F2-00A0C98BC547}';
   IID_IScriptErrorList: TGUID = '{F3470F24-15FD-11D2-BB2E-00805FF7EFCA}';
@@ -93,7 +94,8 @@ const
   IID_ISearches: TGUID = '{47C922A2-3DD5-11D2-BF8B-00C04FB93661}';
   IID_ISearchAssistantOC: TGUID = '{72423E8F-8011-11D2-BE79-00A0C9A83DA1}';
   IID_ISearchAssistantOC2: TGUID = '{72423E8F-8011-11D2-BE79-00A0C9A83DA2}';
-  DIID__SearchAssistantEvents: TGUID = '{1611FDDA-445B-11D2-85DE-00C04FA35C89}';
+  DIID__SearchAssistantEvents: TGUID =
+    '{1611FDDA-445B-11D2-85DE-00C04FA35C89}';
   CLASS_SearchAssistantOC: TGUID = '{B45FF030-4447-11D2-85DE-00C04FA35C89}';
 
 // *********************************************************************//
@@ -286,9 +288,10 @@ type
     procedure GoForward; safecall;
     procedure GoHome; safecall;
     procedure GoSearch; safecall;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); safecall;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); safecall;
     procedure Refresh; safecall;
     procedure Refresh2(var Level: OleVariant); safecall;
     procedure Stop; safecall;
@@ -335,9 +338,10 @@ type
     procedure GoForward; dispid 101;
     procedure GoHome; dispid 102;
     procedure GoSearch; dispid 103;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); dispid 104;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); dispid 104;
     procedure Refresh; dispid -550;
     procedure Refresh2(var Level: OleVariant); dispid 105;
     procedure Stop; dispid 106;
@@ -363,25 +367,35 @@ type
 // *********************************************************************//
   DWebBrowserEvents = dispinterface
     ['{EAB22AC2-30C1-11CF-A7EB-0000C05BAE0B}']
-    procedure BeforeNavigate(const URL: WideString; Flags: Integer; 
-                             const TargetFrameName: WideString; var PostData: OleVariant; 
-                             const Headers: WideString; var Cancel: WordBool); dispid 100;
+    procedure BeforeNavigate(const URL: WideString; Flags: Integer;
+      const TargetFrameName: WideString;
+      var PostData: OleVariant;
+      const Headers: WideString; var Cancel: WordBool);
+      dispid 100;
     procedure NavigateComplete(const URL: WideString); dispid 101;
     procedure StatusTextChange(const Text: WideString); dispid 102;
-    procedure ProgressChange(Progress: Integer; ProgressMax: Integer); dispid 108;
+    procedure ProgressChange(Progress: Integer; ProgressMax: Integer);
+      dispid 108;
     procedure DownloadComplete; dispid 104;
-    procedure CommandStateChange(Command: Integer; Enable: WordBool); dispid 105;
+    procedure CommandStateChange(Command: Integer; Enable: WordBool);
+      dispid 105;
     procedure DownloadBegin; dispid 106;
-    procedure NewWindow(const URL: WideString; Flags: Integer; const TargetFrameName: WideString; 
-                        var PostData: OleVariant; const Headers: WideString; var Processed: WordBool); dispid 107;
+    procedure NewWindow(const URL: WideString; Flags: Integer;
+      const TargetFrameName: WideString;
+      var PostData: OleVariant; const Headers: WideString;
+      var Processed: WordBool); dispid 107;
     procedure TitleChange(const Text: WideString); dispid 113;
-    procedure FrameBeforeNavigate(const URL: WideString; Flags: Integer; 
-                                  const TargetFrameName: WideString; var PostData: OleVariant; 
-                                  const Headers: WideString; var Cancel: WordBool); dispid 200;
+    procedure FrameBeforeNavigate(const URL: WideString; Flags: Integer;
+      const TargetFrameName: WideString;
+      var PostData: OleVariant;
+      const Headers: WideString;
+      var Cancel: WordBool); dispid 200;
     procedure FrameNavigateComplete(const URL: WideString); dispid 201;
-    procedure FrameNewWindow(const URL: WideString; Flags: Integer; 
-                             const TargetFrameName: WideString; var PostData: OleVariant; 
-                             const Headers: WideString; var Processed: WordBool); dispid 204;
+    procedure FrameNewWindow(const URL: WideString; Flags: Integer;
+      const TargetFrameName: WideString;
+      var PostData: OleVariant;
+      const Headers: WideString;
+      var Processed: WordBool); dispid 204;
     procedure Quit(var Cancel: WordBool); dispid 103;
     procedure WindowMove; dispid 109;
     procedure WindowResize; dispid 110;
@@ -398,7 +412,8 @@ type
     ['{0002DF05-0000-0000-C000-000000000046}']
     procedure Quit; safecall;
     procedure ClientToWindow(var pcx: SYSINT; var pcy: SYSINT); safecall;
-    procedure PutProperty(const Property_: WideString; vtValue: OleVariant); safecall;
+    procedure PutProperty(const Property_: WideString;
+      vtValue: OleVariant); safecall;
     function GetProperty(const Property_: WideString): OleVariant; safecall;
     function Get_Name: WideString; safecall;
     function Get_HWND: Integer; safecall;
@@ -437,7 +452,8 @@ type
     ['{0002DF05-0000-0000-C000-000000000046}']
     procedure Quit; dispid 300;
     procedure ClientToWindow(var pcx: SYSINT; var pcy: SYSINT); dispid 301;
-    procedure PutProperty(const Property_: WideString; vtValue: OleVariant); dispid 302;
+    procedure PutProperty(const Property_: WideString; vtValue: OleVariant);
+      dispid 302;
     function GetProperty(const Property_: WideString): OleVariant; dispid 303;
     property Name: WideString readonly dispid 0;
     property HWND: Integer readonly dispid -515;
@@ -453,9 +469,10 @@ type
     procedure GoForward; dispid 101;
     procedure GoHome; dispid 102;
     procedure GoSearch; dispid 103;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); dispid 104;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); dispid 104;
     procedure Refresh; dispid -550;
     procedure Refresh2(var Level: OleVariant); dispid 105;
     procedure Stop; dispid 106;
@@ -481,14 +498,17 @@ type
 // *********************************************************************//
   IWebBrowser2 = interface(IWebBrowserApp)
     ['{D30C1661-CDAF-11D0-8A3E-00C04FC9E26E}']
-    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                        var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                        var Headers: OleVariant); safecall;
+    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); safecall;
     function QueryStatusWB(cmdID: OLECMDID): OLECMDF; safecall;
-    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant; 
-                     var pvaOut: OleVariant); safecall;
-    procedure ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant; 
-                             var pvarSize: OleVariant); safecall;
+    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+      var pvaIn: OleVariant;
+      var pvaOut: OleVariant); safecall;
+    procedure ShowBrowserBar(var pvaClsid: OleVariant;
+      var pvarShow: OleVariant;
+      var pvarSize: OleVariant); safecall;
     function Get_ReadyState: tagREADYSTATE; safecall;
     function Get_Offline: WordBool; safecall;
     procedure Set_Offline(pbOffline: WordBool); safecall;
@@ -507,8 +527,10 @@ type
     property ReadyState: tagREADYSTATE read Get_ReadyState;
     property Offline: WordBool read Get_Offline write Set_Offline;
     property Silent: WordBool read Get_Silent write Set_Silent;
-    property RegisterAsBrowser: WordBool read Get_RegisterAsBrowser write Set_RegisterAsBrowser;
-    property RegisterAsDropTarget: WordBool read Get_RegisterAsDropTarget write Set_RegisterAsDropTarget;
+    property RegisterAsBrowser: WordBool
+      read Get_RegisterAsBrowser write Set_RegisterAsBrowser;
+    property RegisterAsDropTarget: WordBool
+      read Get_RegisterAsDropTarget write Set_RegisterAsDropTarget;
     property TheaterMode: WordBool read Get_TheaterMode write Set_TheaterMode;
     property AddressBar: WordBool read Get_AddressBar write Set_AddressBar;
     property Resizable: WordBool read Get_Resizable write Set_Resizable;
@@ -521,14 +543,17 @@ type
 // *********************************************************************//
   IWebBrowser2Disp = dispinterface
     ['{D30C1661-CDAF-11D0-8A3E-00C04FC9E26E}']
-    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                        var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                        var Headers: OleVariant); dispid 500;
+    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); dispid 500;
     function QueryStatusWB(cmdID: OLECMDID): OLECMDF; dispid 501;
-    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant; 
-                     var pvaOut: OleVariant); dispid 502;
-    procedure ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant; 
-                             var pvarSize: OleVariant); dispid 503;
+    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+      var pvaIn: OleVariant;
+      var pvaOut: OleVariant); dispid 502;
+    procedure ShowBrowserBar(var pvaClsid: OleVariant;
+      var pvarShow: OleVariant;
+      var pvarSize: OleVariant); dispid 503;
     property ReadyState: tagREADYSTATE readonly dispid -525;
     property Offline: WordBool dispid 550;
     property Silent: WordBool dispid 551;
@@ -539,7 +564,8 @@ type
     property Resizable: WordBool dispid 556;
     procedure Quit; dispid 300;
     procedure ClientToWindow(var pcx: SYSINT; var pcy: SYSINT); dispid 301;
-    procedure PutProperty(const Property_: WideString; vtValue: OleVariant); dispid 302;
+    procedure PutProperty(const Property_: WideString; vtValue: OleVariant);
+      dispid 302;
     function GetProperty(const Property_: WideString): OleVariant; dispid 303;
     property Name: WideString readonly dispid 0;
     property HWND: Integer readonly dispid -515;
@@ -555,9 +581,10 @@ type
     procedure GoForward; dispid 101;
     procedure GoHome; dispid 102;
     procedure GoSearch; dispid 103;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); dispid 104;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); dispid 104;
     procedure Refresh; dispid -550;
     procedure Refresh2(var Level: OleVariant); dispid 105;
     procedure Stop; dispid 106;
@@ -584,18 +611,26 @@ type
   DWebBrowserEvents2 = dispinterface
     ['{34A715A0-6587-11D0-924A-0020AFC7AC4D}']
     procedure StatusTextChange(const Text: WideString); dispid 102;
-    procedure ProgressChange(Progress: Integer; ProgressMax: Integer); dispid 108;
-    procedure CommandStateChange(Command: Integer; Enable: WordBool); dispid 105;
+    procedure ProgressChange(Progress: Integer; ProgressMax: Integer);
+      dispid 108;
+    procedure CommandStateChange(Command: Integer; Enable: WordBool);
+      dispid 105;
     procedure DownloadBegin; dispid 106;
     procedure DownloadComplete; dispid 104;
     procedure TitleChange(const Text: WideString); dispid 113;
     procedure PropertyChange(const szProperty: WideString); dispid 112;
-    procedure BeforeNavigate2(const pDisp: IDispatch; var URL: OleVariant; var Flags: OleVariant; 
-                              var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                              var Headers: OleVariant; var Cancel: WordBool); dispid 250;
-    procedure NewWindow2(var ppDisp: IDispatch; var Cancel: WordBool); dispid 251;
-    procedure NavigateComplete2(const pDisp: IDispatch; var URL: OleVariant); dispid 252;
-    procedure DocumentComplete(const pDisp: IDispatch; var URL: OleVariant); dispid 259;
+    procedure BeforeNavigate2(const pDisp: IDispatch;
+      var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant; var Cancel: WordBool);
+      dispid 250;
+    procedure NewWindow2(var ppDisp: IDispatch; var Cancel: WordBool);
+      dispid 251;
+    procedure NavigateComplete2(const pDisp: IDispatch; var URL: OleVariant);
+      dispid 252;
+    procedure DocumentComplete(const pDisp: IDispatch; var URL: OleVariant);
+      dispid 259;
     procedure OnQuit; dispid 253;
     procedure OnVisible(Visible: WordBool); dispid 254;
     procedure OnToolBar(ToolBar: WordBool); dispid 255;
@@ -608,7 +643,8 @@ type
     procedure WindowSetTop(Top: Integer); dispid 265;
     procedure WindowSetWidth(Width: Integer); dispid 266;
     procedure WindowSetHeight(Height: Integer); dispid 267;
-    procedure WindowClosing(IsChildWindow: WordBool; var Cancel: WordBool); dispid 263;
+    procedure WindowClosing(IsChildWindow: WordBool; var Cancel: WordBool);
+      dispid 263;
     procedure ClientToHostWindow(var CX: Integer; var CY: Integer); dispid 268;
     procedure SetSecureLockIcon(SecureLockIcon: Integer); dispid 269;
     procedure FileDownload(var Cancel: WordBool); dispid 270;
@@ -635,14 +671,18 @@ type
     function Get_Count: Integer; safecall;
     function Item(index: OleVariant): IDispatch; safecall;
     function _NewEnum: IUnknown; safecall;
-    procedure Register(const pid: IDispatch; HWND: Integer; swClass: SYSINT; out plCookie: Integer); safecall;
-    procedure RegisterPending(lThreadId: Integer; var pvarloc: OleVariant; 
-                              var pvarlocRoot: OleVariant; swClass: SYSINT; out plCookie: Integer); safecall;
+    procedure Register(const pid: IDispatch; HWND: Integer;
+      swClass: SYSINT; out plCookie: Integer); safecall;
+    procedure RegisterPending(lThreadId: Integer; var pvarloc: OleVariant;
+      var pvarlocRoot: OleVariant;
+      swClass: SYSINT; out plCookie: Integer); safecall;
     procedure Revoke(lCookie: Integer); safecall;
     procedure OnNavigate(lCookie: Integer; var pvarloc: OleVariant); safecall;
     procedure OnActivated(lCookie: Integer; fActive: WordBool); safecall;
-    function FindWindowSW(var pvarloc: OleVariant; var pvarlocRoot: OleVariant; swClass: SYSINT; 
-                          out pHWND: Integer; swfwOptions: SYSINT): IDispatch; safecall;
+    function FindWindowSW(var pvarloc: OleVariant;
+      var pvarlocRoot: OleVariant; swClass: SYSINT;
+      out pHWND: Integer; swfwOptions: SYSINT): IDispatch;
+      safecall;
     procedure OnCreated(lCookie: Integer; const punk: IUnknown); safecall;
     procedure ProcessAttachDetach(fAttach: WordBool); safecall;
     property Count: Integer read Get_Count;
@@ -658,15 +698,22 @@ type
     property Count: Integer readonly dispid 1610743808;
     function Item(index: OleVariant): IDispatch; dispid 0;
     function _NewEnum: IUnknown; dispid -4;
-    procedure Register(const pid: IDispatch; HWND: Integer; swClass: SYSINT; out plCookie: Integer); dispid 1610743811;
-    procedure RegisterPending(lThreadId: Integer; var pvarloc: OleVariant; 
-                              var pvarlocRoot: OleVariant; swClass: SYSINT; out plCookie: Integer); dispid 1610743812;
+    procedure Register(const pid: IDispatch; HWND: Integer;
+      swClass: SYSINT; out plCookie: Integer); dispid 1610743811;
+    procedure RegisterPending(lThreadId: Integer; var pvarloc: OleVariant;
+      var pvarlocRoot: OleVariant;
+      swClass: SYSINT; out plCookie: Integer); dispid 1610743812;
     procedure Revoke(lCookie: Integer); dispid 1610743813;
-    procedure OnNavigate(lCookie: Integer; var pvarloc: OleVariant); dispid 1610743814;
-    procedure OnActivated(lCookie: Integer; fActive: WordBool); dispid 1610743815;
-    function FindWindowSW(var pvarloc: OleVariant; var pvarlocRoot: OleVariant; swClass: SYSINT; 
-                          out pHWND: Integer; swfwOptions: SYSINT): IDispatch; dispid 1610743816;
-    procedure OnCreated(lCookie: Integer; const punk: IUnknown); dispid 1610743817;
+    procedure OnNavigate(lCookie: Integer; var pvarloc: OleVariant);
+      dispid 1610743814;
+    procedure OnActivated(lCookie: Integer; fActive: WordBool);
+      dispid 1610743815;
+    function FindWindowSW(var pvarloc: OleVariant;
+      var pvarlocRoot: OleVariant; swClass: SYSINT;
+      out pHWND: Integer; swfwOptions: SYSINT): IDispatch;
+      dispid 1610743816;
+    procedure OnCreated(lCookie: Integer; const punk: IUnknown);
+      dispid 1610743817;
     procedure ProcessAttachDetach(fAttach: WordBool); dispid 1610743818;
   end;
 
@@ -680,20 +727,27 @@ type
     procedure ResetFirstBootMode; safecall;
     procedure ResetSafeMode; safecall;
     procedure RefreshOfflineDesktop; safecall;
-    procedure AddFavorite(const URL: WideString; var Title: OleVariant); safecall;
+    procedure AddFavorite(const URL: WideString; var Title: OleVariant);
+      safecall;
     procedure AddChannel(const URL: WideString); safecall;
-    procedure AddDesktopComponent(const URL: WideString; const Type_: WideString; 
-                                  var Left: OleVariant; var Top: OleVariant; var Width: OleVariant; 
-                                  var Height: OleVariant); safecall;
+    procedure AddDesktopComponent(const URL: WideString;
+      const Type_: WideString;
+      var Left: OleVariant;
+      var Top: OleVariant; var Width: OleVariant;
+      var Height: OleVariant); safecall;
     function IsSubscribed(const URL: WideString): WordBool; safecall;
-    procedure NavigateAndFind(const URL: WideString; const strQuery: WideString; 
-                              var varTargetFrame: OleVariant); safecall;
-    procedure ImportExportFavorites(fImport: WordBool; const strImpExpPath: WideString); safecall;
+    procedure NavigateAndFind(const URL: WideString;
+      const strQuery: WideString;
+      var varTargetFrame: OleVariant); safecall;
+    procedure ImportExportFavorites(fImport: WordBool;
+      const strImpExpPath: WideString); safecall;
     procedure AutoCompleteSaveForm(var Form: OleVariant); safecall;
-    procedure AutoScan(const strSearch: WideString; const strFailureUrl: WideString; 
-                       var pvarTargetFrame: OleVariant); safecall;
+    procedure AutoScan(const strSearch: WideString;
+      const strFailureUrl: WideString;
+      var pvarTargetFrame: OleVariant); safecall;
     procedure AutoCompleteAttach(var Reserved: OleVariant); safecall;
-    function ShowBrowserUI(const bstrName: WideString; var pvarIn: OleVariant): OleVariant; safecall;
+    function ShowBrowserUI(const bstrName: WideString;
+      var pvarIn: OleVariant): OleVariant; safecall;
   end;
 
 // *********************************************************************//
@@ -706,20 +760,27 @@ type
     procedure ResetFirstBootMode; dispid 1;
     procedure ResetSafeMode; dispid 2;
     procedure RefreshOfflineDesktop; dispid 3;
-    procedure AddFavorite(const URL: WideString; var Title: OleVariant); dispid 4;
+    procedure AddFavorite(const URL: WideString; var Title: OleVariant);
+      dispid 4;
     procedure AddChannel(const URL: WideString); dispid 5;
-    procedure AddDesktopComponent(const URL: WideString; const Type_: WideString; 
-                                  var Left: OleVariant; var Top: OleVariant; var Width: OleVariant; 
-                                  var Height: OleVariant); dispid 6;
+    procedure AddDesktopComponent(const URL: WideString;
+      const Type_: WideString;
+      var Left: OleVariant;
+      var Top: OleVariant; var Width: OleVariant;
+      var Height: OleVariant); dispid 6;
     function IsSubscribed(const URL: WideString): WordBool; dispid 7;
-    procedure NavigateAndFind(const URL: WideString; const strQuery: WideString; 
-                              var varTargetFrame: OleVariant); dispid 8;
-    procedure ImportExportFavorites(fImport: WordBool; const strImpExpPath: WideString); dispid 9;
+    procedure NavigateAndFind(const URL: WideString;
+      const strQuery: WideString;
+      var varTargetFrame: OleVariant); dispid 8;
+    procedure ImportExportFavorites(fImport: WordBool;
+      const strImpExpPath: WideString); dispid 9;
     procedure AutoCompleteSaveForm(var Form: OleVariant); dispid 10;
-    procedure AutoScan(const strSearch: WideString; const strFailureUrl: WideString; 
-                       var pvarTargetFrame: OleVariant); dispid 11;
+    procedure AutoScan(const strSearch: WideString;
+      const strFailureUrl: WideString;
+      var pvarTargetFrame: OleVariant); dispid 11;
     procedure AutoCompleteAttach(var Reserved: OleVariant); dispid 12;
-    function ShowBrowserUI(const bstrName: WideString; var pvarIn: OleVariant): OleVariant; dispid 13;
+    function ShowBrowserUI(const bstrName: WideString;
+      var pvarIn: OleVariant): OleVariant; dispid 13;
   end;
 
 // *********************************************************************//
@@ -729,9 +790,12 @@ type
 // *********************************************************************//
   DShellNameSpaceEvents = dispinterface
     ['{55136806-B2DE-11D1-B9F2-00A0C98BC547}']
-    procedure FavoritesSelectionChange(cItems: Integer; hItem: Integer; const strName: WideString; 
-                                       const strUrl: WideString; cVisits: Integer; 
-                                       const strDate: WideString; fAvailableOffline: Integer); dispid 1;
+    procedure FavoritesSelectionChange(cItems: Integer;
+      hItem: Integer; const strName: WideString;
+      const strUrl: WideString;
+      cVisits: Integer;
+      const strDate: WideString;
+      fAvailableOffline: Integer); dispid 1;
     procedure SelectionChange; dispid 2;
     procedure DoubleClick; dispid 3;
     procedure Initialized; dispid 4;
@@ -811,7 +875,8 @@ type
     procedure Expand(var_: OleVariant; iDepth: SYSINT); safecall;
     procedure UnselectAll; safecall;
     property EnumOptions: Integer read Get_EnumOptions write Set_EnumOptions;
-    property SelectedItem: IDispatch read Get_SelectedItem write Set_SelectedItem;
+    property SelectedItem: IDispatch read Get_SelectedItem
+      write Set_SelectedItem;
     property Root: OleVariant read Get_Root write Set_Root;
     property Depth: SYSINT read Get_Depth write Set_Depth;
     property Mode: SYSUINT read Get_Mode write Set_Mode;
@@ -964,7 +1029,8 @@ type
 // *********************************************************************//
   ISearchAssistantOC = interface(IDispatch)
     ['{72423E8F-8011-11D2-BE79-00A0C9A83DA1}']
-    procedure AddNextMenuItem(const bstrText: WideString; idItem: Integer); safecall;
+    procedure AddNextMenuItem(const bstrText: WideString;
+      idItem: Integer); safecall;
     procedure SetDefaultSearchUrl(const bstrUrl: WideString); safecall;
     procedure NavigateToDefaultSearch; safecall;
     function IsRestricted(const bstrGuid: WideString): WordBool; safecall;
@@ -972,9 +1038,10 @@ type
     function Get_SearchAssistantDefault: WordBool; safecall;
     function Get_Searches: ISearches; safecall;
     function Get_InWebFolder: WordBool; safecall;
-    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString; 
-                          const bstrValue: WideString); safecall;
-    function GetProperty(bPerLocale: WordBool; const bstrName: WideString): WideString; safecall;
+    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString;
+      const bstrValue: WideString); safecall;
+    function GetProperty(bPerLocale: WordBool;
+      const bstrName: WideString): WideString; safecall;
     procedure Set_EventHandled(Param1: WordBool); safecall;
     procedure ResetNextMenu; safecall;
     procedure FindOnWeb; safecall;
@@ -982,7 +1049,8 @@ type
     procedure FindComputer; safecall;
     procedure FindPrinter; safecall;
     procedure FindPeople; safecall;
-    function GetSearchAssistantURL(bSubstitute: WordBool; bCustomize: WordBool): WideString; safecall;
+    function GetSearchAssistantURL(bSubstitute: WordBool;
+      bCustomize: WordBool): WideString; safecall;
     procedure NotifySearchSettingsChanged; safecall;
     procedure Set_ASProvider(const pProvider: WideString); safecall;
     function Get_ASProvider: WideString; safecall;
@@ -991,8 +1059,9 @@ type
     procedure NETDetectNextNavigate; safecall;
     procedure PutFindText(const FindText: WideString); safecall;
     function Get_Version: SYSINT; safecall;
-    function EncodeString(const bstrValue: WideString; const bstrCharSet: WideString; 
-                          bUseUTF8: WordBool): WideString; safecall;
+    function EncodeString(const bstrValue: WideString;
+      const bstrCharSet: WideString;
+      bUseUTF8: WordBool): WideString; safecall;
     property ShellFeaturesEnabled: WordBool read Get_ShellFeaturesEnabled;
     property SearchAssistantDefault: WordBool read Get_SearchAssistantDefault;
     property Searches: ISearches read Get_Searches;
@@ -1010,7 +1079,8 @@ type
 // *********************************************************************//
   ISearchAssistantOCDisp = dispinterface
     ['{72423E8F-8011-11D2-BE79-00A0C9A83DA1}']
-    procedure AddNextMenuItem(const bstrText: WideString; idItem: Integer); dispid 1;
+    procedure AddNextMenuItem(const bstrText: WideString;
+      idItem: Integer); dispid 1;
     procedure SetDefaultSearchUrl(const bstrUrl: WideString); dispid 2;
     procedure NavigateToDefaultSearch; dispid 3;
     function IsRestricted(const bstrGuid: WideString): WordBool; dispid 4;
@@ -1018,9 +1088,10 @@ type
     property SearchAssistantDefault: WordBool readonly dispid 6;
     property Searches: ISearches readonly dispid 7;
     property InWebFolder: WordBool readonly dispid 8;
-    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString; 
-                          const bstrValue: WideString); dispid 9;
-    function GetProperty(bPerLocale: WordBool; const bstrName: WideString): WideString; dispid 10;
+    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString;
+      const bstrValue: WideString); dispid 9;
+    function GetProperty(bPerLocale: WordBool;
+      const bstrName: WideString): WideString; dispid 10;
     property EventHandled: WordBool writeonly dispid 11;
     procedure ResetNextMenu; dispid 12;
     procedure FindOnWeb; dispid 13;
@@ -1028,15 +1099,17 @@ type
     procedure FindComputer; dispid 15;
     procedure FindPrinter; dispid 16;
     procedure FindPeople; dispid 17;
-    function GetSearchAssistantURL(bSubstitute: WordBool; bCustomize: WordBool): WideString; dispid 18;
+    function GetSearchAssistantURL(bSubstitute: WordBool;
+      bCustomize: WordBool): WideString; dispid 18;
     procedure NotifySearchSettingsChanged; dispid 19;
     property ASProvider: WideString dispid 20;
     property ASSetting: SYSINT dispid 21;
     procedure NETDetectNextNavigate; dispid 22;
     procedure PutFindText(const FindText: WideString); dispid 23;
     property Version: SYSINT readonly dispid 24;
-    function EncodeString(const bstrValue: WideString; const bstrCharSet: WideString; 
-                          bUseUTF8: WordBool): WideString; dispid 25;
+    function EncodeString(const bstrValue: WideString;
+      const bstrCharSet: WideString;
+      bUseUTF8: WordBool): WideString; dispid 25;
   end;
 
 // *********************************************************************//
@@ -1058,7 +1131,8 @@ type
   ISearchAssistantOC2Disp = dispinterface
     ['{72423E8F-8011-11D2-BE79-00A0C9A83DA2}']
     property ShowFindPrinter: WordBool readonly dispid 26;
-    procedure AddNextMenuItem(const bstrText: WideString; idItem: Integer); dispid 1;
+    procedure AddNextMenuItem(const bstrText: WideString;
+      idItem: Integer); dispid 1;
     procedure SetDefaultSearchUrl(const bstrUrl: WideString); dispid 2;
     procedure NavigateToDefaultSearch; dispid 3;
     function IsRestricted(const bstrGuid: WideString): WordBool; dispid 4;
@@ -1066,9 +1140,10 @@ type
     property SearchAssistantDefault: WordBool readonly dispid 6;
     property Searches: ISearches readonly dispid 7;
     property InWebFolder: WordBool readonly dispid 8;
-    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString; 
-                          const bstrValue: WideString); dispid 9;
-    function GetProperty(bPerLocale: WordBool; const bstrName: WideString): WideString; dispid 10;
+    procedure PutProperty(bPerLocale: WordBool; const bstrName: WideString;
+      const bstrValue: WideString); dispid 9;
+    function GetProperty(bPerLocale: WordBool;
+      const bstrName: WideString): WideString; dispid 10;
     property EventHandled: WordBool writeonly dispid 11;
     procedure ResetNextMenu; dispid 12;
     procedure FindOnWeb; dispid 13;
@@ -1076,15 +1151,17 @@ type
     procedure FindComputer; dispid 15;
     procedure FindPrinter; dispid 16;
     procedure FindPeople; dispid 17;
-    function GetSearchAssistantURL(bSubstitute: WordBool; bCustomize: WordBool): WideString; dispid 18;
+    function GetSearchAssistantURL(bSubstitute: WordBool;
+      bCustomize: WordBool): WideString; dispid 18;
     procedure NotifySearchSettingsChanged; dispid 19;
     property ASProvider: WideString dispid 20;
     property ASSetting: SYSINT dispid 21;
     procedure NETDetectNextNavigate; dispid 22;
     procedure PutFindText(const FindText: WideString); dispid 23;
     property Version: SYSINT readonly dispid 24;
-    function EncodeString(const bstrValue: WideString; const bstrCharSet: WideString; 
-                          bUseUTF8: WordBool): WideString; dispid 25;
+    function EncodeString(const bstrValue: WideString;
+      const bstrCharSet: WideString;
+      bUseUTF8: WordBool): WideString; dispid 25;
   end;
 
 // *********************************************************************//
@@ -1108,35 +1185,61 @@ type
 // Event   Interface: DWebBrowserEvents
 // TypeFlags        : (34) CanCreate Control
 // *********************************************************************//
-  TWebBrowser_V1BeforeNavigate = procedure(Sender: TObject; const URL: WideString; Flags: Integer; 
-                                                            const TargetFrameName: WideString; 
-                                                            var PostData: OleVariant; 
-                                                            const Headers: WideString; 
-                                                            var Cancel: WordBool) of object;
-  TWebBrowser_V1NavigateComplete = procedure(Sender: TObject; const URL: WideString) of object;
-  TWebBrowser_V1StatusTextChange = procedure(Sender: TObject; const Text: WideString) of object;
-  TWebBrowser_V1ProgressChange = procedure(Sender: TObject; Progress: Integer; ProgressMax: Integer) of object;
-  TWebBrowser_V1CommandStateChange = procedure(Sender: TObject; Command: Integer; Enable: WordBool) of object;
-  TWebBrowser_V1NewWindow = procedure(Sender: TObject; const URL: WideString; Flags: Integer; 
-                                                       const TargetFrameName: WideString; 
-                                                       var PostData: OleVariant; 
-                                                       const Headers: WideString; 
-                                                       var Processed: WordBool) of object;
-  TWebBrowser_V1TitleChange = procedure(Sender: TObject; const Text: WideString) of object;
-  TWebBrowser_V1FrameBeforeNavigate = procedure(Sender: TObject; const URL: WideString; 
-                                                                 Flags: Integer; 
-                                                                 const TargetFrameName: WideString; 
-                                                                 var PostData: OleVariant; 
-                                                                 const Headers: WideString; 
-                                                                 var Cancel: WordBool) of object;
-  TWebBrowser_V1FrameNavigateComplete = procedure(Sender: TObject; const URL: WideString) of object;
-  TWebBrowser_V1FrameNewWindow = procedure(Sender: TObject; const URL: WideString; Flags: Integer; 
-                                                            const TargetFrameName: WideString; 
-                                                            var PostData: OleVariant; 
-                                                            const Headers: WideString; 
-                                                            var Processed: WordBool) of object;
-  TWebBrowser_V1Quit = procedure(Sender: TObject; var Cancel: WordBool) of object;
-  TWebBrowser_V1PropertyChange = procedure(Sender: TObject; const Property_: WideString) of object;
+  TWebBrowser_V1BeforeNavigate = procedure(Sender: TObject;
+    const URL: WideString; Flags: Integer;
+    const TargetFrameName: WideString;
+    var PostData:
+    OleVariant;
+    const Headers:
+    WideString;
+    var Cancel:
+    WordBool) of object;
+  TWebBrowser_V1NavigateComplete = procedure(Sender: TObject;
+    const URL: WideString) of object;
+  TWebBrowser_V1StatusTextChange = procedure(Sender: TObject;
+    const Text: WideString) of object;
+  TWebBrowser_V1ProgressChange = procedure(Sender: TObject;
+    Progress: Integer; ProgressMax: Integer) of object;
+  TWebBrowser_V1CommandStateChange = procedure(Sender: TObject;
+    Command: Integer; Enable: WordBool) of object;
+  TWebBrowser_V1NewWindow = procedure(Sender: TObject;
+    const URL: WideString; Flags: Integer;
+    const TargetFrameName:
+    WideString;
+    var PostData:
+    OleVariant;
+    const Headers:
+    WideString;
+    var Processed: WordBool)
+    of object;
+  TWebBrowser_V1TitleChange = procedure(Sender: TObject;
+    const Text: WideString) of object;
+  TWebBrowser_V1FrameBeforeNavigate = procedure(Sender: TObject;
+    const URL: WideString;
+    Flags:
+    Integer;
+    const TargetFrameName: WideString;
+    var PostData:
+    OleVariant;
+    const Headers:
+    WideString;
+    var Cancel:
+    WordBool) of object;
+  TWebBrowser_V1FrameNavigateComplete = procedure(Sender: TObject;
+    const URL: WideString) of object;
+  TWebBrowser_V1FrameNewWindow = procedure(Sender: TObject;
+    const URL: WideString; Flags: Integer;
+    const TargetFrameName: WideString;
+    var PostData:
+    OleVariant;
+    const Headers:
+    WideString;
+    var Processed:
+    WordBool) of object;
+  TWebBrowser_V1Quit = procedure(Sender: TObject;
+    var Cancel: WordBool) of object;
+  TWebBrowser_V1PropertyChange = procedure(Sender: TObject;
+    const Property_: WideString) of object;
 
   TWebBrowser_V1 = class(TOleControl)
   private
@@ -1158,7 +1261,7 @@ type
     FOnWindowActivate: TNotifyEvent;
     FOnPropertyChange: TWebBrowser_V1PropertyChange;
     FIntf: IWebBrowser;
-    function  GetControlInterface: IWebBrowser;
+    function GetControlInterface: IWebBrowser;
   protected
     procedure CreateControl;
     procedure InitControlData; override;
@@ -1173,18 +1276,21 @@ type
     procedure GoSearch;
     procedure Navigate(const URL: WideString); overload;
     procedure Navigate(const URL: WideString; var Flags: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; var TargetFrameName: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); overload;
     procedure Refresh;
     procedure Refresh2; overload;
     procedure Refresh2(var Level: OleVariant); overload;
     procedure Stop;
-    property  ControlInterface: IWebBrowser read GetControlInterface;
-    property  DefaultInterface: IWebBrowser read GetControlInterface;
+    property ControlInterface: IWebBrowser read GetControlInterface;
+    property DefaultInterface: IWebBrowser read GetControlInterface;
     property Application: IDispatch index 200 read GetIDispatchProp;
     property Parent: IDispatch index 201 read GetIDispatchProp;
     property Container: IDispatch index 202 read GetIDispatchProp;
@@ -1195,38 +1301,53 @@ type
     property LocationURL: WideString index 211 read GetWideStringProp;
     property Busy: WordBool index 212 read GetWordBoolProp;
   published
-    property  TabStop;
-    property  Align;
-    property  DragCursor;
-    property  DragMode;
-    property  ParentShowHint;
-    property  PopupMenu;
-    property  ShowHint;
-    property  TabOrder;
-    property  Visible;
-    property  OnDragDrop;
-    property  OnDragOver;
-    property  OnEndDrag;
-    property  OnEnter;
-    property  OnExit;
-    property  OnStartDrag;
-    property OnBeforeNavigate: TWebBrowser_V1BeforeNavigate read FOnBeforeNavigate write FOnBeforeNavigate;
-    property OnNavigateComplete: TWebBrowser_V1NavigateComplete read FOnNavigateComplete write FOnNavigateComplete;
-    property OnStatusTextChange: TWebBrowser_V1StatusTextChange read FOnStatusTextChange write FOnStatusTextChange;
-    property OnProgressChange: TWebBrowser_V1ProgressChange read FOnProgressChange write FOnProgressChange;
-    property OnDownloadComplete: TNotifyEvent read FOnDownloadComplete write FOnDownloadComplete;
-    property OnCommandStateChange: TWebBrowser_V1CommandStateChange read FOnCommandStateChange write FOnCommandStateChange;
-    property OnDownloadBegin: TNotifyEvent read FOnDownloadBegin write FOnDownloadBegin;
-    property OnNewWindow: TWebBrowser_V1NewWindow read FOnNewWindow write FOnNewWindow;
-    property OnTitleChange: TWebBrowser_V1TitleChange read FOnTitleChange write FOnTitleChange;
-    property OnFrameBeforeNavigate: TWebBrowser_V1FrameBeforeNavigate read FOnFrameBeforeNavigate write FOnFrameBeforeNavigate;
-    property OnFrameNavigateComplete: TWebBrowser_V1FrameNavigateComplete read FOnFrameNavigateComplete write FOnFrameNavigateComplete;
-    property OnFrameNewWindow: TWebBrowser_V1FrameNewWindow read FOnFrameNewWindow write FOnFrameNewWindow;
+    property TabStop;
+    property Align;
+    property DragCursor;
+    property DragMode;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property Visible;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnStartDrag;
+    property OnBeforeNavigate: TWebBrowser_V1BeforeNavigate
+      read FOnBeforeNavigate write FOnBeforeNavigate;
+    property OnNavigateComplete: TWebBrowser_V1NavigateComplete
+      read FOnNavigateComplete write FOnNavigateComplete;
+    property OnStatusTextChange: TWebBrowser_V1StatusTextChange
+      read FOnStatusTextChange write FOnStatusTextChange;
+    property OnProgressChange: TWebBrowser_V1ProgressChange
+      read FOnProgressChange write FOnProgressChange;
+    property OnDownloadComplete: TNotifyEvent
+      read FOnDownloadComplete write FOnDownloadComplete;
+    property OnCommandStateChange: TWebBrowser_V1CommandStateChange
+      read FOnCommandStateChange write FOnCommandStateChange;
+    property OnDownloadBegin: TNotifyEvent
+      read FOnDownloadBegin write FOnDownloadBegin;
+    property OnNewWindow: TWebBrowser_V1NewWindow
+      read FOnNewWindow write FOnNewWindow;
+    property OnTitleChange: TWebBrowser_V1TitleChange
+      read FOnTitleChange write FOnTitleChange;
+    property OnFrameBeforeNavigate: TWebBrowser_V1FrameBeforeNavigate
+      read FOnFrameBeforeNavigate write FOnFrameBeforeNavigate;
+    property OnFrameNavigateComplete: TWebBrowser_V1FrameNavigateComplete
+      read FOnFrameNavigateComplete write FOnFrameNavigateComplete;
+    property OnFrameNewWindow: TWebBrowser_V1FrameNewWindow
+      read FOnFrameNewWindow write FOnFrameNewWindow;
     property OnQuit: TWebBrowser_V1Quit read FOnQuit write FOnQuit;
     property OnWindowMove: TNotifyEvent read FOnWindowMove write FOnWindowMove;
-    property OnWindowResize: TNotifyEvent read FOnWindowResize write FOnWindowResize;
-    property OnWindowActivate: TNotifyEvent read FOnWindowActivate write FOnWindowActivate;
-    property OnPropertyChange: TWebBrowser_V1PropertyChange read FOnPropertyChange write FOnPropertyChange;
+    property OnWindowResize: TNotifyEvent
+      read FOnWindowResize write FOnWindowResize;
+    property OnWindowActivate: TNotifyEvent
+      read FOnWindowActivate write FOnWindowActivate;
+    property OnPropertyChange: TWebBrowser_V1PropertyChange
+      read FOnPropertyChange write FOnPropertyChange;
   end;
 
 
@@ -1239,39 +1360,71 @@ type
 // Event   Interface: DWebBrowserEvents2
 // TypeFlags        : (34) CanCreate Control
 // *********************************************************************//
-  TWebBrowserStatusTextChange = procedure(Sender: TObject; const Text: WideString) of object;
-  TWebBrowserProgressChange = procedure(Sender: TObject; Progress: Integer; ProgressMax: Integer) of object;
-  TWebBrowserCommandStateChange = procedure(Sender: TObject; Command: Integer; Enable: WordBool) of object;
-  TWebBrowserTitleChange = procedure(Sender: TObject; const Text: WideString) of object;
-  TWebBrowserPropertyChange = procedure(Sender: TObject; const szProperty: WideString) of object;
-  TWebBrowserBeforeNavigate2 = procedure(Sender: TObject; const pDisp: IDispatch; 
-                                                          var URL: OleVariant; 
-                                                          var Flags: OleVariant; 
-                                                          var TargetFrameName: OleVariant; 
-                                                          var PostData: OleVariant; 
-                                                          var Headers: OleVariant; 
-                                                          var Cancel: WordBool) of object;
-  TWebBrowserNewWindow2 = procedure(Sender: TObject; var ppDisp: IDispatch; var Cancel: WordBool) of object;
-  TWebBrowserNavigateComplete2 = procedure(Sender: TObject; const pDisp: IDispatch; 
-                                                            var URL: OleVariant) of object;
-  TWebBrowserDocumentComplete = procedure(Sender: TObject; const pDisp: IDispatch; 
-                                                           var URL: OleVariant) of object;
-  TWebBrowserOnVisible = procedure(Sender: TObject; Visible: WordBool) of object;
-  TWebBrowserOnToolBar = procedure(Sender: TObject; ToolBar: WordBool) of object;
-  TWebBrowserOnMenuBar = procedure(Sender: TObject; MenuBar: WordBool) of object;
-  TWebBrowserOnStatusBar = procedure(Sender: TObject; StatusBar: WordBool) of object;
-  TWebBrowserOnFullScreen = procedure(Sender: TObject; FullScreen: WordBool) of object;
-  TWebBrowserOnTheaterMode = procedure(Sender: TObject; TheaterMode: WordBool) of object;
-  TWebBrowserWindowSetResizable = procedure(Sender: TObject; Resizable: WordBool) of object;
-  TWebBrowserWindowSetLeft = procedure(Sender: TObject; Left: Integer) of object;
+  TWebBrowserStatusTextChange = procedure(Sender: TObject;
+    const Text: WideString) of object;
+  TWebBrowserProgressChange = procedure(Sender: TObject;
+    Progress: Integer; ProgressMax: Integer) of object;
+  TWebBrowserCommandStateChange = procedure(Sender: TObject;
+    Command: Integer; Enable: WordBool) of object;
+  TWebBrowserTitleChange = procedure(Sender: TObject;
+    const Text: WideString) of object;
+  TWebBrowserPropertyChange = procedure(Sender: TObject;
+    const szProperty: WideString) of object;
+  TWebBrowserBeforeNavigate2 = procedure(Sender: TObject;
+    const pDisp: IDispatch;
+    var URL: OleVariant;
+    var Flags:
+    OleVariant;
+    var TargetFrameName:
+    OleVariant;
+    var PostData:
+    OleVariant;
+    var Headers:
+    OleVariant;
+    var Cancel: WordBool)
+    of object;
+  TWebBrowserNewWindow2 = procedure(Sender: TObject;
+    var ppDisp: IDispatch; var Cancel: WordBool) of object;
+  TWebBrowserNavigateComplete2 = procedure(Sender: TObject;
+    const pDisp: IDispatch;
+    var URL:
+    OleVariant) of object;
+  TWebBrowserDocumentComplete = procedure(Sender: TObject;
+    const pDisp: IDispatch;
+    var URL: OleVariant)
+    of object;
+  TWebBrowserOnVisible = procedure(Sender: TObject;
+    Visible: WordBool) of object;
+  TWebBrowserOnToolBar = procedure(Sender: TObject;
+    ToolBar: WordBool) of object;
+  TWebBrowserOnMenuBar = procedure(Sender: TObject;
+    MenuBar: WordBool) of object;
+  TWebBrowserOnStatusBar = procedure(Sender: TObject;
+    StatusBar: WordBool) of object;
+  TWebBrowserOnFullScreen = procedure(Sender: TObject;
+    FullScreen: WordBool) of object;
+  TWebBrowserOnTheaterMode = procedure(Sender: TObject;
+    TheaterMode: WordBool) of object;
+  TWebBrowserWindowSetResizable = procedure(Sender: TObject;
+    Resizable: WordBool) of object;
+  TWebBrowserWindowSetLeft = procedure(Sender: TObject;
+    Left: Integer) of object;
   TWebBrowserWindowSetTop = procedure(Sender: TObject; Top: Integer) of object;
-  TWebBrowserWindowSetWidth = procedure(Sender: TObject; Width: Integer) of object;
-  TWebBrowserWindowSetHeight = procedure(Sender: TObject; Height: Integer) of object;
-  TWebBrowserWindowClosing = procedure(Sender: TObject; IsChildWindow: WordBool; 
-                                                        var Cancel: WordBool) of object;
-  TWebBrowserClientToHostWindow = procedure(Sender: TObject; var CX: Integer; var CY: Integer) of object;
-  TWebBrowserSetSecureLockIcon = procedure(Sender: TObject; SecureLockIcon: Integer) of object;
-  TWebBrowserFileDownload = procedure(Sender: TObject; var Cancel: WordBool) of object;
+  TWebBrowserWindowSetWidth = procedure(Sender: TObject;
+    Width: Integer) of object;
+  TWebBrowserWindowSetHeight = procedure(Sender: TObject;
+    Height: Integer) of object;
+  TWebBrowserWindowClosing = procedure(Sender: TObject;
+    IsChildWindow: WordBool;
+    var Cancel:
+    WordBool) of
+    object;
+  TWebBrowserClientToHostWindow = procedure(Sender: TObject;
+    var CX: Integer; var CY: Integer) of object;
+  TWebBrowserSetSecureLockIcon = procedure(Sender: TObject;
+    SecureLockIcon: Integer) of object;
+  TWebBrowserFileDownload = procedure(Sender: TObject;
+    var Cancel: WordBool) of object;
 
   TWebBrowser = class(TOleControl)
   private
@@ -1303,7 +1456,7 @@ type
     FOnSetSecureLockIcon: TWebBrowserSetSecureLockIcon;
     FOnFileDownload: TWebBrowserFileDownload;
     FIntf: IWebBrowser2;
-    function  GetControlInterface: IWebBrowser2;
+    function GetControlInterface: IWebBrowser2;
   protected
     procedure CreateControl;
     procedure InitControlData; override;
@@ -1318,12 +1471,15 @@ type
     procedure GoSearch;
     procedure Navigate(const URL: WideString); overload;
     procedure Navigate(const URL: WideString; var Flags: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; var TargetFrameName: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant); overload;
-    procedure Navigate(const URL: WideString; var Flags: OleVariant; 
-                       var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                       var Headers: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant); overload;
+    procedure Navigate(const URL: WideString; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); overload;
     procedure Refresh;
     procedure Refresh2; overload;
     procedure Refresh2(var Level: OleVariant); overload;
@@ -1334,23 +1490,30 @@ type
     function GetProperty(const Property_: WideString): OleVariant;
     procedure Navigate2(var URL: OleVariant); overload;
     procedure Navigate2(var URL: OleVariant; var Flags: OleVariant); overload;
-    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant; var TargetFrameName: OleVariant); overload;
-    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                        var TargetFrameName: OleVariant; var PostData: OleVariant); overload;
-    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                        var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                        var Headers: OleVariant); overload;
+    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant); overload;
+    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant); overload;
+    procedure Navigate2(var URL: OleVariant; var Flags: OleVariant;
+      var TargetFrameName: OleVariant;
+      var PostData: OleVariant;
+      var Headers: OleVariant); overload;
     function QueryStatusWB(cmdID: OLECMDID): OLECMDF;
     procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT); overload;
-    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant); overload;
-    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant; 
-                     var pvaOut: OleVariant); overload;
+    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+      var pvaIn: OleVariant); overload;
+    procedure ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+      var pvaIn: OleVariant;
+      var pvaOut: OleVariant); overload;
     procedure ShowBrowserBar(var pvaClsid: OleVariant); overload;
-    procedure ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant); overload;
-    procedure ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant; 
-                             var pvarSize: OleVariant); overload;
-    property  ControlInterface: IWebBrowser2 read GetControlInterface;
-    property  DefaultInterface: IWebBrowser2 read GetControlInterface;
+    procedure ShowBrowserBar(var pvaClsid: OleVariant;
+      var pvarShow: OleVariant); overload;
+    procedure ShowBrowserBar(var pvaClsid: OleVariant;
+      var pvarShow: OleVariant;
+      var pvarSize: OleVariant); overload;
+    property ControlInterface: IWebBrowser2 read GetControlInterface;
+    property DefaultInterface: IWebBrowser2 read GetControlInterface;
     property Application: IDispatch index 200 read GetIDispatchProp;
     property Parent: IDispatch index 201 read GetIDispatchProp;
     property Container: IDispatch index 202 read GetIDispatchProp;
@@ -1366,60 +1529,96 @@ type
     property Path: WideString index 401 read GetWideStringProp;
     property ReadyState: TOleEnum index -525 read GetTOleEnumProp;
   published
-    property  TabStop;
-    property  Align;
-    property  DragCursor;
-    property  DragMode;
-    property  ParentShowHint;
-    property  PopupMenu;
-    property  ShowHint;
-    property  TabOrder;
-    property  OnDragDrop;
-    property  OnDragOver;
-    property  OnEndDrag;
-    property  OnEnter;
-    property  OnExit;
-    property  OnStartDrag;
-    property Visible: WordBool index 402 read GetWordBoolProp write SetWordBoolProp stored False;
-    property StatusBar: WordBool index 403 read GetWordBoolProp write SetWordBoolProp stored False;
-    property StatusText: WideString index 404 read GetWideStringProp write SetWideStringProp stored False;
-    property ToolBar: Integer index 405 read GetIntegerProp write SetIntegerProp stored False;
-    property MenuBar: WordBool index 406 read GetWordBoolProp write SetWordBoolProp stored False;
-    property FullScreen: WordBool index 407 read GetWordBoolProp write SetWordBoolProp stored False;
-    property Offline: WordBool index 550 read GetWordBoolProp write SetWordBoolProp stored False;
-    property Silent: WordBool index 551 read GetWordBoolProp write SetWordBoolProp stored False;
-    property RegisterAsBrowser: WordBool index 552 read GetWordBoolProp write SetWordBoolProp stored False;
-    property RegisterAsDropTarget: WordBool index 553 read GetWordBoolProp write SetWordBoolProp stored False;
-    property TheaterMode: WordBool index 554 read GetWordBoolProp write SetWordBoolProp stored False;
-    property AddressBar: WordBool index 555 read GetWordBoolProp write SetWordBoolProp stored False;
-    property Resizable: WordBool index 556 read GetWordBoolProp write SetWordBoolProp stored False;
-    property OnStatusTextChange: TWebBrowserStatusTextChange read FOnStatusTextChange write FOnStatusTextChange;
-    property OnProgressChange: TWebBrowserProgressChange read FOnProgressChange write FOnProgressChange;
-    property OnCommandStateChange: TWebBrowserCommandStateChange read FOnCommandStateChange write FOnCommandStateChange;
-    property OnDownloadBegin: TNotifyEvent read FOnDownloadBegin write FOnDownloadBegin;
-    property OnDownloadComplete: TNotifyEvent read FOnDownloadComplete write FOnDownloadComplete;
-    property OnTitleChange: TWebBrowserTitleChange read FOnTitleChange write FOnTitleChange;
-    property OnPropertyChange: TWebBrowserPropertyChange read FOnPropertyChange write FOnPropertyChange;
-    property OnBeforeNavigate2: TWebBrowserBeforeNavigate2 read FOnBeforeNavigate2 write FOnBeforeNavigate2;
-    property OnNewWindow2: TWebBrowserNewWindow2 read FOnNewWindow2 write FOnNewWindow2;
-    property OnNavigateComplete2: TWebBrowserNavigateComplete2 read FOnNavigateComplete2 write FOnNavigateComplete2;
-    property OnDocumentComplete: TWebBrowserDocumentComplete read FOnDocumentComplete write FOnDocumentComplete;
+    property TabStop;
+    property Align;
+    property DragCursor;
+    property DragMode;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnStartDrag;
+    property Visible: WordBool index 402
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property StatusBar: WordBool index 403
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property StatusText: WideString index 404
+      read GetWideStringProp write SetWideStringProp stored False;
+    property ToolBar: Integer index 405 read GetIntegerProp
+      write SetIntegerProp stored False;
+    property MenuBar: WordBool index 406
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property FullScreen: WordBool index 407
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property Offline: WordBool index 550
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property Silent: WordBool index 551 read GetWordBoolProp
+      write SetWordBoolProp stored False;
+    property RegisterAsBrowser: WordBool index 552
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property RegisterAsDropTarget: WordBool index 553
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property TheaterMode: WordBool index 554
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property AddressBar: WordBool index 555
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property Resizable: WordBool index 556
+      read GetWordBoolProp write SetWordBoolProp stored False;
+    property OnStatusTextChange: TWebBrowserStatusTextChange
+      read FOnStatusTextChange write FOnStatusTextChange;
+    property OnProgressChange: TWebBrowserProgressChange
+      read FOnProgressChange write FOnProgressChange;
+    property OnCommandStateChange: TWebBrowserCommandStateChange
+      read FOnCommandStateChange write FOnCommandStateChange;
+    property OnDownloadBegin: TNotifyEvent
+      read FOnDownloadBegin write FOnDownloadBegin;
+    property OnDownloadComplete: TNotifyEvent
+      read FOnDownloadComplete write FOnDownloadComplete;
+    property OnTitleChange: TWebBrowserTitleChange
+      read FOnTitleChange write FOnTitleChange;
+    property OnPropertyChange: TWebBrowserPropertyChange
+      read FOnPropertyChange write FOnPropertyChange;
+    property OnBeforeNavigate2: TWebBrowserBeforeNavigate2
+      read FOnBeforeNavigate2 write FOnBeforeNavigate2;
+    property OnNewWindow2: TWebBrowserNewWindow2
+      read FOnNewWindow2 write FOnNewWindow2;
+    property OnNavigateComplete2: TWebBrowserNavigateComplete2
+      read FOnNavigateComplete2 write FOnNavigateComplete2;
+    property OnDocumentComplete: TWebBrowserDocumentComplete
+      read FOnDocumentComplete write FOnDocumentComplete;
     property OnQuit: TNotifyEvent read FOnQuit write FOnQuit;
     property OnVisible: TWebBrowserOnVisible read FOnVisible write FOnVisible;
     property OnToolBar: TWebBrowserOnToolBar read FOnToolBar write FOnToolBar;
     property OnMenuBar: TWebBrowserOnMenuBar read FOnMenuBar write FOnMenuBar;
-    property OnStatusBar: TWebBrowserOnStatusBar read FOnStatusBar write FOnStatusBar;
-    property OnFullScreen: TWebBrowserOnFullScreen read FOnFullScreen write FOnFullScreen;
-    property OnTheaterMode: TWebBrowserOnTheaterMode read FOnTheaterMode write FOnTheaterMode;
-    property OnWindowSetResizable: TWebBrowserWindowSetResizable read FOnWindowSetResizable write FOnWindowSetResizable;
-    property OnWindowSetLeft: TWebBrowserWindowSetLeft read FOnWindowSetLeft write FOnWindowSetLeft;
-    property OnWindowSetTop: TWebBrowserWindowSetTop read FOnWindowSetTop write FOnWindowSetTop;
-    property OnWindowSetWidth: TWebBrowserWindowSetWidth read FOnWindowSetWidth write FOnWindowSetWidth;
-    property OnWindowSetHeight: TWebBrowserWindowSetHeight read FOnWindowSetHeight write FOnWindowSetHeight;
-    property OnWindowClosing: TWebBrowserWindowClosing read FOnWindowClosing write FOnWindowClosing;
-    property OnClientToHostWindow: TWebBrowserClientToHostWindow read FOnClientToHostWindow write FOnClientToHostWindow;
-    property OnSetSecureLockIcon: TWebBrowserSetSecureLockIcon read FOnSetSecureLockIcon write FOnSetSecureLockIcon;
-    property OnFileDownload: TWebBrowserFileDownload read FOnFileDownload write FOnFileDownload;
+    property OnStatusBar: TWebBrowserOnStatusBar
+      read FOnStatusBar write FOnStatusBar;
+    property OnFullScreen: TWebBrowserOnFullScreen
+      read FOnFullScreen write FOnFullScreen;
+    property OnTheaterMode: TWebBrowserOnTheaterMode
+      read FOnTheaterMode write FOnTheaterMode;
+    property OnWindowSetResizable: TWebBrowserWindowSetResizable
+      read FOnWindowSetResizable write FOnWindowSetResizable;
+    property OnWindowSetLeft: TWebBrowserWindowSetLeft
+      read FOnWindowSetLeft write FOnWindowSetLeft;
+    property OnWindowSetTop: TWebBrowserWindowSetTop
+      read FOnWindowSetTop write FOnWindowSetTop;
+    property OnWindowSetWidth: TWebBrowserWindowSetWidth
+      read FOnWindowSetWidth write FOnWindowSetWidth;
+    property OnWindowSetHeight: TWebBrowserWindowSetHeight
+      read FOnWindowSetHeight write FOnWindowSetHeight;
+    property OnWindowClosing: TWebBrowserWindowClosing
+      read FOnWindowClosing write FOnWindowClosing;
+    property OnClientToHostWindow: TWebBrowserClientToHostWindow
+      read FOnClientToHostWindow write FOnClientToHostWindow;
+    property OnSetSecureLockIcon: TWebBrowserSetSecureLockIcon
+      read FOnSetSecureLockIcon write FOnSetSecureLockIcon;
+    property OnFileDownload: TWebBrowserFileDownload
+      read FOnFileDownload write FOnFileDownload;
   end;
 
 // *********************************************************************//
@@ -1503,7 +1702,8 @@ type
 // *********************************************************************//
   CoSearchAssistantOC = class
     class function Create: ISearchAssistantOC2;
-    class function CreateRemote(const MachineName: string): ISearchAssistantOC2;
+    class function CreateRemote(
+      const MachineName: string): ISearchAssistantOC2;
   end;
 
 procedure Register;
@@ -1531,7 +1731,8 @@ const
     Version: 401);
 begin
   ControlData := @CControlData;
-  TControlData2(CControlData).FirstEventOfs := Cardinal(@@FOnBeforeNavigate) - Cardinal(Self);
+  TControlData2(CControlData).FirstEventOfs :=
+    Cardinal(@@FOnBeforeNavigate) - Cardinal(Self);
 end;
 
 procedure TWebBrowser_V1.CreateControl;
@@ -1542,7 +1743,8 @@ procedure TWebBrowser_V1.CreateControl;
   end;
 
 begin
-  if FIntf = nil then DoCreate;
+  if FIntf = nil then
+    DoCreate;
 end;
 
 function TWebBrowser_V1.GetControlInterface: IWebBrowser;
@@ -1553,22 +1755,22 @@ end;
 
 function TWebBrowser_V1.Get_Application: IDispatch;
 begin
-    Result := DefaultInterface.Application;
+  Result := DefaultInterface.Application;
 end;
 
 function TWebBrowser_V1.Get_Parent: IDispatch;
 begin
-    Result := DefaultInterface.Parent;
+  Result := DefaultInterface.Parent;
 end;
 
 function TWebBrowser_V1.Get_Container: IDispatch;
 begin
-    Result := DefaultInterface.Container;
+  Result := DefaultInterface.Container;
 end;
 
 function TWebBrowser_V1.Get_Document: IDispatch;
 begin
-    Result := DefaultInterface.Document;
+  Result := DefaultInterface.Document;
 end;
 
 procedure TWebBrowser_V1.GoBack;
@@ -1593,29 +1795,37 @@ end;
 
 procedure TWebBrowser_V1.Navigate(const URL: WideString);
 begin
-  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant);
+procedure TWebBrowser_V1.Navigate(const URL: WideString;
+  var Flags: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
-                                  var TargetFrameName: OleVariant);
+procedure TWebBrowser_V1.Navigate(const URL: WideString;
+  var Flags: OleVariant;
+  var TargetFrameName: OleVariant);
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName,
+    EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
-                                  var TargetFrameName: OleVariant; var PostData: OleVariant);
+procedure TWebBrowser_V1.Navigate(const URL: WideString;
+  var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam);
 end;
 
-procedure TWebBrowser_V1.Navigate(const URL: WideString; var Flags: OleVariant; 
-                                  var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                                  var Headers: OleVariant);
+procedure TWebBrowser_V1.Navigate(const URL: WideString;
+  var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant;
+  var Headers: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
 end;
@@ -1658,7 +1868,8 @@ const
     Version: 401);
 begin
   ControlData := @CControlData;
-  TControlData2(CControlData).FirstEventOfs := Cardinal(@@FOnStatusTextChange) - Cardinal(Self);
+  TControlData2(CControlData).FirstEventOfs :=
+    Cardinal(@@FOnStatusTextChange) - Cardinal(Self);
 end;
 
 procedure TWebBrowser.CreateControl;
@@ -1669,7 +1880,8 @@ procedure TWebBrowser.CreateControl;
   end;
 
 begin
-  if FIntf = nil then DoCreate;
+  if FIntf = nil then
+    DoCreate;
 end;
 
 function TWebBrowser.GetControlInterface: IWebBrowser2;
@@ -1680,22 +1892,22 @@ end;
 
 function TWebBrowser.Get_Application: IDispatch;
 begin
-    Result := DefaultInterface.Application;
+  Result := DefaultInterface.Application;
 end;
 
 function TWebBrowser.Get_Parent: IDispatch;
 begin
-    Result := DefaultInterface.Parent;
+  Result := DefaultInterface.Parent;
 end;
 
 function TWebBrowser.Get_Container: IDispatch;
 begin
-    Result := DefaultInterface.Container;
+  Result := DefaultInterface.Container;
 end;
 
 function TWebBrowser.Get_Document: IDispatch;
 begin
-    Result := DefaultInterface.Document;
+  Result := DefaultInterface.Document;
 end;
 
 procedure TWebBrowser.GoBack;
@@ -1720,7 +1932,8 @@ end;
 
 procedure TWebBrowser.Navigate(const URL: WideString);
 begin
-  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate(URL, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam);
 end;
 
 procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant);
@@ -1728,21 +1941,24 @@ begin
   DefaultInterface.Navigate(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
-                               var TargetFrameName: OleVariant);
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
+  var TargetFrameName: OleVariant);
 begin
-  DefaultInterface.Navigate(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate(URL, Flags, TargetFrameName,
+    EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
-                               var TargetFrameName: OleVariant; var PostData: OleVariant);
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant; 
-                               var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                               var Headers: OleVariant);
+procedure TWebBrowser.Navigate(const URL: WideString; var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant;
+  var Headers: OleVariant);
 begin
   DefaultInterface.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
 end;
@@ -1777,7 +1993,8 @@ begin
   DefaultInterface.ClientToWindow(pcx, pcy);
 end;
 
-procedure TWebBrowser.PutProperty(const Property_: WideString; vtValue: OleVariant);
+procedure TWebBrowser.PutProperty(const Property_: WideString;
+  vtValue: OleVariant);
 begin
   DefaultInterface.PutProperty(Property_, vtValue);
 end;
@@ -1789,7 +2006,8 @@ end;
 
 procedure TWebBrowser.Navigate2(var URL: OleVariant);
 begin
-  DefaultInterface.Navigate2(URL, EmptyParam, EmptyParam, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate2(URL, EmptyParam, EmptyParam,
+    EmptyParam, EmptyParam);
 end;
 
 procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant);
@@ -1797,21 +2015,25 @@ begin
   DefaultInterface.Navigate2(URL, Flags, EmptyParam, EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                                var TargetFrameName: OleVariant);
+procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant;
+  var TargetFrameName: OleVariant);
 begin
-  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, EmptyParam, EmptyParam);
+  DefaultInterface.Navigate2(URL, Flags, TargetFrameName,
+    EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                                var TargetFrameName: OleVariant; var PostData: OleVariant);
+procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant);
 begin
-  DefaultInterface.Navigate2(URL, Flags, TargetFrameName, PostData, EmptyParam);
+  DefaultInterface.Navigate2(URL, Flags, TargetFrameName,
+    PostData, EmptyParam);
 end;
 
-procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant; 
-                                var TargetFrameName: OleVariant; var PostData: OleVariant; 
-                                var Headers: OleVariant);
+procedure TWebBrowser.Navigate2(var URL: OleVariant; var Flags: OleVariant;
+  var TargetFrameName: OleVariant;
+  var PostData: OleVariant;
+  var Headers: OleVariant);
 begin
   DefaultInterface.Navigate2(URL, Flags, TargetFrameName, PostData, Headers);
 end;
@@ -1826,13 +2048,15 @@ begin
   DefaultInterface.ExecWB(cmdID, cmdexecopt, EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant);
+procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+  var pvaIn: OleVariant);
 begin
   DefaultInterface.ExecWB(cmdID, cmdexecopt, pvaIn, EmptyParam);
 end;
 
-procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT; var pvaIn: OleVariant; 
-                             var pvaOut: OleVariant);
+procedure TWebBrowser.ExecWB(cmdID: OLECMDID; cmdexecopt: OLECMDEXECOPT;
+  var pvaIn: OleVariant;
+  var pvaOut: OleVariant);
 begin
   DefaultInterface.ExecWB(cmdID, cmdexecopt, pvaIn, pvaOut);
 end;
@@ -1842,13 +2066,15 @@ begin
   DefaultInterface.ShowBrowserBar(pvaClsid, EmptyParam, EmptyParam);
 end;
 
-procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant);
+procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant;
+  var pvarShow: OleVariant);
 begin
   DefaultInterface.ShowBrowserBar(pvaClsid, pvarShow, EmptyParam);
 end;
 
-procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant; var pvarShow: OleVariant; 
-                                     var pvarSize: OleVariant);
+procedure TWebBrowser.ShowBrowserBar(var pvaClsid: OleVariant;
+  var pvarShow: OleVariant;
+  var pvarSize: OleVariant);
 begin
   DefaultInterface.ShowBrowserBar(pvaClsid, pvarShow, pvarSize);
 end;
@@ -1858,9 +2084,11 @@ begin
   Result := CreateComObject(CLASS_InternetExplorer) as IWebBrowser2;
 end;
 
-class function CoInternetExplorer.CreateRemote(const MachineName: string): IWebBrowser2;
+class function CoInternetExplorer.CreateRemote(
+  const MachineName: string): IWebBrowser2;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_InternetExplorer) as IWebBrowser2;
+  Result := CreateRemoteComObject(MachineName, CLASS_InternetExplorer) as
+    IWebBrowser2;
 end;
 
 class function CoShellBrowserWindow.Create: IWebBrowser2;
@@ -1868,9 +2096,11 @@ begin
   Result := CreateComObject(CLASS_ShellBrowserWindow) as IWebBrowser2;
 end;
 
-class function CoShellBrowserWindow.CreateRemote(const MachineName: string): IWebBrowser2;
+class function CoShellBrowserWindow.CreateRemote(
+  const MachineName: string): IWebBrowser2;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ShellBrowserWindow) as IWebBrowser2;
+  Result := CreateRemoteComObject(MachineName, CLASS_ShellBrowserWindow) as
+    IWebBrowser2;
 end;
 
 class function CoShellWindows.Create: IShellWindows;
@@ -1878,9 +2108,11 @@ begin
   Result := CreateComObject(CLASS_ShellWindows) as IShellWindows;
 end;
 
-class function CoShellWindows.CreateRemote(const MachineName: string): IShellWindows;
+class function CoShellWindows.CreateRemote(
+  const MachineName: string): IShellWindows;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ShellWindows) as IShellWindows;
+  Result := CreateRemoteComObject(MachineName, CLASS_ShellWindows) as
+    IShellWindows;
 end;
 
 class function CoShellUIHelper.Create: IShellUIHelper;
@@ -1888,9 +2120,11 @@ begin
   Result := CreateComObject(CLASS_ShellUIHelper) as IShellUIHelper;
 end;
 
-class function CoShellUIHelper.CreateRemote(const MachineName: string): IShellUIHelper;
+class function CoShellUIHelper.CreateRemote(
+  const MachineName: string): IShellUIHelper;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ShellUIHelper) as IShellUIHelper;
+  Result := CreateRemoteComObject(MachineName, CLASS_ShellUIHelper) as
+    IShellUIHelper;
 end;
 
 class function CoShellNameSpace.Create: IShellNameSpace;
@@ -1898,9 +2132,11 @@ begin
   Result := CreateComObject(CLASS_ShellNameSpace) as IShellNameSpace;
 end;
 
-class function CoShellNameSpace.CreateRemote(const MachineName: string): IShellNameSpace;
+class function CoShellNameSpace.CreateRemote(
+  const MachineName: string): IShellNameSpace;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ShellNameSpace) as IShellNameSpace;
+  Result := CreateRemoteComObject(MachineName, CLASS_ShellNameSpace) as
+    IShellNameSpace;
 end;
 
 class function CoCScriptErrorList.Create: IScriptErrorList;
@@ -1908,9 +2144,11 @@ begin
   Result := CreateComObject(CLASS_CScriptErrorList) as IScriptErrorList;
 end;
 
-class function CoCScriptErrorList.CreateRemote(const MachineName: string): IScriptErrorList;
+class function CoCScriptErrorList.CreateRemote(
+  const MachineName: string): IScriptErrorList;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CScriptErrorList) as IScriptErrorList;
+  Result := CreateRemoteComObject(MachineName, CLASS_CScriptErrorList) as
+    IScriptErrorList;
 end;
 
 class function CoSearchAssistantOC.Create: ISearchAssistantOC2;
@@ -1918,14 +2156,16 @@ begin
   Result := CreateComObject(CLASS_SearchAssistantOC) as ISearchAssistantOC2;
 end;
 
-class function CoSearchAssistantOC.CreateRemote(const MachineName: string): ISearchAssistantOC2;
+class function CoSearchAssistantOC.CreateRemote(
+  const MachineName: string): ISearchAssistantOC2;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SearchAssistantOC) as ISearchAssistantOC2;
+  Result := CreateRemoteComObject(MachineName, CLASS_SearchAssistantOC) as
+    ISearchAssistantOC2;
 end;
 
 procedure Register;
 begin
-  RegisterComponents('ActiveX',[TWebBrowser_V1, TWebBrowser]);
+  RegisterComponents('ActiveX', [TWebBrowser_V1, TWebBrowser]);
 end;
 
 end.

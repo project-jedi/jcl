@@ -74,7 +74,7 @@ type
     function GetIgnoredExceptionsCount: Integer;
   public
     constructor Create; reintroduce;
-    destructor Destroy; override; 
+    destructor Destroy; override;
   published
     // file options
     property Languages: TJclBorPersonalities read FLanguages write FLanguages;
@@ -89,8 +89,10 @@ type
     property SendEMail: Boolean read FSendEMail write FSendEMail;
     property EMailAddress: string read FEMailAddress write FEMailAddress;
     property EMailSubject: string read FEMailSubject write FEMailSubject;
-    property SizeableDialog: Boolean read FSizeableDialog write FSizeableDialog;
-    property AutoScrollBars: Boolean read FAutoScrollBars write FAutoScrollBars;
+    property SizeableDialog: Boolean
+      read FSizeableDialog write FSizeableDialog;
+    property AutoScrollBars: Boolean
+      read FAutoScrollBars write FAutoScrollBars;
     // system options
     property DelayedTrace: Boolean read FDelayedTrace write FDelayedTrace;
     property HookDll: Boolean read FHookDll write FHookDll;
@@ -98,13 +100,16 @@ type
     property LogFileName: string read FLogFileName write FLogFileName;
     property OSInfo: Boolean read FOSInfo write FOSInfo;
     property ModuleList: Boolean read FModuleList write FModuleList;
-    property ActiveControls: Boolean read FActiveControls write FActiveControls;
-    property MainThreadOnly: Boolean read FMainThreadOnly write FMainThreadOnly;
+    property ActiveControls: Boolean
+      read FActiveControls write FActiveControls;
+    property MainThreadOnly: Boolean
+      read FMainThreadOnly write FMainThreadOnly;
     // ignored exceptions
     property TraceAllExceptions: Boolean read FTraceAllExceptions
       write FTraceAllExceptions;
     property TraceEAbort: Boolean read FTraceEAbort write FTraceEAbort;
-    property IgnoredExceptions: TStrings read FIgnoredExceptions write FIgnoredExceptions;
+    property IgnoredExceptions: TStrings
+      read FIgnoredExceptions write FIgnoredExceptions;
     property IgnoredExceptionsCount: Integer read GetIgnoredExceptionsCount;
     // trace options
     property StackList: Boolean read FStackList write FStackList;
@@ -114,7 +119,8 @@ type
     property AllThreads: Boolean read FAllThreads write FAllThreads;
     //property AddressOffset: Boolean read FAddressOffset write FAddressOffset;
     property CodeDetails: Boolean read FCodeDetails write FCodeDetails;
-    property VirtualAddress: Boolean read FVirtualAddress write FVirtualAddress;
+    property VirtualAddress: Boolean
+      read FVirtualAddress write FVirtualAddress;
   end;
 
 implementation

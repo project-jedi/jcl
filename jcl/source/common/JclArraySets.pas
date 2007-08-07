@@ -38,7 +38,7 @@ uses
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfSet,
-      IJclIntfCloneable)
+    IJclIntfCloneable)
   private
     function BinarySearch(const AInterface: IInterface): Integer;
   protected
@@ -139,7 +139,8 @@ begin
     inherited Insert(Idx + 1, AInterface);
 end;
 
-function TJclIntfArraySet.AddAll(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArraySet.AddAll(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -194,7 +195,8 @@ begin
     Result := False;
 end;
 
-procedure TJclIntfArraySet.Insert(Index: Integer; const AInterface: IInterface);
+procedure TJclIntfArraySet.Insert(Index: Integer;
+  const AInterface: IInterface);
 begin
   {$IFDEF CLR}
   raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
@@ -415,4 +417,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

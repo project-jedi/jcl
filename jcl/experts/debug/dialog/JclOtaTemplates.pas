@@ -77,30 +77,38 @@ uses
 function GetFinalFormContent(const Content, FormIdent,
   AncestorIdent: string): string;
 begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Content, FormPattern, FormIdent,
+    [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent,
+    [rfReplaceAll, rfIgnoreCase]);
 end;
 
 function GetFinalHeaderContent(const Content, ModuleIdent, FormIdent,
   AncestorIdent: string): string;
 begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Content, FormPattern, FormIdent,
+    [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent,
+    [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, ModulePattern, ModuleIdent,
+    [rfReplaceAll, rfIgnoreCase]);
 end;
 
 function GetFinalSourceContent(const Content, ModuleIdent, FormIdent,
   AncestorIdent: string): string;
 begin
-  Result := StringReplace(Content, FormPattern, FormIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, AncestorPattern, AncestorIdent, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, ModulePattern, ModuleIdent, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Content, FormPattern, FormIdent,
+    [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, AncestorPattern, AncestorIdent,
+    [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, ModulePattern, ModuleIdent,
+    [rfReplaceAll, rfIgnoreCase]);
 end;
 
 function ApplyTemplate(const Template: string;
   const Params: TJclOtaTemplateParams): string;
   procedure CopyStr(var Dest: string; var IndexDest: Integer;
-    var DestCharCount: Integer; const Src: string; IndexSrc: Integer;
+  var DestCharCount: Integer; const Src: string; IndexSrc: Integer;
     CharCount: Integer);
   begin
     if (Length(Src) - IndexSrc + 1) < CharCount then
@@ -130,7 +138,8 @@ function ApplyTemplate(const Template: string;
     IndexStart: Integer;
   begin
     IndexStart := Index;
-    while (Index <= Count) and (Str[Index] in ['0'..'9', 'A'..'Z', 'a'..'z', '_', '%']) do
+    while (Index <= Count) and
+      (Str[Index] in ['0'..'9', 'A'..'Z', 'a'..'z', '_', '%']) do
       Inc(Index);
     Result := Copy(Str, IndexStart, Index - IndexStart);
   end;
@@ -141,7 +150,7 @@ var
   StrList: TStrings;
 begin
   CharCountIn := Length(Template);
-  CharCountOut := 2*CharCountIn;
+  CharCountOut := 2 * CharCountIn;
   SetLength(Result, CharCountOut);
   IndexInput := 1;
   IndexOutput := 1;
@@ -152,14 +161,16 @@ begin
 
     if TokenPos = 0 then
     begin
-      CopyStr(Result, IndexOutput, CharCountOut, Template, IndexInput, CharCountIn - IndexInput + 1);
+      CopyStr(Result, IndexOutput, CharCountOut, Template,
+        IndexInput, CharCountIn - IndexInput + 1);
       SetLength(Result, IndexOutput - 1);
       Exit;
     end
     else
     begin
       if IfCount = 0 then
-        CopyStr(Result, IndexOutput, CharCountOut, Template, IndexInput, TokenPos - IndexInput);
+        CopyStr(Result, IndexOutput, CharCountOut, Template,
+          IndexInput, TokenPos - IndexInput);
 
       Identifier := GetIdentifier(Template, TokenPos, CharCountIn);
       Command := StrUpper(Identifier);
@@ -173,26 +184,31 @@ begin
           Inc(IfCount);
         end;
       end
-      else if Command = '%IFNOT' then
+      else
+      if Command = '%IFNOT' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
         if (IfCount > 0) or Params.IsDefined(Symbol) then
           Inc(IfCount);
       end
-      else if Command = '%ELSE' then
+      else
+      if Command = '%ELSE' then
       begin
         if IfCount = 1 then
           IfCount := 0
-        else if IfCount = 0 then
+        else
+        if IfCount = 0 then
           IfCount := 1;
       end
-      else if Command = '%ENDIF' then
+      else
+      if Command = '%ENDIF' then
       begin
         if IfCount > 0 then
           Dec(IfCount);
       end
-      else if Command = '%STRVALUE' then
+      else
+      if Command = '%STRVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -201,40 +217,50 @@ begin
           StrValue := Params.GetStrValue(Symbol);
           case Params.Language of
             bpDelphi32:
-              begin
-                StrValue := StringReplace(StrValue, AnsiSingleQuote, AnsiSingleQuote + AnsiSingleQuote, [rfReplaceAll]);
-                StrValue := AnsiSingleQuote + StrValue + AnsiSingleQuote;
-              end;
+            begin
+              StrValue :=
+                StringReplace(StrValue, AnsiSingleQuote, AnsiSingleQuote +
+                AnsiSingleQuote, [rfReplaceAll]);
+              StrValue := AnsiSingleQuote + StrValue + AnsiSingleQuote;
+            end;
             bpBCBuilder32:
-              begin
-                StrValue := StringReplace(StrValue, AnsiDoubleQuote, AnsiBackslash + AnsiDoubleQuote, [rfReplaceAll]);
-                StrValue := AnsiDoubleQuote + StrValue + AnsiDoubleQuote;
-              end;
+            begin
+              StrValue :=
+                StringReplace(StrValue, AnsiDoubleQuote, AnsiBackslash +
+                AnsiDoubleQuote, [rfReplaceAll]);
+              StrValue := AnsiDoubleQuote + StrValue + AnsiDoubleQuote;
+            end;
           end;
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
+          CopyStr(Result, IndexOutput, CharCountOut, StrValue,
+            1, Length(StrValue));
         end;
       end
-      else if Command = '%INTVALUE' then
+      else
+      if Command = '%INTVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
         if IfCount = 0 then
         begin
           StrValue := IntToStr(Params.GetIntValue(Symbol));
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
+          CopyStr(Result, IndexOutput, CharCountOut, StrValue,
+            1, Length(StrValue));
         end;
       end
-      else if Command = '%BOOLVALUE' then
+      else
+      if Command = '%BOOLVALUE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
         if IfCount = 0 then
         begin
           StrValue := BooleanToStr(Params.GetBoolValue(Symbol));
-          CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
+          CopyStr(Result, IndexOutput, CharCountOut, StrValue,
+            1, Length(StrValue));
         end;
       end
-      else if Command = '%REPEATLINE' then
+      else
+      if Command = '%REPEATLINE' then
       begin
         TokenPos := SkipBlanks(Template, TokenPos, CharCountIn);
         Symbol := GetIdentifier(Template, TokenPos, CharCountIn);
@@ -242,7 +268,8 @@ begin
         begin
           RepeatCount := Params.GetIntValue(Symbol);
           StrIndex := TokenPos;
-          while (StrIndex <= CharCountIn) and not (Template[StrIndex] in [AnsiLineFeed, AnsiCarriageReturn]) do
+          while (StrIndex <= CharCountIn) and not
+            (Template[StrIndex] in [AnsiLineFeed, AnsiCarriageReturn]) do
             Inc(StrIndex);
           RepeatPattern := Copy(Template, TokenPos, StrIndex - TokenPos);
           TokenPos := StrIndex;
@@ -260,18 +287,23 @@ begin
                 RepeatValue := StrList.Strings[RepeatCount - 1]
               else
                 RepeatValue := '';
-              StrReplace(StrValue, '%' + Symbol, RepeatValue, [rfReplaceAll, rfIgnoreCase]);
+              StrReplace(StrValue, '%' + Symbol, RepeatValue,
+                [rfReplaceAll, rfIgnoreCase]);
               StrIndex := Pos('%', StrValue);
             end;
-            CopyStr(Result, IndexOutput, CharCountOut, StrValue, 1, Length(StrValue));
-            CopyStr(Result, IndexOutput, CharCountOut, AnsiLineBreak, 1, Length(AnsiLineBreak));
+            CopyStr(Result, IndexOutput, CharCountOut, StrValue,
+              1, Length(StrValue));
+            CopyStr(Result, IndexOutput, CharCountOut,
+              AnsiLineBreak, 1, Length(AnsiLineBreak));
             Dec(RepeatCount);
           end;
         end;
       end
-      else if IfCount = 0 then
-        CopyStr(Result, IndexOutput, CharCountOut, Identifier, 1, Length(Identifier));
-        
+      else
+      if IfCount = 0 then
+        CopyStr(Result, IndexOutput, CharCountOut, Identifier,
+          1, Length(Identifier));
+
       IndexInput := TokenPos;
     end;
   end;

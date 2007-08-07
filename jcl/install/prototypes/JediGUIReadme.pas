@@ -64,7 +64,8 @@ type
     procedure SetReadmeFileName(const Value: string);
     function GetReadmeFileName: string;
 
-    property ReadmeFileName: string read GetReadmeFileName write SetReadmeFileName;
+    property ReadmeFileName: string read GetReadmeFileName
+      write SetReadmeFileName;
   end;
 
 implementation

@@ -33,6 +33,7 @@ begin
 end;
 
 initialization
-  TTypedComObjectFactory.Create(ComServer, TStackTrackDllsTest, Class_StackTrackDllsTest,
+  TTypedComObjectFactory.Create(ComServer, TStackTrackDllsTest,
+    Class_StackTrackDllsTest,
     ciMultiInstance, tmApartment);
 end.

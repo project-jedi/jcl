@@ -79,7 +79,8 @@ begin
   ExceptionLogMemo.Lines.Add(DateTimeToStr(Now));
 
   // Log unhandled exception stack info to ExceptionLogMemo
-  JclLastExceptStackListToStrings(ExceptionLogMemo.Lines, False, True, True, False);
+  JclLastExceptStackListToStrings(ExceptionLogMemo.Lines, False,
+    True, True, False);
 
   // Insert empty line
   ExceptionLogMemo.Lines.Add('');

@@ -9,7 +9,8 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, Qt, QGraphics, QStdCtrls, QControls, QExtCtrls, QComCtrls, QForms, QMask,
+  Types, Qt, QGraphics, QStdCtrls, QControls, QExtCtrls, QComCtrls,
+  QForms, QMask,
   JclStrings, JclFileUtils, QDialogs;
 
 type
@@ -115,7 +116,8 @@ begin
   StatusBar.Panels[2].Text := Format('Processing %s...', [Directory]);
 end;
 
-procedure TFileSearchForm.AddFile(const Directory: string; const FileInfo: TSearchRec);
+procedure TFileSearchForm.AddFile(const Directory: string;
+  const FileInfo: TSearchRec);
 var
   ListItem: TListItem;
   S: string;
@@ -124,9 +126,10 @@ begin
   with ListItem do
   begin
     Caption := Directory + FileInfo.Name;
-    Str(GetSizeOfFile(FileInfo):13, S);
+    Str(GetSizeOfFile(FileInfo): 13, S);
     SubItems.Add(S);
-    SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ', FileDateToDateTime(FileInfo.Time)));
+    SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ',
+      FileDateToDateTime(FileInfo.Time)));
     SubItems.Add(FileAttributesStr(FileInfo));
     {$IFDEF UNIX}
     if (FileInfo.Attr and faSymLink) <> 0 then
@@ -137,7 +140,8 @@ begin
   end;
 end;
 
-procedure TFileSearchForm.TaskDone(const ID: TFileSearchTaskID; const Aborted: Boolean);
+procedure TFileSearchForm.TaskDone(const ID: TFileSearchTaskID;
+  const Aborted: Boolean);
 begin
   if not FFileListLiveUpdate then
     FileList.Items.EndUpdate;
@@ -145,7 +149,8 @@ begin
   if Aborted then
     StatusBar.Panels[2].Text := 'Prematurely aborted.'
   else
-    StatusBar.Panels[2].Text := Format('...finished (%f seconds).', [(Now - FT0) * SecsPerDay]);
+    StatusBar.Panels[2].Text :=
+      Format('...finished (%f seconds).', [(Now - FT0) * SecsPerDay]);
   FileList.Sorted := True;
   StartBtn.Enabled := True;
   SaveBtn.Enabled := True;
@@ -158,7 +163,8 @@ begin
   RootDirInput.Text := PathCanonicalize(RootDirInput.Text);
 
   FFileEnumerator.SearchOption[fsLastChangeAfter] := cbLastChangeAfter.Checked;
-  FFileEnumerator.SearchOption[fsLastChangeBefore] := cbLastChangeBefore.Checked;
+  FFileEnumerator.SearchOption[fsLastChangeBefore] :=
+    cbLastChangeBefore.Checked;
   if FFileEnumerator.SearchOption[fsLastChangeAfter] then
     FFileEnumerator.LastChangeAfterAsString := edLastChangeAfter.Text;
   if FFileEnumerator.SearchOption[fsLastChangeBefore] then
@@ -171,7 +177,7 @@ begin
   FFileEnumerator.FileSizeMax := StrToInt64(edFileSizeMax.Text);
   FFileEnumerator.IncludeSubDirectories := IncludeSubDirectories.Checked;
   FFileEnumerator.IncludeHiddenSubDirectories := IncludeHiddenSubDirs.Checked;
-  FFileEnumerator.CaseSensitiveSearch := not cbCaseInsensitiveSearch.Checked; 
+  FFileEnumerator.CaseSensitiveSearch := not cbCaseInsensitiveSearch.Checked;
   FDirCount := 0;
 
   StartBtn.Enabled := False;
@@ -195,7 +201,8 @@ begin
   FFileEnumerator.StopTask(FTaskID);
 end;
 
-procedure TFileSearchForm.FileListColumnClick(Sender: TObject; Column: TListColumn);
+procedure TFileSearchForm.FileListColumnClick(Sender: TObject;
+  Column: TListColumn);
 const
   SD: array[TSortDirection] of TSortDirection = (sdDescending, sdAscending);
 begin
@@ -210,8 +217,10 @@ end;
 
 procedure TFileSearchForm.cbFileAttributeClick(Sender: TObject);
 const
-  Interest: array[TCheckBoxState] of TAttributeInterest = (aiRejected, aiRequired, aiIgnored);
-  CBState: array[TAttributeInterest] of TCheckBoxState = (cbGrayed, cbUnchecked, cbChecked);
+  Interest: array[TCheckBoxState] of TAttributeInterest =
+    (aiRejected, aiRequired, aiIgnored);
+  CBState: array[TAttributeInterest] of TCheckBoxState =
+    (cbGrayed, cbUnchecked, cbChecked);
 begin
   with FFileEnumerator.AttributeMask do
   begin
@@ -250,7 +259,7 @@ procedure TFileSearchForm.IncludeHiddenSubDirsClick(Sender: TObject);
 begin
   if not IncludeSubDirectories.Checked then
     if IncludeHiddenSubDirs.State = cbChecked then
-        IncludeHiddenSubDirs.State := cbUnchecked;
+      IncludeHiddenSubDirs.State := cbUnchecked;
 end;
 
 procedure TFileSearchForm.DetailsBtnClick(Sender: TObject);
@@ -267,14 +276,13 @@ var
 begin
   if SaveDialog.Execute then
     with TStringList.Create do
-    try
-      for I := 0 to FileList.Items.Count - 1 do
-        Add(FileList.Items[I].Caption);
-      SaveToFile(SaveDialog.FileName);
-    finally
-      Free;
-    end;
+      try
+        for I := 0 to FileList.Items.Count - 1 do
+          Add(FileList.Items[I].Caption);
+        SaveToFile(SaveDialog.FileName);
+      finally
+        Free;
+      end;
 end;
 
 end.
-

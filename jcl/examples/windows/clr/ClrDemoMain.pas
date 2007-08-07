@@ -72,7 +72,7 @@ const
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   m_Image := nil;
-  m_CLR   := nil;
+  m_CLR := nil;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -86,13 +86,13 @@ var
   I: Integer;
 begin
   if Assigned(PC.ActivePage) then
-  with PC.ActivePage do
-  for I:=0 to ControlCount-1 do
-    if Controls[0].InheritsFrom(TfrmAbstract) then
-    begin
-      Result := TfrmAbstract(Controls[0]);
-      Exit;
-    end;
+    with PC.ActivePage do
+      for I := 0 to ControlCount - 1 do
+        if Controls[0].InheritsFrom(TfrmAbstract) then
+        begin
+          Result := TfrmAbstract(Controls[0]);
+          Exit;
+        end;
 
   raise Exception.Create('No frame was active!');
 end;
@@ -130,7 +130,8 @@ begin
     else
     begin
       FreeAndNil(Img);
-      MessageDlg(Format('The file %s is not a CLR file', [dlgOpen.FileName]), mtWarning, [mbOK], 0);
+      MessageDlg(Format('The file %s is not a CLR file', [dlgOpen.FileName]),
+        mtWarning, [mbOK], 0);
     end;
   end;
 end;
@@ -144,27 +145,31 @@ end;
 procedure TfrmMain.actViewStreamDataUpdate(Sender: TObject);
 begin
   with frmMetadata.lstStream do
-  TAction(Sender).Enabled := Assigned(Selected) and
-    ((TObject(Selected.Data).ClassType = TJclCLRStringsStream) or
-     (TObject(Selected.Data).ClassType = TJclCLRGuidStream) or
-     (TObject(Selected.Data).ClassType = TJclCLRUserStringStream) or
-     (TObject(Selected.Data).ClassType = TJclCLRBlobStream) or
-     (TObject(Selected.Data).ClassType = TJclCLRTableStream));
+    TAction(Sender).Enabled := Assigned(Selected) and
+      ((TObject(Selected.Data).ClassType = TJclCLRStringsStream) or
+      (TObject(Selected.Data).ClassType = TJclCLRGuidStream) or
+      (TObject(Selected.Data).ClassType = TJclCLRUserStringStream) or
+      (TObject(Selected.Data).ClassType = TJclCLRBlobStream) or
+      (TObject(Selected.Data).ClassType = TJclCLRTableStream));
 end;
 
 procedure TfrmMain.actViewStreamDataExecute(Sender: TObject);
 begin
   with frmMetadata.lstStream do
-  if TObject(Selected.Data).ClassType = TJclCLRStringsStream then
-    TfrmStrings.Execute(Selected.Data)
-  else if TObject(Selected.Data).ClassType = TJclCLRGuidStream then
-    TfrmGuid.Execute(Selected.Data)
-  else if TObject(Selected.Data).ClassType = TJclCLRUserStringStream then
-    TfrmUserStrings.Execute(Selected.Data)
-  else if TObject(Selected.Data).ClassType = TJclCLRBlobStream then
-    TfrmBlobs.Execute(Selected.Data)
-  else if TObject(Selected.Data).ClassType = TJclCLRTableStream then
-    TfrmTable.Execute(Selected.Data);
+    if TObject(Selected.Data).ClassType = TJclCLRStringsStream then
+      TfrmStrings.Execute(Selected.Data)
+    else
+    if TObject(Selected.Data).ClassType = TJclCLRGuidStream then
+      TfrmGuid.Execute(Selected.Data)
+    else
+    if TObject(Selected.Data).ClassType = TJclCLRUserStringStream then
+      TfrmUserStrings.Execute(Selected.Data)
+    else
+    if TObject(Selected.Data).ClassType = TJclCLRBlobStream then
+      TfrmBlobs.Execute(Selected.Data)
+    else
+    if TObject(Selected.Data).ClassType = TJclCLRTableStream then
+      TfrmTable.Execute(Selected.Data);
 end;
 
 procedure TfrmMain.frmMetadatalstStreamDblClick(Sender: TObject);
@@ -176,15 +181,16 @@ end;
 procedure TfrmMain.actFileDumpExecute(Sender: TObject);
 begin
   dlgSave.InitialDir := ExtractFilePath(m_Image.FileName);
-  dlgSave.FileName   := ExtractFileName(ChangeFileExt(m_Image.FileName, '.il'));
+  dlgSave.FileName := ExtractFileName(
+    ChangeFileExt(m_Image.FileName, '.il'));
   if dlgSave.Execute then
-  with TStringList.Create do
-  try
-    Text := m_CLR.DumpIL;
-    SaveToFile(dlgSave.FileName);
-  finally
-    Free;
-  end;
+    with TStringList.Create do
+      try
+        Text := m_CLR.DumpIL;
+        SaveToFile(dlgSave.FileName);
+      finally
+        Free;
+      end;
 end;
 
 procedure TfrmMain.actFileDumpUpdate(Sender: TObject);

@@ -39,7 +39,7 @@ uses
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IJclIntfCollection,
-      IJclIntfList, IJclIntfArray, IJclIntfCloneable)
+    IJclIntfList, IJclIntfArray, IJclIntfCloneable)
   private
     FElementData: TDynIInterfaceArray;
     FSize: Integer;
@@ -63,7 +63,8 @@ type
     function Size: Integer;
     { IJclIntfList }
     procedure Insert(Index: Integer; const AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
@@ -73,14 +74,16 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity); overload;
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+      overload;
     constructor Create(const ACollection: IJclIntfCollection); overload;
     destructor Destroy; override;
     property Capacity: Integer read FCapacity write SetCapacity;
   end;
 
   //Daniele Teti 02/03/2005
-  TJclStrArrayList = class(TJclStrCollection, IJclStrList, IJclStrArray, IJclCloneable)
+  TJclStrArrayList = class(TJclStrCollection, IJclStrList,
+    IJclStrArray, IJclCloneable)
   private
     FCapacity: Integer;
     FElementData: TDynStringArray;
@@ -90,21 +93,26 @@ type
     procedure Grow; virtual;
     { IJclStrCollection }
     function Add(const AString: string): Boolean; overload; override;
-    function AddAll(const ACollection: IJclStrCollection): Boolean; overload; override;
+    function AddAll(const ACollection: IJclStrCollection): Boolean;
+      overload; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean;
+      override;
     function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; overload; override;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean;
+      override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean;
+      override;
     function Size: Integer; override;
     { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -112,7 +120,8 @@ type
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IJclStrList;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity); overload;
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+      overload;
     constructor Create(const ACollection: IJclStrCollection); overload;
     destructor Destroy; override;
     { IJclCloneable }
@@ -121,7 +130,7 @@ type
   end;
 
   TJclArrayList = class(TJclAbstractContainer, IJclCollection, IJclList,
-      IJclArray, IJclCloneable)
+    IJclArray, IJclCloneable)
   private
     FCapacity: Integer;
     FElementData: TDynObjectArray;
@@ -147,7 +156,8 @@ type
     function Size: Integer;
     { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -157,8 +167,10 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True); overload;
-    constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean = True); overload;
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity;
+      AOwnsObjects: Boolean = True); overload;
+    constructor Create(const ACollection: IJclCollection;
+      AOwnsObjects: Boolean = True); overload;
     destructor Destroy; override;
     property Capacity: Integer read FCapacity write SetCapacity;
     property OwnsObjects: Boolean read FOwnsObjects;
@@ -241,7 +253,8 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1,
+      FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AInterface;
   Inc(FOwnList.FSize);
 
@@ -406,7 +419,8 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1,
+      FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AString;
   Inc(FOwnList.FSize);
 
@@ -571,7 +585,8 @@ begin
   if FOwnList.FSize = FOwnList.Capacity then
     FOwnList.Grow;
   if FOwnList.FSize <> FCursor then
-    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1, FOwnList.FSize - FCursor);
+    MoveArray(FOwnList.FElementData, FCursor, FCursor + 1,
+      FOwnList.FSize - FCursor);
   FOwnList.FElementData[FCursor] := AObject;
   Inc(FOwnList.FSize);
 
@@ -673,7 +688,8 @@ end;
 
 //=== { TJclIntfArrayList } ==================================================
 
-constructor TJclIntfArrayList.Create(ACapacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfArrayList.Create(ACapacity: Integer =
+  DefaultContainerCapacity);
 begin
   inherited Create;
   FSize := 0;
@@ -704,7 +720,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfArrayList.Insert(Index: Integer; const AInterface: IInterface);
+procedure TJclIntfArrayList.Insert(Index: Integer;
+  const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -727,7 +744,8 @@ begin
   Inc(FSize);
 end;
 
-function TJclIntfArrayList.InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.InsertAll(Index: Integer;
+  const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   Size: Integer;
@@ -780,7 +798,8 @@ begin
   Result := True;
 end;
 
-function TJclIntfArrayList.AddAll(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.AddAll(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -853,7 +872,8 @@ begin
     end;
 end;
 
-function TJclIntfArrayList.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.ContainsAll(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -868,10 +888,11 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
-function TJclIntfArrayList.Equals(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.Equals(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
   It: IJclIntfIterator;
@@ -1043,7 +1064,8 @@ begin
   Dec(FSize);
 end;
 
-function TJclIntfArrayList.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.RemoveAll(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1061,7 +1083,8 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfArrayList.RetainAll(const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfArrayList.RetainAll(
+  const ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -1079,7 +1102,8 @@ begin
       Remove(I);
 end;
 
-procedure TJclIntfArrayList.SetObject(Index: Integer; const AInterface: IInterface);
+procedure TJclIntfArrayList.SetObject(Index: Integer;
+  const AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -1123,7 +1147,8 @@ end;
 
 //=== { TJclStrArrayList } ===================================================
 
-constructor TJclStrArrayList.Create(ACapacity: Integer = DefaultContainerCapacity);
+constructor TJclStrArrayList.Create(ACapacity: Integer =
+  DefaultContainerCapacity);
 begin
   inherited Create;
   FSize := 0;
@@ -1236,7 +1261,8 @@ begin
   Result := True;
 end;
 
-function TJclStrArrayList.AddAll(const ACollection: IJclStrCollection): Boolean;
+function TJclStrArrayList.AddAll(
+  const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -1310,7 +1336,8 @@ begin
     end;
 end;
 
-function TJclStrArrayList.ContainsAll(const ACollection: IJclStrCollection): Boolean;
+function TJclStrArrayList.ContainsAll(
+  const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -1328,7 +1355,8 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclStrArrayList.Equals(const ACollection: IJclStrCollection): Boolean;
+function TJclStrArrayList.Equals(
+  const ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
   It: IJclStrIterator;
@@ -1500,7 +1528,8 @@ begin
   Dec(FSize);
 end;
 
-function TJclStrArrayList.RemoveAll(const ACollection: IJclStrCollection): Boolean;
+function TJclStrArrayList.RemoveAll(
+  const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
   {$IFDEF THREADSAFE}
@@ -1518,7 +1547,8 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrArrayList.RetainAll(const ACollection: IJclStrCollection): Boolean;
+function TJclStrArrayList.RetainAll(
+  const ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -1551,7 +1581,7 @@ begin
     {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
     {$ENDIF CLR}
-  FElementData[Index] := AString
+  FElementData[Index] := AString;
 end;
 
 function TJclStrArrayList.Size: Integer;
@@ -1732,7 +1762,8 @@ function TJclArrayList.Clone: TObject;
 var
   NewList: TJclArrayList;
 begin
-  NewList := TJclArrayList.Create(Capacity, False); // Only one can have FOwnsObject = True
+  NewList := TJclArrayList.Create(Capacity, False);
+ // Only one can have FOwnsObject = True
   NewList.AddAll(Self);
   Result := NewList;
 end;
@@ -1773,7 +1804,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclArrayList.Equals(const ACollection: IJclCollection): Boolean;
@@ -2044,4 +2075,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -39,16 +39,24 @@ uses
   SysUtils, Classes, IniFiles;
 
 // Initialization (ini) Files
-function IniReadBool(const FileName, Section, Line: string): Boolean;              // John C Molyneux
-function IniReadInteger(const FileName, Section, Line: string): Integer;           // John C Molyneux
-function IniReadString(const FileName, Section, Line: string): string;             // John C Molyneux
-procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);     // John C Molyneux
-procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);  // John C Molyneux
-procedure IniWriteString(const FileName, Section, Line, Value: string);            // John C Molyneux
+function IniReadBool(const FileName, Section, Line: string): Boolean;
+              // John C Molyneux
+function IniReadInteger(const FileName, Section, Line: string): Integer;
+           // John C Molyneux
+function IniReadString(const FileName, Section, Line: string): string;
+             // John C Molyneux
+procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);
+     // John C Molyneux
+procedure IniWriteInteger(const FileName, Section, Line: string;
+  Value: Integer);  // John C Molyneux
+procedure IniWriteString(const FileName, Section, Line, Value: string);
+            // John C Molyneux
 
 // Initialization (ini) Files helper routines
-procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
-procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string;
+  Strings: TStrings);
+procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string;
+  Strings: TStrings);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -119,7 +127,8 @@ begin
   end;
 end;
 
-procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);
+procedure IniWriteInteger(const FileName, Section, Line: string;
+  Value: Integer);
 var
   Ini: TIniFile;
 begin
@@ -153,7 +162,8 @@ end;
 const
   ItemCountName = 'Count';
 
-procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string;
+  Strings: TStrings);
 var
   Count, I: Integer;
 begin
@@ -171,7 +181,8 @@ begin
   end;
 end;
 
-procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
+procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string;
+  Strings: TStrings);
 var
   I: Integer;
 begin

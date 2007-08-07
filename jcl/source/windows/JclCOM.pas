@@ -47,7 +47,8 @@ uses
 // Various definitions
 const
   { Class ID's that may be reused }
-  CLSID_StdComponentCategoriesMgr: TGUID = '{0002E005-0000-0000-C000-000000000046}';
+  CLSID_StdComponentCategoriesMgr: TGUID =
+    '{0002E005-0000-0000-C000-000000000046}';
 
   CATID_SafeForInitializing: TGUID = '{7DD95802-9882-11CF-9FA9-00AA006C42C4}';
   CATID_SafeForScripting: TGUID = '{7DD95801-9882-11CF-9FA9-00AA006C42C4}';
@@ -97,9 +98,12 @@ function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
   MSDN Home >  MSDN Library >  ActiveX Controls >  Overviews/Tutorials
   Safe Initialization and Scripting for ActiveX Controls }
 
-function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
-function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
-function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
+function CreateComponentCategory(const CatID: TGUID;
+  const sDescription: string): HRESULT;
+function RegisterCLSIDInCategory(const ClassID: TGUID;
+  const CatID: TGUID): HRESULT;
+function UnRegisterCLSIDInCategory(const ClassID: TGUID;
+  const CatID: TGUID): HRESULT;
 
 // Stream Related Routines
 { IDE ISSUE:  These need to be at the bottom of the interface definition as otherwise
@@ -114,8 +118,10 @@ function SizeOfIStreamContents(Stream: IStream): Largeint;
 function StreamToVariantArray(Stream: TStream): OleVariant; overload;
 function StreamToVariantArray(Stream: IStream): OleVariant; overload;
 
-procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream); overload;
-procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overload;
+procedure VariantArrayToStream(VarArray: OleVariant;
+  var Stream: TStream); overload;
+procedure VariantArrayToStream(VarArray: OleVariant;
+  var Stream: IStream); overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -151,7 +157,7 @@ function StringToWideString(const Str: string): WideString;
 var
   iLen: Integer;
 begin
-  iLen:= Length(Str) + 1;
+  iLen := Length(Str) + 1;
   SetLength(Result, (iLen - 1));
   StringToWideChar(Str, PWideChar(Result), iLen);
 end;
@@ -168,11 +174,11 @@ begin
   begin
     OLE32 := SafeLoadLibrary(pcOLE32);
     if OLE32 > 0 then
-    try
-      Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
-    finally
-      FreeLibrary(OLE32);
-    end;
+      try
+        Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
+      finally
+        FreeLibrary(OLE32);
+      end;
   end;
 end;
 
@@ -180,13 +186,15 @@ function IsDCOMEnabled: Boolean;
 var
   RegValue: string;
 begin
-  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\OLE', 'EnableDCOM');
+  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\OLE',
+    'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
 end;
 
 function GetDCOMVersion: string;
 const
-  DCOMVersionKey: PChar = 'CLSID\{bdc67890-4fc0-11d0-a805-00aa006d2ea4}\InstalledVersion';
+  DCOMVersionKey: PChar =
+    'CLSID\{bdc67890-4fc0-11d0-a805-00aa006d2ea4}\InstalledVersion';
 begin
   { NOTE:  This does not work on Windows NT/2000! For a list of DCOM versions:
       http://support.microsoft.com/support/kb/articles/Q235/6/38.ASP }
@@ -208,9 +216,10 @@ var
   DLL: string;
   Version: TJclFileVersionInfo;
 begin
-  Result := '' ;
+  Result := '';
   Key := RegReadString(HKEY_CLASSES_ROOT, 'ADODB.Connection\CLSID', '');
-  DLL := RegReadString(HKEY_CLASSES_ROOT, 'CLSID\' + Key + '\InprocServer32', '');
+  DLL := RegReadString(HKEY_CLASSES_ROOT, 'CLSID\' + Key +
+    '\InprocServer32', '');
   if VersionResourceAvailable(DLL) then
   begin
     Version := TJclFileVersionInfo.Create(DLL);
@@ -291,7 +300,8 @@ begin
 
     if stm <> nil then
       { Same Machine, Different Process}
-      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL, nil, MSHLFLAGS_NORMAL)
+      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL,
+        nil, MSHLFLAGS_NORMAL)
     else
       { TODO : Most likely out of memory, though should not reach here }
       Result := E_POINTER;
@@ -345,7 +355,8 @@ begin
 
     if stm <> nil then
       { Different Machine }
-      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_DIFFERENTMACHINE, nil, MSHLFLAGS_NORMAL)
+      Result := CoMarshalInterface(stm, iid, unk,
+        MSHCTX_DIFFERENTMACHINE, nil, MSHLFLAGS_NORMAL)
     else
       { TODO : Most likely out of memory, though should not reach here }
       Result := E_POINTER;
@@ -375,7 +386,8 @@ end;
 
 //=== Internet Explorer Component Categories Routines ========================
 
-function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
+function CreateComponentCategory(const CatID: TGUID;
+  const sDescription: string): HRESULT;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -388,7 +400,7 @@ begin
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -402,10 +414,10 @@ begin
         Only copy the first 127 characters if it is. }
       iLen := Length(sDescription);
       if iLen > icMAX_CATEGORY_DESC_LEN then
-         iLen := icMAX_CATEGORY_DESC_LEN;
+        iLen := icMAX_CATEGORY_DESC_LEN;
 
       sTemp := Copy(sDescription, 1, iLen);
-      wsTemp := StringToWideString(sTemp); 
+      wsTemp := StringToWideString(sTemp);
 
       Move(Pointer(wsTemp)^, CatInfo.szDescription, (iLen * SizeOf(WideChar)));
 
@@ -418,7 +430,8 @@ begin
   Result := hr;
 end;
 
-function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
+function RegisterCLSIDInCategory(const ClassID: TGUID;
+  const CatID: TGUID): HRESULT;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -428,7 +441,7 @@ begin
   { Register your component categories information }
   CatRegister := nil;
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -443,7 +456,8 @@ begin
   Result := hr;
 end;
 
-function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
+function UnRegisterCLSIDInCategory(const ClassID: TGUID;
+  const CatID: TGUID): HRESULT;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -453,7 +467,7 @@ begin
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -603,7 +617,8 @@ begin
   else
     Stream := TMemoryStream.Create;
 
-  Stream.Size := VarArrayHighBound(VarArray, 1) - VarArrayLowBound(VarArray, 1) + 1;
+  Stream.Size := VarArrayHighBound(VarArray, 1) -
+    VarArrayLowBound(VarArray, 1) + 1;
   pLocked := VarArrayLock(VarArray);
   try
     Stream.Write(pLocked^, Stream.Size);
@@ -632,14 +647,16 @@ begin
     ResetIStreamToStart(Stream)
   else
   begin
-    Stream := (TStreamAdapter.Create(TMemoryStream.Create, soOwned) as IStream);
+    Stream := (TStreamAdapter.Create(TMemoryStream.Create, soOwned) as
+      IStream);
     bCreated := True;
   end;
 
   { Check to ensure creation went well, otherwise we might have run out of memory }
   if Stream <> nil then
   begin
-    iSize := VarArrayHighBound(VarArray, 1) - VarArrayLowBound(VarArray, 1) + 1;
+    iSize := VarArrayHighBound(VarArray, 1) -
+      VarArrayLowBound(VarArray, 1) + 1;
     try
       Stream.SetSize(iSize);
       pLocked := VarArrayLock(VarArray);

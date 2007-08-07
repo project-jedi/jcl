@@ -136,8 +136,10 @@ type
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStrings;
     function GetAsDelimited(const Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(const AString: string; const Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
+    procedure AppendDelimited(const AString: string;
+      const Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(const AString: string;
+      const Separator: string = AnsiLineBreak);
   end;
 
   IJclCollection = interface
@@ -160,7 +162,8 @@ type
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
     procedure Insert(Index: Integer; const AInterface: IInterface); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
@@ -172,7 +175,8 @@ type
   IJclStrList = interface(IJclStrCollection)
     ['{07DD7644-EAC6-4059-99FC-BEB7FBB73186}']
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -180,13 +184,15 @@ type
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IJclStrList;
     //Daniele Teti
-    property Items[Key: Integer]: string read GetString write SetString; default;
+    property Items[Key: Integer]: string read GetString write SetString;
+      default;
   end;
 
   IJclList = interface(IJclCollection)
     ['{8ABC70AC-5C06-43EA-AFE0-D066379BCC28}']
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
+    function InsertAll(Index: Integer;
+      const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -194,7 +200,8 @@ type
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
     //Daniele Teti
-    property Items[Key: Integer]: TObject read GetObject write SetObject; default;
+    property Items[Key: Integer]: TObject read GetObject write SetObject;
+      default;
   end;
 
   IJclIntfArray = interface(IJclIntfList)
@@ -203,7 +210,8 @@ type
     function GetObject(Index: Integer): IInterface;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     {$ENDIF CLR}
-    property Items[Index: Integer]: IInterface read GetObject write SetObject; default;
+    property Items[Index: Integer]: IInterface read GetObject write SetObject;
+      default;
   end;
 
   IJclStrArray = interface(IJclStrList)
@@ -212,7 +220,8 @@ type
     function GetString(Index: Integer): string;
     procedure SetString(Index: Integer; const AString: string);
     {$ENDIF CLR}
-    property Items[Index: Integer]: string read GetString write SetString; default;
+    property Items[Index: Integer]: string read GetString write SetString;
+      default;
   end;
 
   IJclArray = interface(IJclList)
@@ -221,7 +230,8 @@ type
     function GetObject(Index: Integer): TObject;
     procedure SetObject(Index: Integer; AObject: TObject);
     {$ENDIF CLR}
-    property Items[Index: Integer]: TObject read GetObject write SetObject; default;
+    property Items[Index: Integer]: TObject read GetObject write SetObject;
+      default;
   end;
 
   IJclIntfSet = interface(IJclIntfCollection)
@@ -251,21 +261,24 @@ type
     ['{5A21688F-113D-41B4-A17C-54BDB0BD6559}']
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
+    property TraverseOrder: TJclTraverseOrder
+      read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclStrTree = interface(IJclStrCollection)
     ['{1E1896C0-0497-47DF-83AF-A9422084636C}']
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
+    property TraverseOrder: TJclTraverseOrder
+      read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclTree = interface(IJclCollection)
     ['{B0C658CC-FEF5-4178-A4C5-442C0DEDE207}']
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
+    property TraverseOrder: TJclTraverseOrder
+      read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclIntfIntfMap = interface
@@ -323,7 +336,8 @@ type
     //Daniele Teti
     function KeyOfValue(const Value: string): string;
     //Daniele Teti
-    property Items[const Key: string]: string read GetValue write PutValue; default;
+    property Items[const Key: string]: string read GetValue write PutValue;
+      default;
   end;
 
   IJclStrMap = interface
@@ -341,7 +355,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: string]: TObject read GetValue write PutValue; default;
+    property Items[const Key: string]: TObject read GetValue write PutValue;
+      default;
   end;
 
   IJclMap = interface
@@ -359,7 +374,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[Key: TObject]: TObject read GetValue write PutValue; default;
+    property Items[Key: TObject]: TObject read GetValue write PutValue;
+      default;
   end;
 
   IJclIntfQueue = interface
@@ -477,4 +493,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

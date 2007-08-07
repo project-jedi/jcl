@@ -79,7 +79,8 @@ type
       Parent: TEDISEFFile): TEDISEFSet;
     procedure TranslateLoopToSEFSet(StackRecord: TEDILoopStackRecord;
       SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
-    function TranslateToSEFFile(ICSpec: TEDIInterchangeControlSpec): TEDISEFFile;
+    function TranslateToSEFFile(ICSpec: TEDIInterchangeControlSpec):
+      TEDISEFFile;
   end;
 
   TEDISEFToSpecTranslator = class(TEDIObject)
@@ -117,7 +118,8 @@ begin
   inherited Destroy;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFElement(
+  ElementSpec: TEDIElementSpec;
   Parent: TEDISEFFile): TEDISEFElement;
 begin
   Result := TEDISEFElement.Create(Parent);
@@ -127,7 +129,8 @@ begin
   Result.MaximumLength := ElementSpec.MaximumLength;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFElement(ElementSpec: TEDIElementSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFElement(
+  ElementSpec: TEDIElementSpec;
   Parent: TEDISEFSegment): TEDISEFElement;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -146,7 +149,8 @@ begin
   end;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFSegment(
+  SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFFile): TEDISEFSegment;
 var
   E: Integer;
@@ -165,7 +169,8 @@ begin
   end;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFSegment(
+  SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFTable): TEDISEFSegment;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -182,7 +187,8 @@ begin
   end;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFSegment(
+  SegmentSpec: TEDISegmentSpec;
   Parent: TEDISEFLoop): TEDISEFSegment;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -199,7 +205,8 @@ begin
   end;
 end;
 
-procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet(StackRecord: TEDILoopStackRecord;
+procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet(
+  StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
 var
   SEFLoop: TEDISEFLoop;
@@ -208,12 +215,14 @@ begin
   begin
     SEFLoop := TEDISEFLoop.Create(TEDISEFDataObject(StackRecord.EDIObject));
     SEFLoop.Id := SegmentId;
-    TEDISEFDataObjectGroup(StackRecord.EDIObject).EDISEFDataObjects.Add(SEFLoop);
+    TEDISEFDataObjectGroup(
+      StackRecord.EDIObject).EDISEFDataObjects.Add(SEFLoop);
     EDIObject := SEFLoop;
   end;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFSet(TransactionSetSpec: TEDITransactionSetSpec;
+function TEDISpecToSEFTranslator.TranslateToSEFSet(
+  TransactionSetSpec: TEDITransactionSetSpec;
   Parent: TEDISEFFile): TEDISEFSet;
 var
   S: Integer;
@@ -240,12 +249,13 @@ begin
         // Initialize the stack
         SEFTable := TEDISEFTable.Create(Result);
         Result.EDISEFDataObjects.Add(SEFTable);
-        LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, NA_LoopId, NA_LoopId, 0, SEFTable);
+        LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID,
+          NA_LoopId, NA_LoopId, 0, SEFTable);
       end
       else
       begin
         // Check to see if the sections have changed
-        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S-1]);
+        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S - 1]);
         if SegmentSpec.Section <> PrevSegmentSpec.Section then
         begin
           // Create new table for new section
@@ -254,12 +264,14 @@ begin
           // Re-initialize the stack
           LS.Pop(1);
           LS.UpdateStackObject(SEFTable);
-          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, SegmentSpec.OwnerLoopId,
+          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID,
+            SegmentSpec.OwnerLoopId,
             SegmentSpec.ParentLoopId, 0, LSR.EDIObject);
         end
         else
         begin
-          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, SegmentSpec.OwnerLoopId,
+          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID,
+            SegmentSpec.OwnerLoopId,
             SegmentSpec.ParentLoopId, 0, LSR.EDIObject);
         end;
       end;
@@ -292,7 +304,8 @@ begin
   end;
 end;
 
-function TEDISpecToSEFTranslator.TranslateToSEFFile(ICSpec: TEDIInterchangeControlSpec): TEDISEFFile;
+function TEDISpecToSEFTranslator.TranslateToSEFFile(ICSpec:
+  TEDIInterchangeControlSpec): TEDISEFFile;
 var
   F, T, S, E: Integer;
   ElementList: TEDIObjectList;
@@ -352,7 +365,8 @@ begin
   end;
 end;
 
-procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(ElementSpec: TEDIElementSpec;
+procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(
+  ElementSpec: TEDIElementSpec;
   SEFElement: TEDISEFElement);
 var
   Location: string;
@@ -361,17 +375,22 @@ begin
   Location := SEFElement.GetTextSetsLocation;
   Data := ElementSpec.Notes;
   Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
-  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR,
+    [rfReplaceAll]);
   Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
-  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm0, Data);
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location,
+    SEFTextSetsCode_Elm0, Data);
   Data := ElementSpec.Description;
   Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
-  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR,
+    [rfReplaceAll]);
   Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
-  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm2, Data);
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location,
+    SEFTextSetsCode_Elm2, Data);
 end;
 
-procedure TEDISpecToSEFTranslator.TranslateToSEFSegmentTEXTSETS(SegmentSpec: TEDISegmentSpec;
+procedure TEDISpecToSEFTranslator.TranslateToSEFSegmentTEXTSETS(
+  SegmentSpec: TEDISegmentSpec;
   SEFSegment: TEDISEFSegment);
 var
   Location: string;
@@ -383,14 +402,18 @@ begin
   Location := SEFSegment.GetTextSetsLocation;
   Data := SegmentSpec.Description;
   Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
-  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR,
+    [rfReplaceAll]);
   Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
-  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg3, Data);
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location,
+    SEFTextSetsCode_Seg3, Data);
   Data := SegmentSpec.Notes;
   Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
-  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR,
+    [rfReplaceAll]);
   Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
-  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg4, Data);
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location,
+    SEFTextSetsCode_Seg4, Data);
 
   SEFSegment.AssignElementOrdinals;
   for E := 0 to SegmentSpec.ElementCount - 1 do

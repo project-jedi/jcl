@@ -40,35 +40,47 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     // IJediConfiguration
     function GetSections: TStringArray;
     function GetOptions(const Section: string): TOptionArray;
     function GetOptionAsBool(const Section: string; Id: Integer): Boolean;
-    procedure SetOptionAsBool(const Section: string; Id: Integer; Value: Boolean);
-    function GetOptionAsBoolByName(const Section: string; const Name: string): Boolean;
-    procedure SetOptionAsBoolByName(const Section: string; const Name: string; Value: Boolean);
+    procedure SetOptionAsBool(const Section: string; Id: Integer;
+      Value: Boolean);
+    function GetOptionAsBoolByName(const Section: string;
+      const Name: string): Boolean;
+    procedure SetOptionAsBoolByName(const Section: string;
+      const Name: string; Value: Boolean);
     function GetOptionAsString(const Section: string; Id: Integer): string;
-    procedure SetOptionAsString(const Section: string; Id: Integer; const Value: string);
-    function GetOptionAsStringByName(const Section: string; const Name: string): string;
-    procedure SetOptionAsStringByName(const Section: string; const Name: string; const Value: string);
+    procedure SetOptionAsString(const Section: string; Id: Integer;
+      const Value: string);
+    function GetOptionAsStringByName(const Section: string;
+      const Name: string): string;
+    procedure SetOptionAsStringByName(const Section: string;
+      const Name: string; const Value: string);
 
     procedure Clear;
     procedure DeleteSection(const Section: string);
     procedure DeleteOption(const Section: string; Id: Integer);
     function SectionExists(const Section: string): Boolean;
-    function ValueExists(const Section: string; Id: Integer): Boolean; overload;
-    function ValueExists(const Section: string; const Name: string): Boolean; overload;
+    function ValueExists(const Section: string; Id: Integer): Boolean;
+      overload;
+    function ValueExists(const Section: string; const Name: string): Boolean;
+      overload;
 
     property Sections: TStringArray read GetSections;
     property Options[const Section: string]: TOptionArray read GetOptions;
-    property OptionAsBool[const Section: string; Id: Integer]: Boolean read GetOptionAsBool
+    property OptionAsBool[const Section: string;
+      Id: Integer]: Boolean read GetOptionAsBool
       write SetOptionAsBool;
-    property OptionAsBoolByName[const Section: string; const Name: string]: Boolean
+    property OptionAsBoolByName[const Section: string;
+      const Name: string]: Boolean
       read GetOptionAsBoolByName write SetOptionAsBoolByName;
-    property OptionAsString[const Section: string; Id: Integer]: string read GetOptionAsString
+    property OptionAsString[const Section: string;
+      Id: Integer]: string read GetOptionAsString
       write SetOptionAsString;
-    property OptionAsStringByName[const Section: string; const Name: string]: string
+    property OptionAsStringByName[const Section: string;
+      const Name: string]: string
       read GetOptionAsStringByName write SetOptionAsStringByName;
   end;
 
@@ -100,7 +112,7 @@ var
   AFileName: string;
 begin
   inherited Create;
-  
+
   AFileName := '';
 
   if not GetEnvironmentVar('JCL_INSTALL_INI', AFileName) then
@@ -135,7 +147,8 @@ end;
 function TJediConfigIni.GetOptionAsBool(const Section: string;
   Id: Integer): Boolean;
 begin
-  Result := FIniFile.ReadBool(Section, InstallCore.InstallOptionName[Id], False);
+  Result := FIniFile.ReadBool(Section,
+    InstallCore.InstallOptionName[Id], False);
 end;
 
 function TJediConfigIni.GetOptionAsBoolByName(const Section,
@@ -147,7 +160,8 @@ end;
 function TJediConfigIni.GetOptionAsString(const Section: string;
   Id: Integer): string;
 begin
-  Result := FIniFile.ReadString(Section, InstallCore.InstallOptionName[Id], '');
+  Result := FIniFile.ReadString(Section,
+    InstallCore.InstallOptionName[Id], '');
 end;
 
 function TJediConfigIni.GetOptionAsStringByName(const Section,
@@ -235,6 +249,6 @@ end;
 
 initialization
 
-InstallCore.ConfigurationCreator := CreateConfigIni;
+  InstallCore.ConfigurationCreator := CreateConfigIni;
 
 end.

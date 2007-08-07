@@ -14,7 +14,7 @@ const
 type
 
   THexStr = array[0..2] of Char;
-  THexStrArray = array[0..MAXDIGITS-1] of THexStr;
+  THexStrArray = array[0..MAXDIGITS - 1] of THexStr;
 
   THexDump = class(TCustomControl)
   private
@@ -34,7 +34,7 @@ type
     FBorder: TBorderStyle;
     FHexData: THexStrArray;
     FLineAddr: array[0..15] of char;
-    FStream:TMemoryStream;
+    FStream: TMemoryStream;
 
     procedure CalcPaintParams;
     procedure SetTopLine(Value: Integer);
@@ -61,12 +61,13 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property CurrentLine: Integer read FCurrentLine write SetCurrentLine;
-    procedure LoadFromStream(Stream:TStream);
+    procedure LoadFromStream(Stream: TStream);
     procedure Clear;
     property Address: Pointer read FAddress write SetAddress;
     property DataSize: Integer read FDataSize write SetDataSize;
@@ -79,11 +80,16 @@ type
     property Font;
     property TabOrder;
     property TabStop;
-    property ShowAddress: Boolean read FShowAddress write SetShowAddress default True;
-    property ShowCharacters: Boolean read FShowCharacters write SetShowCharacters default True;
-    property AddressColor: TColor index 0 read GetFileColor write SetFileColor default clBlack;
-    property HexDataColor: TColor index 1 read GetFileColor write SetFileColor default clBlack;
-    property AnsiCharColor: TColor index 2 read GetFileColor write SetFileColor default clBlack;
+    property ShowAddress: Boolean
+      read FShowAddress write SetShowAddress default True;
+    property ShowCharacters: Boolean
+      read FShowCharacters write SetShowCharacters default True;
+    property AddressColor: TColor index 0
+      read GetFileColor write SetFileColor default clBlack;
+    property HexDataColor: TColor index 1
+      read GetFileColor write SetFileColor default clBlack;
+    property AnsiCharColor: TColor index 2
+      read GetFileColor write SetFileColor default clBlack;
   end;
 
 function CreateHexDump(AOwner: TWinControl): THexDump;
@@ -188,14 +194,20 @@ begin
   inherited;
   NewTopLine := FTopLine;
   case Message.ScrollCode of
-    SB_LINEDOWN: Inc(NewTopLine);
-    SB_LINEUP: Dec(NewTopLine);
-    SB_PAGEDOWN: Inc(NewTopLine, FVisibleLines - 1);
-    SB_PAGEUP: Dec(NewTopLine, FVisibleLines - 1);
-    SB_THUMBPOSITION, SB_THUMBTRACK: NewTopLine := Message.Pos;
+    SB_LINEDOWN:
+      Inc(NewTopLine);
+    SB_LINEUP:
+      Dec(NewTopLine);
+    SB_PAGEDOWN:
+      Inc(NewTopLine, FVisibleLines - 1);
+    SB_PAGEUP:
+      Dec(NewTopLine, FVisibleLines - 1);
+    SB_THUMBPOSITION, SB_THUMBTRACK:
+      NewTopLine := Message.Pos;
   end;
 
-  if NewTopLine < 0 then NewTopLine := 0;
+  if NewTopLine < 0 then
+    NewTopLine := 0;
   if NewTopLine >= FLineCount then
     NewTopLine := FLineCount - 1;
 
@@ -208,7 +220,8 @@ begin
     if Abs(LinesMoved) = 1 then
     begin
       R := Bounds(0, 0, ClientWidth, ClientHeight - FItemHeight);
-      if LinesMoved = 1 then OffsetRect(R, 0, FItemHeight);
+      if LinesMoved = 1 then
+        OffsetRect(R, 0, FItemHeight);
 
       ScrollWindow(Handle, 0, FItemHeight * LinesMoved, @R, nil);
 
@@ -234,22 +247,26 @@ end;
 
 procedure THexDump.CalcPaintParams;
 const
-  Divisor: array[boolean] of Integer = (3,4);
+  Divisor: array[boolean] of Integer = (3, 4);
 var
   CharsPerLine: Integer;
 
 begin
-  if FItemHeight < 1 then Exit;
+  if FItemHeight < 1 then
+    Exit;
   FVisibleLines := (ClientHeight div FItemHeight) + 1;
   CharsPerLine := ClientWidth div FItemWidth;
-  if FShowAddress then Dec(CharsPerLine, 10);
+  if FShowAddress then
+    Dec(CharsPerLine, 10);
   FBytesPerLine := CharsPerLine div Divisor[FShowCharacters];
   if FBytesPerLine < 1 then
     FBytesPerLine := 1
-  else if FBytesPerLine > MAXDIGITS then
+  else
+  if FBytesPerLine > MAXDIGITS then
     FBytesPerLine := MAXDIGITS;
   FLineCount := (DataSize div FBytesPerLine);
-  if Boolean(DataSize mod FBytesPerLine) then Inc(FLineCount);
+  if Boolean(DataSize mod FBytesPerLine) then
+    Inc(FLineCount);
 end;
 
 procedure THexDump.AdjustScrollBars;
@@ -265,7 +282,8 @@ begin
     Result := True;
     SetTopLine(FCurrentLine);
   end
-  else if FCurrentLine >= (FTopLine + FVisibleLines) - 1 then
+  else
+  if FCurrentLine >= (FTopLine + FVisibleLines) - 1 then
   begin
     SetTopLine(FCurrentLine - (FVisibleLines - 2));
     Result := True;
@@ -279,8 +297,10 @@ var
 begin
   if Value <> FTopLine then
   begin
-    if Value < 0 then Value := 0;
-    if Value >= FLineCount then Value := FLineCount - 1;
+    if Value < 0 then
+      Value := 0;
+    if Value >= FLineCount then
+      Value := FLineCount - 1;
 
     LinesMoved := FTopLine - Value;
     FTopLine := Value;
@@ -289,7 +309,8 @@ begin
     if Abs(LinesMoved) = 1 then
     begin
       R := Bounds(1, 0, ClientWidth, ClientHeight - FItemHeight);
-      if LinesMoved = 1 then OffsetRect(R, 0, FItemHeight);
+      if LinesMoved = 1 then
+        OffsetRect(R, 0, FItemHeight);
 
       ScrollWindow(Handle, 0, FItemHeight * LinesMoved, @R, nil);
 
@@ -317,10 +338,13 @@ var
 begin
   if Value <> FCurrentLine then
   begin
-    if Value < 0 then Value := 0;
-    if Value >= FLineCount then Value := FLineCount - 1;
+    if Value < 0 then
+      Value := 0;
+    if Value >= FLineCount then
+      Value := FLineCount - 1;
 
-    if (FCurrentLine >= FTopLine) and (FCurrentLine < FTopLine + FVisibleLines - 1) then
+    if (FCurrentLine >= FTopLine) and (FCurrentLine < FTopLine +
+      FVisibleLines - 1) then
     begin
       R := Bounds(0, 0, 1, FItemHeight);
       OffsetRect(R, 0, (FCurrentLine - FTopLine) * FItemHeight);
@@ -347,11 +371,11 @@ begin
   Canvas.Brush.Color := Self.Color;
   Canvas.FillRect(ClientRect);
   if FShowAddress then
-    AddressWidth := FItemWidth*10
+    AddressWidth := FItemWidth * 10
   else
     AddressWidth := 0;
   R := Bounds(1, 0, ClientWidth, FItemHeight);
-  TabStop := FItemWidth*3;
+  TabStop := FItemWidth * 3;
   Canvas.Font.Color := FFileColors[1];
   ByteCnt := FBytesPerLine;
   for I := 0 to FVisibleLines - 1 do
@@ -363,24 +387,27 @@ begin
       begin
         Canvas.Font.Color := FFileColors[0];
         R.Right := R.Left + AddressWidth;
-        ExtTextOut(Canvas.Handle, R.Left, R.Top, ETO_OPAQUE or ETO_CLIPPED, @R, LineAddr(I+FTopLine), 9, nil);
+        ExtTextOut(Canvas.Handle, R.Left, R.Top, ETO_OPAQUE or
+          ETO_CLIPPED, @R, LineAddr(I + FTopLine), 9, nil);
         R.Left := R.Right;
         R.Right := ClientWidth;
         Canvas.Font.Color := FFileColors[1];
       end;
-      if (I+FTopLine = FLineCount-1) and ((DataSize mod FBytesPerLine) > 0) then
+      if (I + FTopLine = FLineCount - 1) and
+        ((DataSize mod FBytesPerLine) > 0) then
         ByteCnt := DataSize mod FBytesPerLine;
-      TabbedTextOut(Canvas.Handle, R.Left, R.Top, LineData(I+FTopLine),
-        (ByteCnt*3)-1, 1, TabStop, R.Left);
+      TabbedTextOut(Canvas.Handle, R.Left, R.Top, LineData(I + FTopLine),
+        (ByteCnt * 3) - 1, 1, TabStop, R.Left);
       if FShowCharacters then
       begin
-        R.Left := AddressWidth+(FItemWidth*(FBytesPerLine*3));
+        R.Left := AddressWidth + (FItemWidth * (FBytesPerLine * 3));
         Canvas.Font.Color := FFileColors[2];
-        ExtTextOut(Canvas.Handle, R.Left, R.Top, ETO_OPAQUE or ETO_CLIPPED, @R, LineChars(I+FTopLine), ByteCnt, nil);
+        ExtTextOut(Canvas.Handle, R.Left, R.Top, ETO_OPAQUE or
+          ETO_CLIPPED, @R, LineChars(I + FTopLine), ByteCnt, nil);
       end;
     end
     else ExtTextOut(Canvas.Handle, R.Left, R.Top, ETO_OPAQUE or ETO_CLIPPED,
-      @R, nil, 0, nil);
+        @R, nil, 0, nil);
     OffsetRect(R, 0, FItemHeight);
   end;
 end;
@@ -390,15 +417,22 @@ end;
 procedure THexDump.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if not FActive then Exit;
+  if not FActive then
+    Exit;
 
   case Key of
-    VK_DOWN: CurrentLine := CurrentLine + 1;
-    VK_UP: CurrentLine := CurrentLine - 1;
-    VK_NEXT: CurrentLine := CurrentLine + FVisibleLines;
-    VK_PRIOR: CurrentLine := CurrentLine - FVisibleLines;
-    VK_HOME: CurrentLine := 0;
-    VK_END: CurrentLine := FLineCount - 1;
+    VK_DOWN:
+      CurrentLine := CurrentLine + 1;
+    VK_UP:
+      CurrentLine := CurrentLine - 1;
+    VK_NEXT:
+      CurrentLine := CurrentLine + FVisibleLines;
+    VK_PRIOR:
+      CurrentLine := CurrentLine - FVisibleLines;
+    VK_HOME:
+      CurrentLine := 0;
+    VK_END:
+      CurrentLine := FLineCount - 1;
   end;
 end;
 
@@ -406,7 +440,8 @@ procedure THexDump.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if not Focused then SetFocus;
+  if not Focused then
+    SetFocus;
   if (Button = mbLeft) and FActive then
     CurrentLine := FTopLine + (Y div FItemHeight);
 end;
@@ -471,24 +506,25 @@ end;
 
 function THexDump.LineAddr(Index: Integer): PChar;
 begin
-  Result := StrFmt(FLineAddr, '%p:', [Pointer(PChar(Address)+Index*FBytesPerLine)]);
+  Result := StrFmt(FLineAddr, '%p:',
+    [Pointer(PChar(Address) + Index * FBytesPerLine)]);
 end;
 
 function THexDump.LineData(Index: Integer): PChar;
 
   procedure SetData(P: PChar);
   const
-    HexDigits : array[0..15] of Char = '0123456789ABCDEF';
+    HexDigits: array[0..15] of Char = '0123456789ABCDEF';
   var
     I: Integer;
     B: Byte;
   begin
-    for I := 0 to FBytesPerLine-1 do
+    for I := 0 to FBytesPerLine - 1 do
     begin
-      try 
+      try
         B := Byte(P[I]);
-        FHexData[I][0] := HexDigits[B SHR $04];
-        FHexData[I][1] := HexDigits[B AND $0F];
+        FHexData[I][0] := HexDigits[B shr $04];
+        FHexData[I][1] := HexDigits[B and $0F];
       except
         FHexData[I][0] := '?';
         FHexData[I][1] := '?';
@@ -498,13 +534,13 @@ function THexDump.LineData(Index: Integer): PChar;
   end;
 
 begin
-  SetData(PChar(FAddress) + Index*FBytesPerLine);
+  SetData(PChar(FAddress) + Index * FBytesPerLine);
   Result := FHexData[0];
 end;
 
 function THexDump.LineChars(Index: Integer): PChar;
 begin
-  Result := PChar(FAddress) + Index*FBytesPerLine;
+  Result := PChar(FAddress) + Index * FBytesPerLine;
 end;
 
 procedure THexDump.LoadFromStream(Stream: TStream);
@@ -513,7 +549,7 @@ begin
   if Stream <> nil then
   begin
     FStream := TMemoryStream.Create;
-    FStream.CopyFrom(Stream,0);
+    FStream.CopyFrom(Stream, 0);
     Address := FStream.Memory;
     DataSize := FStream.Size;
   end;

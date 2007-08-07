@@ -45,7 +45,7 @@ uses
   JclBase, StackTrackDLLsComLibrary_TLB;
 
 const
-  StaticLibrary  = 'StackTrackDLLsStaticLibrary.dll';
+  StaticLibrary = 'StackTrackDLLsStaticLibrary.dll';
   DynamicLibrary = 'StackTrackDLLsDynamicLibrary.dll';
 
 procedure Error1; stdcall; external StaticLibrary;

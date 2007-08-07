@@ -81,7 +81,7 @@ type
     function ModuleToFileName(const ModuleName: string): TFileName;
     procedure ImportListViewSort;
     procedure InitTree;
-    function IsListViewActiveAndFocused( ListView: TListView): Boolean;
+    function IsListViewActiveAndFocused(ListView: TListView): Boolean;
     procedure UpdateExportView(Node: TTreeNode);
     procedure UpdateModulesView;
     procedure UpdateParentImportView(Node: TTreeNode);
@@ -110,9 +110,12 @@ type
     modDupNoErrors,          // Duplicate module with no errors.
     modDupFwdNoErrors,       // Forwarded duplicate module with no errors.
     modExportMissing,        // Module with one or more missing export functions
-    modFwdExportMissing,     // Forwarded module with one or more missing export functions
-    modDupExportMissing,     // Duplicate module with one or more missing export functions
-    modDupFwdExportMissing,  // Forwarded duplicate module with one or more missing export functions
+    modFwdExportMissing,
+// Forwarded module with one or more missing export functions
+    modDupExportMissing,
+// Duplicate module with one or more missing export functions
+    modDupFwdExportMissing,
+  // Forwarded duplicate module with one or more missing export functions
     modMissing,              // Missing module.
     modFwdMissing,           // Missing forwarded module.
     modInvalid,              // Invalid module.
@@ -131,24 +134,26 @@ type
   end;
 
 const
-  imgModule               =  0;
-  imgDupModule            =  1;
-  imgModExportMissing     =  2;
-  imgDupExportMissing     =  3;
-  imgMissingModule        =  4;
-  imgInvalidModule        =  5;
-  imgForwardFlag          =  6;
-  imgRoot                 =  7;
-  imgExport               =  8;
-  imgFwdExport            =  9;
-  imgImport               = 10;
-  imgUnresolvedImport     = 11;
-  imgSortAsceding         = 12;
-  imgSortDesceding        =  3;
+  imgModule = 0;
+  imgDupModule = 1;
+  imgModExportMissing = 2;
+  imgDupExportMissing = 3;
+  imgMissingModule = 4;
+  imgInvalidModule = 5;
+  imgForwardFlag = 6;
+  imgRoot = 7;
+  imgExport = 8;
+  imgFwdExport = 9;
+  imgImport = 10;
+  imgUnresolvedImport = 11;
+  imgSortAsceding = 12;
+  imgSortDesceding = 3;
 
   ErrorModules = [modMissing, modFwdMissing, modInvalid, modFwdInvalid];
-  MissingExportModules = [modExportMissing, modFwdExportMissing, modDupExportMissing,
-    modDupFwdExportMissing, modMissing, modFwdMissing, modInvalid, modFwdInvalid];
+  MissingExportModules = [modExportMissing, modFwdExportMissing,
+    modDupExportMissing,
+    modDupFwdExportMissing, modMissing, modFwdMissing, modInvalid,
+    modFwdInvalid];
   ForwardedModules = [modFwdNoErrors, modDupFwdNoErrors, modFwdExportMissing,
     modDupFwdExportMissing];
 
@@ -166,7 +171,7 @@ const
     (ImageIndex: imgInvalidModule; StateIndex: -1),
     (ImageIndex: imgInvalidModule; StateIndex: imgForwardFlag),
     (ImageIndex: imgRoot; StateIndex: -1)
-  );
+    );
 
 { TFileViewerChild }
 
@@ -199,7 +204,8 @@ begin
 {$ENDIF}
 end;
 
-procedure TFileViewerChild.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFileViewerChild.FormClose(Sender: TObject;
+  var Action: TCloseAction);
 begin
   Fix_ListViewBeforeClose(Self);
   Action := caFree;
@@ -215,111 +221,121 @@ var
   RootNode: TTreeNode;
 
   procedure SetNodeState(Node: TTreeNode; State: TPeModuleState);
-var
-  I: Integer;
-begin
-  PPeModuleNodeData(Node.Data)^.State := State;
-  Node.ImageIndex := ModuleImages[State].ImageIndex;
-  Node.SelectedIndex := ModuleImages[State].ImageIndex;
-  Node.StateIndex := ModuleImages[State].StateIndex;
-  if State in (MissingExportModules + ErrorModules) then
+  var
+    I: Integer;
   begin
-    if Node.Parent = RootNode then FAnyRootError := True;
-    I := FModulesList.IndexOf(Node.Text);
-    Assert(I >= 0);
-    FModulesList.Objects[I] := Pointer(State);
+    PPeModuleNodeData(Node.Data)^.State := State;
+    Node.ImageIndex := ModuleImages[State].ImageIndex;
+    Node.SelectedIndex := ModuleImages[State].ImageIndex;
+    Node.StateIndex := ModuleImages[State].StateIndex;
+    if State in (MissingExportModules + ErrorModules) then
+    begin
+      if Node.Parent = RootNode then
+        FAnyRootError := True;
+      I := FModulesList.IndexOf(Node.Text);
+      Assert(I >= 0);
+      FModulesList.Objects[I] := Pointer(State);
+    end;
   end;
-end;
 
-  function AddNode(Node: TTreeNode; const Text: string; State: TPeModuleState): TTreeNode;
-var
-  Data: PPeModuleNodeData;
-begin
-  Result := DependencyTreeView.Items.AddChild(Node, Text);
-  New(Data);
-  Result.Data := Data;
-  SetNodeState(Result, State);
-end;
+  function AddNode(Node: TTreeNode; const Text: string;
+    State: TPeModuleState): TTreeNode;
+  var
+    Data: PPeModuleNodeData;
+  begin
+    Result := DependencyTreeView.Items.AddChild(Node, Text);
+    New(Data);
+    Result.Data := Data;
+    SetNodeState(Result, State);
+  end;
 
-  procedure ScanModule(const ModuleName: string; Node: TTreeNode; Forwarded, ErrorsOnly: Boolean);
-var
-  ExeImage: TJclPeImage;
-  I, Found: Integer;
-  S: string;
-  TempNode: TTreeNode;
-  AddedNodes: array of TTreeNode;
-  AddedNodesCount: Integer;
-begin
-  ExeImage := FPeImagesCache[ModuleToFilename(ModuleName)];
-  case ExeImage.Status of
-    stOk:
-      if not ErrorsOnly then
-      begin
-        with ExeImage.ImportList do
+  procedure ScanModule(const ModuleName: string; Node: TTreeNode;
+    Forwarded, ErrorsOnly: Boolean);
+  var
+    ExeImage: TJclPeImage;
+    I, Found: Integer;
+    S: string;
+    TempNode: TTreeNode;
+    AddedNodes: array of TTreeNode;
+    AddedNodesCount: Integer;
+  begin
+    ExeImage := FPeImagesCache[ModuleToFilename(ModuleName)];
+    case ExeImage.Status of
+      stOk:
+        if not ErrorsOnly then
         begin
-          SetLength(AddedNodes, Count);
-          AddedNodesCount := 0;
-          CheckImports(FPeImagesCache);
-          SortList(ilName);
-          for I := 0 to Count - 1 do
+          with ExeImage.ImportList do
           begin
-            S := Items[I].Name;
-            Found := FModulesList.IndexOf(S);
-            if Found = -1 then
+            SetLength(AddedNodes, Count);
+            AddedNodesCount := 0;
+            CheckImports(FPeImagesCache);
+            SortList(ilName);
+            for I := 0 to Count - 1 do
             begin
-              Found := FModulesList.Add(S);
-              FModulesList.Objects[Found] := Pointer(modNoErrors);
-              if Items[I].TotalResolveCheck = icUnresolved then
-                TempNode := AddNode(Node, S, modExportMissing)
+              S := Items[I].Name;
+              Found := FModulesList.IndexOf(S);
+              if Found = -1 then
+              begin
+                Found := FModulesList.Add(S);
+                FModulesList.Objects[Found] := Pointer(modNoErrors);
+                if Items[I].TotalResolveCheck = icUnresolved then
+                  TempNode := AddNode(Node, S, modExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modNoErrors);
+                AddedNodes[AddedNodesCount] := TempNode;
+                Inc(AddedNodesCount);
+              end
               else
-                TempNode := AddNode(Node, S, modNoErrors);
-              AddedNodes[AddedNodesCount] := TempNode;
-              Inc(AddedNodesCount);
-            end else
-            begin
-              if Items[I].TotalResolveCheck = icUnresolved then
-                TempNode := AddNode(Node, S, modDupExportMissing)
-              else
-                TempNode := AddNode(Node, S, modDupNoErrors);
-              ScanModule(TempNode.Text, TempNode, False, True); // !
-            end;
-            PPeModuleNodeData(TempNode.Data)^.ImportDirectoryIndex := Items[I].ImportDirectoryIndex;
-          end;
-        end;
-        for I := 0 to AddedNodesCount - 1 do
-          ScanModule(AddedNodes[I].Text, AddedNodes[I], False, False);
-        with ExeImage.ExportList do
-        begin
-          CheckForwards(FPeImagesCache);
-          for I := 0 to ForwardedLibsList.Count - 1 do
-          begin
-            S := ForwardedLibsList[I];
-            Found := FModulesList.IndexOf(S);
-            if Found = -1 then
-            begin
-              Found := FModulesList.Add(S);
-              FModulesList.Objects[Found] := Pointer(modNoErrors);
-              if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
-                AddNode(Node, S, modFwdExportMissing)
-              else
-                AddNode(Node, S, modFwdNoErrors);
-            end else
-            begin
-              if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) = icUnresolved then
-                TempNode := AddNode(Node, S, modDupFwdExportMissing)
-              else
-                TempNode := AddNode(Node, S, modDupFwdNoErrors);
-              ScanModule(TempNode.Text, TempNode, True, True); // !
+              begin
+                if Items[I].TotalResolveCheck = icUnresolved then
+                  TempNode := AddNode(Node, S, modDupExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modDupNoErrors);
+                ScanModule(TempNode.Text, TempNode, False, True); // !
+              end;
+              PPeModuleNodeData(TempNode.Data)^.ImportDirectoryIndex :=
+                Items[I].ImportDirectoryIndex;
             end;
           end;
+          for I := 0 to AddedNodesCount - 1 do
+            ScanModule(AddedNodes[I].Text, AddedNodes[I], False, False);
+          with ExeImage.ExportList do
+          begin
+            CheckForwards(FPeImagesCache);
+            for I := 0 to ForwardedLibsList.Count - 1 do
+            begin
+              S := ForwardedLibsList[I];
+              Found := FModulesList.IndexOf(S);
+              if Found = -1 then
+              begin
+                Found := FModulesList.Add(S);
+                FModulesList.Objects[Found] := Pointer(modNoErrors);
+                if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) =
+                  icUnresolved then
+                  AddNode(Node, S, modFwdExportMissing)
+                else
+                  AddNode(Node, S, modFwdNoErrors);
+              end
+              else
+              begin
+                if TJclPeResolveCheck(ForwardedLibsList.Objects[I]) =
+                  icUnresolved then
+                  TempNode := AddNode(Node, S, modDupFwdExportMissing)
+                else
+                  TempNode := AddNode(Node, S, modDupFwdNoErrors);
+                ScanModule(TempNode.Text, TempNode, True, True); // !
+              end;
+            end;
+          end;
         end;
-      end;
-    stNotFound:
-      if Forwarded then SetNodeState(Node, modFwdMissing) else SetNodeState(Node, modMissing);
-  else
-     if Forwarded then SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
+      stNotFound:
+        if Forwarded then
+          SetNodeState(Node, modFwdMissing) else SetNodeState(Node, modMissing);
+      else
+        if Forwarded then
+          SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
+    end;
   end;
-end;
 
 begin
   with DependencyTreeView do
@@ -374,7 +390,8 @@ begin
   ListView.Columns.EndUpdate;
 end;
 
-function TFileViewerChild.IsListViewActiveAndFocused( ListView: TListView): Boolean;
+function TFileViewerChild.IsListViewActiveAndFocused(
+  ListView: TListView): Boolean;
 begin
   Result := (ActiveControl = ListView) and (ListView.ItemFocused <> nil);
 end;
@@ -404,18 +421,21 @@ begin
     SubItems.Add(Format('%d', [Ordinal]));
     SubItems.Add(Format('%d', [Hint]));
     SubItems.Add(AddressOrForwardStr);
-    if IsForwarded then ImageIndex := imgFwdExport else ImageIndex := imgExport;
+    if IsForwarded then
+      ImageIndex := imgFwdExport else ImageIndex := imgExport;
   end;
 end;
 
-procedure TFileViewerChild.ImportListViewData(Sender: TObject; Item: TListItem);
+procedure TFileViewerChild.ImportListViewData(Sender: TObject;
+  Item: TListItem);
 var
   ViewItem: TJclPeImportFuncItem;
 begin
   if FCurrentImportDirIndex = -1 then
     ViewItem := FParentImportViewImage.ImportList.AllItems[Item.Index]
   else
-    ViewItem := FParentImportViewImage.ImportList[FCurrentImportDirIndex][Item.Index];
+    ViewItem := FParentImportViewImage.ImportList[FCurrentImportDirIndex]
+      [Item.Index];
   with Item, ViewItem do
   begin
     if IndirectImportName then
@@ -426,26 +446,32 @@ begin
     begin
       SubItems.Add(Format('%d', [Ordinal]));
       SubItems.Add('');
-    end else
+    end
+    else
     begin
       SubItems.Add('');
       SubItems.Add(Format('%d', [Hint]));
-    end;  
-    if FCurrentImportDirIndex = -1 then SubItems.Add(ImportLib.Name);
+    end;
+    if FCurrentImportDirIndex = -1 then
+      SubItems.Add(ImportLib.Name);
     case ResolveCheck of
-      icUnresolved: ImageIndex := imgUnresolvedImport;
-      icResolved, icNotChecked: ImageIndex := imgImport;
+      icUnresolved:
+        ImageIndex := imgUnresolvedImport;
+      icResolved, icNotChecked:
+        ImageIndex := imgImport;
     end;
   end;
 end;
 
-procedure TFileViewerChild.ExportListViewColumnClick(Sender: TObject; Column: TListColumn);
+procedure TFileViewerChild.ExportListViewColumnClick(Sender: TObject;
+  Column: TListColumn);
 begin
   UpdateSortData(Column);
   ExportListViewSort;
 end;
 
-procedure TFileViewerChild.ImportListViewColumnClick(Sender: TObject; Column: TListColumn);
+procedure TFileViewerChild.ImportListViewColumnClick(Sender: TObject;
+  Column: TListColumn);
 begin
   UpdateSortData(Column);
   ImportListViewSort;
@@ -472,24 +498,25 @@ var
   NodeState: TPeModuleState;
 
   procedure ShowModuleColumn(B: Boolean);
-begin
-  with ImportListView do
-    if (B xor (Columns.Count <> 3)) then
-    begin
-      Columns.BeginUpdate;
-      if B then Columns.Add.Caption := 'Module' else
+  begin
+    with ImportListView do
+      if (B xor (Columns.Count <> 3)) then
       begin
-        Columns[3].Free;
-        if Tag and $FF = 3 then
+        Columns.BeginUpdate;
+        if B then
+          Columns.Add.Caption := 'Module' else
         begin
-          Tag := $100;
-          UpdateSortData(Columns[0]);
-          ImportListViewSort;
+          Columns[3].Free;
+          if Tag and $FF = 3 then
+          begin
+            Tag := $100;
+            UpdateSortData(Columns[0]);
+            ImportListViewSort;
+          end;
         end;
+        Columns.EndUpdate;
       end;
-      Columns.EndUpdate;
-    end;
-end;
+  end;
 
 begin
   with ImportListView.Items do
@@ -516,17 +543,20 @@ begin
       FCurrentImportDirIndex := -1;
       FParentImportViewImage.ImportList.FilterModuleName := Node.Text;
       Count := FParentImportViewImage.ImportList.AllItemCount;
-    end else
+    end
+    else
     if Node.Parent = nil then
     begin
       ShowModuleColumn(True);
       FCurrentImportDirIndex := -1;
       FParentImportViewImage.ImportList.FilterModuleName := '';
       Count := FParentImportViewImage.ImportList.AllItemCount;
-    end else
+    end
+    else
     begin
       ShowModuleColumn(False);
-      FCurrentImportDirIndex := PPeModuleNodeData(Node.Data)^.ImportDirectoryIndex;
+      FCurrentImportDirIndex :=
+        PPeModuleNodeData(Node.Data)^.ImportDirectoryIndex;
       Count := FParentImportViewImage.ImportList[FCurrentImportDirIndex].Count;
     end;
     ImportListViewSort;
@@ -534,27 +564,32 @@ begin
   end;
 end;
 
-procedure TFileViewerChild.DependencyTreeViewChange(Sender: TObject; Node: TTreeNode);
+procedure TFileViewerChild.DependencyTreeViewChange(Sender: TObject;
+  Node: TTreeNode);
 begin
   UpdateExportView(Node);
   UpdateParentImportView(Node);
 end;
 
-procedure TFileViewerChild.DependencyTreeViewDeletion(Sender: TObject; Node: TTreeNode);
+procedure TFileViewerChild.DependencyTreeViewDeletion(Sender: TObject;
+  Node: TTreeNode);
 begin
   Dispose(Node.Data); // PPeModuleNodeData
 end;
 
 procedure TFileViewerChild.ImportListViewSort;
 const
-  MapIndexToSortType: array[0..3] of TJclPeImportSort = (isName, isOrdinal, isHint, isLibImport);
+  MapIndexToSortType: array[0..3] of TJclPeImportSort =
+    (isName, isOrdinal, isHint, isLibImport);
 begin
   with ImportListView do
   begin
     if FCurrentImportDirIndex = -1 then
-      FParentImportViewImage.ImportList.SortAllItemsList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0)
+      FParentImportViewImage.ImportList.SortAllItemsList(
+        MapIndexToSortType[Tag and $FF], Tag and $100 <> 0)
     else
-      FParentImportViewImage.ImportList[FCurrentImportDirIndex].SortList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
+      FParentImportViewImage.ImportList[FCurrentImportDirIndex].SortList(
+        MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
     Invalidate;
   end;
 end;
@@ -566,7 +601,8 @@ const
 begin
   with ExportListView do
   begin
-    FExportViewImage.ExportList.SortList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
+    FExportViewImage.ExportList.SortList(MapIndexToSortType[Tag and $FF],
+      Tag and $100 <> 0);
     Invalidate;
   end;
 end;
@@ -600,16 +636,19 @@ begin
             begin
               Add(HeaderValues[JclPeHeader_Subsystem]);
               Add(HeaderValues[JclPeHeader_ImageBase]);
-              if Assigned(VI) then Add(VI.FileVersion) else Add('');
-              if Assigned(VI) then Add(VI.ProductVersion) else Add('');
+              if Assigned(VI) then
+                Add(VI.FileVersion) else Add('');
+              if Assigned(VI) then
+                Add(VI.ProductVersion) else Add('');
               Add(HeaderValues[JclPeHeader_ImageVersion]);
               Add(HeaderValues[JclPeHeader_LinkerVersion]);
               Add(HeaderValues[JclPeHeader_OperatingSystemVersion]);
               Add(HeaderValues[JclPeHeader_SubsystemVersion]);
-              if Assigned(VI) then Add(VI.FileDescription) else Add('');
+              if Assigned(VI) then
+                Add(VI.FileDescription) else Add('');
             end;
           end;
-          ImageIndex := ModuleImages[TPeModuleState(Objects[I])].ImageIndex; 
+          ImageIndex := ModuleImages[TPeModuleState(Objects[I])].ImageIndex;
         end;
     finally
       EndUpdate;
@@ -617,7 +656,8 @@ begin
   end;
 end;
 
-procedure TFileViewerChild.ModulesListViewInfoTip(Sender: TObject; Item: TListItem; var InfoTip: String);
+procedure TFileViewerChild.ModulesListViewInfoTip(Sender: TObject;
+  Item: TListItem; var InfoTip: String);
 begin
   with Item.SubItems do
     if Count > 10 then
@@ -626,7 +666,8 @@ begin
       InfoTip := '';
 end;
 
-function TFileViewerChild.ModuleToFileName(const ModuleName: string): TFileName;
+function TFileViewerChild.ModuleToFileName(
+  const ModuleName: string): TFileName;
 begin
   Result := TJclPeImage.ExpandBySearchPath(ModuleName, FBasePath);
 end;
@@ -639,10 +680,12 @@ begin
   if ActiveControl = DependencyTreeView then
   begin
     with DependencyTreeView do
-      if Selected <> nil then 
-        if Selected.Level = 0 then S := FFileName else
+      if Selected <> nil then
+        if Selected.Level = 0 then
+          S := FFileName else
           S := Selected.Text;
-  end else
+  end
+  else
   if Activecontrol = ModulesListView then
     with ModulesListView do
       if Selected <> nil then

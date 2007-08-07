@@ -51,11 +51,11 @@ uses
   Classes, SysUtils, JclBase;
 
 const
-  JCL_PCRE_CALLOUT_NOERROR      = 0;
+  JCL_PCRE_CALLOUT_NOERROR = 0;
   JCL_PCRE_CALLOUT_FAILCONTINUE = 1;
 
-  JCL_PCRE_ERROR_CALLOUTERROR   = -998;
-  JCL_PCRE_ERROR_STUDYFAILED    = -999;
+  JCL_PCRE_ERROR_CALLOUTERROR = -998;
+  JCL_PCRE_ERROR_STUDYFAILED = -999;
 
 type
   TJclAnsiRegEx = class;
@@ -82,8 +82,9 @@ type
     LastPos: Integer;
   end;
 
-  TJclAnsiRegExCallout = procedure (Sender: TJclAnsiRegEx;
-    Index, MatchStart, SubjectPos, LastCapture, PatternPos, NextItemLength: Integer;
+  TJclAnsiRegExCallout = procedure(Sender: TJclAnsiRegEx;
+    Index, MatchStart, SubjectPos, LastCapture, PatternPos,
+    NextItemLength: Integer;
     var ErrorCode: Integer) of object;
   TPCRECalloutIndex = 0 .. 255;
 
@@ -129,14 +130,17 @@ type
       UserLocale: Boolean = False): Boolean;
     property Pattern: AnsiString read FPattern;
     property DfaMode: Boolean read FDfaMode write FDfaMode;
-    function Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
+    function Match(const Subject: AnsiString;
+      StartOffset: Cardinal = 1): Boolean;
     property Subject: AnsiString read FSubject;
     property Result: AnsiString read GetResult;
 
     property ViewChanges: Boolean read FViewChanges write FViewChanges;
     property CaptureCount: Integer read FCaptureCount write FCaptureCount;
-    property Captures[Index: Integer]: AnsiString read GetCapture write SetCapture;
-    property CaptureRanges[Index: Integer]: TJclAnsiCaptureRange read GetCaptureRange;
+    property Captures[Index: Integer]: AnsiString
+      read GetCapture write SetCapture;
+    property CaptureRanges[Index: Integer]: TJclAnsiCaptureRange
+      read GetCaptureRange;
 
     property NamedCaptures[const Name: AnsiString]: AnsiString
       read GetNamedCapture write SetNamedCapture;
@@ -158,7 +162,8 @@ procedure TerminateLocaleSupport;
 
 // Args is an array of pairs (CaptureIndex, Value) or (CaptureName, Value).
 // For example: NewIp := StrReplaceRegEx(DirIP, '(\d+)\.(\d+)\.(\d+)\.(\d+)', [3, '128', 4, '254']); 
-function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+function StrReplaceRegEx(const Subject, Pattern: AnsiString;
+  Args: array of const): AnsiString;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -189,9 +194,11 @@ begin
   FreeMem(P);
 end;
 
-function JclPCRECallout(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
+function JclPCRECallout(var callout_block: pcre_callout_block): Integer;
+ {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
-   Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
+  Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(
+    callout_block);
 end;
 
 function PCRECheck(Value: Integer): Boolean;
@@ -199,7 +206,8 @@ var
   PErr: PResStringRec;
 begin
   Result := Value >= 0;
-  if Result then Exit;
+  if Result then
+    Exit;
 
   case Value of
     PCRE_ERROR_NOMATCH:
@@ -248,8 +256,8 @@ begin
       PErr := @RsErrStudyFailed;
     JCL_PCRE_ERROR_CALLOUTERROR:
       PErr := @RsErrCalloutError;
-  else
-    PErr := @RsErrUnknownError;
+    else
+      PErr := @RsErrUnknownError;
   end;
 
   raise EPCREError.CreateRes(PErr, Value);
@@ -289,7 +297,8 @@ begin
   if FPattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
 
-  if Assigned(FCode) then CallPCREFree(FCode);
+  if Assigned(FCode) then
+    CallPCREFree(FCode);
   FCode := pcre_compile2(PChar(FPattern), GetAPIOptions(False),
     @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
   Inc(FErrorOffset);
@@ -299,7 +308,8 @@ begin
   begin
     if Study then
     begin
-      if Assigned(FExtra) then CallPCREFree(FExtra);
+      if Assigned(FExtra) then
+        CallPCREFree(FExtra);
       FExtra := pcre_study(FCode, 0, @ErrMsgPtr);
       Result := Assigned(FExtra) or (not Assigned(ErrMsgPtr));
       if not Result then
@@ -313,7 +323,8 @@ begin
       FVectorSize := FCaptureCount
     else
     begin
-      PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT, @FCaptureCount));
+      PCRECheck(pcre_fullinfo(FCode, FExtra, PCRE_INFO_CAPTURECOUNT,
+        @FCaptureCount));
       FVectorSize := (FCaptureCount + 1) * 3;
     end;
     ReAllocMem(FVector, FVectorSize * SizeOf(Integer));
@@ -328,15 +339,15 @@ const
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny }
   cDesignOptions: array [TJclAnsiRegExOption] of Integer =
-   (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
+    (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY);
   cRunOptions: array [TJclAnsiRegExOption] of Integer =
-   (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
-   PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
-   PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
+    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
+    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
+    PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
 var
   I: TJclAnsiRegExOption;
 begin
@@ -368,11 +379,11 @@ begin
     begin
       CaptureIndex := Integer(FChangedCaptures[Index]);
       Range := GetCaptureRange(CaptureIndex);
-      
+
       Result := Result +
-        Copy(FSubject, Pos, Range.FirstPos - Pos) + 
+        Copy(FSubject, Pos, Range.FirstPos - Pos) +
         FResultValues[CaptureIndex];
-        
+
       Pos := Range.LastPos + 1;
     end;
     if Pos <= Length(FSubject) then
@@ -414,7 +425,7 @@ begin
     begin
       if not Assigned(FChangedCaptures) then
         FChangedCaptures := TList.Create;
-        
+
       // Always resize to the max length to avoid repeated allocations.
       FChangedCaptures.Capacity := FCaptureCount;
       SetLength(FResultValues, FCaptureCount);
@@ -474,7 +485,8 @@ begin
   Result := NameTable + EntrySize * Index + 2;
 end;
 
-function TJclAnsiRegEx.CalloutHandler(var CalloutBlock: pcre_callout_block): Integer;
+function TJclAnsiRegEx.CalloutHandler(
+  var CalloutBlock: pcre_callout_block): Integer;
 begin
   try
     Result := JCL_PCRE_CALLOUT_NOERROR;
@@ -496,7 +508,8 @@ begin
   end;
 end;
 
-function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
+function TJclAnsiRegEx.Match(const Subject: AnsiString;
+  StartOffset: Cardinal = 1): Boolean;
 var
   LocalExtra: real_pcre_extra;
   Extra: Pointer;
@@ -528,12 +541,14 @@ begin
   if FDfaMode then
   begin
     ExecRslt := pcre_dfa_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
-      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize, @Workspace, 20);
+      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector),
+      FVectorSize, @Workspace, 20);
   end
   else
   begin
     ExecRslt := pcre_exec(FCode, Extra, PChar(FSubject), Length(FSubject),
-      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector), FVectorSize);
+      StartOffset - 1, GetAPIOptions(True), pcre.PInteger(FVector),
+      FVectorSize);
   end;
   Result := ExecRslt >= 0;
   if Result then
@@ -575,15 +590,19 @@ begin
 end;
 
 // TODO: Better/specific error messages, show index when available.
-function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of const): AnsiString;
+function StrReplaceRegEx(const Subject, Pattern: AnsiString;
+  Args: array of const): AnsiString;
 
   function ArgToString(Index: Integer): AnsiString;
   begin
     // TODO: Any other type?
     case TVarRec(Args[Index]).VType of
-      vtString: Result := TVarRec(Args[Index]).VString^;
-      vtPChar: Result := TVarRec(Args[Index]).VPChar;
-      vtAnsiString: Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
+      vtString:
+        Result := TVarRec(Args[Index]).VString^;
+      vtPChar:
+        Result := TVarRec(Args[Index]).VPChar;
+      vtAnsiString:
+        Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
       else
         raise EConvertError.Create(SInvalidFormat);
     end;
@@ -625,7 +644,8 @@ end;
 
 //=== { EPCREError } =========================================================
 
-constructor EPCREError.CreateRes(ResStringRec: PResStringRec; ErrorCode: Integer);
+constructor EPCREError.CreateRes(ResStringRec: PResStringRec;
+  ErrorCode: Integer);
 begin
   FErrorCode := ErrorCode;
   inherited CreateRes(ResStringRec);
@@ -655,4 +675,3 @@ finalization
   UnloadPCRE;
 
 end.
-

@@ -56,12 +56,14 @@ type
     ufMNSLogonAccount);
   TNetUserFlags = set of TNetUserFlag;
   TNetUserInfoFlag = (uifScript, uifTempDuplicateAccount, uifNormalAccount,
-    uifInterdomainTrustAccount, uifWorkstationTrustAccount, uifServerTrustAccount);
+    uifInterdomainTrustAccount, uifWorkstationTrustAccount,
+    uifServerTrustAccount);
   TNetUserInfoFlags = set of TNetUserInfoFlag;
   TNetUserPriv = (upUnknown, upGuest, upUser, upAdmin);
   TNetUserAuthFlag = (afOpPrint, afOpComm, afOpServer, afOpAccounts);
   TNetUserAuthFlags = set of TNetUserAuthFlag;
-  TNetWellKnownRID = (wkrAdmins, wkrUsers, wkrGuests, wkrPowerUsers, wkrBackupOPs,
+  TNetWellKnownRID = (wkrAdmins, wkrUsers, wkrGuests, wkrPowerUsers,
+    wkrBackupOPs,
     wkrReplicator, wkrEveryone);
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
@@ -72,18 +74,23 @@ function CreateLocalAccount(const Username, Fullname, Password, Description,
   const PasswordNeverExpires: Boolean = True): Boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
-function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
-function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
+function CreateLocalGroup(
+  const Server, Groupname, Description: string): Boolean;
+function CreateGlobalGroup(
+  const Server, Groupname, Description: string): Boolean;
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 
 function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
-function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
+function GetGlobalGroups(const Server: string;
+  const Groups: TStrings): Boolean;
 function LocalGroupExists(const Group: string): Boolean;
 function GlobalGroupExists(const Server, Group: string): Boolean;
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
-function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+function LookupGroupName(const Server: string;
+  const RID: TNetWellKnownRID): string;
+procedure ParseAccountName(const QualifiedName: string;
+  var Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
@@ -141,7 +148,8 @@ end;
 function CreateLocalAccount(const Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 begin
-  Result := CreateAccount('', Username, Fullname, Password, Description, Homedir,
+  Result := CreateAccount('', Username, Fullname, Password,
+    Description, Homedir,
     Script, PassWordNeverExpires);
 end;
 
@@ -161,7 +169,8 @@ begin
   Result := DeleteAccount('', Username);
 end;
 
-function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
+function CreateGlobalGroup(
+  const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
   Details: GROUP_INFO_1;
@@ -180,7 +189,8 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
+function CreateLocalGroup(
+  const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
   Details: LOCALGROUP_INFO_1;
@@ -220,7 +230,8 @@ var
   I: Integer;
 begin
   wServername := Server;
-  Err := RtdlNetLocalGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+  Err := RtdlNetLocalGroupEnum(PWideChar(wServername), 0, Buffer,
+    MAX_PREFERRED_LENGTH,
     EntriesRead, TotalEntries, nil);
 
   if Err = NERR_SUCCESS then
@@ -242,7 +253,8 @@ begin
   Result := (Err = NERR_SUCCESS);
 end;
 
-function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
+function GetGlobalGroups(const Server: string;
+  const Groups: TStrings): Boolean;
 var
   Err: NET_API_STATUS;
   wServername: WideString;
@@ -252,7 +264,8 @@ var
   I: Integer;
 begin
   wServername := Server;
-  Err := RtdlNetGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+  Err := RtdlNetGroupEnum(PWideChar(wServername), 0, Buffer,
+    MAX_PREFERRED_LENGTH,
     EntriesRead, TotalEntries, nil);
 
   if Err = NERR_SUCCESS then
@@ -327,7 +340,8 @@ begin
   wAccountname := AccountName;
 
   Details.lgrmi3_domainandname := PWideChar(wAccountname);
-  Err := RtdlNetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @Details, 1);
+  Err := RtdlNetLocalGroupAddMembers(nil, PWideChar(wGroupname),
+    3, @Details, 1);
   Result := (Err = NERR_SUCCESS);
 end;
 
@@ -346,8 +360,8 @@ begin
       Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
     wkrReplicator:
       Result := DOMAIN_ALIAS_RID_REPLICATOR;
-  else // (wkrEveryone)
-    Result := SECURITY_WORLD_RID;
+    else // (wkrEveryone)
+      Result := SECURITY_WORLD_RID;
   end;
 end;
 
@@ -366,12 +380,13 @@ begin
       Result := wkrBackupOPs;
     DOMAIN_ALIAS_RID_REPLICATOR:
       Result := wkrReplicator;
-  else // (SECURITY_WORLD_RID)
-    Result := wkrEveryone;
+    else // (SECURITY_WORLD_RID)
+      Result := wkrEveryone;
   end;
 end;
 
-function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
+function LookupGroupName(const Server: string;
+  const RID: TNetWellKnownRID): string;
 var
   sia: Windows.SID_IDENTIFIER_AUTHORITY;
   rd1, rd2: DWORD;
@@ -396,25 +411,27 @@ begin
     rd2 := RIDToDWORD(RID);
     ridCount := 2;
   end;
-  if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0, 0, 0, 0, 0, sd) then
-  try
-    AccountNameLen := 0;
-    DomainNameLen := 0;
-    if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, SidNameUse) then
-      SetLength(Result, AccountNamelen);
+  if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0,
+    0, 0, 0, 0, sd) then
+    try
+      AccountNameLen := 0;
+      DomainNameLen := 0;
+      if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+        nil, DomainNameLen, SidNameUse) then
+        SetLength(Result, AccountNamelen);
 
-    if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, sidNameUse) then
-      StrResetLength(Result)
-    else
-      RaiseLastOSError;
-  finally
-    FreeSID(sd);
-  end;
+      if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+        nil, DomainNameLen, sidNameUse) then
+        StrResetLength(Result)
+      else
+        RaiseLastOSError;
+    finally
+      FreeSID(sd);
+    end;
 end;
 
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+procedure ParseAccountName(const QualifiedName: string;
+  var Domain, UserName: string);
 var
   Parts: TStringList;
 begin

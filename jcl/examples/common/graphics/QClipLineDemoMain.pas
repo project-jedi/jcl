@@ -71,7 +71,7 @@ var
   i: Integer;
   H, S, L: Single;
 begin
-  for i := 0 to Length(P)-1 do
+  for i := 0 to Length(P) - 1 do
   begin
     P[i].X := Random(Width);
     P[i].Y := Random(Height);
@@ -91,4 +91,3 @@ begin
 end;
 
 end.
-

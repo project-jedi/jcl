@@ -181,11 +181,14 @@ begin
   with Item, SCManager.Services[Item.Index] do
   begin
     Caption := ServiceName;
-    Data    := SCManager.Services[Item.Index];
+    Data := SCManager.Services[Item.Index];
     SubItems.Add(DisplayName);
-    SubItems.Add(GetEnumName(TypeInfo(TJclServiceState), Integer(ServiceState)));
-    SubItems.Add(GetEnumName(TypeInfo(TJclServiceStartType), Integer(StartType)));
-    SubItems.Add(GetEnumName(TypeInfo(TJclServiceErrorControlType), Integer(ErrorControlType)));
+    SubItems.Add(GetEnumName(TypeInfo(TJclServiceState),
+      Integer(ServiceState)));
+    SubItems.Add(GetEnumName(TypeInfo(TJclServiceStartType),
+      Integer(StartType)));
+    SubItems.Add(GetEnumName(TypeInfo(TJclServiceErrorControlType),
+      Integer(ErrorControlType)));
     SubItems.Add(IntToStr(Win32ExitCode));
     SubItems.Add(Description);
     SubItems.Add(FileName);
@@ -201,9 +204,9 @@ end;
 procedure TfrmMain.lstSvcColumnClick(Sender: TObject; Column: TListColumn);
 const
   SortOrderMapping: array[0..8] of TJclServiceSortOrderType =
-  (sotServiceName, sotDisplayName, sotServiceState,
-   sotStartType, sotErrorControlType, sotWin32ExitCode,
-   sotDescription, sotFileName, sotLoadOrderGroup);
+    (sotServiceName, sotDisplayName, sotServiceState,
+    sotStartType, sotErrorControlType, sotWin32ExitCode,
+    sotDescription, sotFileName, sotLoadOrderGroup);
 var
   {$IFDEF DELPHI5_UP}
   I: Integer;
@@ -244,7 +247,7 @@ var
   ComputerName: string;
 begin
   if InputQuery('Browse a computer', 'Computer name:', ComputerName) and
-     (CompareText(ComputerName, SCManager.MachineName) <> 0) then
+    (CompareText(ComputerName, SCManager.MachineName) <> 0) then
   begin
     FreeAndNil(FSCManager);
 
@@ -291,33 +294,34 @@ end;
 procedure TfrmMain.actControlStartUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             (Selected.ServiceState in [ssStopped]);
+    (Selected.ServiceState in [ssStopped]);
 end;
 
 procedure TfrmMain.actControlStopUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             (Selected.ServiceState in [ssRunning]) and
-                             (caStop in Selected.ControlsAccepted);
+    (Selected.ServiceState in [ssRunning]) and
+    (caStop in Selected.ControlsAccepted);
 end;
 
 procedure TfrmMain.actControlPauseUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             (Selected.ServiceState in [ssRunning]) and
-                             (caPauseContinue in Selected.ControlsAccepted);
+    (Selected.ServiceState in [ssRunning]) and
+    (caPauseContinue in Selected.ControlsAccepted);
 end;
 
 procedure TfrmMain.actControlContinueUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             (Selected.ServiceState in [ssPaused]);
+    (Selected.ServiceState in [ssPaused]);
 end;
 
 procedure TfrmMain.actControlDeleteExecute(Sender: TObject);
 begin
-  if MessageDlg(Format('Are you sure to delete the [%s] service?', [Selected.ServiceName]),
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  if MessageDlg(Format('Are you sure to delete the [%s] service?',
+    [Selected.ServiceName]),
+    mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     Selected.Delete;
     SCManager.Refresh(True);
@@ -338,9 +342,9 @@ end;
 procedure TfrmMain.actViewDependentUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             ((Selected.DependentServiceCount <> 0) or
-                              (Selected.DependentGroupCount <> 0) or
-                              (Selected.DependentByServiceCount <> 0));
+    ((Selected.DependentServiceCount <> 0) or
+    (Selected.DependentGroupCount <> 0) or
+    (Selected.DependentByServiceCount <> 0));
 end;
 
 procedure TfrmMain.actViewGroupsExecute(Sender: TObject);
@@ -351,7 +355,7 @@ end;
 procedure TfrmMain.actViewGroupsUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(lstSvc.Selected) and
-                             (Selected.Group.Name <> '')
+    (Selected.Group.Name <> '');
 end;
 
 procedure TfrmMain.lstSvcInfoTip(Sender: TObject; Item: TListItem;
@@ -361,51 +365,58 @@ procedure TfrmMain.lstSvcInfoTip(Sender: TObject; Item: TListItem;
     AType: TJclServiceType;
   begin
     Result := '';
-    for AType:=Low(TJclServiceType) to High(TJclServiceType) do
+    for AType := Low(TJclServiceType) to High(TJclServiceType) do
       if AType in SvcTypes then
       begin
         if Result <> '' then
           Result := Result + ', ';
-        Result := Result + GetEnumName(TypeInfo(TJclServiceType), Integer(AType));
+        Result := Result + GetEnumName(TypeInfo(TJclServiceType),
+          Integer(AType));
       end;
   end;
-  function FormatControlsAccepted(const CtrlAccepted: TJclServiceControlAccepteds): string;
+  function FormatControlsAccepted(
+  const CtrlAccepted: TJclServiceControlAccepteds): string;
   var
     ACtrl: TJclServiceControlAccepted;
   begin
     Result := '';
-    for ACtrl:=Low(TJclServiceControlAccepted) to High(TJclServiceControlAccepted) do
+    for ACtrl := Low(TJclServiceControlAccepted)
+      to High(TJclServiceControlAccepted) do
       if ACtrl in CtrlAccepted then
       begin
         if Result <> '' then
           Result := Result + ', ';
-        Result := Result + GetEnumName(TypeInfo(TJclServiceControlAccepted), Integer(ACtrl));
+        Result := Result + GetEnumName(TypeInfo(TJclServiceControlAccepted),
+          Integer(ACtrl));
       end;
   end;
 begin
   with TJclNtService(Item.Data) do
     InfoTip := Format('Service Name: %s' + CRLF +
-                      'Display Name: %s' + CRLF +
-                      'Description: %s' + CRLF +
-                      'File Name: %s' + CRLF +
-                      'Service Type: %s' + CRLF +
-                      'Service State: %s' + CRLF +
-                      'Start Type: %s' + CRLF +
-                      'Error Control: %s' + CRLF +
-                      'Win32 Exit Code: [%d] %s' + CRLF +
-                      'Service Group: %s' + CRLF +
-                      'Controls Accepted: %s',
-                      [ServiceName,
-                       DisplayName,
-                       Description,
-                       FileName,
-                       FormatServiceTypes(ServiceTypes),
-                       GetEnumName(TypeInfo(TJclServiceState), Integer(ServiceState)),
-                       GetEnumName(TypeInfo(TJclServiceStartType), Integer(StartType)),
-                       GetEnumName(TypeInfo(TJclServiceErrorControlType), Integer(ErrorControlType)),
-                       Win32ExitCode, SysErrorMessage(Win32ExitCode),
-                       Group.Name,
-                       FormatControlsAccepted(ControlsAccepted)]);
+      'Display Name: %s' + CRLF +
+      'Description: %s' + CRLF +
+      'File Name: %s' + CRLF +
+      'Service Type: %s' + CRLF +
+      'Service State: %s' + CRLF +
+      'Start Type: %s' + CRLF +
+      'Error Control: %s' + CRLF +
+      'Win32 Exit Code: [%d] %s' + CRLF +
+      'Service Group: %s' + CRLF +
+      'Controls Accepted: %s',
+      [ServiceName,
+      DisplayName,
+      Description,
+      FileName,
+      FormatServiceTypes(ServiceTypes),
+      GetEnumName(TypeInfo(TJclServiceState),
+      Integer(ServiceState)),
+      GetEnumName(TypeInfo(TJclServiceStartType),
+      Integer(StartType)),
+      GetEnumName(TypeInfo(TJclServiceErrorControlType),
+      Integer(ErrorControlType)),
+      Win32ExitCode, SysErrorMessage(Win32ExitCode),
+      Group.Name,
+      FormatControlsAccepted(ControlsAccepted)]);
 end;
 
 procedure TfrmMain.ApplicationHint(Sender: TObject);

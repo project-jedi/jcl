@@ -36,17 +36,17 @@ uses
 
 const
   DelphiRootDirKeyValue = 'RootDir';
-  RegJclKey             = 'Jedi\JCL\';
-  RegJclIDEKey          = RegJclKey + 'IDE\';
-  DelphiEnvironmentVar  = 'DELPHI';
+  RegJclKey = 'Jedi\JCL\';
+  RegJclIDEKey = RegJclKey + 'IDE\';
+  DelphiEnvironmentVar = 'DELPHI';
   {$IFDEF COMPILER6_UP}
   EnvironmentVarsKey    = 'Environment Variables';
   {$ENDIF COMPÏLER6_UP}
 
   //=== Various constants shared by different experts ========================
-  JclLeft   = 'Left';
-  JclTop    = 'Top';
-  JclWidth  = 'Right';
+  JclLeft = 'Left';
+  JclTop = 'Top';
+  JclWidth = 'Right';
   JclHeight = 'Height';
 
   JclDesignerAny = {$IFDEF COMPILER6_UP} dAny {$ELSE COMPILER6_UP} '' {$ENDIF COMPILER6_UP};
@@ -61,33 +61,33 @@ const
   JclActionSettings = 'Actions';
 
   //=== Configuration form ===================================================
-  JclPanelTreeWidth      = 'PanelTreeWidth';
+  JclPanelTreeWidth = 'PanelTreeWidth';
   JclConfigureActionName = 'JCLConfigureCommand';
-  JclConfigureMenuName   = 'JCLConfigureMenu';
+  JclConfigureMenuName = 'JCLConfigureMenu';
 
   //=== Debug Expert =========================================================
-  JclDebugExpertRegKey         = 'JclDebugExpert';
-  JclDebugEnabledRegValue      = 'JclDebugEnabled';
+  JclDebugExpertRegKey = 'JclDebugExpert';
+  JclDebugEnabledRegValue = 'JclDebugEnabled';
   JclDebugGenerateJdbgRegValue = 'JclDebugGenerateJdbg';
-  JclDebugInsertJdbgRegValue   = 'JclDebugInsertJdbg';
-  MapFileOptionName            = 'MapFile';
-  OutputDirOptionName          = 'OutputDir';
-  RuntimeOnlyOptionName        = 'RuntimeOnly';
-  PkgDllDirOptionName          = 'PkgDllDir';
-  BPLOutputDirOptionName       = 'PackageDPLOutput';
-  LIBPREFIXOptionName          = 'SOPrefix';
-  LIBSUFFIXOptionName          = 'SOSuffix';
-  ColumnRegName                = 'Column%d';
-  JclDebugMessagePrefix        = 'Jcl Debug Expert';
-  JclInsertDataActionName      = 'JCLInsertDataCommand';
-  JclInsertDataMenuName        = 'JCLInsertDataMenu';
+  JclDebugInsertJdbgRegValue = 'JclDebugInsertJdbg';
+  MapFileOptionName = 'MapFile';
+  OutputDirOptionName = 'OutputDir';
+  RuntimeOnlyOptionName = 'RuntimeOnly';
+  PkgDllDirOptionName = 'PkgDllDir';
+  BPLOutputDirOptionName = 'PackageDPLOutput';
+  LIBPREFIXOptionName = 'SOPrefix';
+  LIBSUFFIXOptionName = 'SOSuffix';
+  ColumnRegName = 'Column%d';
+  JclDebugMessagePrefix = 'Jcl Debug Expert';
+  JclInsertDataActionName = 'JCLInsertDataCommand';
+  JclInsertDataMenuName = 'JCLInsertDataMenu';
 
   //=== Favorite Folders Expert ==============================================
-  JclFavoritesExpertName     = 'JclFavoriteFoldersExpert';
-  JclFavoritesListSubKey     = 'Favorites';
-  PictDialogFolderItemName   = 'PictureDialogPath';
-  BorlandImagesPath          = 'Borland Shared\Images';
-  FavDialogTemplateName      = 'FAVDLGTEMPLATE';
+  JclFavoritesExpertName = 'JclFavoriteFoldersExpert';
+  JclFavoritesListSubKey = 'Favorites';
+  PictDialogFolderItemName = 'PictureDialogPath';
+  BorlandImagesPath = 'Borland Shared\Images';
+  FavDialogTemplateName = 'FAVDLGTEMPLATE';
   OpenPictDialogTemplateName = 'DLGTEMPLATE';
 
   //=== Threads Expert =======================================================
@@ -96,23 +96,23 @@ const
   //=== SIMD Expert ==========================================================
   JclSIMDExpertName = 'JclSIMDExpert';
   JclSIMDActionName = 'JCLSIMDCommand';
-  JclSIMDMenuName   = 'JCLSIMDMenu';
+  JclSIMDMenuName = 'JCLSIMDMenu';
 
   //=== Uses Expert ==========================================================
-  JclUsesExpertName   = 'JclUsesExpert';
+  JclUsesExpertName = 'JclUsesExpert';
   SIniIdentifierLists = 'IdentifierLists';
-  SRegDebugLibPath    = 'Debug Library';
-  SRegLibPath         = 'Library';
-  SRegWizardActive    = 'Uses Wizard Active';
-  SRegWizardConfirm   = 'Uses Wizard Confirm';
-  SRegWizardIniFile   = 'Configuration File';
+  SRegDebugLibPath = 'Debug Library';
+  SRegLibPath = 'Library';
+  SRegWizardActive = 'Uses Wizard Active';
+  SRegWizardConfirm = 'Uses Wizard Confirm';
+  SRegWizardIniFile = 'Configuration File';
   JclRootDirValueName = 'RootDir';
-  JclIniFileLocation  = 'experts\useswizard\JediUsesWizard.ini';
+  JclIniFileLocation = 'experts\useswizard\JediUsesWizard.ini';
 
   //=== Project analyser =====================================================
-  AnalyzerViewName            = 'AnalyzerView';
+  AnalyzerViewName = 'AnalyzerView';
   JclProjectAnalyzeActionName = 'JCLProjectAnalyseCommand';
-  JclProjectAnalyzeMenuName   = 'JCLProjectAnalyseMenu';
+  JclProjectAnalyzeMenuName = 'JCLProjectAnalyseMenu';
 
   //=== Repository Expert ====================================================
   JclRepositoryCategoryDelphiFiles = {$IFDEF BDS} sCategoryDelphiNewFiles {$ELSE BDS} '' {$ENDIF BDS};

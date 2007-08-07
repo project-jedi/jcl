@@ -49,7 +49,7 @@ type
   {$ENDIF COMPILER5}
 
   EJclStreamError = class(EJclError);
-  
+
   // abstraction layer to support Delphi 5 and C++Builder 5 streams
   // 64 bit version of overloaded functions are introduced
   TJclStream = class(TStream)
@@ -80,7 +80,8 @@ type
 
   TJclFileStream = class(TJclHandleStream)
   public
-    constructor Create(const FileName: string; Mode: Word; Rights: Cardinal = 0);
+    constructor Create(const FileName: string; Mode: Word;
+      Rights: Cardinal = 0);
     destructor Destroy; override;
   end;
 
@@ -157,7 +158,8 @@ type
     procedure Delete(const Index: Integer);
 
     property Streams[Index: Integer]: TStream read GetStream write SetStream;
-    property ReadStreamIndex: Integer read FReadStreamIndex write SetReadStreamIndex;
+    property ReadStreamIndex: Integer read FReadStreamIndex
+      write SetReadStreamIndex;
     property ReadStream: TStream read GetReadStream write SetReadStream;
     property Count: Integer read GetCount;
   end;
@@ -177,11 +179,14 @@ type
     constructor Create(AStream: TStream; AOwnsStream: Boolean = False);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+      overload; override;
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    property AfterStreamChange: TNotifyEvent read FAfterStreamChange write FAfterStreamChange;
-    property BeforeStreamChange: TNotifyEvent read FBeforeStreamChange write FBeforeStreamChange;
+    property AfterStreamChange: TNotifyEvent
+      read FAfterStreamChange write FAfterStreamChange;
+    property BeforeStreamChange: TNotifyEvent
+      read FBeforeStreamChange write FBeforeStreamChange;
     property OwnsStream: Boolean read FOwnsStream write FOwnsStream;
     property Stream: TStream read FStream write SetStream;
   end;
@@ -213,7 +218,8 @@ type
     property BufferSize: Longint read FBufferSize write FBufferSize;
   end;
 
-  TStreamNotifyEvent = procedure(Sender: TObject; Position: Int64; Size: Int64) of object;
+  TStreamNotifyEvent = procedure(Sender: TObject; Position: Int64;
+    Size: Int64) of object;
 
   TJclEventStream = class(TJclStreamDecorator)
   private
@@ -224,13 +230,16 @@ type
     procedure DoAfterStreamChange; override;
     procedure SetSize(const NewSize: Int64); override;
   public
-    constructor Create(AStream: TStream; ANotification: TStreamNotifyEvent = nil;
+    constructor Create(AStream: TStream;
+      ANotification: TStreamNotifyEvent = nil;
       AOwnsStream: Boolean = False);
     function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; overload; override;
+    function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+      overload; override;
     function Seek(Offset: Longint; Origin: Word): Longint; overload; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    property OnNotification: TStreamNotifyEvent read FNotification write FNotification;
+    property OnNotification: TStreamNotifyEvent
+      read FNotification write FNotification;
   end;
 
   TJclEasyStream = class(TJclStreamDecorator)
@@ -286,9 +295,12 @@ type
 
   TJclStreamSeekEvent = function(Sender: TObject; const Offset: Int64;
     Origin: TSeekOrigin): Int64 of object;
-  TJclStreamReadEvent = function(Sender: TObject; var Buffer; Count: Longint): Longint of object;
-  TJclStreamWriteEvent = function(Sender: TObject; const Buffer; Count: Longint): Longint of object;
-  TJclStreamSizeEvent = procedure(Sender: TObject; const NewSize: Int64) of object;
+  TJclStreamReadEvent = function(Sender: TObject; var Buffer;
+    Count: Longint): Longint of object;
+  TJclStreamWriteEvent = function(Sender: TObject; const Buffer;
+    Count: Longint): Longint of object;
+  TJclStreamSizeEvent = procedure(Sender: TObject;
+    const NewSize: Int64) of object;
 
   TJclDelegatedStream = class(TJclStream)
   private
@@ -407,8 +419,8 @@ begin
       Result64 := Seek(Int64(Offset), soCurrent);
     soFromEnd:
       Result64 := Seek(Int64(Offset), soEnd);
-  else
-    Result64 := -1;
+    else
+      Result64 := -1;
   end;
   if (Result64 < 0) or (Result64 > High(Longint)) then
     Result64 := -1;
@@ -442,7 +454,8 @@ end;
 function TJclHandleStream.Read(var Buffer; Count: Longint): Longint;
 begin
   {$IFDEF MSWINDOWS}
-  if (Count <= 0) or not ReadFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
+  if (Count <= 0) or not ReadFile(Handle, Buffer, DWORD(Count),
+    DWORD(Result), nil) then
     Result := 0;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
@@ -453,7 +466,8 @@ end;
 function TJclHandleStream.Write(const Buffer; Count: Longint): Longint;
 begin
   {$IFDEF MSWINDOWS}
-  if (Count <= 0) or not WriteFile(Handle, Buffer, DWORD(Count), DWORD(Result), nil) then
+  if (Count <= 0) or not WriteFile(Handle, Buffer, DWORD(Count),
+    DWORD(Result), nil) then
     Result := 0;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
@@ -462,24 +476,27 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclHandleStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 const
   INVALID_SET_FILE_POINTER = -1;
 type
   TLarge = record
     case Boolean of
-    False:
-     (OffsetLo: Longint;
-      OffsetHi: Longint);
-    True:
+      False:
+      (OffsetLo: Longint;
+        OffsetHi: Longint);
+      True:
       (Offset64: Int64);
   end;
 var
   Offs: TLarge;
 begin
   Offs.Offset64 := Offset;
-  Offs.OffsetLo := SetFilePointer(Handle, Offs.OffsetLo, @Offs.OffsetHi, Ord(Origin));
-  if (Offs.OffsetLo = INVALID_SET_FILE_POINTER) and (GetLastError <> NO_ERROR) then
+  Offs.OffsetLo := SetFilePointer(Handle, Offs.OffsetLo,
+    @Offs.OffsetHi, Ord(Origin));
+  if (Offs.OffsetLo = INVALID_SET_FILE_POINTER) and
+    (GetLastError <> NO_ERROR) then
     Result := -1
   else
     Result := Offs.Offset64;
@@ -509,7 +526,8 @@ end;
 
 //=== { TJclFileStream } =====================================================
 
-constructor TJclFileStream.Create(const FileName: string; Mode: Word; Rights: Cardinal);
+constructor TJclFileStream.Create(const FileName: string;
+  Mode: Word; Rights: Cardinal);
 var
   H: THandle;
 {$IFDEF KYLIX}
@@ -643,9 +661,9 @@ begin
       Rel := FPosition;
     soEnd:
       Rel := FSize;
-  else
+    else
     // force Rel + Offset = -1 (code is never reached)
-    Rel := Offset - 1;
+      Rel := Offset - 1;
   end;
   if Rel + Offset >= 0 then
   begin
@@ -773,7 +791,8 @@ begin
     Dec(FReadStreamIndex);
 end;
 
-function TJclMultiplexStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclMultiplexStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 begin
   // what should this function do?
   Result := -1;
@@ -816,7 +835,8 @@ end;
 
 //=== { TJclStreamDecorator } ================================================
 
-constructor TJclStreamDecorator.Create(AStream: TStream; AOwnsStream: Boolean = False);
+constructor TJclStreamDecorator.Create(AStream: TStream;
+  AOwnsStream: Boolean = False);
 begin
   inherited Create;
   FStream := AStream;
@@ -850,7 +870,8 @@ begin
     Result := 0;
 end;
 
-function TJclStreamDecorator.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclStreamDecorator.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 begin
   Result := StreamSeek(Stream, Offset, Origin);
 end;
@@ -892,7 +913,8 @@ end;
 
 //=== { TJclBufferedStream } =================================================
 
-constructor TJclBufferedStream.Create(AStream: TStream; AOwnsStream: Boolean = False);
+constructor TJclBufferedStream.Create(AStream: TStream;
+  AOwnsStream: Boolean = False);
 begin
   inherited Create(AStream, AOwnsStream);
   if Stream <> nil then
@@ -908,7 +930,8 @@ end;
 
 function TJclBufferedStream.BufferHit: Boolean;
 begin
-  Result := (FBufferStart <= FPosition) and (FPosition < (FBufferStart + FBufferCurrentSize));
+  Result := (FBufferStart <= FPosition) and
+    (FPosition < (FBufferStart + FBufferCurrentSize));
 end;
 
 procedure TJclBufferedStream.DoAfterStreamChange;
@@ -975,7 +998,8 @@ begin
   Result := Result - Count;
 end;
 
-function TJclBufferedStream.ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
+function TJclBufferedStream.ReadFromBuffer(var Buffer;
+  Count, Start: Longint): Longint;
 var
   BufPos: Longint;
   P: PChar;
@@ -1002,8 +1026,8 @@ begin
       Inc(NewPos, Offset);
     soEnd:
       NewPos := GetCalcedSize + Offset;
-  else
-    NewPos := -1;
+    else
+      NewPos := -1;
   end;
   if NewPos < 0 then
     NewPos := -1
@@ -1041,7 +1065,8 @@ begin
   Result := Result - Count;
 end;
 
-function TJclBufferedStream.WriteToBuffer(const Buffer; Count, Start: Longint): Longint;
+function TJclBufferedStream.WriteToBuffer(const Buffer;
+  Count, Start: Longint): Longint;
 var
   BufPos: Longint;
   P: PChar;
@@ -1135,7 +1160,7 @@ begin
     Exit;
   Buffer := nil;
   try
-    GetMem(Buffer, 2*BUFSIZE);
+    GetMem(Buffer, 2 * BUFSIZE);
     StreamBuffer := Buffer + BUFSIZE;
     Position := 0;
     Stream.Position := 0;
@@ -1326,45 +1351,50 @@ begin
     Result := 0;
 end;
 
-function TJclScopedStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclScopedStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 begin
   case Origin of
     soBeginning:
-      begin
-        if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
-          Result := -1            // low and high bound check
-        else
-          Result := StreamSeek(ParentStream, StartPos + Offset, soBeginning) - StartPos;
-      end;
+    begin
+      if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
+        Result := -1            // low and high bound check
+      else
+        Result := StreamSeek(ParentStream, StartPos + Offset,
+          soBeginning) - StartPos;
+    end;
     soCurrent:
-      begin
-        if Offset = 0 then
-          Result := FCurrentPos   // speeding the Position property up
-        else if ((FCurrentPos + Offset) < 0) or ((MaxSize >= 0)
-          and ((FCurrentPos + Offset) > MaxSize)) then
-          Result := -1            // low and high bound check
-        else
-          Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
-      end;
+    begin
+      if Offset = 0 then
+        Result := FCurrentPos   // speeding the Position property up
+      else
+      if ((FCurrentPos + Offset) < 0) or ((MaxSize >= 0)
+        and ((FCurrentPos + Offset) > MaxSize)) then
+        Result := -1            // low and high bound check
+      else
+        Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
+    end;
     soEnd:
+    begin
+      if (MaxSize >= 0) then
       begin
-        if (MaxSize >= 0) then
-        begin
-          if (Offset > 0) or (MaxSize < -Offset) then // low and high bound check
-            Result := -1
-          else
-            Result := StreamSeek(ParentStream, StartPos + MaxSize + Offset, soBeginning) - StartPos;
-        end
+        if (Offset > 0) or (MaxSize < -Offset) then
+ // low and high bound check
+          Result := -1
         else
+          Result := StreamSeek(ParentStream, StartPos +
+            MaxSize + Offset, soBeginning) - StartPos;
+      end
+      else
+      begin
+        Result := StreamSeek(ParentStream, Offset, soEnd);
+        if (Result <> -1) and (Result < StartPos) then // low bound check
         begin
-          Result := StreamSeek(ParentStream, Offset, soEnd);
-          if (Result <> -1) and (Result < StartPos) then // low bound check
-          begin
-            Result := -1;
-            StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
-          end;
+          Result := -1;
+          StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
         end;
       end;
+    end;
     else
       Result := -1;
   end;
@@ -1405,7 +1435,8 @@ begin
     FOnSize(Self, NewSize);
 end;
 
-function TJclDelegatedStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
+function TJclDelegatedStream.Seek(const Offset: Int64;
+  Origin: TSeekOrigin): Int64;
 begin
   if Assigned(FOnSeek) then
     Result := FOnSeek(Self, Offset, Origin)
@@ -1459,7 +1490,8 @@ end;
 
 function TJclSectoredStream.FlatToSectored(const Position: Int64): Int64;
 begin
-  Result := (Position div BufferSize) * (BufferSize + FSectorOverHead) // add overheads of previous buffers
+  Result := (Position div BufferSize) *
+    (BufferSize + FSectorOverHead) // add overheads of previous buffers
     + Position mod BufferSize; // offset in sector
 end;
 
@@ -1517,7 +1549,8 @@ var
   TotalSectorSize: Int64;
 begin
   TotalSectorSize := BufferSize + FSectorOverHead;
-  Result := (Position div TotalSectorSize) * BufferSize // remove previous overheads
+  Result := (Position div TotalSectorSize) *
+    BufferSize // remove previous overheads
     + Position mod TotalSectorSize; // offset in sector
 end;
 
@@ -1546,7 +1579,8 @@ begin
   FBuffer[FBufferCurrentSize + 1] := CRC shr 8;
 end;
 
-constructor TJclCRC16Stream.Create(AStorageStream: TStream; AOwnsStream: Boolean);
+constructor TJclCRC16Stream.Create(AStorageStream: TStream;
+  AOwnsStream: Boolean);
 begin
   inherited Create(AStorageStream, AOwnsStream, 2);
 end;
@@ -1558,7 +1592,8 @@ var
   CRC: Cardinal;
 begin
   CRC := FBuffer[FBufferCurrentSize] + (FBuffer[FBufferCurrentSize + 1] shl 8)
-    + (FBuffer[FBufferCurrentSize + 2] shl 16) + (FBuffer[FBufferCurrentSize + 3] shl 24);
+    + (FBuffer[FBufferCurrentSize + 2] shl 16) +
+    (FBuffer[FBufferCurrentSize + 3] shl 24);
   if CheckCrc32(FBuffer, FBufferCurrentSize, CRC) < 0 then
     raise EJclStreamError.CreateRes(@RsStreamsCRCError);
 end;

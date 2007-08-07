@@ -61,15 +61,23 @@ type
 
 // NTFS - Compression
 type
-  TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
+  TFileCompressionState = (fcNoCompression, fcDefaultCompression,
+    fcLZNT1Compression);
 
-function NtfsGetCompression(const FileName: string; var State: Short): Boolean; overload;
-function NtfsGetCompression(const FileName: string): TFileCompressionState; overload;
-function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
-procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
-procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: TFileCompressionState);
-procedure NtfsSetDefaultFileCompression(const Directory: string; const State: TFileCompressionState);
-procedure NtfsSetPathCompression(const Path: string; const State: TFileCompressionState; Recursive: Boolean);
+function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
+  overload;
+function NtfsGetCompression(const FileName: string): TFileCompressionState;
+  overload;
+function NtfsSetCompression(const FileName: string;
+  const State: Short): Boolean;
+procedure NtfsSetFileCompression(const FileName: string;
+  const State: TFileCompressionState);
+procedure NtfsSetDirectoryTreeCompression(const Directory: string;
+  const State: TFileCompressionState);
+procedure NtfsSetDefaultFileCompression(const Directory: string;
+  const State: TFileCompressionState);
+procedure NtfsSetPathCompression(const Path: string;
+  const State: TFileCompressionState; Recursive: Boolean);
 
 // NTFS - Sparse Files
 type
@@ -80,17 +88,24 @@ type
   end;
 
 function NtfsSetSparse(const FileName: string): Boolean;
-function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
-function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
-function NtfsQueryAllocRanges(const FileName: string; Offset, Count: Int64; var Ranges: TNtfsAllocRanges): Boolean;
-function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: Integer): TFileAllocatedRangeBuffer;
+function NtfsZeroDataByHandle(const Handle: THandle;
+  const First, Last: Int64): Boolean;
+function NtfsZeroDataByName(const FileName: string;
+  const First, Last: Int64): Boolean;
+function NtfsQueryAllocRanges(const FileName: string;
+  Offset, Count: Int64; var Ranges: TNtfsAllocRanges): Boolean;
+function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges;
+  Index: Integer): TFileAllocatedRangeBuffer;
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
 function NtfsGetSparse(const FileName: string): Boolean;
 
 // NTFS - Reparse Points
-function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
-function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
-function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+function NtfsDeleteReparsePoint(const FileName: string;
+  ReparseTag: DWORD): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData;
+  Size: Longword): Boolean;
+function NtfsGetReparsePoint(const FileName: string;
+  var ReparseData: TReparseGuidDataBuffer): Boolean;
 function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
 function NtfsFileHasReparsePoint(const Path: string): Boolean;
@@ -98,27 +113,35 @@ function NtfsFileHasReparsePoint(const Path: string): Boolean;
 // NTFS - Volume Mount Points
 function NtfsIsFolderMountPoint(const Path: string): Boolean;
 function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
-function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
+function NtfsMountVolume(const Volume: Char;
+  const MountPoint: string): Boolean;
 
 // NTFS - Change Journal
 // NTFS - Opportunistic Locks
 type
   TOpLock = (olExclusive, olReadOnly, olBatch, olFilter);
 
-function NtfsOpLockAckClosePending(Handle: THandle; Overlapped: TOverlapped): Boolean;
-function NtfsOpLockBreakAckNo2(Handle: THandle; Overlapped: TOverlapped): Boolean;
-function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): Boolean;
-function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolean;
-function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
+function NtfsOpLockAckClosePending(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakAckNo2(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakAcknowledge(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakNotify(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
+function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock;
+  Overlapped: TOverlapped): Boolean;
 
 // Junction Points
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 function NtfsDeleteJunctionPoint(const Source: string): Boolean;
-function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string;
+  var Destination: string): Boolean;
 
 // Streams
 type
-  TStreamId = (siInvalid, siStandard, siExtendedAttribute, siSecurity, siAlternate,
+  TStreamId = (siInvalid, siStandard, siExtendedAttribute,
+    siSecurity, siAlternate,
     siHardLink, siProperty, siObjectIdentifier, siReparsePoints, siSparseFile);
   TStreamIds = set of TStreamId;
 
@@ -136,31 +159,37 @@ type
     Size: Int64;
   end;
 
-function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds; var Data: TFindStreamData): Boolean;
+function NtfsFindFirstStream(const FileName: string;
+  StreamIds: TStreamIds; var Data: TFindStreamData): Boolean;
 function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
 function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 
 // Hard links
-function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
+function NtfsCreateHardLink(
+  const LinkFileName, ExistingFileName: String): Boolean;
 // ANSI-specific version
-function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
+function NtfsCreateHardLinkA(
+  const LinkFileName, ExistingFileName: AnsiString): Boolean;
 // UNICODE-specific version
-function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
+function NtfsCreateHardLinkW(
+  const LinkFileName, ExistingFileName: WideString): Boolean;
 
 type
   TNtfsHardLinkInfo = record
     LinkCount: Cardinal;
     case Integer of
-    0: (
-      FileIndexHigh: Cardinal;
-      FileIndexLow: Cardinal);
-    1: (
-      FileIndex: Int64);
+      0: (
+        FileIndexHigh: Cardinal;
+        FileIndexLow: Cardinal);
+      1: (
+        FileIndex: Int64);
   end;
 
-function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
+function NtfsGetHardLinkInfo(const FileName: string;
+  var Info: TNtfsHardLinkInfo): Boolean;
 
-function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
+function NtfsFindHardLinks(const Path: string;
+  const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 function NtfsDeleteHardLinks(const FileName: string): Boolean;
 
 // NTFS File summary
@@ -169,7 +198,8 @@ type
 
   TJclFileSummaryAccess = (fsaRead, fsaWrite, fsaReadWrite);
   TJclFileSummaryShare = (fssDenyNone, fssDenyRead, fssDenyWrite, fssDenyAll);
-  TJclFileSummaryPropSetCallback = function(const FMTID: TGUID): Boolean of object;
+  TJclFileSummaryPropSetCallback = function(const FMTID: TGUID): Boolean of
+    object;
   TJclFileSummaryPropCallback = function(const Name: WideString; ID: TPropID;
     Vt: TVarType): Boolean of object;
 
@@ -196,10 +226,12 @@ type
     // Type of ID changed to Integer to be compatible with indexed properties
     // VT_LPWSTR
     function GetWideStringProperty(const ID: Integer): WideString;
-    procedure SetWideStringProperty(const ID: Integer; const Value: WideString);
+    procedure SetWideStringProperty(const ID: Integer;
+      const Value: WideString);
     // VT_LPSTR
     function GetAnsiStringProperty(const ID: Integer): AnsiString;
-    procedure SetAnsiStringProperty(const ID: Integer; const Value: AnsiString);
+    procedure SetAnsiStringProperty(const ID: Integer;
+      const Value: AnsiString);
     // VT_I4
     function GetIntegerProperty(const ID: Integer): Integer;
     procedure SetIntegerProperty(const ID: Integer; const Value: Integer);
@@ -217,7 +249,8 @@ type
     procedure SetBooleanProperty(const ID: Integer; const Value: Boolean);
     // VT_VARIANT | VT_VECTOR
     function GetTCAPROPVARIANTProperty(const ID: Integer): TCAPROPVARIANT;
-    procedure SetTCAPROPVARIANTProperty(const ID: Integer; const Value: TCAPROPVARIANT);
+    procedure SetTCAPROPVARIANTProperty(const ID: Integer;
+      const Value: TCAPROPVARIANT);
     // // VT_LPSTR | VT_VECTOR
     function GetTCALPSTRProperty(const ID: Integer): TCALPSTR;
     procedure SetTCALPSTRProperty(const ID: Integer; const Value: TCALPSTR);
@@ -243,13 +276,16 @@ type
     FShareMode: TJclFileSummaryShare;
     FStorage: IPropertySetStorage;
   public
-    constructor Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
+    constructor Create(AFileName: WideString;
+      AAccessMode: TJclFileSummaryAccess;
       AShareMode: TJclFileSummaryShare; AsDocument: Boolean = False;
       ACreate: Boolean = False);
     destructor Destroy; override;
 
-    function CreatePropertySet(AClass: TJclFilePropertySetClass; ResetExisting: Boolean): TJclFilePropertySet;
-    procedure GetPropertySet(AClass: TJclFilePropertySetClass; out Instance); overload;
+    function CreatePropertySet(AClass: TJclFilePropertySetClass;
+      ResetExisting: Boolean): TJclFilePropertySet;
+    procedure GetPropertySet(AClass: TJclFilePropertySetClass;
+      out Instance); overload;
     procedure GetPropertySet(const FMTID: TGUID; out Instance); overload;
     function GetPropertySet(const FMTID: TGUID): IPropertyStorage; overload;
     procedure DeletePropertySet(const FMTID: TGUID); overload;
@@ -271,23 +307,31 @@ type
       write SetAnsiStringProperty;
     property Author: AnsiString index PIDSI_AUTHOR read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property KeyWords: AnsiString index PIDSI_KEYWORDS read GetAnsiStringProperty
+    property KeyWords: AnsiString index PIDSI_KEYWORDS
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property Comments: AnsiString index PIDSI_COMMENTS read GetAnsiStringProperty
+    property Comments: AnsiString index PIDSI_COMMENTS
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property Template: AnsiString index PIDSI_TEMPLATE read GetAnsiStringProperty
+    property Template: AnsiString index PIDSI_TEMPLATE
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property LastAuthor: AnsiString index PIDSI_LASTAUTHOR read GetAnsiStringProperty
+    property LastAuthor: AnsiString index PIDSI_LASTAUTHOR
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property RevNumber: AnsiString index PIDSI_REVNUMBER read GetAnsiStringProperty
+    property RevNumber: AnsiString index PIDSI_REVNUMBER
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
     property EditTime: TFileTime index PIDSI_EDITTIME read GetFileTimeProperty
       write SetFileTimeProperty;
-    property LastPrintedTime: TFileTime index PIDSI_LASTPRINTED read GetFileTimeProperty
+    property LastPrintedTime: TFileTime index PIDSI_LASTPRINTED
+      read GetFileTimeProperty
       write SetFileTimeProperty;
-    property CreationTime: TFileTime index PIDSI_CREATE_DTM read GetFileTimeProperty
+    property CreationTime: TFileTime index PIDSI_CREATE_DTM
+      read GetFileTimeProperty
       write SetFileTimeProperty;
-    property LastSaveTime: TFileTime index PIDSI_LASTSAVE_DTM read GetFileTimeProperty
+    property LastSaveTime: TFileTime index PIDSI_LASTSAVE_DTM
+      read GetFileTimeProperty
       write SetFileTimeProperty;
     property PageCount: Integer index PIDSI_PAGECOUNT read GetIntegerProperty
       write SetIntegerProperty;
@@ -307,9 +351,11 @@ type
   public
     class function GetFMTID: TGUID; override;
 
-    property Category: AnsiString index PIDDSI_CATEGORY read GetAnsiStringProperty
+    property Category: AnsiString index PIDDSI_CATEGORY
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property PresFormat: AnsiString index PIDDSI_PRESFORMAT read GetAnsiStringProperty
+    property PresFormat: AnsiString index PIDDSI_PRESFORMAT
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
     property ByteCount: Integer index PIDDSI_BYTECOUNT read GetIntegerProperty
       write SetIntegerProperty;
@@ -317,25 +363,32 @@ type
       write SetIntegerProperty;
     property ParCount: Integer index PIDDSI_PARCOUNT read GetIntegerProperty
       write SetIntegerProperty;
-    property SlideCount: Integer index PIDDSI_SLIDECOUNT read GetIntegerProperty
+    property SlideCount: Integer index PIDDSI_SLIDECOUNT
+      read GetIntegerProperty
       write SetIntegerProperty;
     property NoteCount: Integer index PIDDSI_NOTECOUNT read GetIntegerProperty
       write SetIntegerProperty;
-    property HiddenCount: Integer index PIDDSI_HIDDENCOUNT read GetIntegerProperty
+    property HiddenCount: Integer index PIDDSI_HIDDENCOUNT
+      read GetIntegerProperty
       write SetIntegerProperty;
-    property MMClipCount: Integer index PIDDSI_MMCLIPCOUNT read GetIntegerProperty
+    property MMClipCount: Integer index PIDDSI_MMCLIPCOUNT
+      read GetIntegerProperty
       write SetIntegerProperty;
     property Scale: Boolean index PIDDSI_SCALE read GetBooleanProperty
       write SetBooleanProperty;
-    property HeadingPair: TCAPROPVARIANT index PIDDSI_HEADINGPAIR read GetTCAPROPVARIANTProperty
+    property HeadingPair: TCAPROPVARIANT index PIDDSI_HEADINGPAIR
+      read GetTCAPROPVARIANTProperty
       write SetTCAPROPVARIANTProperty;
     property DocParts: TCALPSTR index PIDDSI_DOCPARTS read GetTCALPSTRProperty
       write SetTCALPSTRProperty;
-    property Manager: AnsiString index PIDDSI_MANAGER read GetAnsiStringProperty
+    property Manager: AnsiString index PIDDSI_MANAGER
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property Company: AnsiString index PIDDSI_COMPANY read GetAnsiStringProperty
+    property Company: AnsiString index PIDDSI_COMPANY
+      read GetAnsiStringProperty
       write SetAnsiStringProperty;
-    property LinksDirty: Boolean index PIDDSI_LINKSDIRTY read GetBooleanProperty
+    property LinksDirty: Boolean index PIDDSI_LINKSDIRTY
+      read GetBooleanProperty
       write SetBooleanProperty;
   end;
 
@@ -345,13 +398,16 @@ type
 
     property Editor: WideString index PIDMSI_EDITOR read GetWideStringProperty
       write SetWideStringProperty;
-    property Supplier: WideString index PIDMSI_SUPPLIER read GetWideStringProperty
+    property Supplier: WideString index PIDMSI_SUPPLIER
+      read GetWideStringProperty
       write SetWideStringProperty;
     property Source: WideString index PIDMSI_SOURCE read GetWideStringProperty
       write SetWideStringProperty;
-    property SequenceNo: WideString index PIDMSI_SEQUENCE_NO read GetWideStringProperty
+    property SequenceNo: WideString index PIDMSI_SEQUENCE_NO
+      read GetWideStringProperty
       write SetWideStringProperty;
-    property Project: WideString index PIDMSI_PROJECT read GetWideStringProperty
+    property Project: WideString index PIDMSI_PROJECT
+      read GetWideStringProperty
       write SetWideStringProperty;
     property Status: Cardinal index PIDMSI_STATUS read GetCardinalProperty
       write SetCardinalProperty;
@@ -359,9 +415,11 @@ type
       write SetWideStringProperty;
     property Rating: WideString index PIDMSI_RATING read GetWideStringProperty
       write SetWideStringProperty;
-    property Production: TFileTime index PIDMSI_PRODUCTION read GetFileTimeProperty
+    property Production: TFileTime index PIDMSI_PRODUCTION
+      read GetFileTimeProperty
       write SetFileTimeProperty;
-    property Copyright: WideString index PIDMSI_COPYRIGHT read GetWideStringProperty
+    property Copyright: WideString index PIDMSI_COPYRIGHT
+      read GetWideStringProperty
       write SetWideStringProperty;
   end;
 
@@ -370,9 +428,11 @@ type
     class function GetFMTID: TGUID; override;
 
     property Version: Integer index PID_MSIVERSION read GetIntegerProperty
-      write SetIntegerProperty; // integer, Installer version number (major*100+minor)
+      write SetIntegerProperty;
+ // integer, Installer version number (major*100+minor)
     property Source: Integer index PID_MSISOURCE read GetIntegerProperty
-      write SetIntegerProperty; // integer, type of file image, short/long, media/tree
+      write SetIntegerProperty;
+ // integer, type of file image, short/long, media/tree
     property Restrict: Integer index PID_MSIRESTRICT read GetIntegerProperty
       write SetIntegerProperty; // integer, transform restrictions
   end;
@@ -464,23 +524,30 @@ type
   public
     class function GetFMTID: TGUID; override;
 
-    property StreamName: WideString index PIDVSI_STREAM_NAME read GetWideStringProperty
+    property StreamName: WideString index PIDVSI_STREAM_NAME
+      read GetWideStringProperty
       write SetWideStringProperty; // "StreamName", VT_LPWSTR
     property Width: Cardinal index PIDVSI_FRAME_WIDTH read GetCardinalProperty
       write SetCardinalProperty; // "FrameWidth", VT_UI4
-    property Height: Cardinal index PIDVSI_FRAME_HEIGHT read GetCardinalProperty
+    property Height: Cardinal index PIDVSI_FRAME_HEIGHT
+      read GetCardinalProperty
       write SetCardinalProperty; // "FrameHeight", VT_UI4
-    property TimeLength: Cardinal index PIDVSI_TIMELENGTH read GetCardinalProperty
+    property TimeLength: Cardinal index PIDVSI_TIMELENGTH
+      read GetCardinalProperty
       write SetCardinalProperty; // "TimeLength", VT_UI4, milliseconds
-    property FrameCount: Cardinal index PIDVSI_FRAME_COUNT read GetCardinalProperty
+    property FrameCount: Cardinal index PIDVSI_FRAME_COUNT
+      read GetCardinalProperty
       write SetCardinalProperty; // "FrameCount". VT_UI4
-    property FrameRate: Cardinal index PIDVSI_FRAME_RATE read GetCardinalProperty
+    property FrameRate: Cardinal index PIDVSI_FRAME_RATE
+      read GetCardinalProperty
       write SetCardinalProperty; // "FrameRate", VT_UI4, frames/millisecond
     property DataRate: Cardinal index PIDVSI_DATA_RATE read GetCardinalProperty
       write SetCardinalProperty; // "DataRate", VT_UI4, bytes/second
-    property SampleSize: Cardinal index PIDVSI_SAMPLE_SIZE read GetCardinalProperty
+    property SampleSize: Cardinal index PIDVSI_SAMPLE_SIZE
+      read GetCardinalProperty
       write SetCardinalProperty; // "SampleSize", VT_UI4
-    property Compression: WideString index PIDVSI_COMPRESSION read GetWideStringProperty
+    property Compression: WideString index PIDVSI_COMPRESSION
+      read GetWideStringProperty
       write SetWideStringProperty; // "Compression", VT_LPWSTR
     property StreamNumber: Word index PIDVSI_STREAM_NUMBER read GetWordProperty
       write SetWordProperty; // "StreamNumber", VT_UI2}
@@ -492,21 +559,28 @@ type
 
     property Format: WideString index PIDASI_FORMAT read GetBSTRProperty
       write SetBSTRProperty; // VT_BSTR
-    property TimeLength: Cardinal index PIDASI_TIMELENGTH read GetCardinalProperty
+    property TimeLength: Cardinal index PIDASI_TIMELENGTH
+      read GetCardinalProperty
       write SetCardinalProperty; // VT_UI4, milliseconds
-    property AverageDataRate: Cardinal index PIDASI_AVG_DATA_RATE read GetCardinalProperty
+    property AverageDataRate: Cardinal index PIDASI_AVG_DATA_RATE
+      read GetCardinalProperty
       write SetCardinalProperty; // VT_UI4,  Hz
-    property SampleRate: Cardinal index PIDASI_SAMPLE_RATE read GetCardinalProperty
+    property SampleRate: Cardinal index PIDASI_SAMPLE_RATE
+      read GetCardinalProperty
       write SetCardinalProperty; // VT_UI4,  bits
-    property SampleSize: Cardinal index PIDASI_SAMPLE_SIZE read GetCardinalProperty
+    property SampleSize: Cardinal index PIDASI_SAMPLE_SIZE
+      read GetCardinalProperty
       write SetCardinalProperty; // VT_UI4,  bits
-    property ChannelCount: Cardinal index PIDASI_CHANNEL_COUNT read GetCardinalProperty
+    property ChannelCount: Cardinal index PIDASI_CHANNEL_COUNT
+      read GetCardinalProperty
       write SetCardinalProperty; // VT_UI4
     property StreamNumber: Word index PIDASI_STREAM_NUMBER read GetWordProperty
       write SetWordProperty; // VT_UI2
-    property StreamName: WideString index PIDASI_STREAM_NAME read GetWideStringProperty
+    property StreamName: WideString index PIDASI_STREAM_NAME
+      read GetWideStringProperty
       write SetWideStringProperty; // VT_LPWSTR
-    property Compression: WideString index PIDASI_COMPRESSION read GetWideStringProperty
+    property Compression: WideString index PIDASI_COMPRESSION
+      read GetWideStringProperty
       write SetWideStringProperty; // VT_LPWSTR}
   end;
 
@@ -579,11 +653,11 @@ uses
 
 const
   CompressionFormat: array [TFileCompressionState] of Short =
-  (
+    (
     COMPRESSION_FORMAT_NONE,
     COMPRESSION_FORMAT_DEFAULT,
     COMPRESSION_FORMAT_LZNT1
-  );
+    );
 
   // use IsDirectory(FileName) as array index
   FileFlag: array [Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
@@ -600,8 +674,8 @@ type
 
 function CallersCallerAddress: Pointer;
 asm
-        MOV     EAX, [EBP]
-        MOV     EAX, TStackFrame([EAX]).CallerAddress
+  MOV     EAX, [EBP]
+  MOV     EAX, TStackFrame([EAX]).CallerAddress
 end;
 
 {$STACKFRAMES ON}
@@ -610,15 +684,17 @@ procedure ValidateArgument(Condition: Boolean; const Routine: string;
   const Argument: string);
 begin
   if not Condition then
-    raise EJclInvalidArgument.CreateResFmt(@RsInvalidArgument, [Routine, Argument])
-      at CallersCallerAddress;
+    raise EJclInvalidArgument.CreateResFmt(@RsInvalidArgument,
+      [Routine, Argument])
+    at CallersCallerAddress;
 end;
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
 
-function SetCompression(const FileName: string; const State: Short; FileFlag: DWORD): Boolean;
+function SetCompression(const FileName: string; const State: Short;
+  FileFlag: DWORD): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
@@ -628,16 +704,17 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ, nil, OPEN_EXISTING, FileFlag, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Buffer := State;
-    Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
-      SizeOf(Short), nil, 0, BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end
+    try
+      Buffer := State;
+      Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
+        SizeOf(Short), nil, 0, BytesReturned, nil);
+    finally
+      CloseHandle(Handle);
+    end;
 end;
 
-function SetPathCompression(Dir: string; const Mask: string; const State: Short;
+function SetPathCompression(Dir: string; const Mask: string;
+  const State: Short;
   const SetDefault, Recursive: Boolean): Boolean;
 var
   FileName: string;
@@ -652,25 +729,26 @@ begin
   begin
     Dir := PathAddSeparator(Dir);
     if FindFirst(Dir + Mask, faAnyFile, SearchRec) = 0 then
-    try
-      repeat
-        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-        begin
-          FileName := Dir + SearchRec.Name;
-          if (SearchRec.Attr and faDirectory) = 0 then
-            Result := SetCompression(FileName, State, 0)
-          else
+      try
+        repeat
+          if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+          begin
+            FileName := Dir + SearchRec.Name;
+            if (SearchRec.Attr and faDirectory) = 0 then
+              Result := SetCompression(FileName, State, 0)
+            else
             if Recursive then
-              Result := SetPathCompression(FileName, Mask, State, SetDefault, True);
-          if not Result then
-            Exit;
-        end;
-        R := FindNext(SearchRec);
-      until R <> 0;
-      Result := (R = ERROR_NO_MORE_FILES);
-    finally
-      SysUtils.FindClose(SearchRec);
-    end;
+              Result := SetPathCompression(FileName, Mask, State,
+                SetDefault, True);
+            if not Result then
+              Exit;
+          end;
+          R := FindNext(SearchRec);
+        until R <> 0;
+        Result := (R = ERROR_NO_MORE_FILES);
+      finally
+        SysUtils.FindClose(SearchRec);
+      end;
   end;
 end;
 
@@ -702,38 +780,47 @@ begin
       Result := fcNoCompression;
     COMPRESSION_FORMAT_LZNT1:
       Result := fcLZNT1Compression;
-  else
+    else
     // (rom) very dubious.
-    Assert(False, 'TFileCompressionState requires expansion');
-    Result := TFileCompressionState(State);
+      Assert(False, 'TFileCompressionState requires expansion');
+      Result := TFileCompressionState(State);
   end;
 end;
 
-function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
+function NtfsSetCompression(const FileName: string;
+  const State: Short): Boolean;
 begin
   Result := SetCompression(FileName, State, FileFlag[IsDirectory(FileName)]);
 end;
 
 {$STACKFRAMES ON}
 
-procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
+procedure NtfsSetFileCompression(const FileName: string;
+  const State: TFileCompressionState);
 begin
-  ValidateArgument(not IsDirectory(FileName), 'NtfsSetFileCompression', 'FileName');
+  ValidateArgument(not IsDirectory(FileName), 'NtfsSetFileCompression',
+    'FileName');
   if not SetCompression(FileName, CompressionFormat[State], 0) then
     RaiseLastOSError;
 end;
 
-procedure NtfsSetDefaultFileCompression(const Directory: string; const State: TFileCompressionState);
+procedure NtfsSetDefaultFileCompression(const Directory: string;
+  const State: TFileCompressionState);
 begin
-  ValidateArgument(IsDirectory(Directory), 'NtfsSetDefaultFileCompression', 'Directory');
-  if not SetCompression(Directory, CompressionFormat[State], FILE_FLAG_BACKUP_SEMANTICS) then
+  ValidateArgument(IsDirectory(Directory), 'NtfsSetDefaultFileCompression',
+    'Directory');
+  if not SetCompression(Directory, CompressionFormat[State],
+    FILE_FLAG_BACKUP_SEMANTICS) then
     RaiseLastOSError;
 end;
 
-procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: TFileCompressionState);
+procedure NtfsSetDirectoryTreeCompression(const Directory: string;
+  const State: TFileCompressionState);
 begin
-  ValidateArgument(IsDirectory(Directory), 'NtfsSetDirectoryTreeCompression', 'Directory');
-  if not SetPathCompression(Directory, '*', CompressionFormat[State], True, True) then
+  ValidateArgument(IsDirectory(Directory), 'NtfsSetDirectoryTreeCompression',
+    'Directory');
+  if not SetPathCompression(Directory, '*', CompressionFormat[State],
+    True, True) then
     RaiseLastOSError;
 end;
 
@@ -760,7 +847,8 @@ begin
     if Mask = '' then
       Mask := '*';
   end;
-  if not SetPathCompression(Dir, Mask, CompressionFormat[State], SetDefault, Recursive) then
+  if not SetPathCompression(Dir, Mask, CompressionFormat[State],
+    SetDefault, Recursive) then
     RaiseLastOSError;
 end;
 
@@ -772,16 +860,19 @@ var
   BytesReturned: DWORD;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil,
+    OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
-      Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0, BytesReturned, nil);
+      Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil,
+        0, nil, 0, BytesReturned, nil);
     finally
       CloseHandle(Handle);
     end;
 end;
 
-function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
+function NtfsZeroDataByHandle(const Handle: THandle;
+  const First, Last: Int64): Boolean;
 var
   BytesReturned: DWORD;
   ZeroDataInfo: TFileZeroDataInformation;
@@ -804,12 +895,14 @@ begin
   end;
 end;
 
-function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
+function NtfsZeroDataByName(const FileName: string;
+  const First, Last: Int64): Boolean;
 var
   Handle: THandle;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil,
+    OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
       Result := NtfsZeroDataByHandle(Handle, First, Last);
@@ -829,7 +922,8 @@ begin
 end;
 
 function __QueryAllocRanges(const Handle: THandle; const Offset, Count: Int64;
-  var Ranges: PFileAllocatedRangeBuffer; var MoreData: Boolean; var Size: Cardinal): Boolean;
+  var Ranges: PFileAllocatedRangeBuffer; var MoreData: Boolean;
+  var Size: Cardinal): Boolean;
 var
   BytesReturned: DWORD;
   SearchRange: TFileAllocatedRangeBuffer;
@@ -861,25 +955,26 @@ var
   Size: Cardinal;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ,
+    nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  try
-    R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
-    Ranges.MoreData := MoreData;
-    Result := R;
-    if R then
-    begin
-      Ranges.Entries := Size div SizeOf(TFileAllocatedRangeBuffer);
-      Ranges.Data := CurrRanges;
-    end
-    else
-    begin
-      Ranges.Entries := 0;
-      Ranges.Data := nil;
+    try
+      R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
+      Ranges.MoreData := MoreData;
+      Result := R;
+      if R then
+      begin
+        Ranges.Entries := Size div SizeOf(TFileAllocatedRangeBuffer);
+        Ranges.Data := CurrRanges;
+      end
+      else
+      begin
+        Ranges.Entries := 0;
+        Ranges.Data := nil;
+      end;
+    finally
+      CloseHandle(Handle);
     end;
-  finally
-    CloseHandle(Handle);
-  end;
 end;
 
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
@@ -941,7 +1036,8 @@ begin
     Result := (Attr and FILE_ATTRIBUTE_REPARSE_POINT) <> 0;
 end;
 
-function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
+function NtfsDeleteReparsePoint(const FileName: string;
+  ReparseTag: DWORD): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
@@ -949,26 +1045,30 @@ var
 begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
-    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or
+    FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
       FillChar(ReparseData, SizeOf(ReparseData), #0);
       ReparseData.ReparseTag := ReparseTag;
-      Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT, @ReparseData,
+      Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT,
+        @ReparseData,
         REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nil, 0, BytesReturned, nil);
     finally
       CloseHandle(Handle);
     end;
 end;
 
-function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData;
+  Size: Longword): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
 begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
-    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or
+    FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
     try
       Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
@@ -978,7 +1078,8 @@ begin
     end;
 end;
 
-function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+function NtfsGetReparsePoint(const FileName: string;
+  var ReparseData: TReparseGuidDataBuffer): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
@@ -986,12 +1087,15 @@ var
 begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or
+    FILE_FLAG_OPEN_REPARSE_POINT, 0);
   LastError := GetLastError;
   if Handle <> INVALID_HANDLE_VALUE then
     try
-      Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-        ReparseData.ReparseDataLength + SizeOf(ReparseData), BytesReturned, nil);
+      Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT,
+        nil, 0, @ReparseData,
+        ReparseData.ReparseDataLength + SizeOf(ReparseData),
+        BytesReturned, nil);
       if not Result then
       begin
         ReparseData.ReparseDataLength := BytesReturned;
@@ -1016,7 +1120,8 @@ end;
 
 function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
 const
-  DDD_FLAGS = DDD_RAW_TARGET_PATH or DDD_REMOVE_DEFINITION or DDD_EXACT_MATCH_ON_REMOVE;
+  DDD_FLAGS = DDD_RAW_TARGET_PATH or DDD_REMOVE_DEFINITION or
+    DDD_EXACT_MATCH_ON_REMOVE;
 var
   DriveStr: string;
   VolumeName: string;
@@ -1025,7 +1130,8 @@ begin
   // a unique volume name the drive must exist. Therefore we must temporarily
   // create a symbolic link for the drive using DefineDosDevice.
   DriveStr := Drive + ':';
-  Result := DefineDosDevice(DDD_RAW_TARGET_PATH, PChar(DriveStr), PChar(Device));
+  Result := DefineDosDevice(DDD_RAW_TARGET_PATH, PChar(DriveStr),
+    PChar(Device));
   if Result then
   begin
     SetLength(VolumeName, 1024);
@@ -1037,18 +1143,21 @@ begin
     if not DefineDosDevice(DDD_FLAGS, PChar(DriveStr), PChar(Device)) then
       raise EJclNtfsError.CreateRes(@RsNtfsUnableToDeleteSymbolicLink);
     if Result then
-      Result := RtdlSetVolumeMountPoint(PChar(DriveStr + '\'), PChar(VolumeName));
+      Result := RtdlSetVolumeMountPoint(PChar(DriveStr + '\'),
+        PChar(VolumeName));
   end;
 end;
 
-function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
+function NtfsMountVolume(const Volume: Char;
+  const MountPoint: string): Boolean;
 var
   VolumeName: string;
   VolumeStr: string;
 begin
   SetLength(VolumeName, 1024);
   VolumeStr := Volume + ':\';
-  Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(VolumeStr), PChar(VolumeName), 1024);
+  Result := RtdlGetVolumeNameForVolumeMountPoint(PChar(VolumeStr),
+    PChar(VolumeName), 1024);
   if Result then
   begin
     if not JclFileUtils.DirectoryExists(MountPoint) then
@@ -1061,32 +1170,39 @@ end;
 
 //=== NTFS - Opportunistic Locks =============================================
 
-function NtfsOpLockAckClosePending(Handle: THandle; Overlapped: TOverlapped): Boolean;
+function NtfsOpLockAckClosePending(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
 begin
-  Result := DeviceIoControl(Handle, FSCTL_OPBATCH_ACK_CLOSE_PENDING, nil, 0, nil,
+  Result := DeviceIoControl(Handle, FSCTL_OPBATCH_ACK_CLOSE_PENDING,
+    nil, 0, nil,
     0, BytesReturned, @Overlapped);
 end;
 
-function NtfsOpLockBreakAckNo2(Handle: THandle; Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakAckNo2(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
 begin
-  Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACK_NO_2, nil, 0, nil, 0,
+  Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACK_NO_2,
+    nil, 0, nil, 0,
     BytesReturned, @Overlapped);
 end;
 
-function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakAcknowledge(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
 begin
-  Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACKNOWLEDGE, nil, 0, nil,
+  Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACKNOWLEDGE,
+    nil, 0, nil,
     0, BytesReturned, @Overlapped);
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
 
-function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolean;
+function NtfsOpLockBreakNotify(Handle: THandle;
+  Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
 begin
@@ -1094,7 +1210,8 @@ begin
     BytesReturned, @Overlapped);
 end;
 
-function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
+function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock;
+  Overlapped: TOverlapped): Boolean;
 const
   IoCodes: array [TOpLock] of Cardinal = (
     FSCTL_REQUEST_OPLOCK_LEVEL_1, FSCTL_REQUEST_OPLOCK_LEVEL_2,
@@ -1102,7 +1219,8 @@ const
 var
   BytesReturned: Cardinal;
 begin
-  Result := DeviceIoControl(Handle, IoCodes[Kind], nil, 0, nil, 0, BytesReturned, @Overlapped);
+  Result := DeviceIoControl(Handle, IoCodes[Kind], nil, 0, nil,
+    0, BytesReturned, @Overlapped);
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
 
@@ -1110,13 +1228,13 @@ end;
 
 type
   TReparseDataBufferOverlay = record
-  case Boolean of
-    False:
+    case Boolean of
+      False:
       (Reparse: TReparseDataBuffer;);
-    True:
+      True:
       (Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;);
   end;
-  
+
 function IsReparseTagValid(Tag: DWORD): Boolean;
 begin
   Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
@@ -1157,7 +1275,8 @@ begin
   // Not the most elegant way to copy an AnsiString into an Unicode buffer but
   // let's avoid dependencies on JclUnicode.pas (adds significant resources).
   DestW := WideString(Dest);
-  Move(DestW[1], ReparseData.Reparse.PathBuffer, Length(DestW) * SizeOf(WideChar));
+  Move(DestW[1], ReparseData.Reparse.PathBuffer, Length(DestW) *
+    SizeOf(WideChar));
   Result := NtfsSetReparsePoint(Source, ReparseData.Reparse,
     ReparseData.Reparse.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
@@ -1167,7 +1286,8 @@ begin
   Result := NtfsDeleteReparsePoint(Source, IO_REPARSE_TAG_MOUNT_POINT);
 end;
 
-function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
+function NtfsGetJunctionPointDestination(const Source: string;
+  var Destination: string): Boolean;
 var
   Handle: THandle;
   ReparseData: TReparseDataBufferOverlay;
@@ -1177,26 +1297,29 @@ begin
   if NtfsFileHasReparsePoint(Source) then
   begin
     Handle := CreateFile(PChar(Source), GENERIC_READ, 0, nil,
-      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or
+      FILE_FLAG_OPEN_REPARSE_POINT, 0);
     if Handle <> INVALID_HANDLE_VALUE then
-    try
-      if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-        MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
+      try
+        if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
+          MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
         IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
         then
-      begin
-        if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
         begin
-          SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
-          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
-            (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
-            PChar(Destination), Length(Destination), nil, nil);
-          Result := True;
+          if BytesReturned >= ReparseData.Reparse.SubstituteNameLength +
+          SizeOf(WideChar) then
+          begin
+            SetLength(Destination,
+              (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
+            WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
+              (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
+              PChar(Destination), Length(Destination), nil, nil);
+            Result := True;
+          end;
         end;
+      finally
+        CloseHandle(Handle);
       end;
-    finally
-      CloseHandle(Handle);
-    end
   end;
 end;
 
@@ -1224,7 +1347,8 @@ begin
   begin
     // Read stream header
     BytesToRead := DWORD(@Header.cStreamName[0]) - DWORD(@Header.dwStreamId);
-    if not Windows.BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
+    if not Windows.BackupRead(Data.Internal.FileHandle, (@Header),
+      BytesToRead, BytesRead,
       False, True, Data.Internal.Context) then
     begin
       SetLastError(ERROR_READ_FAULT);
@@ -1238,14 +1362,16 @@ begin
     // If stream has a name then read it
     if Header.dwStreamNameSize > 0 then
     begin
-      StreamName := HeapAlloc(GetProcessHeap, 0, Header.dwStreamNameSize + SizeOf(WCHAR));
+      StreamName := HeapAlloc(GetProcessHeap, 0, Header.dwStreamNameSize +
+        SizeOf(WCHAR));
       if StreamName = nil then
       begin
         SetLastError(ERROR_OUTOFMEMORY);
         Exit;
       end;
       if not Windows.BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
-        Header.dwStreamNameSize, BytesRead, False, True, Data.Internal.Context) then
+        Header.dwStreamNameSize, BytesRead, False, True,
+        Data.Internal.Context) then
       begin
         HeapFree(GetProcessHeap, 0, StreamName);
         SetLastError(ERROR_READ_FAULT);
@@ -1279,7 +1405,8 @@ begin
          BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
     {$ELSE}
     BytesToSeek.QuadPart := Header.Size;
-    if (Header.Size <> 0) and (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+    if (Header.Size <> 0) and
+      (not JclWin32.BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
       BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
     {$ENDIF FPC}
     begin
@@ -1338,7 +1465,8 @@ begin
   if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
-    Result := Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
+    Result := Windows.BackupRead(0, nil, 0, BytesRead, True,
+      False, Data.Internal.Context);
     if not Result then
       LastError := GetLastError;
     CloseHandle(Data.Internal.FileHandle);
@@ -1363,18 +1491,22 @@ end;
 
 // For a description see: NtfsCreateHardLink()
 (* ANSI implementation of the function - calling UNICODE anyway ;-) *)
-function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
+function NtfsCreateHardLinkA(
+  const LinkFileName, ExistingFileName: AnsiString): Boolean;
 begin
   // Invoke either (homegrown vs. API) function and supply NIL for security attributes
-  Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
+  Result := CreateHardLinkA(PAnsiChar(LinkFileName),
+    PAnsiChar(ExistingFileName), nil);
 end;
 
 // For a description see: NtfsCreateHardLink()
 (* UNICODE implementation of the function - we are on NT, aren't we ;-) *)
-function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
+function NtfsCreateHardLinkW(
+  const LinkFileName, ExistingFileName: WideString): Boolean;
 begin
   // Invoke either (homegrown vs. API) function and supply NIL for security attributes
-  Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
+  Result := CreateHardLinkW(PWideChar(LinkFileName),
+    PWideChar(ExistingFileName), nil);
 end;
 
 // NtfsCreateHardLink
@@ -1410,38 +1542,43 @@ end;
 //   The above holds for NTFS volumes (and those filesystems supporting hardlinks).
 //   Why all references need to reside on the same volume should be clear from these
 //   remarks.
-function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
+function NtfsCreateHardLink(
+  const LinkFileName, ExistingFileName: String): Boolean;
 {$DEFINE ANSI} // TODO: review for possible existing compatible DEFINES in the JCL
 begin
   {$IFDEF ANSI}
-  Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
+  Result := CreateHardLinkA(PAnsiChar(LinkFileName),
+    PAnsiChar(ExistingFileName), nil);
   {$ELSE}
   Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
   {$ENDIF ANSI}
 end;
 
-function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
+function NtfsGetHardLinkInfo(const FileName: string;
+  var Info: TNtfsHardLinkInfo): Boolean;
 var
   F: THandle;
   FileInfo: TByHandleFileInformation;
 begin
   Result := False;
-  F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+  F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or
+    FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if F <> INVALID_HANDLE_VALUE then
-  try
-    if GetFileInformationByHandle(F, FileInfo) then
-    begin
-      Info.LinkCount := FileInfo.nNumberOfLinks;
-      Info.FileIndexHigh := FileInfo.nFileIndexHigh;
-      Info.FileIndexLow := FileInfo.nFileIndexLow;
-      Result := True;
+    try
+      if GetFileInformationByHandle(F, FileInfo) then
+      begin
+        Info.LinkCount := FileInfo.nNumberOfLinks;
+        Info.FileIndexHigh := FileInfo.nFileIndexHigh;
+        Info.FileIndexLow := FileInfo.nFileIndexLow;
+        Result := True;
+      end;
+    finally
+      CloseHandle(F);
     end;
-  finally
-    CloseHandle(F);
-  end
 end;
 
-function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
+function NtfsFindHardLinks(const Path: string;
+  const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 var
   SearchRec: TSearchRec;
   R: Integer;
@@ -1461,7 +1598,8 @@ begin
           if (SearchRec.Attr and faDirectory) = faDirectory then
           begin
             // recurse into subdirectory
-            Result := NtfsFindHardLinks(Path + '\' + SearchRec.Name, FileIndexHigh, FileIndexLow, List);
+            Result := NtfsFindHardLinks(Path + '\' + SearchRec.Name,
+              FileIndexHigh, FileIndexLow, List);
             if not Result then
               Break;
           end
@@ -1470,7 +1608,8 @@ begin
             // found a file, is it a hard link?
             if NtfsGetHardLinkInfo(Path + '\' + SearchRec.Name, Info) then
             begin
-              if (Info.FileIndexHigh = FileIndexHigh) and (Info.FileIndexLow = FileIndexLow) then
+              if (Info.FileIndexHigh = FileIndexHigh) and
+                (Info.FileIndexLow = FileIndexLow) then
                 List.Add(Path + '\' + SearchRec.Name);
             end;
           end;
@@ -1508,7 +1647,8 @@ begin
       if Info.LinkCount > 1 then
       begin
         // find all hard links for this file
-        if not NtfsFindHardLinks(FullPathName[1] + ':', Info.FileIndexHigh, Info.FileIndexLow, Files) then
+        if not NtfsFindHardLinks(FullPathName[1] + ':',
+          Info.FileIndexHigh, Info.FileIndexLow, Files) then
           Exit;
         // first delete the originally specified file from the list, we don't delete that one until all hard links
         // are succesfully deleted so we can use it to restore them if anything goes wrong. Theoretically one could
@@ -1561,12 +1701,13 @@ end;
 
 const
   AccessModes: array [TJclFileSummaryAccess] of DWORD =
-    ( STGM_READ, STGM_WRITE, STGM_READWRITE );
+    (STGM_READ, STGM_WRITE, STGM_READWRITE);
   ShareModes: array [TJclFileSummaryShare] of DWORD =
-    ( STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
-      STGM_SHARE_EXCLUSIVE );
-      
-constructor TJclFileSummary.Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
+    (STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
+    STGM_SHARE_EXCLUSIVE);
+
+constructor TJclFileSummary.Create(AFileName: WideString;
+  AAccessMode: TJclFileSummaryAccess;
   AShareMode: TJclFileSummaryShare; AsDocument: Boolean; ACreate: Boolean);
 var
   Format: DWORD;
@@ -1589,11 +1730,13 @@ begin
 
   if ACreate then
     OleCheck(StgCreateStorageEx(PWideChar(AFileName),
-      STGM_DIRECT or AccessModes[AAccessMode] or ShareModes[AShareMode], Format, 0,
+      STGM_DIRECT or AccessModes[AAccessMode] or
+      ShareModes[AShareMode], Format, 0,
       nil, nil, @IntfGUID, AIntf))
   else
     OleCheck(StgOpenStorageEx(PWideChar(AFileName),
-      STGM_DIRECT or AccessModes[AAccessMode] or ShareModes[AShareMode], Format, 0,
+      STGM_DIRECT or AccessModes[AAccessMode] or
+      ShareModes[AShareMode], Format, 0,
       nil, nil, @IntfGUID, AIntf));
 
   FStorage := AIntf as IPropertySetStorage;
@@ -1604,8 +1747,10 @@ function TJclFileSummary.CreatePropertySet(AClass: TJclFilePropertySetClass;
 var
   PropertyStorage: IPropertyStorage;
 begin
-  OleCheck(FStorage.Create(AClass.GetFMTID, AClass.GetFMTID, PROPSETFLAG_DEFAULT,
-    STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
+  OleCheck(FStorage.Create(AClass.GetFMTID, AClass.GetFMTID,
+    PROPSETFLAG_DEFAULT,
+    STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or
+    ShareModes[ShareMode],
     PropertyStorage));
   if Assigned(PropertyStorage) then
     Result := AClass.Create(PropertyStorage)
@@ -1670,7 +1815,8 @@ begin
   TJclFilePropertySet(Instance) := nil;
   PropertyStorage := GetPropertySet(FMTID);
   if Assigned(PropertyStorage) then
-    TJclFilePropertySet(Instance) := TJclFilePropertySet.Create(PropertyStorage);
+    TJclFilePropertySet(Instance) :=
+      TJclFilePropertySet.Create(PropertyStorage);
 end;
 
 function TJclFileSummary.GetPropertySet(const FMTID: TGUID): IPropertyStorage;
@@ -1686,8 +1832,9 @@ begin
       Result := nil
     else
       OleCheck(FStorage.Create(FMTID, FMTID, PROPSETFLAG_DEFAULT,
-        STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
-        Result))
+        STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or
+        ShareModes[ShareMode],
+        Result));
   end
   else
     OleCheck(Status);
@@ -1774,8 +1921,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1789,8 +1936,8 @@ begin
       Result := False;
     VT_BOOL:
       Result := PropValue.bool;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1808,8 +1955,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1833,8 +1980,8 @@ begin
       Result := PropValue.uiVal;
     VT_UI4, VT_UINT:
       Result := PropValue.ulVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1848,8 +1995,8 @@ begin
       Result := nil;
     VT_CF:
       Result := PropValue.pclipdata
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1863,8 +2010,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_FILETIME:
       Result := PropValue.filetime;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1893,8 +2040,8 @@ begin
       Result := PropValue.uiVal;
     VT_UI4, VT_UINT:
       Result := PropValue.ulVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1942,8 +2089,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_LPSTR or VT_VECTOR:
       Result := PropValue.calpstr;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1958,8 +2105,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_VARIANT or VT_VECTOR:
       Result := PropValue.capropvar;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1978,8 +2125,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1999,8 +2146,8 @@ begin
       Result := PropValue.bVal;
     VT_UI2:
       Result := PropValue.uiVal;
-  else
-    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+    else
+      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -2132,7 +2279,8 @@ begin
   SetProperty(ID, PropValue);
 end;
 
-procedure TJclFilePropertySet.SetProperty(ID: TPropID; const Value: TPropVariant);
+procedure TJclFilePropertySet.SetProperty(ID: TPropID;
+  const Value: TPropVariant);
 var
   Prop: TPropSpec;
 begin
@@ -2160,7 +2308,7 @@ end;
 
 class function TJclMediaFileSummaryInformation.GetFMTID: TGUID;
 begin
-  Result := FMTID_MediaFileSummaryInformation
+  Result := FMTID_MediaFileSummaryInformation;
 end;
 
 //=== { TJclMSISummaryInformation } ==========================================
@@ -2258,7 +2406,7 @@ end;
 
 class function TJclVolumeSummaryInformation.GetFMTID: TGUID;
 begin
-  Result := FMTID_Volume; 
+  Result := FMTID_Volume;
 end;
 
 //=== { TJclShareSummaryInformation } ========================================

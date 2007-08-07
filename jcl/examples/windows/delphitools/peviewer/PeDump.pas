@@ -124,7 +124,8 @@ type
     function ActiveLibName: string;
     function ActiveWin32Function: string;
     property FileName: TFileName read GetFileName;
-    property HasDirectory[const Directory: DWORD]: Boolean read GetHasDirectory;
+    property HasDirectory[const Directory: DWORD]: Boolean
+      read GetHasDirectory;
     property GroupImports: Boolean read FGroupImports write SetGroupImports;
     property PeImage: TJclPeImage read FPeImage;
     property UnmangleNames: Boolean read FUnmangleNames write SetUnmangleNames;
@@ -159,15 +160,24 @@ resourcestring
 function GetCategoryName(Category: TPeDumpViewCategory): string;
 begin
   case Category of
-    vcHeader: Result := RsHeader;
-    vcDirectory: Result := RsDirectory;
-    vcSection: Result := RsSection;
-    vcLoadConfig: Result := RsLoadConfig;
-    vcImport: Result := RsImport;
-    vcExport: Result := RsExport;
-    vcResource: Result := RsResource;
-    vcRelocation: Result := RsRelocation;
-    vcDebug: Result := RsDebug;
+    vcHeader:
+      Result := RsHeader;
+    vcDirectory:
+      Result := RsDirectory;
+    vcSection:
+      Result := RsSection;
+    vcLoadConfig:
+      Result := RsLoadConfig;
+    vcImport:
+      Result := RsImport;
+    vcExport:
+      Result := RsExport;
+    vcResource:
+      Result := RsResource;
+    vcRelocation:
+      Result := RsRelocation;
+    vcDebug:
+      Result := RsDebug;
   end;
 end;
 
@@ -180,8 +190,8 @@ begin
       Result := icoDelayImport;
     ikBoundImport:
       Result := icoBoundImport;
-  else
-    Result := 0;
+    else
+      Result := 0;
   end;
 end;
 
@@ -192,7 +202,8 @@ begin
   with SectionTreeView do
     if (Selected <> nil) and (Selected.Level = 1) and
       (TPeDumpViewCategory(Selected.Parent.Data) = vcImport) then
-      Result := FPeImage.ExpandBySearchPath(Selected.Text, ExtractFilePath(FileName))
+      Result := FPeImage.ExpandBySearchPath(Selected.Text,
+        ExtractFilePath(FileName))
     else
       Result := '';
 end;
@@ -203,14 +214,14 @@ begin
   if IsListViewActiveAndFocused(ImportListView) then
     Result := ImportListView.ItemFocused.Caption
   else
-    if IsListViewActiveAndFocused(ExportListView) then
-      Result := ExportListView.ItemFocused.Caption
-    else
-      Result := '';
+  if IsListViewActiveAndFocused(ExportListView) then
+    Result := ExportListView.ItemFocused.Caption
+  else
+    Result := '';
   if Pos('@', Result) > 0 then
     Result := ''
   else
-    Result := StrRemoveChars(Result, ['[', ']']);  
+    Result := StrRemoveChars(Result, ['[', ']']);
 end;
 
 constructor TPeDumpChild.CreateEx(AOwner: TComponent; APeImage: TJclPeImage);
@@ -225,7 +236,8 @@ end;
 
 function TPeDumpChild.GetFileName: TFileName;
 begin
-  if FPeImage = nil then Result := '' else Result := FPeImage.FileName;
+  if FPeImage = nil then
+    Result := '' else Result := FPeImage.FileName;
 end;
 
 function TPeDumpChild.GetHasDirectory(const Directory: DWORD): Boolean;
@@ -251,7 +263,8 @@ var
 begin
   with PageControl1 do
   begin
-    for I := 0 to PageCount - 1 do Pages[I].TabVisible := False;
+    for I := 0 to PageCount - 1 do
+      Pages[I].TabVisible := False;
     FOriginalPageControlWndProc := WindowProc;
     WindowProc := PageControlWndProc;
     ActivePage := ItemsTab;
@@ -272,74 +285,76 @@ var
 begin
   Fix_ListViewBeforeClose(Self);
   F := MainForm.FindPeResourceView(FPeImage);
-  if F <> nil then F.Close;
+  if F <> nil then
+    F.Close;
   Action := caFree;
 end;
 
 procedure TPeDumpChild.UpdateView;
 
   procedure BuildImageTree;
-var
-  Category: TPeDumpViewCategory;
-  TempNode: TTreeNode;
+  var
+    Category: TPeDumpViewCategory;
+    TempNode: TTreeNode;
 
-  function AddCategoryNode(ImageIndex: Integer): TTreeNode;
-begin
-  Result := SectionTreeView.Items.AddChildObject(nil, GetCategoryName(Category),
-    Pointer(Category));
-  Result.ImageIndex := ImageIndex;
-  Result.SelectedIndex := ImageIndex;
-end;
+    function AddCategoryNode(ImageIndex: Integer): TTreeNode;
+    begin
+      Result := SectionTreeView.Items.AddChildObject(nil,
+        GetCategoryName(Category),
+        Pointer(Category));
+      Result.ImageIndex := ImageIndex;
+      Result.SelectedIndex := ImageIndex;
+    end;
 
-begin
-  FPeImage.TryGetNamesForOrdinalImports;
-  with SectionTreeView do
   begin
-    Items.BeginUpdate;
-    try
-      Items.Clear;
-      for Category := Low(Category) to High(Category) do
-        case Category of
-          vcHeader:
-            AddCategoryNode(icoHeader);
-          vcDirectory:
-            AddCategoryNode(icoDirectory);
-          vcSection:
-            AddCategoryNode(icoSection);
-          vcLoadConfig:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG] then
-              AddCategoryNode(icoLoadConfig);
-          vcImport:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_IMPORT] then
-            begin
-              TempNode := AddCategoryNode(icoImports);
-              TempNode.HasChildren := True;
-            end;
-          vcExport:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_EXPORT] then
-              AddCategoryNode(icoExports);
-          vcRelocation:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_BASERELOC] then
-            begin
-              TempNode := AddCategoryNode(icoRelocation);
-              TempNode.HasChildren := True;
-            end;
-          vcResource:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_RESOURCE] then
-            begin
-              TempNode := AddCategoryNode(icoResources);
-              TempNode.HasChildren := True;
-            end;
-          vcDebug:
-            if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_DEBUG] then
-              AddCategoryNode(icoDebug);
-        end;
-      Selected := Items.GetFirstNode;
-    finally
-      Items.EndUpdate;
+    FPeImage.TryGetNamesForOrdinalImports;
+    with SectionTreeView do
+    begin
+      Items.BeginUpdate;
+      try
+        Items.Clear;
+        for Category := Low(Category) to High(Category) do
+          case Category of
+            vcHeader:
+              AddCategoryNode(icoHeader);
+            vcDirectory:
+              AddCategoryNode(icoDirectory);
+            vcSection:
+              AddCategoryNode(icoSection);
+            vcLoadConfig:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG] then
+                AddCategoryNode(icoLoadConfig);
+            vcImport:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_IMPORT] then
+              begin
+                TempNode := AddCategoryNode(icoImports);
+                TempNode.HasChildren := True;
+              end;
+            vcExport:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_EXPORT] then
+                AddCategoryNode(icoExports);
+            vcRelocation:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_BASERELOC] then
+              begin
+                TempNode := AddCategoryNode(icoRelocation);
+                TempNode.HasChildren := True;
+              end;
+            vcResource:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_RESOURCE] then
+              begin
+                TempNode := AddCategoryNode(icoResources);
+                TempNode.HasChildren := True;
+              end;
+            vcDebug:
+              if FPeImage.DirectoryExists[IMAGE_DIRECTORY_ENTRY_DEBUG] then
+                AddCategoryNode(icoDebug);
+          end;
+        Selected := Items.GetFirstNode;
+      finally
+        Items.EndUpdate;
+      end;
     end;
   end;
-end;
 
 begin
   BuildImageTree;
@@ -352,7 +367,8 @@ begin
   with SectionListView do
   begin
     Items.Count := FPeImage.ImageSectionCount;
-    if Items.Count > 0 then ItemFocused := Items[0];
+    if Items.Count > 0 then
+      ItemFocused := Items[0];
   end;
   ExportListView.Items.Count := FPeImage.ExportList.Count;
   UpdateResourceDir;
@@ -368,15 +384,17 @@ procedure TPeDumpChild.ItemsListViewData(Sender: TObject; Item: TListItem);
 begin
   with Item, FPeImage do
     case TListView(Sender).Tag of
-      0: begin
-           Caption := HeaderNames(TJclPeHeader(Index));
-           SubItems.Add(HeaderValues[TJclPeHeader(Index)]);
-         end;
-      1: begin
-           Caption := LoadConfigNames(TJclLoadConfig(Index));
-           SubItems.Add(LoadConfigValues[TJclLoadConfig(Index)]);
-         end;
-   end;      
+      0:
+      begin
+        Caption := HeaderNames(TJclPeHeader(Index));
+        SubItems.Add(HeaderValues[TJclPeHeader(Index)]);
+      end;
+      1:
+      begin
+        Caption := LoadConfigNames(TJclLoadConfig(Index));
+        SubItems.Add(LoadConfigValues[TJclLoadConfig(Index)]);
+      end;
+    end;
 end;
 
 procedure TPeDumpChild.SectionTreeViewExpanding(Sender: TObject;
@@ -386,111 +404,123 @@ var
   TempNode: TTreeNode;
   ResItem: TJclPeResourceItem;
 begin
-  if Node.GetFirstChild = nil then with SectionTreeView do 
-  begin
-    Items.BeginUpdate;
-    case GetNodeCategory(Node) of
-      vcImport:
-        if GroupImports then
-        begin
-          for I := 0 to FPeImage.ImportList.UniqueLibItemCount  - 1 do
-            with Items.AddChild(Node, FPeImage.ImportList.UniqueLibNames[I]) do
-            begin
-              Data := Pointer(-1);
-              ImageIndex := ImageIndexFromImportKind(FPeImage.ImportList.UniqueLibItems[I].ImportKind);
-              SelectedIndex := ImageIndex;
-            end;
-        end else
-        begin
-//        FPeImage.ImportList.SortList(ilName);
-          for I := 0 to FPeImage.ImportList.Count - 1 do
-            with Items.AddChild(Node, FPeImage.ImportList[I].Name) do
-            begin
-              Data := Pointer(FPeImage.ImportList[I].ImportDirectoryIndex);
-              ImageIndex := ImageIndexFromImportKind(FPeImage.ImportList[I].ImportKind);
-              SelectedIndex := ImageIndex;
-            end;
-        end;
-      vcResource:
-        if Node.Level = 0 then
-          for I := 0 to FPeImage.ResourceList.Count - 1 do
+  if Node.GetFirstChild = nil then
+    with SectionTreeView do
+    begin
+      Items.BeginUpdate;
+      case GetNodeCategory(Node) of
+        vcImport:
+          if GroupImports then
           begin
-            ResItem := FPeImage.ResourceList[I];
-            TempNode := Items.AddChildObject(Node, ResItem.ResourceTypeStr, ResItem);
-            TempNode.ImageIndex := icoResources;
-            TempNode.SelectedIndex := TempNode.ImageIndex;
-            TempNode.HasChildren := True;
+            for I := 0 to FPeImage.ImportList.UniqueLibItemCount - 1 do
+              with Items.AddChild(Node, FPeImage.ImportList.UniqueLibNames[I]) do
+              begin
+                Data := Pointer(-1);
+                ImageIndex :=
+                  ImageIndexFromImportKind(FPeImage.ImportList.UniqueLibItems[I].ImportKind);
+                SelectedIndex := ImageIndex;
+              end;
           end
-        else
-        begin
-          ResItem := TJclPeResourceItem(Node.Data);
-          for I := 0 to ResItem.List.Count - 1 do
-            with Items.AddChildObject(Node, ResItem.List[I].Name, ResItem.List[I]) do
+          else
+          begin
+//        FPeImage.ImportList.SortList(ilName);
+            for I := 0 to FPeImage.ImportList.Count - 1 do
+              with Items.AddChild(Node, FPeImage.ImportList[I].Name) do
+              begin
+                Data := Pointer(FPeImage.ImportList[I].ImportDirectoryIndex);
+                ImageIndex :=
+                  ImageIndexFromImportKind(FPeImage.ImportList[I].ImportKind);
+                SelectedIndex := ImageIndex;
+              end;
+          end;
+        vcResource:
+          if Node.Level = 0 then
+            for I := 0 to FPeImage.ResourceList.Count - 1 do
             begin
-              ImageIndex := icoResources;
+              ResItem := FPeImage.ResourceList[I];
+              TempNode := Items.AddChildObject(Node,
+                ResItem.ResourceTypeStr, ResItem);
+              TempNode.ImageIndex := icoResources;
+              TempNode.SelectedIndex := TempNode.ImageIndex;
+              TempNode.HasChildren := True;
+            end
+          else
+          begin
+            ResItem := TJclPeResourceItem(Node.Data);
+            for I := 0 to ResItem.List.Count - 1 do
+              with Items.AddChildObject(Node, ResItem.List[I].Name,
+                  ResItem.List[I]) do
+              begin
+                ImageIndex := icoResources;
+                SelectedIndex := ImageIndex;
+              end;
+          end;
+        vcRelocation:
+          for I := 0 to FPeImage.RelocationList.Count - 1 do
+            with Items.AddChildObject(Node,
+                Format('%.8x', [FPeImage.RelocationList[I].VirtualAddress]),
+                Pointer(I)) do
+            begin
+              ImageIndex := icoRelocation;
               SelectedIndex := ImageIndex;
             end;
-        end;
-      vcRelocation:
-        for I := 0 to FPeImage.RelocationList.Count - 1 do
-          with Items.AddChildObject(Node,
-            Format('%.8x', [FPeImage.RelocationList[I].VirtualAddress]), Pointer(I)) do
-          begin
-            ImageIndex := icoRelocation;
-            SelectedIndex := ImageIndex;
-          end;
+      end;
+      Items.EndUpdate;
     end;
-    Items.EndUpdate;
-  end;
 end;
 
 procedure TPeDumpChild.SectionTreeViewChange(Sender: TObject; Node: TTreeNode);
 begin
-  if FUpdatingView then Exit;
+  if FUpdatingView then
+    Exit;
   case GetNodeCategory(Node) of
     vcHeader:
-      begin
-        ItemsListView.Items.Count := Integer(High(TJclPeHeader)) + 1;
-        ItemsListView.Tag := 0; // Header items
-        ItemsListView.Invalidate;
-        PageControl1.ActivePage := ItemsTab;
-      end;
-    vcDirectory: PageControl1.ActivePage := DirectoryTab;
-    vcSection: PageControl1.ActivePage := SectionTab;
+    begin
+      ItemsListView.Items.Count := Integer(High(TJclPeHeader)) + 1;
+      ItemsListView.Tag := 0; // Header items
+      ItemsListView.Invalidate;
+      PageControl1.ActivePage := ItemsTab;
+    end;
+    vcDirectory:
+      PageControl1.ActivePage := DirectoryTab;
+    vcSection:
+      PageControl1.ActivePage := SectionTab;
     vcLoadConfig:
-      begin
-        ItemsListView.Items.Count := Integer(High(TJclLoadConfig)) + 1;
-        ItemsListView.Tag := 1; // Load config items
-        ItemsListView.Invalidate;
-        PageControl1.ActivePage := ItemsTab;
-      end;
+    begin
+      ItemsListView.Items.Count := Integer(High(TJclLoadConfig)) + 1;
+      ItemsListView.Tag := 1; // Load config items
+      ItemsListView.Invalidate;
+      PageControl1.ActivePage := ItemsTab;
+    end;
     vcImport:
-      begin
-        if Node.Level = 0 then UpdateImportView(nil) else UpdateImportView(Node);
-        PageControl1.ActivePage := ImportTab;
-      end;
+    begin
+      if Node.Level = 0 then
+        UpdateImportView(nil) else UpdateImportView(Node);
+      PageControl1.ActivePage := ImportTab;
+    end;
     vcExport:
       PageControl1.ActivePage := ExportTab;
     vcRelocation:
-      begin
-        UpdateRelocationView(Node);
-        PageControl1.ActivePage := RelocTab;
-      end;
+    begin
+      UpdateRelocationView(Node);
+      PageControl1.ActivePage := RelocTab;
+    end;
     vcResource:
       if Node.Level = 0 then
       begin
         UpdateResourceDir;
         PageControl1.ActivePage := ResourceDirTab;
-      end else
+      end
+      else
       begin
         UpdateResourceView(TJclPeResourceItem(Node.Data));
         PageControl1.ActivePage := ResourceTab;
       end;
     vcDebug:
-      begin
-        DebugListView.Items.Count := FPeImage.DebugList.Count;
-        PageControl1.ActivePage := DebugTab;
-      end;
+    begin
+      DebugListView.Items.Count := FPeImage.DebugList.Count;
+      PageControl1.ActivePage := DebugTab;
+    end;
   end;
 end;
 
@@ -498,7 +528,7 @@ procedure TPeDumpChild.DirectoryListViewData(Sender: TObject; Item: TListItem);
 const
   DirectoryIcons: array[0..15] of Integer =
     (icoExports, icoImports, icoResources, -1, -1, icoRelocation, icoDebug,
-     -1, -1, -1, icoLoadConfig, icoBoundImport, -1, icoDelayImport, -1, -1);
+    -1, -1, -1, icoLoadConfig, icoBoundImport, -1, icoDelayImport, -1, -1);
 var
   Percent: Single;
 begin
@@ -509,11 +539,13 @@ begin
       Percent := DataDirectory[Index].Size * 100 / SizeOfImage;
       Caption := FPeImage.DirectoryNames(Index);
       Data := Pointer(DataDirectory[Index].Size);
-      if Integer(Data) <> 0 then ImageIndex := DirectoryIcons[Index];
+      if Integer(Data) <> 0 then
+        ImageIndex := DirectoryIcons[Index];
       SubItems.Add(Format('%.8x', [DataDirectory[Index].VirtualAddress]));
       SubItems.Add(Format('%.8x', [DataDirectory[Index].Size]));
       SubItems.Add(Format('%3.1f%%', [Percent]));
-      SubItems.Add(FPeImage.ImageSectionNameFromRva[DataDirectory[Index].VirtualAddress]);
+      SubItems.Add(FPeImage.ImageSectionNameFromRva[
+        DataDirectory[Index].VirtualAddress]);
     end;
   end
   else
@@ -523,11 +555,13 @@ begin
       Percent := DataDirectory[Index].Size * 100 / SizeOfImage;
       Caption := FPeImage.DirectoryNames(Index);
       Data := Pointer(DataDirectory[Index].Size);
-      if Integer(Data) <> 0 then ImageIndex := DirectoryIcons[Index];
+      if Integer(Data) <> 0 then
+        ImageIndex := DirectoryIcons[Index];
       SubItems.Add(Format('%.8x', [DataDirectory[Index].VirtualAddress]));
       SubItems.Add(Format('%.8x', [DataDirectory[Index].Size]));
       SubItems.Add(Format('%3.1f%%', [Percent]));
-      SubItems.Add(FPeImage.ImageSectionNameFromRva[DataDirectory[Index].VirtualAddress]);
+      SubItems.Add(FPeImage.ImageSectionNameFromRva[
+        DataDirectory[Index].VirtualAddress]);
     end;
   end;
 end;
@@ -553,7 +587,8 @@ begin
   ListView.Columns.EndUpdate;
 end;
 
-procedure TPeDumpChild.ImportListViewColumnClick(Sender: TObject; Column: TListColumn);
+procedure TPeDumpChild.ImportListViewColumnClick(Sender: TObject;
+  Column: TListColumn);
 begin
   UpdateSortData(Column);
   ImportListViewSort;
@@ -569,22 +604,27 @@ begin
   begin
     FPeImage.ImportList.FilterModuleName := '';
     ImportListView.Items.Count := FPeImage.ImportList.AllItemCount;
-  end else
+  end
+  else
   if Integer(Node.Data) = -1 then
   begin
     FPeImage.ImportList.FilterModuleName := Node.Text;
     ImportListView.Items.Count := FPeImage.ImportList.AllItemCount;
-  end else
+  end
+  else
   begin
     FCurrentImportIndex := Integer(Node.Data);
-    ImportListView.Items.Count := FPeImage.ImportList[FCurrentImportIndex].Count;
+    ImportListView.Items.Count :=
+      FPeImage.ImportList[FCurrentImportIndex].Count;
   end;
   ImportListViewSort;
   ImportListView.Invalidate;
   with ImportStatusBar, FPeImage.ImportList do
   begin
-    Panels[0].Text := Format(RsNumberOfFunctions, [ImportListView.Items.Count]);
-    Panels[1].Text := Format(RsLinkerProducer, [LinkerProducers[LinkerProducer]]);
+    Panels[0].Text := Format(RsNumberOfFunctions,
+      [ImportListView.Items.Count]);
+    Panels[1].Text := Format(RsLinkerProducer,
+      [LinkerProducers[LinkerProducer]]);
   end;
 end;
 
@@ -606,7 +646,8 @@ begin
     begin
       SubItems.Add(Format('%d', [Ordinal]));
       SubItems.Add('');
-    end else
+    end
+    else
     begin
       SubItems.Add('');
       SubItems.Add(Format('%d', [Hint]));
@@ -693,21 +734,24 @@ begin
     if IsDirectory then
     begin
       Caption := Name;
-      if (List.Count = 1) and (StrToIntDef(List[0].Name, 0) = LANG_NEUTRAL) then
+      if (List.Count = 1) and (StrToIntDef(List[0].Name, 0) =
+        LANG_NEUTRAL) then
       begin // only neutral language
         DirSize := List[0].DataEntry^.Size;
         SubItems.Add(Format('(%x)', [List[0].DataEntry^.OffsetToData]));
-      end else
+      end
+      else
       begin
         DirSize := 0;
         for I := 0 to List.Count - 1 do
           Inc(DirSize, List[I].DataEntry^.Size);
         SubItems.Add('');
-      end;  
+      end;
       SubItems.Add(Format('%x', [DirSize]));
       SubItems.Add(Format('%d', [List.Count]));
-    end else
-    begin 
+    end
+    else
+    begin
       Caption := Format('%s (%s)', [ParentItem.Name, Name]);
       SubItems.Add(Format('%x', [DataEntry^.OffsetToData]));
       SubItems.Add(Format('%x', [DataEntry^.Size]));
@@ -722,7 +766,8 @@ begin
   ResourceDirListView.Invalidate;
 end;
 
-procedure TPeDumpChild.ResourceDirListViewData(Sender: TObject; Item: TListItem);
+procedure TPeDumpChild.ResourceDirListViewData(Sender: TObject;
+  Item: TListItem);
 begin
   with Item, FPeImage.ResourceList[Item.Index] do
   begin
@@ -737,12 +782,15 @@ begin
   begin
     FCurrentRelocationIndex := -1;
     RelocListView.Items.Count := FPeImage.RelocationList.AllItemCount;
-  end else
+  end
+  else
   begin
     FCurrentRelocationIndex := Integer(Node.Data);
-    RelocListView.Items.Count := FPeImage.RelocationList[FCurrentRelocationIndex].Count;
+    RelocListView.Items.Count :=
+      FPeImage.RelocationList[FCurrentRelocationIndex].Count;
   end;
-  RelocStatusBar.Panels[0].Text := Format(RsAddresses, [RelocListView.Items.Count]);
+  RelocStatusBar.Panels[0].Text :=
+    Format(RsAddresses, [RelocListView.Items.Count]);
   RelocListView.Invalidate;
 end;
 
@@ -751,14 +799,16 @@ var
   ViewItem: TJclPeRelocation;
 
   function RelocationTypeStr(RelocType: Byte): string;
-begin
-  case RelocType of
-    IMAGE_REL_BASED_ABSOLUTE: Result := 'ABSOLUTE';
-    IMAGE_REL_BASED_HIGHLOW: Result := 'HIGHLOW';
-  else
-    Result := IntToStr(RelocType);
+  begin
+    case RelocType of
+      IMAGE_REL_BASED_ABSOLUTE:
+        Result := 'ABSOLUTE';
+      IMAGE_REL_BASED_HIGHLOW:
+        Result := 'HIGHLOW';
+      else
+        Result := IntToStr(RelocType);
+    end;
   end;
-end;
 
 begin
   if FCurrentRelocationIndex = -1 then
@@ -781,7 +831,7 @@ begin
     SubItems.Add(Format('%.8x', [AddressOfRawData]));
     SubItems.Add(Format('%.8x', [PointerToRawData]));
     SubItems.Add(Format('%d.%.2d', [MajorVersion, MinorVersion]));
-  end;  
+  end;
 end;
 
 procedure TPeDumpChild.ImportListViewDblClick(Sender: TObject);
@@ -792,7 +842,8 @@ end;
 procedure TPeDumpChild.DirectoryListViewCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  if Integer(Item.Data) = 0 then Sender.Canvas.Font.Color := clGrayText;
+  if Integer(Item.Data) = 0 then
+    Sender.Canvas.Font.Color := clGrayText;
 end;
 
 procedure TPeDumpChild.SetGroupImports(const Value: Boolean);
@@ -815,12 +866,14 @@ begin
           begin
             NodeIndex := Selected.Parent.Index;
             WasExpanded := True;
-          end else
+          end
+          else
           begin
             NodeIndex := Selected.Index;
             WasExpanded := Selected.Expanded;
           end;
-        end else
+        end
+        else
         begin
           NodeIndex := 0;
           WasExpanded := False;
@@ -834,7 +887,8 @@ begin
         end;
         FUpdatingView := False;
         Selected := TempNode;
-        if WasExpanded then Selected.Expand(False);
+        if WasExpanded then
+          Selected.Expand(False);
       finally
         Items.EndUpdate;
       end;
@@ -844,14 +898,17 @@ end;
 
 procedure TPeDumpChild.ImportListViewSort;
 const
-  MapIndexToSortType: array[0..3] of TJclPeImportSort = (isName, isOrdinal, isHint, isLibImport);
+  MapIndexToSortType: array[0..3] of TJclPeImportSort =
+    (isName, isOrdinal, isHint, isLibImport);
 begin
   with ImportListView do
   begin
     if FCurrentImportIndex = -1 then
-      FPeImage.ImportList.SortAllItemsList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0)
+      FPeImage.ImportList.SortAllItemsList(MapIndexToSortType[Tag and $FF],
+        Tag and $100 <> 0)
     else
-      FPeImage.ImportList[FCurrentImportIndex].SortList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
+      FPeImage.ImportList[FCurrentImportIndex].SortList(
+        MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
     Invalidate;
   end;
 end;
@@ -863,14 +920,16 @@ const
 begin
   with ExportListView do
   begin
-    FPeImage.ExportList.SortList(MapIndexToSortType[Tag and $FF], Tag and $100 <> 0);
+    FPeImage.ExportList.SortList(MapIndexToSortType[Tag and $FF],
+      Tag and $100 <> 0);
     Invalidate;
   end;
 end;
 
 function TPeDumpChild.GetNodeCategory(Node: TTreeNode): TPeDumpViewCategory;
 begin
-  while Node.Parent <> nil do Node := Node.Parent;
+  while Node.Parent <> nil do
+    Node := Node.Parent;
   Result := TPeDumpViewCategory(Node.Data);
 end;
 
@@ -906,29 +965,31 @@ const
     (Value: IMAGE_FILE_BYTES_REVERSED_LO; Name: 'BYTES_REVERSED_LO'),
     (Value: IMAGE_FILE_32BIT_MACHINE; Name: '32BIT_MACHINE'),
     (Value: IMAGE_FILE_DEBUG_STRIPPED; Name: 'DEBUG_STRIPPED'),
-    (Value: IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP; Name: 'REMOVABLE_RUN_FROM_SWAP'),
+    (Value: IMAGE_FILE_REMOVABLE_RUN_FROM_SWAP;
+    Name: 'REMOVABLE_RUN_FROM_SWAP'),
     (Value: IMAGE_FILE_NET_RUN_FROM_SWAP; Name: 'NET_RUN_FROM_SWAP'),
     (Value: IMAGE_FILE_SYSTEM; Name: 'SYSTEM'),
     (Value: IMAGE_FILE_DLL; Name: 'DLL'),
     (Value: IMAGE_FILE_UP_SYSTEM_ONLY; Name: 'UP_SYSTEM_ONLY'),
     (Value: IMAGE_FILE_BYTES_REVERSED_HI; Name: 'BYTES_REVERSED_HI')
-  );
+    );
 var
   C: Word;
   I: Integer;
 begin
   case HeaderItem of
     JclPeHeader_Characteristics:
-      begin
-        Result := '';
-        C := FPeImage.LoadedImage.FileHeader.FileHeader.Characteristics;
-        for I := Low(ImageCharacteristicValues) to High(ImageCharacteristicValues) do
-          if C and ImageCharacteristicValues[I].Value <> 0 then
-            Result := Result + #13#10 + ImageCharacteristicValues[I].Name;
-        Delete(Result, 1, 2);
-      end;
-  else
-    Result := '';
+    begin
+      Result := '';
+      C := FPeImage.LoadedImage.FileHeader.FileHeader.Characteristics;
+      for I := Low(ImageCharacteristicValues)
+        to High(ImageCharacteristicValues) do
+        if C and ImageCharacteristicValues[I].Value <> 0 then
+          Result := Result + #13#10 + ImageCharacteristicValues[I].Name;
+      Delete(Result, 1, 2);
+    end;
+    else
+      Result := '';
   end;
 end;
 
@@ -936,7 +997,8 @@ procedure TPeDumpChild.ItemsListViewInfoTip(Sender: TObject;
   Item: TListItem; var InfoTip: String);
 begin
   case TListView(Sender).Tag of
-    0: InfoTip := HeadersRemark(TJclPeHeader(Item.Index));
+    0:
+      InfoTip := HeadersRemark(TJclPeHeader(Item.Index));
   end;
 end;
 

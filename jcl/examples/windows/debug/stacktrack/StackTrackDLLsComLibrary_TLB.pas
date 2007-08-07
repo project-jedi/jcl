@@ -39,7 +39,8 @@ const
   StackTrackDLLsComLibraryMajorVersion = 1;
   StackTrackDLLsComLibraryMinorVersion = 0;
 
-  LIBID_StackTrackDLLsComLibrary: TGUID = '{D4935E5D-790E-48CA-B360-0165C1305153}';
+  LIBID_StackTrackDLLsComLibrary: TGUID =
+    '{D4935E5D-790E-48CA-B360-0165C1305153}';
 
   IID_IStackTrackDllsTest: TGUID = '{26473046-CCEB-4671-9AB1-2216EF4D2164}';
   CLASS_StackTrackDllsTest: TGUID = '{DA3AEC52-1481-4119-B140-2157C7ADEC5B}';
@@ -64,8 +65,8 @@ type
 // *********************************************************************//
   IStackTrackDllsTest = interface(IUnknown)
     ['{26473046-CCEB-4671-9AB1-2216EF4D2164}']
-    function  Error1: HResult; stdcall;
-    function  Error2: HResult; stdcall;
+    function Error1: HResult; stdcall;
+    function Error2: HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -77,7 +78,8 @@ type
 // *********************************************************************//
   CoStackTrackDllsTest = class
     class function Create: IStackTrackDllsTest;
-    class function CreateRemote(const MachineName: string): IStackTrackDllsTest;
+    class function CreateRemote(
+      const MachineName: string): IStackTrackDllsTest;
   end;
 
 implementation
@@ -89,9 +91,11 @@ begin
   Result := CreateComObject(CLASS_StackTrackDllsTest) as IStackTrackDllsTest;
 end;
 
-class function CoStackTrackDllsTest.CreateRemote(const MachineName: string): IStackTrackDllsTest;
+class function CoStackTrackDllsTest.CreateRemote(
+  const MachineName: string): IStackTrackDllsTest;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_StackTrackDllsTest) as IStackTrackDllsTest;
+  Result := CreateRemoteComObject(MachineName, CLASS_StackTrackDllsTest) as
+    IStackTrackDllsTest;
 end;
 
 end.

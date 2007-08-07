@@ -72,31 +72,31 @@ type
     ids: PUINT;
   end;
 
-  TAsnInteger32        = LongInt;
+  TAsnInteger32 = LongInt;
   {$EXTERNALSYM TAsnInteger32}
-  TAsnUnsigned32       = ULONG;
+  TAsnUnsigned32 = ULONG;
   {$EXTERNALSYM TAsnUnsigned32}
-  TAsnCounter64        = ULARGE_INTEGER;
+  TAsnCounter64 = ULARGE_INTEGER;
   {$EXTERNALSYM TAsnCounter64}
-  TAsnCounter32        = TAsnUnsigned32;
+  TAsnCounter32 = TAsnUnsigned32;
   {$EXTERNALSYM TAsnCounter32}
-  TAsnGauge32          = TAsnUnsigned32;
+  TAsnGauge32 = TAsnUnsigned32;
   {$EXTERNALSYM TAsnGauge32}
-  TAsnTimeticks        = TAsnUnsigned32;
+  TAsnTimeticks = TAsnUnsigned32;
   {$EXTERNALSYM TAsnTimeticks}
-  TAsnBits             = TAsnOctetString;
+  TAsnBits = TAsnOctetString;
   {$EXTERNALSYM TAsnBits}
-  TAsnSequence         = TAsnOctetString;
+  TAsnSequence = TAsnOctetString;
   {$EXTERNALSYM TAsnSequence}
   TAsnImplicitSequence = TAsnOctetString;
   {$EXTERNALSYM TAsnImplicitSequence}
-  TAsnIPAddress        = TAsnOctetString;
+  TAsnIPAddress = TAsnOctetString;
   {$EXTERNALSYM TAsnIPAddress}
-  TAsnNetworkAddress   = TAsnOctetString;
+  TAsnNetworkAddress = TAsnOctetString;
   {$EXTERNALSYM TAsnNetworkAddress}
-  TAsnDisplayString    = TAsnOctetString;
+  TAsnDisplayString = TAsnOctetString;
   {$EXTERNALSYM TAsnDisplayString}
-  TAsnOpaque           = TAsnOctetString;
+  TAsnOpaque = TAsnOctetString;
   {$EXTERNALSYM TAsnOpaque}
 
   PAsnAny = ^TAsnAny;
@@ -113,8 +113,8 @@ type
       7: (address: TAsnIPAddress);         // ASN_IPADDRESS
       8: (counter: TAsnCounter32);         // ASN_COUNTER32
       9: (gauge: TAsnGauge32);             // ASN_GAUGE32
-     10: (ticks: TAsnTimeticks);           // ASN_TIMETICKS
-     11: (arbitrary: TAsnOpaque);          // ASN_OPAQUE
+      10: (ticks: TAsnTimeticks);           // ASN_TIMETICKS
+      11: (arbitrary: TAsnOpaque);          // ASN_OPAQUE
   end;
 
   TAsnObjectName = TAsnObjectIdentifier;
@@ -136,204 +136,212 @@ const
 
 { ASN/BER Base Types }
 
-  ASN_UNIVERSAL                   = $00;
+  ASN_UNIVERSAL = $00;
   {$EXTERNALSYM ASN_UNIVERSAL}
-  ASN_APPLICATION                 = $40;
+  ASN_APPLICATION = $40;
   {$EXTERNALSYM ASN_APPLICATION}
-  ASN_CONTEXT                     = $80;
+  ASN_CONTEXT = $80;
   {$EXTERNALSYM ASN_CONTEXT}
-  ASN_PRIVATE                     = $C0;
+  ASN_PRIVATE = $C0;
   {$EXTERNALSYM ASN_PRIVATE}
 
-  ASN_PRIMITIVE                   = $00;
+  ASN_PRIMITIVE = $00;
   {$EXTERNALSYM ASN_PRIMITIVE}
-  ASN_CONSTRUCTOR                 = $20;
+  ASN_CONSTRUCTOR = $20;
   {$EXTERNALSYM ASN_CONSTRUCTOR}
 
 { PDU Type Values }
 
-  SNMP_PDU_GET                    = (ASN_CONTEXT or ASN_CONSTRUCTOR or $0);
+  SNMP_PDU_GET = (ASN_CONTEXT or ASN_CONSTRUCTOR or $0);
   {$EXTERNALSYM SNMP_PDU_GET}
-  SNMP_PDU_GETNEXT                = (ASN_CONTEXT or ASN_CONSTRUCTOR or $1);
+  SNMP_PDU_GETNEXT = (ASN_CONTEXT or ASN_CONSTRUCTOR or $1);
   {$EXTERNALSYM SNMP_PDU_GETNEXT}
-  SNMP_PDU_RESPONSE               = (ASN_CONTEXT or ASN_CONSTRUCTOR or $2);
+  SNMP_PDU_RESPONSE = (ASN_CONTEXT or ASN_CONSTRUCTOR or $2);
   {$EXTERNALSYM SNMP_PDU_RESPONSE}
-  SNMP_PDU_SET                    = (ASN_CONTEXT or ASN_CONSTRUCTOR or $3);
+  SNMP_PDU_SET = (ASN_CONTEXT or ASN_CONSTRUCTOR or $3);
   {$EXTERNALSYM SNMP_PDU_SET}
-  SNMP_PDU_V1TRAP                 = (ASN_CONTEXT or ASN_CONSTRUCTOR or $4);
+  SNMP_PDU_V1TRAP = (ASN_CONTEXT or ASN_CONSTRUCTOR or $4);
   {$EXTERNALSYM SNMP_PDU_V1TRAP}
-  SNMP_PDU_GETBULK                = (ASN_CONTEXT or ASN_CONSTRUCTOR or $5);
+  SNMP_PDU_GETBULK = (ASN_CONTEXT or ASN_CONSTRUCTOR or $5);
   {$EXTERNALSYM SNMP_PDU_GETBULK}
-  SNMP_PDU_INFORM                 = (ASN_CONTEXT or ASN_CONSTRUCTOR or $6);
+  SNMP_PDU_INFORM = (ASN_CONTEXT or ASN_CONSTRUCTOR or $6);
   {$EXTERNALSYM SNMP_PDU_INFORM}
-  SNMP_PDU_TRAP                   = (ASN_CONTEXT or ASN_CONSTRUCTOR or $7);
+  SNMP_PDU_TRAP = (ASN_CONTEXT or ASN_CONSTRUCTOR or $7);
   {$EXTERNALSYM SNMP_PDU_TRAP}
 
 { SNMP Simple Syntax Values }
 
-  ASN_INTEGER                     = (ASN_UNIVERSAL or ASN_PRIMITIVE or $02);
+  ASN_INTEGER = (ASN_UNIVERSAL or ASN_PRIMITIVE or $02);
   {$EXTERNALSYM ASN_INTEGER}
-  ASN_BITS                        = (ASN_UNIVERSAL or ASN_PRIMITIVE or $03);
+  ASN_BITS = (ASN_UNIVERSAL or ASN_PRIMITIVE or $03);
   {$EXTERNALSYM ASN_BITS}
-  ASN_OCTETSTRING                 = (ASN_UNIVERSAL or ASN_PRIMITIVE or $04);
+  ASN_OCTETSTRING = (ASN_UNIVERSAL or ASN_PRIMITIVE or $04);
   {$EXTERNALSYM ASN_OCTETSTRING}
-  ASN_NULL                        = (ASN_UNIVERSAL or ASN_PRIMITIVE or $05);
+  ASN_NULL = (ASN_UNIVERSAL or ASN_PRIMITIVE or $05);
   {$EXTERNALSYM ASN_NULL}
-  ASN_OBJECTIDENTIFIER            = (ASN_UNIVERSAL or ASN_PRIMITIVE or $06);
+  ASN_OBJECTIDENTIFIER = (ASN_UNIVERSAL or ASN_PRIMITIVE or $06);
   {$EXTERNALSYM ASN_OBJECTIDENTIFIER}
-  ASN_INTEGER32                   = ASN_INTEGER;
+  ASN_INTEGER32 = ASN_INTEGER;
   {$EXTERNALSYM ASN_INTEGER32}
 
 { SNMP Constructor Syntax Values }
 
-  ASN_SEQUENCE                    = (ASN_UNIVERSAL or ASN_CONSTRUCTOR or $10);
+  ASN_SEQUENCE = (ASN_UNIVERSAL or ASN_CONSTRUCTOR or $10);
   {$EXTERNALSYM ASN_SEQUENCE}
-  ASN_SEQUENCEOF                  = ASN_SEQUENCE;
+  ASN_SEQUENCEOF = ASN_SEQUENCE;
   {$EXTERNALSYM ASN_SEQUENCEOF}
 
 { SNMP Application Syntax Values }
 
-  ASN_IPADDRESS                   = (ASN_APPLICATION or ASN_PRIMITIVE or $00);
+  ASN_IPADDRESS = (ASN_APPLICATION or ASN_PRIMITIVE or $00);
   {$EXTERNALSYM ASN_IPADDRESS}
-  ASN_COUNTER32                   = (ASN_APPLICATION or ASN_PRIMITIVE or $01);
+  ASN_COUNTER32 = (ASN_APPLICATION or ASN_PRIMITIVE or $01);
   {$EXTERNALSYM ASN_COUNTER32}
-  ASN_GAUGE32                     = (ASN_APPLICATION or ASN_PRIMITIVE or $02);
+  ASN_GAUGE32 = (ASN_APPLICATION or ASN_PRIMITIVE or $02);
   {$EXTERNALSYM ASN_GAUGE32}
-  ASN_TIMETICKS                   = (ASN_APPLICATION or ASN_PRIMITIVE or $03);
+  ASN_TIMETICKS = (ASN_APPLICATION or ASN_PRIMITIVE or $03);
   {$EXTERNALSYM ASN_TIMETICKS}
-  ASN_OPAQUE                      = (ASN_APPLICATION or ASN_PRIMITIVE or $04);
+  ASN_OPAQUE = (ASN_APPLICATION or ASN_PRIMITIVE or $04);
   {$EXTERNALSYM ASN_OPAQUE}
-  ASN_COUNTER64                   = (ASN_APPLICATION or ASN_PRIMITIVE or $06);
+  ASN_COUNTER64 = (ASN_APPLICATION or ASN_PRIMITIVE or $06);
   {$EXTERNALSYM ASN_COUNTER64}
-  ASN_UNSIGNED32                  = (ASN_APPLICATION or ASN_PRIMITIVE or $07);
+  ASN_UNSIGNED32 = (ASN_APPLICATION or ASN_PRIMITIVE or $07);
   {$EXTERNALSYM ASN_UNSIGNED32}
 
 { SNMP Exception Conditions }
 
-  SNMP_EXCEPTION_NOSUCHOBJECT     = (ASN_CONTEXT or ASN_PRIMITIVE or $00);
+  SNMP_EXCEPTION_NOSUCHOBJECT = (ASN_CONTEXT or ASN_PRIMITIVE or $00);
   {$EXTERNALSYM SNMP_EXCEPTION_NOSUCHOBJECT}
-  SNMP_EXCEPTION_NOSUCHINSTANCE   = (ASN_CONTEXT or ASN_PRIMITIVE or $01);
+  SNMP_EXCEPTION_NOSUCHINSTANCE = (ASN_CONTEXT or ASN_PRIMITIVE or $01);
   {$EXTERNALSYM SNMP_EXCEPTION_NOSUCHINSTANCE}
-  SNMP_EXCEPTION_ENDOFMIBVIEW     = (ASN_CONTEXT or ASN_PRIMITIVE or $02);
+  SNMP_EXCEPTION_ENDOFMIBVIEW = (ASN_CONTEXT or ASN_PRIMITIVE or $02);
   {$EXTERNALSYM SNMP_EXCEPTION_ENDOFMIBVIEW}
 
 { SNMP Request Types (used in SnmpExtensionQueryEx) }
 
-  SNMP_EXTENSION_GET              = SNMP_PDU_GET;
+  SNMP_EXTENSION_GET = SNMP_PDU_GET;
   {$EXTERNALSYM SNMP_EXTENSION_GET}
-  SNMP_EXTENSION_GET_NEXT         = SNMP_PDU_GETNEXT;
+  SNMP_EXTENSION_GET_NEXT = SNMP_PDU_GETNEXT;
   {$EXTERNALSYM SNMP_EXTENSION_GET_NEXT}
-  SNMP_EXTENSION_GET_BULK         = SNMP_PDU_GETBULK;
+  SNMP_EXTENSION_GET_BULK = SNMP_PDU_GETBULK;
   {$EXTERNALSYM SNMP_EXTENSION_GET_BULK}
-  SNMP_EXTENSION_SET_TEST         = (ASN_PRIVATE or ASN_CONSTRUCTOR or $0);
+  SNMP_EXTENSION_SET_TEST = (ASN_PRIVATE or ASN_CONSTRUCTOR or $0);
   {$EXTERNALSYM SNMP_EXTENSION_SET_TEST}
-  SNMP_EXTENSION_SET_COMMIT       = SNMP_PDU_SET;
+  SNMP_EXTENSION_SET_COMMIT = SNMP_PDU_SET;
   {$EXTERNALSYM SNMP_EXTENSION_SET_COMMIT}
-  SNMP_EXTENSION_SET_UNDO         = (ASN_PRIVATE or ASN_CONSTRUCTOR or $1);
+  SNMP_EXTENSION_SET_UNDO = (ASN_PRIVATE or ASN_CONSTRUCTOR or $1);
   {$EXTERNALSYM SNMP_EXTENSION_SET_UNDO}
-  SNMP_EXTENSION_SET_CLEANUP      = (ASN_PRIVATE or ASN_CONSTRUCTOR or $2);
+  SNMP_EXTENSION_SET_CLEANUP = (ASN_PRIVATE or ASN_CONSTRUCTOR or $2);
   {$EXTERNALSYM SNMP_EXTENSION_SET_CLEANUP}
 
 { SNMP Error Codes }
 
-  SNMP_ERRORSTATUS_NOERROR                    = 0;
+  SNMP_ERRORSTATUS_NOERROR = 0;
   {$EXTERNALSYM SNMP_ERRORSTATUS_NOERROR}
-  SNMP_ERRORSTATUS_TOOBIG                     = 1;
+  SNMP_ERRORSTATUS_TOOBIG = 1;
   {$EXTERNALSYM SNMP_ERRORSTATUS_TOOBIG}
-  SNMP_ERRORSTATUS_NOSUCHNAME                 = 2;
+  SNMP_ERRORSTATUS_NOSUCHNAME = 2;
   {$EXTERNALSYM SNMP_ERRORSTATUS_NOSUCHNAME}
-  SNMP_ERRORSTATUS_BADVALUE                   = 3;
+  SNMP_ERRORSTATUS_BADVALUE = 3;
   {$EXTERNALSYM SNMP_ERRORSTATUS_BADVALUE}
-  SNMP_ERRORSTATUS_READONLY                   = 4;
+  SNMP_ERRORSTATUS_READONLY = 4;
   {$EXTERNALSYM SNMP_ERRORSTATUS_READONLY}
-  SNMP_ERRORSTATUS_GENERR                     = 5;
+  SNMP_ERRORSTATUS_GENERR = 5;
   {$EXTERNALSYM SNMP_ERRORSTATUS_GENERR}
-  SNMP_ERRORSTATUS_NOACCESS                   = 6;
+  SNMP_ERRORSTATUS_NOACCESS = 6;
   {$EXTERNALSYM SNMP_ERRORSTATUS_NOACCESS}
-  SNMP_ERRORSTATUS_WRONGTYPE                  = 7;
+  SNMP_ERRORSTATUS_WRONGTYPE = 7;
   {$EXTERNALSYM SNMP_ERRORSTATUS_WRONGTYPE}
-  SNMP_ERRORSTATUS_WRONGLENGTH                = 8;
+  SNMP_ERRORSTATUS_WRONGLENGTH = 8;
   {$EXTERNALSYM SNMP_ERRORSTATUS_WRONGLENGTH}
-  SNMP_ERRORSTATUS_WRONGENCODING              = 9;
+  SNMP_ERRORSTATUS_WRONGENCODING = 9;
   {$EXTERNALSYM SNMP_ERRORSTATUS_WRONGENCODING}
-  SNMP_ERRORSTATUS_WRONGVALUE                 = 10;
+  SNMP_ERRORSTATUS_WRONGVALUE = 10;
   {$EXTERNALSYM SNMP_ERRORSTATUS_WRONGVALUE}
-  SNMP_ERRORSTATUS_NOCREATION                 = 11;
+  SNMP_ERRORSTATUS_NOCREATION = 11;
   {$EXTERNALSYM SNMP_ERRORSTATUS_NOCREATION}
-  SNMP_ERRORSTATUS_INCONSISTENTVALUE          = 12;
+  SNMP_ERRORSTATUS_INCONSISTENTVALUE = 12;
   {$EXTERNALSYM SNMP_ERRORSTATUS_INCONSISTENTVALUE}
-  SNMP_ERRORSTATUS_RESOURCEUNAVAILABLE        = 13;
+  SNMP_ERRORSTATUS_RESOURCEUNAVAILABLE = 13;
   {$EXTERNALSYM SNMP_ERRORSTATUS_RESOURCEUNAVAILABLE}
-  SNMP_ERRORSTATUS_COMMITFAILED               = 14;
+  SNMP_ERRORSTATUS_COMMITFAILED = 14;
   {$EXTERNALSYM SNMP_ERRORSTATUS_COMMITFAILED}
-  SNMP_ERRORSTATUS_UNDOFAILED                 = 15;
+  SNMP_ERRORSTATUS_UNDOFAILED = 15;
   {$EXTERNALSYM SNMP_ERRORSTATUS_UNDOFAILED}
-  SNMP_ERRORSTATUS_AUTHORIZATIONERROR         = 16;
+  SNMP_ERRORSTATUS_AUTHORIZATIONERROR = 16;
   {$EXTERNALSYM SNMP_ERRORSTATUS_AUTHORIZATIONERROR}
-  SNMP_ERRORSTATUS_NOTWRITABLE                = 17;
+  SNMP_ERRORSTATUS_NOTWRITABLE = 17;
   {$EXTERNALSYM SNMP_ERRORSTATUS_NOTWRITABLE}
-  SNMP_ERRORSTATUS_INCONSISTENTNAME           = 18;
+  SNMP_ERRORSTATUS_INCONSISTENTNAME = 18;
   {$EXTERNALSYM SNMP_ERRORSTATUS_INCONSISTENTNAME}
 
 { SNMPv1 Trap Types }
 
-  SNMP_GENERICTRAP_COLDSTART                  = 0;
+  SNMP_GENERICTRAP_COLDSTART = 0;
   {$EXTERNALSYM SNMP_GENERICTRAP_COLDSTART}
-  SNMP_GENERICTRAP_WARMSTART                  = 1;
+  SNMP_GENERICTRAP_WARMSTART = 1;
   {$EXTERNALSYM SNMP_GENERICTRAP_WARMSTART}
-  SNMP_GENERICTRAP_LINKDOWN                   = 2;
+  SNMP_GENERICTRAP_LINKDOWN = 2;
   {$EXTERNALSYM SNMP_GENERICTRAP_LINKDOWN}
-  SNMP_GENERICTRAP_LINKUP                     = 3;
+  SNMP_GENERICTRAP_LINKUP = 3;
   {$EXTERNALSYM SNMP_GENERICTRAP_LINKUP}
-  SNMP_GENERICTRAP_AUTHFAILURE                = 4;
+  SNMP_GENERICTRAP_AUTHFAILURE = 4;
   {$EXTERNALSYM SNMP_GENERICTRAP_AUTHFAILURE}
-  SNMP_GENERICTRAP_EGPNEIGHLOSS               = 5;
+  SNMP_GENERICTRAP_EGPNEIGHLOSS = 5;
   {$EXTERNALSYM SNMP_GENERICTRAP_EGPNEIGHLOSS}
-  SNMP_GENERICTRAP_ENTERSPECIFIC              = 6;
+  SNMP_GENERICTRAP_ENTERSPECIFIC = 6;
   {$EXTERNALSYM SNMP_GENERICTRAP_ENTERSPECIFIC}
 
 { SNMP Access Types }
 
-  SNMP_ACCESS_NONE                            = 0;
+  SNMP_ACCESS_NONE = 0;
   {$EXTERNALSYM SNMP_ACCESS_NONE}
-  SNMP_ACCESS_NOTIFY                          = 1;
+  SNMP_ACCESS_NOTIFY = 1;
   {$EXTERNALSYM SNMP_ACCESS_NOTIFY}
-  SNMP_ACCESS_READ_ONLY                       = 2;
+  SNMP_ACCESS_READ_ONLY = 2;
   {$EXTERNALSYM SNMP_ACCESS_READ_ONLY}
-  SNMP_ACCESS_READ_WRITE                      = 3;
+  SNMP_ACCESS_READ_WRITE = 3;
   {$EXTERNALSYM SNMP_ACCESS_READ_WRITE}
-  SNMP_ACCESS_READ_CREATE                     = 4;
+  SNMP_ACCESS_READ_CREATE = 4;
   {$EXTERNALSYM SNMP_ACCESS_READ_CREATE}
 
 { SNMP API Return Code Definitions }
 
 type
-  SNMPAPI                                     = Integer;
+  SNMPAPI = Integer;
   {$EXTERNALSYM SNMPAPI}
 const
-  SNMPAPI_NOERROR                             = True;
+  SNMPAPI_NOERROR = True;
   {$EXTERNALSYM SNMPAPI_NOERROR}
-  SNMPAPI_ERROR                               = False;
+  SNMPAPI_ERROR = False;
   {$EXTERNALSYM SNMPAPI_ERROR}
 
 { SNMP Extension API Type Definitions }
 
 type
-  TSnmpExtensionInit = function (dwUptimeReference: DWORD; var phSubagentTrapEvent: THandle;
+  TSnmpExtensionInit = function(dwUptimeReference: DWORD;
+    var phSubagentTrapEvent: THandle;
     var pFirstSupportedRegion: PAsnObjectIdentifier): Boolean; stdcall;
 
-  TSnmpExtensionInitEx = function (var pNextSupportedRegion: PAsnObjectIdentifier): Boolean; stdcall;
+  TSnmpExtensionInitEx = function(
+    var pNextSupportedRegion: PAsnObjectIdentifier): Boolean; stdcall;
 
-  TSnmpExtensionMonitor = function (pAgentMgmtData: Pointer): Boolean; stdcall;
+  TSnmpExtensionMonitor = function(pAgentMgmtData: Pointer): Boolean; stdcall;
 
-  TSnmpExtensionQuery = function (bPduType: Byte; var pVarBindList: TSnmpVarBindList;
-    var pErrorStatus: TAsnInteger32; var pErrorIndex: TAsnInteger32): Boolean; stdcall;
+  TSnmpExtensionQuery = function(bPduType: Byte;
+    var pVarBindList: TSnmpVarBindList;
+    var pErrorStatus: TAsnInteger32; var pErrorIndex: TAsnInteger32): Boolean;
+    stdcall;
 
-  TSnmpExtensionQueryEx = function (nRequestType: UINT; nTransactionId: UINT; var pVarBindList: PSnmpVarBindList;
-    var pContextInfo: PAsnOctetString; var pErrorStatus: TAsnInteger32; var pErrorIndex: TAsnInteger32): Boolean; stdcall;
+  TSnmpExtensionQueryEx = function(nRequestType: UINT;
+    nTransactionId: UINT; var pVarBindList: PSnmpVarBindList;
+    var pContextInfo: PAsnOctetString; var pErrorStatus: TAsnInteger32;
+    var pErrorIndex: TAsnInteger32): Boolean; stdcall;
 
-  TSnmpExtensionTrap = function (pEnterpriseOid: PAsnObjectIdentifier; var pGenericTrapId: TAsnInteger32;
-     var pSpecificTrapId: TAsnInteger32; var pTimeStamp: TAsnTimeticks; var pVarBindList: PSnmpVarBindList): Boolean; stdcall;
+  TSnmpExtensionTrap = function(pEnterpriseOid: PAsnObjectIdentifier;
+    var pGenericTrapId: TAsnInteger32;
+    var pSpecificTrapId: TAsnInteger32; var pTimeStamp: TAsnTimeticks;
+    var pVarBindList: PSnmpVarBindList): Boolean; stdcall;
 
   TSnmpExtensionClose = procedure; stdcall;
 
@@ -342,20 +350,30 @@ type
 {$IFDEF SNMP_DYNAMIC_LINK}
 
 var
-  SnmpUtilOidCpy: function(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidAppend: function(pOidDst: PAsnObjectIdentifier; pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
-  SnmpUtilOidNCmp: function(pOid1, pOid2: PAsnObjectIdentifier; nSubIds: UINT): SNMPAPI; stdcall;
-  SnmpUtilOidCmp: function(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidCpy: function(pOidDst: PAsnObjectIdentifier;
+  pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidAppend: function(pOidDst: PAsnObjectIdentifier;
+  pOidSrc: PAsnObjectIdentifier): SNMPAPI; stdcall;
+  SnmpUtilOidNCmp: function(pOid1, pOid2: PAsnObjectIdentifier;
+  nSubIds: UINT): SNMPAPI; stdcall;
+  SnmpUtilOidCmp: function(pOid1, pOid2: PAsnObjectIdentifier): SNMPAPI;
+  stdcall;
   SnmpUtilOidFree: procedure(pOid: TAsnObjectIdentifier); stdcall;
-  SnmpUtilOctetsCmp: function(pOctets1, pOctets2: PAsnOctetString): SNMPAPI; stdcall;
-  SnmpUtilOctetsNCmp: function(pOctets1, pOctets2: PAsnOctetString; nChars: UINT): SNMPAPI; stdcall;
-  SnmpUtilOctetsCpy: function(pOctetsDst, pOctetsSrc: PAsnOctetString): SNMPAPI; stdcall;
+  SnmpUtilOctetsCmp: function(pOctets1, pOctets2: PAsnOctetString): SNMPAPI;
+  stdcall;
+  SnmpUtilOctetsNCmp: function(pOctets1, pOctets2: PAsnOctetString;
+  nChars: UINT): SNMPAPI; stdcall;
+  SnmpUtilOctetsCpy: function(pOctetsDst, pOctetsSrc:
+  PAsnOctetString): SNMPAPI;
+  stdcall;
   SnmpUtilOctetsFree: procedure(pOctets: PAsnOctetString); stdcall;
   SnmpUtilAsnAnyCpy: function(pAnyDst, pAnySrc: PAsnAny): SNMPAPI; stdcall;
   SnmpUtilAsnAnyFree: procedure(pAny: PAsnAny); stdcall;
-  SnmpUtilVarBindCpy: function(pVbDst: PSnmpVarBind; pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
+  SnmpUtilVarBindCpy: function(pVbDst: PSnmpVarBind;
+  pVbSrc: PSnmpVarBind): SNMPAPI; stdcall;
   SnmpUtilVarBindFree: procedure(pVb: PSnmpVarBind); stdcall;
-  SnmpUtilVarBindListCpy: function(pVblDst: PSnmpVarBindList; pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
+  SnmpUtilVarBindListCpy: function(pVblDst: PSnmpVarBindList;
+  pVblSrc: PSnmpVarBindList): SNMPAPI; stdcall;
   SnmpUtilVarBindListFree: procedure(pVbl: PSnmpVarBindList); stdcall;
   SnmpUtilMemFree: procedure(pMem: Pointer); stdcall;
   SnmpUtilMemAlloc: function(nBytes: UINT): Pointer; stdcall;
@@ -427,26 +445,26 @@ procedure SnmpSvcSetLogType(nLogType: Integer); stdcall;
 { SNMP Debugging Definitions }
 
 const
-  SNMP_LOG_SILENT                 = $0;
+  SNMP_LOG_SILENT = $0;
   {$EXTERNALSYM SNMP_LOG_SILENT}
-  SNMP_LOG_FATAL                  = $1;
+  SNMP_LOG_FATAL = $1;
   {$EXTERNALSYM SNMP_LOG_FATAL}
-  SNMP_LOG_ERROR                  = $2;
+  SNMP_LOG_ERROR = $2;
   {$EXTERNALSYM SNMP_LOG_ERROR}
-  SNMP_LOG_WARNING                = $3;
+  SNMP_LOG_WARNING = $3;
   {$EXTERNALSYM SNMP_LOG_WARNING}
-  SNMP_LOG_TRACE                  = $4;
+  SNMP_LOG_TRACE = $4;
   {$EXTERNALSYM SNMP_LOG_TRACE}
-  SNMP_LOG_VERBOSE                = $5;
+  SNMP_LOG_VERBOSE = $5;
   {$EXTERNALSYM SNMP_LOG_VERBOSE}
 
-  SNMP_OUTPUT_TO_CONSOLE          = $1;
+  SNMP_OUTPUT_TO_CONSOLE = $1;
   {$EXTERNALSYM SNMP_OUTPUT_TO_CONSOLE}
-  SNMP_OUTPUT_TO_LOGFILE          = $2;
+  SNMP_OUTPUT_TO_LOGFILE = $2;
   {$EXTERNALSYM SNMP_OUTPUT_TO_LOGFILE}
-  SNMP_OUTPUT_TO_EVENTLOG         = $4;  // no longer supported
+  SNMP_OUTPUT_TO_EVENTLOG = $4;  // no longer supported
   {$EXTERNALSYM SNMP_OUTPUT_TO_EVENTLOG}
-  SNMP_OUTPUT_TO_DEBUGGER         = $8;
+  SNMP_OUTPUT_TO_DEBUGGER = $8;
   {$EXTERNALSYM SNMP_OUTPUT_TO_DEBUGGER}
 
 { SNMP Debugging Prototypes }
@@ -458,7 +476,7 @@ procedure SnmpUtilDbgPrint(nLogLevel: Integer; szFormat: PChar); stdcall;
 {$ELSE SNMP_DYNAMIC_LINK}
 
 var
-  SnmpUtilDbgPrint: procedure (nLogLevel: Integer; szFormat: PChar); stdcall;
+  SnmpUtilDbgPrint: procedure(nLogLevel: Integer; szFormat: PChar); stdcall;
 
 {$ENDIF ~SNMP_DYNAMIC_LINK}
 
@@ -469,45 +487,46 @@ var
 const
   DEFINE_NULLOID: TAsnObjectIdentifier = (idLength: 0; ids: nil);
   {$EXTERNALSYM DEFINE_NULLOID}
-  DEFINE_NULLOCTETS: TAsnOctetString = (stream: nil; length: 0; dynamic_: False);
+  DEFINE_NULLOCTETS: TAsnOctetString = (stream: nil; length: 0;
+    dynamic_: False);
   {$EXTERNALSYM DEFINE_NULLOCTETS}
 
-  DEFAULT_SNMP_PORT_UDP       = 161;
+  DEFAULT_SNMP_PORT_UDP = 161;
   {$EXTERNALSYM DEFAULT_SNMP_PORT_UDP}
-  DEFAULT_SNMP_PORT_IPX       = 36879;
+  DEFAULT_SNMP_PORT_IPX = 36879;
   {$EXTERNALSYM DEFAULT_SNMP_PORT_IPX}
-  DEFAULT_SNMPTRAP_PORT_UDP   = 162;
+  DEFAULT_SNMPTRAP_PORT_UDP = 162;
   {$EXTERNALSYM DEFAULT_SNMPTRAP_PORT_UDP}
-  DEFAULT_SNMPTRAP_PORT_IPX   = 36880;
+  DEFAULT_SNMPTRAP_PORT_IPX = 36880;
   {$EXTERNALSYM DEFAULT_SNMPTRAP_PORT_IPX}
-  SNMP_MAX_OID_LEN            = 128;
+  SNMP_MAX_OID_LEN = 128;
   {$EXTERNALSYM SNMP_MAX_OID_LEN}
 
 { API Error Code Definitions }
 
-  SNMP_MEM_ALLOC_ERROR            = 1;
+  SNMP_MEM_ALLOC_ERROR = 1;
   {$EXTERNALSYM SNMP_MEM_ALLOC_ERROR}
-  SNMP_BERAPI_INVALID_LENGTH      = 10;
+  SNMP_BERAPI_INVALID_LENGTH = 10;
   {$EXTERNALSYM SNMP_BERAPI_INVALID_LENGTH}
-  SNMP_BERAPI_INVALID_TAG         = 11;
+  SNMP_BERAPI_INVALID_TAG = 11;
   {$EXTERNALSYM SNMP_BERAPI_INVALID_TAG}
-  SNMP_BERAPI_OVERFLOW            = 12;
+  SNMP_BERAPI_OVERFLOW = 12;
   {$EXTERNALSYM SNMP_BERAPI_OVERFLOW}
-  SNMP_BERAPI_SHORT_BUFFER        = 13;
+  SNMP_BERAPI_SHORT_BUFFER = 13;
   {$EXTERNALSYM SNMP_BERAPI_SHORT_BUFFER}
-  SNMP_BERAPI_INVALID_OBJELEM     = 14;
+  SNMP_BERAPI_INVALID_OBJELEM = 14;
   {$EXTERNALSYM SNMP_BERAPI_INVALID_OBJELEM}
-  SNMP_PDUAPI_UNRECOGNIZED_PDU    = 20;
+  SNMP_PDUAPI_UNRECOGNIZED_PDU = 20;
   {$EXTERNALSYM SNMP_PDUAPI_UNRECOGNIZED_PDU}
-  SNMP_PDUAPI_INVALID_ES          = 21;
+  SNMP_PDUAPI_INVALID_ES = 21;
   {$EXTERNALSYM SNMP_PDUAPI_INVALID_ES}
-  SNMP_PDUAPI_INVALID_GT          = 22;
+  SNMP_PDUAPI_INVALID_GT = 22;
   {$EXTERNALSYM SNMP_PDUAPI_INVALID_GT}
-  SNMP_AUTHAPI_INVALID_VERSION    = 30;
+  SNMP_AUTHAPI_INVALID_VERSION = 30;
   {$EXTERNALSYM SNMP_AUTHAPI_INVALID_VERSION}
-  SNMP_AUTHAPI_INVALID_MSG_TYPE   = 31;
+  SNMP_AUTHAPI_INVALID_MSG_TYPE = 31;
   {$EXTERNALSYM SNMP_AUTHAPI_INVALID_MSG_TYPE}
-  SNMP_AUTHAPI_TRIV_AUTH_FAILED   = 32;
+  SNMP_AUTHAPI_TRIV_AUTH_FAILED = 32;
   {$EXTERNALSYM SNMP_AUTHAPI_TRIV_AUTH_FAILED}
 
 { Support for old definitions (support disabled via SNMPSTRICT) }
@@ -680,13 +699,20 @@ begin
     Result := SnmpExtensionLoaded;
     if Result then
     begin
-      @SnmpExtensionInit := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionInit');
-      @SnmpExtensionInitEx := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionInitEx');
-      @SnmpExtensionMonitor := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionMonitor');
-      @SnmpExtensionQuery := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionQuery');
-      @SnmpExtensionQueryEx := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionQueryEx');
-      @SnmpExtensionTrap := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionTrap');
-      @SnmpExtensionClose := GetProcAddress(ExtensionLibHandle, 'SnmpExtensionClose');
+      @SnmpExtensionInit :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionInit');
+      @SnmpExtensionInitEx :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionInitEx');
+      @SnmpExtensionMonitor :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionMonitor');
+      @SnmpExtensionQuery :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionQuery');
+      @SnmpExtensionQueryEx :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionQueryEx');
+      @SnmpExtensionTrap :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionTrap');
+      @SnmpExtensionClose :=
+        GetProcAddress(ExtensionLibHandle, 'SnmpExtensionClose');
       Result := Assigned(SnmpExtensionInit);
       if not Result then
         UnloadSnmpExtension;
@@ -790,24 +816,34 @@ begin
       @SnmpUtilOidCmp := GetProcAddress(SnmpLibHandle, 'SnmpUtilOidCmp');
       @SnmpUtilOidFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilOidFree');
       @SnmpUtilOctetsCmp := GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsCmp');
-      @SnmpUtilOctetsNCmp := GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsNCmp');
+      @SnmpUtilOctetsNCmp :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsNCmp');
       @SnmpUtilOctetsCpy := GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsCpy');
-      @SnmpUtilOctetsFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsFree');
+      @SnmpUtilOctetsFree :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilOctetsFree');
       @SnmpUtilAsnAnyCpy := GetProcAddress(SnmpLibHandle, 'SnmpUtilAsnAnyCpy');
-      @SnmpUtilAsnAnyFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilAsnAnyFree');
-      @SnmpUtilVarBindCpy := GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindCpy');
-      @SnmpUtilVarBindFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindFree');
-      @SnmpUtilVarBindListCpy := GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindListCpy');
-      @SnmpUtilVarBindListFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindListFree');
+      @SnmpUtilAsnAnyFree :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilAsnAnyFree');
+      @SnmpUtilVarBindCpy :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindCpy');
+      @SnmpUtilVarBindFree :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindFree');
+      @SnmpUtilVarBindListCpy :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindListCpy');
+      @SnmpUtilVarBindListFree :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilVarBindListFree');
       @SnmpUtilMemFree := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemFree');
       @SnmpUtilMemAlloc := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemAlloc');
-      @SnmpUtilMemReAlloc := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemReAlloc');
+      @SnmpUtilMemReAlloc :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilMemReAlloc');
       @SnmpUtilOidToA := GetProcAddress(SnmpLibHandle, 'SnmpUtilOidToA');
       @SnmpUtilIdsToA := GetProcAddress(SnmpLibHandle, 'SnmpUtilIdsToA');
       @SnmpUtilPrintOid := GetProcAddress(SnmpLibHandle, 'SnmpUtilPrintOid');
-      @SnmpUtilPrintAsnAny := GetProcAddress(SnmpLibHandle, 'SnmpUtilPrintAsnAny');
+      @SnmpUtilPrintAsnAny :=
+        GetProcAddress(SnmpLibHandle, 'SnmpUtilPrintAsnAny');
       @SnmpSvcGetUptime := GetProcAddress(SnmpLibHandle, 'SnmpSvcGetUptime');
-      @SnmpSvcSetLogLevel := GetProcAddress(SnmpLibHandle, 'SnmpSvcSetLogLevel');
+      @SnmpSvcSetLogLevel :=
+        GetProcAddress(SnmpLibHandle, 'SnmpSvcSetLogLevel');
       @SnmpSvcSetLogType := GetProcAddress(SnmpLibHandle, 'SnmpSvcSetLogType');
       @SnmpUtilDbgPrint := GetProcAddress(SnmpLibHandle, 'SnmpUtilDbgPrint');
       {$IFNDEF SNMPSTRICT}
@@ -829,7 +865,7 @@ begin
       @SNMP_DBG_realloc := GetProcAddress(SnmpLibHandle, 'SnmpUtilMemReAlloc');
       {$ENDIF ~SNMPSTRICT}
       Result := True;
-   end;
+    end;
   end;
 end;
 

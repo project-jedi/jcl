@@ -52,7 +52,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    private
+  private
     FDetailsVisible: Boolean;
     FThreadID: DWORD;
     FLastActiveControl: TWinControl;
@@ -94,7 +94,8 @@ implementation
 
 uses
   ClipBrd, Math,
-  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings, JclSysInfo, JclWin32;
+  JclBase, JclFileUtils, JclHookExcept, JclPeImage, JclStrings,
+  JclSysInfo, JclWin32;
 
 resourcestring
   RsAppError = '%s - application error';
@@ -130,7 +131,8 @@ begin
   Addr2 := Cardinal(List.Objects[Index2]);
   if Addr1 > Addr2 then
     Result := 1
-  else if Addr1 < Addr2 then
+  else
+  if Addr1 < Addr2 then
     Result := -1
   else
     Result := 0;
@@ -159,7 +161,7 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset      = $86;
+  CallOffset = $86;
   CallOffsetDebug = $94;
 type
   PCALLInstruction = ^TCALLInstruction;
@@ -176,15 +178,21 @@ var
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
     try
-      CallAddress := Pointer(Cardinal(TApplicationHandleExceptionAddr) + Offset);
+      CallAddress := Pointer(
+        Cardinal(TApplicationHandleExceptionAddr) + Offset);
       CALLInstruction.Call := $E8;
       Result := PCALLInstruction(CallAddress)^.Call = CALLInstruction.Call;
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(
+            Pointer(Integer(CallAddress) +
+            Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) =
+            SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address =
+            Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) -
+            SizeOf(CALLInstruction);
       end;
     except
       Result := False;
@@ -192,15 +200,21 @@ var
   end;
 
 begin
-  TApplicationHandleExceptionAddr := PeMapImgResolvePackageThunk(@TApplication.HandleException);
-  SysUtilsShowExceptionAddr := PeMapImgResolvePackageThunk(@SysUtils.ShowException);
-  if Assigned(TApplicationHandleExceptionAddr) and Assigned(SysUtilsShowExceptionAddr) then
+  TApplicationHandleExceptionAddr :=
+    PeMapImgResolvePackageThunk(@TApplication.HandleException);
+  SysUtilsShowExceptionAddr :=
+    PeMapImgResolvePackageThunk(@SysUtils.ShowException);
+  if Assigned(TApplicationHandleExceptionAddr) and
+    Assigned(SysUtilsShowExceptionAddr) then
   begin
-    Result := CheckAddressForOffset(CallOffset) or CheckAddressForOffset(CallOffsetDebug);
+    Result := CheckAddressForOffset(CallOffset) or
+      CheckAddressForOffset(CallOffsetDebug);
     if Result then
     begin
-      CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
-      Result := WriteProtectedMemory(CallAddress, @CallInstruction, SizeOf(CallInstruction), WrittenBytes);
+      CALLInstruction.Address :=
+        Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
+      Result := WriteProtectedMemory(CallAddress, @CallInstruction,
+        SizeOf(CallInstruction), WrittenBytes);
     end;
   end
   else
@@ -279,7 +293,7 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
- 
+
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
@@ -288,7 +302,8 @@ begin
     StackList := JclGetExceptStackList(FThreadID);
     if Assigned(StackList) then
     begin
-      DetailsMemo.Lines.Add(Format(RsStackList, [DateTimeToStr(StackList.TimeStamp)]));
+      DetailsMemo.Lines.Add(Format(RsStackList,
+        [DateTimeToStr(StackList.TimeStamp)]));
       StackList.AddToStrings(DetailsMemo.Lines, True, True, True, True);
       NextDetailBlock;
     end;
@@ -296,8 +311,10 @@ begin
 
 
     // System and OS information
-    DetailsMemo.Lines.Add(Format(RsOSVersion, [GetWindowsVersionString, NtProductTypeString,
-      Win32MajorVersion, Win32MinorVersion, Win32BuildNumber, Win32CSDVersion]));
+    DetailsMemo.Lines.Add(Format(RsOSVersion,
+      [GetWindowsVersionString, NtProductTypeString,
+      Win32MajorVersion, Win32MinorVersion, Win32BuildNumber,
+      Win32CSDVersion]));
     GetCpuInfo(CpuInfo);
     with CpuInfo do
     begin
@@ -307,13 +324,15 @@ begin
         ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
       if ExMMX then
         ProcessorDetails := ProcessorDetails + ' MMXex'
-      else if MMX then
+      else
+      if MMX then
         ProcessorDetails := ProcessorDetails + ' MMX';
       if SSE > 0 then
         ProcessorDetails := Format('%s SSE%d', [ProcessorDetails, SSE]);
       if Ex3DNow then
         ProcessorDetails := ProcessorDetails + ' 3DNow!ex'
-      else if _3DNow then
+      else
+      if _3DNow then
         ProcessorDetails := ProcessorDetails + ' 3DNow!';
       if Is64Bits then
         ProcessorDetails := ProcessorDetails + ' 64 bits';
@@ -321,9 +340,11 @@ begin
         ProcessorDetails := ProcessorDetails + ' DEP';
     end;
     DetailsMemo.Lines.Add(ProcessorDetails);
-    DetailsMemo.Lines.Add(Format(RsMemory, [GetTotalPhysicalMemory div 1024 div 1024,
+    DetailsMemo.Lines.Add(Format(RsMemory,
+      [GetTotalPhysicalMemory div 1024 div 1024,
       GetFreePhysicalMemory div 1024 div 1024]));
-    DetailsMemo.Lines.Add(Format(RsScreenRes, [Screen.Width, Screen.Height, GetBPP]));
+    DetailsMemo.Lines.Add(Format(RsScreenRes,
+      [Screen.Width, Screen.Height, GetBPP]));
     NextDetailBlock;
 
 
@@ -345,22 +366,27 @@ begin
         else
         if PETarget = taWin64 then
           NtHeaders64 := PeMapImgNtHeaders64(Pointer(ModuleBase));
-        if (NtHeaders32 <> nil) and (NtHeaders32^.OptionalHeader.ImageBase <> ModuleBase) then
-          ImageBaseStr := Format('<%.8x> ', [NtHeaders32^.OptionalHeader.ImageBase])
+        if (NtHeaders32 <> nil) and
+          (NtHeaders32^.OptionalHeader.ImageBase <> ModuleBase) then
+          ImageBaseStr := Format('<%.8x> ',
+            [NtHeaders32^.OptionalHeader.ImageBase])
         else
-        if (NtHeaders64 <> nil) and (NtHeaders64^.OptionalHeader.ImageBase <> ModuleBase) then
-          ImageBaseStr := Format('<%.8x> ', [NtHeaders64^.OptionalHeader.ImageBase])
+        if (NtHeaders64 <> nil) and
+          (NtHeaders64^.OptionalHeader.ImageBase <> ModuleBase) then
+          ImageBaseStr := Format('<%.8x> ',
+            [NtHeaders64^.OptionalHeader.ImageBase])
         else
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
           with TJclFileVersionInfo.Create(ModuleName) do
-          try
-            DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
-            if FileDescription <> '' then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
-          finally
-            Free;
-          end
+            try
+              DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion +
+                ' - ' + FileVersion);
+              if FileDescription <> '' then
+                DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
+            finally
+              Free;
+            end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
       end;
@@ -395,7 +421,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ExceptionHandler(Sender: TObject; E: Exception);
+class procedure TExceptionDialog.ExceptionHandler(Sender: TObject;
+  E: Exception);
 begin
   if Assigned(E) then
     if ExceptionShowing then
@@ -416,7 +443,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ExceptionThreadHandler(Thread: TJclDebugThread);
+class procedure TExceptionDialog.ExceptionThreadHandler(
+  Thread: TJclDebugThread);
 var
   E: Exception;
 begin
@@ -457,7 +485,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TExceptionDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TExceptionDialog.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
 begin
   if (Key = Ord('C')) and (ssCtrl in Shift) then
   begin
@@ -487,7 +516,8 @@ procedure TExceptionDialog.FormShow(Sender: TObject);
 begin
   BeforeCreateDetails;
   MessageBeep(MB_ICONERROR);
-  if (GetCurrentThreadId = MainThreadID) and (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
+  if (GetCurrentThreadId = MainThreadID) and
+    (GetWindowThreadProcessId(Handle, nil) = MainThreadID) then
     PostMessage(Handle, UM_CREATEDETAILS, 0, 0)
   else
     CreateReport;
@@ -497,14 +527,16 @@ end;
 
 function TExceptionDialog.GetReportAsText: string;
 begin
-  Result := StrEnsureSuffix(AnsiCrLf, TextLabel.Text) + AnsiCrLf + DetailsMemo.Text;
+  Result := StrEnsureSuffix(AnsiCrLf, TextLabel.Text) + AnsiCrLf +
+    DetailsMemo.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TExceptionDialog.NextDetailBlock;
 begin
-  DetailsMemo.Lines.Add(StrRepeat(ReportNewBlockDelimiterChar, ReportMaxColumns));
+  DetailsMemo.Lines.Add(StrRepeat(ReportNewBlockDelimiterChar,
+    ReportMaxColumns));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -554,7 +586,7 @@ begin
     else
       Height := FNonDetailsHeight;
     Constraints.MinHeight := FNonDetailsHeight;
-    Constraints.MaxHeight := FNonDetailsHeight
+    Constraints.MaxHeight := FNonDetailsHeight;
   end;
   DetailsBtn.Caption := DetailsCaption;
   DetailsMemo.Enabled := Value;
@@ -562,7 +594,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-class procedure TExceptionDialog.ShowException(E: TObject; Thread: TJclDebugThread);
+class procedure TExceptionDialog.ShowException(E: TObject;
+  Thread: TJclDebugThread);
 begin
   if ExceptionDialog = nil then
     ExceptionDialog := ExceptionDialogClass.Create(Application);
@@ -575,13 +608,15 @@ begin
         FThreadID := MainThreadID;
       FLastActiveControl := Screen.ActiveControl;
       if E is Exception then
-        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', Exception(E).Message))
+        TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.',
+          Exception(E).Message))
       else
         TextLabel.Text := AdjustLineBreaks(StrEnsureSuffix('.', E.ClassName));
       UpdateTextLabelScrollbars;
       DetailsMemo.Lines.Add(Format(RsExceptionClass, [E.ClassName]));
       if E is Exception then
-        DetailsMemo.Lines.Add(Format(RsExceptionMessage, [StrEnsureSuffix('.', Exception(E).Message)]));
+        DetailsMemo.Lines.Add(Format(RsExceptionMessage,
+          [StrEnsureSuffix('.', Exception(E).Message)]));
       if Thread = nil then
         DetailsMemo.Lines.Add(Format(RsExceptionAddr, [ExceptAddr]))
       else
@@ -607,10 +642,11 @@ end;
 procedure TExceptionDialog.UpdateTextLabelScrollbars;
 begin
   Canvas.Font := TextLabel.Font;
-  if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
+  if TextLabel.Lines.Count * Canvas.TextHeight('Wg') >
+    TextLabel.ClientHeight then
     TextLabel.ScrollBars := ssVertical
   else
-    TextLabel.ScrollBars := ssNone;   
+    TextLabel.ScrollBars := ssNone;
 end;
 
 //==================================================================================================
@@ -632,7 +668,8 @@ begin
     JclStackTrackingOptions := JclStackTrackingOptions + [stRawMode];
     JclStackTrackingOptions := JclStackTrackingOptions + [stStaticModuleList];
     JclStackTrackingOptions := JclStackTrackingOptions + [stDelayedTrace];
-    JclDebugThreadList.OnSyncException := TExceptionDialog.ExceptionThreadHandler;
+    JclDebugThreadList.OnSyncException :=
+      TExceptionDialog.ExceptionThreadHandler;
     JclStartExceptionTracking;
     if HookTApplicationHandleException then
       JclTrackExceptionsFromLibraries;

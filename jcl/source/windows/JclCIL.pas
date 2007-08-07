@@ -43,7 +43,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, 
+  Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   {$IFDEF RTL130_UP}
@@ -53,7 +53,7 @@ uses
 
 type
   TJclOpCode =
-   (opNop, opBreak,
+    (opNop, opBreak,
     opLdArg_0, opLdArg_1, opLdArg_2, opLdArg_3,
     opLdLoc_0, opLdLoc_1, opLdLoc_2, opLdLoc_3,
     opStLoc_0, opStLoc_1, opStLoc_2, opStLoc_3,
@@ -133,7 +133,7 @@ type
   TJclInstructionDumpILOptions = set of TJclInstructionDumpILOption;
 
   TJclInstructionParamType =
-   (ptVoid, ptI1, ptI2, ptI4, ptI8, ptU1, ptU2, ptU4, ptU8, ptR4, ptR8,
+    (ptVoid, ptI1, ptI2, ptI4, ptI8, ptU1, ptU2, ptU4, ptU8, ptR4, ptR8,
     ptToken, ptSOff, ptLOff, ptArray);
 
 const
@@ -158,7 +158,8 @@ type
     function FormatLabel(Offset: Integer): string;
   protected
     function GetSize: DWORD; virtual;
-    function DumpILOption(Option: TJclInstructionDumpILOption): string; virtual;
+    function DumpILOption(Option: TJclInstructionDumpILOption): string;
+      virtual;
   public
     constructor Create(AOwner: TJclClrILGenerator; AOpCode: TJclOpCode);
     procedure Load(Stream: TStream); virtual;
@@ -192,7 +193,8 @@ type
     destructor Destroy; override;
     function DumpIL(Options: TJclInstructionDumpILOptions): string;
     property Method: TJclClrMethodBody read FMethod;
-    property Instructions[const Idx: Integer]: TJclInstruction read GetInstruction;
+    property Instructions[const Idx: Integer]: TJclInstruction
+      read GetInstruction;
     property InstructionCount: Integer read GetInstructionCount;
   end;
 
@@ -224,137 +226,137 @@ const
   STP1 = $FE;
 
   OpCodeInfos: array [TJclOpCode, TJclOpCodeInfoType] of string =
-   (
-    ('nop',            RsCILCmdnop,         RsCILDescrnop),
-    ('break',          RsCILCmdbreak,       RsCILDescrbreak),
-    ('ldarg.0',        RsCILCmdldarg0,      RsCILDescrldarg0),
-    ('ldarg.1',        RsCILCmdldarg1,      RsCILDescrldarg1),
-    ('ldarg.2',        RsCILCmdldarg2,      RsCILDescrldarg2),
-    ('ldarg.3',        RsCILCmdldarg3,      RsCILDescrldarg3),
-    ('ldloc.0',        RsCILCmdldloc0,      RsCILDescrldloc0),
-    ('ldloc.1',        RsCILCmdldloc1,      RsCILDescrldloc1),
-    ('ldloc.2',        RsCILCmdldloc2,      RsCILDescrldloc2),
-    ('ldloc.3',        RsCILCmdldloc3,      RsCILDescrldloc3),
-    ('stloc.0',        RsCILCmdstloc0,      RsCILDescrstloc0),
-    ('stloc.1',        RsCILCmdstloc1,      RsCILDescrstloc1),
-    ('stloc.2',        RsCILCmdstloc2,      RsCILDescrstloc2),
-    ('stloc.3',        RsCILCmdstloc3,      RsCILDescrstloc3),
-    ('ldarg.s',        RsCILCmdldargs,      RsCILDescrldargs),
-    ('ldarga.s',       RsCILCmdldargas,     RsCILDescrldargas),
-    ('starg.s',        RsCILCmdstargs,      RsCILDescrstargs),
-    ('ldloc.s',        RsCILCmdldlocs,      RsCILDescrldlocs),
-    ('ldloca.s',       RsCILCmdldlocas,     RsCILDescrldlocas),
-    ('stloc.s',        RsCILCmdstlocs,      RsCILDescrstlocs),
-    ('ldnull',         RsCILCmdldnull,      RsCILDescrldnull),
-    ('ldc.i4.m1',      RsCILCmdldci4m1,     RsCILDescrldci4m1),
-    ('ldc.i4.0',       RsCILCmdldci40,      RsCILDescrldci40),
-    ('ldc.i4.1',       RsCILCmdldci41,      RsCILDescrldci41),
-    ('ldc.i4.2',       RsCILCmdldci42,      RsCILDescrldci42),
-    ('ldc.i4.3',       RsCILCmdldci43,      RsCILDescrldci43),
-    ('ldc.i4.4',       RsCILCmdldci44,      RsCILDescrldci44),
-    ('ldc.i4.5',       RsCILCmdldci45,      RsCILDescrldci45),
-    ('ldc.i4.6',       RsCILCmdldci46,      RsCILDescrldci46),
-    ('ldc.i4.7',       RsCILCmdldci47,      RsCILDescrldci47),
-    ('ldc.i4.8',       RsCILCmdldci48,      RsCILDescrldci48),
-    ('ldc.i4.s',       RsCILCmdldci4s,      RsCILDescrldci4s),
-    ('ldc.i4',         RsCILCmdldci4,       RsCILDescrldci4),
-    ('ldc.i8',         RsCILCmdldci8,       RsCILDescrldci8),
-    ('ldc.r4',         RsCILCmdldcr4,       RsCILDescrldcr4),
-    ('ldc.r8',         RsCILCmdldcr8,       RsCILDescrldcr8),
-    ('unused',         RsCILCmdunused1,     RsCILDescrunused1),
-    ('dup',            RsCILCmddup,         RsCILDescrdup),
-    ('pop',            RsCILCmdpop,         RsCILDescrpop),
-    ('jmp',            RsCILCmdjmp,         RsCILDescrjmp),
-    ('call',           RsCILCmdcall,        RsCILDescrcall),
-    ('calli',          RsCILCmdcalli,       RsCILDescrcalli),
-    ('ret',            RsCILCmdret,         RsCILDescrret),
-    ('br.s',           RsCILCmdbrs,         RsCILDescrbrs),
-    ('brfalse.s',      RsCILCmdbrfalses,    RsCILDescrbrfalses),
-    ('brtrue.s',       RsCILCmdbrtrues,     RsCILDescrbrtrues),
-    ('beq.s',          RsCILCmdbeqs,        RsCILDescrbeqs),
-    ('bge.s',          RsCILCmdbges,        RsCILDescrbges),
-    ('bgt.s',          RsCILCmdbgts,        RsCILDescrbgts),
-    ('ble.s',          RsCILCmdbles,        RsCILDescrbles),
-    ('blt.s',          RsCILCmdblts,        RsCILDescrblts),
-    ('bne.un.s',       RsCILCmdbneuns,      RsCILDescrbneuns),
-    ('bge.un.s',       RsCILCmdbgeuns,      RsCILDescrbgeuns),
-    ('bgt.un.s',       RsCILCmdbgtuns,      RsCILDescrbgtuns),
-    ('ble.un.s',       RsCILCmdbleuns,      RsCILDescrbleuns),
-    ('blt.un.s',       RsCILCmdbltuns,      RsCILDescrbltuns),
-    ('br',             RsCILCmdbr,          RsCILDescrbr),
-    ('brfalse',        RsCILCmdbrfalse,     RsCILDescrbrfalse),
-    ('brtrue',         RsCILCmdbrtrue,      RsCILDescrbrtrue),
-    ('beq',            RsCILCmdbeq,         RsCILDescrbeq),
-    ('bge',            RsCILCmdbge,         RsCILDescrbge),
-    ('bgt',            RsCILCmdbgt,         RsCILDescrbgt),
-    ('ble',            RsCILCmdble,         RsCILDescrble),
-    ('blt',            RsCILCmdblt,         RsCILDescrblt),
-    ('bne.un',         RsCILCmdbneun,       RsCILDescrbneun),
-    ('bge.un',         RsCILCmdbgeun,       RsCILDescrbgeun),
-    ('bgt.un',         RsCILCmdbgtun,       RsCILDescrbgtun),
-    ('ble.un',         RsCILCmdbleun,       RsCILDescrbleun),
-    ('blt.un',         RsCILCmdbltun,       RsCILDescrbltun),
-    ('switch',         RsCILCmdswitch,      RsCILDescrswitch),
-    ('ldind.i1',       RsCILCmdldindi1,     RsCILDescrldindi1),
-    ('ldind.u1',       RsCILCmdldindu1,     RsCILDescrldindu1),
-    ('ldind.i2',       RsCILCmdldindi2,     RsCILDescrldindi2),
-    ('ldind.u2',       RsCILCmdldindu2,     RsCILDescrldindu2),
-    ('ldind.i4',       RsCILCmdldindi4,     RsCILDescrldindi4),
-    ('ldind.u4',       RsCILCmdldindu4,     RsCILDescrldindu4),
-    ('ldind.i8',       RsCILCmdldindi8,     RsCILDescrldindi8),
-    ('ldind.i',        RsCILCmdldindi,      RsCILDescrldindi),
-    ('ldind.r4',       RsCILCmdldindr4,     RsCILDescrldindr4),
-    ('ldind.r8',       RsCILCmdldindr8,     RsCILDescrldindr8),
-    ('ldind.ref',      RsCILCmdldindref,    RsCILDescrldindref),
-    ('stind.ref',      RsCILCmdstindref,    RsCILDescrstindref),
-    ('stind.i1',       RsCILCmdstindi1,     RsCILDescrstindi1),
-    ('stind.i2',       RsCILCmdstindi2,     RsCILDescrstindi2),
-    ('stind.i4',       RsCILCmdstindi4,     RsCILDescrstindi4),
-    ('stind.i8',       RsCILCmdstindi8,     RsCILDescrstindi8),
-    ('stind.r4',       RsCILCmdstindr4,     RsCILDescrstindr4),
-    ('stind.r8',       RsCILCmdstindr8,     RsCILDescrstindr8),
-    ('add',            RsCILCmdadd,         RsCILDescradd),
-    ('sub',            RsCILCmdsub,         RsCILDescrsub),
-    ('mul',            RsCILCmdmul,         RsCILDescrmul),
-    ('div',            RsCILCmddiv,         RsCILDescrdiv),
-    ('div.un',         RsCILCmddivun,       RsCILDescrdivun),
-    ('rem',            RsCILCmdrem,         RsCILDescrrem),
-    ('rem.un',         RsCILCmdremun,       RsCILDescrremun),
-    ('and',            RsCILCmdand,         RsCILDescrand),
-    ('or',             RsCILCmdor,          RsCILDescror),
-    ('xor',            RsCILCmdxor,         RsCILDescrxor),
-    ('shl',            RsCILCmdshl,         RsCILDescrshl),
-    ('shr',            RsCILCmdshr,         RsCILDescrshr),
-    ('shr.un',         RsCILCmdshrun,       RsCILDescrshrun),
-    ('neg',            RsCILCmdneg,         RsCILDescrneg),
-    ('not',            RsCILCmdnot,         RsCILDescrnot),
-    ('conv.i1',        RsCILCmdconvi1,      RsCILDescrconvi1),
-    ('conv.i2',        RsCILCmdconvi2,      RsCILDescrconvi2),
-    ('conv.i4',        RsCILCmdconvi4,      RsCILDescrconvi4),
-    ('conv.i8',        RsCILCmdconvi8,      RsCILDescrconvi8),
-    ('conv.r4',        RsCILCmdconvr4,      RsCILDescrconvr4),
-    ('conv.r8',        RsCILCmdconvr8,      RsCILDescrconvr8),
-    ('conv.u4',        RsCILCmdconvu4,      RsCILDescrconvu4),
-    ('conv.u8',        RsCILCmdconvu8,      RsCILDescrconvu8),
-    ('callvirt',       RsCILCmdcallvirt,    RsCILDescrcallvirt),
-    ('cpobj',          RsCILCmdcpobj,       RsCILDescrcpobj),
-    ('ldobj',          RsCILCmdldobj,       RsCILDescrldobj),
-    ('ldstr',          RsCILCmdldstr,       RsCILDescrldstr),
-    ('newobj',         RsCILCmdnewobj,      RsCILDescrnewobj),
-    ('castclass',      RsCILCmdcastclass,   RsCILDescrcastclass),
-    ('isinst',         RsCILCmdisinst,      RsCILDescrisinst),
-    ('conv.r.un',      RsCILCmdconvrun,     RsCILDescrconvrun),
-    ('unused',         RsCILCmdunused2,     RsCILDescrunused2),
-    ('unused',         RsCILCmdunused3,     RsCILDescrunused3),
-    ('unbox',          RsCILCmdunbox,       RsCILDescrunbox),
-    ('throw',          RsCILCmdthrow,       RsCILDescrthrow),
-    ('ldfld',          RsCILCmdldfld,       RsCILDescrldfld),
-    ('ldflda',         RsCILCmdldflda,      RsCILDescrldflda),
-    ('stfld',          RsCILCmdstfld,       RsCILDescrstfld),
-    ('ldsfld',         RsCILCmdldsfld,      RsCILDescrldsfld),
-    ('ldsflda',        RsCILCmdldsflda,     RsCILDescrldsflda),
-    ('stsfld',         RsCILCmdstsfld,      RsCILDescrstsfld),
-    ('stobj',          RsCILCmdstobj,       RsCILDescrstobj),
+    (
+    ('nop', RsCILCmdnop, RsCILDescrnop),
+    ('break', RsCILCmdbreak, RsCILDescrbreak),
+    ('ldarg.0', RsCILCmdldarg0, RsCILDescrldarg0),
+    ('ldarg.1', RsCILCmdldarg1, RsCILDescrldarg1),
+    ('ldarg.2', RsCILCmdldarg2, RsCILDescrldarg2),
+    ('ldarg.3', RsCILCmdldarg3, RsCILDescrldarg3),
+    ('ldloc.0', RsCILCmdldloc0, RsCILDescrldloc0),
+    ('ldloc.1', RsCILCmdldloc1, RsCILDescrldloc1),
+    ('ldloc.2', RsCILCmdldloc2, RsCILDescrldloc2),
+    ('ldloc.3', RsCILCmdldloc3, RsCILDescrldloc3),
+    ('stloc.0', RsCILCmdstloc0, RsCILDescrstloc0),
+    ('stloc.1', RsCILCmdstloc1, RsCILDescrstloc1),
+    ('stloc.2', RsCILCmdstloc2, RsCILDescrstloc2),
+    ('stloc.3', RsCILCmdstloc3, RsCILDescrstloc3),
+    ('ldarg.s', RsCILCmdldargs, RsCILDescrldargs),
+    ('ldarga.s', RsCILCmdldargas, RsCILDescrldargas),
+    ('starg.s', RsCILCmdstargs, RsCILDescrstargs),
+    ('ldloc.s', RsCILCmdldlocs, RsCILDescrldlocs),
+    ('ldloca.s', RsCILCmdldlocas, RsCILDescrldlocas),
+    ('stloc.s', RsCILCmdstlocs, RsCILDescrstlocs),
+    ('ldnull', RsCILCmdldnull, RsCILDescrldnull),
+    ('ldc.i4.m1', RsCILCmdldci4m1, RsCILDescrldci4m1),
+    ('ldc.i4.0', RsCILCmdldci40, RsCILDescrldci40),
+    ('ldc.i4.1', RsCILCmdldci41, RsCILDescrldci41),
+    ('ldc.i4.2', RsCILCmdldci42, RsCILDescrldci42),
+    ('ldc.i4.3', RsCILCmdldci43, RsCILDescrldci43),
+    ('ldc.i4.4', RsCILCmdldci44, RsCILDescrldci44),
+    ('ldc.i4.5', RsCILCmdldci45, RsCILDescrldci45),
+    ('ldc.i4.6', RsCILCmdldci46, RsCILDescrldci46),
+    ('ldc.i4.7', RsCILCmdldci47, RsCILDescrldci47),
+    ('ldc.i4.8', RsCILCmdldci48, RsCILDescrldci48),
+    ('ldc.i4.s', RsCILCmdldci4s, RsCILDescrldci4s),
+    ('ldc.i4', RsCILCmdldci4, RsCILDescrldci4),
+    ('ldc.i8', RsCILCmdldci8, RsCILDescrldci8),
+    ('ldc.r4', RsCILCmdldcr4, RsCILDescrldcr4),
+    ('ldc.r8', RsCILCmdldcr8, RsCILDescrldcr8),
+    ('unused', RsCILCmdunused1, RsCILDescrunused1),
+    ('dup', RsCILCmddup, RsCILDescrdup),
+    ('pop', RsCILCmdpop, RsCILDescrpop),
+    ('jmp', RsCILCmdjmp, RsCILDescrjmp),
+    ('call', RsCILCmdcall, RsCILDescrcall),
+    ('calli', RsCILCmdcalli, RsCILDescrcalli),
+    ('ret', RsCILCmdret, RsCILDescrret),
+    ('br.s', RsCILCmdbrs, RsCILDescrbrs),
+    ('brfalse.s', RsCILCmdbrfalses, RsCILDescrbrfalses),
+    ('brtrue.s', RsCILCmdbrtrues, RsCILDescrbrtrues),
+    ('beq.s', RsCILCmdbeqs, RsCILDescrbeqs),
+    ('bge.s', RsCILCmdbges, RsCILDescrbges),
+    ('bgt.s', RsCILCmdbgts, RsCILDescrbgts),
+    ('ble.s', RsCILCmdbles, RsCILDescrbles),
+    ('blt.s', RsCILCmdblts, RsCILDescrblts),
+    ('bne.un.s', RsCILCmdbneuns, RsCILDescrbneuns),
+    ('bge.un.s', RsCILCmdbgeuns, RsCILDescrbgeuns),
+    ('bgt.un.s', RsCILCmdbgtuns, RsCILDescrbgtuns),
+    ('ble.un.s', RsCILCmdbleuns, RsCILDescrbleuns),
+    ('blt.un.s', RsCILCmdbltuns, RsCILDescrbltuns),
+    ('br', RsCILCmdbr, RsCILDescrbr),
+    ('brfalse', RsCILCmdbrfalse, RsCILDescrbrfalse),
+    ('brtrue', RsCILCmdbrtrue, RsCILDescrbrtrue),
+    ('beq', RsCILCmdbeq, RsCILDescrbeq),
+    ('bge', RsCILCmdbge, RsCILDescrbge),
+    ('bgt', RsCILCmdbgt, RsCILDescrbgt),
+    ('ble', RsCILCmdble, RsCILDescrble),
+    ('blt', RsCILCmdblt, RsCILDescrblt),
+    ('bne.un', RsCILCmdbneun, RsCILDescrbneun),
+    ('bge.un', RsCILCmdbgeun, RsCILDescrbgeun),
+    ('bgt.un', RsCILCmdbgtun, RsCILDescrbgtun),
+    ('ble.un', RsCILCmdbleun, RsCILDescrbleun),
+    ('blt.un', RsCILCmdbltun, RsCILDescrbltun),
+    ('switch', RsCILCmdswitch, RsCILDescrswitch),
+    ('ldind.i1', RsCILCmdldindi1, RsCILDescrldindi1),
+    ('ldind.u1', RsCILCmdldindu1, RsCILDescrldindu1),
+    ('ldind.i2', RsCILCmdldindi2, RsCILDescrldindi2),
+    ('ldind.u2', RsCILCmdldindu2, RsCILDescrldindu2),
+    ('ldind.i4', RsCILCmdldindi4, RsCILDescrldindi4),
+    ('ldind.u4', RsCILCmdldindu4, RsCILDescrldindu4),
+    ('ldind.i8', RsCILCmdldindi8, RsCILDescrldindi8),
+    ('ldind.i', RsCILCmdldindi, RsCILDescrldindi),
+    ('ldind.r4', RsCILCmdldindr4, RsCILDescrldindr4),
+    ('ldind.r8', RsCILCmdldindr8, RsCILDescrldindr8),
+    ('ldind.ref', RsCILCmdldindref, RsCILDescrldindref),
+    ('stind.ref', RsCILCmdstindref, RsCILDescrstindref),
+    ('stind.i1', RsCILCmdstindi1, RsCILDescrstindi1),
+    ('stind.i2', RsCILCmdstindi2, RsCILDescrstindi2),
+    ('stind.i4', RsCILCmdstindi4, RsCILDescrstindi4),
+    ('stind.i8', RsCILCmdstindi8, RsCILDescrstindi8),
+    ('stind.r4', RsCILCmdstindr4, RsCILDescrstindr4),
+    ('stind.r8', RsCILCmdstindr8, RsCILDescrstindr8),
+    ('add', RsCILCmdadd, RsCILDescradd),
+    ('sub', RsCILCmdsub, RsCILDescrsub),
+    ('mul', RsCILCmdmul, RsCILDescrmul),
+    ('div', RsCILCmddiv, RsCILDescrdiv),
+    ('div.un', RsCILCmddivun, RsCILDescrdivun),
+    ('rem', RsCILCmdrem, RsCILDescrrem),
+    ('rem.un', RsCILCmdremun, RsCILDescrremun),
+    ('and', RsCILCmdand, RsCILDescrand),
+    ('or', RsCILCmdor, RsCILDescror),
+    ('xor', RsCILCmdxor, RsCILDescrxor),
+    ('shl', RsCILCmdshl, RsCILDescrshl),
+    ('shr', RsCILCmdshr, RsCILDescrshr),
+    ('shr.un', RsCILCmdshrun, RsCILDescrshrun),
+    ('neg', RsCILCmdneg, RsCILDescrneg),
+    ('not', RsCILCmdnot, RsCILDescrnot),
+    ('conv.i1', RsCILCmdconvi1, RsCILDescrconvi1),
+    ('conv.i2', RsCILCmdconvi2, RsCILDescrconvi2),
+    ('conv.i4', RsCILCmdconvi4, RsCILDescrconvi4),
+    ('conv.i8', RsCILCmdconvi8, RsCILDescrconvi8),
+    ('conv.r4', RsCILCmdconvr4, RsCILDescrconvr4),
+    ('conv.r8', RsCILCmdconvr8, RsCILDescrconvr8),
+    ('conv.u4', RsCILCmdconvu4, RsCILDescrconvu4),
+    ('conv.u8', RsCILCmdconvu8, RsCILDescrconvu8),
+    ('callvirt', RsCILCmdcallvirt, RsCILDescrcallvirt),
+    ('cpobj', RsCILCmdcpobj, RsCILDescrcpobj),
+    ('ldobj', RsCILCmdldobj, RsCILDescrldobj),
+    ('ldstr', RsCILCmdldstr, RsCILDescrldstr),
+    ('newobj', RsCILCmdnewobj, RsCILDescrnewobj),
+    ('castclass', RsCILCmdcastclass, RsCILDescrcastclass),
+    ('isinst', RsCILCmdisinst, RsCILDescrisinst),
+    ('conv.r.un', RsCILCmdconvrun, RsCILDescrconvrun),
+    ('unused', RsCILCmdunused2, RsCILDescrunused2),
+    ('unused', RsCILCmdunused3, RsCILDescrunused3),
+    ('unbox', RsCILCmdunbox, RsCILDescrunbox),
+    ('throw', RsCILCmdthrow, RsCILDescrthrow),
+    ('ldfld', RsCILCmdldfld, RsCILDescrldfld),
+    ('ldflda', RsCILCmdldflda, RsCILDescrldflda),
+    ('stfld', RsCILCmdstfld, RsCILDescrstfld),
+    ('ldsfld', RsCILCmdldsfld, RsCILDescrldsfld),
+    ('ldsflda', RsCILCmdldsflda, RsCILDescrldsflda),
+    ('stsfld', RsCILCmdstsfld, RsCILDescrstsfld),
+    ('stobj', RsCILCmdstobj, RsCILDescrstobj),
     ('conv.ovf.i1.un', RsCILCmdconvovfi1un, RsCILDescrconvovfi1un),
     ('conv.ovf.i2.un', RsCILCmdconvovfi2un, RsCILDescrconvovfi2un),
     ('conv.ovf.i4.un', RsCILCmdconvovfi4un, RsCILDescrconvovfi4un),
@@ -363,200 +365,237 @@ const
     ('conv.ovf.u2.un', RsCILCmdconvovfu2un, RsCILDescrconvovfu2un),
     ('conv.ovf.u4.un', RsCILCmdconvovfu4un, RsCILDescrconvovfu4un),
     ('conv.ovf.u8.un', RsCILCmdconvovfu8un, RsCILDescrconvovfu8un),
-    ('conv.ovf.i.un',  RsCILCmdconvovfiun,  RsCILDescrconvovfiun),
-    ('conv.ovf.u.un',  RsCILCmdconvovfuun,  RsCILDescrconvovfuun),
-    ('box',            RsCILCmdbox,         RsCILDescrbox),
-    ('newarr',         RsCILCmdnewarr,      RsCILDescrnewarr),
-    ('ldlen',          RsCILCmdldlen,       RsCILDescrldlen),
-    ('ldelema',        RsCILCmdldelema,     RsCILDescrldelema),
-    ('ldelem.i1',      RsCILCmdldelemi1,    RsCILDescrldelemi1),
-    ('ldelem.u1',      RsCILCmdldelemu1,    RsCILDescrldelemu1),
-    ('ldelem.i2',      RsCILCmdldelemi2,    RsCILDescrldelemi2),
-    ('ldelem.u2',      RsCILCmdldelemu2,    RsCILDescrldelemu2),
-    ('ldelem.i4',      RsCILCmdldelemi4,    RsCILDescrldelemi4),
-    ('ldelem.u4',      RsCILCmdldelemu4,    RsCILDescrldelemu4),
-    ('ldelem.i8',      RsCILCmdldelemi8,    RsCILDescrldelemi8),
-    ('ldelem.i',       RsCILCmdldelemi,     RsCILDescrldelemi),
-    ('ldelem.r4',      RsCILCmdldelemr4,    RsCILDescrldelemr4),
-    ('ldelem.r8',      RsCILCmdldelemr8,    RsCILDescrldelemr8),
-    ('ldelem.ref',     RsCILCmdldelemref,   RsCILDescrldelemref),
-    ('stelem.i',       RsCILCmdstelemi,     RsCILDescrstelemi),
-    ('stelem.i1',      RsCILCmdstelemi1,    RsCILDescrstelemi1),
-    ('stelem.i2',      RsCILCmdstelemi2,    RsCILDescrstelemi2),
-    ('stelem.i4',      RsCILCmdstelemi4,    RsCILDescrstelemi4),
-    ('stelem.i8',      RsCILCmdstelemi8,    RsCILDescrstelemi8),
-    ('stelem.r4',      RsCILCmdstelemr4,    RsCILDescrstelemr4),
-    ('stelem.r8',      RsCILCmdstelemr8,    RsCILDescrstelemr8),
-    ('stelem.ref',     RsCILCmdstelemref,   RsCILDescrstelemref),
-    ('unused',         RsCILCmdunused4,     RsCILDescrunused4),
-    ('unused',         RsCILCmdunused5,     RsCILDescrunused5),
-    ('unused',         RsCILCmdunused6,     RsCILDescrunused6),
-    ('unused',         RsCILCmdunused7,     RsCILDescrunused7),
-    ('unused',         RsCILCmdunused8,     RsCILDescrunused8),
-    ('unused',         RsCILCmdunused9,     RsCILDescrunused9),
-    ('unused',         RsCILCmdunused10,    RsCILDescrunused10),
-    ('unused',         RsCILCmdunused11,    RsCILDescrunused11),
-    ('unused',         RsCILCmdunused12,    RsCILDescrunused12),
-    ('unused',         RsCILCmdunused13,    RsCILDescrunused13),
-    ('unused',         RsCILCmdunused14,    RsCILDescrunused14),
-    ('unused',         RsCILCmdunused15,    RsCILDescrunused15),
-    ('unused',         RsCILCmdunused16,    RsCILDescrunused16),
-    ('unused',         RsCILCmdunused17,    RsCILDescrunused17),
-    ('unused',         RsCILCmdunused18,    RsCILDescrunused18),
-    ('unused',         RsCILCmdunused19,    RsCILDescrunused19),
-    ('conv.ovf.i1',    RsCILCmdconvovfi1,   RsCILDescrconvovfi1),
-    ('conv.ovf.u1',    RsCILCmdconvovfu1,   RsCILDescrconvovfu1),
-    ('conv.ovf.i2',    RsCILCmdconvovfi2,   RsCILDescrconvovfi2),
-    ('conv.ovf.u2',    RsCILCmdconvovfu2,   RsCILDescrconvovfu2),
-    ('conv.ovf.i4',    RsCILCmdconvovfi4,   RsCILDescrconvovfi4),
-    ('conv.ovf.u4',    RsCILCmdconvovfu4,   RsCILDescrconvovfu4),
-    ('conv.ovf.i8',    RsCILCmdconvovfi8,   RsCILDescrconvovfi8),
-    ('conv.ovf.u8',    RsCILCmdconvovfu8,   RsCILDescrconvovfu8),
-    ('unused',         RsCILCmdunused20,    RsCILDescrunused20),
-    ('unused',         RsCILCmdunused21,    RsCILDescrunused21),
-    ('unused',         RsCILCmdunused22,    RsCILDescrunused22),
-    ('unused',         RsCILCmdunused23,    RsCILDescrunused23),
-    ('unused',         RsCILCmdunused24,    RsCILDescrunused24),
-    ('unused',         RsCILCmdunused25,    RsCILDescrunused25),
-    ('unused',         RsCILCmdunused26,    RsCILDescrunused26),
-    ('refanyval',      RsCILCmdrefanyval,   RsCILDescrrefanyval),
-    ('ckfinite',       RsCILCmdckfinite,    RsCILDescrckfinite),
-    ('unused',         RsCILCmdunused27,    RsCILDescrunused27),
-    ('unused',         RsCILCmdunused28,    RsCILDescrunused28),
-    ('mkrefany',       RsCILCmdmkrefany,    RsCILDescrmkrefany),
-    ('unused',         RsCILCmdunused29,    RsCILDescrunused29),
-    ('unused',         RsCILCmdunused30,    RsCILDescrunused30),
-    ('unused',         RsCILCmdunused31,    RsCILDescrunused31),
-    ('unused',         RsCILCmdunused32,    RsCILDescrunused32),
-    ('unused',         RsCILCmdunused33,    RsCILDescrunused33),
-    ('unused',         RsCILCmdunused34,    RsCILDescrunused34),
-    ('unused',         RsCILCmdunused35,    RsCILDescrunused35),
-    ('unused',         RsCILCmdunused36,    RsCILDescrunused36),
-    ('unused',         RsCILCmdunused37,    RsCILDescrunused37),
-    ('ldtoken',        RsCILCmdldtoken,     RsCILDescrldtoken),
-    ('conv.u2',        RsCILCmdconvu2,      RsCILDescrconvu2),
-    ('conv.u1',        RsCILCmdconvu1,      RsCILDescrconvu1),
-    ('conv.i',         RsCILCmdconvi,       RsCILDescrconvi),
-    ('conv.ovf.i',     RsCILCmdconvovfi,    RsCILDescrconvovfi),
-    ('conv.ovf.u',     RsCILCmdconvovfu,    RsCILDescrconvovfu),
-    ('add.ovf',        RsCILCmdaddovf,      RsCILDescraddovf),
-    ('add.ovf.un',     RsCILCmdaddovfun,    RsCILDescraddovfun),
-    ('mul.ovf',        RsCILCmdmulovf,      RsCILDescrmulovf),
-    ('mul.ovf.un',     RsCILCmdmulovfun,    RsCILDescrmulovfun),
-    ('sub.ovf',        RsCILCmdsubovf,      RsCILDescrsubovf),
-    ('sub.ovf.un',     RsCILCmdsubovfun,    RsCILDescrsubovfun),
-    ('endfinally',     RsCILCmdendfinally,  RsCILDescrendfinally),
-    ('leave',          RsCILCmdleave,       RsCILDescrleave),
-    ('leave.s',        RsCILCmdleaves,      RsCILDescrleaves),
-    ('stind.i',        RsCILCmdstindi,      RsCILDescrstindi),
-    ('conv.u',         RsCILCmdconvu,       RsCILDescrconvu),
-    ('unused',         RsCILCmdunused38,    RsCILDescrunused38),
-    ('unused',         RsCILCmdunused39,    RsCILDescrunused39),
-    ('unused',         RsCILCmdunused40,    RsCILDescrunused40),
-    ('unused',         RsCILCmdunused41,    RsCILDescrunused41),
-    ('unused',         RsCILCmdunused42,    RsCILDescrunused42),
-    ('unused',         RsCILCmdunused43,    RsCILDescrunused43),
-    ('unused',         RsCILCmdunused44,    RsCILDescrunused44),
-    ('unused',         RsCILCmdunused45,    RsCILDescrunused45),
-    ('unused',         RsCILCmdunused46,    RsCILDescrunused46),
-    ('unused',         RsCILCmdunused47,    RsCILDescrunused47),
-    ('unused',         RsCILCmdunused48,    RsCILDescrunused48),
-    ('unused',         RsCILCmdunused49,    RsCILDescrunused49),
-    ('unused',         RsCILCmdunused50,    RsCILDescrunused50),
-    ('unused',         RsCILCmdunused51,    RsCILDescrunused51),
-    ('unused',         RsCILCmdunused52,    RsCILDescrunused52),
-    ('unused',         RsCILCmdunused53,    RsCILDescrunused53),
-    ('unused',         RsCILCmdunused54,    RsCILDescrunused54),
-    ('unused',         RsCILCmdunused55,    RsCILDescrunused55),
-    ('unused',         RsCILCmdunused56,    RsCILDescrunused56),
-    ('unused',         RsCILCmdunused57,    RsCILDescrunused57),
-    ('unused',         RsCILCmdunused58,    RsCILDescrunused58),
-    ('unused',         RsCILCmdunused59,    RsCILDescrunused59),
-    ('unused',         RsCILCmdunused60,    RsCILDescrunused60),
-    ('prefix7',        RsCILCmdprefix7,     RsCILDescrprefix7),
-    ('prefix6',        RsCILCmdprefix6,     RsCILDescrprefix6),
-    ('prefix5',        RsCILCmdprefix5,     RsCILDescrprefix5),
-    ('prefix4',        RsCILCmdprefix4,     RsCILDescrprefix4),
-    ('prefix3',        RsCILCmdprefix3,     RsCILDescrprefix3),
-    ('prefix2',        RsCILCmdprefix2,     RsCILDescrprefix2),
-    ('prefix1',        RsCILCmdprefix1,     RsCILDescrprefix1),
-    ('prefixref',      RsCILCmdprefixref,   RsCILDescrprefixref),
+    ('conv.ovf.i.un', RsCILCmdconvovfiun, RsCILDescrconvovfiun),
+    ('conv.ovf.u.un', RsCILCmdconvovfuun, RsCILDescrconvovfuun),
+    ('box', RsCILCmdbox, RsCILDescrbox),
+    ('newarr', RsCILCmdnewarr, RsCILDescrnewarr),
+    ('ldlen', RsCILCmdldlen, RsCILDescrldlen),
+    ('ldelema', RsCILCmdldelema, RsCILDescrldelema),
+    ('ldelem.i1', RsCILCmdldelemi1, RsCILDescrldelemi1),
+    ('ldelem.u1', RsCILCmdldelemu1, RsCILDescrldelemu1),
+    ('ldelem.i2', RsCILCmdldelemi2, RsCILDescrldelemi2),
+    ('ldelem.u2', RsCILCmdldelemu2, RsCILDescrldelemu2),
+    ('ldelem.i4', RsCILCmdldelemi4, RsCILDescrldelemi4),
+    ('ldelem.u4', RsCILCmdldelemu4, RsCILDescrldelemu4),
+    ('ldelem.i8', RsCILCmdldelemi8, RsCILDescrldelemi8),
+    ('ldelem.i', RsCILCmdldelemi, RsCILDescrldelemi),
+    ('ldelem.r4', RsCILCmdldelemr4, RsCILDescrldelemr4),
+    ('ldelem.r8', RsCILCmdldelemr8, RsCILDescrldelemr8),
+    ('ldelem.ref', RsCILCmdldelemref, RsCILDescrldelemref),
+    ('stelem.i', RsCILCmdstelemi, RsCILDescrstelemi),
+    ('stelem.i1', RsCILCmdstelemi1, RsCILDescrstelemi1),
+    ('stelem.i2', RsCILCmdstelemi2, RsCILDescrstelemi2),
+    ('stelem.i4', RsCILCmdstelemi4, RsCILDescrstelemi4),
+    ('stelem.i8', RsCILCmdstelemi8, RsCILDescrstelemi8),
+    ('stelem.r4', RsCILCmdstelemr4, RsCILDescrstelemr4),
+    ('stelem.r8', RsCILCmdstelemr8, RsCILDescrstelemr8),
+    ('stelem.ref', RsCILCmdstelemref, RsCILDescrstelemref),
+    ('unused', RsCILCmdunused4, RsCILDescrunused4),
+    ('unused', RsCILCmdunused5, RsCILDescrunused5),
+    ('unused', RsCILCmdunused6, RsCILDescrunused6),
+    ('unused', RsCILCmdunused7, RsCILDescrunused7),
+    ('unused', RsCILCmdunused8, RsCILDescrunused8),
+    ('unused', RsCILCmdunused9, RsCILDescrunused9),
+    ('unused', RsCILCmdunused10, RsCILDescrunused10),
+    ('unused', RsCILCmdunused11, RsCILDescrunused11),
+    ('unused', RsCILCmdunused12, RsCILDescrunused12),
+    ('unused', RsCILCmdunused13, RsCILDescrunused13),
+    ('unused', RsCILCmdunused14, RsCILDescrunused14),
+    ('unused', RsCILCmdunused15, RsCILDescrunused15),
+    ('unused', RsCILCmdunused16, RsCILDescrunused16),
+    ('unused', RsCILCmdunused17, RsCILDescrunused17),
+    ('unused', RsCILCmdunused18, RsCILDescrunused18),
+    ('unused', RsCILCmdunused19, RsCILDescrunused19),
+    ('conv.ovf.i1', RsCILCmdconvovfi1, RsCILDescrconvovfi1),
+    ('conv.ovf.u1', RsCILCmdconvovfu1, RsCILDescrconvovfu1),
+    ('conv.ovf.i2', RsCILCmdconvovfi2, RsCILDescrconvovfi2),
+    ('conv.ovf.u2', RsCILCmdconvovfu2, RsCILDescrconvovfu2),
+    ('conv.ovf.i4', RsCILCmdconvovfi4, RsCILDescrconvovfi4),
+    ('conv.ovf.u4', RsCILCmdconvovfu4, RsCILDescrconvovfu4),
+    ('conv.ovf.i8', RsCILCmdconvovfi8, RsCILDescrconvovfi8),
+    ('conv.ovf.u8', RsCILCmdconvovfu8, RsCILDescrconvovfu8),
+    ('unused', RsCILCmdunused20, RsCILDescrunused20),
+    ('unused', RsCILCmdunused21, RsCILDescrunused21),
+    ('unused', RsCILCmdunused22, RsCILDescrunused22),
+    ('unused', RsCILCmdunused23, RsCILDescrunused23),
+    ('unused', RsCILCmdunused24, RsCILDescrunused24),
+    ('unused', RsCILCmdunused25, RsCILDescrunused25),
+    ('unused', RsCILCmdunused26, RsCILDescrunused26),
+    ('refanyval', RsCILCmdrefanyval, RsCILDescrrefanyval),
+    ('ckfinite', RsCILCmdckfinite, RsCILDescrckfinite),
+    ('unused', RsCILCmdunused27, RsCILDescrunused27),
+    ('unused', RsCILCmdunused28, RsCILDescrunused28),
+    ('mkrefany', RsCILCmdmkrefany, RsCILDescrmkrefany),
+    ('unused', RsCILCmdunused29, RsCILDescrunused29),
+    ('unused', RsCILCmdunused30, RsCILDescrunused30),
+    ('unused', RsCILCmdunused31, RsCILDescrunused31),
+    ('unused', RsCILCmdunused32, RsCILDescrunused32),
+    ('unused', RsCILCmdunused33, RsCILDescrunused33),
+    ('unused', RsCILCmdunused34, RsCILDescrunused34),
+    ('unused', RsCILCmdunused35, RsCILDescrunused35),
+    ('unused', RsCILCmdunused36, RsCILDescrunused36),
+    ('unused', RsCILCmdunused37, RsCILDescrunused37),
+    ('ldtoken', RsCILCmdldtoken, RsCILDescrldtoken),
+    ('conv.u2', RsCILCmdconvu2, RsCILDescrconvu2),
+    ('conv.u1', RsCILCmdconvu1, RsCILDescrconvu1),
+    ('conv.i', RsCILCmdconvi, RsCILDescrconvi),
+    ('conv.ovf.i', RsCILCmdconvovfi, RsCILDescrconvovfi),
+    ('conv.ovf.u', RsCILCmdconvovfu, RsCILDescrconvovfu),
+    ('add.ovf', RsCILCmdaddovf, RsCILDescraddovf),
+    ('add.ovf.un', RsCILCmdaddovfun, RsCILDescraddovfun),
+    ('mul.ovf', RsCILCmdmulovf, RsCILDescrmulovf),
+    ('mul.ovf.un', RsCILCmdmulovfun, RsCILDescrmulovfun),
+    ('sub.ovf', RsCILCmdsubovf, RsCILDescrsubovf),
+    ('sub.ovf.un', RsCILCmdsubovfun, RsCILDescrsubovfun),
+    ('endfinally', RsCILCmdendfinally, RsCILDescrendfinally),
+    ('leave', RsCILCmdleave, RsCILDescrleave),
+    ('leave.s', RsCILCmdleaves, RsCILDescrleaves),
+    ('stind.i', RsCILCmdstindi, RsCILDescrstindi),
+    ('conv.u', RsCILCmdconvu, RsCILDescrconvu),
+    ('unused', RsCILCmdunused38, RsCILDescrunused38),
+    ('unused', RsCILCmdunused39, RsCILDescrunused39),
+    ('unused', RsCILCmdunused40, RsCILDescrunused40),
+    ('unused', RsCILCmdunused41, RsCILDescrunused41),
+    ('unused', RsCILCmdunused42, RsCILDescrunused42),
+    ('unused', RsCILCmdunused43, RsCILDescrunused43),
+    ('unused', RsCILCmdunused44, RsCILDescrunused44),
+    ('unused', RsCILCmdunused45, RsCILDescrunused45),
+    ('unused', RsCILCmdunused46, RsCILDescrunused46),
+    ('unused', RsCILCmdunused47, RsCILDescrunused47),
+    ('unused', RsCILCmdunused48, RsCILDescrunused48),
+    ('unused', RsCILCmdunused49, RsCILDescrunused49),
+    ('unused', RsCILCmdunused50, RsCILDescrunused50),
+    ('unused', RsCILCmdunused51, RsCILDescrunused51),
+    ('unused', RsCILCmdunused52, RsCILDescrunused52),
+    ('unused', RsCILCmdunused53, RsCILDescrunused53),
+    ('unused', RsCILCmdunused54, RsCILDescrunused54),
+    ('unused', RsCILCmdunused55, RsCILDescrunused55),
+    ('unused', RsCILCmdunused56, RsCILDescrunused56),
+    ('unused', RsCILCmdunused57, RsCILDescrunused57),
+    ('unused', RsCILCmdunused58, RsCILDescrunused58),
+    ('unused', RsCILCmdunused59, RsCILDescrunused59),
+    ('unused', RsCILCmdunused60, RsCILDescrunused60),
+    ('prefix7', RsCILCmdprefix7, RsCILDescrprefix7),
+    ('prefix6', RsCILCmdprefix6, RsCILDescrprefix6),
+    ('prefix5', RsCILCmdprefix5, RsCILDescrprefix5),
+    ('prefix4', RsCILCmdprefix4, RsCILDescrprefix4),
+    ('prefix3', RsCILCmdprefix3, RsCILDescrprefix3),
+    ('prefix2', RsCILCmdprefix2, RsCILDescrprefix2),
+    ('prefix1', RsCILCmdprefix1, RsCILDescrprefix1),
+    ('prefixref', RsCILCmdprefixref, RsCILDescrprefixref),
 
-    ('arglist',        RsCILCmdarglist,     RsCILDescrarglist),
-    ('ceq',            RsCILCmdceq,         RsCILDescrceq),
-    ('cgt',            RsCILCmdcgt,         RsCILDescrcgt),
-    ('cgt.un',         RsCILCmdcgtun,       RsCILDescrcgtun),
-    ('clt',            RsCILCmdclt,         RsCILDescrclt),
-    ('clt.un',         RsCILCmdcltun,       RsCILDescrcltun),
-    ('ldftn',          RsCILCmdldftn,       RsCILDescrldftn),
-    ('ldvirtftn',      RsCILCmdldvirtftn,   RsCILDescrldvirtftn),
-    ('unused',         RsCILCmdunused61,    RsCILDescrunused61),
-    ('ldarg',          RsCILCmdldarg,       RsCILDescrldarg),
-    ('ldarga',         RsCILCmdldarga,      RsCILDescrldarga),
-    ('starg',          RsCILCmdstarg,       RsCILDescrstarg),
-    ('ldloc',          RsCILCmdldloc,       RsCILDescrldloc),
-    ('ldloca',         RsCILCmdldloca,      RsCILDescrldloca),
-    ('stloc',          RsCILCmdstloc,       RsCILDescrstloc),
-    ('localloc',       RsCILCmdlocalloc,    RsCILDescrlocalloc),
-    ('unused',         RsCILCmdunused62,    RsCILDescrunused62),
-    ('endfilter',      RsCILCmdendfilter,   RsCILDescrendfilter),
-    ('unaligned.',     RsCILCmdunaligned,   RsCILDescrunaligned),
-    ('volatile.',      RsCILCmdvolatile,    RsCILDescrvolatile),
-    ('tail.',          RsCILCmdtail,        RsCILDescrtail),
-    ('initobj',        RsCILCmdinitobj,     RsCILDescrinitobj),
-    ('unused',         RsCILCmdunused63,    RsCILDescrunused63),
-    ('cpblk',          RsCILCmdcpblk,       RsCILDescrcpblk),
-    ('initblk',        RsCILCmdinitblk,     RsCILDescrinitblk),
-    ('unused',         RsCILCmdunused64,    RsCILDescrunused64),
-    ('rethrow',        RsCILCmdrethrow,     RsCILDescrrethrow),
-    ('unused',         RsCILCmdunused65,    RsCILDescrunused65),
-    ('sizeof',         RsCILCmdsizeof,      RsCILDescrsizeof),
-    ('refanytype',     RsCILCmdrefanytype,  RsCILDescrrefanytype),
-    ('unused',         RsCILCmdunused66,    RsCILDescrunused66),
-    ('unused',         RsCILCmdunused67,    RsCILDescrunused67),
-    ('unused',         RsCILCmdunused68,    RsCILDescrunused68),
-    ('unused',         RsCILCmdunused69,    RsCILDescrunused69),
-    ('unused',         RsCILCmdunused70,    RsCILDescrunused70)
-   );
+    ('arglist', RsCILCmdarglist, RsCILDescrarglist),
+    ('ceq', RsCILCmdceq, RsCILDescrceq),
+    ('cgt', RsCILCmdcgt, RsCILDescrcgt),
+    ('cgt.un', RsCILCmdcgtun, RsCILDescrcgtun),
+    ('clt', RsCILCmdclt, RsCILDescrclt),
+    ('clt.un', RsCILCmdcltun, RsCILDescrcltun),
+    ('ldftn', RsCILCmdldftn, RsCILDescrldftn),
+    ('ldvirtftn', RsCILCmdldvirtftn, RsCILDescrldvirtftn),
+    ('unused', RsCILCmdunused61, RsCILDescrunused61),
+    ('ldarg', RsCILCmdldarg, RsCILDescrldarg),
+    ('ldarga', RsCILCmdldarga, RsCILDescrldarga),
+    ('starg', RsCILCmdstarg, RsCILDescrstarg),
+    ('ldloc', RsCILCmdldloc, RsCILDescrldloc),
+    ('ldloca', RsCILCmdldloca, RsCILDescrldloca),
+    ('stloc', RsCILCmdstloc, RsCILDescrstloc),
+    ('localloc', RsCILCmdlocalloc, RsCILDescrlocalloc),
+    ('unused', RsCILCmdunused62, RsCILDescrunused62),
+    ('endfilter', RsCILCmdendfilter, RsCILDescrendfilter),
+    ('unaligned.', RsCILCmdunaligned, RsCILDescrunaligned),
+    ('volatile.', RsCILCmdvolatile, RsCILDescrvolatile),
+    ('tail.', RsCILCmdtail, RsCILDescrtail),
+    ('initobj', RsCILCmdinitobj, RsCILDescrinitobj),
+    ('unused', RsCILCmdunused63, RsCILDescrunused63),
+    ('cpblk', RsCILCmdcpblk, RsCILDescrcpblk),
+    ('initblk', RsCILCmdinitblk, RsCILDescrinitblk),
+    ('unused', RsCILCmdunused64, RsCILDescrunused64),
+    ('rethrow', RsCILCmdrethrow, RsCILDescrrethrow),
+    ('unused', RsCILCmdunused65, RsCILDescrunused65),
+    ('sizeof', RsCILCmdsizeof, RsCILDescrsizeof),
+    ('refanytype', RsCILCmdrefanytype, RsCILDescrrefanytype),
+    ('unused', RsCILCmdunused66, RsCILDescrunused66),
+    ('unused', RsCILCmdunused67, RsCILDescrunused67),
+    ('unused', RsCILCmdunused68, RsCILDescrunused68),
+    ('unused', RsCILCmdunused69, RsCILDescrunused69),
+    ('unused', RsCILCmdunused70, RsCILDescrunused70)
+    );
 
   OpCodeParamTypes: array [TJclOpCode] of TJclInstructionParamType =
-   (ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {00}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptU1,     ptU1,    {08}
-    ptU1,     ptU1,     ptU1,     ptU1,     ptVoid,   ptVoid,   ptVoid,   ptVoid,  {10}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptI1,    {18}
-    ptI4,     ptI8,     ptR4,     ptR8,     ptVoid,   ptVoid,   ptVoid,   ptToken, {20}
-    ptToken,  ptVoid,   ptVoid,   ptSOff,   ptSOff,   ptSOff,   ptSOff,   ptSOff,  {28}
-    ptSOff,   ptSOff,   ptSOff,   ptSOff,   ptSOff,   ptSOff,   ptSOff,   ptSOff,  {30}
-    ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptLOff,  {38}
-    ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptLOff,   ptVoid,   ptVoid,   ptVoid,  {40}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {48}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {50}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {58}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {60}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken, {68}
-    ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptVoid,   ptVoid,  {70}
-    ptVoid,   ptToken,  ptVoid,   ptToken,  ptToken,  ptToken,  ptToken,  ptToken, {78}
-    ptToken,  ptToken,  ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {80}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,  ptToken,  ptVoid,   ptToken, {88}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {90}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {98}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {A0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {A8}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {B0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {B8}
-    ptVoid,   ptVoid,   ptToken,  ptVoid,   ptVoid,   ptVoid,   ptToken,   ptVoid, {C0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {C8}
-    ptToken,  ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {D0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptI4,     ptI1,     ptVoid,  {D8}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {E0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {E8}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {F0}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,  {F8}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,  ptToken, {00}
-    ptVoid,   ptU2,     ptU2,     ptU2,     ptU2,     ptU2,     ptU2,     ptVoid,  {08}
-    ptVoid,   ptVoid,   ptI1,     ptVoid,   ptVoid,   ptToken,  ptVoid,   ptVoid,  {10}
-    ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,  ptVoid,   ptVoid,   ptVoid,  {18}
-    ptVoid,   ptVoid,   ptVoid);                                                   {20}
+    (ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {00}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptU1, ptU1,    {08}
+    ptU1, ptU1, ptU1, ptU1, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {10}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptI1,    {18}
+    ptI4, ptI8, ptR4, ptR8, ptVoid, ptVoid,
+    ptVoid, ptToken, {20}
+    ptToken, ptVoid, ptVoid, ptSOff, ptSOff, ptSOff,
+    ptSOff, ptSOff,  {28}
+    ptSOff, ptSOff, ptSOff, ptSOff, ptSOff, ptSOff,
+    ptSOff, ptSOff,  {30}
+    ptLOff, ptLOff, ptLOff, ptLOff, ptLOff, ptLOff,
+    ptLOff, ptLOff,  {38}
+    ptLOff, ptLOff, ptLOff, ptLOff, ptLOff, ptVoid,
+    ptVoid, ptVoid,  {40}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {48}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {50}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {58}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {60}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptToken, {68}
+    ptToken, ptToken, ptToken, ptToken, ptToken, ptToken,
+    ptVoid, ptVoid,  {70}
+    ptVoid, ptToken, ptVoid, ptToken, ptToken, ptToken,
+    ptToken, ptToken, {78}
+    ptToken, ptToken, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {80}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptToken, ptToken,
+    ptVoid, ptToken, {88}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {90}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {98}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {A0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {A8}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {B0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {B8}
+    ptVoid, ptVoid, ptToken, ptVoid, ptVoid, ptVoid,
+    ptToken, ptVoid, {C0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {C8}
+    ptToken, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {D0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptI4,
+    ptI1, ptVoid,  {D8}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {E0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {E8}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {F0}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptVoid, ptVoid,  {F8}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptVoid, ptVoid,
+    ptToken, ptToken, {00}
+    ptVoid, ptU2, ptU2, ptU2, ptU2, ptU2,
+    ptU2, ptVoid,  {08}
+    ptVoid, ptVoid, ptI1, ptVoid, ptVoid, ptToken,
+    ptVoid, ptVoid,  {10}
+    ptVoid, ptVoid, ptVoid, ptVoid, ptToken, ptVoid,
+    ptVoid, ptVoid,  {18}
+    ptVoid, ptVoid, ptVoid);
+                                                   {20}
 
 //===  { TJclClrILGenerator } ================================================
 
@@ -581,7 +620,8 @@ begin
         if OpCode = STP1 then
         begin
           OpCode := PByte(Longint(Stream.Memory) + Stream.Position + 1)^;
-          Instruction := TJclInstruction.Create(Self, TJclOpCode(MaxByte + 1 + OpCode));
+          Instruction := TJclInstruction.Create(Self,
+            TJclOpCode(MaxByte + 1 + OpCode));
         end
         else
           Instruction := TJclInstruction.Create(Self, TJclOpCode(OpCode));
@@ -603,7 +643,8 @@ begin
   inherited Destroy;
 end;
 
-function TJclClrILGenerator.DumpIL(Options: TJclInstructionDumpILOptions): string;
+function TJclClrILGenerator.DumpIL(Options:
+  TJclInstructionDumpILOptions): string;
 var
   I, J, Indent: Integer;
 
@@ -629,41 +670,42 @@ var
 begin
   Indent := 0;
   with TStringList.Create do
-  try
-    for I := 0 to InstructionCount-1 do
-    begin
-      for J := 0 to Method.ExceptionHandlerCount-1 do
-      with Method.ExceptionHandlers[J] do
+    try
+      for I := 0 to InstructionCount - 1 do
       begin
-        if Instructions[I].Offset = TryBlock.Offset then
-        begin
-          Add(IndentStr + '.try');
-          Add(IndentStr + '{');
-          Inc(Indent);
-        end;
-        if Instructions[I].Offset = (TryBlock.Offset + TryBlock.Length) then
-        begin
-          Dec(Indent);
-          Add(IndentStr + '}  // end .try');
-        end;
-        if Instructions[I].Offset = HandlerBlock.Offset then
-        begin
-          Add(IndentStr + FlagsToName(Flags));
-          Add(IndentStr + '{');
-          Inc(Indent);
-        end;
-        if Instructions[I].Offset = (HandlerBlock.Offset + HandlerBlock.Length) then
-        begin
-          Dec(Indent);
-          Add(IndentStr + '}  // end ' + FlagsToName(Flags));
-        end;
+        for J := 0 to Method.ExceptionHandlerCount - 1 do
+          with Method.ExceptionHandlers[J] do
+          begin
+            if Instructions[I].Offset = TryBlock.Offset then
+            begin
+              Add(IndentStr + '.try');
+              Add(IndentStr + '{');
+              Inc(Indent);
+            end;
+            if Instructions[I].Offset = (TryBlock.Offset + TryBlock.Length) then
+            begin
+              Dec(Indent);
+              Add(IndentStr + '}  // end .try');
+            end;
+            if Instructions[I].Offset = HandlerBlock.Offset then
+            begin
+              Add(IndentStr + FlagsToName(Flags));
+              Add(IndentStr + '{');
+              Inc(Indent);
+            end;
+            if Instructions[I].Offset = (HandlerBlock.Offset +
+              HandlerBlock.Length) then
+            begin
+              Dec(Indent);
+              Add(IndentStr + '}  // end ' + FlagsToName(Flags));
+            end;
+          end;
+        Add(IndentStr + Instructions[I].DumpIL(Options));
       end;
-      Add(IndentStr + Instructions[I].DumpIL(Options));
+      Result := Text;
+    finally
+      Free;
     end;
-    Result := Text;
-  finally
-    Free;
-  end;
 end;
 
 function TJclClrILGenerator.GetInstructionCount: Integer;
@@ -671,14 +713,16 @@ begin
   Result := FInstructions.Count;
 end;
 
-function TJclClrILGenerator.GetInstruction(const Idx: Integer): TJclInstruction;
+function TJclClrILGenerator.GetInstruction(
+  const Idx: Integer): TJclInstruction;
 begin
   Result := TJclInstruction(FInstructions[Idx]);
 end;
 
 //=== { TJclInstruction } ====================================================
 
-constructor TJclInstruction.Create(AOwner :TJclClrILGenerator; AOpCode: TJclOpCode);
+constructor TJclInstruction.Create(AOwner: TJclClrILGenerator;
+  AOpCode: TJclOpCode);
 begin
   inherited Create;
   FOwner := AOwner;
@@ -715,7 +759,7 @@ end;
 
 function TJclInstruction.GetDescription: string;
 begin
-  Result := OpCodeInfos[OpCode, itDescription]
+  Result := OpCodeInfos[OpCode, itDescription];
 end;
 
 function TJclInstruction.GetSize: DWORD;
@@ -732,9 +776,10 @@ begin
     ptI8, ptU8, ptR8:
       Result := SizeOf(Int64);
     ptArray:
-      Result := (VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) + 1 + 1) * SizeOf(Integer);
-  else
-    Result := 0;
+      Result := (VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) +
+        1 + 1) * SizeOf(Integer);
+    else
+      Result := 0;
   end;
   Result := OpCodeSize[OpCode in [opNop..opPrefixRef]] + Result;
 end;
@@ -742,7 +787,8 @@ end;
 procedure TJclInstruction.Load(Stream: TStream);
 var
   Code: Byte;
-  I, ArraySize: DWORD;   { TODO : I, ArraySize = DWORD create a serious problem }
+  I, ArraySize: DWORD;
+   { TODO : I, ArraySize = DWORD create a serious problem }
   Value: Integer;
 begin
   FOffset := Stream.Position;
@@ -751,45 +797,48 @@ begin
     if WideOpCode then
     begin
       if Code <> STP1 then
-        raise EJclCliInstructionStreamInvalid.CreateRes(@RsInstructionStreamInvalid);
+        raise EJclCliInstructionStreamInvalid.CreateRes(
+          @RsInstructionStreamInvalid);
       Stream.Read(Code, SizeOf(Code));
     end;
 
     if Code <> RealOpCode then
-      raise EJclCliInstructionStreamInvalid.CreateRes(@RsInstructionStreamInvalid);
+      raise EJclCliInstructionStreamInvalid.CreateRes(
+        @RsInstructionStreamInvalid);
 
     with TVarData(FParam) do
-    case ParamType of
-      ptU1:
+      case ParamType of
+        ptU1:
         begin
           Stream.Read(VByte, SizeOf(Byte));
           VType := varByte;
         end;
-      ptI2:
+        ptI2:
         begin
           Stream.Read(VSmallInt, SizeOf(SmallInt));
           VType := varSmallInt;
         end;
-      ptLOff, ptI4:
+        ptLOff, ptI4:
         begin
           Stream.Read(VInteger, SizeOf(Integer));
           VType := varInteger;
         end;
-      ptR4:
+        ptR4:
         begin
           Stream.Read(VSingle, SizeOf(Single));
           VType := varSingle;
         end;
-      ptR8:                                       
+        ptR8:
         begin
           Stream.Read(VDouble, SizeOf(Double));
           VType := varDouble;
         end;
-      ptArray:
+        ptArray:
         begin
           Stream.Read(ArraySize, SizeOf(ArraySize));
-          FParam := VarArrayCreate([0, ArraySize-1], varInteger);
-          for I := 0 to ArraySize-1 do  { TODO : ArraySize = 0 and we have a nearly endless loop }
+          FParam := VarArrayCreate([0, ArraySize - 1], varInteger);
+          for I := 0 to ArraySize - 1 do
+  { TODO : ArraySize = 0 and we have a nearly endless loop }
           begin
             Stream.Read(Value, SizeOf(Value));
             FParam[I] := Value;
@@ -817,7 +866,7 @@ begin
           VType := varInt64;
         end;
       {$ENDIF RTL140_UP}
-    end;
+      end;
   except
     Stream.Position := FOffset;
     raise;
@@ -895,11 +944,13 @@ begin
   Result := 'IL_' + IntToHex(Offset, 4);
 end;
 
-function TJclInstruction.DumpILOption(Option: TJclInstructionDumpILOption): string;
+function TJclInstruction.DumpILOption(Option:
+  TJclInstructionDumpILOption): string;
 
   function TokenToString(Token: DWORD): string;
   begin
-    Result := '(' + IntToHex(Token shr 24, 2) + ')' + IntToHex(Token mod (1 shl 24), 6);
+    Result := '(' + IntToHex(Token shr 24, 2) + ')' +
+      IntToHex(Token mod (1 shl 24), 6);
   end;
 
 var
@@ -913,18 +964,18 @@ begin
     doLineNo:
       Result := 'IL_' + IntToHex(Offset, 4);
     doRawBytes:
-      begin
-        if WideOpCode then
-          CodeStr := IntToHex(STP1, 2);
+    begin
+      if WideOpCode then
+        CodeStr := IntToHex(STP1, 2);
 
-        CodeStr := CodeStr + IntToHex(RealOpCode, 2);
-        CodeStr := CodeStr + StrRepeat(' ', 4 - Length(CodeStr));
+      CodeStr := CodeStr + IntToHex(RealOpCode, 2);
+      CodeStr := CodeStr + StrRepeat(' ', 4 - Length(CodeStr));
 
-        case ParamType of
-          ptSOff, ptI1, ptU1:
-            ParamStr := IntToHex(TVarData(FParam).VByte, 2);
-          ptArray:
-            ParamStr := 'Array';
+      case ParamType of
+        ptSOff, ptI1, ptU1:
+          ParamStr := IntToHex(TVarData(FParam).VByte, 2);
+        ptArray:
+          ParamStr := 'Array';
           {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
           ptI2, ptU2:
             ParamStr := IntToHex(TVarData(FParam).VWord, 4);
@@ -937,17 +988,18 @@ begin
           {$ENDIF RTL140_UP}
         else
           ParamStr := '';
-        end;
-        ParamStr := ParamStr + StrRepeat(' ', 10 - Length(ParamStr));
-        Result := CodeStr + ' | ' + ParamStr;
       end;
+      ParamStr := ParamStr + StrRepeat(' ', 10 - Length(ParamStr));
+      Result := CodeStr + ' | ' + ParamStr;
+    end;
     doIL:
-      begin
-        case ParamType of
+    begin
+      case ParamType of
         ptVoid:
           ; // do nothing
         ptLOff:
-          Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
+          Result := FormatLabel(Integer(Offset + Size) +
+            TVarData(Param).VInteger - 1);
         {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
         ptToken:
           begin
@@ -999,10 +1051,11 @@ begin
         {$ENDIF RTL140_UP}
         else
           Result := VarToStr(Param);
-        end;
-        Result := GetName + StrRepeat(' ', 10 - Length(GetName)) + ' ' + Result;
-        Result := Result + StrRepeat(' ', 20 - Length(Result));
       end;
+      Result := GetName + StrRepeat(' ', 10 - Length(GetName)) +
+        ' ' + Result;
+      Result := Result + StrRepeat(' ', 20 - Length(Result));
+    end;
     doTokenValue:
       Result := ''; // do nothing
     doComment:

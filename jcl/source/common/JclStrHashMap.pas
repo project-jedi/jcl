@@ -65,8 +65,10 @@ type
   PUserData = Pointer;
   PData = Pointer;
 
-  TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean;
-  TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean of object;
+  TIterateFunc = function(AUserData: PUserData; const AStr: string;
+    var APtr: PData): Boolean;
+  TIterateMethod = function(AUserData: PUserData; const AStr: string;
+    var APtr: PData): Boolean of object;
   {$ENDIF CLR}
 
   {$IFDEF CLR}
@@ -112,9 +114,12 @@ type
     FList: PHashArray;
     FLeftDelete: Boolean;
     FTraits: TStringHashMapTraits;
-    function IterateNode(ANode: PHashNode; AUserData: PUserData; AIterateFunc: TIterateFunc): Boolean;
-    function IterateMethodNode(ANode: PHashNode; AUserData: PUserData; AIterateMethod: TIterateMethod): Boolean;
-    procedure NodeIterate(ANode: PPHashNode; AUserData: PUserData; AIterateFunc: TNodeIterateFunc);
+    function IterateNode(ANode: PHashNode; AUserData: PUserData;
+      AIterateFunc: TIterateFunc): Boolean;
+    function IterateMethodNode(ANode: PHashNode; AUserData: PUserData;
+      AIterateMethod: TIterateMethod): Boolean;
+    procedure NodeIterate(ANode: PPHashNode; AUserData: PUserData;
+      AIterateFunc: TNodeIterateFunc);
     procedure SetHashSize(AHashSize: Cardinal);
     procedure DeleteNodes(var Q: PHashNode);
     procedure DeleteNode(var Q: PHashNode);
@@ -131,7 +136,8 @@ type
     function Remove(const S: string): PData;
     procedure RemoveData(const P);
     procedure Iterate(AUserData: PUserData; AIterateFunc: TIterateFunc);
-    procedure IterateMethod(AUserData: PUserData; AIterateMethod: TIterateMethod);
+    procedure IterateMethod(AUserData: PUserData;
+      AIterateMethod: TIterateMethod);
     function Has(const S: string): Boolean;
     function Find(const S: string; var P): Boolean;
     function FindData(const P; var S: string): Boolean;
@@ -147,9 +153,12 @@ type
 function StrHash(const S: string): THashValue;
 function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 
 type
   TCaseSensitiveTraits = class(TStringHashMapTraits)
@@ -217,14 +226,16 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
   Result := True;
 end;
 
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 begin
   {$IFDEF CLR}
   TObject(AData).Free;
@@ -235,7 +246,8 @@ begin
   Result := True;
 end;
 
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 begin
   {$IFDEF CLR}
   TObject(AData).Free;
@@ -360,7 +372,8 @@ end;
 
 //=== { TStringHashMap } =====================================================
 
-constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
+constructor TStringHashMap.Create(ATraits: TStringHashMapTraits;
+  AHashSize: Cardinal);
 begin
   inherited Create;
   {$IFDEF CLR}
@@ -604,7 +617,7 @@ begin
           until S^.Left = nil;
         { now, S = symmetric successor of Q }
         S^.Left := T^.Left;
-        R^.Left :=  S^.Right;
+        R^.Left := S^.Right;
         S^.Right := T^.Right;
         Q := S;
       end;
@@ -782,7 +795,8 @@ begin
     DeleteNode(PPN^);
   end
   else
-    raise EJclStringHashMapError.CreateResFmt(@RsStringHashMapInvalidNode, [S]);
+    raise EJclStringHashMapError.CreateResFmt(
+      @RsStringHashMapInvalidNode, [S]);
 end;
 
 procedure TStringHashMap.IterateMethod(AUserData: Pointer;
@@ -795,7 +809,8 @@ begin
       Break;
 end;
 
-procedure TStringHashMap.Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
+procedure TStringHashMap.Iterate(AUserData: Pointer;
+  AIterateFunc: TIterateFunc);
 var
   I: Integer;
 begin
@@ -886,4 +901,3 @@ finalization
   FreeAndNil(GlobalCaseSensitiveTraits);
 
 end.
-

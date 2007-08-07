@@ -55,14 +55,19 @@ function SimpleCompare(Obj1, Obj2: TObject): Integer;
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 
 // Apply algorithms
-procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
-procedure Apply(const First: IJclStrIterator; Count: Integer; F: TStrApplyFunction); overload;
-procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
+procedure Apply(const First: IJclIntfIterator; Count: Integer;
+  F: TIntfApplyFunction); overload;
+procedure Apply(const First: IJclStrIterator; Count: Integer;
+  F: TStrApplyFunction); overload;
+procedure Apply(const First: IJclIterator; Count: Integer;
+  F: TApplyFunction); overload;
 
 // Find algorithms
-function Find(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface;
+function Find(const First: IJclIntfIterator; Count: Integer;
+  const AInterface: IInterface;
   AComparator: TIntfCompare): IJclIntfIterator; overload;
-function Find(const First: IJclStrIterator; Count: Integer; const AString: string;
+function Find(const First: IJclStrIterator; Count: Integer;
+  const AString: string;
   AComparator: TStrCompare): IJclStrIterator; overload;
 function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): IJclIterator; overload;
@@ -72,7 +77,8 @@ function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer; overload;
 function CountObject(const First: IJclStrIterator; Count: Integer;
   const AString: string; AComparator: TStrCompare): Integer; overload;
-function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
+function CountObject(const First: IJclIterator; Count: Integer;
+  AObject: TObject;
   AComparator: TCompare): Integer; overload;
 
 // Copy algorithms
@@ -84,14 +90,20 @@ procedure Copy(const First: IJclIterator; Count: Integer;
   const Output: IJclIterator); overload;
 
 // Generate algorithms
-procedure Generate(const List: IJclIntfList; Count: Integer; const AInterface: IInterface); overload;
-procedure Generate(const List: IJclStrList; Count: Integer; const AString: string); overload;
-procedure Generate(const List: IJclList; Count: Integer; AObject: TObject); overload;
+procedure Generate(const List: IJclIntfList; Count: Integer;
+  const AInterface: IInterface); overload;
+procedure Generate(const List: IJclStrList; Count: Integer;
+  const AString: string); overload;
+procedure Generate(const List: IJclList; Count: Integer;
+  AObject: TObject); overload;
 
 // Fill algorithms
-procedure Fill(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface); overload;
-procedure Fill(const First: IJclStrIterator; Count: Integer; const AString: string); overload;
-procedure Fill(const First: IJclIterator; Count: Integer; AObject: TObject); overload;
+procedure Fill(const First: IJclIntfIterator; Count: Integer;
+  const AInterface: IInterface); overload;
+procedure Fill(const First: IJclStrIterator; Count: Integer;
+  const AString: string); overload;
+procedure Fill(const First: IJclIterator; Count: Integer;
+  AObject: TObject); overload;
 
 // Reverse algorithms
 procedure Reverse(const First, Last: IJclIntfIterator); overload;
@@ -100,13 +112,19 @@ procedure Reverse(const First, Last: IJclIterator); overload;
 
 type
   // Pointer functions for sort algorithms
-  TIntfSortProc = procedure(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare);
-  TStrSortProc = procedure(const AList: IJclStrList; L, R: Integer; AComparator: TStrCompare);
-  TSortProc = procedure(const AList: IJclList; L, R: Integer; AComparator: TCompare);
+  TIntfSortProc = procedure(const AList: IJclIntfList;
+    L, R: Integer; AComparator: TIntfCompare);
+  TStrSortProc = procedure(const AList: IJclStrList; L, R: Integer;
+    AComparator: TStrCompare);
+  TSortProc = procedure(const AList: IJclList; L, R: Integer;
+    AComparator: TCompare);
 
-procedure QuickSort(const AList: IJclIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
-procedure QuickSort(const AList: IJclStrList; L, R: Integer; AComparator: TStrCompare); overload;
-procedure QuickSort(const AList: IJclList; L, R: Integer; AComparator: TCompare); overload;
+procedure QuickSort(const AList: IJclIntfList; L, R: Integer;
+  AComparator: TIntfCompare); overload;
+procedure QuickSort(const AList: IJclStrList; L, R: Integer;
+  AComparator: TStrCompare); overload;
+procedure QuickSort(const AList: IJclList; L, R: Integer;
+  AComparator: TCompare); overload;
 
 var
   IntfSortProc: TIntfSortProc = QuickSort;
@@ -114,9 +132,12 @@ var
   SortProc: TSortProc = QuickSort;
 
 // Sort algorithms
-procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare); overload;
-procedure Sort(const AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
-procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
+procedure Sort(const AList: IJclIntfList; First, Last: Integer;
+  AComparator: TIntfCompare); overload;
+procedure Sort(const AList: IJclStrList; First, Last: Integer;
+  AComparator: TStrCompare); overload;
+procedure Sort(const AList: IJclList; First, Last: Integer;
+  AComparator: TCompare); overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -166,7 +187,8 @@ begin
   Result := Integer(Obj1) - Integer(Obj2);
 end;
 
-procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction);
+procedure Apply(const First: IJclIntfIterator; Count: Integer;
+  F: TIntfApplyFunction);
 var
   I: Integer;
 begin
@@ -180,7 +202,8 @@ begin
       Break;
 end;
 
-procedure Apply(const First: IJclStrIterator; Count: Integer; F: TStrApplyFunction);
+procedure Apply(const First: IJclStrIterator; Count: Integer;
+  F: TStrApplyFunction);
 var
   I: Integer;
 begin
@@ -294,7 +317,8 @@ begin
       Break;
 end;
 
-function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
+function CountObject(const First: IJclIterator; Count: Integer;
+  AObject: TObject;
   AComparator: TCompare): Integer;
 var
   I: Integer;
@@ -552,7 +576,8 @@ begin
   until I >= R;
 end;
 
-procedure QuickSort(const AList: IJclList; L, R: Integer; AComparator: TCompare);
+procedure QuickSort(const AList: IJclList; L, R: Integer;
+  AComparator: TCompare);
 var
   I, J, P: Integer;
   Obj: TObject;
@@ -586,17 +611,20 @@ begin
   until I >= R;
 end;
 
-procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIntfCompare);
+procedure Sort(const AList: IJclIntfList; First, Last: Integer;
+  AComparator: TIntfCompare);
 begin
   IntfSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(const AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare);
+procedure Sort(const AList: IJclStrList; First, Last: Integer;
+  AComparator: TStrCompare);
 begin
   StrSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare);
+procedure Sort(const AList: IJclList; First, Last: Integer;
+  AComparator: TCompare);
 begin
   SortProc(AList, First, Last, AComparator);
 end;
@@ -610,4 +638,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

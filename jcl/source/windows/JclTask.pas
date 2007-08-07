@@ -48,10 +48,11 @@ uses
 type
   TDateTimeArray = array of TDateTime;
 
-  TJclScheduledTaskStatus = (tsUnknown, tsReady, tsRunning, tsNotScheduled, tsHasNotRun);
+  TJclScheduledTaskStatus = (tsUnknown, tsReady, tsRunning,
+    tsNotScheduled, tsHasNotRun);
 
   TJclScheduledTaskFlag =
-   (tfInteractive, tfDeleteWhenDone, tfDisabled, tfStartOnlyIfIdle,
+    (tfInteractive, tfDeleteWhenDone, tfDisabled, tfStartOnlyIfIdle,
     tfKillOnIdleEndl, tfDontStartIfOnBatteries, tfKillIfGoingOnBatteries,
     tfRunOnlyIfDocked, tfHidden, tfRunIfConnectedToInternet,
     tfRestartOnIdleResume, tfSystemRequired, tfRunOnlyIfLoggedOn);
@@ -90,8 +91,10 @@ type
     function Remove(const TaskIntf: ITask): Integer; overload;
     function Remove(const ATask: TJclScheduledTask): Integer; overload;
     property TaskScheduler: ITaskScheduler read FTaskScheduler;
-    property TargetComputer: WideString read GetTargetComputer write SetTargetComputer;
-    property Tasks[const Idx: Integer]: TJclScheduledTask read GetTask; default;
+    property TargetComputer: WideString
+      read GetTargetComputer write SetTargetComputer;
+    property Tasks[const Idx: Integer]: TJclScheduledTask read GetTask;
+      default;
     property TaskCount: Integer read GetTaskCount;
   public
     class function IsRunning: Boolean;
@@ -129,7 +132,8 @@ type
     function Add: TJclTaskTrigger; overload;
     function AddItem(Item: TJclTaskTrigger; Index: Integer): TJclTaskTrigger;
     function Insert(Index: Integer): TJclTaskTrigger;
-    property Items[Index: Integer]: TJclTaskTrigger read GetItem write SetItem; default;
+    property Items[Index: Integer]: TJclTaskTrigger read GetItem write SetItem;
+      default;
   end;
 
 {$HPPEMIT '#define _di_IScheduledWorkItem IScheduledWorkItem*'}
@@ -159,12 +163,15 @@ type
     procedure SetErrorRetryInterval(const Value: Word);
     function GetFlags: TJclScheduledTaskFlags;
     procedure SetFlags(const Value: TJclScheduledTaskFlags);
-    function GetData: TStream;                                  { TODO : stream is owned by instance }
-    procedure SetData(const Value: TStream);                    { TODO : stream is owned by caller (copy) }
+    function GetData: TStream;
+                                  { TODO : stream is owned by instance }
+    procedure SetData(const Value: TStream);
+                    { TODO : stream is owned by caller (copy) }
     function GetTrigger(const Idx: Integer): TJclTaskTrigger;
     function GetTriggerCount: Integer;
   protected
-    constructor Create(const ATaskName: WideString; const AScheduledWorkItem: IScheduledWorkItem);
+    constructor Create(const ATaskName: WideString;
+      const AScheduledWorkItem: IScheduledWorkItem);
   public
     destructor Destroy; override;
     procedure Save;
@@ -172,24 +179,29 @@ type
     procedure Run;
     procedure Terminate;
     procedure SetAccountInformation(const Name, Password: WideString);
-    function GetRunTimes(const BeginTime: TDateTime; const EndTime: TDateTime = InfiniteTime): TDateTimeArray;
+    function GetRunTimes(const BeginTime: TDateTime;
+      const EndTime: TDateTime = InfiniteTime): TDateTimeArray;
     property ScheduledWorkItem: IScheduledWorkItem read FScheduledWorkItem;
     property TaskName: WideString read FTaskName write FTaskName;
     property AccountName: WideString read GetAccountName write SetAccountName;
     property Password: WideString write SetPassword;
     property Comment: WideString read GetComment write SetComment;
     property Creator: WideString read GetCreator write SetCreator;
-    property ErrorRetryCount: Word read GetErrorRetryCount write SetErrorRetryCount;
-    property ErrorRetryInterval: Word read GetErrorRetryInterval write SetErrorRetryInterval;
+    property ErrorRetryCount: Word read GetErrorRetryCount
+      write SetErrorRetryCount;
+    property ErrorRetryInterval: Word
+      read GetErrorRetryInterval write SetErrorRetryInterval;
     property ExitCode: DWORD read GetExitCode;
-    property OwnerData: TStream read GetData write SetData;  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
+    property OwnerData: TStream read GetData write SetData;
+  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
     property IdleMinutes: Word read GetIdleMinutes;
     property DeadlineMinutes: Word read GetDeadlineMinutes;
     property MostRecentRunTime: Windows.TSystemTime read GetMostRecentRunTime;
     property NextRunTime: Windows.TSystemTime read GetNextRunTime;
     property Status: TJclScheduledTaskStatus read GetStatus;
     property Flags: TJclScheduledTaskFlags read GetFlags write SetFlags;
-    property Triggers[const Idx: Integer]: TJclTaskTrigger read GetTrigger; default;
+    property Triggers[const Idx: Integer]: TJclTaskTrigger read GetTrigger;
+      default;
     property TriggerCount: Integer read GetTriggerCount;
   end;
 
@@ -209,10 +221,13 @@ type
     procedure SetWorkingDirectory(const Value: WideString);
     function GetTask: ITask;
   public
-    function ShowPage(Pages: TJclScheduleTaskPropertyPages = JclScheduleTaskAllPages): Boolean;
+    function ShowPage(Pages: TJclScheduleTaskPropertyPages =
+      JclScheduleTaskAllPages): Boolean;
     property Task: ITask read GetTask;
-    property ApplicationName: WideString read GetApplicationName write SetApplicationName;
-    property WorkingDirectory: WideString read GetWorkingDirectory write SetWorkingDirectory;
+    property ApplicationName: WideString
+      read GetApplicationName write SetApplicationName;
+    property WorkingDirectory: WideString
+      read GetWorkingDirectory write SetWorkingDirectory;
     property MaxRunTime: DWORD read GetMaxRunTime write SetMaxRunTime;
     property Parameters: WideString read GetParameters write SetParameters;
     property Priority: DWORD read GetPriority write SetPriority;
@@ -237,7 +252,7 @@ uses
 
 const
   TaskFlagMapping: array [TJclScheduledTaskFlag] of DWORD =
-   (TASK_FLAG_INTERACTIVE, TASK_FLAG_DELETE_WHEN_DONE, TASK_FLAG_DISABLED,
+    (TASK_FLAG_INTERACTIVE, TASK_FLAG_DELETE_WHEN_DONE, TASK_FLAG_DISABLED,
     TASK_FLAG_START_ONLY_IF_IDLE, TASK_FLAG_KILL_ON_IDLE_END,
     TASK_FLAG_DONT_START_IF_ON_BATTERIES, TASK_FLAG_KILL_IF_GOING_ON_BATTERIES,
     TASK_FLAG_RUN_ONLY_IF_DOCKED, TASK_FLAG_HIDDEN,
@@ -287,12 +302,13 @@ class function TJclTaskSchedule.IsRunning: Boolean;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      Refresh;
-      Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
-    finally
-      Free;
-    end;
+      try
+        Refresh;
+        Result := FindService('Schedule', NtSvc) and
+          (NtSvc.ServiceState = ssRunning);
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -311,7 +327,8 @@ class procedure TJclTaskSchedule.Start;
     si: TStartupInfo;
     pi: TProcessInformation;
   begin
-    Win32Check(SearchPath(nil, 'mstask.exe', nil, MAX_PATH, AppName, FilePart) > 0);
+    Win32Check(SearchPath(nil, 'mstask.exe', nil, MAX_PATH,
+      AppName, FilePart) > 0);
 
     si.cb := SizeOf(si);
     Win32Check(CreateProcess(AppName, nil, nil, nil, False,
@@ -326,13 +343,13 @@ class procedure TJclTaskSchedule.Start;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      Refresh;
-      if FindService('Schedule', NtSvc) then
-        NtSvc.Start;
-    finally
-      Free;
-    end;
+      try
+        Refresh;
+        if FindService('Schedule', NtSvc) then
+          NtSvc.Start;
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -352,7 +369,7 @@ class procedure TJclTaskSchedule.Stop;
     begin
       hProcess := OpenProcess(PROCESS_TERMINATE, False,
         GetWindowThreadProcessId(
-          FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
+        FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
       Win32Check(hProcess <> 0);
       Win32Check(TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
       Win32Check(CloseHandle(hProcess));
@@ -364,12 +381,12 @@ class procedure TJclTaskSchedule.Stop;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      if FindService('Schedule', NtSvc) then
-        NtSvc.Stop;
-    finally
-      Free;
-    end;
+      try
+        if FindService('Schedule', NtSvc) then
+          NtSvc.Stop;
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -403,7 +420,8 @@ begin
   TaskIid := IID_ITask;
   ItemName := nil;
   FTasks.Clear;
-  while SUCCEEDED(EnumWorkItems.Next(1, ItemName, FetchedCount)) and (FetchedCount > 0) do
+  while SUCCEEDED(EnumWorkItems.Next(1, ItemName, FetchedCount)) and
+    (FetchedCount > 0) do
   begin
     RealItemName := ItemName^;
     OleCheck(TaskScheduler.Activate(RealItemName, TaskIid, spUnk));
@@ -421,7 +439,8 @@ var
 begin
   TaskClsId := CLSID_CTask;
   TaskIid := IID_ITask;
-  OleCheck(TaskScheduler.NewWorkItem(PWideChar(TaskName), TaskClsId, TaskIid, spUnk));
+  OleCheck(TaskScheduler.NewWorkItem(PWideChar(TaskName),
+    TaskClsId, TaskIid, spUnk));
   Result := TJclScheduledTask.Create(TaskName, spUnk as ITask);
   Result.SetAccountInformation(LocalSystemAccount, '');
   Result.Save;
@@ -436,7 +455,7 @@ end;
 
 function TJclTaskSchedule.Remove(const TaskName: WideString): Integer;
 begin
-  for Result := 0 to TaskCount-1 do
+  for Result := 0 to TaskCount - 1 do
     if WideCompareText(Tasks[Result].TaskName, TaskName) = 0 then
     begin
       Delete(Result);
@@ -447,7 +466,7 @@ end;
 
 function TJclTaskSchedule.Remove(const TaskIntf: ITask): Integer;
 begin
-  for Result := 0 to TaskCount-1 do
+  for Result := 0 to TaskCount - 1 do
     if Tasks[Result].Task = TaskIntf then
     begin
       Delete(Result);
@@ -528,7 +547,8 @@ begin
   Result := TJclTaskTrigger(inherited Add);
 end;
 
-function TJclTaskTriggers.AddItem(Item: TJclTaskTrigger; Index: Integer): TJclTaskTrigger;
+function TJclTaskTriggers.AddItem(Item: TJclTaskTrigger;
+  Index: Integer): TJclTaskTrigger;
 begin
   if Item = nil then
     Result := Add
@@ -601,13 +621,15 @@ begin
     end;
 end;
 
-procedure TJclScheduledWorkItem.SetAccountInformation(const Name, Password: WideString);
+procedure TJclScheduledWorkItem.SetAccountInformation(
+  const Name, Password: WideString);
 begin
   if IsWinNT then  // ignore this method in Win9x/ME
     if (Name = LocalSystemAccount) or (Name = '') then
       OleCheck(FScheduledWorkItem.SetAccountInformation('', nil))
     else
-      OleCheck(FScheduledWorkItem.SetAccountInformation(PWideChar(Name), PWideChar(Password)));
+      OleCheck(FScheduledWorkItem.SetAccountInformation(PWideChar(Name),
+        PWideChar(Password)));
 end;
 
 procedure TJclScheduledWorkItem.SetAccountName(const Value: WideString);
@@ -677,7 +699,8 @@ begin
   OleCheck(FScheduledWorkItem.GetNextRunTime(Result));
 end;
 
-function TJclScheduledWorkItem.GetRunTimes(const BeginTime, EndTime: TDateTime): TDateTimeArray;
+function TJclScheduledWorkItem.GetRunTimes(
+  const BeginTime, EndTime: TDateTime): TDateTimeArray;
 var
   BeginSysTime, EndSysTime: TSystemTime;
   I, Count: Word;
@@ -687,12 +710,14 @@ begin
   DateTimeToSystemTime(EndTime, EndSysTime);
 
   if EndTime = InfiniteTime then
-    OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, nil, Count, TaskTimes))
+    OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, nil,
+      Count, TaskTimes))
   else
-    OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, @EndSysTime, Count, TaskTimes));
+    OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime,
+      @EndSysTime, Count, TaskTimes));
   try
     SetLength(Result, Count);
-    for I := 0 to Count-1 do
+    for I := 0 to Count - 1 do
     begin
       Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
       Inc(TaskTimes);
@@ -716,8 +741,8 @@ begin
       Result := tsNotScheduled;
     SCHED_S_TASK_HAS_NOT_RUN:
       Result := tsHasNotRun;
-  else
-    Result := tsUnknown;
+    else
+      Result := tsUnknown;
   end;
 end;
 
@@ -748,7 +773,7 @@ var
 begin
   OleCheck(FScheduledWorkItem.GetFlags(AFlags));
   Result := [];
-  for AFlag:=Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
+  for AFlag := Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
     if (AFlags and TaskFlagMapping[AFlag]) = TaskFlagMapping[AFlag] then
       Include(Result, AFlag);
 end;
@@ -759,7 +784,7 @@ var
   AFlag: TJclScheduledTaskFlag;
 begin
   AFlags := 0;
-  for AFlag:=Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
+  for AFlag := Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
     if AFlag in Value then
       AFlags := AFlags or TaskFlagMapping[AFlag];
   OleCheck(FScheduledWorkItem.SetFlags(AFlags));
@@ -786,7 +811,8 @@ procedure TJclScheduledWorkItem.SetData(const Value: TStream);
 begin
   FData.Clear;
   FData.CopyFrom(Value, 0);
-  OleCheck(FScheduledWorkItem.SetWorkItemData(FData.Size, PByte(FData.Memory)));
+  OleCheck(FScheduledWorkItem.SetWorkItemData(FData.Size,
+    PByte(FData.Memory)));
 end;
 
 procedure TJclScheduledWorkItem.Refresh;
@@ -798,11 +824,11 @@ begin
 
   FTriggers.Clear;
   if Count > 0 then
-  for I:=0 to Count-1 do
-  begin
-    OleCheck(FScheduledWorkItem.GetTrigger(I, ATrigger));
-    FTriggers.Add(ATrigger);
-  end;
+    for I := 0 to Count - 1 do
+    begin
+      OleCheck(FScheduledWorkItem.GetTrigger(I, ATrigger));
+      FTriggers.Add(ATrigger);
+    end;
 end;
 
 function TJclScheduledWorkItem.GetTriggerCount: Integer;
@@ -889,14 +915,18 @@ begin
   OleCheck(Task.SetWorkingDirectory(PWideChar(Value)));
 end;
 
-function TJclScheduledTask.ShowPage(Pages: TJclScheduleTaskPropertyPages): Boolean;
+function TJclScheduledTask.ShowPage(Pages:
+  TJclScheduleTaskPropertyPages): Boolean;
 var
   PropPages: array [0..2] of MSTask.HPropSheetPage;
   PropHeader: {CommCtrl.}TPropSheetHeader;
 begin
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_TASK, True, PropPages[0]));
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SCHEDULE, True, PropPages[1]));
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SETTINGS, True, PropPages[2]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(
+    TASKPAGE_TASK, True, PropPages[0]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(
+    TASKPAGE_SCHEDULE, True, PropPages[1]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(
+    TASKPAGE_SETTINGS, True, PropPages[2]));
 
   FillChar(PropHeader, SizeOf(PropHeader), 0);
   PropHeader.dwSize := SizeOf(PropHeader);

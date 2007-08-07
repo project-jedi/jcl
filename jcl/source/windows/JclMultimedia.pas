@@ -78,8 +78,10 @@ type
     constructor Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
     destructor Destroy; override;
     class function GetTime: Cardinal;
-    class function BeginPeriod(const Period: Cardinal): Boolean; { TODO -cHelp : Doc }
-    class function EndPeriod(const Period: Cardinal): Boolean;   { TODO -cHelp : Doc }
+    class function BeginPeriod(const Period: Cardinal): Boolean;
+ { TODO -cHelp : Doc }
+    class function EndPeriod(const Period: Cardinal): Boolean;
+   { TODO -cHelp : Doc }
     procedure BeginTimer(const Delay, Resolution: Cardinal);
     procedure EndTimer;
     function Elapsed(const Update: Boolean): Cardinal;
@@ -122,8 +124,10 @@ type
     procedure SetUniformValue(const Value: Cardinal);
     procedure SetValue(const Value: TDynCardinalArray);
   protected
-    constructor Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
-    procedure PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails; AUniform, AMultiple: Boolean);
+    constructor Create(AMixerLine: TJclMixerLine;
+      const AControlInfo: TMixerControl);
+    procedure PrepareControlDetailsStruc(
+      var ControlDetails: TMixerControlDetails; AUniform, AMultiple: Boolean);
   public
     destructor Destroy; override;
     function FormatValue(AValue: Cardinal): string;
@@ -160,10 +164,13 @@ type
     destructor Destroy; override;
     class function ComponentTypeToString(const ComponentType: DWORD): string;
     property ComponentString: string read GetComponentString;
-    property HasControlType[ControlType: DWORD]: Boolean read GetHasControlType;
+    property HasControlType[ControlType: DWORD]: Boolean
+      read GetHasControlType;
     property ID: DWORD read GetID;
-    property LineControlByType[ControlType: DWORD]: TJclMixerLineControl read GetLineControlByType;
-    property LineControls[Index: Integer]: TJclMixerLineControl read GetLineControls; default;
+    property LineControlByType[ControlType: DWORD]: TJclMixerLineControl
+      read GetLineControlByType;
+    property LineControls[Index: Integer]: TJclMixerLineControl
+      read GetLineControls; default;
     property LineControlCount: Integer read GetLineControlCount;
     property LineInfo: TMixerLine read FLineInfo;
     property Name: string read GetName;
@@ -174,7 +181,8 @@ type
   private
     FMixerDestination: TJclMixerDestination;
   protected
-    constructor Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
+    constructor Create(AMixerDestination: TJclMixerDestination;
+      ASourceIndex: Cardinal);
   public
     property MixerDestination: TJclMixerDestination read FMixerDestination;
   end;
@@ -185,7 +193,8 @@ type
     function GetSourceCount: Integer;
     function GetSources(Index: Integer): TJclMixerSource;
   protected
-    constructor Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
+    constructor Create(AMixerDevice: TJclMixerDevice;
+      ADestinationIndex: Cardinal);
     procedure BuildSources;
   public
     destructor Destroy; override;
@@ -209,7 +218,8 @@ type
     function GetLineByID(LineID: DWORD): TJclMixerLine;
     function GetLineControlByID(ControlID: DWORD): TJclMixerLineControl;
     function GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
-    procedure SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
+    procedure SetLineUniformValue(ComponentType, ControlType: DWORD;
+      const Value: Cardinal);
   protected
     constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
     procedure BuildDestinations;
@@ -218,18 +228,23 @@ type
     procedure Open(ACallBackWnd: THandle);
   public
     destructor Destroy; override;
-    function FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
+    function FindLineControl(ComponentType, ControlType: DWORD):
+      TJclMixerLineControl;
     property Capabilities: TMixerCaps read FCapabilities;
     property DeviceIndex: Cardinal read FDeviceIndex;
-    property Destinations[Index: Integer]: TJclMixerDestination read GetDestinations; default;
+    property Destinations[Index: Integer]: TJclMixerDestination
+      read GetDestinations; default;
     property DestinationCount: Integer read GetDestinationCount;
     property Handle: HMIXER read FHandle;
     property LineByID[LineID: DWORD]: TJclMixerLine read GetLineByID;
-    property LineByComponentType[ComponentType: DWORD]: TJclMixerLine read GetLineByComponentType;
+    property LineByComponentType[ComponentType: DWORD]: TJclMixerLine
+      read GetLineByComponentType;
     property Lines[Index: Integer]: TJclMixerLine read GetLines;
     property LineCount: Integer read GetLineCount;
-    property LineControlByID[ControlID: DWORD]: TJclMixerLineControl read GetLineControlByID;
-    property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal read GetLineUniformValue write SetLineUniformValue;
+    property LineControlByID[ControlID: DWORD]: TJclMixerLineControl
+      read GetLineControlByID;
+    property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal
+      read GetLineUniformValue write SetLineUniformValue;
     property ProductName: string read GetProductName;
   end;
 
@@ -243,7 +258,8 @@ type
     function GetLineMute(ComponentType: Integer): Boolean;
     function GetLineVolume(ComponentType: Integer): Cardinal;
     function GetLineByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLine;
-    function GetLineControlByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLineControl;
+    function GetLineControlByID(MixerHandle: HMIXER;
+      LineID: DWORD): TJclMixerLineControl;
     procedure SetLineMute(ComponentType: Integer; const Value: Boolean);
     procedure SetLineVolume(ComponentType: Integer; const Value: Cardinal);
   protected
@@ -255,15 +271,22 @@ type
     property Devices[Index: Integer]: TJclMixerDevice read GetDevices; default;
     property DeviceCount: Integer read GetDeviceCount;
     property FirstDevice: TJclMixerDevice read GetFirstDevice;
-    property LineByID[MixerHandle: HMIXER; LineID: DWORD]: TJclMixerLine read GetLineByID;
-    property LineControlByID[MixerHandle: HMIXER; LineID: DWORD]: TJclMixerLineControl read GetLineControlByID;
-    property LineMute[ComponentType: Integer]: Boolean read GetLineMute write SetLineMute;
-    property LineVolume[ComponentType: Integer]: Cardinal read GetLineVolume write SetLineVolume;
-    property SpeakersMute: Boolean index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineMute write SetLineMute;
-    property SpeakersVolume: Cardinal index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineVolume write SetLineVolume;
+    property LineByID[MixerHandle: HMIXER;
+      LineID: DWORD]: TJclMixerLine read GetLineByID;
+    property LineControlByID[MixerHandle: HMIXER;
+      LineID: DWORD]: TJclMixerLineControl read GetLineControlByID;
+    property LineMute[ComponentType: Integer]: Boolean
+      read GetLineMute write SetLineMute;
+    property LineVolume[ComponentType: Integer]: Cardinal
+      read GetLineVolume write SetLineVolume;
+    property SpeakersMute: Boolean index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS
+      read GetLineMute write SetLineMute;
+    property SpeakersVolume: Cardinal index
+      MIXERLINE_COMPONENTTYPE_DST_SPEAKERS
+      read GetLineVolume write SetLineVolume;
   end;
 
-  function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
+function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
 
 type
   // MCI Error checking
@@ -273,7 +296,8 @@ type
     FMciErrorMsg: string;
   public
     constructor Create(MciErrNo: MCIERROR; const Msg: string);
-    constructor CreateFmt(MciErrNo: MCIERROR; const Msg: string; const Args: array of const);
+    constructor CreateFmt(MciErrNo: MCIERROR; const Msg: string;
+      const Args: array of const);
     constructor CreateRes(MciErrNo: MCIERROR; Ident: Integer);
     property MciErrorNo: DWORD read FMciErrorNo;
     property MciErrorMsg: string read FMciErrorMsg;
@@ -283,7 +307,8 @@ function MMCheck(const MciError: MCIERROR; const Msg: string = ''): MCIERROR;
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 
 // CD Drive MCI Routines
-function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char = #0): MCIERROR;
+function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms;
+  Drive: Char = #0): MCIERROR;
 function CloseCdMciDevice(var OpenParams: TMCI_Open_Parms): MCIERROR;
 
 // CD Drive specific routines
@@ -304,8 +329,10 @@ type
 
 function GetCdInfo(InfoType: TJclCdMediaInfo; Drive: Char = #0): string;
 
-function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char = #0): TJclCdTrackInfo; overload;
-function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean = False; Drive: Char = #0): string; overload;
+function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray;
+  Drive: Char = #0): TJclCdTrackInfo; overload;
+function GetCDAudioTrackList(TrackList: TStrings;
+  IncludeTrackType: Boolean = False; Drive: Char = #0): string; overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -323,7 +350,7 @@ uses
   SysUtils,
   JclResources, JclSysUtils;
 
-{ TODO : move to JclWin32? }  
+{ TODO : move to JclWin32? }
 {$IFDEF FPC}
 // declarations missing from mmsystem.pp
 const
@@ -348,7 +375,8 @@ function mixerSetControlDetails(hmxobj: HMIXEROBJ; pmxcd: PMixerControlDetails; 
 
 //=== { TJclMultimediaTimer } ================================================
 
-constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
+constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind;
+  Notification: TMmNotificationKind);
 begin
   FKind := Kind;
   FNotification := Notification;
@@ -371,12 +399,14 @@ begin
   inherited Destroy;
 end;
 
-procedure MmTimerCallback(TimerId, Msg: Cardinal; User, dw1, dw2: DWORD); stdcall;
+procedure MmTimerCallback(TimerId, Msg: Cardinal;
+  User, dw1, dw2: DWORD); stdcall;
 begin
   TJclMultimediaTimer(User).Timer(TimerId);
 end;
 
-class function TJclMultimediaTimer.BeginPeriod(const Period: Cardinal): Boolean;
+class function TJclMultimediaTimer.BeginPeriod(
+  const Period: Cardinal): Boolean;
 begin
   Result := timeBeginPeriod(Period) = TIMERR_NOERROR;
 end;
@@ -398,24 +428,25 @@ begin
   end;
   case FNotification of
     nkCallback:
-      begin
-        Event := Event or TIME_CALLBACK_FUNCTION;
-        TimerCallback := @MmTimerCallback;
-      end;
+    begin
+      Event := Event or TIME_CALLBACK_FUNCTION;
+      TimerCallback := @MmTimerCallback;
+    end;
     nkSetEvent:
-      begin
-        Event := Event or TIME_CALLBACK_EVENT_SET;
-        TimerCallback := TFNTimeCallback(FEvent.Handle);
-      end;
+    begin
+      Event := Event or TIME_CALLBACK_EVENT_SET;
+      TimerCallback := TFNTimeCallback(FEvent.Handle);
+    end;
     nkPulseEvent:
-      begin
-        Event := Event or TIME_CALLBACK_EVENT_PULSE;
-        TimerCallback := TFNTimeCallback(FEvent.Handle);
-      end;
+    begin
+      Event := Event or TIME_CALLBACK_EVENT_PULSE;
+      TimerCallback := TFNTimeCallback(FEvent.Handle);
+    end;
   end;
   FStartTime := GetTime;
   if timeBeginPeriod(FPeriod) = TIMERR_NOERROR then
-    FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack, DWORD(Self), Event);
+    FTimerId := timeSetEvent(Delay, Resolution, TimerCallBack,
+      DWORD(Self), Event);
   if FTimerId = 0 then
     raise EJclMmTimerError.CreateRes(@RsMmSetEvent);
 end;
@@ -461,8 +492,8 @@ begin
       Result := FTimeCaps.wPeriodMax;
     1:
       Result := FTimeCaps.wPeriodMin;
-  else
-    Result := 0;
+    else
+      Result := 0;
   end;
 end;
 
@@ -508,12 +539,15 @@ begin
   Result[1] := Right;
 end;
 
-constructor TJclMixerLineControl.Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
+constructor TJclMixerLineControl.Create(AMixerLine: TJclMixerLine;
+  const AControlInfo: TMixerControl);
 begin
   FControlInfo := AControlInfo;
   FMixerLine := AMixerLine;
-  FIsList := (ControlInfo.dwControlType and MIXERCONTROL_CT_CLASS_MASK) = MIXERCONTROL_CT_CLASS_LIST;
-  FIsMultiple := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_MULTIPLE <> 0;
+  FIsList := (ControlInfo.dwControlType and MIXERCONTROL_CT_CLASS_MASK) =
+    MIXERCONTROL_CT_CLASS_LIST;
+  FIsMultiple := FControlInfo.fdwControl and
+    MIXERCONTROL_CONTROLF_MULTIPLE <> 0;
   FIsUniform := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_UNIFORM <> 0;
 end;
 
@@ -536,8 +570,8 @@ begin
       Result := Format('%.1fdB', [AValue / 10]);
     MIXERCONTROL_CT_UNITS_PERCENT:
       Result := Format('%.1f%%', [AValue / 10]);
-  else
-    Result := '';
+    else
+      Result := '';
   end;
 end;
 
@@ -564,10 +598,12 @@ begin
     begin
       PrepareControlDetailsStruc(ControlDetails, True, IsMultiple);
       ControlDetails.cbDetails := SizeOf(TMixerControlDetailsListText);
-      GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) * ControlDetails.cMultipleItems);
+      GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) *
+        ControlDetails.cMultipleItems);
       try
         ControlDetails.paDetails := ListTexts;
-        if mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) = MMSYSERR_NOERROR then
+        if mixerGetControlDetails(MixerLine.MixerDevice.Handle,
+          @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) = MMSYSERR_NOERROR then
         begin
           P := ListTexts;
           for I := 1 to ControlDetails.cMultipleItems do
@@ -575,7 +611,7 @@ begin
             FListText.AddObject(P^.szName, Pointer(P^.dwParam1));
             Inc(P);
           end;
-        end;  
+        end;
       finally
         FreeMem(ListTexts);
       end;
@@ -596,7 +632,8 @@ begin
   PrepareControlDetailsStruc(ControlDetails, True, False);
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Result;
-  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle,
+    @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
 end;
 
 function TJclMixerLineControl.GetValue: TDynCardinalArray;
@@ -614,7 +651,8 @@ begin
   SetLength(Result, ItemCount);
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Result[0];
-  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle,
+    @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
 end;
 
 function TJclMixerLineControl.GetValueString: string;
@@ -629,7 +667,8 @@ begin
   Delete(Result, 1, 1);
 end;
 
-procedure TJclMixerLineControl.PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails;
+procedure TJclMixerLineControl.PrepareControlDetailsStruc(
+  var ControlDetails: TMixerControlDetails;
   AUniform, AMultiple: Boolean);
 begin
   FillChar(ControlDetails, SizeOf(ControlDetails), 0);
@@ -650,7 +689,8 @@ begin
   PrepareControlDetailsStruc(ControlDetails, True, False);
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Value;
-  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle,
+    @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
 end;
 
 procedure TJclMixerLineControl.SetValue(const Value: TDynCardinalArray);
@@ -672,19 +712,23 @@ begin
   {$ENDIF ASSERTIONS_ON}
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Value[0];
-  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle,
+    @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
 end;
 
 //=== { TJclMixerLine } ======================================================
 
 function MixerLineCompareID(Item1, Item2: Pointer): Integer;
 begin
-  Result := Integer(TJclMixerLine(Item1).ID) - Integer(TJclMixerLine(Item2).ID);
+  Result := Integer(TJclMixerLine(Item1).ID) -
+    Integer(TJclMixerLine(Item2).ID);
 end;
 
-function MixerLineSearchID(Param: Pointer; ItemIndex: Integer; const Value): Integer;
+function MixerLineSearchID(Param: Pointer; ItemIndex: Integer;
+  const Value): Integer;
 begin
-  Result := Integer(TJclMixerDevice(Param).Lines[ItemIndex].ID) - Integer(Value);
+  Result := Integer(TJclMixerDevice(Param).Lines[ItemIndex].ID) -
+    Integer(Value);
 end;
 
 constructor TJclMixerLine.Create(AMixerDevice: TJclMixerDevice);
@@ -713,7 +757,8 @@ begin
     MixerControls.cControls := FLineInfo.cControls;
     MixerControls.cbmxctrl := SizeOf(TMixerControl);
     MixerControls.pamxctrl := Controls;
-    if mixerGetLineControls(FMixerDevice.Handle, @MixerControls, MIXER_GETLINECONTROLSF_ALL) = MMSYSERR_NOERROR then
+    if mixerGetLineControls(FMixerDevice.Handle, @MixerControls,
+      MIXER_GETLINECONTROLSF_ALL) = MMSYSERR_NOERROR then
     begin
       P := Controls;
       for I := 1 to FLineInfo.cControls do
@@ -722,13 +767,14 @@ begin
         FLineControls.Add(Item);
         Inc(P);
       end;
-    end;  
+    end;
   finally
     FreeMem(Controls);
   end;
 end;
 
-class function TJclMixerLine.ComponentTypeToString(const ComponentType: DWORD): string;
+class function TJclMixerLine.ComponentTypeToString(
+  const ComponentType: DWORD): string;
 begin
   case ComponentType of
     MIXERLINE_COMPONENTTYPE_DST_UNDEFINED:
@@ -743,7 +789,8 @@ begin
       Result := RsMmMixerSpeakers;
     MIXERLINE_COMPONENTTYPE_DST_HEADPHONES:
       Result := RsMmMixerHeadphones;
-    MIXERLINE_COMPONENTTYPE_DST_TELEPHONE, MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE:
+    MIXERLINE_COMPONENTTYPE_DST_TELEPHONE,
+    MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE:
       Result := RsMmMixerTelephone;
     MIXERLINE_COMPONENTTYPE_DST_WAVEIN:
       Result := RsMmMixerWaveIn;
@@ -763,8 +810,8 @@ begin
       Result := RsMmMixerAuxiliary;
     MIXERLINE_COMPONENTTYPE_SRC_ANALOG:
       Result := RsMmMixerAnalog;
-  else
-    Result := '';
+    else
+      Result := '';
   end;
 end;
 
@@ -783,7 +830,8 @@ begin
   Result := LineInfo.dwLineID;
 end;
 
-function TJclMixerLine.GetLineControlByType(ControlType: DWORD): TJclMixerLineControl;
+function TJclMixerLine.GetLineControlByType(ControlType: DWORD):
+TJclMixerLineControl;
 var
   I: Integer;
 begin
@@ -818,24 +866,28 @@ end;
 
 //=== { TJclMixerSource } ====================================================
 
-constructor TJclMixerSource.Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
+constructor TJclMixerSource.Create(AMixerDestination: TJclMixerDestination;
+  ASourceIndex: Cardinal);
 begin
   inherited Create(AMixerDestination.MixerDevice);
   FMixerDestination := AMixerDestination;
   FLineInfo.cbStruct := SizeOf(FLineInfo);
   FLineInfo.dwDestination := FMixerDestination.LineInfo.dwDestination;
   FLineInfo.dwSource := ASourceIndex;
-  MMCheck(mixerGetLineInfo(FMixerDestination.MixerDevice.Handle, @FLineInfo, MIXER_GETLINEINFOF_SOURCE));
+  MMCheck(mixerGetLineInfo(FMixerDestination.MixerDevice.Handle,
+    @FLineInfo, MIXER_GETLINEINFOF_SOURCE));
 end;
 
 //=== { TJclMixerDestination } ===============================================
 
-constructor TJclMixerDestination.Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
+constructor TJclMixerDestination.Create(AMixerDevice: TJclMixerDevice;
+  ADestinationIndex: Cardinal);
 begin
   inherited Create(AMixerDevice);
   FLineInfo.cbStruct := SizeOf(FLineInfo);
   FLineInfo.dwDestination := ADestinationIndex;
-  MMCheck(mixerGetLineInfo(AMixerDevice.Handle, @FLineInfo, MIXER_GETLINEINFOF_DESTINATION));
+  MMCheck(mixerGetLineInfo(AMixerDevice.Handle, @FLineInfo,
+    MIXER_GETLINEINFOF_DESTINATION));
   FSources := TObjectList.Create;
 end;
 
@@ -874,13 +926,15 @@ end;
 
 //=== { TJclMixerDevice } ====================================================
 
-constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: THandle);
+constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal;
+  ACallBackWnd: THandle);
 begin
   FDeviceIndex := ADeviceIndex;
   FHandle := -1;
   FDestinations := TObjectList.Create;
   FLines := TList.Create;
-  MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities, SizeOf(FCapabilities)));
+  MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities,
+    SizeOf(FCapabilities)));
   Open(ACallBackWnd);
   BuildDestinations;
 end;
@@ -929,7 +983,8 @@ begin
   end;
 end;
 
-function TJclMixerDevice.FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
+function TJclMixerDevice.FindLineControl(ComponentType, ControlType: DWORD):
+TJclMixerLineControl;
 var
   TempLine: TJclMixerLine;
 begin
@@ -949,7 +1004,8 @@ begin
   Result := TJclMixerDestination(FDestinations[Index]);
 end;
 
-function TJclMixerDevice.GetLineByComponentType(ComponentType: DWORD): TJclMixerLine;
+function TJclMixerDevice.GetLineByComponentType(ComponentType: DWORD):
+TJclMixerLine;
 var
   I: Integer;
 begin
@@ -966,14 +1022,16 @@ function TJclMixerDevice.GetLineByID(LineID: DWORD): TJclMixerLine;
 var
   I: Integer;
 begin
-  I := SearchSortedUntyped(Self, LineCount, MixerLineSearchID, Pointer(LineID));
+  I := SearchSortedUntyped(Self, LineCount, MixerLineSearchID,
+    Pointer(LineID));
   if I = -1 then
     Result := nil
   else
     Result := Lines[I];
 end;
 
-function TJclMixerDevice.GetLineControlByID(ControlID: DWORD): TJclMixerLineControl;
+function TJclMixerDevice.GetLineControlByID(ControlID: DWORD):
+TJclMixerLineControl;
 var
   L, C: Integer;
   TempLine: TJclMixerLine;
@@ -998,7 +1056,7 @@ begin
   begin
     BuildLines;
     Result := FLines.Count;
-  end;  
+  end;
 end;
 
 function TJclMixerDevice.GetLines(Index: Integer): TJclMixerLine;
@@ -1006,7 +1064,8 @@ begin
   Result := TJclMixerLine(FLines[Index]);
 end;
 
-function TJclMixerDevice.GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
+function TJclMixerDevice.GetLineUniformValue(ComponentType,
+  ControlType: DWORD): Cardinal;
 var
   LineControl: TJclMixerLineControl;
 begin
@@ -1014,7 +1073,7 @@ begin
   if LineControl <> nil then
     Result := LineControl.UniformValue
   else
-    Result := 0;  
+    Result := 0;
 end;
 
 function TJclMixerDevice.GetProductName: string;
@@ -1035,7 +1094,9 @@ begin
   end;
 end;
 
-procedure TJclMixerDevice.SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
+procedure TJclMixerDevice.SetLineUniformValue(ComponentType,
+  ControlType: DWORD;
+  const Value: Cardinal);
 var
   LineControl: TJclMixerLineControl;
 begin
@@ -1091,7 +1152,8 @@ begin
   Result := Devices[0];
 end;
 
-function TJclMixer.GetLineByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLine;
+function TJclMixer.GetLineByID(MixerHandle: HMIXER;
+  LineID: DWORD): TJclMixerLine;
 var
   I: Integer;
   TempDevice: TJclMixerDevice;
@@ -1109,7 +1171,8 @@ begin
   end;
 end;
 
-function TJclMixer.GetLineControlByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLineControl;
+function TJclMixer.GetLineControlByID(MixerHandle: HMIXER;
+  LineID: DWORD): TJclMixerLineControl;
 var
   I: Integer;
   TempDevice: TJclMixerDevice;
@@ -1129,22 +1192,27 @@ end;
 
 function TJclMixer.GetLineMute(ComponentType: Integer): Boolean;
 begin
-  Result := Boolean(FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_MUTE]);
+  Result := Boolean(FirstDevice.LineUniformValue[Cardinal(ComponentType),
+    MIXERCONTROL_CONTROLTYPE_MUTE]);
 end;
 
 function TJclMixer.GetLineVolume(ComponentType: Integer): Cardinal;
 begin
-  Result := FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_VOLUME];
+  Result := FirstDevice.LineUniformValue[Cardinal(ComponentType),
+    MIXERCONTROL_CONTROLTYPE_VOLUME];
 end;
 
 procedure TJclMixer.SetLineMute(ComponentType: Integer; const Value: Boolean);
 begin
-  FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_MUTE] := Cardinal(Value);
+  FirstDevice.LineUniformValue[Cardinal(ComponentType),
+    MIXERCONTROL_CONTROLTYPE_MUTE] := Cardinal(Value);
 end;
 
-procedure TJclMixer.SetLineVolume(ComponentType: Integer; const Value: Cardinal);
+procedure TJclMixer.SetLineVolume(ComponentType: Integer;
+  const Value: Cardinal);
 begin
-  FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_VOLUME] := Value;
+  FirstDevice.LineUniformValue[Cardinal(ComponentType),
+    MIXERCONTROL_CONTROLTYPE_VOLUME] := Value;
 end;
 
 //=== { EJclMciError } =======================================================
@@ -1161,14 +1229,16 @@ constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited CreateFmt(Msg + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg, Args);
+  inherited CreateFmt(Msg + AnsiLineBreak + RsMmMciErrorPrefix +
+    FMciErrorMsg, Args);
 end;
 
 constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(LoadStr(Ident)+ AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(LoadStr(Ident) + AnsiLineBreak + RsMmMciErrorPrefix +
+    FMciErrorMsg);
 end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
@@ -1190,7 +1260,8 @@ end;
 
 //=== CD Drive MCI Routines ==================================================
 
-function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char): MCIERROR;
+function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms;
+  Drive: Char): MCIERROR;
 var
   OpenParam: DWORD;
   DriveName: array [0..2] of Char;
@@ -1239,7 +1310,8 @@ begin
   try
     FillChar(StatusParams, SizeOf(StatusParams), 0);
     StatusParams.dwItem := MCI_STATUS_MEDIA_PRESENT;
-    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM or MCI_WAIT, Cardinal(@StatusParams)));
+    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_STATUS,
+      MCI_STATUS_ITEM or MCI_WAIT, Cardinal(@StatusParams)));
     Result := Boolean(StatusParams.dwReturn);
   finally
     CloseCdMciDevice(Mci);
@@ -1261,14 +1333,16 @@ begin
     InfoParams.dwCallback := 0;
     InfoParams.lpstrReturn := Buffer;
     InfoParams.dwRetSize := SizeOf(Buffer) - 1;
-    if mciSendCommand(Mci.wDeviceID, MCI_INFO, InfoConsts[InfoType], Cardinal(@InfoParams)) = MMSYSERR_NOERROR then
+    if mciSendCommand(Mci.wDeviceID, MCI_INFO, InfoConsts[InfoType],
+      Cardinal(@InfoParams)) = MMSYSERR_NOERROR then
       Result := Buffer;
   finally
     CloseCdMciDevice(Mci);
   end;
 end;
 
-function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char): TJclCdTrackInfo;
+function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray;
+  Drive: Char): TJclCdTrackInfo;
 var
   Mci: TMCI_Open_Parms;
   SetParams: TMCI_Set_Parms;
@@ -1282,7 +1356,8 @@ var
     FillChar(StatusParams, SizeOf(StatusParams), 0);
     StatusParams.dwItem := Item;
     StatusParams.dwTrack := Track;
-    if mciSendCommand(Mci.wDeviceID, MCI_STATUS, Command, Cardinal(@StatusParams)) = MMSYSERR_NOERROR then
+    if mciSendCommand(Mci.wDeviceID, MCI_STATUS, Command,
+      Cardinal(@StatusParams)) = MMSYSERR_NOERROR then
       Result := StatusParams.dwReturn
     else
       Result := 0;
@@ -1293,21 +1368,24 @@ begin
   try
     FillChar(SetParams, SizeOf(SetParams), 0);
     SetParams.dwTimeFormat := MCI_FORMAT_MSF;
-    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, Cardinal(@SetParams)));
+    MMCheck(mciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT,
+      Cardinal(@SetParams)));
     Result.TrackType := ttOther;
     TrackCnt := GetTrackInfo(MCI_STATUS_ITEM, MCI_STATUS_NUMBER_OF_TRACKS, 0);
     SetLength(TrackList, TrackCnt);
     for I := 0 to TrackCnt - 1 do
     begin
-      Ret := GetTrackInfo(MCI_STATUS_ITEM or MCI_TRACK, MCI_STATUS_LENGTH, I + 1);
+      Ret := GetTrackInfo(MCI_STATUS_ITEM or MCI_TRACK,
+        MCI_STATUS_LENGTH, I + 1);
       TrackList[I].Minute := mci_MSF_Minute(Ret);
       TrackList[I].Second := mci_MSF_Second(Ret);
-      Ret := GetTrackInfo(MCI_STATUS_ITEM or MCI_TRACK, MCI_CDA_STATUS_TYPE_TRACK, I + 1);
+      Ret := GetTrackInfo(MCI_STATUS_ITEM or MCI_TRACK,
+        MCI_CDA_STATUS_TYPE_TRACK, I + 1);
       if Ret = MCI_CDA_TRACK_AUDIO then
       begin
         Result.TrackType := ttAudio;
         TrackList[I].TrackType := ttAudio;
-      end  
+      end
       else
         TrackList[I].TrackType := ttOther;
     end;
@@ -1319,7 +1397,8 @@ begin
   end;
 end;
 
-function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean; Drive: Char): string;
+function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean;
+  Drive: Char): string;
 var
   Tracks: TJclCdTrackInfoArray;
   TotalTime: TJclCdTrackInfo;
