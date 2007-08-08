@@ -26,11 +26,11 @@ Description:
   for complete bytes. The bitwise function can be used to
   calculate the table. So this kind of CRC calculating offers
   some specialities:
-      *   the table based operation creates the same result as
+      *   The table based operation creates the same result as
           the bitwise calculation.
-      *   the table is reproduced by calculating the CRC of a
+      *   The table is reproduced by calculating the CRC of a
           single byte, using the starting value Zero.
-      *   the CRC check immediately creates the syndrome.
+      *   The CRC check immediately creates the syndrome.
   Beware, that the results of different CRC software algorithms
   might be different even if the same Polynomial and starting
   value is used. The algorithm might use another order of bits
@@ -1182,13 +1182,15 @@ Description:
   finite or infinite (fpInfinite).  If finite, it is either denormal
   (fpDenormal) or normal. If normal, it is either non-zero (fpNormal)
   or zero (fpZero).
-  Remarks
-   * Only the Extended data type allows for unsupported encodings.
-   * What separates NaNs from numbers is that the former are unordered. That is,
-   the result of relational operations (<, <=, =, >=, >) is not defined for NaNs.
-   * Certain classes of floating point values may result from an exception
-   condition if the corresponding FPU exception is masked out.
-   See table below.
+Notes:
+  Only the Extended data type allows for unsupported encodings.
+  
+  What separates NaNs from numbers is that the former are unordered. That is,
+  the result of relational operations (<, <=, =, >=, >) is not defined for NaNs.
+  
+  Certain classes of floating point values may result from an exception
+  condition if the corresponding FPU exception is masked out.
+  See table below.
 <TABLE>
 Exception class  Result on masked exception  Result class
 ---------------  --------------------------  ------------
@@ -1863,7 +1865,7 @@ Parameters:
   Idx - Index of the bit.
 Result:
   The return value is the value of the indexed bit.
-See also:;
+See also:
   TJclASet.SetBit
 --------------------------------------------------------------------------------
 @@TJclASet.GetRange@Integer@Integer@Boolean
@@ -2088,9 +2090,9 @@ Summary:
 
   This operation is implemented with three different versions
   depending on the type of the number to added:
-  - to add a floating point number: TJclRational.Add Method (Float)
-  - to add an integer number: TJclRational.Add Method (Integer)
-  - to add a rational number: TJclRational.Add Method (TJclRational)
+    * To add a floating point number: TJclRational.Add Method (Float)
+    * To add an integer number: TJclRational.Add Method (Integer)
+    * To add a rational number: TJclRational.Add Method (TJclRational)
 See also:
   TJclRational.Add@Float
   TJclRational.Add@Integer

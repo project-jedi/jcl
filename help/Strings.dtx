@@ -209,8 +209,8 @@ Description:
   StrSame compares the two supplied strings and returns whether or not they are
   identical.
 Parameters:
-  S1 - First string to compare
-  S2 - Second string to compare
+  S1 - First string to compare.
+  S2 - Second string to compare.
 Result:
   If the two strings are identical the return value is True, if they are not the
   return value is False.
@@ -274,8 +274,8 @@ Description:
   If it doesn't then the prefix is prepended to the string otherwise the function
   does nothing. Note that if Text is an empty string then the result will be Prefix.
 Parameters:
-  Prefix - The prefix to test for and apply
-  Text - The string which must be forced to have a prefix
+  Prefix - The prefix to test for and apply.
+  Text - The string which must be forced to have a prefix.
 Result:
   The function result is a copy of the supplied Text, prefixed with Prefix.
 See also:
@@ -293,8 +293,8 @@ Description:
   If it does then the prefix is deleted from the string otherwise the function
   does nothing.
 Parameters:
-  Prefix - The prefix to test for and apply
-  Text - The string which must not have a prefix
+  Prefix - The prefix to test for and apply.
+  Text - The string which must not have a prefix.
 Result:
   The function result is a copy of the supplied Text, eventually minus the prefix.
 See also:
@@ -312,8 +312,8 @@ Description:
   If it doesn't then the suffix is appended to the string otherwise the function
   does nothing. Note that if Text is an empty string then the result will be Suffix.
 Parameters:
-  Suffix - The suffix to test for and apply
-  Text - The string which must be forced to have a suffix
+  Suffix - The suffix to test for and apply.
+  Text - The string which must be forced to have a suffix.
 Result:
   The function result is a copy of the supplied Text, with the suffix.
 See also:
@@ -331,8 +331,8 @@ Description:
   If it does then the suffix is deleted from the string otherwise the function
   does nothing.
 Parameters:
-  Suffix - The suffix to test for and apply
-  Text - The string which must not have a suffix
+  Suffix - The suffix to test for and apply.
+  Text - The string which must not have a suffix.
 Result:
   The function result is a copy of the supplied Text, eventually minus the suffix.
 See also:
@@ -380,7 +380,7 @@ Donator:
 @@StrLower
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
-  Lowercases all characters in a string
+  Lowercases all characters in a string.
 Description:
   StrLower returns a copy of the string, converted to lowercase. That is, if you pass in 'Project JEDI' you'll get 'project jedi'.
 Parameters:
@@ -397,7 +397,7 @@ Donator:
 @@StrLowerInPlace
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
-  Lowercases all characters in a string
+  Lowercases all characters in a string.
 Description:
   StrLower converts all characters in the supplied string to lowercase.
 Parameters:
@@ -414,7 +414,7 @@ Donator:
 @@StrLowerBuff
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
-  Lowercases all characters in a string
+  Lowercases all characters in a string.
 Description:
   StrLowerBuff converts all characters in the supplied string to lowercase.
 Parameters:
@@ -572,7 +572,7 @@ Description:
   reversing it, then do not write code like S := StrReverse(S) but instead use
   the StrReverseInPlace function because it's much faster.
 Parameters:
-  S - The string to reverse
+  S - The string to reverse.
 Result:
   A reversed copy of the supplied string.
 See also:
@@ -721,7 +721,7 @@ Description:
   results in an empty string. If the string length of the Source is odd
   then a '0' is prepended internally to make up the first byte.
 Parameters:
-  S - A string of hex digit pairs to be converted
+  S - A string of hex digit pairs to be converted.
 Result:
   The string of converted bytes.
 Donator:
@@ -736,7 +736,7 @@ Description:
   For example, StrTrimCharLeft('000123', '0') returns '123'.
 Parameters:
   S - The source string from which the leading characters need to be removed.
-  C - The character to remove
+  C - The character to remove.
 Result:
   The function returns the source string S without any leading characters C.
 See also:
@@ -753,7 +753,7 @@ Description:
   For example, StrTrimCharRight('123000', '0') returns '123'.
 Parameters:
   S - The source string from which the trailing characters need to be removed.
-  C - The character to remove
+  C - The character to remove.
 Result:
   The function returns the source string S without any trailing characters C.
 See also:
@@ -782,7 +782,7 @@ Donator:
 @@StrUpperInPlace
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
-  Uppercases all characters in a string
+  Uppercases all characters in a string.
 Description:
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
@@ -799,7 +799,7 @@ Donator:
 @@StrUpperBuff
 <GROUP StringManipulation.StringTransformationRoutines>
 Summary:
-  Uppercases all characters in a string
+  Uppercases all characters in a string.
 Description:
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
@@ -988,8 +988,8 @@ JEDI          Judi          Ord(LowerCase('E')) - Ord('u')
 </TABLE>
 
 Parameters:
-  S1 - First string to compare
-  S2 - Second string to compare
+  S1 - First string to compare.
+  S2 - Second string to compare.
 Result:
   StrCompare returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
