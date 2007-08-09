@@ -662,6 +662,7 @@ type
     function SupportsVisualCLX: Boolean;
     function SupportsVCL: Boolean;
     function LibFolderName: string;
+    function ObjFolderName: string;
     // Command line tools
     property CommandLineTools: TCommandLineTools read FCommandLineTools;
     property BCC32: TJclBCC32 read GetBCC32;
@@ -3877,6 +3878,11 @@ begin
   Result := PathAddSeparator(RootDir) + PathAddSeparator('lib');
 end;
 
+function TJclBorRADToolInstallation.ObjFolderName: string;
+begin
+  Result := LibFolderName + PathAddSeparator('obj');
+end;
+
 function TJclBorRADToolInstallation.ProcessMapFile(const BinaryFileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 var
@@ -4244,20 +4250,26 @@ end;
 {$ENDIF KEEP_DEPRECATED}
 
 function TJclBorRADToolInstallation.SupportsVCL: Boolean;
+const
+  VclDcp = 'vcl.dcp';
 begin
   {$IFDEF KYLIX}
   Result := False;
   {$ELSE ~KYLIX}
-  Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6);
+  Result := (RadToolKind = brBorlandDevStudio) or (VersionNumber >= 6)
+    and (FileExists(LibFolderName + VclDcp) or FileExists(ObjFolderName + VclDcp));
   {$ENDIF ~KYLIX}
 end;
 
 function TJclBorRADToolInstallation.SupportsVisualCLX: Boolean;
+const
+  VisualClxDcp = 'visualclx.dcp';
 begin
   {$IFDEF KYLIX}
   Result := True;
   {$ELSE}
-  Result := (Edition <> deSTD) and (VersionNumber in [6, 7]) and (RadToolKind <> brBorlandDevStudio);
+  Result := (Edition <> deSTD) and (VersionNumber in [6, 7]) and (RadToolKind <> brBorlandDevStudio)
+    and (FileExists(LibFolderName + VisualClxDcp) or FileExists(ObjFolderName + VisualClxDcp));
   {$ENDIF KYLIX}
 end;
 

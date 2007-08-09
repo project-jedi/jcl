@@ -1,4 +1,4 @@
-{**************************************************************************************************}
+﻿{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL) extension                                                        }
 {                                                                                                  }
@@ -77,6 +77,8 @@ type
         joCopyHppFiles,
         joCheckHppFiles,
       joPackages,
+        joVclPackage,
+        joClxPackage,
         joDualPackages,
         joCopyPackagesHppFiles,
         joPdbCreate,
@@ -128,6 +130,7 @@ type
     FDemoSectionName: string;
     FLogFileName: string;
     FSilent: Boolean;
+    FRuntimeInstallation: Boolean;
     procedure AddDemo(const Directory: string; const FileInfo: TSearchRec);
     procedure AddDemos(const Directory: string);
     function GetDemoList: TStringList;
@@ -180,6 +183,7 @@ type
     property OptionChecked[Option: TJclOption]: Boolean read GetOptionChecked;
     property LogFileName: string read FLogFileName;
     property Silent: Boolean read FSilent write FSilent;
+    property RuntimeInstallation: Boolean read FRuntimeInstallation; // false for C#Builder 1, Delphi 8 and .net targets
   end;
 
   TJclDistribution = class (TInterfacedObject, IJediProduct)
@@ -393,6 +397,8 @@ resourcestring
 
   // packages
   RsCaptionPackages             = 'Packages';
+  RsCaptionVclPackage           = 'VCL Package';
+  RsCaptionClxPackage           = 'CLX package';
   RsCaptionDualPackages         = 'Dual packages';
   RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
@@ -489,8 +495,9 @@ resourcestring
   RsHintCheckHppFiles   = 'Compile some C++ source files to verify JCL headers';
 
   // packages
-  RsHintPackages             = 'Build and eventually install JCL runtime packages (RTL, VCL and Visual ' +
-    'CLX) and optional IDE experts.';
+  RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
+  RsHintVclPackage           = 'Build JCL runtime package containing VCL extensions';
+  RsHintClxPackage           = 'Build JCL runtime package containing Visual CLX extensions';
   RsHintDualPackages         = 'The same package introduce component for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
@@ -589,6 +596,8 @@ var
       (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
       (Id: -1; Caption: RsCaptionCheckHppFiles; Hint: RsHintCheckHppFiles), // joCheckHppFiles
       (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
+      (Id: -1; Caption: RsCaptionVclPackage; Hint: RsHintVclPackage), // joVclPackage
+      (Id: -1; Caption: RsCaptionClxPackage; Hint: RsHintClxPackage), // joClxPackage
       (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
       (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
       (Id: -1; Caption: RsCaptionPdbCreate; Hint: RsHintPdbCreate), // joPdbCreate
@@ -782,6 +791,10 @@ begin
   FTargetName := Target.Name;
   if CLRVersion <> '' then
     FTargetName := Format('%s CLR %s', [FTargetName, CLRVersion]);
+
+  // exclude C#Builder 1, Delphi 8 and .net targets
+  FRunTimeInstallation := (CLRVersion = '') and ((Target.RadToolKind <> brBorlandDevStudio)
+    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities)));
 
   case TargetPlatform of
     //bp32bit:
@@ -1023,8 +1036,12 @@ procedure TJclInstallation.Init;
     end;
   end;
 
-  procedure AddPackageOptions(Parent: TJclOption; RuntimeInstallation: Boolean);
+  procedure AddPackageOptions(Parent: TJclOption);
   begin
+    if RuntimeInstallation and Target.SupportsVCL then
+      AddOption(joVclPackage, [goChecked], Parent);
+    if RuntimeInstallation and Target.SupportsVisualCLX then
+      AddOption(joClxPackage, [goChecked], Parent);
     if (bpBCBuilder32 in Target.Personalities) and RunTimeInstallation and (CLRVersion = '') then
     begin
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
@@ -1060,7 +1077,7 @@ procedure TJclInstallation.Init;
       AddOption(joPdbCreate, [goNoAutoCheck], Parent);
   end;
 
-  procedure AddExpertOptions(Parent: TJclOption; RuntimeInstallation: Boolean);
+  procedure AddExpertOptions(Parent: TJclOption);
   {$IFDEF MSWINDOWS}
   var
     ExpertOptions: TJediInstallGUIOptions;
@@ -1166,8 +1183,6 @@ procedure TJclInstallation.Init;
     end;
   end;
 
-var
-  RunTimeInstallation: Boolean;
 begin
   FGUI := InstallCore.InstallGUI;
   if not Assigned(GUI) then
@@ -1176,9 +1191,6 @@ begin
   FGUIPage := GUI.CreateInstallPage;
   GUIPage.Caption := TargetName;
   GUIPage.SetIcon(Target.IdeExeFileName);
-
-  RunTimeInstallation := (Target.RadToolKind <> brBorlandDevStudio)
-    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));
 
   AddOption(joLibrary, [goExpandable, goChecked], JediTargetOption);
 
@@ -1210,12 +1222,12 @@ begin
   if not Target.IsTurboExplorer then
   begin
     AddOption(joPackages, [goStandAloneParent, goExpandable, goChecked], joLibrary);
-    AddPackageOptions(joPackages, RuntimeInstallation);
+    AddPackageOptions(joPackages);
 
     if CLRVersion = '' then
     begin
       {$IFDEF MSWINDOWS}
-      AddExpertOptions(joPackages, RunTimeInstallation);
+      AddExpertOptions(joPackages);
       {$ENDIF MSWINDOWS}
       if RunTimeInstallation then
         AddDemoNodes;
@@ -1651,11 +1663,21 @@ function TJclInstallation.Install: Boolean;
           GetDcpPath, GetBplPath, Distribution.FJclPath);
         {$ENDIF MSWINDOWS}
         Result := CompilePackage(FullPackageFileName(Target, JclDpk), False);
-        if Target.SupportsVisualCLX then
-          Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
-        if ((Target.VersionNumber >= 6) and (Target.RadToolKind <> brBorlandDevStudio))
-          or ((Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3)) then
+
+        if Result and OptionChecked[joVclPackage] then
+        begin
+          MarkOptionBegin(joVclPackage);
           Result := Result and CompilePackage(FullPackageFileName(Target, JclVclDpk), False);
+          MarkOptionEnd(joVclPackage, Result);
+        end;
+
+        if Result and OptionChecked[joClxPackage] then
+        begin
+          MarkOptionBegin(joClxPackage);
+          Result := Result and CompilePackage(FullPackageFileName(Target, JclVClxDpk), False);
+          MarkOptionEnd(joClxPackage, Result);
+        end;
+
         MarkOptionEnd(joPackages, Result);
       end
       {$IFDEF MSWINDOWS}
@@ -2039,10 +2061,9 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       UninstallPackage(FullPackageFileName(Target, JclDpk));
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.IDEVersionNumber = 5) then
 
-      if Target.SupportsVisualCLX then
+      if RuntimeInstallation and Target.SupportsVisualCLX then
         UninstallPackage(FullPackageFileName(Target, JclVClxDpk));
-      if ((Target.VersionNumber >= 6) and (Target.RadToolKind <> brBorlandDevStudio))
-        or ((Target.VersionNumber >=3) and (Target.RadToolKind = brBorlandDevStudio)) then
+      if RuntimeInstallation and Target.SupportsVCL then
         UninstallPackage(FullPackageFileName(Target, JclVclDpk));
       {$IFDEF MSWINDOWS}
       RemoveJediRegInformation(Target.ConfigDataLocation, 'JCL');
