@@ -4909,13 +4909,32 @@ begin
 end;
 
 class function TJclBDSInstallation.GetCommonProjectsDirectory(const RootDir: string; IDEVersionNumber: Integer): string;
+var
+  RsVarsOutput, ComSpec: string;
+  Lines: TStrings;
 begin
   if IDEVersionNumber >= 5 then
   begin
-    Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
-      ['RAD Studio'])[0];
+    Result := '';
+    if GetEnvironmentVar('COMSPEC', ComSpec) and (JclSysUtils.Execute(Format('%s /C "%s%sbin%srsvars.bat && set BDS"',
+      [ComSpec, ExtractShortPathName(RootDir), DirDelimiter, DirDelimiter]), RsVarsOutput) = 0) then
+    begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := RsVarsOutput;
+        Result := Lines.Values[EnvVariableBDSCOMDIRValueName];
+      finally
+        Lines.Free;
+      end;
+    end;
 
-    Result := Format('%s%s%d.0', [PathAddSeparator(GetCommonDocumentsFolder), PathAddSeparator(Result), IDEVersionNumber]);
+    if Result = '' then
+    begin
+      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.',
+        ['RAD Studio'])[0];
+
+      Result := Format('%s%s%d.0', [PathAddSeparator(GetCommonDocumentsFolder), PathAddSeparator(Result), IDEVersionNumber]);
+    end;
   end
   else
     Result := GetDefaultProjectsDirectory(RootDir, IDEVersionNumber);
