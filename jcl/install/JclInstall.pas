@@ -2586,21 +2586,24 @@ end;
 
 function TJclInstallation.CompileApplication(FileName: string): Boolean;
 var
-  CfgFileName, Directory: string;
+  OldDirectory, NewDirectory: string;
 begin
-  Directory := ExtractFileDir(FileName);
+  NewDirectory := ExtractFileDir(FileName);
   FileName := ExtractFileName(FileName);
   WriteLog(Format(RsBuildingMessage, [FileName]));
-  SetCurrentDir(Directory);
-  CfgFileName := ChangeFileExt(FileName, '.cfg');
-  StringToFile(CfgFileName, Format(
-    '-e%s' + AnsiLineBreak +    // Exe output dir
-    '-n.' + AnsiLineBreak +    // Unit output dir
-    '-u%s;%s' + AnsiLineBreak + // Unit directories
-    '-i%s',                     // Include path
-    [Distribution.JclBinDir, FLibReleaseDir, Distribution.JclSourcePath, Distribution.JclSourceDir]));
-  Result := Target.DCC32.Execute(FileName);
-  FileDelete(CfgFileName);
+  OldDirectory := GetCurrentDir;
+  try
+    SetCurrentDir(NewDirectory);
+    Target.DCC32.Options.Clear;
+    Target.DCC32.SetDefaultOptions;
+    Target.DCC32.AddPathOption('E', Distribution.JclBinDir);
+    Target.DCC32.AddPathOption('N', '.');
+    Target.DCC32.AddPathOption('U', FLibReleaseDir + DirSeparator + Distribution.JclSourcePath);
+    Target.DCC32.AddPathOption('I', Distribution.JclSourceDir);
+    Result := Target.DCC32.Execute(FileName);
+  finally
+    SetCurrentDir(OldDirectory);
+  end;
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
