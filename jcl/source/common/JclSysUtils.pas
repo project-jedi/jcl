@@ -520,10 +520,22 @@ type
     procedure OpenLog;
     procedure Write(const Text: string; Indent: Integer = 0); overload;
     procedure Write(Strings: TStrings; Indent: Integer = 0); overload;
+    //Writes a line to the log file. The current timestamp is written before the line.
+    procedure TimeWrite(const Text: string; Indent: Integer = 0); overload;
+    procedure TimeWrite(Strings: TStrings; Indent: Integer = 0); overload;
     procedure WriteStamp(SeparatorLen: Integer = 0);
     property LogFileName: string read FLogFileName;
     property LogOpen: Boolean read GetLogOpen;
   end;
+
+// Procedure to initialize the SimpleLog Variable
+procedure InitSimpleLog (const ALogFileName: string = '');
+
+// Global Variable to make it easier for an application wide log handling.
+// Must be initialized with InitSimpleLog before using
+var
+  SimpleLog : TJclSimpleLog;
+
 {$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
@@ -3136,6 +3148,36 @@ begin
     Write(Strings[I], Indent);
 end;
 
+procedure TJclSimpleLog.TimeWrite(const Text: string; Indent: Integer = 0);
+var
+  S: string;
+  SL: TStringList;
+  I: Integer;
+begin
+  if LogOpen then
+  begin
+    SL := TStringList.Create;
+    try
+      SL.Text := Text;
+      for I := 0 to SL.Count - 1 do
+      begin
+        S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
+      end;
+    finally
+      SL.Free;
+    end;
+  end;
+end;
+
+procedure TJclSimpleLog.TimeWrite(Strings: TStrings; Indent: Integer = 0);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    TimeWrite(Strings[I], Indent);
+end;
+
 procedure TJclSimpleLog.WriteStamp(SeparatorLen: Integer);
 begin
   if SeparatorLen = 0 then
@@ -3148,10 +3190,19 @@ begin
   Write(StrRepeat('=', SeparatorLen));
 end;
 
+procedure InitSimpleLog (const ALogFileName: string = '');
+begin
+  if Assigned(SimpleLog) then
+    FreeAndNil(SimpleLog);
+  SimpleLog := TJclSimpleLog.Create(ALogFileName);
+  SimpleLog.OpenLog;
+end;
+
 {$ENDIF ~CLR}
 
 initialization
   {$IFNDEF CLR}
+  SimpleLog := nil;
   {$IFDEF MSWINDOWS}
   {$IFDEF THREADSAFE}
   if not Assigned(GlobalMMFHandleListCS) then
@@ -3174,5 +3225,7 @@ finalization
   FreeAndNil(GlobalMMFHandleListCS);
   {$ENDIF THREADSAFE}
   {$ENDIF MSWINDOWS}
+  if Assigned(SimpleLog) then
+    FreeAndNil(SimpleLog);
   {$ENDIF ~CLR}
 end.
