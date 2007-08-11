@@ -2798,7 +2798,7 @@ end;
 procedure TJclDCC32.SetDefaultOptions;
 begin
   Options.Clear;
-  if (Installation.RadToolKind = brBorlandDevStudio) and (Installation.VersionNumber >= 3) then
+  if (Installation.RadToolKind = brBorlandDevStudio) and (Installation.VersionNumber >= 4) then
     Options.Add('--no-config');
   AddPathOption('U', Installation.LibFolderName);
   if Installation.RadToolKind = brCppBuilder then
