@@ -4,10 +4,7 @@ rem compile UDExtract.dpr
 dcc32 UDExtract.dpr -U..\..\jcl\source\windows;..\..\jcl\source\common -I..\..\jcl\source -N0. -E.
 
 rem execute UDExtract.dpr
-UDExtract.exe UnicodeData.txt JclUnicode.rc /c=SpecialCasing.txt /f=CaseFolding.txt
-
-rem copying JclUnicode.rc
-copy JclUnicode.rc + Composition.rc ..\..\jcl\source\windows\JclUnicode.rc
+UDExtract.exe UnicodeData.txt ..\..\jcl\source\windows\JclUnicode.rc /c=SpecialCasing.txt /f=CaseFolding.txt /d=DerivedNormalizationProps.txt
 
 rem compiling JclUnicode.rc
 cd ..\..\jcl\source\windows

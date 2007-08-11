@@ -1020,7 +1020,7 @@ function WideUpperCase(const S: WideString): WideString; overload;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
-function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
+function UnicodeCompose(const Codes: array of UCS4; var Composite: UCS4): Integer;
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
@@ -1438,7 +1438,7 @@ type
   TDecompositionsArray = array [Byte] of TDecompositions;
   
 var
-  // list of decompositions, organized (again) as two stage matrix
+  // list of decompositions, organized (again) as three stage matrix
   // Note: there are two tables, one for canonical decompositions and the other one
   //       for compatibility decompositions.
   DecompositionsLoaded: Boolean;
@@ -1750,19 +1750,21 @@ end;
 type
   // maps between a pair of code points to a composite code point
   // Note: the source pair is packed into one 4 byte value to speed up search. 
-  TCompositionPair = record
+  TComposition = record
     Code: Cardinal;
-    Composition: UCS4;
+    First: Cardinal;
+    Next: array of Cardinal;
   end;
 
 var
   // list of composition mappings
-  Compositions: array of TCompositionPair;
+  Compositions: array of TComposition;
+  MaxCompositionSize: Integer;
 
 procedure LoadCompositionData;
 var
   Stream: TResourceStream;
-  Size: Cardinal;
+  I, Size: Integer;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -1771,50 +1773,95 @@ begin
     if Compositions = nil then
     begin
       Stream := TResourceStream.Create(HInstance, 'COMPOSITION', 'UNICODEDATA');
-      // a) determine size of compositions array
-      Stream.ReadBuffer(Size, 4);
-      SetLength(Compositions, Size);
-      // b) read data
-      Stream.ReadBuffer(Compositions[0], Size * SizeOf(TCompositionPair));
-      Stream.Free;
+      try
+        // a) determine size of compositions array
+        Stream.ReadBuffer(Size, 4);
+        SetLength(Compositions, Size);
+        // b) read data
+        for I := 0 to Size - 1 do
+        begin
+          Stream.ReadBuffer(Compositions[I].Code, 4);
+          Stream.ReadBuffer(Size, 4);
+          if Size > MaxCompositionSize then
+            MaxCompositionSize := Size;
+          SetLength(Compositions[I].Next, Size - 1);
+          Stream.ReadBuffer(Compositions[I].First, 4);
+          Stream.ReadBuffer(Compositions[I].Next[0], 4 * (Size - 1));
+        end;
+      finally
+        Stream.Free;
+      end;
     end;
   finally
     LoadInProgress.Leave;
   end;
 end;
 
-function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
-// Maps the sequence of First and Second to a composite.
-// Result is True if there was a mapping otherwise it is False.
+function UnicodeCompose(const Codes: array of UCS4; var Composite: UCS4): Integer;
+// Maps the sequence of Codes (up to MaxCompositionSize codes) to a composite
+// Result is the number of Codes that were composed (at least 1 if Codes is not empty)
 var
-  L, R, M, C: Integer;
-  Pair: Integer;
+  L, R, M, I, HighCodes, HighNext: Integer;
 begin
   if Compositions = nil then
     LoadCompositionData;
 
-  Result := False;
+  Result := 0;
+  HighCodes := High(Codes);
+
+  if HighCodes = -1 then
+    Exit;
+
+  if HighCodes = 0 then
+  begin
+    Result := 1;
+    Composite := Codes[0];
+    Exit;
+  end;
+
   L := 0;
   R := High(Compositions);
-  Pair := Integer((First shl 16) or Word(Second));
+
   while L <= R do
   begin
     M := (L + R) shr 1;
-    C := Integer(Compositions[M].Code) - Pair;
-    if C < 0  then
+    if Compositions[M].First > Codes[0] then
+      R := M - 1
+    else
+    if Compositions[M].First < Codes[0] then
       L := M + 1
     else
     begin
-      R := M - 1;
-      if C = 0 then
+      // back to the first element where Codes[0] = First
+      while (M > 0) and (Compositions[M-1].First = Codes[0]) do
+        Dec(M);
+
+      while (M <= High(Compositions)) and (Compositions[M].First = Codes[0]) do
       begin
-        Result := True;
-        L := M;
+        HighNext := High(Compositions[M].Next);
+        Result := 0;
+
+        if HighNext < HighCodes then // enough characters in buffer to be tested
+        begin
+          for I := 0 to HighNext do
+            if Compositions[M].Next[I] = Codes[I + 1] then
+              Result := I + 2 { +1 for first, +1 because of 0-based array }
+            else
+              Break;
+
+          if Result = HighNext + 2 then // all codes matched
+          begin
+            Composite := Compositions[M].Code;
+            Exit;
+          end;
+        end;
+
+        Inc(M);
       end;
     end;
   end;
-  if Result then
-    Composite := Compositions[L].Composition;
+  Result := 1;
+  Composite := Codes[0];
 end;
 
 //=== { TSearchEngine } ======================================================
@@ -6351,14 +6398,9 @@ end;
 
 function WideCompose(const S: WideString): WideString;
 var
-  StarterPos,
-  CompPos,
-  DecompPos: Integer;
+  Buffer: array of UCS4;
+  LastInPos, InPos, OutPos, BufferSize, NbProcessed: Integer;
   Composite: UCS4;
-  Ch,
-  StarterChar: WideChar;
-  LastClass,
-  CurrentClass: Cardinal;
 begin
   // Set an arbitrary length for the result. This is automatically done when checking
   // for hangul composition.
@@ -6367,39 +6409,50 @@ begin
   if Result = '' then
     Exit;
 
-  StarterPos := 1;
-  CompPos := 2;
+  if Compositions = nil then
+    LoadCompositionData;
 
-  StarterChar := Result[StarterPos];
-  LastClass := CanonicalCombiningClass(UCS4(StarterChar));
-  if LastClass <> 0 then
-    LastClass := 256; // fix for irregular combining sequence
+  LastInPos := Length(Result);
+  if LastInPos > MaxCompositionSize then
+    SetLength(Buffer, MaxCompositionSize)
+  else
+    SetLength(Buffer, LastInPos);
 
-  // Loop on the (decomposed) characters, combining where possible.
-  for DecompPos := 2 to Length(Result) do
+  BufferSize := 0;
+  InPos := 0;
+  OutPos := 0;
+
+  while (InPos < LastInPos) or (BufferSize > 0) do
   begin
-    Ch := Result[DecompPos];
-    CurrentClass := CanonicalCombiningClass(UCS4(Ch));
-    if UnicodeComposePair(UCS4(StarterChar), UCS4(Ch), Composite) and
-      ((LastClass < CurrentClass) or (LastClass = 0)) then
+    // fill buffer from input
+
+    while BufferSize < Length(Buffer) do
     begin
-      Result[StarterPos] := UCS2(Composite);
-      StarterChar := UCS2(Composite);
-    end
-    else
-    begin
-      if CurrentClass = 0 then
+      if InPos < LastInPos then
       begin
-        StarterPos := CompPos;
-        StarterChar := Ch;
-      end;
-      LastClass := CurrentClass;
-      Result[CompPos] := Ch;
-      Inc(CompPos);
+        Inc(InPos);
+        Buffer[BufferSize] := UCS4(Result[InPos]);
+        Inc(BufferSize);
+      end
+      else
+        SetLength(Buffer, BufferSize);
     end;
+
+    if Length(Buffer) = 0 then
+      Break;
+
+    NbProcessed := UnicodeCompose(Buffer, Composite);
+    if NbProcessed = 0 then
+      Break;
+
+    Move(Buffer[NbProcessed], Buffer[0], (BufferSize - NbProcessed) * SizeOf(UCS4));
+    Dec(BufferSize, NbProcessed);
+
+    Inc(OutPos);
+    Result[OutPos] := UCS2(Composite);
   end;
   // since we have likely shortened the source string we have to set the correct length on exit
-  SetLength(Result, CompPos - 1);
+  SetLength(Result, OutPos);
 end;
 
 procedure FixCanonical(var S: WideString);

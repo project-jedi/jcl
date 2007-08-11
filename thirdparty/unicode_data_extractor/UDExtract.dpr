@@ -6,7 +6,7 @@ program UDExtract;
 // to a resource file. For usage see procedure PrintUsage.
 
 uses
-  Classes, SysUtils, JclUnicode;
+  Classes, SysUtils, JclUnicode, JclSysUtils;
 
 type
   TDecomposition = record
@@ -119,6 +119,7 @@ var
   SourceFileName,
   SpecialCasingFileName,
   CaseFoldingFileName,
+  DerivedNormalizationPropsFileName,
   TargetFileName: string;
   Verbose: Boolean;
 
@@ -132,12 +133,16 @@ var
   CCCs: array[Byte] of TRangeArray;
   // list of decomposition
   Decompositions: array of TDecomposition;
-  // array to hold the number equivalents for specific codes
+  // array to hold the number equivalents for specific codes (sorted by code)
   NumberCodes: array of TCodeIndex;
   // array of numbers used in NumberCodes
   Numbers: array of TNumber;
   // array for all case mappings (including 1 to many casing if a special casing source file was given)
   CaseMapping: array of TCase;
+  // array of compositions (somehow the same as Decompositions except sorted by decompositions and removed elements)
+  Compositions: array of TDecomposition;
+  // array of composition exception ranges
+  CompositionExceptions: array of TRange;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -503,6 +508,15 @@ begin
 
   Decompositions[I].Code := Code;
   Move(DecompTemp[0], Decompositions[I].Decompositions[0], DecompTempSize * SizeOf(Cardinal));
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure AddRangeToCompositionExclusions(Start, Stop: Cardinal);
+begin
+  SetLength(CompositionExceptions, Length(CompositionExceptions) + 1);
+  CompositionExceptions[High(CompositionExceptions)].Start := Start;
+  CompositionExceptions[High(CompositionExceptions)].Stop := Stop;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -968,6 +982,61 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure ParseDerivedNormalizationProps;
+
+// parse DerivedNormalizationProps looking for composition exclusions
+
+var
+ Lines,
+ Line: TStringList;
+ I, SeparatorPos: Integer;
+ Start, Stop: Cardinal;
+
+begin
+  Lines := TStringList.Create;
+ try
+   Lines.LoadFromFile(DerivedNormalizationPropsFileName);
+   Line := TStringList.Create;
+   try
+     for I := 0 to Lines.Count - 1 do
+     begin
+       // Layout of one line is:
+       // <range>; <options> [;...] ; # <name>
+       SplitLine(Lines[I], Line);
+       // continue only if the line is not empty
+       if (Line.Count > 0) and (Length(Line[0]) > 1) then
+       begin
+         // the range currently being under consideration
+         SeparatorPos := Pos('..', Line[0]);
+         if SeparatorPos > 0 then
+         begin
+           Start := StrToInt('$' + Copy(Line[0], 1, SeparatorPos - 1));
+           Stop := StrToInt('$' + Copy(Line[0], SeparatorPos + 2, MaxInt));
+         end
+         else
+         begin
+           Start := StrToInt('$' + Line[0]);
+           Stop := Start;
+         end;
+         // first option is considered
+         if SameText(Line[1], 'Full_Composition_Exclusion') then
+           AddRangeToCompositionExclusions(Start, Stop);
+       end;
+       if not Verbose then
+         Write(Format(#13'  %d%% done', [Round(100 * I / Lines.Count)]));
+     end;
+   finally
+     Line.Free;
+   end;
+ finally
+   Lines.Free;
+ end;
+ if not Verbose then
+   Writeln;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function FindDecomposition(Code: Cardinal): Integer;
 
 var
@@ -1031,6 +1100,94 @@ begin
     if DecompTempSize > 0 then
       AddDecomposition(Decompositions[I].Code);
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function IsCompositionExcluded(Code: Cardinal): Boolean;
+
+// checks if composition is excluded to this code (decomposition cannot be recomposed)
+
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 0 to High(CompositionExceptions) do
+    with CompositionExceptions[I] do
+      if (Start <= Code) and (Code <= Stop) then
+      begin
+        Result := True;
+        Break;
+      end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function SortCompositions(Item1, Item2: Pointer): Integer;
+type
+  PDecomposition = ^TDecomposition;
+var
+  Decomposition1, Decomposition2: PDecomposition;
+  I, Len1, Len2, MinLen: Integer;
+begin
+  Decomposition1 := Item1;
+  Decomposition2 := Item2;
+  Len1 := Length(Decomposition1^.Decompositions);
+  Len2 := Length(Decomposition2^.Decompositions);
+  MinLen := Len1;
+  if MinLen > Len2 then
+    MinLen := Len2;
+
+  for I := 0 to MinLen - 1 do
+  begin
+    if Decomposition1^.Decompositions[I] > Decomposition2^.Decompositions[I] then
+    begin
+      Result := 1;
+      Exit;
+    end
+    else
+    if Decomposition1^.Decompositions[I] < Decomposition2^.Decompositions[I] then
+    begin
+      Result := -1;
+      Exit;
+    end;
+  end;
+  // if starts of two arrays are identical, sorting from longer to shorter (gives more
+  // chances to longer combinations at runtime
+  if Len1 < Len2 then
+    Result := 1
+  else
+  if Len1 > Len2 then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure CreateCompositions;
+
+// create composition list from decomposition list
+
+var
+  I, J: Integer;
+begin
+  // reduce reallocations
+  SetLength(Compositions, Length(Decompositions));
+
+  // eliminate exceptions
+  I := 0;
+  for J := 0 to High(Decompositions) do
+    if not IsCompositionExcluded(Decompositions[J].Code) then
+  begin
+    Compositions[I] := Decompositions[J];
+    Inc(I);
+  end;
+
+  // fix overhead
+  SetLength(Compositions, I);
+
+  SortDynArray(Pointer(Compositions), SizeOf(Compositions[0]), SortCompositions);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1255,6 +1412,25 @@ begin
     end;
     FlushLine;
     WriteLine('}');
+    WriteLine;
+    WriteLine;
+
+    // 7 ) composition data
+    // create composition data from decomposition data and exclusion list before generating the output
+    CreateCompositions;
+    WriteLine('COMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteLine('{');
+    // first, write the number of compositions
+    WriteLong(Length(Compositions));
+    for I := 0 to High(Compositions) do
+      with Compositions[I] do
+    begin
+      WriteLong(Code);
+      WriteLong(Length(Decompositions));
+      WriteArray(Decompositions);
+    end;
+    FlushLine;
+    WriteLine('}');
   finally
     Stream.Free;
   end;
@@ -1267,15 +1443,17 @@ begin
   Writeln('Usage: UDExtract Source[.txt] Target[.rc] options');
   Writeln('  Path and extension are optional. Default extension for all source files');
   Writeln('  (including optional files) is ".txt".');
-  Writeln('  Source must be a Unicode data file (e.g. UnicodeData-3.0.1.txt)');
+  Writeln('  Source must be a Unicode data file (e.g. UnicodeData-5.1.0.txt)');
   Writeln('  and Target is a resource script.');
   Writeln;
   Writeln('  Options might have the following values (not case sensitive):');
   Writeln('    /?'#9#9'shows this screen');
   Writeln('    /c=filename'#9'specifies an optional file containing special casing');
-  Writeln('    '#9#9'properties (e.g. SpecialCasing-3.txt)');
+  Writeln('    '#9#9'properties (e.g. SpecialCasing-5.1.0.txt)');
   Writeln('    /f=filename'#9'specifies an optional file containing case fold');
-  Writeln('    '#9#9'mappings (e.g. CaseFolding-2.txt)');
+  Writeln('    '#9#9'mappings (e.g. CaseFolding-5.1.0.txt)');
+  WriteLn('    /d=filename'#9'specifies an optional file containing derived normalization');
+  WriteLn('    '#9#9'props (e.g. DerivedNormalizationProps-5.1.0.txt)');
   Writeln('    /v'#9#9'verbose mode; no warnings, errors etc. are shown, no user input is required');
   Writeln;
   Writeln('Press <enter> to continue...');
@@ -1311,38 +1489,49 @@ begin
       Halt(2);
     end
     else
-      if SameText(S, '/v') then
-        Verbose := True
+    if SameText(S, '/v') then
+      Verbose := True
+    else
+    if SameText(Copy(S, 1, 3), '/c=') then
+    begin
+      SpecialCasingFileName := Trim(Copy(S, 4, MaxInt));
+      if SpecialCasingFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(SpecialCasingFileName);
+        SpecialCasingFileName := Trim(AnsiExtractQuotedStr(Run, SpecialCasingFileName[1]));
+      end;
+      CheckExtension(SpecialCasingFileName, '.txt');
+    end
+    else
+    if SameText(Copy(S, 1, 3), '/f=') then
+    begin
+      CaseFoldingFileName := Trim(Copy(S, 4, MaxInt));
+      if CaseFoldingFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(CaseFoldingFileName);
+        CaseFoldingFileName := Trim(AnsiExtractQuotedStr(Run, CaseFoldingFileName[1]));
+      end;
+      CheckExtension(CaseFoldingFileName, '.txt');
+    end
+    else
+    if SameText(Copy(S, 1, 3), '/d=') then
+    begin
+      DerivedNormalizationPropsFileName := Trim(Copy(S, 4, MaxInt));
+      if DerivedNormalizationPropsFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(DerivedNormalizationPropsFileName);
+        DerivedNormalizationPropsFileName := Trim(AnsiExtractQuotedStr(Run, DerivedNormalizationPropsFileName[1]));
+      end;
+      CheckExtension(DerivedNormalizationPropsFileName, '.txt');
+    end
+    else
+    begin
+      PrintUsage;
+      if SameText(S, '/?') then
+        Halt(0)
       else
-        if SameText(Copy(S, 1, 3), '/c=') then
-        begin
-          SpecialCasingFileName := Trim(Copy(S, 4, MaxInt));
-          if SpecialCasingFileName[1] in ['''', '"'] then
-          begin
-            Run := PChar(SpecialCasingFileName);
-            SpecialCasingFileName := Trim(AnsiExtractQuotedStr(Run, SpecialCasingFileName[1]));
-          end;
-          CheckExtension(SpecialCasingFileName, '.txt');
-        end
-        else
-          if SameText(Copy(S, 1, 3), '/f=') then
-          begin
-            CaseFoldingFileName := Trim(Copy(S, 4, MaxInt));
-            if CaseFoldingFileName[1] in ['''', '"'] then
-            begin
-              Run := PChar(CaseFoldingFileName);
-              CaseFoldingFileName := Trim(AnsiExtractQuotedStr(Run, CaseFoldingFileName[1]));
-            end;
-            CheckExtension(CaseFoldingFileName, '.txt');
-          end
-          else
-          begin
-            PrintUsage;
-            if SameText(S, '/?') then
-              Halt(0)
-            else
-              Halt(2);
-          end;
+        Halt(2);
+    end;
   end;
 end;
 
@@ -1413,6 +1602,24 @@ begin
             Writeln('Reading case folding data from ' + CaseFoldingFileName + ':');
           end;
           ParseCaseFolding;
+        end;
+      end;
+
+      if Length(DerivedNormalizationPropsFileName) > 0 then
+      begin
+        if not FileExists(DerivedNormalizationPropsFileName) then
+        begin
+          WriteLn;
+          Warning(DerivedNormalizationPropsFileName + ' not found, ignoring derived normalization');
+        end
+        else
+        begin
+          if not Verbose then
+          begin
+            WriteLn;
+            WriteLn('Reading derived normalization props from ' + DerivedNormalizationPropsFileName + ':');
+          end;
+          ParseDerivedNormalizationProps;
         end;
       end;
 
