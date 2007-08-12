@@ -61,8 +61,8 @@ var
   SharedThreadNames: TSharedThreadNames;
   HookImports: TJclPeMapImgHooks;
   Kernel32_CreateThread: function(lpThreadAttributes: Pointer;
-    dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
-    lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
+  dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
+  lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
   Kernel32_ExitThread: procedure(dwExitCode: DWORD); stdcall;
   {$IFDEF DELPHI7_UP}
   Kernel32_ResumeThread: function(hThread: THandle): DWORD; stdcall;
@@ -77,15 +77,15 @@ begin
   Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress,
     lpParameter, dwCreationFlags, lpThreadId);
   if (Result <> 0) and (lpParameter <> nil) then
-  try
-    Instance := PThreadRec(lpParameter)^.Parameter;
-    if Instance is TJclDebugThread then
-      RegisterThread(TJclDebugThread(Instance), TJclDebugThread(Instance).ThreadName, True)
-    else
-    if Instance is TThread then
-      RegisterThread(TThread(Instance), '', True);
-  except
-  end;
+    try
+      Instance := PThreadRec(lpParameter)^.Parameter;
+      if Instance is TJclDebugThread then
+        RegisterThread(TJclDebugThread(Instance), TJclDebugThread(Instance).ThreadName, True)
+      else
+      if Instance is TThread then
+        RegisterThread(TThread(Instance), '', True);
+    except
+    end;
 end;
 
 procedure NewExitThread(dwExitCode: DWORD); stdcall;

@@ -23,7 +23,7 @@ unit JclFont;
 interface
 
 type
-     TFontType  = (ftAuto, ftCaption, ftContent);
+  TFontType = (ftAuto, ftCaption, ftContent);
 
 procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFontType = ftAuto);
 
@@ -40,7 +40,8 @@ begin
     AObjectFont.Name := 'Segoe UI';
     AObjectFont.Size := 9;
   end
-  else if IsWinXP or IsWin2k or IsWin2003 then
+  else
+  if IsWinXP or IsWin2k or IsWin2003 then
   begin
     // MS Shell Dlg 2
     AObjectFont.Name := 'Tahoma';
@@ -61,7 +62,8 @@ begin
     AObjectFont.Name := 'Calibri';
     AObjectFont.Size := 9;
   end
-  else if IsWinXP or IsWin2k or IsWin2003 then
+  else
+  if IsWinXP or IsWin2k or IsWin2003 then
   begin
     // MS Shell Dlg 2
     AObjectFont.Name := 'Verdana';
@@ -78,7 +80,7 @@ end;
 procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFontType);
 var
   AObjectFont: TFont;
-  AFontType:   TFontType;
+  AFontType: TFontType;
 begin
   if (AObject.ClassType = TFont) then
     AObjectFont := TFont(AObject)
@@ -99,7 +101,8 @@ begin
   begin
     SetCaptionFont(AObjectFont);
   end
-  else if (AFontType = ftContent) then
+  else
+  if (AFontType = ftContent) then
   begin
     SetContentFont(AObjectFont);
   end;

@@ -104,7 +104,8 @@ type
     property Errors: Cardinal read FErrors;
     property CurrentLine: Cardinal read FCurrentLine write SetCurrentLine;
 
-    property AutoClearCompileMessages: Boolean read FAutoClearCompileMessages write FAutoClearCompileMessages default False;
+    property AutoClearCompileMessages: Boolean read FAutoClearCompileMessages
+      write FAutoClearCompileMessages default False;
     property CompileMessages: ICompileMessages read FCompileMessages write FCompileMessages;
   end;
 
@@ -209,9 +210,11 @@ begin
 
   if FErrors > 0 then
     LblStatus.Caption := RsThereAreErrors
-  else if FWarnings > 0 then
+  else
+  if FWarnings > 0 then
     LblStatus.Caption := RsThereAreWarnings
-  else if FHints > 0 then
+  else
+  if FHints > 0 then
     LblStatus.Caption := RsThereAreHints
   else
     LblStatus.Caption := RsCompiled;

@@ -52,7 +52,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    private
+  private
     FDetailsVisible: Boolean;
     FThreadID: DWORD;
     FLastActiveControl: TWinControl;
@@ -130,7 +130,8 @@ begin
   Addr2 := Cardinal(List.Objects[Index2]);
   if Addr1 > Addr2 then
     Result := 1
-  else if Addr1 < Addr2 then
+  else
+  if Addr1 < Addr2 then
     Result := -1
   else
     Result := 0;
@@ -159,7 +160,7 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset      = $86;
+  CallOffset = $86;
   CallOffsetDebug = $94;
 type
   PCALLInstruction = ^TCALLInstruction;
@@ -182,9 +183,11 @@ var
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) +
+            Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) -
+            Integer(CallAddress) - SizeOf(CALLInstruction);
       end;
     except
       Result := False;
@@ -279,7 +282,7 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
- 
+
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
@@ -307,13 +310,15 @@ begin
         ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
       if ExMMX then
         ProcessorDetails := ProcessorDetails + ' MMXex'
-      else if MMX then
+      else
+      if MMX then
         ProcessorDetails := ProcessorDetails + ' MMX';
       if SSE > 0 then
         ProcessorDetails := Format('%s SSE%d', [ProcessorDetails, SSE]);
       if Ex3DNow then
         ProcessorDetails := ProcessorDetails + ' 3DNow!ex'
-      else if _3DNow then
+      else
+      if _3DNow then
         ProcessorDetails := ProcessorDetails + ' 3DNow!';
       if Is64Bits then
         ProcessorDetails := ProcessorDetails + ' 64 bits';
@@ -354,13 +359,13 @@ begin
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
           with TJclFileVersionInfo.Create(ModuleName) do
-          try
-            DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
-            if FileDescription <> '' then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
-          finally
-            Free;
-          end
+            try
+              DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
+              if FileDescription <> '' then
+                DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
+            finally
+              Free;
+            end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
       end;
@@ -554,7 +559,7 @@ begin
     else
       Height := FNonDetailsHeight;
     Constraints.MinHeight := FNonDetailsHeight;
-    Constraints.MaxHeight := FNonDetailsHeight
+    Constraints.MaxHeight := FNonDetailsHeight;
   end;
   DetailsBtn.Caption := DetailsCaption;
   DetailsMemo.Enabled := Value;
@@ -610,7 +615,7 @@ begin
   if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
     TextLabel.ScrollBars := ssVertical
   else
-    TextLabel.ScrollBars := ssNone;   
+    TextLabel.ScrollBars := ssNone;
 end;
 
 //==================================================================================================

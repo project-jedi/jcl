@@ -40,7 +40,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     // IJediConfiguration
     function GetSections: TStringArray;
     function GetOptions(const Section: string): TOptionArray;
@@ -100,7 +100,7 @@ var
   AFileName: string;
 begin
   inherited Create;
-  
+
   AFileName := '';
 
   if not GetEnvironmentVar('JCL_INSTALL_INI', AFileName) then
@@ -235,6 +235,6 @@ end;
 
 initialization
 
-InstallCore.ConfigurationCreator := CreateConfigIni;
+  InstallCore.ConfigurationCreator := CreateConfigIni;
 
 end.

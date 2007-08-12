@@ -153,8 +153,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -307,7 +307,7 @@ begin
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
-    
+
     Result := Stream.DataString;
   finally
     Stream.Free;
@@ -360,7 +360,7 @@ end;
 constructor TJCLUsesWizardNotifier.Create(AWizard: TJclUsesWizard);
 begin
   inherited Create;
-  
+
   FWizard := AWizard;
 end;
 
@@ -426,7 +426,7 @@ end;
 constructor TJCLUsesWizard.Create;
 begin
   inherited Create(JclUsesExpertName);
-  
+
   FIdentifierLists := TStringList.Create;
   FErrors := TList.Create;
   FActive := False;
@@ -440,7 +440,7 @@ begin
   ClearErrors;
   FErrors.Free;
   FIdentifierLists.Free;
-  
+
   inherited Destroy;
 end;
 
@@ -481,8 +481,8 @@ begin
         if ExtractFilePath(IdentListFileName) = '' then
           IdentListFileName := ExtractFilePath(FIniFile) + IdentListFileName;
 
-          IdentList.LoadFromFile(IdentListFileName);
-          FIdentifierLists[I] := FIdentifierLists[I] + '=' + IdentList.CommaText;
+        IdentList.LoadFromFile(IdentListFileName);
+        FIdentifierLists[I] := FIdentifierLists[I] + '=' + IdentList.CommaText;
       end;
     finally
       IdentList.Free;
@@ -534,7 +534,7 @@ var
   begin
     SError := '';
     SUndeclaredIdent := '';
-    
+
     Dcc32FileName := 'dcc32.exe';
 
     // try to retrieve and prepend Delphi bin path
@@ -868,13 +868,13 @@ begin
                   else
                     UsesIntf.Insert(0, ChangeList[I]);
                 waMoveToIntf:
-                  begin
-                    if UsesIntf.Count = 0 then
-                      UsesIntf.Add(ChangeList[I])
-                    else
-                      UsesIntf.Insert(0, ChangeList[I]);
-                    UsesImpl.Remove(UsesImpl.IndexOf(ChangeList[I]));
-                  end;
+                begin
+                  if UsesIntf.Count = 0 then
+                    UsesIntf.Add(ChangeList[I])
+                  else
+                    UsesIntf.Insert(0, ChangeList[I]);
+                  UsesImpl.Remove(UsesImpl.IndexOf(ChangeList[I]));
+                end;
                 else
                   ChangeList.Delete(I);
               end;

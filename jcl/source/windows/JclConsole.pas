@@ -123,7 +123,8 @@ type
   TJclScreenWindow = class;
 
   // Console screen buffer
-  TJclScreenBufferBeforeResizeEvent = procedure(Sender: TObject; const NewSize: TCoord; var CanResize: Boolean) of object;
+  TJclScreenBufferBeforeResizeEvent = procedure(Sender: TObject; const NewSize: TCoord;
+    var CanResize: Boolean) of object;
   TJclScreenBufferAfterResizeEvent = procedure(Sender: TObject) of object;
 
   TJclScreenBufferTextHorizontalAlign = (thaCurrent, thaLeft, thaCenter, thaRight);
@@ -195,7 +196,8 @@ type
   // Console screen text attributes
   TJclScreenFontColor = (fclBlack, fclBlue, fclGreen, fclRed, fclCyan, fclMagenta, fclYellow, fclWhite);
   TJclScreenBackColor = (bclBlack, bclBlue, bclGreen, bclRed, bclCyan, bclMagenta, bclYellow, bclWhite);
-  TJclScreenFontStyle = (fsLeadingByte, fsTrailingByte, fsGridHorizontal, fsGridLeftVertical, fsGridRightVertical, fsReverseVideo, fsUnderscore, fsSbcsDbcs);
+  TJclScreenFontStyle = (fsLeadingByte, fsTrailingByte, fsGridHorizontal, fsGridLeftVertical,
+    fsGridRightVertical, fsReverseVideo, fsUnderscore, fsSbcsDbcs);
   TJclScreenFontStyles = set of TJclScreenFontStyle;
 
   IJclScreenTextAttribute = interface
@@ -359,7 +361,7 @@ type
   end;
 
   // Console input buffer
-  TJclInputCtrlEvent = ( ceCtrlC, ceCtrlBreak, ceCtrlClose, ceCtrlLogOff, ceCtrlShutdown );
+  TJclInputCtrlEvent = (ceCtrlC, ceCtrlBreak, ceCtrlClose, ceCtrlLogOff, ceCtrlShutdown);
 
   TJclInputRecordArray = array of TInputRecord;
 
@@ -427,15 +429,15 @@ function SetConsoleWindowInfo(hConsoleOutput: THandle; bAbsolute: BOOL;
 {$ENDIF FPC}
 
 const
-  COMMON_LVB_LEADING_BYTE    = $0100; // Leading Byte of DBCS
-  COMMON_LVB_TRAILING_BYTE   = $0200; // Trailing Byte of DBCS
+  COMMON_LVB_LEADING_BYTE = $0100; // Leading Byte of DBCS
+  COMMON_LVB_TRAILING_BYTE = $0200; // Trailing Byte of DBCS
   COMMON_LVB_GRID_HORIZONTAL = $0400; // DBCS: Grid attribute: top horizontal.
-  COMMON_LVB_GRID_LVERTICAL  = $0800; // DBCS: Grid attribute: left vertical.
-  COMMON_LVB_GRID_RVERTICAL  = $1000; // DBCS: Grid attribute: right vertical.
-  COMMON_LVB_REVERSE_VIDEO   = $4000; // DBCS: Reverse fore/back ground attribute.
-  COMMON_LVB_UNDERSCORE      = $8000; // DBCS: Underscore.
+  COMMON_LVB_GRID_LVERTICAL = $0800; // DBCS: Grid attribute: left vertical.
+  COMMON_LVB_GRID_RVERTICAL = $1000; // DBCS: Grid attribute: right vertical.
+  COMMON_LVB_REVERSE_VIDEO = $4000; // DBCS: Reverse fore/back ground attribute.
+  COMMON_LVB_UNDERSCORE = $8000; // DBCS: Underscore.
 
-  COMMON_LVB_SBCSDBCS        = $0300; // SBCS or DBCS flag.
+  COMMON_LVB_SBCSDBCS = $0300; // SBCS or DBCS flag.
 
 const
   FontColorMask: Word = FOREGROUND_BLUE or FOREGROUND_GREEN or FOREGROUND_RED;
@@ -445,7 +447,7 @@ const
     COMMON_LVB_REVERSE_VIDEO or COMMON_LVB_UNDERSCORE or COMMON_LVB_SBCSDBCS;
 
   FontColorMapping: array [TJclScreenFontColor] of Word =
-   (0,
+    (0,
     FOREGROUND_BLUE,
     FOREGROUND_GREEN,
     FOREGROUND_RED,
@@ -455,7 +457,7 @@ const
     FOREGROUND_BLUE or FOREGROUND_GREEN or FOREGROUND_RED);
 
   BackColorMapping: array [TJclScreenBackColor] of Word =
-   (0,
+    (0,
     BACKGROUND_BLUE,
     BACKGROUND_GREEN,
     BACKGROUND_RED,
@@ -465,7 +467,7 @@ const
     BACKGROUND_BLUE or BACKGROUND_GREEN or BACKGROUND_RED);
 
   FontStyleMapping: array [TJclScreenFontStyle] of Word =
-   (COMMON_LVB_LEADING_BYTE,    // Leading Byte of DBCS
+    (COMMON_LVB_LEADING_BYTE,    // Leading Byte of DBCS
     COMMON_LVB_TRAILING_BYTE,   // Trailing Byte of DBCS
     COMMON_LVB_GRID_HORIZONTAL, // DBCS: Grid attribute: top horizontal.
     COMMON_LVB_GRID_LVERTICAL,  // DBCS: Grid attribute: left vertical.
@@ -477,7 +479,7 @@ const
 const
   InputModeMapping: array [TJclConsoleInputMode] of DWORD =
     (ENABLE_LINE_INPUT, ENABLE_ECHO_INPUT, ENABLE_PROCESSED_INPUT,
-     ENABLE_WINDOW_INPUT, ENABLE_MOUSE_INPUT);
+    ENABLE_WINDOW_INPUT, ENABLE_MOUSE_INPUT);
 
   OutputModeMapping: array [TJclConsoleOutputMode] of DWORD =
     (ENABLE_PROCESSED_OUTPUT, ENABLE_WRAP_AT_EOL_OUTPUT);
@@ -508,10 +510,10 @@ begin
       CTRL_SHUTDOWN_EVENT:
         if Assigned(Console.OnShutdown) then
           Console.OnShutdown(Console);
-    else
+      else
       // (rom) disabled. Makes function result unpredictable.
       //Assert(False, 'Unknown Ctrl Event');
-      Result := False;
+        Result := False;
     end;
   except
     // (rom) dubious. An exception implies that an event has been handled.
@@ -525,7 +527,7 @@ constructor TJclConsole.Create;
 begin
   inherited Create;
   FScreens := TObjectList.Create;
-  FInput:= TJclInputBuffer.Create(Self);
+  FInput := TJclInputBuffer.Create(Self);
   FActiveScreenIndex := FScreens.Add(TJclScreenBuffer.Create);
   FOnCtrlC := nil;
   FOnCtrlBreak := nil;
@@ -673,20 +675,20 @@ begin
   Result := False;
   { TODO : Documentation of this solution }
   with PImageDosHeader(Module)^ do
-  if e_magic = IMAGE_DOS_SIGNATURE then
-    with PImageNtHeaders(Integer(Module) + {$IFDEF FPC} e_lfanew {$ELSE} _lfanew {$ENDIF})^ do
-      if Signature = IMAGE_NT_SIGNATURE then
-        Result := OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
+    if e_magic = IMAGE_DOS_SIGNATURE then
+      with PImageNtHeaders(Integer(Module) + {$IFDEF FPC} e_lfanew {$ELSE} _lfanew {$ENDIF})^ do
+        if Signature = IMAGE_NT_SIGNATURE then
+          Result := OptionalHeader.Subsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
 end;
 
 class function TJclConsole.IsConsole(const FileName: TFileName): Boolean;
 begin
   with TJclFileMappingStream.Create(FileName) do
-  try
-    Result := IsConsole(HMODULE(Memory));
-  finally
-    Free;
-  end;
+    try
+      Result := IsConsole(HMODULE(Memory));
+    finally
+      Free;
+    end;
 end;
 {$ENDIF ~CLR}
 
@@ -873,7 +875,7 @@ begin
     if Assigned(ATextAttribute) then
     begin
       SetLength(Attrs, Length(Text));
-      for I:=0 to Length(Text)-1 do
+      for I := 0 to Length(Text) - 1 do
         Attrs[I] := ATextAttribute.TextAttribute;
       {$IFDEF CLR}
       Result := Write(Text, X, Y, Attrs);
@@ -947,8 +949,8 @@ begin
       X := Window.Left + (Window.Width - Length(Text)) div 2;
     thaRight:
       X := Window.Right - Length(Text) + 1;
-  else
-    X := Cursor.Position.X;
+    else
+      X := Cursor.Position.X;
   end;
   case VerticalAlign of
     //tvaCurrent: Y := Cursor.Position.Y;
@@ -958,8 +960,8 @@ begin
       Y := Window.Top + Window.Height div 2;
     tvaBottom:
       Y := Window.Bottom;
-  else
-    Y := Cursor.Position.Y;
+    else
+      Y := Cursor.Position.Y;
   end;
   Result := Write(Text, X, Y, ATextAttribute);
 end;
@@ -1020,7 +1022,8 @@ begin
   Cursor.MoveTo(0, 0);
   Win32Check(FillConsoleOutputCharacter(Handle, ch, Width * Height, Cursor.Position, WriteCount));
   if Assigned(ATextAttribute) then
-    Win32Check(FillConsoleOutputAttribute(Handle, ATextAttribute.TextAttribute, Width * Height, Cursor.Position, WriteCount))
+    Win32Check(FillConsoleOutputAttribute(Handle, ATextAttribute.TextAttribute, Width * Height,
+      Cursor.Position, WriteCount))
   else
     Win32Check(FillConsoleOutputAttribute(Handle, Font.TextAttribute, Width * Height, Cursor.Position, WriteCount));
 end;
@@ -1316,7 +1319,7 @@ begin
   begin
     NewRect.Left := X;
     NewRect.Top := Y;
-    NewRect.Right:= NewRect.Left + Width - 1;
+    NewRect.Right := NewRect.Left + Width - 1;
     NewRect.Bottom := NewRect.Top + Height - 1;
     DoResize(NewRect);
   end;

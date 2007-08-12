@@ -64,8 +64,8 @@ type
 // *********************************************************************//
   IStackTrackDllsTest = interface(IUnknown)
     ['{26473046-CCEB-4671-9AB1-2216EF4D2164}']
-    function  Error1: HResult; stdcall;
-    function  Error2: HResult; stdcall;
+    function Error1: HResult; stdcall;
+    function Error2: HResult; stdcall;
   end;
 
 // *********************************************************************//

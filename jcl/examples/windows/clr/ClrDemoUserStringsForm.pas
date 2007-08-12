@@ -15,7 +15,7 @@ type
     FStream: TJclCLRUserStringStream;
     procedure ShowStrings(const AStream: TJclCLRUserStringStream);
   public
-    class procedure Execute(const AStream: TJclCLRUserStringStream); 
+    class procedure Execute(const AStream: TJclCLRUserStringStream);
   end;
 
 var
@@ -30,12 +30,12 @@ implementation
 class procedure TfrmUserStrings.Execute(const AStream: TJclCLRUserStringStream);
 begin
   with TfrmUserStrings.Create(nil) do
-  try
-    ShowStrings(AStream);
-    ShowModal;
-  finally
-    Free;
-  end;
+    try
+      ShowStrings(AStream);
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 procedure TfrmUserStrings.ShowStrings(const AStream: TJclCLRUserStringStream);

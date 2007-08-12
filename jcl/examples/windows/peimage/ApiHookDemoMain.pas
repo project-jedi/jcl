@@ -64,8 +64,9 @@ begin
   begin
     @OldMessageBeep := nil;
     AddMsg('MessageBeep unhooked ...');
-  end else
-    AddMsg('MessageBeep wasn''t hooked')
+  end
+  else
+    AddMsg('MessageBeep wasn''t hooked');
 end;
 
 procedure TForm1.BeepBtnClick(Sender: TObject);

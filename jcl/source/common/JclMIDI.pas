@@ -44,108 +44,108 @@ uses
 // manifest constants for MIDI message protocol
 const
   // MIDI Status Bytes for Channel Voice Messages
-  MIDIMsgNoteOff             = $80;
-  MIDIMsgNoteOn              = $90;
-  MIDIMsgPolyKeyPressure     = $A0;
-  MIDIMsgControlChange       = $B0;
-  MIDIMsgProgramChange       = $C0;
-  MIDIMsgChannelKeyPressure  = $D0;
+  MIDIMsgNoteOff = $80;
+  MIDIMsgNoteOn = $90;
+  MIDIMsgPolyKeyPressure = $A0;
+  MIDIMsgControlChange = $B0;
+  MIDIMsgProgramChange = $C0;
+  MIDIMsgChannelKeyPressure = $D0;
   MIDIMsgAftertouch = MIDIMsgChannelKeyPressure; // Synonym
-  MIDIMsgPitchWheelChange    = $E0;
+  MIDIMsgPitchWheelChange = $E0;
   // MIDI Status Bytes for System Common Messages
-  MIDIMsgSysEx               = $F0;
-  MIDIMsgMTCQtrFrame         = $F1; // MIDI Time Code Qtr. Frame
-  MIDIMsgSongPositionPtr     = $F2;
-  MIDIMsgSongSelect          = $F3;
-  MIDIMsgTuneRequest         = $F6;
-  MIDIMsgEOX                 = $F7; // marks end of system exclusive message
+  MIDIMsgSysEx = $F0;
+  MIDIMsgMTCQtrFrame = $F1; // MIDI Time Code Qtr. Frame
+  MIDIMsgSongPositionPtr = $F2;
+  MIDIMsgSongSelect = $F3;
+  MIDIMsgTuneRequest = $F6;
+  MIDIMsgEOX = $F7; // marks end of system exclusive message
 
   // MIDI Status Bytes for System Real-Time Messages
-  MIDIMsgTimingClock         = $F8;
-  MIDIMsgStartSequence       = $FA;
-  MIDIMsgContinueSequence    = $FB;
-  MIDIMsgStopSequence        = $FC;
-  MIDIMsgActiveSensing       = $FE;
-  MIDIMsgSystemReset         = $FF;
+  MIDIMsgTimingClock = $F8;
+  MIDIMsgStartSequence = $FA;
+  MIDIMsgContinueSequence = $FB;
+  MIDIMsgStopSequence = $FC;
+  MIDIMsgActiveSensing = $FE;
+  MIDIMsgSystemReset = $FF;
 
   // MIDICC...: MIDI Control Change Messages
 
   // Continuous Controllers MSB
-  MIDICCBankSelect         = $00;
-  MIDICCModulationWheel    = $01;
-  MIDICCBreathControl      = $02;
-  MIDICCFootController     = $04;
-  MIDICCPortamentoTime     = $05;
-  MIDICCDataEntry          = $06;
-  MIDICCChannelVolume      = $07;
+  MIDICCBankSelect = $00;
+  MIDICCModulationWheel = $01;
+  MIDICCBreathControl = $02;
+  MIDICCFootController = $04;
+  MIDICCPortamentoTime = $05;
+  MIDICCDataEntry = $06;
+  MIDICCChannelVolume = $07;
   MIDICCMainVolume = MIDICCChannelVolume;
-  MIDICCBalance            = $08;
-  MIDICCPan                = $0A;
-  MIDICCExpression         = $0B;
-  MIDICCEffectControl      = $0C;
-  MIDICCEffectControl2     = $0D;
-  MIDICCGeneralPurpose1    = $10;
-  MIDICCGeneralPurpose2    = $11;
-  MIDICCGeneralPurpose3    = $12;
-  MIDICCGeneralPurpose4    = $13;
+  MIDICCBalance = $08;
+  MIDICCPan = $0A;
+  MIDICCExpression = $0B;
+  MIDICCEffectControl = $0C;
+  MIDICCEffectControl2 = $0D;
+  MIDICCGeneralPurpose1 = $10;
+  MIDICCGeneralPurpose2 = $11;
+  MIDICCGeneralPurpose3 = $12;
+  MIDICCGeneralPurpose4 = $13;
   // Continuous Controllers LSB
-  MIDICCBankSelectLSB      = $20;
+  MIDICCBankSelectLSB = $20;
   MIDICCModulationWheelLSB = $21;
-  MIDICCBreathControlLSB   = $22;
-  MIDICCFootControllerLSB  = $24;
-  MIDICCPortamentoTimeLSB  = $25;
-  MIDICCDataEntryLSB       = $26;
-  MIDICCChannelVolumeLSB   = $27;
+  MIDICCBreathControlLSB = $22;
+  MIDICCFootControllerLSB = $24;
+  MIDICCPortamentoTimeLSB = $25;
+  MIDICCDataEntryLSB = $26;
+  MIDICCChannelVolumeLSB = $27;
   MIDICCMainVolumeLSB = MIDICCChannelVolumeLSB;
-  MIDICCBalanceLSB         = $28;
-  MIDICCPanLSB             = $2A;
-  MIDICCExpressionLSB      = $2B;
-  MIDICCEffectControlLSB   = $2C;
-  MIDICCEffectControl2LSB  = $2D;
+  MIDICCBalanceLSB = $28;
+  MIDICCPanLSB = $2A;
+  MIDICCExpressionLSB = $2B;
+  MIDICCEffectControlLSB = $2C;
+  MIDICCEffectControl2LSB = $2D;
   MIDICCGeneralPurpose1LSB = $30;
   MIDICCGeneralPurpose2LSB = $31;
   MIDICCGeneralPurpose3LSB = $32;
   MIDICCGeneralPurpose4LSB = $33;
   // Switches
-  MIDICCSustain            = $40;
-  MIDICCPortamento         = $41;
-  MIDICCSustenuto          = $42;
-  MIDICCSoftPedal          = $43;
-  MIDICCLegato             = $44;
-  MIDICCHold2              = $45;
+  MIDICCSustain = $40;
+  MIDICCPortamento = $41;
+  MIDICCSustenuto = $42;
+  MIDICCSoftPedal = $43;
+  MIDICCLegato = $44;
+  MIDICCHold2 = $45;
 
-  MIDICCSound1             = $46; // (Sound Variation)
-  MIDICCSound2             = $47; // (Timbre/Harmonic Intens.)
-  MIDICCSound3             = $48; // (Release Time)
-  MIDICCSound4             = $49; // (Attack Time)
-  MIDICCSound5             = $4A; // (Brightness)
-  MIDICCSound6             = $4B; // (Decay Time)
-  MIDICCSound7             = $4C; // (Vibrato Rate)
-  MIDICCSound8             = $4D; // (Vibrato Depth)
-  MIDICCSound9             = $4E; // (Vibrato Delay)
-  MIDICCSound10            = $4F; //
+  MIDICCSound1 = $46; // (Sound Variation)
+  MIDICCSound2 = $47; // (Timbre/Harmonic Intens.)
+  MIDICCSound3 = $48; // (Release Time)
+  MIDICCSound4 = $49; // (Attack Time)
+  MIDICCSound5 = $4A; // (Brightness)
+  MIDICCSound6 = $4B; // (Decay Time)
+  MIDICCSound7 = $4C; // (Vibrato Rate)
+  MIDICCSound8 = $4D; // (Vibrato Depth)
+  MIDICCSound9 = $4E; // (Vibrato Delay)
+  MIDICCSound10 = $4F; //
 
-  MIDICCGeneralPurpose5    = $50;
-  MIDICCGeneralPurpose6    = $51;
-  MIDICCGeneralPurpose7    = $52;
-  MIDICCGeneralPurpose8    = $53;
-  MIDICCPortamentoControl  = $54;
+  MIDICCGeneralPurpose5 = $50;
+  MIDICCGeneralPurpose6 = $51;
+  MIDICCGeneralPurpose7 = $52;
+  MIDICCGeneralPurpose8 = $53;
+  MIDICCPortamentoControl = $54;
 
-  MIDICCReverbSendLevel    = $5B;
-  MIDICCEffects2Depth      = $5C;
+  MIDICCReverbSendLevel = $5B;
+  MIDICCEffects2Depth = $5C;
   MIDICCTremoloDepth = MIDICCEffects2Depth;
-  MIDICCChorusSendLevel    = $5D;
-  MIDICCEffects4Depth      = $5E;
+  MIDICCChorusSendLevel = $5D;
+  MIDICCEffects4Depth = $5E;
   MIDICCCelesteDepth = MIDICCEffects4Depth;
-  MIDICCEffects5Depth      = $5F;
+  MIDICCEffects5Depth = $5F;
   MIDICCPhaserDepth = MIDICCEffects5Depth;
 
-  MIDICCDataEntryInc       = $60;
-  MIDICCDataEntryDec       = $61;
-  MIDICCNonRegParamNumLSB  = $62;
-  MIDICCNonRegParamNumMSB  = $63;
-  MIDICCRegParamNumLSB     = $64;
-  MIDICCRegParamNumMSB     = $65;
+  MIDICCDataEntryInc = $60;
+  MIDICCDataEntryDec = $61;
+  MIDICCNonRegParamNumLSB = $62;
+  MIDICCNonRegParamNumMSB = $63;
+  MIDICCRegParamNumLSB = $64;
+  MIDICCRegParamNumMSB = $65;
 
 //  Registered Parameter Numbers [CC# 65H,64H]
 // -----------------------------------------------------------
@@ -159,43 +159,43 @@ const
 //   00 = 0     |  04 = 4     | Tuning Bank Select
 
   // Channel Mode Messages (Control Change >= $78)
-  MIDICCAllSoundOff        = $78;
+  MIDICCAllSoundOff = $78;
   MIDICCResetAllControllers = $79;
-  MIDICCLocalControl       = $7A;
-  MIDICCAllNotesOff        = $7B;
+  MIDICCLocalControl = $7A;
+  MIDICCAllNotesOff = $7B;
 
-  MIDICCOmniModeOff        = $7C;
-  MIDICCOmniModeOn         = $7D;
-  MIDICCMonoModeOn         = $7E;
-  MIDICCPolyModeOn         = $7F;
+  MIDICCOmniModeOff = $7C;
+  MIDICCOmniModeOn = $7D;
+  MIDICCMonoModeOn = $7E;
+  MIDICCPolyModeOn = $7F;
 
 type
-  TMIDIChannel          = 1..16;
-  TMIDIDataByte         = 0..$7F;           //  7 bits
-  TMIDIDataWord         = 0..$3FFF;         // 14 bits
-  TMIDIStatusByte       = $80..$FF;
-  TMIDIVelocity         = TMIDIDataByte;
-  TMIDIKey              = TMIDIDataByte;
-  TMIDINote             = TMIDIKey;
+  TMIDIChannel = 1..16;
+  TMIDIDataByte = 0..$7F;           //  7 bits
+  TMIDIDataWord = 0..$3FFF;         // 14 bits
+  TMIDIStatusByte = $80..$FF;
+  TMIDIVelocity = TMIDIDataByte;
+  TMIDIKey = TMIDIDataByte;
+  TMIDINote = TMIDIKey;
 
 const
   // Helper definitions
-  MIDIDataMask          = $7F;
-  MIDIDataWordMask      = $3FFF;
-  MIDIChannelMsgMask    = $F0;
-  MIDIInvalidStatus     = TMIDIStatusByte(0);
-  BitsPerMIDIDataByte   = 7;
-  BitsPerMIDIDataWord   = BitsPerMIDIDataByte * 2;
-  MIDIPitchWheelCenter  = 1 shl (BitsPerMIDIDataWord - 1);
+  MIDIDataMask = $7F;
+  MIDIDataWordMask = $3FFF;
+  MIDIChannelMsgMask = $F0;
+  MIDIInvalidStatus = TMIDIStatusByte(0);
+  BitsPerMIDIDataByte = 7;
+  BitsPerMIDIDataWord = BitsPerMIDIDataByte * 2;
+  MIDIPitchWheelCenter = 1 shl (BitsPerMIDIDataWord - 1);
 
 type
   TMIDINotes = set of TMIDINote;
 
   TSingleNoteTuningData = packed record
-  case Integer of
-    0:
+    case Integer of
+      0:
       (Key: TMIDINote; Frequency: array [0..2] of TMIDIDataByte);
-    1:
+      1:
       (DWord: LongWord);
   end;
 
@@ -436,26 +436,26 @@ const
   HalftonesPerOctave = 12;
 begin
   case Note mod HalftonesPerOctave of
-     0:
-       Result := RsOctaveC;
-     1:
-       Result := RsOctaveCSharp;
-     2:
-       Result := RsOctaveD;
-     3:
-       Result := RsOctaveDSharp;
-     4:
-       Result := RsOctaveE;
-     5:
-       Result := RsOctaveF;
-     6:
-       Result := RsOctaveFSharp;
-     7:
-       Result := RsOctaveG;
-     8:
-       Result := RsOctaveGSharp;
-     9:
-       Result := RsOctaveA;
+    0:
+      Result := RsOctaveC;
+    1:
+      Result := RsOctaveCSharp;
+    2:
+      Result := RsOctaveD;
+    3:
+      Result := RsOctaveDSharp;
+    4:
+      Result := RsOctaveE;
+    5:
+      Result := RsOctaveF;
+    6:
+      Result := RsOctaveFSharp;
+    7:
+      Result := RsOctaveG;
+    8:
+      Result := RsOctaveGSharp;
+    9:
+      Result := RsOctaveA;
     10:
       Result := RsOctaveASharp;
     11:

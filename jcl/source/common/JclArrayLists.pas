@@ -39,7 +39,7 @@ uses
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IJclIntfCollection,
-      IJclIntfList, IJclIntfArray, IJclIntfCloneable)
+    IJclIntfList, IJclIntfArray, IJclIntfCloneable)
   private
     FElementData: TDynIInterfaceArray;
     FSize: Integer;
@@ -121,7 +121,7 @@ type
   end;
 
   TJclArrayList = class(TJclAbstractContainer, IJclCollection, IJclList,
-      IJclArray, IJclCloneable)
+    IJclArray, IJclCloneable)
   private
     FCapacity: Integer;
     FElementData: TDynObjectArray;
@@ -868,7 +868,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclIntfArrayList.Equals(const ACollection: IJclIntfCollection): Boolean;
@@ -1551,7 +1551,7 @@ begin
     {$ELSE}
     raise EJclOutOfBoundsError.CreateRes(@RsEOutOfBounds);
     {$ENDIF CLR}
-  FElementData[Index] := AString
+  FElementData[Index] := AString;
 end;
 
 function TJclStrArrayList.Size: Integer;
@@ -1773,7 +1773,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclArrayList.Equals(const ACollection: IJclCollection): Boolean;
@@ -2044,4 +2044,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

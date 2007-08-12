@@ -124,7 +124,7 @@ begin
     // This allows the Stop method to compensate for it and return a more
     // accurate result. Thanks to John O'Harrow (john att elmcrest dott demon dott co dott uk)
     TmpOverhead := 0;
-    for Count := 0 to Iterations-1 do
+    for Count := 0 to Iterations - 1 do
     begin
       Start;
       Stop;
@@ -143,7 +143,7 @@ begin
   FElapsedTime := 0;
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
-  if not QueryPerformanceCounter(FStart) then  
+  if not QueryPerformanceCounter(FStart) then
     raise EJclCounterError.CreateRes(@RsNoCounter);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
@@ -187,12 +187,12 @@ procedure TJclCounter.Continue;
 var
   Overall: Float;
 begin
-   if not(FCounting) then
-   begin
-     Overall := FOverallElapsedTime;
-     Start;
-     FOverallElapsedTime := Overall;
-   end;
+  if not (FCounting) then
+  begin
+    Overall := FOverallElapsedTime;
+    Start;
+    FOverallElapsedTime := Overall;
+  end;
 end;
 
 procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);

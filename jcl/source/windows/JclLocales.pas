@@ -390,8 +390,8 @@ begin
       Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
     13:
       Param := LOCALE_SABBREVMONTHNAME13;
-  else
-    raise ERangeError.CreateRes(@SRangeError);
+    else
+      raise ERangeError.CreateRes(@SRangeError);
   end;
   Result := GetStringInfo(Param);
 end;
@@ -534,7 +534,7 @@ type
   end;
 const
   CharsetTable: array [1..10] of TCharsetEntry =
-   (
+    (
     (CodePage: 1252; Charset: ANSI_CHARSET),
     (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
     (CodePage: 1251; Charset: RUSSIAN_CHARSET),
@@ -543,9 +543,9 @@ const
     (CodePage: 1255; Charset: HEBREW_CHARSET),
     (CodePage: 1256; Charset: ARABIC_CHARSET),
     (CodePage: 1257; Charset: BALTIC_CHARSET),
-    (CodePage:  874; Charset: THAI_CHARSET),
-    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-   );
+    (CodePage: 874; Charset: THAI_CHARSET),
+    (CodePage: 932; Charset: SHIFTJIS_CHARSET)
+    );
 var
   I, CpANSI: Integer;
 begin
@@ -1039,11 +1039,11 @@ end;
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
   with TJclLocalesList.Create(lkInstalled) do
-  try
-    FillStrings(Strings, InfoType);
-  finally
-    Free;
-  end;
+    try
+      FillStrings(Strings, InfoType);
+    finally
+      Free;
+    end;
 end;
 
 {$IFDEF UNITVERSIONING}

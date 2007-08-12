@@ -69,10 +69,10 @@ const
 
 type
   TWideFileOptionsType =
-   (
+    (
     foAnsiFile,  // loads/writes an ANSI file
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
-   );
+    );
   TWideFileOptions = set of TWideFileOptionsType;
 
   TSearchFlag = (
@@ -81,7 +81,7 @@ type
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
-  );
+    );
   TSearchFlags = set of TSearchFlag;
 
   TWStrings = class;
@@ -652,21 +652,21 @@ end;
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EAX
-       MOV     EDI, ESI
-       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
-@@1:
-       LODSW
-       OR      EAX, EAX
-       JZ      @@2
-       XCHG    AL, AH
-       STOSW
-       JMP     @@1
-@@2:
-       POP     EDI
-       POP     ESI
+  PUSH    ESI
+  PUSH    EDI
+  MOV     ESI, EAX
+  MOV     EDI, ESI
+  xor     EAX, EAX // clear high order byte to be able to use 32bit operand below
+  @@1:
+  LODSW
+  or      EAX, EAX
+  JZ      @@2
+  XCHG    AL, AH
+  STOSW
+  JMP     @@1
+  @@2:
+  POP     EDI
+  POP     ESI
 end;
 
 function StrNScanW(const Str1, Str2: PWideChar): Integer;
@@ -723,17 +723,17 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
-       TEST    EAX, EAX
-       JZ      @@Exit        // get out if the string is nil or StrLen is 0
-       JCXZ    @@Exit
-@@Loop:
-       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
-       JE      @@Exit        // than REP SCASW
-       ADD     EAX, 2
-       DEC     ECX
-       JNZ     @@Loop
-       XOR     EAX, EAX
-@@Exit:
+  TEST    EAX, EAX
+  JZ      @@Exit        // get out if the string is nil or StrLen is 0
+  JCXZ    @@Exit
+  @@Loop:
+  CMP[EAX], DX     // this unrolled loop is actually faster on modern processors
+  JE      @@Exit        // than REP SCASW
+  ADD     EAX, 2
+  DEC     ECX
+  JNZ     @@Loop
+  xor     EAX, EAX
+  @@Exit:
 end;
 
 function StrBufSizeW(const Str: PWideChar): Cardinal;
@@ -762,19 +762,19 @@ end;
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
-       PUSH EDI
-       PUSH ESI
-       MOV EDI, EAX
-       MOV ESI, EDX
-       MOV EDX, EAX
-       XOR AX, AX
-@@1:   LODSB
-       STOSW
-       DEC ECX
-       JNZ @@1
-       MOV EAX, EDX
-       POP ESI
-       POP EDI
+  PUSH EDI
+  PUSH ESI
+  MOV EDI, EAX
+  MOV ESI, EDX
+  MOV EDX, EAX
+  xor AX, AX
+  @@1:   LODSB
+  STOSW
+  DEC ECX
+  JNZ @@1
+  MOV EAX, EDX
+  POP ESI
+  POP EDI
 end;
 
 //=== WideString functions ===================================================
@@ -1230,7 +1230,7 @@ procedure TWStrings.DefineProperties(Filer: TFiler);
     begin
       Result := True;
       if Filer.Ancestor is TWStrings then
-        Result := not Equals(TWStrings(Filer.Ancestor))
+        Result := not Equals(TWStrings(Filer.Ancestor));
     end
     else
       Result := Count > 0;
@@ -1346,11 +1346,11 @@ begin
         case P[0] of
           WideChar(0)..WideChar(32):
             Inc(P);
-        else
-          if (P[0] = AQuoteChar) or (P[0] = ADelimiter) then
-            Inc(P)
           else
-            Break;
+            if (P[0] = AQuoteChar) or (P[0] = ADelimiter) then
+              Inc(P)
+            else
+              Break;
         end;
       end;
       if P[0] <> WideChar(0) then
@@ -1615,8 +1615,8 @@ var
       case P^ of
         WideChar(1)..WideChar(32):
           Inc(P);
-      else
-        Break;
+        else
+          Break;
       end;
   end;
 
@@ -1743,7 +1743,7 @@ var
 begin
   Writer.WriteListBegin;
   for I := 0 to Count - 1 do
-     Writer.WriteWideString(GetP(I)^);
+    Writer.WriteWideString(GetP(I)^);
   Writer.WriteListEnd;
 end;
 

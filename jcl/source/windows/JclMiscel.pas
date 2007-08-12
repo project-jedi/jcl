@@ -75,10 +75,10 @@ function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD
 function AbortShutDown: Boolean; overload;
 function AbortShutDown(const MachineName: string): Boolean; overload;
 
-type                                              
+type
   TJclAllowedPowerOperation = (apoHibernate, apoShutdown, apoSuspend);
   TJclAllowedPowerOperations = set of TJclAllowedPowerOperation;
-  
+
 function GetAllowedPowerOperations: TJclAllowedPowerOperations;
 
 // CreateProcAsUser
@@ -325,7 +325,7 @@ begin
     try
       Result := EnableProcessPrivilege(True, PrivilegeName)
         and InitiateSystemShutdown(PChar(MachineName), PChar(DialogMessage),
-          TimeOut, Force, Reboot);
+        TimeOut, Force, Reboot);
     finally
       EnableProcessPrivilege(OldShutdownPrivilege, PrivilegeName);
     end;
@@ -401,8 +401,8 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 const
   // default values for window stations and desktops
   CreateProcDEFWINSTATION = 'WinSta0';
-  CreateProcDEFDESKTOP    = 'Default';
-  CreateProcDOMUSERSEP    = '\';
+  CreateProcDEFDESKTOP = 'Default';
+  CreateProcDOMUSERSEP = '\';
 var
   ConsoleTitle: string;
   Help: string;
@@ -430,13 +430,13 @@ begin
         raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonUserError);
       ERROR_ACCESS_DENIED:
         raise EJclCreateProcessError.CreateRes(@RsCreateProcAccessDenied);
-    else
-      raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
+      else
+        raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
     end;
   end;
 
   // Step 3: give the new user access to the current WindowStation and Desktop
-  hWindowStation:= GetProcessWindowStation;
+  hWindowStation := GetProcessWindowStation;
   WinStaName := GetUserObjectName(hWindowStation);
   if WinStaName = '' then
     WinStaName := CreateProcDEFWINSTATION;
@@ -463,10 +463,10 @@ begin
   FillChar(StartUpInfo, SizeOf(StartUpInfo), #0);
   with StartUpInfo do
   begin
-    cb:= SizeOf(StartUpInfo);
-    lpTitle:= PChar(ConsoleTitle);
+    cb := SizeOf(StartUpInfo);
+    lpTitle := PChar(ConsoleTitle);
     Help := WinStaName + '\' + DeskTopName;
-    lpDesktop:= PChar(Help);
+    lpDesktop := PChar(Help);
   end;
 
   // Step 5: create the child process
@@ -482,7 +482,7 @@ begin
       ERROR_PRIVILEGE_NOT_HELD:
         raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegesMissing,
           [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
-           GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
+          GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
         raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound, [CommandLine]);
       else

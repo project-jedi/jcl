@@ -182,7 +182,8 @@ var
 begin
   with PageControl1 do
   begin
-    for I := 0 to PageCount - 1 do Pages[I].TabVisible := False;
+    for I := 0 to PageCount - 1 do
+      Pages[I].TabVisible := False;
     FOriginalPageControlWndProc := WindowProc;
     WindowProc := PageControlWndProc;
     ActivePage := DirTab;
@@ -278,7 +279,8 @@ begin
       else
         Ascii := Ascii + '.';
       Inc(DumpData);
-      if Address + I >= EndAddress then Break;
+      if Address + I >= EndAddress then
+        Break;
     end;
     Item.Caption := Format('%x', [Address]);
     Item.SubItems.Add(Hex);
@@ -343,9 +345,9 @@ var
         H := GetSystemMetrics(SM_CYICON);
       rkBitmap:
         H := TPeResUnkGraphic(Item).GraphicProperties.Height;
-    else
-      FTempGraphic.Assign(Item);
-      H := FTempGraphic.Height;
+      else
+        FTempGraphic.Assign(Item);
+        H := FTempGraphic.Height;
     end;
     MaxRowHeight := Max(MaxRowHeight, H);
   end;
@@ -390,8 +392,10 @@ begin
       with Canvas do
       begin
         case ACol of
-          0: Text := 'Name';
-          1: Text := 'Graphic';
+          0:
+            Text := 'Name';
+          1:
+            Text := 'Graphic';
         end;
         Brush.Color := clBtnFace;
         Font.Color := clBtnText;
@@ -410,7 +414,8 @@ begin
         Inc(Rect.Bottom);
         MoveTo(Rect.Left, Rect.Bottom);
         LineTo(Rect.Right, Rect.Bottom);
-      end else
+      end
+    else
     begin
       if (gdSelected in State) and Focused then
       begin
@@ -418,7 +423,8 @@ begin
         Canvas.Font.Color := clHighlightText;
         Canvas.FillRect(Rect);
         DrawFocusRect(Canvas.Handle, Rect);
-      end else
+      end
+      else
       begin
         Canvas.Brush.Color := Color;
         Canvas.Font.Color := Font.Color;
@@ -427,30 +433,33 @@ begin
       InflateRect(Rect, -1, -1);
       Item := FCurrentDir[ARow - 1];
       case ACol of
-        0:Canvas.TextRect(Rect, Rect.Left + 2, Rect.Top + 2, Item.ResName);
-        1:begin
-            W := 0;
-            if not Item.IsList then
+        0:
+          Canvas.TextRect(Rect, Rect.Left + 2, Rect.Top + 2, Item.ResName);
+        1:
+        begin
+          W := 0;
+          if not Item.IsList then
+          begin
+            FTempGraphic.Assign(Item);
+            with FTempGraphic do
+              SetRect(DrawRect, Rect.Left, Rect.Top, Rect.Left + Width, Rect.Top + Height);
+            if not RectIncludesRect(DrawRect, Rect) then
             begin
-              FTempGraphic.Assign(Item);
-              with FTempGraphic do
-                SetRect(DrawRect, Rect.Left, Rect.Top, Rect.Left + Width, Rect.Top + Height);
-              if not RectIncludesRect(DrawRect, Rect) then
-              begin
-                DrawRect.Right := Min(DrawRect.Right, Rect.Right);
-                DrawRect.Bottom := Min(DrawRect.Bottom, Rect.Bottom);
-                Canvas.StretchDraw(DrawRect, FTempGraphic.Graphic);
-              end
-              else
-                Canvas.Draw(Rect.Left + 2, Rect.Top + 2, FTempGraphic.Graphic);
-            end else
+              DrawRect.Right := Min(DrawRect.Right, Rect.Right);
+              DrawRect.Bottom := Min(DrawRect.Bottom, Rect.Bottom);
+              Canvas.StretchDraw(DrawRect, FTempGraphic.Graphic);
+            end
+            else
+              Canvas.Draw(Rect.Left + 2, Rect.Top + 2, FTempGraphic.Graphic);
+          end
+          else
             for I := 0 to Item.ItemCount - 1 do
             begin
               FTempGraphic.Assign(Item[I]);
               Canvas.Draw(Rect.Left + 2 + W, Rect.Top + 2, FTempGraphic.Graphic);
               Inc(W, FTempGraphic.Width + 5);
             end;
-          end;
+        end;
       end;
     end;
   end;
@@ -479,7 +488,8 @@ end;
 procedure TPeResViewChild.StringsListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  if Selected then DetailedStringMemo.Text := Item.SubItems[0];
+  if Selected then
+    DetailedStringMemo.Text := Item.SubItems[0];
 end;
 
 procedure TPeResViewChild.Animate1Open(Sender: TObject);
@@ -500,7 +510,8 @@ begin
   begin
     CustomColors.Values['ColorA'] := Format('%.6x', [ColorToRGB(clBtnFace)]);
     Color := Animate1.Color;
-    if Execute then Animate1.Color := Color;
+    if Execute then
+      Animate1.Color := Color;
   end;
 end;
 
@@ -511,17 +522,17 @@ procedure TPeResViewChild.UpdateSelected;
     Result := True;
     case FCurrentDir.Kind of
       rkBitmap, rkCursor, rkIcon:
-        begin
-          CreateGraphicList(FCurrentDir);
-          PageControl1.ActivePage := GraphDirTab;
-        end;
+      begin
+        CreateGraphicList(FCurrentDir);
+        PageControl1.ActivePage := GraphDirTab;
+      end;
       rkString:
-        begin
-          CreateStringsList(TPeResString(FCurrentDir));
-          PageControl1.ActivePage := StringsTab;
-        end;
-    else
-      Result := False;
+      begin
+        CreateStringsList(TPeResString(FCurrentDir));
+        PageControl1.ActivePage := StringsTab;
+      end;
+      else
+        Result := False;
     end;
   end;
 
@@ -537,40 +548,41 @@ procedure TPeResViewChild.UpdateSelected;
     Result := True;
     case FSelectedItem.Kind of
       rkAccelerator:
-        begin
-          TextRichEdit.Lines.Assign(TPeResAccelerator(FSelectedItem));
-          PageControl1.ActivePage := TextTab;
-        end;
+      begin
+        TextRichEdit.Lines.Assign(TPeResAccelerator(FSelectedItem));
+        PageControl1.ActivePage := TextTab;
+      end;
       rkAvi:
-        begin
-          Animate1.Assign(FSelectedItem);
-          PageControl1.ActivePage := AviTab;
-        end;
+      begin
+        Animate1.Assign(FSelectedItem);
+        PageControl1.ActivePage := AviTab;
+      end;
       rkBitmap, rkIcon, rkCursor:
-        begin
-          GraphImage.Picture.Assign(FSelectedItem);
-          if GraphImage.Picture.Graphic is TBitmap then
-            GraphImage.Picture.Bitmap.Transparent := True;
-          with TPeResUnkGraphic(FSelectedItem).GraphicProperties do
-            GraphStatusBar.Panels[0].Text := Format(RsGraphicStatus, [Width, Height, BitsPerPixel]);
-          PageControl1.ActivePage := GraphTab;
-        end;
+      begin
+        GraphImage.Picture.Assign(FSelectedItem);
+        if GraphImage.Picture.Graphic is TBitmap then
+          GraphImage.Picture.Bitmap.Transparent := True;
+        with TPeResUnkGraphic(FSelectedItem).GraphicProperties do
+          GraphStatusBar.Panels[0].Text := Format(RsGraphicStatus, [Width, Height, BitsPerPixel]);
+        PageControl1.ActivePage := GraphTab;
+      end;
       rkString:
-        begin
-          CreateStringsList(TPeResString(FSelectedItem));
-          PageControl1.ActivePage := StringsTab;
-        end;
+      begin
+        CreateStringsList(TPeResString(FSelectedItem));
+        PageControl1.ActivePage := StringsTab;
+      end;
       rkHTML:
-        begin
-          WebBrowser1.Navigate(TPeResHTML(FSelectedItem).ResPath);
-          PageControl1.ActivePage := HTMLTab;
-        end;
+      begin
+        WebBrowser1.Navigate(TPeResHTML(FSelectedItem).ResPath);
+        PageControl1.ActivePage := HTMLTab;
+      end;
       rkData:
         if TPeResRCData(FSelectedItem).DataKind <> dkUnknown then
         begin
           TextRichEdit.Lines.Assign(TPeResRCData(FSelectedItem));
           PageControl1.ActivePage := TextTab;
-        end else
+        end
+        else
           Result := False;
 {      rkDialog:
         begin
@@ -578,17 +590,17 @@ procedure TPeResViewChild.UpdateSelected;
           PageControl1.ActivePage := DialogTab;
         end;} { TODO : Check for dialog templates }
       rkMessageTable:
-        begin
-          CreateStringsList(TPeResUnkStrings(FSelectedItem));
-          PageControl1.ActivePage := StringsTab;
-        end;
+      begin
+        CreateStringsList(TPeResUnkStrings(FSelectedItem));
+        PageControl1.ActivePage := StringsTab;
+      end;
       rkVersion:
-        begin
-          TextRichEdit.Lines.Assign(TPeResVersion(FSelectedItem));
-          PageControl1.ActivePage := TextTab;
-        end;
-    else
-      Result := False;
+      begin
+        TextRichEdit.Lines.Assign(TPeResVersion(FSelectedItem));
+        PageControl1.ActivePage := TextTab;
+      end;
+      else
+        Result := False;
     end;
   end;
 
@@ -607,13 +619,15 @@ begin
 //    FCurrentDir := FSelectedItem;
     if (not FShowSpecialDirView) or (not SpecialDirectoryView) then
       DefaultDirectoryView;
-  end else
+  end
+  else
   begin
     if FSelectedItem.IsList then
     begin
 //      FCurrentDir := FSelectedItem;
       DefaultDirectoryView;
-    end else
+    end
+    else
     begin
       if FShowAsHexView or (not SpecialDetailView) then
         DefaultDetailView;
@@ -634,35 +648,37 @@ var
   ListNode, ItemNode: TTreeNode;
   Item, RootItem: TPeResItem;
 begin
-  if Node.GetFirstChild = nil then with ResourceTreeView do
-  begin
-    Items.BeginUpdate;
-    try
-      RootItem := TPeResItem(Node.Data);
-      for N := 0 to RootItem.ItemCount - 1 do
-      begin
-        Item := RootItem[N];
-        ListNode := Items.AddChildObject(Node, Item.ResName, Item);
-        if Item.IsList then
+  if Node.GetFirstChild = nil then
+    with ResourceTreeView do
+    begin
+      Items.BeginUpdate;
+      try
+        RootItem := TPeResItem(Node.Data);
+        for N := 0 to RootItem.ItemCount - 1 do
         begin
-          ListNode.ImageIndex := icoFolderShut;
-          ListNode.SelectedIndex := icoFolderOpen;
-          for L := 0 to Item.ItemCount - 1 do
+          Item := RootItem[N];
+          ListNode := Items.AddChildObject(Node, Item.ResName, Item);
+          if Item.IsList then
           begin
-            ItemNode := Items.AddChildObject(ListNode, Item[L].ResName, Item[L]);
-            ItemNode.ImageIndex := icoResItem;
-            ItemNode.SelectedIndex := icoResItem;
+            ListNode.ImageIndex := icoFolderShut;
+            ListNode.SelectedIndex := icoFolderOpen;
+            for L := 0 to Item.ItemCount - 1 do
+            begin
+              ItemNode := Items.AddChildObject(ListNode, Item[L].ResName, Item[L]);
+              ItemNode.ImageIndex := icoResItem;
+              ItemNode.SelectedIndex := icoResItem;
+            end;
+          end
+          else
+          begin
+            ListNode.ImageIndex := icoResItem;
+            ListNode.SelectedIndex := icoResItem;
           end;
-        end else
-        begin
-          ListNode.ImageIndex := icoResItem;
-          ListNode.SelectedIndex := icoResItem;
         end;
+      finally
+        Items.EndUpdate;
       end;
-    finally
-      Items.EndUpdate;
     end;
-  end;
 end;
 
 procedure TPeResViewChild.SaveResource;
@@ -681,7 +697,7 @@ begin
       finally
         FileStream.Free;
       end;
-    end;      
+    end;
   end;
 end;
 
@@ -702,7 +718,8 @@ begin
         Selected := Selected.GetNextSibling;
         Selected.MakeVisible;
         ResourceTreeView.Update;
-      end else
+      end
+      else
         Break;
     end;
 end;

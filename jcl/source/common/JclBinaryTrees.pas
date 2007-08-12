@@ -379,7 +379,7 @@ begin
   Result := FCursor.Obj;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil) then
     // come from Right
   begin
     FCursor := FCursor.Left;
@@ -695,7 +695,7 @@ begin
   Result := FCursor.Str;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil) then
     // come from Right
   begin
     FCursor := FCursor.Left;
@@ -1013,7 +1013,7 @@ begin
   Result := FCursor.Obj;
   LastRet := FCursor;
   FCursor := FCursor.Parent;
-  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil)  then
+  if (FCursor <> nil) and (FCursor.Left <> LastRet) and (FCursor.Left <> nil) then
     // come from Right
   begin
     FCursor := FCursor.Left;
@@ -1371,7 +1371,7 @@ begin
           FreeMem(Save);
           {$ENDIF CLR}
           Current.Left := nil;
-        end
+        end;
       end;
     end;
   end;
@@ -1516,24 +1516,24 @@ begin
     toPreOrder:
       Result := TPreOrderIntfItr.Create(Self, Start);
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Left <> nil do
-            Start := Start.Left;
-        Result := TInOrderIntfItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderIntfItr.Create(Self, Start);
+    end;
     toPostOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Left <> nil then
             Start := Start.Left
           else
             Start := Start.Right;
         end;
-        Result := TPostOrderIntfItr.Create(Self, Start);
-      end;
+      Result := TPostOrderIntfItr.Create(Self, Start);
+    end;
   end;
 end;
 
@@ -1554,24 +1554,24 @@ begin
   Start := FRoot;
   case FTraverseOrder of
     toPreOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Right <> nil then
             Start := Start.Right
           else
             Start := Start.Left;
         end;
-        Result := TPreOrderIntfItr.Create(Self, Start);
-      end;
+      Result := TPreOrderIntfItr.Create(Self, Start);
+    end;
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
-        Result := TInOrderIntfItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderIntfItr.Create(Self, Start);
+    end;
     toPostOrder:
       Result := TPostOrderIntfItr.Create(Self, Start);
   end;
@@ -1584,7 +1584,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-  //  if TempNode = nil then	Exit;
+  //  if TempNode = nil then  Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
@@ -1607,7 +1607,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-  //  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then   Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
@@ -1790,7 +1790,7 @@ begin
         Save.Parent.Left := nil
       else
       if Save = Save.Parent.Right then
-        Save.Parent.Right := nil
+        Save.Parent.Right := nil;
   end;
   {$IFDEF CLR}
   Save.Free;
@@ -2127,7 +2127,7 @@ begin
           FreeMem(Save);
           {$ENDIF CLR}
           Current.Left := nil;
-        end
+        end;
       end;
     end;
   end;
@@ -2272,24 +2272,24 @@ begin
     toPreOrder:
       Result := TPreOrderStrItr.Create(Self, Start);
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Left <> nil do
-            Start := Start.Left;
-        Result := TInOrderStrItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderStrItr.Create(Self, Start);
+    end;
     toPostOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Left <> nil then
             Start := Start.Left
           else
             Start := Start.Right;
         end;
-        Result := TPostOrderStrItr.Create(Self, Start);
-      end;
+      Result := TPostOrderStrItr.Create(Self, Start);
+    end;
   end;
 end;
 
@@ -2310,24 +2310,24 @@ begin
   Start := FRoot;
   case FTraverseOrder of
     toPreOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Right <> nil then
             Start := Start.Right
           else
             Start := Start.Left;
         end;
-        Result := TPreOrderStrItr.Create(Self, Start);
-      end;
+      Result := TPreOrderStrItr.Create(Self, Start);
+    end;
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
-        Result := TInOrderStrItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderStrItr.Create(Self, Start);
+    end;
     toPostOrder:
       Result := TPostOrderStrItr.Create(Self, Start);
   end;
@@ -2423,7 +2423,7 @@ var
           RotateRight(Node.Parent);
           Node := FRoot;
         end;
-      end
+      end;
     end;
     Node.Color := tcBlack;
   end;
@@ -2500,7 +2500,7 @@ begin
         Save.Parent.Left := nil
       else
       if Save = Save.Parent.Right then
-        Save.Parent.Right := nil
+        Save.Parent.Right := nil;
   end;
   {$IFDEF CLR}
   Save.Free;
@@ -2554,7 +2554,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-  //  if TempNode = nil then	Exit;
+  //  if TempNode = nil then  Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
@@ -2577,7 +2577,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-  //  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then   Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
@@ -2813,7 +2813,7 @@ begin
           FreeMem(Save);
           {$ENDIF CLR}
           Current.Left := nil;
-        end
+        end;
       end;
     end;
   end;
@@ -2958,24 +2958,24 @@ begin
     toPreOrder:
       Result := TPreOrderItr.Create(Self, Start);
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Left <> nil do
-            Start := Start.Left;
-        Result := TInOrderItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderItr.Create(Self, Start);
+    end;
     toPostOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Left <> nil then
             Start := Start.Left
           else
             Start := Start.Right;
         end;
-        Result := TPostOrderItr.Create(Self, Start);
-      end;
+      Result := TPostOrderItr.Create(Self, Start);
+    end;
   end;
 end;
 
@@ -2996,24 +2996,24 @@ begin
   Start := FRoot;
   case FTraverseOrder of
     toPreOrder:
-      begin
-        if Start <> nil then
-          while (Start.Left <> nil) or (Start.Right <> nil) do
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
           if Start.Right <> nil then
             Start := Start.Right
           else
             Start := Start.Left;
         end;
-        Result := TPreOrderItr.Create(Self, Start);
-      end;
+      Result := TPreOrderItr.Create(Self, Start);
+    end;
     toOrder:
-      begin
-        if Start <> nil then
-          while Start.Right <> nil do
-            Start := Start.Right;
-        Result := TInOrderItr.Create(Self, Start);
-      end;
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderItr.Create(Self, Start);
+    end;
     toPostOrder:
       Result := TPostOrderItr.Create(Self, Start);
   end;
@@ -3109,7 +3109,7 @@ var
           RotateRight(Node.Parent);
           Node := FRoot;
         end;
-      end
+      end;
     end;
     Node.Color := tcBlack;
   end;
@@ -3186,7 +3186,7 @@ begin
         Save.Parent.Left := nil
       else
       if Save = Save.Parent.Right then
-        Save.Parent.Right := nil
+        Save.Parent.Right := nil;
   end;
   {$IFDEF CLR}
   Save.Free;
@@ -3240,7 +3240,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-  //  if TempNode = nil then	Exit;
+  //  if TempNode = nil then  Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
@@ -3263,7 +3263,7 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-  //  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then   Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
@@ -3298,4 +3298,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

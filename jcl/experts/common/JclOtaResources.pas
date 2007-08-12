@@ -55,9 +55,9 @@ resourcestring
   RsAboutCopyright = 'Copyright the JCL development team';
   RsAboutTitle = 'JEDI Code Library';
   RsAboutDescription = 'JEDI Code Library http://jcl.sf.net' + AnsiLineBreak +
-                       'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + AnsiLineBreak +
-                       'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + AnsiLineBreak +
-                       'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
+    'The JCL is a member of the JEDI Project http://www.delphi-jedi.org' + AnsiLineBreak +
+    'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + AnsiLineBreak +
+    'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
   RsAboutLicenceStatus = 'MPL 1.1';
   RsJCLOptions = 'JCL Options...';
   RsActionSheet = 'Common\Actions';
@@ -68,15 +68,15 @@ resourcestring
 resourcestring
   RsReportFormCaption = 'Exception in an expert of the JCL';
   RsExceptionDetails = 'An exception was raised in an expert of the JCL.' + AnsiLineBreak +
-                       'The JCL development team expects quality and performance for the library.' +
-                       'That''s why we highly encourage you to report this exception by quoting ' +
-                       'your version of Delphi/BCB/BDS (including patch numbers), by explaining ' +
-                       'steps to reproduce and by copying the call stack displayed in the box below.' + AnsiLineBreak +
-                       'There are several ways to report bugs in the JCL:' + AnsiLineBreak +
-                       ' - issue tracker (recommended),' + AnsiLineBreak +
-                       ' - jedi newsgroups,' + AnsiLineBreak +
-                       ' - mailing list.' + AnsiLineBreak +
-                       'Details and guidelines for these tools are available at:';
+    'The JCL development team expects quality and performance for the library.' +
+    'That''s why we highly encourage you to report this exception by quoting ' +
+    'your version of Delphi/BCB/BDS (including patch numbers), by explaining ' +
+    'steps to reproduce and by copying the call stack displayed in the box below.' + AnsiLineBreak +
+    'There are several ways to report bugs in the JCL:' + AnsiLineBreak +
+    ' - issue tracker (recommended),' + AnsiLineBreak +
+    ' - jedi newsgroups,' + AnsiLineBreak +
+    ' - mailing list.' + AnsiLineBreak +
+    'Details and guidelines for these tools are available at:';
   RsReportURL = 'http://homepages.borland.com/jedi/jcl/page24.html';
   RsReportCaption = 'JCL - Feedback&&Support - Report a bug page';
   RsDetailsExceptionName = 'Exception class name: ';
@@ -162,11 +162,11 @@ resourcestring
 
 //=== OpenDlgFavAdapter.pas ==================================================
 resourcestring
-  RsAdd          = '<- Add';
-  RsDelete       = '&Delete';
-  RsFavorites    = '&Favorites';
+  RsAdd = '<- Add';
+  RsDelete = '&Delete';
+  RsFavorites = '&Favorites';
   RsConfirmation = 'Confirmation';
-  RsDelConfirm   = 'Are you sure to delete "%s" from favorite folders?';
+  RsDelConfirm = 'Are you sure to delete "%s" from favorite folders?';
 
 //=== JclUsesDialog.pas ======================================================
 resourcestring
@@ -219,7 +219,8 @@ resourcestring
   RsENoProjectOptions = 'Project options are not available';
   RsCantInsertToInstalledPackage = 'JCL Debug IDE Expert: Can not insert debug information to installed package' +
     AnsiLineBreak + '%s' + AnsiLineBreak + 'Would you like to disable inserting JCL Debug data ?';
-  RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak + 'Compilation aborted';
+  RsCompilationAborted = 'JCL Debug data cannot be inserted to installed package' + AnsiLineBreak +
+    'Compilation aborted';
   RsInsertDataCaption = 'Insert JCL Debug data';
   RsEExecutableNotFound = 'Executable file for project "%s" not found.' +
     'JCL debug data can''t be added to the binary.';
@@ -323,7 +324,7 @@ resourcestring
 //=== JclOtaExcDlgRepository.pas =============================================
 resourcestring
   RsRepositoryExcDlgPage = 'Exception dialog';
-  
+
   RsRepositoryExcDlgDelphiName = 'Jcl Exception dialog for Delphi';
   RsRepositoryExcDlgDelphiDescription = 'Create an exception dialog for your Delphi project';
 

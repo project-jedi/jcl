@@ -75,7 +75,7 @@ type
   end;
 
   TJclIntfLinkedList = class(TJclAbstractContainer, IJclIntfCollection,
-      IJclIntfList, IJclIntfCloneable)
+    IJclIntfList, IJclIntfCloneable)
   private
     FStart: PJclIntfLinkedListItem;
     FEnd: PJclIntfLinkedListItem;
@@ -151,7 +151,7 @@ type
   end;
 
   TJclLinkedList = class(TJclAbstractContainer, IJclCollection, IJclList,
-      IJclCloneable)
+    IJclCloneable)
   private
     FStart: PJclLinkedListItem;
     FEnd: PJclLinkedListItem;
@@ -1059,7 +1059,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclIntfLinkedList.Equals(const ACollection: IJclIntfCollection): Boolean;
@@ -1626,7 +1626,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclStrLinkedList.Equals(const ACollection: IJclStrCollection): Boolean;
@@ -2192,7 +2192,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-  Result := contains(It.Next);
+    Result := contains(It.Next);
 end;
 
 function TJclLinkedList.Equals(const ACollection: IJclCollection): Boolean;
@@ -2346,7 +2346,7 @@ begin
         {$IFDEF CLR}
         Current.Free;
         {$ELSE}
-        Dispose(Current);
+      Dispose(Current);
         {$ENDIF CLR}
       Dec(FSize);
       Result := True;
@@ -2565,4 +2565,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -239,7 +239,7 @@ type
     //
     procedure DeleteEDIDataObjects;
     property EDIDataObject[Index: Integer]: TEDIXMLDataObject read GetEDIDataObject
-    write SetEDIDataObject; default;
+      write SetEDIDataObject; default;
     property EDIDataObjects: TEDIXMLDataObjectArray read FEDIDataObjects write FEDIDataObjects;
   end;
 
@@ -282,7 +282,7 @@ type
     property SegmentID: string read FSegmentID write FSegmentID;
   end;
 
-  TEDIXMLSegmentArray = array of TEDIXMLSegment;  
+  TEDIXMLSegmentArray = array of TEDIXMLSegment;
 
   TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
   public
@@ -488,7 +488,7 @@ const
   Value_xml = 'xml';
   Value_Version10 = '1.0';
   Value_Windows1252 = 'windows-1252';
-  Value_EDITRANSDOC = 'EDITRANSDOC';  
+  Value_EDITRANSDOC = 'EDITRANSDOC';
 
 //=== { TEDIXMLDelimiters } ==================================================
 
@@ -1301,7 +1301,7 @@ begin
         Result := Parent.Delimiters
       else
       // Get the delimiters from the interchange control
-        if Assigned(Parent.Parent) and (Parent.Parent is TEDIXMLInterchangeControl) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIXMLInterchangeControl) then
         Result := Parent.Parent.Delimiters;
 end;
 
@@ -2700,4 +2700,3 @@ finalization
 {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 end.
-

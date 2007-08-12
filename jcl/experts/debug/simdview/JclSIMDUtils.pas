@@ -42,15 +42,15 @@ type
   TJclMMRegister = packed record
     case TJclMMContentType of
       mt8Bytes:
-        (Bytes: array [0..7] of Byte;);
+      (Bytes: array [0..7] of Byte;);
       mt4Words:
-        (Words: array [0..3] of Word;);
+      (Words: array [0..3] of Word;);
       mt2DWords:
-        (DWords: array [0..1] of Cardinal;);
+      (DWords: array [0..1] of Cardinal;);
       mt1QWord:
-        (QWords: Int64;);
+      (QWords: Int64;);
       mt2Singles:
-        (Singles: array [0..1] of Single;);
+      (Singles: array [0..1] of Single;);
   end;
 
   TJclFPUContentType = (ftExtended, ftMM);
@@ -58,10 +58,10 @@ type
   TJclFPUData = packed record
     case TJclFPUContentType of
       ftExtended:
-        (FloatValue: Extended;);
+      (FloatValue: Extended;);
       ftMM:
-        (MMRegister: TJclMMRegister;
-         Reserved: Word;);
+      (MMRegister: TJclMMRegister;
+        Reserved: Word;);
   end;
 
   TJclFPURegister = packed record
@@ -76,17 +76,17 @@ type
   TJclXMMRegister = packed record
     case TJclXMMContentType of
       xt16Bytes:
-        (Bytes: array [0..15] of Byte;);
+      (Bytes: array [0..15] of Byte;);
       xt8Words:
-        (Words: array [0..7] of Word;);
+      (Words: array [0..7] of Word;);
       xt4DWords:
-        (DWords: array [0..3] of Cardinal;);
+      (DWords: array [0..3] of Cardinal;);
       xt2QWords:
-        (QWords: array [0..1] of Int64;);
+      (QWords: array [0..1] of Int64;);
       xt4Singles:
-        (Singles: array [0..3] of Single;);
+      (Singles: array [0..3] of Single;);
       xt2Doubles:
-        (Doubles: array [0..1] of Double;);
+      (Doubles: array [0..1] of Double;);
   end;
 
   TJclProcessorSize = (ps32Bits, ps64Bits);
@@ -94,10 +94,10 @@ type
   TJclXMMRegisters = packed record
     case TJclProcessorSize of
       ps32Bits:
-        (LegacyXMM: array [0..7] of TJclXMMRegister;
-         LegacyReserved: array [0..127] of Byte;);
+      (LegacyXMM: array [0..7] of TJclXMMRegister;
+        LegacyReserved: array [0..127] of Byte;);
       ps64Bits:
-        (LongXMM: array [0..15] of TJclXMMRegister;);
+      (LongXMM: array [0..15] of TJclXMMRegister;);
   end;
 
   //TJclRoundingControl = (rcRoundToNearest,   //=0
@@ -142,39 +142,39 @@ type
 
 const
   MXCSRBitsDescriptions: array [TMXCSRRange] of TBitDescription =
-   (
-    (AndMask: MXCSR_IE;  Shifting: 0;  ShortName: RsVectorIE;  LongName: RsVectorIEText),
-    (AndMask: MXCSR_DE;  Shifting: 1;  ShortName: RsVectorDE;  LongName: RsVectorDEText),
-    (AndMask: MXCSR_ZE;  Shifting: 2;  ShortName: RsVectorZE;  LongName: RsVectorZEText),
-    (AndMask: MXCSR_OE;  Shifting: 3;  ShortName: RsVectorOE;  LongName: RsVectorOEText),
-    (AndMask: MXCSR_UE;  Shifting: 4;  ShortName: RsVectorUE;  LongName: RsVectorUEText),
-    (AndMask: MXCSR_PE;  Shifting: 5;  ShortName: RsVectorPE;  LongName: RsVectorPEText),
-    (AndMask: MXCSR_DAZ; Shifting: 6;  ShortName: RsVectorDAZ; LongName: RsVectorDAZText),
-    (AndMask: MXCSR_IM;  Shifting: 7;  ShortName: RsVectorIM;  LongName: RsVectorIMText),
-    (AndMask: MXCSR_DM;  Shifting: 8;  ShortName: RsVectorDM;  LongName: RsVectorDMText),
-    (AndMask: MXCSR_ZM;  Shifting: 9;  ShortName: RsVectorZM;  LongName: RsVectorZMText),
-    (AndMask: MXCSR_OM;  Shifting: 10; ShortName: RsVectorOM;  LongName: RsVectorOMText),
-    (AndMask: MXCSR_UM;  Shifting: 11; ShortName: RsVectorUM;  LongName: RsVectorUMText),
-    (AndMask: MXCSR_PM;  Shifting: 12; ShortName: RsVectorPM;  LongName: RsVectorPMText),
-    (AndMask: MXCSR_RC;  Shifting: 13; ShortName: RsVectorRC;  LongName: RsVectorRCText),
-    (AndMask: MXCSR_FZ;  Shifting: 15; ShortName: RsVectorFZ;  LongName: RsVectorFZText)
-   );
+    (
+    (AndMask: MXCSR_IE; Shifting: 0; ShortName: RsVectorIE; LongName: RsVectorIEText),
+    (AndMask: MXCSR_DE; Shifting: 1; ShortName: RsVectorDE; LongName: RsVectorDEText),
+    (AndMask: MXCSR_ZE; Shifting: 2; ShortName: RsVectorZE; LongName: RsVectorZEText),
+    (AndMask: MXCSR_OE; Shifting: 3; ShortName: RsVectorOE; LongName: RsVectorOEText),
+    (AndMask: MXCSR_UE; Shifting: 4; ShortName: RsVectorUE; LongName: RsVectorUEText),
+    (AndMask: MXCSR_PE; Shifting: 5; ShortName: RsVectorPE; LongName: RsVectorPEText),
+    (AndMask: MXCSR_DAZ; Shifting: 6; ShortName: RsVectorDAZ; LongName: RsVectorDAZText),
+    (AndMask: MXCSR_IM; Shifting: 7; ShortName: RsVectorIM; LongName: RsVectorIMText),
+    (AndMask: MXCSR_DM; Shifting: 8; ShortName: RsVectorDM; LongName: RsVectorDMText),
+    (AndMask: MXCSR_ZM; Shifting: 9; ShortName: RsVectorZM; LongName: RsVectorZMText),
+    (AndMask: MXCSR_OM; Shifting: 10; ShortName: RsVectorOM; LongName: RsVectorOMText),
+    (AndMask: MXCSR_UM; Shifting: 11; ShortName: RsVectorUM; LongName: RsVectorUMText),
+    (AndMask: MXCSR_PM; Shifting: 12; ShortName: RsVectorPM; LongName: RsVectorPMText),
+    (AndMask: MXCSR_RC; Shifting: 13; ShortName: RsVectorRC; LongName: RsVectorRCText),
+    (AndMask: MXCSR_FZ; Shifting: 15; ShortName: RsVectorFZ; LongName: RsVectorFZText)
+    );
 
 type
   TJclSIMDValue = packed record
     case Display: TJclXMMContentType of
       xt16Bytes:
-        (ValueByte: Byte;);
+      (ValueByte: Byte;);
       xt8Words:
-        (ValueWord: Word;);
+      (ValueWord: Word;);
       xt4DWords:
-        (ValueDWord: Cardinal;);
+      (ValueDWord: Cardinal;);
       xt2QWords:
-        (ValueQWord: Int64;);
+      (ValueQWord: Int64;);
       xt4Singles:
-        (ValueSingle: Single;);
+      (ValueSingle: Single;);
       xt2Doubles:
-        (ValueDouble: Double;);
+      (ValueDouble: Double;);
   end;
 
   TJclSIMDFormat = (sfBinary, sfSigned, sfUnsigned, sfHexa);
@@ -230,7 +230,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Shortint(Value.ValueByte));
@@ -240,9 +240,9 @@ begin
       Result := IntToStr(Integer(Value.ValueDWord));
     xt2QWords:
       Result := IntToStr(Value.ValueQWord);
-  else
-    Result := '';
-    Exit;
+    else
+      Result := '';
+      Exit;
   end;
   Result := StringOfChar(' ', Width[Value.Display] - Length(Result)) + Result;
 end;
@@ -253,7 +253,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Byte(Value.ValueByte));
@@ -263,9 +263,9 @@ begin
       Result := IntToStr(Cardinal(Value.ValueDWord));
     xt2QWords:
       Result := IntToStr(Value.ValueQWord);
-  else
-    Result := '';
-    Exit;
+    else
+      Result := '';
+      Exit;
   end;
   Result := StringOfChar(' ', Width[Value.Display] - Length(Result)) + Result;
 end;
@@ -276,7 +276,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToHex(Value.ValueByte, Width[xt16Bytes]);
@@ -286,8 +286,8 @@ begin
       Result := IntToHex(Value.ValueDWord, Width[xt4DWords]);
     xt2QWords:
       Result := IntToHex(Value.ValueQWord, Width[xt2QWords]);
-  else
-    Result := '';
+    else
+      Result := '';
   end;
 end;
 
@@ -295,14 +295,14 @@ function FormatFloat(Value: TJclSIMDValue): string;
 begin
   if not (Value.Display in [xt4Singles, xt2Doubles]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt4Singles:
       Result := FloatToStr(Value.ValueSingle);
     xt2Doubles:
       Result := FloatToStr(Value.ValueDouble);
-  else
-    Result := '';
+    else
+      Result := '';
   end;
   Result := StringOfChar(' ', 22 - Length(Result)) + Result; // 22 = max string length of a double value
 end;
@@ -323,8 +323,8 @@ begin
       FormatFunction := FormatUnsigned;
     sfHexa:
       FormatFunction := FormatHexa;
-  else
-    Exit;
+    else
+      Exit;
   end;
   case Value.Display of
     xt16Bytes..xt2QWords:
@@ -351,8 +351,8 @@ begin
         ;
       '1':
         Inc(TestValue);
-    else
-      Exit;
+      else
+        Exit;
     end;
   end;
   Result := True;
@@ -374,8 +374,8 @@ begin
         Result := False;
     xt2QWords:
       Value.ValueQWord := TestValue;
-  else
-    Result := False;
+    else
+      Result := False;
   end;
 end;
 
@@ -405,8 +405,8 @@ begin
           Result := False;
       xt2QWords:
         Value.ValueQWord := TestValue;
-    else
-      Result := False;
+      else
+        Result := False;
     end;
 end;
 
@@ -436,8 +436,8 @@ begin
           Result := False;
       xt2QWords:
         Value.ValueQWord := TestValue;
-    else
-      Result := False;
+      else
+        Result := False;
     end;
 end;
 
@@ -462,8 +462,8 @@ begin
         Inc(TestValue, Ord(StringValue[Index]) - Ord('A') + 10);
       'a'..'f':
         Inc(TestValue, Ord(StringValue[Index]) - Ord('a') + 10);
-    else
-      Exit;
+      else
+        Exit;
     end;
   end;
   Result := True;
@@ -485,8 +485,8 @@ begin
         Result := False;
     xt2QWords:
       Value.ValueQWord := TestValue;
-  else
-    Result := False;
+    else
+      Result := False;
   end;
 end;
 
@@ -511,8 +511,8 @@ begin
           Value.ValueDouble := TestValue
         else
           Result := False;
-    else
-      Result := False;
+      else
+        Result := False;
     end;
 end;
 
@@ -533,8 +533,8 @@ begin
       ParseFunction := ParseUnsigned;
     sfHexa:
       ParseFunction := ParseHexa;
-  else
-    Exit;
+    else
+      Exit;
   end;
   case Value.Display of
     xt16Bytes..xt2QWords:
@@ -806,11 +806,11 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JvContext^) and
-      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+    Result := GetThreadContext(AThread.Handle, JvContext^) and
+      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) <> 0);
     if Result then
       VectorContext := JvContext^.VectorContext
-    else                                                  
+    else
       FillChar(VectorContext, SizeOf(VectorContext), 0);
   finally
     FreeMem(ContextMemory);
@@ -874,10 +874,10 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle,JvContext^) and
+    Result := GetThreadContext(AThread.Handle, JvContext^) and
       ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
     if Result then
-      Result := SetThreadContext(AThread.Handle,JvContext^);
+      Result := SetThreadContext(AThread.Handle, JvContext^);
   finally
     FreeMem(ContextMemory);
   end;
@@ -885,4 +885,3 @@ end;
 {$ENDIF COMPILER9_UP}
 
 end.
-

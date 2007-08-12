@@ -346,7 +346,7 @@ var
   Msg: TMessage;
 
   function EnumWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
-  begin 
+  begin
     with Message^ do
       SendNotifyMessage(Wnd, Msg, WParam, LParam);
     Result := True;

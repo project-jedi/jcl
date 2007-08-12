@@ -181,20 +181,20 @@ uses
   JclSysInfo, JclResources;
 
 const
-  PrintIniPrinterName   = 'PrinterName';
-  PrintIniPrinterPort   = 'PrinterPort';
-  PrintIniOrientation   = 'Orientation';
-  PrintIniPaperSize     = 'PaperSize';
-  PrintIniPaperLength   = 'PaperLength';
-  PrintIniPaperWidth    = 'PaperWidth';
-  PrintIniScale         = 'Scale';
-  PrintIniCopies        = 'Copies';
+  PrintIniPrinterName = 'PrinterName';
+  PrintIniPrinterPort = 'PrinterPort';
+  PrintIniOrientation = 'Orientation';
+  PrintIniPaperSize = 'PaperSize';
+  PrintIniPaperLength = 'PaperLength';
+  PrintIniPaperWidth = 'PaperWidth';
+  PrintIniScale = 'Scale';
+  PrintIniCopies = 'Copies';
   PrintIniDefaultSource = 'DefaultSource';
-  PrintIniPrintQuality  = 'PrintQuality';
-  PrintIniColor         = 'Color';
-  PrintIniDuplex        = 'Duplex';
-  PrintIniYResolution   = 'YResolution';
-  PrintIniTTOption      = 'TTOption';
+  PrintIniPrintQuality = 'PrintQuality';
+  PrintIniColor = 'Color';
+  PrintIniDuplex = 'Duplex';
+  PrintIniYResolution = 'YResolution';
+  PrintIniTTOption = 'TTOption';
 
   cWindows: PChar = 'windows';
   cDevice = 'device';
@@ -621,8 +621,8 @@ begin
       Result := RsPSESheet;
     dmpaper_User:
       Result := RsPSUser;
-  else
-    Result := RsPSUnknown;
+    else
+      Result := RsPSUnknown;
   end;
 end;
 
@@ -775,23 +775,23 @@ var
   DrvHandle: THandle;
   ExtDevCode: Integer;
 begin
-  CheckPrinter;      
+  CheckPrinter;
   if OpenPrinter(FDevice, DrvHandle, nil) then
-  try
-    FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
-      dm_PaperLength or dm_PaperWidth or
-      dm_Scale or dm_Copies or
-      dm_DefaultSource or dm_PrintQuality or
-      dm_Color or dm_Duplex or
-      dm_YResolution or dm_TTOption;
-    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-      FDeviceMode^, FDeviceMode^,
-      DM_IN_BUFFER or DM_OUT_BUFFER);
-    if ExtDevCode <> IDOK then
-      raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
-  finally
-    ClosePrinter(DrvHandle);
-  end;
+    try
+      FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
+        dm_PaperLength or dm_PaperWidth or
+        dm_Scale or dm_Copies or
+        dm_DefaultSource or dm_PrintQuality or
+        dm_Color or dm_Duplex or
+        dm_YResolution or dm_TTOption;
+      ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+        FDeviceMode^, FDeviceMode^,
+        DM_IN_BUFFER or DM_OUT_BUFFER);
+      if ExtDevCode <> IDOK then
+        raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
+    finally
+      ClosePrinter(DrvHandle);
+    end;
 end;
 
 procedure TJclPrintSet.SaveToDefaults;

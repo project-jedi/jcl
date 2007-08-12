@@ -147,7 +147,8 @@ type
 function StrHash(const S: string): THashValue;
 function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 
@@ -217,7 +218,8 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
@@ -604,7 +606,7 @@ begin
           until S^.Left = nil;
         { now, S = symmetric successor of Q }
         S^.Left := T^.Left;
-        R^.Left :=  S^.Right;
+        R^.Left := S^.Right;
         S^.Right := T^.Right;
         Q := S;
       end;
@@ -886,4 +888,3 @@ finalization
   FreeAndNil(GlobalCaseSensitiveTraits);
 
 end.
-

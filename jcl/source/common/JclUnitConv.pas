@@ -51,15 +51,15 @@ uses
 const
   { Temperature constants }
 
-  CelsiusFreezingPoint    = 0.0;
+  CelsiusFreezingPoint = 0.0;
   FahrenheitFreezingPoint = 32.0;
-  KelvinFreezingPoint     = 273.15;
-  CelsiusBoilingPoint     = 100.0 + CelsiusFreezingPoint;
-  FahrenheitBoilingPoint  = 180.0 + FahrenheitFreezingPoint;
-  KelvinBoilingPoint      = 100.0 + KelvinFreezingPoint;
-  CelsiusAbsoluteZero     = -273.15;
-  FahrenheitAbsoluteZero  = -459.67;
-  KelvinAbsoluteZero      = 0.0;
+  KelvinFreezingPoint = 273.15;
+  CelsiusBoilingPoint = 100.0 + CelsiusFreezingPoint;
+  FahrenheitBoilingPoint = 180.0 + FahrenheitFreezingPoint;
+  KelvinBoilingPoint = 100.0 + KelvinFreezingPoint;
+  CelsiusAbsoluteZero = -273.15;
+  FahrenheitAbsoluteZero = -459.67;
+  KelvinAbsoluteZero = 0.0;
 
   { Newly added for Rankine and Reaumur Support by scottprice }
   RankineAbsoluteZero = 0.0;
@@ -73,23 +73,23 @@ const
 
   { Mathematical constants }
 
-  DegPerCycle: Float      = 360.0;
-  DegPerGrad: Float       = 0.9;
-  DegPerRad: Float        = 57.295779513082320876798154814105;
-  GradPerCycle: Float     = 400.0;
-  GradPerDeg: Float       = 1.1111111111111111111111111111111;
-  GradPerRad: Float       = 63.661977236758134307553505349006;
-  RadPerCycle: Float      = 6.283185307179586476925286766559;
-  RadPerDeg: Float        = 0.017453292519943295769236907684886;
-  RadPerGrad: Float       = 0.015707963267948966192313216916398;
-  CyclePerDeg: Float      = 0.0027777777777777777777777777777778;
-  CyclePerGrad: Float     = 0.0025;
-  CyclePerRad: Float      = 0.15915494309189533576888376337251;
-  ArcMinutesPerDeg        = 60.0;
-  ArcSecondsPerArcMinute  = 60.0;
-  ArcSecondsPerDeg        = ArcSecondsPerArcMinute * ArcMinutesPerDeg;
-  DegPerArcMinute         = 1 / ArcMinutesPerDeg;
-  DegPerArcSecond         = 1 / ArcSecondsPerDeg;
+  DegPerCycle: Float = 360.0;
+  DegPerGrad: Float = 0.9;
+  DegPerRad: Float = 57.295779513082320876798154814105;
+  GradPerCycle: Float = 400.0;
+  GradPerDeg: Float = 1.1111111111111111111111111111111;
+  GradPerRad: Float = 63.661977236758134307553505349006;
+  RadPerCycle: Float = 6.283185307179586476925286766559;
+  RadPerDeg: Float = 0.017453292519943295769236907684886;
+  RadPerGrad: Float = 0.015707963267948966192313216916398;
+  CyclePerDeg: Float = 0.0027777777777777777777777777777778;
+  CyclePerGrad: Float = 0.0025;
+  CyclePerRad: Float = 0.15915494309189533576888376337251;
+  ArcMinutesPerDeg = 60.0;
+  ArcSecondsPerArcMinute = 60.0;
+  ArcSecondsPerDeg = ArcSecondsPerArcMinute * ArcMinutesPerDeg;
+  DegPerArcMinute = 1 / ArcMinutesPerDeg;
+  DegPerArcSecond = 1 / ArcSecondsPerDeg;
 
 
 type
@@ -271,7 +271,7 @@ begin
   if Temperature < CelsiusAbsoluteZero then
     TemperatureBelowAbsoluteError;
 
-  Result := (((FahrenheitBoilingPoint-FahrenheitFreezingPoint) /
+  Result := (((FahrenheitBoilingPoint - FahrenheitFreezingPoint) /
     CelsiusBoilingPoint) * Temperature) + FahrenheitFreezingPoint;
 
   // °F = °C × 1.8 + 32
@@ -296,7 +296,8 @@ begin
   if Temperature = CelsiusAbsoluteZero then
   begin
     Result := RankineAbsoluteZero;
-  end else
+  end
+  else
   begin
     Result := RankineFreezingPoint - FahrenheitFreezingPoint +
       CelsiusToFahrenheit(Temperature);
@@ -319,7 +320,7 @@ begin
 
   // °C = (°F - 32) / 1.8
   Result := (CelsiusBoilingPoint /
-    (FahrenheitBoilingPoint-FahrenheitFreezingPoint)) *
+    (FahrenheitBoilingPoint - FahrenheitFreezingPoint)) *
     (Temperature - FahrenheitFreezingPoint);
 end;
 
@@ -466,109 +467,109 @@ begin
   case FromType of
     { All conversions from Celcius to other formats are listed here }
     ttCelsius:
-      begin
-        case ToType of
-          ttFahrenheit:
-            Result := CelsiusToFahrenheit(Temperature);
-          ttKelvin:
-            Result := CelsiusToKelvin(Temperature);
-          ttRankine:
-            Result := CelsiusToRankine(Temperature);
-          ttReaumur:
-            Result := CelsiusToReaumur(Temperature);
+    begin
+      case ToType of
+        ttFahrenheit:
+          Result := CelsiusToFahrenheit(Temperature);
+        ttKelvin:
+          Result := CelsiusToKelvin(Temperature);
+        ttRankine:
+          Result := CelsiusToRankine(Temperature);
+        ttReaumur:
+          Result := CelsiusToReaumur(Temperature);
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
-        end;
       end;
+    end;
     { All conversions from Fahrenheit to other formats are listed here }
     ttFahrenheit:
-      begin
-        case ToType of
-          ttCelsius:
-            Result := FahrenheitToCelsius(Temperature);
-          ttKelvin:
-            Result := FahrenheitToKelvin(Temperature);
-          ttRankine:
-            Result := FahrenheitToRankine(Temperature);
-          ttReaumur:
-            Result := FahrenheitToReaumur(Temperature);
+    begin
+      case ToType of
+        ttCelsius:
+          Result := FahrenheitToCelsius(Temperature);
+        ttKelvin:
+          Result := FahrenheitToKelvin(Temperature);
+        ttRankine:
+          Result := FahrenheitToRankine(Temperature);
+        ttReaumur:
+          Result := FahrenheitToReaumur(Temperature);
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
-        end;
       end;
+    end;
     { All conversions from Kelvin to other formats are listed here }
     ttKelvin:
-      begin
-        case ToType of
-          ttCelsius:
-            Result := KelvinToCelsius(Temperature);
-          ttFahrenheit:
-            Result := KelvinToFahrenheit(Temperature);
-          ttRankine:
-            Result := KelvinToRankine(Temperature);
-          ttReaumur:
-            Result := KelvinToReaumur(Temperature);
+    begin
+      case ToType of
+        ttCelsius:
+          Result := KelvinToCelsius(Temperature);
+        ttFahrenheit:
+          Result := KelvinToFahrenheit(Temperature);
+        ttRankine:
+          Result := KelvinToRankine(Temperature);
+        ttReaumur:
+          Result := KelvinToReaumur(Temperature);
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
-        end;
       end;
+    end;
     { All conversions from Kelvin to other formats are listed here }
     ttRankine:
-      begin
-        case ToType of
-          ttCelsius:
-            Result := RankineToCelsius(Temperature);
-          ttFahrenheit:
-            Result := RankineToFahrenheit(Temperature);
-          ttKelvin:
-            Result := RankineToKelvin(Temperature);
-          ttReaumur:
-            Result := RankineToReaumur(Temperature);
+    begin
+      case ToType of
+        ttCelsius:
+          Result := RankineToCelsius(Temperature);
+        ttFahrenheit:
+          Result := RankineToFahrenheit(Temperature);
+        ttKelvin:
+          Result := RankineToKelvin(Temperature);
+        ttReaumur:
+          Result := RankineToReaumur(Temperature);
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
-        end;
       end;
+    end;
     { All conversions from Reaumur to other formats are listed here }
     ttReaumur:
-      begin
-        case ToType of
-          ttCelsius:
-            Result := ReaumurToCelsius(Temperature);
-          ttFahrenheit:
-            Result := ReaumurToFahrenheit(Temperature);
-          ttKelvin:
-            Result := ReaumurToKelvin(Temperature);
-          ttRankine:
-            Result := ReaumurToRankine(Temperature);
+    begin
+      case ToType of
+        ttCelsius:
+          Result := ReaumurToCelsius(Temperature);
+        ttFahrenheit:
+          Result := ReaumurToFahrenheit(Temperature);
+        ttKelvin:
+          Result := ReaumurToKelvin(Temperature);
+        ttRankine:
+          Result := ReaumurToRankine(Temperature);
         else
           {$IFDEF CLR}
           raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
           {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
           {$ENDIF CLR}
-        end;
       end;
-  else
+    end;
+    else
     {$IFDEF CLR}
     raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cFromType]);
     {$ELSE}
-    raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
+      raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
     {$ENDIF CLR}
   end;
 end;
@@ -713,13 +714,13 @@ end;
 
 procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Phi, Theta: Float);
 begin
-  Rho := Sqrt(X*X + Y*Y + Z*Z);
+  Rho := Sqrt(X * X + Y * Y + Z * Z);
   Phi := ArcTan2(Y, X);
   if Phi < 0 then
     Phi := Phi + TwoPi;
   Theta := 0;
   if Rho > 0 then
-    Theta := ArcCos(Z/Rho);
+    Theta := ArcCos(Z / Rho);
 end;
 
 procedure CylinderToCartesian(const R, Phi, Zeta: Float; out X, Y, Z: Float);
@@ -879,72 +880,72 @@ begin
   Result := Oz / 35.2739619496;
 end;
 
-function QrUsToKg(const Qr: Float) : Float;
+function QrUsToKg(const Qr: Float): Float;
 begin
   Result := Qr * 11.34;
 end;
 
-function QrUkToKg(const Qr: Float) : Float;
+function QrUkToKg(const Qr: Float): Float;
 begin
   Result := Qr * 12.7;
 end;
 
-function KgToQrUs(const Kg: Float) : Float;
+function KgToQrUs(const Kg: Float): Float;
 begin
   Result := Kg / 11.34;
 end;
 
-function KgToQrUk(const Kg: Float) : Float;
+function KgToQrUk(const Kg: Float): Float;
 begin
   Result := Kg / 12.7;
 end;
 
-function CwtUsToKg(const Cwt: Float) : Float;
+function CwtUsToKg(const Cwt: Float): Float;
 begin
   Result := Cwt * 45.35924;
 end;
 
-function CwtUkToKg(const Cwt: Float) : Float;
+function CwtUkToKg(const Cwt: Float): Float;
 begin
   Result := Cwt * 50.80235;
 end;
 
-function KgToCwtUs(const Kg: Float) : Float;
+function KgToCwtUs(const Kg: Float): Float;
 begin
   Result := Kg / 45.35924;
 end;
 
-function KgToCwtUk(const Kg: Float) : Float;
+function KgToCwtUk(const Kg: Float): Float;
 begin
   Result := Kg / 50.80235;
 end;
 
-function LtonToKg(const Lton: Float) : Float;
+function LtonToKg(const Lton: Float): Float;
 begin
   Result := Lton * 1016.047;
 end;
 
-function StonToKg(const Ston: Float) : Float;
+function StonToKg(const Ston: Float): Float;
 begin
   Result := Ston * 907.1847;
 end;
 
-function KgToLton(const Kg: Float) : Float;
+function KgToLton(const Kg: Float): Float;
 begin
   Result := Kg / 1016.047;
 end;
 
-function KgToSton(const Kg: Float) : Float;
+function KgToSton(const Kg: Float): Float;
 begin
   Result := Kg / 907.1847;
 end;
 
-function KgToKarat(const Kg: Float) : Float;
+function KgToKarat(const Kg: Float): Float;
 begin
   Result := Kg / 0.0002;
 end;
 
-function KaratToKg(const Karat: Float) : Float;
+function KaratToKg(const Karat: Float): Float;
 begin
   Result := Karat * 0.0002;
 end;

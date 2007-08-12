@@ -80,7 +80,7 @@ begin
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then
           with TreeViewChanges.Items.AddChild(Node, Format(RsUndeclIdent,
-            [UnitName, LineNumber, Identifier, UsesName])) do
+              [UnitName, LineNumber, Identifier, UsesName])) do
           begin
             ImageIndex := -1;
             SelectedIndex := -1;

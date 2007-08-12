@@ -141,11 +141,12 @@ begin
     AssignFileTotalTime := StopCount(C);
     CloseFile(T);
 
-    ReadLnLabel.Caption := Format('Lines: %d, TJclMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
+    ReadLnLabel.Caption := Format(
+      'Lines: %d, TJclMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
       [LineCount, TotalTime * 1000, StringListTotalTime * 1000, AssignFileTotalTime * 1000]);
   finally
     Screen.Cursor := crDefault;
-  end;      
+  end;
 end;
 
 

@@ -62,10 +62,10 @@ var
   SharedThreadNames: TSharedThreadNames;
   HookImports: TJclPeMapImgHooks;
   Notifier: TJclDebugThreadNotifier;
-  Kernel32_CreateThread: function (lpThreadAttributes: Pointer;
-    dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
-    lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
-  Kernel32_ExitThread: procedure (dwExitCode: DWORD); stdcall;
+  Kernel32_CreateThread: function(lpThreadAttributes: Pointer;
+  dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
+  lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
+  Kernel32_ExitThread: procedure(dwExitCode: DWORD); stdcall;
 
 function NewCreateThread(lpThreadAttributes: Pointer;
   dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
@@ -73,14 +73,15 @@ function NewCreateThread(lpThreadAttributes: Pointer;
 var
   Instance: TObject;
 begin
-  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
+  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter,
+    dwCreationFlags, lpThreadId);
   if (Result <> 0) and (lpParameter <> nil) then
-  try
-    Instance := PThreadRec(lpParameter)^.Parameter;
-    if Instance is TThread then
-      RegisterThread(TThread(Instance), '', True);
-  except
-  end;
+    try
+      Instance := PThreadRec(lpParameter)^.Parameter;
+      if Instance is TThread then
+        RegisterThread(TThread(Instance), '', True);
+    except
+    end;
 end;
 
 procedure NewExitThread(dwExitCode: DWORD); stdcall;

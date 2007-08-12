@@ -116,7 +116,7 @@ end;
 
 procedure TMainForm.RandBtnClick(Sender: TObject);
 begin
-  ValueEdit.Text := FloatToStr(Power(Random * 4 -2, Random(400)));
+  ValueEdit.Text := FloatToStr(Power(Random * 4 - 2, Random(400)));
   EvalBtn.Enabled := False;
   Display;
 end;

@@ -97,15 +97,15 @@ begin
   {$ELSE}
   lstTasks.Items.Clear;
   {$ENDIF}
-  for I:=0 to DM.Task.TaskCount-1 do
-  with lstTasks.Items.Add, DM.Task[I] do
-  begin
-    Caption := TaskName;
-    Data    := DM.Task[I];
-    SubItems.Add(SystemTimeToString(MostRecentRunTime));
-    SubItems.Add(SystemTimeToString(NextRunTime));
-    SubItems.Add(Comment);
-  end;
+  for I := 0 to DM.Task.TaskCount - 1 do
+    with lstTasks.Items.Add, DM.Task[I] do
+    begin
+      Caption := TaskName;
+      Data := DM.Task[I];
+      SubItems.Add(SystemTimeToString(MostRecentRunTime));
+      SubItems.Add(SystemTimeToString(NextRunTime));
+      SubItems.Add(Comment);
+    end;
 end;
 
 function TfrmMain.SystemTimeToString(const SysTime: TSystemTime): string;
@@ -177,7 +177,7 @@ procedure TfrmMain.ppTaskInfoHTMLTag(Sender: TObject; Tag: TTag;
   var
     AFlag: TJclScheduledTaskFlag;
   begin
-    for AFlag:=Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
+    for AFlag := Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
       if AFlag in Flags then
         Result := Result + GetEnumName(TypeInfo(TJclScheduledTaskFlag), Integer(AFlag)) + ' ';
     if Result = '' then
@@ -187,58 +187,78 @@ procedure TfrmMain.ppTaskInfoHTMLTag(Sender: TObject; Tag: TTag;
   var
     I: Integer;
   begin
-    for I:=0 to Task.TriggerCount-1 do
+    for I := 0 to Task.TriggerCount - 1 do
       Result := Format('%s<LI>%s</LI>', [Result, Task.Triggers[I].TriggerString]);
     Result := '<UL>' + Result + '</UL>';
   end;
 begin
   with TJclScheduledTask(frmMain.lstTasks.Selected.Data) do
-  try
-    if CompareText(TagString, 'TaskName') = 0 then
-      ReplaceText := TaskName
-    else if CompareText(TagString, 'AccountName') = 0 then
-      ReplaceText := AccountName
-    else if CompareText(TagString, 'Comment') = 0 then
-      ReplaceText := Comment
-    else if CompareText(TagString, 'Creator') = 0 then
-      ReplaceText := Creator
-    else if CompareText(TagString, 'ErrorRetryCount') = 0 then
-      ReplaceText := 'Unimplemented' // IntToStr(ErrorRetryCount)
-    else if CompareText(TagString, 'ErrorRetryInterval') = 0 then
-      ReplaceText := 'Unimplemented' // IntToStr(ErrorRetryInterval)
-    else if CompareText(TagString, 'ExitCode') = 0 then
-      ReplaceText := IntToStr(ExitCode)
-    else if CompareText(TagString, 'Data') = 0 then
-      ReplaceText := IntToStr(OwnerData.Size) + ' Bytes'
-    else if CompareText(TagString, 'IdleMinutes') = 0 then
-      ReplaceText := IntToStr(IdleMinutes) + ' Minutes'
-    else if CompareText(TagString, 'DeadlineMinutes') = 0 then
-      ReplaceText := IntToStr(DeadlineMinutes) + ' Minutes'
-    else if CompareText(TagString, 'MostRecentRunTime') = 0 then
-      ReplaceText := SystemTimeToString(MostRecentRunTime)
-    else if CompareText(TagString, 'NextRunTime') = 0 then
-      ReplaceText := SystemTimeToString(NextRunTime)
-    else if CompareText(TagString, 'Status') = 0 then
-      ReplaceText := TaskStatusToString(Status)
-    else if CompareText(TagString, 'Flags') = 0 then
-      ReplaceText := TaskFlagsToString(Flags)
-    else if CompareText(TagString, 'ApplicationName') = 0 then
-      ReplaceText := ApplicationName
-    else if CompareText(TagString, 'WorkingDirectory') = 0 then
-      ReplaceText := WorkingDirectory
-    else if CompareText(TagString, 'MaxRunTime') = 0 then
-      ReplaceText := MsToStr(MaxRunTime)
-    else if CompareText(TagString, 'Parameters') = 0 then
-      ReplaceText := Parameters
-    else if CompareText(TagString, 'Priority') = 0 then
-      ReplaceText := IntToStr(Priority)
-    else if CompareText(TagString, 'TaskFlags') = 0 then
-      ReplaceText := IntToHex(TaskFlags, 8)
-    else if CompareText(TagString, 'Triggers') = 0 then
-      ReplaceText := TriggersToHtml(TJclScheduledTask(frmMain.lstTasks.Selected.Data));
-  except
-    ReplaceText := 'Unknown';
-  end;
+    try
+      if CompareText(TagString, 'TaskName') = 0 then
+        ReplaceText := TaskName
+      else
+      if CompareText(TagString, 'AccountName') = 0 then
+        ReplaceText := AccountName
+      else
+      if CompareText(TagString, 'Comment') = 0 then
+        ReplaceText := Comment
+      else
+      if CompareText(TagString, 'Creator') = 0 then
+        ReplaceText := Creator
+      else
+      if CompareText(TagString, 'ErrorRetryCount') = 0 then
+        ReplaceText := 'Unimplemented' // IntToStr(ErrorRetryCount)
+      else
+      if CompareText(TagString, 'ErrorRetryInterval') = 0 then
+        ReplaceText := 'Unimplemented' // IntToStr(ErrorRetryInterval)
+      else
+      if CompareText(TagString, 'ExitCode') = 0 then
+        ReplaceText := IntToStr(ExitCode)
+      else
+      if CompareText(TagString, 'Data') = 0 then
+        ReplaceText := IntToStr(OwnerData.Size) + ' Bytes'
+      else
+      if CompareText(TagString, 'IdleMinutes') = 0 then
+        ReplaceText := IntToStr(IdleMinutes) + ' Minutes'
+      else
+      if CompareText(TagString, 'DeadlineMinutes') = 0 then
+        ReplaceText := IntToStr(DeadlineMinutes) + ' Minutes'
+      else
+      if CompareText(TagString, 'MostRecentRunTime') = 0 then
+        ReplaceText := SystemTimeToString(MostRecentRunTime)
+      else
+      if CompareText(TagString, 'NextRunTime') = 0 then
+        ReplaceText := SystemTimeToString(NextRunTime)
+      else
+      if CompareText(TagString, 'Status') = 0 then
+        ReplaceText := TaskStatusToString(Status)
+      else
+      if CompareText(TagString, 'Flags') = 0 then
+        ReplaceText := TaskFlagsToString(Flags)
+      else
+      if CompareText(TagString, 'ApplicationName') = 0 then
+        ReplaceText := ApplicationName
+      else
+      if CompareText(TagString, 'WorkingDirectory') = 0 then
+        ReplaceText := WorkingDirectory
+      else
+      if CompareText(TagString, 'MaxRunTime') = 0 then
+        ReplaceText := MsToStr(MaxRunTime)
+      else
+      if CompareText(TagString, 'Parameters') = 0 then
+        ReplaceText := Parameters
+      else
+      if CompareText(TagString, 'Priority') = 0 then
+        ReplaceText := IntToStr(Priority)
+      else
+      if CompareText(TagString, 'TaskFlags') = 0 then
+        ReplaceText := IntToHex(TaskFlags, 8)
+      else
+      if CompareText(TagString, 'Triggers') = 0 then
+        ReplaceText := TriggersToHtml(TJclScheduledTask(frmMain.lstTasks.Selected.Data));
+    except
+      ReplaceText := 'Unknown';
+    end;
 end;
 
 end.

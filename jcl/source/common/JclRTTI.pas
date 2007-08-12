@@ -167,7 +167,7 @@ type
     ['{7DAD5224-46EA-11D5-B0C0-4854E825F345}']
     function GetBaseType: IJclOrdinalTypeInfo;
 
-    procedure GetAsList(const Value;  const WantRanges: Boolean;
+    procedure GetAsList(const Value; const WantRanges: Boolean;
       const Strings: TStrings);
     procedure SetAsList(out Value; const Strings: TStrings);
 
@@ -339,7 +339,7 @@ function JclTypeInfo(ATypeInfo: {$IFDEF CLR}TTypeInfo{$ELSE ~CLR}PTypeInfo{$ENDI
 // Enumeration types
 const
   PREFIX_CUT_LOWERCASE = 255;
-  PREFIX_CUT_EQUAL     = 254;
+  PREFIX_CUT_EQUAL = 254;
 
   MaxPrefixCut = 250;
 
@@ -450,7 +450,7 @@ begin
     TmpLines.Text := CurLine;
     TmpLines2 := TStringList.Create;
     try
-      I := TmpLines.Count-1;
+      I := TmpLines.Count - 1;
       if not EndedInCRLF then
         Dec(I);
       while I >= 0 do
@@ -460,7 +460,7 @@ begin
         begin
           TmpLines2.Text := WrapText(
             TmpLines[I],
-            AnsiLineBreak + StringOfChar(' ', 2 * (IndentLevel+1)),
+            AnsiLineBreak + StringOfChar(' ', 2 * (IndentLevel + 1)),
             WrapChars,
             Wrap);
           TmpLines.Delete(I);
@@ -487,8 +487,8 @@ begin
   CRLFPos := StrLastPos(AnsiLineBreak, CurLine);
   if CRLFPos > 0 then
   begin
-    PrimWrite(Copy(CurLine, 1, CRLFPos-1));
-    Delete(FCurLine, 1, CRLFPos+1);
+    PrimWrite(Copy(CurLine, 1, CRLFPos - 1));
+    Delete(FCurLine, 1, CRLFPos + 1);
   end;
 end;
 
@@ -799,7 +799,7 @@ begin
         {$IFDEF CLR}
         not SameText(Name, Names[Result]) do
         {$ELSE}
-        not AnsiSameText(Name, Names[Result]) do
+    not AnsiSameText(Name, Names[Result]) do
         {$ENDIF CLR}
     Dec(Result);
   if Result < MinValue then
@@ -992,7 +992,7 @@ begin
   ClearValue;
   Strings.BeginUpdate;
   try
-  for I := 0 to Strings.Count - 1 do
+    for I := 0 to Strings.Count - 1 do
     begin
       if Trim(Strings[I]) <> '' then
       begin
@@ -1356,8 +1356,8 @@ begin
       Result := pskVirtualMethod;
     $FF:
       Result := pskField;
-  else
-    Result := pskStaticMethod;
+    else
+      Result := pskStaticMethod;
   end;
 end;
 
@@ -1370,8 +1370,8 @@ begin
       Result := Smallint(Value and $0000FFFF);
     pskField:
       Result := Value and $00FFFFFF;
-  else
-    Result := 0;
+    else
+      Result := 0;
   end;
 end;
 
@@ -1594,7 +1594,7 @@ begin
     IntToStr(TotalPropertyCount) + ')');
   Dest.Indent;
   try
-    for I := 0 to PropertyCount-1 do
+    for I := 0 to PropertyCount - 1 do
     begin
       Prop := Properties[I];
       Dest.Writeln(Prop.Name + ': ' + Prop.PropType.Name);
@@ -1701,7 +1701,7 @@ begin
      {$IFDEF CLR}
      not SameText(Parent.Name, 'TObject') then
      {$ELSE}
-     not AnsiSameText(Parent.Name, 'TObject') then
+    not AnsiSameText(Parent.Name, 'TObject') then
      {$ENDIF CLR}
   begin
     Dest.Write(Name + ' = class(' + Parent.Name);
@@ -1713,7 +1713,7 @@ begin
     {$ELSE}
     IntfTbl := ClassRef.GetInterfaceTable;
     if IntfTbl <> nil then
-      for I := 0 to IntfTbl.EntryCount-1 do
+      for I := 0 to IntfTbl.EntryCount - 1 do
         Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID) + ''']');
     {$ENDIF CLR}
     Dest.Writeln(') // unit ' + UnitName);
@@ -1725,10 +1725,10 @@ begin
     Dest.Writeln('published');
     Dest.Indent;
     try
-      for I := 0 to PropertyCount-1 do
+      for I := 0 to PropertyCount - 1 do
       begin
         Prop := Properties[I];
-        Dest.Write('property ' + Prop.Name + ': ' +  Prop.PropType.Name);
+        Dest.Write('property ' + Prop.Name + ': ' + Prop.PropType.Name);
         if Prop.HasIndex then
           Dest.Write(Format(' index %d', [Prop.Index]));
 
@@ -1961,7 +1961,7 @@ begin
   begin
     if ParameterCount > 0 then
     begin
-      LastParam := Parameters[ParameterCount-1];
+      LastParam := Parameters[ParameterCount - 1];
       ResPtr := Pointer(Longint(LastParam.Param) + LastParam.RecSize);
     end
     else
@@ -2008,7 +2008,7 @@ begin
   Dest.Writeln(LoadResString(@RsRTTIParamCount) + IntToStr(ParameterCount));
   Dest.Indent;
   try
-    for I := 0 to ParameterCount-1 do
+    for I := 0 to ParameterCount - 1 do
     begin
       if I > 0 then
         Dest.Writeln('');
@@ -2039,7 +2039,7 @@ begin
   else
     Dest.Write('procedure');
   Prefix := '(';
-  for I := 0 to ParameterCount-1 do
+  for I := 0 to ParameterCount - 1 do
   begin
     Dest.Write(Prefix);
     Prefix := '; ';
@@ -2210,7 +2210,7 @@ begin
     Dest.Write('(' + Parent.Name + ')');
   {$ELSE ~CLR}
   if (Parent <> nil) and not (ifDispInterface in Flags) and not
-      AnsiSameText(Parent.Name, 'IUnknown') then
+    AnsiSameText(Parent.Name, 'IUnknown') then
     Dest.Write('(' + Parent.Name + ')');
   {$ENDIF ~CLR}
   Dest.Writeln(' // unit ' + UnitName);
@@ -2414,8 +2414,8 @@ begin
     tkDynArray:
       Result := TJclDynArrayTypeInfo.Create(ATypeInfo);
     {$ENDIF RTL140_UP}
-  else
-    Result := TJclTypeInfo.Create(ATypeInfo);
+    else
+      Result := TJclTypeInfo.Create(ATypeInfo);
   end;
 end;
 
@@ -2475,7 +2475,7 @@ var
 begin
   List := TypeList.LockList;
   try
-    I := List.Count-1;
+    I := List.Count - 1;
     while (I >= 0) and (PTypeItem(List[I]).TypeInfo <> TypeInfo) do
       Dec(I);
     if I > -1 then
@@ -2502,7 +2502,7 @@ begin
   L := TypeList.LockList;
   try
     while L.Count > 0 do
-      RemoveTypeInfo(PTypeItem(L[L.Count-1])^.TypeInfo);
+      RemoveTypeInfo(PTypeItem(L[L.Count - 1])^.TypeInfo);
   finally
     TypeList.UnlockList;
   end;
@@ -2522,7 +2522,7 @@ begin
   Item := nil;
   List := TypeList.LockList;
   try
-    I := List.Count-1;
+    I := List.Count - 1;
     while (I >= 0) and (PTypeItem(List[I]).TypeInfo <> TypeInfo) do
       Dec(I);
     if I > -1 then
@@ -2565,8 +2565,8 @@ begin
       EnumVal := Integer(Value);
     otULong:
       EnumVal := Longword(Value);
-  else
-    EnumVal := 0;
+    else
+      EnumVal := 0;
   end;
   // Check range...
   if (EnumVal < MinEnum) or (EnumVal > MaxEnum) then
@@ -2595,7 +2595,7 @@ begin
   for I := Low(Literals) to High(Literals) do
     StringSize := StringSize + 1 + Length(Literals[I]);
   Result := AllocMem(SizeOf(TTypeInfo) + SizeOf(TOrdType) +
-    (2*SizeOf(Integer)) + SizeOf(PPTypeInfo) +
+    (2 * SizeOf(Integer)) + SizeOf(PPTypeInfo) +
     StringSize {$IFDEF RTL140_UP}+ 1{$ENDIF RTL140_UP});
   try
     with Result^ do
@@ -2613,13 +2613,13 @@ begin
     else
       TypeData^.OrdType := otULong;
     TypeData^.MinValue := 0;
-    TypeData^.MaxValue := Length(Literals)-1;
+    TypeData^.MaxValue := Length(Literals) - 1;
     TypeData^.BaseType^ := Result;   // No sub-range: basetype points to itself
     CurName := @TypeData^.NameList;
     for I := Low(Literals) to High(Literals) do
     begin
       CurName^ := Literals[I];
-      Inc(Integer(CurName), Length(Literals[I])+1);
+      Inc(Integer(CurName), Length(Literals[I]) + 1);
     end;
     {$IFDEF RTL140_UP}
     CurName^ := ''; // Unit name unknown
@@ -2662,12 +2662,12 @@ begin
         Delete(S, 1, PrefixCut);
       if S = '' then
         S := Names[I];
-      Literals[I- MinValue] := S;
+      Literals[I - MinValue] := S;
     end;
     if PrefixCut = PREFIX_CUT_EQUAL then
     begin
       S := Literals[High(Literals)];
-      I := High(Literals)-1;
+      I := High(Literals) - 1;
       while (I >= 0) and (S > '') do
       begin
         while Copy(Literals[I], 1, Length(S)) <> S do
@@ -2692,7 +2692,7 @@ var
   TypeData: PTypeData;
 begin
   Result := AllocMem(SizeOf(TTypeInfo) + SizeOf(TOrdType) +
-    (2*SizeOf(Integer)) + SizeOf(PPTypeInfo));
+    (2 * SizeOf(Integer)) + SizeOf(PPTypeInfo));
   try
     with Result^ do
     begin
@@ -2746,7 +2746,7 @@ begin
         RangeInfo := nil;
       TmpVal := StrToInt64(Value);
       if (RangeInfo <> nil) and ((TmpVal < RangeInfo.MinValue) or
-          (TmpVal > RangeInfo.MaxValue)) then
+        (TmpVal > RangeInfo.MaxValue)) then
         {$IFDEF CLR}
         raise EConvertError.CreateFmt(SInvalidInteger, [Value]);
         {$ELSE}
@@ -2755,7 +2755,7 @@ begin
       Result := Integer(TmpVal);
     end
     else
-      Result := StrToInt(Value)
+      Result := StrToInt(Value);
   end;
 end;
 
@@ -2774,7 +2774,7 @@ begin
     if (TypeInfo <> nil) and (GetTypeData(TypeInfo).OrdType = otULong) then
       Result := IntToStr(Int64(Cardinal(Value)))
     else
-      Result := IntToStr(Value)
+      Result := IntToStr(Value);
   end;
 end;
 
@@ -2830,8 +2830,8 @@ begin
       if S[0][1] = '[' then
       begin
         S[0] := Copy(S[0], 2, Length(S[0]));
-        S[S.Count-1] := Copy(S[S.Count-1], 1,
-          Length(S[S.Count-1]) - 1);
+        S[S.Count - 1] := Copy(S[S.Count - 1], 1,
+          Length(S[S.Count - 1]) - 1);
       end;
     end;
     SetInfo.SetAsList(SetVar, S);
@@ -2931,8 +2931,8 @@ begin
         Byte(TypeData^.OrdType) := 16;
       129..256:
         Byte(TypeData^.OrdType) := 32;
-    else
-      Byte(TypeData^.OrdType) := 255;
+      else
+        Byte(TypeData^.OrdType) := 255;
     end;
     TypeData^.CompType := AllocMem(SizeOf(Pointer));
     TypeData^.CompType^ := BaseType;
@@ -2966,12 +2966,12 @@ type
   TJmp = packed record
     case OpCodeJmp: Byte of
       $E9:
-        (JmpOffset: Longint);
+      (JmpOffset: Longint);
       $FF:
-        (OpCode2: Byte;
-         EntryOffset: Longint);
+      (OpCode2: Byte;
+        EntryOffset: Longint);
   end;
-  
+
 {$ENDIF ~CLR}
 
 // Copied from System.pas (_IsClass function)
@@ -2986,19 +2986,19 @@ asm
         { ->    EAX     left operand (class)    }
         {       EDX VMT of right operand        }
         { <-    AL      left is derived from right      }
-        TEST    EAX,EAX
-        JE      @@exit
-@@loop:
-        MOV     EAX,[EAX]
-        CMP     EAX,EDX
-        JE      @@success
-        MOV     EAX,[EAX].vmtParent
-        TEST    EAX,EAX
-        JNE     @@loop
-        JMP     @@exit
-@@success:
-        MOV     AL,1
-@@exit:
+  TEST    EAX,EAX
+  JE      @@exit
+  @@loop:
+  MOV     EAX,[EAX]
+  CMP     EAX,EDX
+  JE      @@success
+  MOV     EAX,[EAX].vmtParent
+  TEST    EAX,EAX
+  JNE     @@loop
+  JMP     @@exit
+  @@success:
+  MOV     AL,1
+  @@exit:
 end;
 {$ENDIF ~CLR}
 

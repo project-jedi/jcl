@@ -427,7 +427,7 @@ type
     property InterchangeControlCount: Integer read GetCount;
   end;
 
-  TEDIFileArray = array of TEDIFile;  
+  TEDIFileArray = array of TEDIFile;
 
 {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
 {$IFDEF UNITVERSIONING}
@@ -711,8 +711,8 @@ begin
       Result := InternalCreateElement;
     ediCompositeElement:
       Result := InternalCreateCompositeElement;
-  else
-    Result := nil;
+    else
+      Result := nil;
   end;
 end;
 
@@ -1579,8 +1579,8 @@ begin
       Result := InternalCreateFunctionalGroup;
     ediMessage:
       Result := InternalCreateMessage;
-  else
-    Result := nil;
+    else
+      Result := nil;
   end;
 end;
 
@@ -1764,7 +1764,7 @@ begin
       InternalDelimitersDetection(StartPos);
     SearchResult := StrSearch(FDelimiters.SD + UNBSegmentId + FDelimiters.ED, FData, StartPos);
     UNASegmentData := Copy(FData, StartPos, (SearchResult - StartPos) + FDelimiters.SDLen);
-    StartPos := SearchResult + FDelimiters.SDLen;    
+    StartPos := SearchResult + FDelimiters.SDLen;
   end
   else
   if UNBSegmentId = Copy(FData, StartPos, Length(UNBSegmentId)) then
@@ -1930,10 +1930,10 @@ end;
 
 procedure TEDIFile.InternalDelimitersDetection(StartPos: Integer);
 begin
-  FDelimiters.SS := Copy(FData, StartPos + Length(UNASegmentId), 1);        
+  FDelimiters.SS := Copy(FData, StartPos + Length(UNASegmentId), 1);
   FDelimiters.ED := Copy(FData, StartPos + Length(UNASegmentId) + 1, 1);
   if Copy(FData, StartPos + Length(UNASegmentId) + 5, 2) = AnsiCrLf then
-    FDelimiters.SD := Copy(FData, StartPos + Length(UNASegmentId) + 5, 2) 
+    FDelimiters.SD := Copy(FData, StartPos + Length(UNASegmentId) + 5, 2)
   else
     FDelimiters.SD := Copy(FData, StartPos + Length(UNASegmentId) + 5, 1);
 end;
@@ -1951,9 +1951,9 @@ begin
   if Copy(FData, SearchResult - 2, 2) = AnsiCrLf then
     FDelimiters.SD := Copy(FData, SearchResult - 2, 2)
   else
-    FDelimiters.SD := Copy(FData, SearchResult - 1, 1); 
+    FDelimiters.SD := Copy(FData, SearchResult - 1, 1);
   SearchResult := SearchResult - 2;
-  for I := SearchResult downto 1 do              
+  for I := SearchResult downto 1 do
   begin
     Delimiter := Copy(FData, I, 1);
     if not (Delimiter[1] in
@@ -2204,8 +2204,8 @@ begin
       TEDIMessageLoop(Result).ParentLoopId := ParentLoopId;
       TEDIMessageLoop(Result).Parent := Self;
     end;
-  else
-    Result := nil;
+    else
+      Result := nil;
   end;
 end;
 

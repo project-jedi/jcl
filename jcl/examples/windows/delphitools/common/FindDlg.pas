@@ -70,12 +70,12 @@ resourcestring
 function ShowFindDialog(AListView: TListView): Boolean;
 begin
   with TFindTextForm.Create(Application) do
-  try
-    ListView := AListView;
-    Result := ShowModal = mrOk;
-  finally
-    Free;
-  end;
+    try
+      ListView := AListView;
+      Result := ShowModal = mrOk;
+    finally
+      Free;
+    end;
 end;
 
 { TFindForm }
@@ -196,7 +196,7 @@ begin
   begin
     LV := TListView(Screen.Activecontrol);
     Result := (LV.Items.Count > 0) and not LV.HideSelection;
-  end;    
+  end;
 end;
 
 end.

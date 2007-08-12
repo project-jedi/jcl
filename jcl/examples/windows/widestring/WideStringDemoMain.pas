@@ -9,19 +9,19 @@ uses
 
 type
   TForm1 = class(TForm)
-    FileListView:     TListView;
-    Panel1:           TPanel;
+    FileListView: TListView;
+    Panel1: TPanel;
     FilterEncodingComboBox: TComboBox;
     IncludeSubDirectoriesCheckBox: TCheckBox;
-    ConvertButton:    TButton;
-    SearchButton:     TButton;
-    Label3:           TLabel;
-    FileMaskEdit:     TEdit;
-    Label2:           TLabel;
+    ConvertButton: TButton;
+    SearchButton: TButton;
+    Label3: TLabel;
+    FileMaskEdit: TEdit;
+    Label2: TLabel;
     RootDirectoryEdit: TEdit;
-    Label1:           TLabel;
-    StatusBar1:       TStatusBar;
-    FilePopupMenu:    TPopupMenu;
+    Label1: TLabel;
+    StatusBar1: TStatusBar;
+    FilePopupMenu: TPopupMenu;
     OpenwithNotepad1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -38,11 +38,11 @@ type
   end;
 
 var
-  Form1:           TForm1;
+  Form1: TForm1;
   FileListViewSortAscending: boolean;
-  UTF8FileCount:   integer;
+  UTF8FileCount: integer;
   FFileEnumerator: TJclFileEnumerator;
-  FTaskID:         TFileSearchTaskID;
+  FTaskID: TFileSearchTaskID;
   FWideStringList: TWideStringList;
 
 const
@@ -140,7 +140,7 @@ begin
         FWideStringList.SaveFormat := sfAnsi;
         FWideStringList.SaveToFile(PChar(FileListView.Items[i].SubItems[0] +
           FileListView.Items[i].Caption));
-          FileListView.Items[i].SubItems[1] := SaveFormatValues[FWideStringList.SaveFormat];
+        FileListView.Items[i].SubItems[1] := SaveFormatValues[FWideStringList.SaveFormat];
         Dec(UTF8FileCount);
       end;
     end;

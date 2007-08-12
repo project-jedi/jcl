@@ -61,10 +61,10 @@ begin
   mmLog.Lines.Add(Format(
     '  Exception occured at $%p (Module "%s", Procedure "%s", Unit "%s", Line %d)',
     [ModInfo.Address,
-     ModInfo.UnitName,
-     ModInfo.ProcedureName,
-     ModInfo.SourceName,
-     ModInfo.LineNumber]));
+    ModInfo.UnitName,
+    ModInfo.ProcedureName,
+    ModInfo.SourceName,
+    ModInfo.LineNumber]));
   if stExceptFrame in JclStackTrackingOptions then
   begin
     mmLog.Lines.Add('  Except frame-dump:');
@@ -76,14 +76,14 @@ begin
       ExceptFrame := JclLastExceptFrameList.Items[I];
       ExceptionHandled := ExceptFrame.HandlerInfo(ExceptObj, HandlerLocation);
       if (ExceptFrame.FrameKind = efkFinally) or
-          (ExceptFrame.FrameKind = efkUnknown) or
-          not ExceptionHandled then
+        (ExceptFrame.FrameKind = efkUnknown) or
+        not ExceptionHandled then
         HandlerLocation := ExceptFrame.CodeLocation;
       ModInfo := GetLocationInfo(HandlerLocation);
       TmpS := Format(
         '    Frame at $%p (type: %s',
         [ExceptFrame.ExcFrame,
-         GetEnumName(TypeInfo(TExceptFrameKind), Ord(ExceptFrame.FrameKind))]);
+        GetEnumName(TypeInfo(TExceptFrameKind), Ord(ExceptFrame.FrameKind))]);
       if ExceptionHandled then
         TmpS := TmpS + ', handles exception)'
       else
@@ -100,9 +100,9 @@ begin
       mmLog.Lines.Add(Format(
         '      Module "%s", Procedure "%s", Unit "%s", Line %d',
         [ModInfo.UnitName,
-         ModInfo.ProcedureName,
-         ModInfo.SourceName,
-         ModInfo.LineNumber]));
+        ModInfo.ProcedureName,
+        ModInfo.SourceName,
+        ModInfo.LineNumber]));
       Inc(I);
     end;
   end;

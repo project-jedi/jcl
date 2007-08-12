@@ -516,7 +516,7 @@ begin
   Result := False;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -541,7 +541,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
+    Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -599,7 +599,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -686,7 +686,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(Integer(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -715,7 +715,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -837,7 +837,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -862,7 +862,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
+    Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -922,7 +922,7 @@ begin
   if Key = '' then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1024,7 +1024,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1053,7 +1053,7 @@ begin
   Result := nil;
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1175,7 +1175,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1200,7 +1200,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
+    Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1258,7 +1258,7 @@ begin
   Result := '';
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1306,7 +1306,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}(FBuckets[J]);
+    Bucket := {$IFNDEF CLR} @{$ENDIF}(FBuckets[J]);
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1375,7 +1375,7 @@ begin
   if Value = '' then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1404,7 +1404,7 @@ begin
   Result := '';
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1544,7 +1544,7 @@ begin
   Result := False;
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1569,7 +1569,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
+    Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1628,7 +1628,7 @@ begin
   if Key = '' then
     Exit;
   I := FHashFunction(HashString(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[I];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[I];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1741,7 +1741,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(HashString(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1771,7 +1771,7 @@ begin
   Result := nil;
   if Key = '' then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(HashString(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1846,7 +1846,7 @@ begin
   begin
     for J := 0 to FBuckets[I].Count - 1 do
     begin
-      FBuckets[I].Entries[J].Key := nil; 
+      FBuckets[I].Entries[J].Key := nil;
       FreeObject(FBuckets[I].Entries[J].Value);
     end;
     FBuckets[I].Count := 0;
@@ -1896,7 +1896,7 @@ begin
   Result := False;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -1921,7 +1921,7 @@ begin
     Exit;
   for J := 0 to FCapacity - 1 do
   begin
-    Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[J];
+    Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[J];
     for I := 0 to Bucket.Count - 1 do
       if Bucket.Entries[I].Value = Value then
       begin
@@ -1989,7 +1989,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -2077,7 +2077,7 @@ begin
   if Value = nil then
     Exit;
   Index := FHashFunction(Integer(Key));
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[Index];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[Index];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -2109,7 +2109,7 @@ begin
   Result := nil;
   if Key = nil then
     Exit;
-  Bucket := {$IFNDEF CLR}@{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
+  Bucket := {$IFNDEF CLR} @{$ENDIF}FBuckets[FHashFunction(Integer(Key))];
   for I := 0 to Bucket.Count - 1 do
     if Bucket.Entries[I].Key = Key then
     begin
@@ -2153,4 +2153,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

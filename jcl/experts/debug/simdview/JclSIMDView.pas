@@ -27,7 +27,7 @@
 unit JclSIMDView;
 
 {$I jcl.inc}
-                     
+
 interface
 
 uses
@@ -81,14 +81,14 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier,
     IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
     FThreadList: TList;
-    function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
-    function FindThreadReference(AThread:IOTAThread): PThreadReference;
+    function FindProcessReference(AProcess: IOTAProcess): PProcessReference;
+    function FindThreadReference(AThread: IOTAThread): PThreadReference;
   public
     constructor Create(AOwner: TJclSIMDWizard); reintroduce;
     destructor Destroy; override;
@@ -121,7 +121,7 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 uses
-  JclOtaConsts, JclOtaResources, 
+  JclOtaConsts, JclOtaResources,
   JclSIMDUtils;
 
 procedure Register;
@@ -162,8 +162,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin

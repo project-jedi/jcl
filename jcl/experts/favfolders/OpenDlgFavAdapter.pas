@@ -37,7 +37,7 @@ uses
   JclPeImage;
 
 type
-  TFavOpenDialog = class (TObject)
+  TFavOpenDialog = class(TObject)
   private
     FAddButton: TButton;
     FDeleteMode: Boolean;
@@ -104,7 +104,7 @@ uses
 {$R FavDlg.res}
 
 type
-  TGetOpenFileName = function (var OpenFile: TOpenFilename): Bool; stdcall;
+  TGetOpenFileName = function(var OpenFile: TOpenFilename): Bool; stdcall;
 
 var
   OldGetOpenFileName: TGetOpenFileName;
@@ -161,7 +161,7 @@ begin
         else
           FavOpenDialog.PictureDialogLastFolder := '';
       end;
-   end;
+    end;
 end;
 
 function NewGetOpenFileName(var OpenFile: TOpenFilename): Bool; stdcall;
@@ -317,7 +317,7 @@ begin
   FParentWnd := GetParent(FHandle);
   if IsOpenPictDialog then
     DoShow
-  else  
+  else
   begin
     GetClientRect(FHandle, PreviewRect);
     PreviewRect.Top := PreviewRect.Bottom - 43;
@@ -331,7 +331,7 @@ begin
     finally
       FFavoriteComboBox.Items.Assign(FavoriteFolders);
     end;
-  end;  
+  end;
 end;
 
 procedure TFavOpenDialog.DoClose;
@@ -349,7 +349,7 @@ end;
 procedure TFavOpenDialog.FavoriteComboBoxClick(Sender: TObject);
 begin
   with FFavoriteComboBox do
-    if ItemIndex <> - 1 then
+    if ItemIndex <> -1 then
       CurrentFolder := FFavoriteComboBox.Items[ItemIndex];
 end;
 
@@ -470,39 +470,39 @@ begin
   begin
     case Message.Msg of
       WM_NOTIFY:
-        begin
-          case (POFNotify(Message.LParam)^.hdr.code) of
-            CDN_INITDONE:
-              DialogShow;
-            CDN_FOLDERCHANGE:
-              if not IsOpenPictDialog then
-                DialogFolderChange;
-            CDN_FILEOK:
-              if IsOpenPictDialog then
-                FPictureDialogLastFolder := CurrentFolder;
-          end;
-          Default;
-        end;
-      WM_DESTROY:
-        begin
-          if not IsOpenPictDialog then
-            FavoriteFolders.Assign(FFavoriteComboBox.Items);
-          try
-            DoClose;
-            Default;
-          finally
+      begin
+        case (POFNotify(Message.LParam)^.hdr.code) of
+          CDN_INITDONE:
+            DialogShow;
+          CDN_FOLDERCHANGE:
             if not IsOpenPictDialog then
-              FFavoritePanel.ParentWindow := 0;
-            FParentWnd := 0;
-          end;
+              DialogFolderChange;
+          CDN_FILEOK:
+            if IsOpenPictDialog then
+              FPictureDialogLastFolder := CurrentFolder;
         end;
-      WM_NCDESTROY:
-        begin
+        Default;
+      end;
+      WM_DESTROY:
+      begin
+        if not IsOpenPictDialog then
+          FavoriteFolders.Assign(FFavoriteComboBox.Items);
+        try
+          DoClose;
           Default;
-          FHandle := 0;
+        finally
+          if not IsOpenPictDialog then
+            FFavoritePanel.ParentWindow := 0;
+          FParentWnd := 0;
         end;
-    else
-      Default;
+      end;
+      WM_NCDESTROY:
+      begin
+        Default;
+        FHandle := 0;
+      end;
+      else
+        Default;
     end;
   end;
 end;
@@ -511,14 +511,14 @@ initialization
 
 finalization
 
-try
-  FreeAndNil(FavOpenDialog);
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
+  try
+    FreeAndNil(FavOpenDialog);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
-end;
 
 end.

@@ -71,7 +71,7 @@ type
     function GetSorted: Boolean;
     function Equals(Strings: TStrings): Boolean;
     function IndexOfName(const Name: string): Integer;
-    function IndexOfObject(AObject: TObject): Integer; 
+    function IndexOfObject(AObject: TObject): Integer;
     function LoadFromFile(const FileName: string): IJclStringList;
     function LoadFromStream(Stream: TStream): IJclStringList;
     function SaveToFile(const FileName: string): IJclStringList;
@@ -166,15 +166,18 @@ type
     function Trim: IJclStringList;
     function Join(const ASeparator: string = ''): string;
     function Split(const AText, ASeparator: string; AClearBeforeAdd: Boolean = True): IJclStringList;
-    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' ']; AClearBeforeAdd: Boolean = True): IJclStringList;
+    function ExtractWords(const AText: string; const ADelims: TSetOfAnsiChar = [#0..' '];
+      AClearBeforeAdd: Boolean = True): IJclStringList;
     function Last: string;
     function First: string;
     function LastIndex: Integer;
     function Clear: IJclStringList;
     function DeleteRegEx(const APattern: string): IJclStringList;
     function KeepRegEx(const APattern: string): IJclStringList;
-    function Files(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
-    function Directories(const APattern: string = '*'; ARecursive: Boolean = False; const ARegExPattern: string = ''): IJclStringList;
+    function Files(const APattern: string = '*'; ARecursive: Boolean = False;
+      const ARegExPattern: string = ''): IJclStringList;
+    function Directories(const APattern: string = '*'; ARecursive: Boolean = False;
+      const ARegExPattern: string = ''): IJclStringList;
     function GetStringsRef: TStrings;
     function ConfigAsSet: IJclStringList;
     function Delimit(const ADelimiter: string): IJclStringList;
@@ -677,7 +680,7 @@ function TJclStringListImpl.Directories(const APattern: string = '*';
       try
         repeat
           if (LSearchRec.Attr and faDirectory = 0) or
-             (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
+            (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
             Continue;
           LFullName := LPath + LSearchRec.Name;
           if (ARegExPattern = '') or MatchRegEx(LFullName, ARegExPattern) then
@@ -716,7 +719,7 @@ function TJclStringListImpl.Files(const APattern: string = '*';
       try
         repeat
           if (LSearchRec.Attr and faDirectory <> 0) or
-             (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
+            (LSearchRec.Name = '.') or (LSearchRec.Name = '..') then
             Continue;
           LFullName := LPath + LSearchRec.Name;
           if (ARegExPattern = '') or MatchRegEx(LFullName, ARegExPattern) then
@@ -811,7 +814,7 @@ begin
   I := IndexOf(AKey);
   if I < 0 then
     I := Add(AKey);
-  Interfaces[I] := Value
+  Interfaces[I] := Value;
 end;
 
 procedure TJclStringListImpl.SetKeyObject(const AKey: string; const Value: TObject);
@@ -850,7 +853,7 @@ begin
   I := IndexOf(AKey);
   if I < 0 then
     I := Add(AKey);
-  Variants[I] := Value
+  Variants[I] := Value;
 end;
 
 function TJclStringListImpl.GetValue(const Name: string): string;

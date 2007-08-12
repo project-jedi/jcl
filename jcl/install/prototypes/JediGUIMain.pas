@@ -119,7 +119,7 @@ uses
   {$ENDIF ~VisualCLX}
 
 const
-  DelphiJediURL     = 'http://www.delphi-jedi.org/';
+  DelphiJediURL = 'http://www.delphi-jedi.org/';
 
 function CreateMainForm: IJediInstallGUI;
 var
@@ -212,19 +212,19 @@ begin
   begin
     ModuleHandle := LoadLibraryEx(PChar(FileName), 0, DONT_RESOLVE_DLL_REFERENCES);
     if ModuleHandle <> 0 then
-    try
-      IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
-        LR_LOADTRANSPARENT);
-    finally
-      FreeLibrary(ModuleHandle);
-    end;
+      try
+        IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
+          LR_LOADTRANSPARENT);
+      finally
+        FreeLibrary(ModuleHandle);
+      end;
   end;
   if IconHandle <> 0 then
-  try
-    ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
-  finally
-    DestroyIcon(IconHandle);
-  end;
+    try
+      ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
+    finally
+      DestroyIcon(IconHandle);
+    end;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -384,6 +384,6 @@ end;
 
 initialization
 
-InstallCore.InstallGUICreator := CreateMainForm;
+  InstallCore.InstallGUICreator := CreateMainForm;
 
 end.

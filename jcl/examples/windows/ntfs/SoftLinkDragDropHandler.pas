@@ -81,10 +81,10 @@ begin
   with FormatEtc do
   begin
     cfFormat := CF_HDROP;
-    ptd      := nil;
+    ptd := nil;
     dwAspect := DVASPECT_CONTENT;
-    lindex   := -1;
-    tymed    := TYMED_HGLOBAL;
+    lindex := -1;
+    tymed := TYMED_HGLOBAL;
   end;
 
   // Render the data referenced by the IDataObject pointer to an HGLOBAL
@@ -126,7 +126,7 @@ begin
 end;
 
 function TDirDropContextMenu.QueryContextMenu(Menu: HMENU; indexMenu, idCmdFirst,
-          idCmdLast, uFlags: UINT): HResult;
+  idCmdLast, uFlags: UINT): HResult;
 begin
   Result := 0; // or use MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, 0);
 
@@ -134,7 +134,7 @@ begin
     Exit;
 
   if ((uFlags and $0000000F) = CMF_NORMAL) or
-     ((uFlags and CMF_EXPLORE) <> 0) then
+    ((uFlags and CMF_EXPLORE) <> 0) then
   begin
     // Add one menu item to context menu
     InsertMenu(Menu, indexMenu, MF_STRING or MF_BYPOSITION, idCmdFirst, PChar(SMenuItem));

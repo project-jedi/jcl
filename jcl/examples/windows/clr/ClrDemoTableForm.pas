@@ -10,7 +10,7 @@ type
   TDumpLineKind = (lkWide, lkThin, lkEmpty);
 
   TfrmTable = class(TForm)
-    lblVer: TLabel;            
+    lblVer: TLabel;
     edtVer: TEdit;
     btnOK: TBitBtn;
     lstTables: TListView;
@@ -66,12 +66,12 @@ uses
 class procedure TfrmTable.Execute(const AStream: TJclClrTableStream);
 begin
   with TfrmTable.Create(nil) do
-  try
-    ShowTables(AStream);
-    ShowModal;
-  finally
-    Free;
-  end;
+    try
+      ShowTables(AStream);
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 procedure TfrmTable.Dump(const Msg: string);
@@ -93,9 +93,12 @@ end;
 procedure TfrmTable.Dump(const LineKind: TDumpLineKind);
 begin
   case LineKind of
-    lkWide:  Dump('========================================');
-    lkThin:  Dump('----------------------------------------');
-    lkEmpty: Dump('');
+    lkWide:
+      Dump('========================================');
+    lkThin:
+      Dump('----------------------------------------');
+    lkEmpty:
+      Dump('');
   end;
 end;
 
@@ -103,24 +106,24 @@ procedure TfrmTable.ShowTables(const AStream: TJclClrTableStream);
 var
   AKind: TJclClrTableKind;
 begin
-  FStream     := AStream;
+  FStream := AStream;
   edtVer.Text := AStream.VersionString;
   with lstTables.Items do
   begin
     BeginUpdate;
     try
       Clear;
-      for AKind:=Low(TJclClrTableKind) to High(TJclClrTableKind) do
-      if Assigned(AStream.Tables[AKind]) then
-      with AStream.Tables[AKind], Add do
-      begin
-        Caption := IntToStr(Count);
-        Data    := AStream.Tables[AKind];
-        SubItems.Add(IntToStr(RowCount));
-        SubItems.Add('$' + IntToHex(Offset, 8));
-        SubItems.Add(IntToStr(Size));
-        SubItems.Add(Copy(AStream.Tables[AKind].ClassName, StrLen('TJclClrTable')+1, MaxWord));
-      end;
+      for AKind := Low(TJclClrTableKind) to High(TJclClrTableKind) do
+        if Assigned(AStream.Tables[AKind]) then
+          with AStream.Tables[AKind], Add do
+          begin
+            Caption := IntToStr(Count);
+            Data := AStream.Tables[AKind];
+            SubItems.Add(IntToStr(RowCount));
+            SubItems.Add('$' + IntToHex(Offset, 8));
+            SubItems.Add(IntToStr(Size));
+            SubItems.Add(Copy(AStream.Tables[AKind].ClassName, StrLen('TJclClrTable') + 1, MaxWord));
+          end;
     finally
       EndUpdate;
     end;
@@ -138,37 +141,53 @@ begin
 
     if ATable.ClassType = TJclClrTableAssembly then
       DumpTable(TJclClrTableAssembly(ATable))
-    else if ATable.ClassType = TJclClrTableAssemblyRef then
+    else
+    if ATable.ClassType = TJclClrTableAssemblyRef then
       DumpTable(TJclClrTableAssemblyRef(ATable))
-    else if ATable.ClassType = TJclClrTableAssemblyOS then
+    else
+    if ATable.ClassType = TJclClrTableAssemblyOS then
       DumpTable(TJclClrTableAssemblyOS(ATable))
-    else if ATable.ClassType = TJclClrTableAssemblyProcessor then
+    else
+    if ATable.ClassType = TJclClrTableAssemblyProcessor then
       DumpTable(TJclClrTableAssemblyProcessor(ATable))
-    else if ATable.ClassType = TJclClrTableModule then
+    else
+    if ATable.ClassType = TJclClrTableModule then
       DumpTable(TJclClrTableModule(ATable))
-    else if ATable.ClassType = TJclClrTableModuleRef then
+    else
+    if ATable.ClassType = TJclClrTableModuleRef then
       DumpTable(TJclClrTableModuleRef(ATable))
-    else if ATable.ClassType = TJclClrTableTypeDef then
+    else
+    if ATable.ClassType = TJclClrTableTypeDef then
       DumpTable(TJclClrTableTypeDef(ATable))
-    else if ATable.ClassType = TJclClrTableTypeRef then
+    else
+    if ATable.ClassType = TJclClrTableTypeRef then
       DumpTable(TJclClrTableTypeRef(ATable))
-    else if ATable.ClassType = TJclClrTableMethodDef then
+    else
+    if ATable.ClassType = TJclClrTableMethodDef then
       DumpTable(TJclClrTableMethodDef(ATable))
-    else if ATable.ClassType = TJclClrTableFieldDef then
+    else
+    if ATable.ClassType = TJclClrTableFieldDef then
       DumpTable(TJclClrTableFieldDef(ATable))
-    else if ATable.ClassType = TJclClrTableMemberRef then
+    else
+    if ATable.ClassType = TJclClrTableMemberRef then
       DumpTable(TJclClrTableMemberRef(ATable))
-    else if ATable.ClassType = TJclClrTableCustomAttribute then
+    else
+    if ATable.ClassType = TJclClrTableCustomAttribute then
       DumpTable(TJclClrTableCustomAttribute(ATable))
-    else if ATable.ClassType = TJclClrTableParamDef then
+    else
+    if ATable.ClassType = TJclClrTableParamDef then
       DumpTable(TJclClrTableParamDef(ATable))
-    else if ATable.ClassType = TJclClrTablePropertyDef then
+    else
+    if ATable.ClassType = TJclClrTablePropertyDef then
       DumpTable(TJclClrTablePropertyDef(ATable))
-    else if ATable.ClassType = TJclClrTableFile then
+    else
+    if ATable.ClassType = TJclClrTableFile then
       DumpTable(TJclClrTableFile(ATable))
-    else if ATable.ClassType = TJclClrTableManifestResource then
+    else
+    if ATable.ClassType = TJclClrTableManifestResource then
       DumpTable(TJclClrTableManifestResource(ATable))
-    else if ATable.ClassType = TJclClrTableExportedType then
+    else
+    if ATable.ClassType = TJclClrTableExportedType then
       DumpTable(TJclClrTableExportedType(ATable));
 
     memDump.Perform(WM_VSCROLL, SB_TOP, 0);
@@ -222,7 +241,7 @@ var
   FlagMsg: string;
   Assembly: TJclClrTableAssemblyRefRow;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Assembly := ATable[I];
     Dump('Name: ' + Assembly.Name);
@@ -247,17 +266,20 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableAssemblyOS);
   function GetOSName(const PlatformID: DWORD): string;
   begin
     case PlatformID of
-    VER_PLATFORM_WIN32s:        Result := 'Win32s';
-    VER_PLATFORM_WIN32_WINDOWS: Result := 'Windows';
-    VER_PLATFORM_WIN32_NT:      Result := 'WinNT';
-    else
-      Result := IntToHex(PlatformID, 8);
+      VER_PLATFORM_WIN32s:
+        Result := 'Win32s';
+      VER_PLATFORM_WIN32_WINDOWS:
+        Result := 'Windows';
+      VER_PLATFORM_WIN32_NT:
+        Result := 'WinNT';
+      else
+        Result := IntToHex(PlatformID, 8);
     end;
   end;
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Dump('OS : ' + GetOSName(ATable[I].PlatformID));
     Dump('Version: ' + ATable[I].Version);
@@ -290,7 +312,7 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableAssemblyProcessor);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Dump('Processor : ' + GetProcessName(ATable[I].Processor));
   end;
@@ -314,22 +336,22 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableModuleRef);
 var
   I: Integer;
 begin
-   for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
     Dump('Name : ' + ATable[I].Name);
 end;
 
 procedure TfrmTable.DumpTable(const ATable: TJclClrTableTypeDef);
 const
   ClassSemanticsNames: array[TJclClrClassSemantics] of string =
-  ('.class', 'interface');
+    ('.class', 'interface');
   TypeVisibilityNames: array[TJclClrTypeVisibility] of string =
-  ('private', 'public', 'nested public', 'nested private', 'nested family',
-   'nested assembly', 'nested famandassem', 'nested famorassem');
+    ('private', 'public', 'nested public', 'nested private', 'nested family',
+    'nested assembly', 'nested famandassem', 'nested famorassem');
   AbstractNames: array[Boolean] of string = ('', 'abstract ');
   ClassLayoutNames: array[TJclClrClassLayout] of string =
-  ('auto', 'sequential', 'explicit');
+    ('auto', 'sequential', 'explicit');
   StringFormattingNames: array[TJclClrStringFormatting] of string =
-  ('ansi', 'unicode', 'autochar');
+    ('ansi', 'unicode', 'autochar');
   ImportNames: array[Boolean] of string = ('', 'import ');
   SerializableNames: array[Boolean] of string = ('', 'serializable');
   SealedNames: array[Boolean] of string = ('', 'sealed ');
@@ -340,147 +362,152 @@ const
 var
   I, J: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-  with ATable.Rows[I] do
-  begin
-    Dump('%s %s %s%s %s %s%s%s%s%s%s%s%s',
-      [ClassSemanticsNames[ClassSemantics],
-       TypeVisibilityNames[Visibility],
-       AbstractNames[taAbstract in Attributes],
-       ClassLayoutNames[ClassLayout],
-       StringFormattingNames[StringFormatting],
-       ImportNames[taImport in Attributes],
-       SerializableNames[taSerializable in Attributes],
-       SealedNames[taSealed in Attributes],
-       SpecialNameNames[taSpecialName in Attributes],
-       BeforeFieldInitNames[taBeforeFieldInit in Attributes],
-       RTSpecialNameNames[taRTSpecialName in Attributes],
-       HasSecurityNames[taHasSecurity in Attributes],
-       FullName]);
+  for I := 0 to ATable.RowCount - 1 do
+    with ATable.Rows[I] do
+    begin
+      Dump('%s %s %s%s %s %s%s%s%s%s%s%s%s',
+        [ClassSemanticsNames[ClassSemantics],
+        TypeVisibilityNames[Visibility],
+        AbstractNames[taAbstract in Attributes],
+        ClassLayoutNames[ClassLayout],
+        StringFormattingNames[StringFormatting],
+        ImportNames[taImport in Attributes],
+        SerializableNames[taSerializable in Attributes],
+        SealedNames[taSealed in Attributes],
+        SpecialNameNames[taSpecialName in Attributes],
+        BeforeFieldInitNames[taBeforeFieldInit in Attributes],
+        RTSpecialNameNames[taRTSpecialName in Attributes],
+        HasSecurityNames[taHasSecurity in Attributes],
+        FullName]);
 
-    if HasField then
-    for J:=0 to FieldCount-1 do
-      Dump('  .field %s', [Fields[J].Name]);
+      if HasField then
+        for J := 0 to FieldCount - 1 do
+          Dump('  .field %s', [Fields[J].Name]);
 
-    if HasMethod then
-    for J:=0 to MethodCount-1 do
-      Dump('  .method %s', [Methods[J].Name]);
-  end;
+      if HasMethod then
+        for J := 0 to MethodCount - 1 do
+          Dump('  .method %s', [Methods[J].Name]);
+    end;
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableTypeRef); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableTypeRef);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-    Dump('%s.%s', [ATable.Rows[I].Namespace, ATable.Rows[I].Name])
+  for I := 0 to ATable.RowCount - 1 do
+    Dump('%s.%s', [ATable.Rows[I].Namespace, ATable.Rows[I].Name]);
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableMethodDef); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableMethodDef);
 var
   I, J: Integer;
   AttrStr, ParamStr: string;
 begin
-  for I:=0 to ATable.RowCount-1 do
-  with ATable.Rows[I] do
-  begin
-    if HasParam then
+  for I := 0 to ATable.RowCount - 1 do
+    with ATable.Rows[I] do
     begin
-      ParamStr := '';
-      for J:=0 to ParamCount-1 do
+      if HasParam then
       begin
-        if ParamStr <> '' then
-          ParamStr := ParamStr + ', ';
-        if Params[J].Flags <> [] then
+        ParamStr := '';
+        for J := 0 to ParamCount - 1 do
         begin
-          AttrStr := '';
-          if pkIn in Params[J].Flags then
-            AttrStr := AttrStr + 'In';
-          if pkOut in Params[J].Flags then
+          if ParamStr <> '' then
+            ParamStr := ParamStr + ', ';
+          if Params[J].Flags <> [] then
           begin
-            if AttrStr <> '' then
-              AttrStr := AttrStr + ', ';
-            AttrStr := AttrStr + 'Out';
+            AttrStr := '';
+            if pkIn in Params[J].Flags then
+              AttrStr := AttrStr + 'In';
+            if pkOut in Params[J].Flags then
+            begin
+              if AttrStr <> '' then
+                AttrStr := AttrStr + ', ';
+              AttrStr := AttrStr + 'Out';
+            end;
+            if pkOptional in Params[J].Flags then
+            begin
+              if AttrStr <> '' then
+                AttrStr := AttrStr + ', ';
+              AttrStr := AttrStr + 'Opt';
+            end;
+            if pkHasDefault in Params[J].Flags then
+            begin
+              if AttrStr <> '' then
+                AttrStr := AttrStr + ', ';
+              AttrStr := AttrStr + 'Default';
+            end;
+            if pkHasFieldMarshal in Params[J].Flags then
+            begin
+              if AttrStr <> '' then
+                AttrStr := AttrStr + ', ';
+              AttrStr := AttrStr + 'Marshal';
+            end;
+            ParamStr := ParamStr + '[' + AttrStr + '] ';
           end;
-          if pkOptional in Params[J].Flags then
-          begin
-            if AttrStr <> '' then
-              AttrStr := AttrStr + ', ';
-            AttrStr := AttrStr + 'Opt';
-          end;
-          if pkHasDefault in Params[J].Flags then
-          begin
-            if AttrStr <> '' then
-              AttrStr := AttrStr + ', ';
-            AttrStr := AttrStr + 'Default';
-          end;
-          if pkHasFieldMarshal in Params[J].Flags then
-          begin
-            if AttrStr <> '' then
-              AttrStr := AttrStr + ', ';
-            AttrStr := AttrStr + 'Marshal';
-          end;
-          ParamStr := ParamStr + '[' + AttrStr + '] ';
+          ParamStr := ParamStr + Params[J].Name;
         end;
-        ParamStr := ParamStr + Params[J].Name;
+      end;
+      if Assigned(MethodBody) then
+      begin
+        Dump('%s.%s::%s(%s) @ %p:%d', [ParentToken.Namespace, ParentToken.Name, Name, ParamStr,
+          Pointer(RVA), MethodBody.Size]);
+        TfrmAbstract.DumpBuf(MethodBody.Code, MethodBody.Size, memDump, DWORD(MethodBody.Code), False);
+      end
+      else
+      begin
+        Dump('%s.%s::%s(%s)', [ParentToken.Namespace, ParentToken.Name, Name, ParamStr]);
       end;
     end;
-    if Assigned(MethodBody) then
-    begin
-      Dump('%s.%s::%s(%s) @ %p:%d', [ParentToken.Namespace, ParentToken.Name, Name, ParamStr, Pointer(RVA), MethodBody.Size]);
-      TfrmAbstract.DumpBuf(MethodBody.Code, MethodBody.Size, memDump, DWORD(MethodBody.Code), False);
-    end
-    else
-    begin
-      Dump('%s.%s::%s(%s)', [ParentToken.Namespace, ParentToken.Name, Name, ParamStr]);
-    end;
-  end;
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableFieldDef); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableFieldDef);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-    Dump('%s', [ATable.Rows[I].Name])
+  for I := 0 to ATable.RowCount - 1 do
+    Dump('%s', [ATable.Rows[I].Name]);
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableMemberRef); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableMemberRef);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-    Dump('%s', [ATable.Rows[I].Name])
+  for I := 0 to ATable.RowCount - 1 do
+    Dump('%s', [ATable.Rows[I].Name]);
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableCustomAttribute); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableCustomAttribute);
   function GetParent(const Attr: TJclClrTableCustomAttributeRow): string;
   var
     ARow: TJclClrTableRow;
   begin
-    ARow   := Attr.Parent;
+    ARow := Attr.Parent;
     if ARow is TJclClrTableAssemblyRow then
       with ARow as TJclClrTableAssemblyRow do
         Result := Name
-    else if ARow is TJclClrTableTypeDefRow then
+    else
+    if ARow is TJclClrTableTypeDefRow then
       with ARow as TJclClrTableTypeDefRow do
         Result := Namespace + '.' + Name
-    else if ARow is TJclClrTableTypeRefRow then
+    else
+    if ARow is TJclClrTableTypeRefRow then
       with ARow as TJclClrTableTypeRefRow do
         Result := Namespace + '.' + Name
-    else if ARow is TJclClrTableMethodDefRow then
+    else
+    if ARow is TJclClrTableMethodDefRow then
       with ARow as TJclClrTableMethodDefRow do
         Result := Name
-    else if ARow is TJclClrTableParamDefRow then
+    else
+    if ARow is TJclClrTableParamDefRow then
       with ARow as TJclClrTableParamDefRow do
         Result := Method.ParentToken.Namespace + '.' + Method.ParentToken.Name + '::' +
-                  Method.Name + '(..., ' + Name + ', ...)'
+          Method.Name + '(..., ' + Name + ', ...)'
     else
       Result := 'Unknown Parent';
 
-    Result := Result + ' <' + Copy(ARow.ClassName, Length('TJclClrTable')+1,
-        Length(ARow.ClassName)-Length('TJclClrTable')-Length('Row')) +
-        '> [' + IntToHex(Attr.ParentIdx, 8) + ']';
+    Result := Result + ' <' + Copy(ARow.ClassName, Length('TJclClrTable') + 1,
+      Length(ARow.ClassName) - Length('TJclClrTable') - Length('Row')) +
+      '> [' + IntToHex(Attr.ParentIdx, 8) + ']';
   end;
   function GetMethod(const Attr: TJclClrTableCustomAttributeRow): string;
     function GetParentClassName(const ParentClass: TJclClrTableRow): string;
@@ -488,15 +515,19 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableCustomAttribute);
       if ParentClass is TJclClrTableTypeRefRow then
         with ParentClass as TJclClrTableTypeRefRow do
           Result := Namespace + '.' + Name
-      else if ParentClass is TJclClrTableModuleRefRow then
+      else
+      if ParentClass is TJclClrTableModuleRefRow then
         with ParentClass as TJclClrTableModuleRefRow do
           Result := Name
-      else if ParentClass is TJclClrTableMethodDefRow then
+      else
+      if ParentClass is TJclClrTableMethodDefRow then
         with ParentClass as TJclClrTableMethodDefRow do
           Result := Name
-      else if ParentClass is TJclClrTableTypeSpecRow then
+      else
+      if ParentClass is TJclClrTableTypeSpecRow then
         Result := ''
-      else if ParentClass is TJclClrTableTypeDefRow then
+      else
+      if ParentClass is TJclClrTableTypeDefRow then
         with ParentClass as TJclClrTableTypeDefRow do
           Result := Namespace + '.' + Name
       else
@@ -509,20 +540,21 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableCustomAttribute);
     if AMethod is TJclClrTableMethodDefRow then
       with AMethod as TJclClrTableMethodDefRow do
         Result := ParentToken.Namespace + '.' + ParentToken.Name + ' :: ' + Name
-    else if AMethod is TJclClrTableMemberRefRow then
+    else
+    if AMethod is TJclClrTableMemberRefRow then
       with AMethod as TJclClrTableMemberRefRow do
         Result := GetParentClassName(ParentClass) + '::' + Name
     else
       Result := 'Unknown method type - ' + IntToHex(Attr.ParentIdx, 8);
 
-    Result := Result + ' <' + Copy(AMethod.ClassName, Length('TJclClrTable')+1,
-        Length(AMethod.ClassName)-Length('TJclClrTable')-Length('Row')) +
-        '> [' + IntToHex(Attr.TypeIdx, 8) + ']';
+    Result := Result + ' <' + Copy(AMethod.ClassName, Length('TJclClrTable') + 1,
+      Length(AMethod.ClassName) - Length('TJclClrTable') - Length('Row')) +
+      '> [' + IntToHex(Attr.TypeIdx, 8) + ']';
   end;
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Dump('Parent: ' + GetParent(ATable[I]));
     Dump('Method: ' + GetMethod(ATable[I]));
@@ -536,7 +568,7 @@ var
   I: Integer;
   Attr: string;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Attr := '';
     if pkIn in ATable.Rows[I].Flags then
@@ -554,27 +586,27 @@ begin
   end;
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTablePropertyDef); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTablePropertyDef);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-    Dump('%s', [ATable.Rows[I].Name])
+  for I := 0 to ATable.RowCount - 1 do
+    Dump('%s', [ATable.Rows[I].Name]);
 end;
 
-procedure TfrmTable.DumpTable(const ATable: TJclClrTableManifestResource); 
+procedure TfrmTable.DumpTable(const ATable: TJclClrTableManifestResource);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
-    Dump('%s', [ATable.Rows[I].Name])
+  for I := 0 to ATable.RowCount - 1 do
+    Dump('%s', [ATable.Rows[I].Name]);
 end;
 
 procedure TfrmTable.DumpTable(const ATable: TJclClrTableFile);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
   begin
     Dump('File Name: ' + ATable[I].Name);
     Dump('Contains Metadata: ' + BooleanToStr(ATable[I].ContainsMetadata));
@@ -586,7 +618,7 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableExportedType);
 var
   I: Integer;
 begin
-  for I:=0 to ATable.RowCount-1 do
+  for I := 0 to ATable.RowCount - 1 do
     Dump(ATable[I].TypeNamespace + '.' + ATable[I].TypeName);
 end;
 

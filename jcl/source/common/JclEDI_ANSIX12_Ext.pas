@@ -115,7 +115,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDITransactionSet := TransactionSet;
-  FEDISEFSet := SEFSet; 
+  FEDISEFSet := SEFSet;
   FEDITransactionSetSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -220,7 +220,7 @@ begin
     if I > J then
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
-         IntToStr(DataSegment.GetIndexPositionFromParent)]);
+        IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];
   end;
 end;

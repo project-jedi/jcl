@@ -229,7 +229,7 @@ begin
   begin
     AFrame.PageActivated(Direction);
     AFrame.Visible := True;
-    LabelProgression.Caption := Format(RsWizardProgression, [PageIndex+1 {one based}, PageCount, AFrame.Caption]);
+    LabelProgression.Caption := Format(RsWizardProgression, [PageIndex + 1 {one based}, PageCount, AFrame.Caption]);
   end;
 end;
 

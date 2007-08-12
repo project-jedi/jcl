@@ -38,7 +38,7 @@ uses
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfSet,
-      IJclIntfCloneable)
+    IJclIntfCloneable)
   private
     function BinarySearch(const AInterface: IInterface): Integer;
   protected
@@ -415,4 +415,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

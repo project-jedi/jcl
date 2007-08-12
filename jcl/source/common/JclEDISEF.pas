@@ -95,8 +95,8 @@ const
 
   EDISEFUserAttributeSet =
     [EDISEFUserAttributePeriod, EDISEFUserAttributeExclamationPoint,
-     EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
-     EDISEFUserAttributeAmpersand];
+    EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
+    EDISEFUserAttributeAmpersand];
 
 const
   // EDI SEF Text,Sets Constants
@@ -495,7 +495,7 @@ type
 
   published
     property UserAttribute: string read FUserAttribute write FUserAttribute;
-    property Position: Integer read FPosition write FPosition;    
+    property Position: Integer read FPosition write FPosition;
     property PositionIncrement: Integer read FPositionIncrement write FPositionIncrement;
     property ResetPositionInc: Boolean read FResetPositionInc write FResetPositionInc;
     property Ordinal: Integer read FOrdinal write FOrdinal;
@@ -854,8 +854,8 @@ begin
       Result := EDISEFUserAttributeHyphenDesc;
     caAmpersand:
       Result := EDISEFUserAttributeAmpersandDesc;
-  else
-    Result := RsUnknownAttribute;
+    else
+      Result := RsUnknownAttribute;
   end;
 end;
 
@@ -874,8 +874,8 @@ begin
       Result := EDISEFUserAttributeHyphenDesc;
     EDISEFUserAttributeAmpersand:
       Result := EDISEFUserAttributeAmpersandDesc;
-  else
-    Result := RsUnknownAttribute;
+    else
+      Result := RsUnknownAttribute;
   end;
 end;
 
@@ -945,7 +945,7 @@ begin
   K := StrSearch(SEFDelimiter_SemiColon, Data, 1);
   L := StrSearch(SEFDelimiter_Colon, Data, 1);
   M := StrSearch(SEFDelimiter_Comma, Data, 1);
-  N := StrSearch(SEFDelimiter_Comma, Data, M + 1); 
+  N := StrSearch(SEFDelimiter_Comma, Data, M + 1);
   P := Length(Data) + 1;
   // Parse Id using the closest delimiter
   O := P;
@@ -1133,8 +1133,8 @@ begin
   // Parse other attributes
   if J <> 0 then
   begin
-    Inc(J);                                       
-    O := P; 
+    Inc(J);
+    O := P;
     if K <> 0 then
       if O > K then
         O := K;
@@ -1540,7 +1540,7 @@ begin
     if (Segment.RequirementDesignator = '') or
       (Segment.RequirementDesignator = Value_Optional) then
       Result := Result + SEFDelimiter_Comma;
-    if Segment.MaximumUse >= Value_UndefinedMaximum then    
+    if Segment.MaximumUse >= Value_UndefinedMaximum then
       Result := Result + SEFDelimiter_Comma + Value_GreaterThanOne
     else
       Result := Result + SEFDelimiter_Comma + IntToStr(Segment.MaximumUse);
@@ -1552,7 +1552,7 @@ procedure ParseLoopDataOfSETSDefinition(Data: string; Loop: TEDISEFLoop;
 var
   I, J, K, L, M, N: Integer;
   SegmentData: string;
-  PositionIncrement: string;  
+  PositionIncrement: string;
   RepeatCount: Integer;
   LoopId, RepeatData: string;
   Segment: TEDISEFSegment;
@@ -1584,7 +1584,7 @@ begin
       if (N < I) and (N <> 0) then
         L := N;
       if L <> 0 then
-        PositionIncrement := Copy(Data, L, (I - L));      
+        PositionIncrement := Copy(Data, L, (I - L));
 
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
@@ -1631,7 +1631,7 @@ begin
         RepeatData := Value_One;
       RepeatCount := StrToInt(RepeatData);
       // Correct start position
-      K := N;      
+      K := N;
       // Validate end position
       N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
@@ -1647,7 +1647,7 @@ begin
       NestedLoop := Loop.AddLoop;
       NestedLoop.SEFFile := SEFFile;
       NestedLoop.LoopId := LoopId;
-      NestedLoop.MaximumRepeat := RepeatCount;                
+      NestedLoop.MaximumRepeat := RepeatCount;
       NestedLoop.Data := RepeatData;
       NestedLoop.Disassemble;
       if NestedLoop.LoopId = '' then
@@ -1696,7 +1696,7 @@ begin
       if (N < I) and (N <> 0) then
         L := N;
       if L <> 0 then
-        PositionIncrement := Copy(Data, L, (I - L));          
+        PositionIncrement := Copy(Data, L, (I - L));
 
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
@@ -1826,7 +1826,7 @@ begin
       ExtractFromDataObjectGroup(DataObjectClass, RepeatingPattern, ObjectList);
     end;
     ListItem := ListItem.NextItem;
-  end; 
+  end;
 end;
 
 procedure ExtractFromDataObjectGroup(DataObjectClasses: array of TEDISEFDataObjectClass;
@@ -2708,7 +2708,7 @@ begin
     else
     if DataObject is TEDISEFSegment then
       Result := TEDISEFSegment(DataObject).GetTextSetsLocation;
-  end; 
+  end;
   if Result <> '' then
     Result := Result + '~' + IntToStr(FOrdinal);
 end;
@@ -2887,7 +2887,7 @@ begin
     if TEDISEFRepeatingPattern(FParent).BaseParent is TEDISEFSegment then
       ParseCOMSDataOfSEGSDefinition(FData, Self, FSEFFile.COMS);
   end;
-  UpdateOwnerItemName;  
+  UpdateOwnerItemName;
   AssignElementOrdinals;
 end;
 
@@ -2930,7 +2930,7 @@ begin
           Element.OutOfSequenceOrdinal := True;
         end;
       end;
-    end; 
+    end;
   finally
     ElementList.Free;
   end;
@@ -3135,7 +3135,7 @@ begin
   else
   if (FParent is TEDISEFTable) or (FParent is TEDISEFLoop) then
     ParseSEGSDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;    
+  UpdateOwnerItemName;
   AssignElementOrdinals;
 end;
 
@@ -3242,7 +3242,7 @@ begin
         CompositeElement := TEDISEFCompositeElement(ElementList[I]);
         CompositeElement.BindTextSets(FSEFFile.TEXTSETS);
       end;
-    end; 
+    end;
   finally
     ElementList.Free;
   end;
@@ -3352,7 +3352,7 @@ end;
 constructor TEDISEFLoop.Create(Parent: TEDISEFDataObject);
 begin
   inherited Create(Parent);
-  FMaximumRepeat := Value_UndefinedMaximum; 
+  FMaximumRepeat := Value_UndefinedMaximum;
 end;
 
 destructor TEDISEFLoop.Destroy;
@@ -3428,7 +3428,7 @@ procedure TEDISEFLoop.Disassemble;
 begin
   // FParent is TEDISEFTable
   ParseLoopDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;  
+  UpdateOwnerItemName;
 end;
 
 function TEDISEFLoop.GetParentLoopId: string;
@@ -3694,7 +3694,7 @@ procedure TEDISEFSet.Disassemble;
 begin
   // FParent is TEDISEFFile
   ParseSetsDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;  
+  UpdateOwnerItemName;
   // Assign segment ordinals that were not explicitly defined
   AssignSegmentOrdinals;
   // Assign segment positions
@@ -3705,7 +3705,7 @@ begin
   if Tables.Count = 3 then
   begin
     // (rom) make resourcestrings?
-    Table[0].Id := 'Heading';             
+    Table[0].Id := 'Heading';
     Table[1].Id := 'Detail';
     Table[2].Id := 'Summary';
   end;
@@ -3713,7 +3713,7 @@ end;
 
 function TEDISEFSet.GetEDISEFTable(Index: Integer): TEDISEFTable;
 begin
-  Result := TEDISEFTable(FEDISEFDataObjects[Index])
+  Result := TEDISEFTable(FEDISEFDataObjects[Index]);
 end;
 
 procedure TEDISEFSet.BuildSegmentObjectListFromLoop(ObjectList: TObjectList; Loop: TEDISEFLoop);
@@ -3728,7 +3728,7 @@ begin
     if ListItem.EDISEFDataObject is TEDISEFSegment then
     begin
       Segment := TEDISEFSegment(ListItem.EDISEFDataObject);
-      ObjectList.Add(Segment)
+      ObjectList.Add(Segment);
     end
     else
     if ListItem.EDISEFDataObject is TEDISEFLoop then
@@ -3821,7 +3821,7 @@ begin
       Segment := TEDISEFSegment(SegmentList[I]);
       Segment.BindTextSets(FSEFFile.TEXTSETS);
       Segment.BindElementTextSets;
-    end; 
+    end;
   finally
     SegmentList.Free;
   end;
@@ -3978,7 +3978,7 @@ procedure TEDISEFFile.Disassemble;
 begin
   // Must parse file in reverse order to build specification from the dictionary values
   // .TEXT,SETS
-  ParseTextSets;   
+  ParseTextSets;
   // .CODES
   ParseCodes;
   // .ELMS
@@ -4093,7 +4093,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         CompositeElement := TEDISEFCompositeElement.Create(Self);
-        FEDISEFComs.Add(CompositeElement);        
+        FEDISEFComs.Add(CompositeElement);
         CompositeElement.Data := TempList[I];
         CompositeElement.SEFFile := Self;
         if CompositeElement.Data <> '' then
@@ -4126,7 +4126,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         Element := TEDISEFElement.Create(Self);
-        FEDISEFElms.Add(Element);        
+        FEDISEFElms.Add(Element);
         Element.Data := TempList[I];
         Element.SEFFile := Self;
         if Element.Data <> '' then
@@ -4182,7 +4182,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         Segment := TEDISEFSegment.Create(Self);
-        FEDISEFSegs.Add(Segment);        
+        FEDISEFSegs.Add(Segment);
         Segment.Data := TempList[I];
         Segment.SEFFile := Self;
         if Segment.Data <> '' then
@@ -4215,7 +4215,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         TransactionSet := TEDISEFSet.Create(Self);
-        FEDISEFSets.Add(TransactionSet);        
+        FEDISEFSets.Add(TransactionSet);
         TransactionSet.Data := TempList[I];
         TransactionSet.SEFFile := Self;
         if TransactionSet.Data <> '' then
@@ -4273,7 +4273,7 @@ begin
     SearchResult := SearchResult + Length(SectionTag_VER);
     SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
-      FEDISEFVer := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1)       
+      FEDISEFVer := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1)
     else
       FEDISEFVer := Copy(FData, SearchResult + 1, (Length(FData) - SearchResult) - 2);
     if FEDISEFVer = '' then
@@ -4308,7 +4308,7 @@ procedure TEDISEFTable.Disassemble;
 begin
   // FParent is TEDISEFSet
   ParseTableDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;  
+  UpdateOwnerItemName;
 end;
 
 function TEDISEFFile.GetEDISEFCodesList: TStrings;
@@ -4421,7 +4421,7 @@ begin
     if FBaseParent is TEDISEFSegment then
       InternalParseSEGSDataOfSEGSDefinition(FData, Self, FSEFFile);
   end;
-  UpdateOwnerItemName;  
+  UpdateOwnerItemName;
 end;
 
 procedure TEDISEFRepeatingPattern.SetParent(const Value: TEDISEFDataObject);
@@ -4539,30 +4539,48 @@ begin
   case FEDISEFWhereType of
     twSet:
       case FWhat[1] of
-        SEFTextSetsCode_Set0: Result := SEFTextSetsCode_Set0_Desc;
-        SEFTextSetsCode_Set1: Result := SEFTextSetsCode_Set1_Desc;
-        SEFTextSetsCode_Set2: Result := SEFTextSetsCode_Set2_Desc;
-        SEFTextSetsCode_Set3: Result := SEFTextSetsCode_Set3_Desc;
-        SEFTextSetsCode_Set4: Result := SEFTextSetsCode_Set4_Desc;
-        SEFTextSetsCode_Set5: Result := SEFTextSetsCode_Set5_Desc;
+        SEFTextSetsCode_Set0:
+          Result := SEFTextSetsCode_Set0_Desc;
+        SEFTextSetsCode_Set1:
+          Result := SEFTextSetsCode_Set1_Desc;
+        SEFTextSetsCode_Set2:
+          Result := SEFTextSetsCode_Set2_Desc;
+        SEFTextSetsCode_Set3:
+          Result := SEFTextSetsCode_Set3_Desc;
+        SEFTextSetsCode_Set4:
+          Result := SEFTextSetsCode_Set4_Desc;
+        SEFTextSetsCode_Set5:
+          Result := SEFTextSetsCode_Set5_Desc;
       end;
     twSegment:
       case FWhat[1] of
-        SEFTextSetsCode_Seg0: Result := SEFTextSetsCode_Seg0_Desc;
-        SEFTextSetsCode_Seg1: Result := SEFTextSetsCode_Seg1_Desc;
-        SEFTextSetsCode_Seg2: Result := SEFTextSetsCode_Seg2_Desc;
-        SEFTextSetsCode_Seg3: Result := SEFTextSetsCode_Seg3_Desc;
-        SEFTextSetsCode_Seg4: Result := SEFTextSetsCode_Seg4_Desc;
-        SEFTextSetsCode_Seg5: Result := SEFTextSetsCode_Seg5_Desc;
-        SEFTextSetsCode_Seg6: Result := SEFTextSetsCode_Seg6_Desc;
-        SEFTextSetsCode_Seg7: Result := SEFTextSetsCode_Seg7_Desc;
+        SEFTextSetsCode_Seg0:
+          Result := SEFTextSetsCode_Seg0_Desc;
+        SEFTextSetsCode_Seg1:
+          Result := SEFTextSetsCode_Seg1_Desc;
+        SEFTextSetsCode_Seg2:
+          Result := SEFTextSetsCode_Seg2_Desc;
+        SEFTextSetsCode_Seg3:
+          Result := SEFTextSetsCode_Seg3_Desc;
+        SEFTextSetsCode_Seg4:
+          Result := SEFTextSetsCode_Seg4_Desc;
+        SEFTextSetsCode_Seg5:
+          Result := SEFTextSetsCode_Seg5_Desc;
+        SEFTextSetsCode_Seg6:
+          Result := SEFTextSetsCode_Seg6_Desc;
+        SEFTextSetsCode_Seg7:
+          Result := SEFTextSetsCode_Seg7_Desc;
       end;
     twElementOrCompositeElement, twSubElement:
       case FWhat[1] of
-        SEFTextSetsCode_Elm0: Result := SEFTextSetsCode_Elm0_Desc;
-        SEFTextSetsCode_Elm1: Result := SEFTextSetsCode_Elm1_Desc;
-        SEFTextSetsCode_Elm2: Result := SEFTextSetsCode_Elm2_Desc;
-        SEFTextSetsCode_Elm4: Result := SEFTextSetsCode_Elm4_Desc;
+        SEFTextSetsCode_Elm0:
+          Result := SEFTextSetsCode_Elm0_Desc;
+        SEFTextSetsCode_Elm1:
+          Result := SEFTextSetsCode_Elm1_Desc;
+        SEFTextSetsCode_Elm2:
+          Result := SEFTextSetsCode_Elm2_Desc;
+        SEFTextSetsCode_Elm4:
+          Result := SEFTextSetsCode_Elm4_Desc;
       end;
   end;
 end;

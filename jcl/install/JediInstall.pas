@@ -36,11 +36,11 @@ uses
 type
   TJediInstallGUIOption =
     (
-      goExpandable,
-      goRadioButton,
-      goNoAutoCheck,            // do not auto-check when the parent node gets checked
-      goStandaloneParent,       // do not auto-uncheck when all child nodes are unchecked
-      goChecked
+    goExpandable,
+    goRadioButton,
+    goNoAutoCheck,            // do not auto-check when the parent node gets checked
+    goStandaloneParent,       // do not auto-uncheck when all child nodes are unchecked
+    goChecked
     );
   TJediInstallGUIOptions = set of TJediInstallGUIOption;
 
@@ -146,7 +146,7 @@ type
     ['{90E201C9-EA6B-446A-9251-D2516867874D}']
   end;
 
-  TInstallEvent = procedure of Object;
+  TInstallEvent = procedure of object;
 
   // GUI abstraction layer
   IJediInstallGUI = interface
@@ -240,16 +240,16 @@ var
 function InstallCore: TJediInstallCore;
 
 resourcestring
-  RsCantFindFiles    = 'Can not find installation files, check your installation.';
-  RsCloseRADTool     = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
-  RsConfirmInstall   = 'Are you sure to install all selected features?';
+  RsCantFindFiles = 'Can not find installation files, check your installation.';
+  RsCloseRADTool = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
+  RsConfirmInstall = 'Are you sure to install all selected features?';
   RsConfirmUninstall = 'Do you really want to uninstall the JCL?';
-  RsInstallSuccess   = 'Installation finished';
-  RsInstallFailure   = 'Installation failed.'#10'Check compiler output for details.';
-  RsNoInstall        = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
-  RsUpdateNeeded     = 'You should install latest Update Pack #%d for %s.'#13#10 +
-                       'Would you like to open Borland support web page?';
-  RsHintTarget       = 'Installation target';
+  RsInstallSuccess = 'Installation finished';
+  RsInstallFailure = 'Installation failed.'#10'Check compiler output for details.';
+  RsNoInstall = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
+  RsUpdateNeeded = 'You should install latest Update Pack #%d for %s.'#13#10 +
+    'Would you like to open Borland support web page?';
+  RsHintTarget = 'Installation target';
 
 implementation
 
@@ -288,7 +288,7 @@ begin
   if Closing then
     Exit;
   FClosing := True;
-  
+
   for Index := FProducts.Size - 1 downto 0 do
     (FProducts.GetObject(Index) as IJediProduct).Close;
   FProducts.Clear;
@@ -300,7 +300,7 @@ end;
 constructor TJediInstallCore.Create;
 begin
   inherited Create(nil);
-  
+
   FOptions := TStringList.Create;
   FProducts := TJclIntfArrayList.Create;
   FClosing := False;
@@ -460,10 +460,11 @@ begin
 
   if IsCompileFileLine(Line) then
   begin
-    LineType:= clFileProgress;
+    LineType := clFileProgress;
     Result := '';
   end
-  else if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ', 'conseil: ']) then // do not localize
+  else
+  if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ', 'conseil: ']) then // do not localize
   begin
     // hide hint about getter/setter names
     if (Pos(' H2369 ', Line) = 0) then
@@ -475,7 +476,8 @@ begin
     else
       Result := '';
   end
-  else if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
+  else
+  if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
   begin
     // hide platform warnings
     if (Pos(' W1002 ', Line) = 0) then
@@ -487,19 +489,22 @@ begin
     else
       Result := '';
   end
-  else if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
+  else
+  if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
   begin
     LineType := clError;
     if Assigned(Page) then
       Page.AddError(Line);
   end
-  else if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
+  else
+  if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
   begin
     LineType := clFatal;
     if Assigned(Page) then
       Page.AddFatal(Line);
   end
-  else if Assigned(Page) then
+  else
+  if Assigned(Page) then
     Page.AddText(Line);
 end;
 
@@ -515,6 +520,6 @@ initialization
 
 finalization
 
-InternalInstallCore.Free;
+  InternalInstallCore.Free;
 
 end.

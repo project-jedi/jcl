@@ -97,7 +97,7 @@ end;
 
 function TMyObjectList.Contains(AObject: TMyObject): Boolean;
 begin
-Result := inherited Contains(AObject);
+  Result := inherited Contains(AObject);
 end;
 
 function TMyObjectList.GetObject(Index: Integer): TMyObject;
@@ -131,4 +131,3 @@ begin
 end;
 
 end.
-

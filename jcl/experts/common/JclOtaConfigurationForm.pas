@@ -151,7 +151,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -197,9 +198,9 @@ begin
   LabelHomePage.Caption := RsHomePage;
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-            Settings.LoadInteger(JclTop, Top),
-            Settings.LoadInteger(JclWidth, Width),
-            Settings.LoadInteger(JclHeight, Height));
+    Settings.LoadInteger(JclTop, Top),
+    Settings.LoadInteger(JclWidth, Width),
+    Settings.LoadInteger(JclHeight, Height));
   PanelTree.Width := Settings.LoadInteger(JclPanelTreeWidth, PanelTree.Width);
 end;
 

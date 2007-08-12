@@ -69,7 +69,7 @@ type
 //  - notifier callback functions
 //  - ... (non exhaustive list)
 
-  EJclExpertException = class (Exception)
+  EJclExpertException = class(Exception)
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;
@@ -82,7 +82,7 @@ type
   {$ENDIF MSWINDOWS}
   end;
 
-  TJclOTASettings = class (TObject)
+  TJclOTASettings = class(TObject)
   private
     FKeyName: string;
     FBaseKeyName: string;
@@ -107,7 +107,7 @@ type
   // between this unit and the JclOtaConfigurationForm unit.
   IJclOTAOptionsCallback = interface;
 
-  TJclOTAAddPageFunc = procedure (AControl: TControl; PageName: string;
+  TJclOTAAddPageFunc = procedure(AControl: TControl; PageName: string;
     Expert: IJclOTAOptionsCallback) of object;
 
   IJclOTAOptionsCallback = interface
@@ -151,7 +151,7 @@ type
     destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    
+
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
     function GetDrcFileName(const Project: IOTAProject): string;
@@ -245,10 +245,10 @@ begin
   try
     Result := nil;
     if Assigned(GlobalActionList) then
-      for Index := 0 to GlobalActionList.Count-1 do
+      for Index := 0 to GlobalActionList.Count - 1 do
       begin
         TestAction := TCustomAction(GlobalActionList.Items[Index]);
-        if (CompareText(Name,TestAction.Name) = 0) then
+        if (CompareText(Name, TestAction.Name) = 0) then
           Result := TestAction;
       end;
     {$IFNDEF COMPILER6_UP}
@@ -325,12 +325,12 @@ var
 begin
   inherited Create;
 
-  Supports(BorlandIDEServices,IOTAServices,OTAServices);
+  Supports(BorlandIDEServices, IOTAServices, OTAServices);
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
   FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
-  
+
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
@@ -531,7 +531,7 @@ begin
   end;
 end;
 
-procedure TJclOTAExpertBase.AddConfigurationPages(  
+procedure TJclOTAExpertBase.AddConfigurationPages(
   AddPageFunc: TJclOTAAddPageFunc);
 begin
   // AddPageFunc uses '\' as a separator in PageName to build a tree
@@ -565,7 +565,7 @@ begin
   RegisterSplashScreen;
   RegisterAboutBox;
   {$ENDIF BDS}
-  
+
   Supports(BorlandIDEServices, IOTAServices, FServices);
   if not Assigned(FServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
@@ -673,7 +673,7 @@ function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
-    
+
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
@@ -715,7 +715,7 @@ begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
   if IsPackage(Project) then
   begin
@@ -740,7 +740,8 @@ begin
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
-  else if not PathIsAbsolute(Result) then
+  else
+  if not PathIsAbsolute(Result) then
     Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
@@ -920,14 +921,14 @@ begin
         begin
           for Index := 0 to SourceNode.Items.Count - 1 do
             if AnsiSameText(SourceNode.Items.Item[0].Name, 'Source') then
-          begin
-            NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
-            if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
             begin
-              Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
-              Break;
+              NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
+              if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
+              begin
+                Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
+                Break;
+              end;
             end;
-          end;
         end;
       end;
     finally
@@ -1017,7 +1018,7 @@ begin
       Result := StringReplace(Result, Format('$(%s)', [Name]),
         FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
     end;
-  While Pos('\\', Result) > 0 do
+  while Pos('\\', Result) > 0 do
     Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
 end;
 
@@ -1050,7 +1051,7 @@ procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
 begin
   if Action.Name <> '' then
     ActionSettings.SaveInteger(Action.Name, Action.ShortCut);
-    
+
   if Assigned(GlobalActionList) then
   begin
     GlobalActionList.Remove(Action);
@@ -1110,7 +1111,7 @@ begin
     ConfigurationAction.ActionList := NTAServices.ActionList;
     RegisterAction(ConfigurationAction);
   end;
-  
+
   if not Assigned(ConfigurationMenuItem) then
   begin
     IDEMenuItem := NTAServices.MainMenu.Items;
@@ -1239,25 +1240,25 @@ end;
 
 initialization
 
-Classes.RegisterClass(TJclWizardForm);
-Classes.RegisterClass(TJclWizardFrame);
+  Classes.RegisterClass(TJclWizardForm);
+  Classes.RegisterClass(TJclWizardFrame);
 
 finalization
 
-try
+  try
   {$IFDEF BDS}
   UnregisterAboutBox;
   {$ENDIF BDS}
-  FreeAndNil(GlobalActionList);
-  FreeAndNil(GlobalActionSettings);
-  FreeAndNil(GlobalExpertList);
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
+    FreeAndNil(GlobalActionList);
+    FreeAndNil(GlobalActionSettings);
+    FreeAndNil(GlobalExpertList);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
-end;
 
 //=== Helper routines ========================================================
 

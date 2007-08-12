@@ -157,16 +157,17 @@ begin
           if PD.RelocateCnt = 0 then
             ImageIndex := 20
           else
-            ImageIndex := 19;  
+            ImageIndex := 19;
           with SubItems do
           begin
             Add(IntToStr(PD.UsageCnt));
-            if PD.RelocateCnt = 0 then Add('-') else Add(IntToStr(PD.RelocateCnt));
+            if PD.RelocateCnt = 0 then
+              Add('-') else Add(IntToStr(PD.RelocateCnt));
             Add(ML[I]);
-          end;  
+          end;
         end;
-       AlphaSort;
-       Items.EndUpdate;
+      AlphaSort;
+      Items.EndUpdate;
     end;
 
     with StatusBar do
@@ -239,7 +240,7 @@ end;
 
 procedure TModulesDumpForm.DumpPe1Update(Sender: TObject);
 begin
-  DumpPe1.Enabled := GlobalModule.PeViewerRegistred and Assigned(ModulesListView.Selected)
+  DumpPe1.Enabled := GlobalModule.PeViewerRegistred and Assigned(ModulesListView.Selected);
 end;
 
 end.

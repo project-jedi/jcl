@@ -40,7 +40,7 @@ const
 
 type
   TJclRegisterType = (rtXMM, rtMM);
-  
+
   TJclSIMDModifyFrm = class(TForm)
     ComboBoxDisplay: TComboBox;
     ComboBoxFormat: TComboBox;
@@ -110,10 +110,10 @@ implementation
 
 const
   NbEdits: array [TJclRegisterType, TJclXMMContentType] of Byte =
-   (
+    (
     (16, 8, 4, 2, 4, 2),
-    ( 8, 4, 2, 1, 2, 1)
-   );
+    (8, 4, 2, 1, 2, 1)
+    );
 
   Texts: array [TJclXMMContentType] of string =
     ('Byte', 'Word', 'DWord', 'QWord', 'Single', 'Double');
@@ -147,7 +147,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -302,10 +303,10 @@ begin
           xt4Singles:
             Value.ValueSingle := MMRegister.Singles[ALabel.Tag];
           xt2Doubles:
-            begin
-              ALabel.Caption := '';
-              Break;
-            end;
+          begin
+            ALabel.Caption := '';
+            Break;
+          end;
         end;
     end;
     ALabel.Caption := SysUtils.Format('%s%d = %s', [Texts[Display], Index, FormatValue(Value, Format)]);
@@ -368,13 +369,13 @@ begin
   for I := 0 to PanelModify.ControlCount - 1 do
     if PanelModify.Controls[I] is TComboBox then
       with TComboBox(PanelModify.Controls[I]) do
-  begin
-    for J := 0 to Items.Count - 1 do
-      if (Items.Strings[J] <> '') and (History.IndexOf(Items.Strings[J]) = -1) then
-        History.Add(Items.Strings[J]);
-    if (Text <> '') and (History.IndexOf(Text) = -1) then
-      History.Add(Text);
-  end;
+      begin
+        for J := 0 to Items.Count - 1 do
+          if (Items.Strings[J] <> '') and (History.IndexOf(Items.Strings[J]) = -1) then
+            History.Add(Items.Strings[J]);
+        if (Text <> '') and (History.IndexOf(Text) = -1) then
+          History.Add(Text);
+      end;
   while History.Count > HistoryListSize do
     History.Delete(0);
 end;
@@ -407,7 +408,7 @@ var
   EvaluateResult: TOTAEvaluateResult;
   AValue: TJclSIMDValue;
   AComboBox: TComboBox;
-  ResultBuffer: array [0..ResultBufferSize-1] of Char;
+  ResultBuffer: array [0..ResultBufferSize - 1] of Char;
   ResultAddr, ResultSize: Cardinal;
   CanModify: Boolean;
   VectorFrame: TJclVectorFrame;
@@ -422,7 +423,7 @@ begin
   begin
     if (FTextIndex >= 0) and (FResultStr <> '') then
     begin
-      if (ParseValue(FResultStr,AValue,Format)) then
+      if (ParseValue(FResultStr, AValue, Format)) then
         case RegisterType of
           rtXMM:
             case AValue.Display of

@@ -3,7 +3,7 @@ unit QEnvironmentExampleMain;
 interface
 
 uses
-  SysUtils, Classes, QControls, QForms, QComCtrls, 
+  SysUtils, Classes, QControls, QForms, QComCtrls,
   JclSysInfo;
 
 type
@@ -73,4 +73,3 @@ begin
 end;
 
 end.
-

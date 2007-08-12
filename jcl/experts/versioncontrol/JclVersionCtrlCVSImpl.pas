@@ -35,7 +35,7 @@ uses
   VersionControlImpl;
 
 type
-  TJclVersionControlCVS = class (TJclVersionControlPlugin)
+  TJclVersionControlCVS = class(TJclVersionControlPlugin)
   private
     FTortoiseCVSAct: string;
   protected
@@ -107,8 +107,8 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: string;
     ProcessInfo: TProcessInformation;
     CurrentDir, CommandLine: string;
   begin
-    FillChar(StartupInfo,SizeOf(TStartupInfo),#0);
-    FillChar(ProcessInfo,SizeOf(TProcessInformation),#0);
+    FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
+    FillChar(ProcessInfo, SizeOf(TProcessInformation), #0);
     startupInfo.cb := SizeOf(TStartupInfo);
     startupInfo.dwFlags := STARTF_USESHOWWINDOW;
     startupInfo.wShowWindow := SW_SHOW;
@@ -122,7 +122,7 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: string;
       CurrentDir := FileName
     else
       CurrentDir := ExtractFilePath(FileName);
-      
+
     CommandLine := Format('%s %s -l "%s"', [FTortoiseCVSAct, ActionName, PathRemoveSeparator(FileName)]);
 
     Result := CreateProcess(nil, PChar(CommandLine), nil,
@@ -212,10 +212,10 @@ begin
         Added := False;
         for Index := 0 to Entries.Count - 1 do
           if Pos(FileNameLine, AnsiUpperCase(Entries.Strings[Index])) = 1 then
-        begin
-          Added := True;
-          Break;
-        end;
+          begin
+            Added := True;
+            Break;
+          end;
 
         if Added then
         // TODO: check modifications
@@ -235,10 +235,10 @@ begin
   Result := inherited GetSupportedActions;
   if Enabled then
     Result := Result + [vcaAdd, vcaAddSandbox, vcaBlame, vcaBranch,
-    vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox,
-    vcaDiff, vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox,
-    vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
-    vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
+      vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox,
+      vcaDiff, vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox,
+      vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
+      vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
 end;
 
 function TJclVersionControlCVS.GetIcon(
@@ -327,11 +327,11 @@ begin
     if Enabled then
       for Index := Length(FileName) downto 1 do
         if FileName[Index] = DirDelimiter then
-    begin
-      DirectoryName := Copy(FileName, 1, Index);
-      if DirectoryExists(DirectoryName + JclVersionCtrlCVSDirectory) then
-        SdBxNames.Add(DirectoryName);
-    end;
+        begin
+          DirectoryName := Copy(FileName, 1, Index);
+          if DirectoryExists(DirectoryName + JclVersionCtrlCVSDirectory) then
+            SdBxNames.Add(DirectoryName);
+        end;
 
     if SdBxNames.Count = 0 then
       Result := inherited GetSandboxNames(FileName, SdBxNames);
@@ -342,26 +342,26 @@ end;
 
 initialization
 
-try
-  TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlCVS);
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
+  try
+    TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlCVS);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
-end;
 
 finalization
 
-try
-  TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlCVS);
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
+  try
+    TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlCVS);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
-end;
 
 end.

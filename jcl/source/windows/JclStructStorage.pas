@@ -252,7 +252,8 @@ type
   {$EXTERNALSYM tagSTGOPTIONS}
   TStgOptions = tagSTGOPTIONS;
 
-  TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint;
+    grfAttrs: DWORD; pStgOptions:
     PStgOptions;
     reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
   TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
@@ -339,7 +340,7 @@ begin
     Result := nil
   else
   begin
-    Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
+    Result := AllocMem((Length(S) + 1) * SizeOf(WideChar));
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
     // (outchy) length(S) is the number of characters, not the size in bytes
     // (rom) fixed output buffer size (see Win32 help)
@@ -508,15 +509,15 @@ begin
     if not Result then
       Exit;
     while Succeeded(Enum.Next(1, Stat, @NumFetch)) and (NumFetch = 1) do
-    try
-      if Folders and (Stat.dwType = STGTY_STORAGE) then
-        Strings.Add(WideCharToString(Stat.pwcsName))
-      else
-      if not Folders and (Stat.dwType = STGTY_STREAM) then
-        Strings.Add(WideCharToString(Stat.pwcsName));
-    finally
-      CoMallocFree(Stat.pwcsName);
-    end;
+      try
+        if Folders and (Stat.dwType = STGTY_STORAGE) then
+          Strings.Add(WideCharToString(Stat.pwcsName))
+        else
+        if not Folders and (Stat.dwType = STGTY_STREAM) then
+          Strings.Add(WideCharToString(Stat.pwcsName));
+      finally
+        CoMallocFree(Stat.pwcsName);
+      end;
   finally
     Strings.EndUpdate;
   end;
@@ -785,4 +786,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
