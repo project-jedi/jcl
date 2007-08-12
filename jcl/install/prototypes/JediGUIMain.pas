@@ -164,6 +164,9 @@ begin
 
   {$IFDEF VCL}
   TitlePanel.DoubleBuffered := True;
+  {$IFDEF COMPILER7_UP}
+  TitlePanel.ParentBackground := False;
+  {$ENDIF}
   {$ELSE}
   //WindowState := wsMaximized; // wouldn't work in Form resource
   {$ENDIF}
