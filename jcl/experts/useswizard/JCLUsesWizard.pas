@@ -45,8 +45,7 @@ type
     LineNumber: Integer;
     Identifier: array [0..MAX_PATH - 1] of Char;
     // resolved by wizard
-    UsesName: array [0..MAX_PATH - 1] of Char;
- // unit name to be added to uses clause
+    UsesName: array [0..MAX_PATH - 1] of Char; // unit name to be added to uses clause
   end;
 
   TJCLUsesWizard = class(TJclOTAExpert)
@@ -76,30 +75,23 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl;
-      SaveChanges: Boolean); override;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
     property Active: Boolean read FActive write SetActive;
-    property ConfirmChanges: Boolean
-      read FConfirmChanges write FConfirmChanges;
+    property ConfirmChanges: Boolean read FConfirmChanges write FConfirmChanges;
     property IniFile: string read FIniFile write FIniFile;
   end;
 
-  TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier,
-    IOTAIDENotifier, IOTAIDENotifier50)
+  TJCLUsesWizardNotifier = class(TNotifierObject, IOTANotifier, IOTAIDENotifier, IOTAIDENotifier50)
   private
     FWizard: TJclUsesWizard;
   public
     { IOTAIDENotifier }
     procedure AfterCompile(Succeeded: Boolean); overload;
-    procedure BeforeCompile(const Project: IOTAProject;
-      var Cancel: Boolean); overload;
-    procedure FileNotification(NotifyCode: TOTAFileNotification;
-      const FileName: string; var Cancel: Boolean);
+    procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); overload;
+    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
     { IOTAIDENotifier50 }
-    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean);
-      overload;
-    procedure BeforeCompile(const Project: IOTAProject;
-      IsCodeInsight: Boolean; var Cancel: Boolean); overload;
+    procedure AfterCompile(Succeeded: Boolean; IsCodeInsight: Boolean); overload;
+    procedure BeforeCompile(const Project: IOTAProject; IsCodeInsight: Boolean; var Cancel: Boolean); overload;
   public
     constructor Create(AWizard: TJclUsesWizard); reintroduce;
     property Wizard: TJclUsesWizard read FWizard;
@@ -161,8 +153,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -315,7 +307,7 @@ begin
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
-
+    
     Result := Stream.DataString;
   finally
     Stream.Free;
@@ -324,8 +316,7 @@ end;
 
 //=== { TJCLUsesWizardNotifier } =============================================
 
-procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded,
-  IsCodeInsight: Boolean);
+procedure TJCLUsesWizardNotifier.AfterCompile(Succeeded, IsCodeInsight: Boolean);
 var
   Messages: TStrings;
 begin
@@ -361,8 +352,7 @@ begin
   // do nothing
 end;
 
-procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject;
-  var Cancel: Boolean);
+procedure TJCLUsesWizardNotifier.BeforeCompile(const Project: IOTAProject; var Cancel: Boolean);
 begin
   // do nothing
 end;
@@ -370,12 +360,11 @@ end;
 constructor TJCLUsesWizardNotifier.Create(AWizard: TJclUsesWizard);
 begin
   inherited Create;
-
+  
   FWizard := AWizard;
 end;
 
-procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode:
-  TOTAFileNotification;
+procedure TJCLUsesWizardNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
 begin
   // do nothing
@@ -383,8 +372,7 @@ end;
 
 //=== { TJCLUsesWizard } =====================================================
 
-procedure TJCLUsesWizard.AddConfigurationPages(AddPageFunc:
-  TJclOTAAddPageFunc);
+procedure TJCLUsesWizard.AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc);
 begin
   inherited AddConfigurationPages(AddPageFunc);
   FFrameJclOptions := TFrameJclOptions.Create(nil);
@@ -438,7 +426,7 @@ end;
 constructor TJCLUsesWizard.Create;
 begin
   inherited Create(JclUsesExpertName);
-
+  
   FIdentifierLists := TStringList.Create;
   FErrors := TList.Create;
   FActive := False;
@@ -452,7 +440,7 @@ begin
   ClearErrors;
   FErrors.Free;
   FIdentifierLists.Free;
-
+  
   inherited Destroy;
 end;
 
@@ -488,15 +476,13 @@ begin
       IniFile.ReadSection(SIniIdentifierLists, FIdentifierLists);
       for I := 0 to FIdentifierLists.Count - 1 do
       begin
-        IdentListFileName :=
-          IniFile.ReadString(SIniIdentifierLists, FIdentifierLists[I],
+        IdentListFileName := IniFile.ReadString(SIniIdentifierLists, FIdentifierLists[I],
           ChangeFileExt(FIdentifierLists[I], '.txt'));
         if ExtractFilePath(IdentListFileName) = '' then
           IdentListFileName := ExtractFilePath(FIniFile) + IdentListFileName;
 
-        IdentList.LoadFromFile(IdentListFileName);
-        FIdentifierLists[I] :=
-          FIdentifierLists[I] + '=' + IdentList.CommaText;
+          IdentList.LoadFromFile(IdentListFileName);
+          FIdentifierLists[I] := FIdentifierLists[I] + '=' + IdentList.CommaText;
       end;
     finally
       IdentList.Free;
@@ -510,10 +496,8 @@ procedure TJCLUsesWizard.LoadSettings;
 var
   DefaultIniFile, DefaultRegKey: string;
 begin
-  DefaultRegKey := StrEnsureSuffix(AnsiBackslash,
-    Services.GetBaseRegistryKey) + RegJclKey;
-  DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey,
-    JclRootDirValueName, '');
+  DefaultRegKey := StrEnsureSuffix(AnsiBackslash, Services.GetBaseRegistryKey) + RegJclKey;
+  DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey, JclRootDirValueName, '');
   if DefaultIniFile <> '' then
     DefaultIniFile := PathAddSeparator(DefaultIniFile) + JclIniFileLocation;
 
@@ -550,7 +534,7 @@ var
   begin
     SError := '';
     SUndeclaredIdent := '';
-
+    
     Dcc32FileName := 'dcc32.exe';
 
     // try to retrieve and prepend Delphi bin path
@@ -561,14 +545,12 @@ var
     else
     {$ENDIF COMPILER6_UP}
     if RegKeyExists(HKEY_LOCAL_MACHINE, S) then
-      Dcc32FileName := PathAddSeparator(
-        RegReadString(HKEY_LOCAL_MACHINE, S, 'RootDir')) + 'Bin\' + Dcc32FileName;
+      Dcc32FileName := PathAddSeparator(RegReadString(HKEY_LOCAL_MACHINE, S, 'RootDir')) + 'Bin\' + Dcc32FileName;
 
     // try to load localized resources first
     Dcc32 := LoadResourceModule(PChar(Dcc32FileName));
     if Dcc32 = 0 then // if not found try the executable
-      Dcc32 := LoadLibraryEx(PChar(Dcc32FileName), 0,
-        LOAD_LIBRARY_AS_DATAFILE);
+      Dcc32 := LoadLibraryEx(PChar(Dcc32FileName), 0, LOAD_LIBRARY_AS_DATAFILE);
     if Dcc32 = 0 then
       Exit;
 
@@ -696,8 +678,7 @@ var
     try
       StrLCopy(Error^.UnitName, PChar(UnitName), Length(Error^.UnitName));
       Error^.LineNumber := LineNumber;
-      StrLCopy(Error^.Identifier, PChar(Identifier),
-        Length(Error^.Identifier));
+      StrLCopy(Error^.Identifier, PChar(Identifier), Length(Error^.Identifier));
 
       Result := True;
     except
@@ -860,10 +841,8 @@ begin
             with PErrorInfo(FErrors[I])^ do
               if (UsesName <> '') and (ChangeList.IndexOf(UsesName) = -1) then
               begin
-                if LineNumber < GetLineNumber(PChar(GoalSource),
-                  PChar(GoalSource) + Length(TextBeforeIntf) +
-                  IntfLength + Length(TextAfterIntf)) then
- // error in interface section
+                if LineNumber < GetLineNumber(PChar(GoalSource), PChar(GoalSource) + Length(TextBeforeIntf) +
+                  IntfLength + Length(TextAfterIntf)) then // error in interface section
                 begin
                   if UsesImpl.IndexOf(UsesName) = -1 then
                     ChangeList.AddObject(UsesName, TObject(waAddToIntf))
@@ -889,13 +868,13 @@ begin
                   else
                     UsesIntf.Insert(0, ChangeList[I]);
                 waMoveToIntf:
-                begin
-                  if UsesIntf.Count = 0 then
-                    UsesIntf.Add(ChangeList[I])
-                  else
-                    UsesIntf.Insert(0, ChangeList[I]);
-                  UsesImpl.Remove(UsesImpl.IndexOf(ChangeList[I]));
-                end;
+                  begin
+                    if UsesIntf.Count = 0 then
+                      UsesIntf.Add(ChangeList[I])
+                    else
+                      UsesIntf.Insert(0, ChangeList[I]);
+                    UsesImpl.Remove(UsesImpl.IndexOf(ChangeList[I]));
+                  end;
                 else
                   ChangeList.Delete(I);
               end;
@@ -911,10 +890,8 @@ begin
                   Writer.CopyTo(Length(TextBeforeIntf));
                   Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength);
                   Writer.Insert(PChar(UsesIntf.Text));
-                  Writer.CopyTo(Length(TextBeforeIntf) +
-                    IntfLength + Length(TextAfterIntf));
-                  Writer.DeleteTo(Length(TextBeforeIntf) +
-                    IntfLength + Length(TextAfterIntf) + ImplLength);
+                  Writer.CopyTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf));
+                  Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf) + ImplLength);
                   Writer.Insert(PChar(UsesImpl.Text));
                   Writer.CopyTo(Length(GoalSource));
                 finally

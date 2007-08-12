@@ -77,8 +77,7 @@ type
 
     // override to customize
     procedure DoExecute(const Personality: TJclBorPersonality); virtual;
-    function IsVisible(const Personality: TJclBorPersonality): Boolean;
-      virtual;
+    function IsVisible(const Personality: TJclBorPersonality): Boolean; virtual;
 
     {$IFDEF BDS}
     property OTAGalleryCategoryManager: IOTAGalleryCategoryManager
@@ -103,7 +102,7 @@ type
     {$ENDIF COMPILER8_UP}
 
     // IOTAProjectWizard
-
+      
     {$IFDEF COMPILER10_UP}
     // IOTAProjectWizard100
     function IsProjectWizardVisible(Project: IOTAProject): Boolean;
@@ -120,8 +119,7 @@ type
 
     property Name: string read FName;
   public
-    function CreateForm(const FormAncestor, FormName, FormFileName,
-      FormContent,
+    function CreateForm(const FormAncestor, FormName, FormFileName, FormContent,
       SourceFileName, SourceContent, HeaderFileName,
       HeaderContent: string): IOTAModule;
   end;
@@ -137,7 +135,7 @@ type
     FFormAncestor: string;
     FFormName: string;
     FProjectModule: IOTAProject;
-    procedure SaveFile(const FileName, FileContent: string);
+    procedure SaveFile(const FileName, FileContent: string); 
   public
     constructor Create(const ProjectModule: IOTAProject;
       FormAncestor, FormName, FormFileName, FormContent, SourceFileName,
@@ -159,10 +157,8 @@ type
     function GetShowForm: Boolean;
     function GetShowSource: Boolean;
     function NewFormFile(const FormIdent, AncestorIdent: string): IOTAFile;
-    function NewImplSource(
-      const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
-    function NewIntfSource(
-      const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
+    function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
+    function NewIntfSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
     procedure FormCreated(const FormEditor: IOTAFormEditor);
   end;
 
@@ -376,7 +372,7 @@ end;
 function TJclOTARepositoryExpert.QueryInterface(const IID: TGUID;
   out Obj): HResult; stdcall;
 begin
-  if (IsEqualGUID(IID, IOTAFormWizard) and (FItemType <> ritForm))
+  if   (IsEqualGUID(IID, IOTAFormWizard) and (FItemType <> ritForm))
     {$IFDEF COMPILER10_UP}
     or (IsEqualGUID(IID, IOTAFormWizard100) and (FItemType <> ritForm))
     or (IsEqualGUID(IID, IOTAProjectWizard100) and (FItemType <> ritProject))
@@ -433,8 +429,7 @@ end;
 function TJclOtaFormCreator.GetExisting: Boolean;
 begin
   // new module
-  Result := (FSourceFileName <> '') and (FFormFileName <> '') and
-    (FHeaderFileName <> '');
+  Result := (FSourceFileName <> '') and (FFormFileName <> '') and (FHeaderFileName <> '');
 end;
 
 function TJclOtaFormCreator.GetFileSystem: string;
@@ -451,12 +446,10 @@ end;
 function TJclOtaFormCreator.GetImplFileName: string;
 begin
   if (FFormContent <> '') and (FFormFileName <> '') then
-    SaveFile(FFormFileName, GetFinalFormContent(FFormContent,
-      FFormName, FFormAncestor));
+    SaveFile(FFormFileName, GetFinalFormContent(FFormContent, FFormName, FFormAncestor));
 
   if (FSourceContent <> '') and (FSourceFileName <> '') then
-    SaveFile(FSourceFileName, GetFinalSourceContent(FSourceContent,
-      PathExtractFileNameNoExt(FSourceFileName), FFormName, FFormAncestor));
+    SaveFile(FSourceFileName, GetFinalSourceContent(FSourceContent, PathExtractFileNameNoExt(FSourceFileName), FFormName, FFormAncestor));
 
   Result := FSourceFileName;
 end;
@@ -464,9 +457,8 @@ end;
 function TJclOtaFormCreator.GetIntfFileName: string;
 begin
   if (FHeaderContent <> '') and (FHeaderFileName <> '') then
-    SaveFile(FHeaderFileName, GetFinalHeaderContent(FHeaderContent,
-      PathExtractFileNameNoExt(FSourceFileName), FFormName, FFormAncestor));
-
+    SaveFile(FHeaderFileName, GetFinalHeaderContent(FHeaderContent, PathExtractFileNameNoExt(FSourceFileName), FFormName, FFormAncestor));
+    
   Result := FHeaderFileName;
 end;
 
@@ -497,17 +489,16 @@ end;
 function TJclOtaFormCreator.GetUnnamed: Boolean;
 begin
   // the save-as dialog will be displayed
-  Result := ((FFormFileName = '') and (FFormContent <> ''))
-    or ((FSourceFileName = '') and (FSourceContent <> ''))
-    or ((FHeaderFileName = '') and (FHeaderContent <> ''));
+  Result :=   ((FFormFileName = '') and (FFormContent <> ''))
+           or ((FSourceFileName = '') and (FSourceContent <> ''))
+           or ((FHeaderFileName = '') and (FHeaderContent <> ''));
 end;
 
 function TJclOtaFormCreator.NewFormFile(const FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
   if FFormContent <> '' then
-    Result := TJclOtaFile.Create(FFormFileName,
-      GetFinalFormContent(FFormContent, FormIdent, AncestorIdent))
+    Result := TJclOtaFile.Create(FFormFileName, GetFinalFormContent(FFormContent, FormIdent, AncestorIdent))
   else
     Result := nil;
 end;
@@ -516,8 +507,7 @@ function TJclOtaFormCreator.NewImplSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
   if FSourceContent <> '' then
-    Result := TJclOtaFile.Create(FSourceFileName,
-      GetFinalSourceContent(FSourceContent, ModuleIdent, FormIdent, AncestorIdent))
+    Result := TJclOtaFile.Create(FSourceFileName, GetFinalSourceContent(FSourceContent, ModuleIdent, FormIdent, AncestorIdent))
   else
     Result := nil;
 end;
@@ -526,8 +516,7 @@ function TJclOtaFormCreator.NewIntfSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
   if FHeaderContent <> '' then
-    Result := TJclOtaFile.Create(FHeaderFileName,
-      GetFinalHeaderContent(FHeaderContent, ModuleIdent, FormIdent, AncestorIdent))
+    Result := TJclOtaFile.Create(FHeaderFileName, GetFinalHeaderContent(FHeaderContent, ModuleIdent, FormIdent, AncestorIdent))
   else
     Result := nil;
 end;

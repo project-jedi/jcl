@@ -128,8 +128,7 @@ type
     function LpiToDot(const Lpi, Lines: Double): Integer;
     procedure TextOutInch(const X, Y: Double; const Text: string);
     procedure TextOutCm(const X, Y: Double; const Text: string);
-    procedure TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double;
-      const Text: string);
+    procedure TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double; const Text: string);
     procedure CustomPageSetup(const Width, Height: Double);
     procedure SaveToIniFile(const IniFileName, Section: string);
     function ReadFromIniFile(const IniFileName, Section: string): Boolean;
@@ -144,8 +143,7 @@ type
     property Color: Integer read GetColor write SetColor;
     property Duplex: Integer read GetDuplex write SetDuplex;
     property YResolution: Integer read GetYResolution write SetYResolution;
-    property TrueTypeOption: Integer read GetTrueTypeOption
-      write SetTrueTypeOption;
+    property TrueTypeOption: Integer read GetTrueTypeOption write SetTrueTypeOption;
     property PrinterName: string read GetPrinterName;
     property PrinterPort: string read GetPrinterPort write SetPort;
     property PrinterDriver: string read GetPrinterDriver;
@@ -183,20 +181,20 @@ uses
   JclSysInfo, JclResources;
 
 const
-  PrintIniPrinterName = 'PrinterName';
-  PrintIniPrinterPort = 'PrinterPort';
-  PrintIniOrientation = 'Orientation';
-  PrintIniPaperSize = 'PaperSize';
-  PrintIniPaperLength = 'PaperLength';
-  PrintIniPaperWidth = 'PaperWidth';
-  PrintIniScale = 'Scale';
-  PrintIniCopies = 'Copies';
+  PrintIniPrinterName   = 'PrinterName';
+  PrintIniPrinterPort   = 'PrinterPort';
+  PrintIniOrientation   = 'Orientation';
+  PrintIniPaperSize     = 'PaperSize';
+  PrintIniPaperLength   = 'PaperLength';
+  PrintIniPaperWidth    = 'PaperWidth';
+  PrintIniScale         = 'Scale';
+  PrintIniCopies        = 'Copies';
   PrintIniDefaultSource = 'DefaultSource';
-  PrintIniPrintQuality = 'PrintQuality';
-  PrintIniColor = 'Color';
-  PrintIniDuplex = 'Duplex';
-  PrintIniYResolution = 'YResolution';
-  PrintIniTTOption = 'TTOption';
+  PrintIniPrintQuality  = 'PrintQuality';
+  PrintIniColor         = 'Color';
+  PrintIniDuplex        = 'Duplex';
+  PrintIniYResolution   = 'YResolution';
+  PrintIniTTOption      = 'TTOption';
 
   cWindows: PChar = 'windows';
   cDevice = 'device';
@@ -268,8 +266,7 @@ var
   FontSize: Integer;
 begin
   FontSize := Printer.Canvas.Font.Size;
-  Printer.Canvas.Font.PixelsPerInch :=
-    GetDeviceCaps(Printer.Handle, LogPixelsY);
+  Printer.Canvas.Font.PixelsPerInch := GetDeviceCaps(Printer.Handle, LogPixelsY);
   Printer.Canvas.Font.Size := FontSize;
 end;
 
@@ -282,8 +279,7 @@ end;
 function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 begin
   Result := Length(Text);
-  while (Result > 0) and (Printer.Canvas.TextWidth(
-      Copy(Text, 1, Result)) > Dots) do
+  while (Result > 0) and (Printer.Canvas.TextWidth(Copy(Text, 1, Result)) > Dots) do
     Dec(Result);
 end;
 
@@ -351,15 +347,12 @@ begin
   if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
   begin
     SetLastError(0);
-    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil,
-      0, Needed, Returned);
-    if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or
-      (Needed = 0)) then
+    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
+    if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
       Exit;
     GetMem(PI2, Needed);
     try
-      Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PI2,
-        Needed, Needed, Returned);
+      Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PI2, Needed, Needed, Returned);
       if Result then
         PrinterName := PI2^.pPrinterName;
     finally
@@ -371,8 +364,7 @@ begin
   if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
   begin
     SetLength(PrinterName, BUFSIZE);
-    Result := GetProfileString(cWindows, cDevice, ',,,',
-      PChar(PrinterName), BUFSIZE) > 0;
+    Result := GetProfileString(cWindows, cDevice, ',,,', PChar(PrinterName), BUFSIZE) > 0;
     if Result then
       PrinterName := Copy(PrinterName, 1, Pos(',', PrinterName) - 1)
     else
@@ -431,8 +423,7 @@ begin
       try
         SetLastError(0);
         Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
-        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or
-          (Needed = 0)) then
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
           Exit;
         GetMem(PI2, Needed);
         try
@@ -461,17 +452,14 @@ begin
       try
         SetLastError(0);
         Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
-        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or
-          (Needed = 0)) then
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
           Exit;
         GetMem(PI2, Needed);
         try
           Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
-          if Result and (PI2^.pDriverName <> nil) and
-            (PI2^.pPortName <> nil) then
+          if Result and (PI2^.pDriverName <> nil) and (PI2^.pPortName <> nil) then
           begin
-            PrinterStr := PrinterName + ',' + PI2^.pDriverName +
-              ',' + PI2^.pPortName;
+            PrinterStr := PrinterName + ',' + PI2^.pDriverName + ',' + PI2^.pPortName;
             Result := WriteProfileString(cWindows, cDevice, PChar(PrinterStr));
             if Result then
               SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0,
@@ -560,8 +548,7 @@ var
 begin
   if FPaperArray <> nil then
     FreeMem(FPaperArray, FNumPapers * SizeOf(Word));
-  FNumPapers := DeviceCapabilities(FDevice, FPort, DC_Papers,
-    nil, FDeviceMode);
+  FNumPapers := DeviceCapabilities(FDevice, FPort, DC_Papers, nil, FDeviceMode);
   if FNumPapers > 0 then
   begin
     GetMem(FPaperArray, FNumPapers * SizeOf(Word));
@@ -634,8 +621,8 @@ begin
       Result := RsPSESheet;
     dmpaper_User:
       Result := RsPSUser;
-    else
-      Result := RsPSUnknown;
+  else
+    Result := RsPSUnknown;
   end;
 end;
 
@@ -788,23 +775,23 @@ var
   DrvHandle: THandle;
   ExtDevCode: Integer;
 begin
-  CheckPrinter;
+  CheckPrinter;      
   if OpenPrinter(FDevice, DrvHandle, nil) then
-    try
-      FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
-        dm_PaperLength or dm_PaperWidth or
-        dm_Scale or dm_Copies or
-        dm_DefaultSource or dm_PrintQuality or
-        dm_Color or dm_Duplex or
-        dm_YResolution or dm_TTOption;
-      ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-        FDeviceMode^, FDeviceMode^,
-        DM_IN_BUFFER or DM_OUT_BUFFER);
-      if ExtDevCode <> IDOK then
-        raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
-    finally
-      ClosePrinter(DrvHandle);
-    end;
+  try
+    FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
+      dm_PaperLength or dm_PaperWidth or
+      dm_Scale or dm_Copies or
+      dm_DefaultSource or dm_PrintQuality or
+      dm_Color or dm_Duplex or
+      dm_YResolution or dm_TTOption;
+    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+      FDeviceMode^, FDeviceMode^,
+      DM_IN_BUFFER or DM_OUT_BUFFER);
+    if ExtDevCode <> IDOK then
+      raise EJclPrinterError.CreateRes(@RsUpdatingPrinter);
+  finally
+    ClosePrinter(DrvHandle);
+  end;
 end;
 
 procedure TJclPrintSet.SaveToDefaults;
@@ -876,8 +863,7 @@ begin
   Printer.Canvas.TextOut(XCmToDot(X), YCmToDot(Y), Text);
 end;
 
-procedure TJclPrintSet.TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double;
-  const Text: string);
+procedure TJclPrintSet.TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double; const Text: string);
 begin
   Printer.Canvas.TextOut(CpiToDot(Cpi, Chars), LpiToDot(Lpi, Lines), Text);
 end;
@@ -914,8 +900,7 @@ begin
   PrIniFile.Free;
 end;
 
-function TJclPrintSet.ReadFromIniFile(
-  const IniFileName, Section: string): Boolean;
+function TJclPrintSet.ReadFromIniFile(const IniFileName, Section: string): Boolean;
 var
   PrIniFile: TIniFile;
   SavedName: string;
@@ -931,28 +916,19 @@ begin
     begin
       Result := True;
       Printer.PrinterIndex := NewIndex;
-      PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort,
-        PrinterPort);
-      Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation,
-        Orientation);
-      PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize,
-        PaperSize);
-      PaperLength := PrIniFile.ReadInteger(Section, PrintIniPaperLength,
-        PaperLength);
-      PaperWidth := PrIniFile.ReadInteger(Section, PrintIniPaperWidth,
-        PaperWidth);
+      PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
+      Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
+      PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize, PaperSize);
+      PaperLength := PrIniFile.ReadInteger(Section, PrintIniPaperLength, PaperLength);
+      PaperWidth := PrIniFile.ReadInteger(Section, PrintIniPaperWidth, PaperWidth);
       Scale := PrIniFile.ReadInteger(Section, PrintIniScale, Scale);
       Copies := PrIniFile.ReadInteger(Section, PrintIniCopies, Copies);
-      DefaultSource := PrIniFile.ReadInteger(Section,
-        PrintIniDefaultSource, DefaultSource);
-      PrintQuality := PrIniFile.ReadInteger(Section,
-        PrintIniPrintQuality, PrintQuality);
+      DefaultSource := PrIniFile.ReadInteger(Section, PrintIniDefaultSource, DefaultSource);
+      PrintQuality := PrIniFile.ReadInteger(Section, PrintIniPrintQuality, PrintQuality);
       Color := PrIniFile.ReadInteger(Section, PrintIniColor, Color);
       Duplex := PrIniFile.ReadInteger(Section, PrintIniDuplex, Duplex);
-      YResolution := PrIniFile.ReadInteger(Section, PrintIniYResolution,
-        YResolution);
-      TrueTypeOption := PrIniFile.ReadInteger(Section,
-        PrintIniTTOption, TrueTypeOption);
+      YResolution := PrIniFile.ReadInteger(Section, PrintIniYResolution, YResolution);
+      TrueTypeOption := PrIniFile.ReadInteger(Section, PrintIniTTOption, TrueTypeOption);
     end
     else
       Result := False;

@@ -187,8 +187,7 @@ begin
   end;
 end;
 
-function ReadUnitVersionInfo(AStream: TStream;
-  var AVersionInfo: TUnitVersionInfo): Boolean;
+function ReadUnitVersionInfo(AStream: TStream; var AVersionInfo: TUnitVersionInfo): Boolean;
 begin
   Result := True;
   with AVersionInfo do
@@ -208,19 +207,17 @@ begin
   {$IFDEF MSWINDOWS}
   if not Result then
     Result := LoadFromDefaultSection(AModule);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}    
 end;
 
-function TJclUnitVersioningList.LoadFromDefaultResource(
-  AModule: HMODULE): Boolean;
+function TJclUnitVersioningList.LoadFromDefaultResource(AModule: HMODULE): Boolean;
 var
   ResourceStream: TResourceStream;
 begin
   Result := False;
   if FindResource(AModule, JclUnitVersioningDataResName, RT_RCDATA) <> 0 then
   begin
-    ResourceStream := TResourceStream.Create(AModule,
-      JclUnitVersioningDataResName, RT_RCDATA);
+    ResourceStream := TResourceStream.Create(AModule, JclUnitVersioningDataResName, RT_RCDATA);
     try
       Result := LoadFromStream(ResourceStream);
     finally
@@ -230,17 +227,14 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-function TJclUnitVersioningList.LoadFromDefaultSection(
-  AModule: HMODULE): Boolean;
+function TJclUnitVersioningList.LoadFromDefaultSection(AModule: HMODULE): Boolean;
 var
   PeSectionStream: TJclPeSectionStream;
 begin
   Result := False;
-  if PeMapImgFindSectionFromModule(Pointer(AModule),
-    JclUnitVersioningDataResName) <> nil then
+  if PeMapImgFindSectionFromModule(Pointer(AModule), JclUnitVersioningDataResName) <> nil then
   begin
-    PeSectionStream := TJclPeSectionStream.Create(AModule,
-      JclUnitVersioningDataResName);
+    PeSectionStream := TJclPeSectionStream.Create(AModule, JclUnitVersioningDataResName);
     try
       Result := LoadFromStream(PeSectionStream);
     finally
@@ -339,7 +333,7 @@ begin
   FInstance := Instance;
   FInfoList := TJclUnitVersioningList.Create;
   if FInfoList.Load(Instance) then
-    for I := 0 to FInfoList.Count - 1 do
+    for I := 0 to FInfoList.Count -1 do
       RegisterUnitVersion(Instance, FInfoList[I]^);
 end;
 
@@ -363,8 +357,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclDefaultUnitVersioningProvider.IndexOfInstance(
-  Instance: THandle): Integer;
+function TJclDefaultUnitVersioningProvider.IndexOfInstance(Instance: THandle): Integer;
 var
   I: Integer;
 begin
@@ -377,15 +370,13 @@ begin
     end;
 end;
 
-procedure TJclDefaultUnitVersioningProvider.LoadModuleUnitVersioningInfo(
-  Instance: THandle);
+procedure TJclDefaultUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
 begin
   if IndexOfInstance(Instance) < 0 then
     FModules.Add(TJclUnitVersioningProviderModule.Create(Instance));
 end;
 
-procedure TJclDefaultUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(
-  Instance: THandle);
+procedure TJclDefaultUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
 var
   Idx: Integer;
 begin
@@ -400,7 +391,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
-    );
+  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

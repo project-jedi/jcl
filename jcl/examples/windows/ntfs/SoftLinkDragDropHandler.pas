@@ -27,8 +27,7 @@ type
     FIsRootDirectory: Boolean;
   protected
     { IShellExtInit }
-    function IShellExtInit.Initialize = SEIInitialize;
- // Avoid compiler warning
+    function IShellExtInit.Initialize = SEIInitialize; // Avoid compiler warning
     function SEIInitialize(pidlFolder: PItemIDList; lpdobj: IDataObject;
       hKeyProgID: HKEY): HResult; stdcall;
     { IContextMenu }
@@ -61,8 +60,7 @@ begin
   Result := NtfsReparsePointsSupported(ExtractFileDrive(FileName));
 end;
 
-function TDirDropContextMenu.SEIInitialize(pidlFolder: PItemIDList;
-  lpdobj: IDataObject;
+function TDirDropContextMenu.SEIInitialize(pidlFolder: PItemIDList; lpdobj: IDataObject;
   hKeyProgID: HKEY): HResult;
 var
   FileName: string;
@@ -83,10 +81,10 @@ begin
   with FormatEtc do
   begin
     cfFormat := CF_HDROP;
-    ptd := nil;
+    ptd      := nil;
     dwAspect := DVASPECT_CONTENT;
-    lindex := -1;
-    tymed := TYMED_HGLOBAL;
+    lindex   := -1;
+    tymed    := TYMED_HGLOBAL;
   end;
 
   // Render the data referenced by the IDataObject pointer to an HGLOBAL
@@ -102,8 +100,7 @@ begin
   if Count = 1 then
   begin
     SetLength(FLinkTarget, DragQueryFile(StgMedium.hGlobal, 0, nil, 0) + 1);
-    DragQueryFile(StgMedium.hGlobal, 0, PChar(FLinkTarget),
-      Length(FLinkTarget));
+    DragQueryFile(StgMedium.hGlobal, 0, PChar(FLinkTarget), Length(FLinkTarget));
     if DirectoryExists(FLinkTarget) then
     begin
       LinkDir := PidlToPath(pidlFolder);
@@ -120,8 +117,7 @@ begin
             SetLength(Volume, N - 1);
           FileName := Volume;
         end;
-        FLinkPath := Format('%s' + Prefix + '%.175s',
-          [PathAddSeparator(LinkDir), FileName]);
+        FLinkPath := Format('%s' + Prefix + '%.175s', [PathAddSeparator(LinkDir), FileName]);
         Result := NOERROR;
       end;
     end;
@@ -129,9 +125,8 @@ begin
   ReleaseStgMedium(StgMedium);
 end;
 
-function TDirDropContextMenu.QueryContextMenu(Menu: HMENU;
-  indexMenu, idCmdFirst,
-  idCmdLast, uFlags: UINT): HResult;
+function TDirDropContextMenu.QueryContextMenu(Menu: HMENU; indexMenu, idCmdFirst,
+          idCmdLast, uFlags: UINT): HResult;
 begin
   Result := 0; // or use MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, 0);
 
@@ -139,19 +134,17 @@ begin
     Exit;
 
   if ((uFlags and $0000000F) = CMF_NORMAL) or
-    ((uFlags and CMF_EXPLORE) <> 0) then
+     ((uFlags and CMF_EXPLORE) <> 0) then
   begin
     // Add one menu item to context menu
-    InsertMenu(Menu, indexMenu, MF_STRING or MF_BYPOSITION,
-      idCmdFirst, PChar(SMenuItem));
+    InsertMenu(Menu, indexMenu, MF_STRING or MF_BYPOSITION, idCmdFirst, PChar(SMenuItem));
 
     // Return number of menu items added
     Result := 1; // or use MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, 1)
   end;
 end;
 
-function TDirDropContextMenu.InvokeCommand(
-  var lpici: TCMInvokeCommandInfo): HResult;
+function TDirDropContextMenu.InvokeCommand(var lpici: TCMInvokeCommandInfo): HResult;
 var
   Success: Boolean;
 begin
@@ -169,8 +162,7 @@ begin
     Exit;
   end;
 
-  if (not DirectoryExists(FLinkPath) and CreateDir(FLinkPath))
- {or DirectoryIsEmpty(FLinkPath)} then
+  if (not DirectoryExists(FLinkPath) and CreateDir(FLinkPath)) {or DirectoryIsEmpty(FLinkPath)} then
   begin
     Success := NtfsCreateJunctionPoint(FLinkPath, FLinkTarget);
     if Success then
@@ -178,8 +170,7 @@ begin
   end;
 end;
 
-function TDirDropContextMenu.GetCommandString(idCmd, uType: UINT;
-  pwReserved: PUINT;
+function TDirDropContextMenu.GetCommandString(idCmd, uType: UINT; pwReserved: PUINT;
   pszName: LPSTR; cchMax: UINT): HRESULT;
 begin
   if (idCmd = 0) then
@@ -215,8 +206,7 @@ begin
       with TRegistry.Create do
         try
           RootKey := HKEY_LOCAL_MACHINE;
-          OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions',
-            True);
+          OpenKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions', True);
           OpenKey('Approved', True);
           WriteString(ClassID, SDescription);
         finally
@@ -232,8 +222,7 @@ begin
 end;
 
 initialization
-  TDirDropContextMenuFactory.Create(ComServer, TDirDropContextMenu,
-    Class_ContextMenu,
+  TDirDropContextMenuFactory.Create(ComServer, TDirDropContextMenu, Class_ContextMenu,
     '', SDescription, ciMultiInstance,
     tmApartment);
 end.

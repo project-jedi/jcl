@@ -30,16 +30,13 @@ uses
   Windows, Classes, SysUtils;
 
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string); overload;
-procedure RegisterThread(Thread: TThread; const ThreadName: string;
-  IncludeClassName: Boolean = True); overload;
+procedure RegisterThread(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean = True); overload;
 
 procedure UnregisterThread(ThreadID: DWORD); overload;
 procedure UnregisterThread(Thread: TThread); overload;
 
-procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string);
-  overload;
-procedure ChangeThreadName(Thread: TThread; const ThreadName: string;
-  IncludeClassName: Boolean = True); overload;
+procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string); overload;
+procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean = True); overload;
 
 function ThreadNamesAvailable: Boolean;
 
@@ -65,28 +62,25 @@ var
   SharedThreadNames: TSharedThreadNames;
   HookImports: TJclPeMapImgHooks;
   Notifier: TJclDebugThreadNotifier;
-  Kernel32_CreateThread: function(lpThreadAttributes: Pointer;
-  dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
-  lpParameter: Pointer; dwCreationFlags: DWORD;
-  var lpThreadId: DWORD): THandle; stdcall;
-  Kernel32_ExitThread: procedure(dwExitCode: DWORD); stdcall;
+  Kernel32_CreateThread: function (lpThreadAttributes: Pointer;
+    dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
+    lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
+  Kernel32_ExitThread: procedure (dwExitCode: DWORD); stdcall;
 
 function NewCreateThread(lpThreadAttributes: Pointer;
   dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
-  lpParameter: Pointer; dwCreationFlags: DWORD;
-  var lpThreadId: DWORD): THandle; stdcall;
+  lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall;
 var
   Instance: TObject;
 begin
-  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize,
-    lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
+  Result := Kernel32_CreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
   if (Result <> 0) and (lpParameter <> nil) then
-    try
-      Instance := PThreadRec(lpParameter)^.Parameter;
-      if Instance is TThread then
-        RegisterThread(TThread(Instance), '', True);
-    except
-    end;
+  try
+    Instance := PThreadRec(lpParameter)^.Parameter;
+    if Instance is TThread then
+      RegisterThread(TThread(Instance), '', True);
+  except
+  end;
 end;
 
 procedure NewExitThread(dwExitCode: DWORD); stdcall;
@@ -117,16 +111,13 @@ end;
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string);
 begin
   if Assigned(SharedThreadNames) then
-    SharedThreadNames.RegisterThread(ThreadID,
-      CreateThreadName(ThreadName, ''));
+    SharedThreadNames.RegisterThread(ThreadID, CreateThreadName(ThreadName, ''));
 end;
 
-procedure RegisterThread(Thread: TThread; const ThreadName: string;
-  IncludeClassName: Boolean);
+procedure RegisterThread(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
   if Assigned(SharedThreadNames) then
-    SharedThreadNames.RegisterThread(Thread.ThreadID,
-      CreateThreadName(ThreadName, Thread.ClassName));
+    SharedThreadNames.RegisterThread(Thread.ThreadID, CreateThreadName(ThreadName, Thread.ClassName));
 end;
 
 procedure UnregisterThread(ThreadID: DWORD);
@@ -147,12 +138,10 @@ begin
     SharedThreadNames[ThreadID] := CreateThreadName(ThreadName, '');
 end;
 
-procedure ChangeThreadName(Thread: TThread; const ThreadName: string;
-  IncludeClassName: Boolean);
+procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean);
 begin
   if Assigned(SharedThreadNames) then
-    SharedThreadNames[Thread.ThreadID] :=
-      CreateThreadName(ThreadName, Thread.ClassName);
+    SharedThreadNames[Thread.ThreadID] := CreateThreadName(ThreadName, Thread.ClassName);
 end;
 
 function ThreadNamesAvailable: Boolean;
@@ -168,10 +157,8 @@ begin
     HookImports := TJclPeMapImgHooks.Create;
     with HookImports do
     begin
-      HookImport(SystemBase, kernel32, 'CreateThread',
-        @NewCreateThread, @Kernel32_CreateThread);
-      HookImport(SystemBase, kernel32, 'ExitThread', @NewExitThread,
-        @Kernel32_ExitThread);
+      HookImport(SystemBase, kernel32, 'CreateThread', @NewCreateThread, @Kernel32_CreateThread);
+      HookImport(SystemBase, kernel32, 'ExitThread', @NewExitThread, @Kernel32_ExitThread);
     end;
     { TODO -oPV -cDesign : TJclDebugThread could hold its name. In case of that the name could be read in hooked CreateThread }
     Notifier := TJclDebugThreadNotifier.Create;
@@ -185,8 +172,7 @@ procedure TJclDebugThreadNotifier.ThreadRegistered(ThreadID: DWORD);
 begin
   with JclDebugThreadList do
     SharedThreadNames.RegisterThread(ThreadID,
-      CreateThreadName(ThreadNames[ThreadID],
-      JclDebugThreadList.ThreadClassNames[ThreadID]));
+      CreateThreadName(ThreadNames[ThreadID], JclDebugThreadList.ThreadClassNames[ThreadID]));
 end;
 
 initialization

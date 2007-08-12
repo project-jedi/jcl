@@ -73,14 +73,11 @@ function Permutation(N, R: Cardinal): Float;
 function Combinations(N, R: Cardinal): Float;
 function SumOfSquares(const X: TDynFloatArray): Float;
 function PopulationVariance(const X: TDynFloatArray): Float;
-procedure PopulationVarianceAndMean(const X: TDynFloatArray;
-  var Variance, Mean: Float);
+procedure PopulationVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 function SampleVariance(const X: TDynFloatArray): Float;
-procedure SampleVarianceAndMean(const X: TDynFloatArray;
-  var Variance, Mean: Float);
+procedure SampleVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 function StdError(const X: TDynFloatArray): Float; overload;
-function StdError(const Variance: Float; const SampleSize: Integer): Float;
-  overload;
+function StdError(const Variance: Float; const SampleSize: Integer): Float; overload;
 function SumFloatArray(const B: TDynFloatArray): Float;
 function SumSquareDiffFloatArray(const B: TDynFloatArray; Diff: Float): Float;
 function SumSquareFloatArray(const B: TDynFloatArray): Float;
@@ -132,8 +129,7 @@ begin
   {$ENDIF CLR}
 end;
 
-function GetSampleSize(const Sample: TDynFloatArray;
-  MinValidSize: Integer = 1): Integer;
+function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
 begin
   Result := Length(Sample);
   if Result < MinValidSize then
@@ -208,7 +204,7 @@ begin
   if not ((R = 0) or (R = N)) then
   begin
     if R > N div 2 then
-      R := N - R;
+    R := N - R;
     K := 2;
     try
       for I := N - R + 1 to N do
@@ -294,7 +290,7 @@ begin
   // We need to sort the values first
   SortedList := Copy(X);
   // type cast to Pointer for the sake of FPC
-  SortDynArray(Pointer(SortedList), SizeOf(Float), DynArrayCompareFloat);
+  SortDynArray(Pointer(SortedList), SizeOf(Float),DynArrayCompareFloat);
 
   // and call the median function afterwards
   Result := Median(SortedList);
@@ -330,7 +326,7 @@ end;
 
 function Permutation(N, R: Cardinal): Float;
 var
-  I: Integer;
+  I : Integer;
 begin
   if (N = 0) or (R > N) or (N > MaxFactorial) then
   begin
@@ -353,9 +349,9 @@ function Combinations(N, R: Cardinal): Float;
 begin
   Result := Factorial(R);
   if IsFloatZero(Result) then
-    Result := -1.0
+   Result := -1.0
   else
-    Result := Permutation(N, R) / Result;
+   Result := Permutation(N, R) / Result;
 end;
 
 { TODO -cDoc : donator: Fred Hovey, contributor: Robert Rossmair }
@@ -382,8 +378,7 @@ begin
   Result := SumOfSquares(X) / Length(X);
 end;
 
-procedure PopulationVarianceAndMean(const X: TDynFloatArray;
-  var Variance, Mean: Float);
+procedure PopulationVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 var
   I, N: Integer;
   Sum, SumSq: Float;
@@ -406,12 +401,11 @@ var
   N: Integer;
 begin
   N := GetSampleSize(X, 2);
-  Result := SumOfSquares(X) / (N - 1);
+  Result := SumOfSquares(X) / (N - 1)
 end;
 
 { TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
-procedure SampleVarianceAndMean(const X: TDynFloatArray;
-  var Variance, Mean: Float);
+procedure SampleVarianceAndMean(const X: TDynFloatArray; var Variance, Mean: Float);
 var
   I, N: Integer;
   Sum, SumSq: Float;
@@ -428,7 +422,7 @@ begin
   if N < 2 then
     InvalidSampleSize(N);
   //Variance := (SumSq / (N - 1)) - Sqr(Sum / (N - 1)) => WRONG!!!!
-  Variance := (SumSq - Sum * Sum / N) / (N - 1);
+  Variance := (SumSq - Sum * Sum / N) / (N - 1)
 end;
 
 { TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }

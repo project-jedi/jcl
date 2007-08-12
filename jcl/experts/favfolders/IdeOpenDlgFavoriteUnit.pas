@@ -97,8 +97,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -109,8 +109,7 @@ begin
     if not Assigned(OTAWizardServices) then
       raise EJclExpertException.CreateTrace(RsENoWizardServices);
 
-    JCLWizardIndex := OTAWizardServices.AddWizard(
-      TJclOpenDialogsFavoriteExpert.Create);
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclOpenDialogsFavoriteExpert.Create);
 
     Result := True;
   except
@@ -130,8 +129,7 @@ end;
 procedure TJclOpenDialogsFavoriteExpert.DialogClose(Sender: TObject);
 begin
   Settings.SaveStrings(JclFavoritesListSubKey, FFavOpenDialog.FavoriteFolders);
-  Settings.SaveString(PictDialogFolderItemName,
-    FFavOpenDialog.PictureDialogLastFolder);
+  Settings.SaveString(PictDialogFolderItemName, FFavOpenDialog.PictureDialogLastFolder);
 end;
 
 procedure TJclOpenDialogsFavoriteExpert.DialogShow(Sender: TObject);
@@ -147,8 +145,7 @@ begin
   FFavOpenDialog.HookDialogs;
   FFavOpenDialog.OnClose := DialogClose;
   FFavOpenDialog.OnShow := DialogShow;
-  FFavOpenDialog.PictureDialogLastFolder :=
-    Settings.LoadString(PictDialogFolderItemName,
+  FFavOpenDialog.PictureDialogLastFolder := Settings.LoadString(PictDialogFolderItemName,
     PathAddSeparator(GetCommonFilesFolder) + BorlandImagesPath);
 end;
 

@@ -104,9 +104,7 @@ begin
     ExeFileName := ParamStr(2);
     if (MapFileName <> '') and (ExeFileName <> '') then
     begin
-      if not InsertDebugDataIntoExecutableFile(ExeFileName,
-        MapFileName, LinkerBugUnit, MapFileSize, JclDebugDataSize,
-        LineNumberErrors) then
+      if not InsertDebugDataIntoExecutableFile(ExeFileName, MapFileName, LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors) then
         ExitCode := 1;
       Application.ShowMainForm := False;
       Application.Terminate;
@@ -191,8 +189,7 @@ begin
         begin
           MapFileName := SubItems[3];
           JdbgFileName := ChangeFileExt(MapFileName, JclDbgFileExtension);
-          if ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit,
-            LineNumberErrors) then
+          if ConvertMapFileToJdbgFile(MapFileName, LinkerBugUnit, LineNumberErrors) then
           begin
             ImageIndex := 3;
             JdbgFileSize := FileGetSize(JdbgFileName);
@@ -214,8 +211,7 @@ begin
         end;
         Update;
       end;
-      StatusBar1.Panels[0].Text :=
-        Format(RsConversionStatus, [FilesConverted, StopCount(Cnt)]);
+      StatusBar1.Panels[0].Text := Format(RsConversionStatus, [FilesConverted, StopCount(Cnt)]);
       StatusBar1.Panels[1].Text := Format(RsLinkerBugs, [LinkerBugCnt]);
     end;
   finally

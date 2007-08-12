@@ -36,13 +36,11 @@ uses
 type
   TJediInstallGUIOption =
     (
-    goExpandable,
-    goRadioButton,
-    goNoAutoCheck,
-// do not auto-check when the parent node gets checked
-    goStandaloneParent,
-       // do not auto-uncheck when all child nodes are unchecked
-    goChecked
+      goExpandable,
+      goRadioButton,
+      goNoAutoCheck,            // do not auto-check when the parent node gets checked
+      goStandaloneParent,       // do not auto-uncheck when all child nodes are unchecked
+      goChecked
     );
   TJediInstallGUIOptions = set of TJediInstallGUIOption;
 
@@ -68,15 +66,13 @@ type
     procedure SetReadmeFileName(const Value: string);
     function GetReadmeFileName: string;
 
-    property ReadmeFileName: string read GetReadmeFileName
-      write SetReadmeFileName;
+    property ReadmeFileName: string read GetReadmeFileName write SetReadmeFileName;
   end;
 
   IJediInstallPage = interface(IJediPage)
     ['{91C3A26F-0258-410A-9EAF-06F86C5748CF}']
     procedure AddInstallOption(Id: Integer; Options: TJediInstallGUIOptions;
-      const Caption: string = ''; const Hint: string = '';
-      Parent: Integer = -1);
+      const Caption: string = ''; const Hint: string = ''; Parent: Integer = -1);
     procedure InitDisplay;
     function GetOptionChecked(Id: Integer): Boolean;
     procedure SetOptionChecked(Id: Integer; Value: Boolean);
@@ -99,11 +95,9 @@ type
     procedure CompilationProgress(const FileName: string; LineNumber: Integer);
     procedure SetIcon(const FileName: string);
 
-    property OptionChecked[Id: Integer]: Boolean
-      read GetOptionChecked write SetOptionChecked;
+    property OptionChecked[Id: Integer]: Boolean read GetOptionChecked write SetOptionChecked;
     property DirectoryCount: Integer read GetDirectoryCount;
-    property Directories[Index: Integer]: string
-      read GetDirectory write SetDirectory;
+    property Directories[Index: Integer]: string read GetDirectory write SetDirectory;
     property Progress: Integer read GetProgress write SetProgress;
   end;
 
@@ -121,42 +115,30 @@ type
     function GetSections: TStringArray;
     function GetOptions(const Section: string): TOptionArray;
     function GetOptionAsBool(const Section: string; Id: Integer): Boolean;
-    procedure SetOptionAsBool(const Section: string; Id: Integer;
-      Value: Boolean);
-    function GetOptionAsBoolByName(const Section: string;
-      const Name: string): Boolean;
-    procedure SetOptionAsBoolByName(const Section: string;
-      const Name: string; Value: Boolean);
+    procedure SetOptionAsBool(const Section: string; Id: Integer; Value: Boolean);
+    function GetOptionAsBoolByName(const Section: string; const Name: string): Boolean;
+    procedure SetOptionAsBoolByName(const Section: string; const Name: string; Value: Boolean);
     function GetOptionAsString(const Section: string; Id: Integer): string;
-    procedure SetOptionAsString(const Section: string; Id: Integer;
-      const Value: string);
-    function GetOptionAsStringByName(const Section: string;
-      const Name: string): string;
-    procedure SetOptionAsStringByName(const Section: string;
-      const Name: string; const Value: string);
+    procedure SetOptionAsString(const Section: string; Id: Integer; const Value: string);
+    function GetOptionAsStringByName(const Section: string; const Name: string): string;
+    procedure SetOptionAsStringByName(const Section: string; const Name: string; const Value: string);
 
     procedure Clear;
     procedure DeleteSection(const Section: string);
     procedure DeleteOption(const Section: string; Id: Integer);
     function SectionExists(const Section: string): Boolean;
-    function ValueExists(const Section: string; Id: Integer): Boolean;
-      overload;
-    function ValueExists(const Section: string; const Name: string): Boolean;
-      overload;
+    function ValueExists(const Section: string; Id: Integer): Boolean; overload;
+    function ValueExists(const Section: string; const Name: string): Boolean; overload;
 
     property Sections: TStringArray read GetSections;
     property Options[const Section: string]: TOptionArray read GetOptions;
-    property OptionAsBool[const Section: string;
-      Id: Integer]: Boolean read GetOptionAsBool
+    property OptionAsBool[const Section: string; Id: Integer]: Boolean read GetOptionAsBool
       write SetOptionAsBool;
-    property OptionAsBoolByName[const Section: string;
-      const Name: string]: Boolean
+    property OptionAsBoolByName[const Section: string; const Name: string]: Boolean
       read GetOptionAsBoolByName write SetOptionAsBoolByName;
-    property OptionAsString[const Section: string;
-      Id: Integer]: string read GetOptionAsString
+    property OptionAsString[const Section: string; Id: Integer]: string read GetOptionAsString
       write SetOptionAsString;
-    property OptionAsStringByName[const Section: string;
-      const Name: string]: string
+    property OptionAsStringByName[const Section: string; const Name: string]: string
       read GetOptionAsStringByName write SetOptionAsStringByName;
   end;
 
@@ -164,13 +146,12 @@ type
     ['{90E201C9-EA6B-446A-9251-D2516867874D}']
   end;
 
-  TInstallEvent = procedure of object;
+  TInstallEvent = procedure of Object;
 
   // GUI abstraction layer
   IJediInstallGUI = interface
     ['{3471A535-51D7-4FBB-B6AE-20D136E38E34}']
-    function Dialog(const Text: string;
-      DialogType: TDialogType = dtInformation;
+    function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
       Options: TDialogResponses = [drOK]): TDialogResponse;
     function CreateReadmePage: IJediReadmePage;
     function CreateInstallPage: IJediInstallPage;
@@ -202,8 +183,7 @@ type
   TJediInstallGUICreator = function: IJediInstallGUI;
   TJediConfigurationCreator = function: IJediConfiguration;
 
-  TCompileLineType = (clText, clFileProgress, clHint, clWarning,
-    clError, clFatal);
+  TCompileLineType = (clText, clFileProgress, clHint, clWarning, clError, clFatal);
 
   TJediInstallCore = class(TComponent)
   private
@@ -250,8 +230,7 @@ type
     property InstallGUICreator: TJediInstallGUICreator read FInstallGUICreator
       write FInstallGUICreator;
     property Configuration: IJediConfiguration read GetConfiguration;
-    property ConfigurationCreator: TJediConfigurationCreator
-      read FConfigurationCreator
+    property ConfigurationCreator: TJediConfigurationCreator read FConfigurationCreator
       write FConfigurationCreator;
   end;
 
@@ -261,19 +240,16 @@ var
 function InstallCore: TJediInstallCore;
 
 resourcestring
-  RsCantFindFiles =
-    'Can not find installation files, check your installation.';
-  RsCloseRADTool =
-    'Please close all running instances of Delphi/C++Builder IDE before the installation.';
-  RsConfirmInstall = 'Are you sure to install all selected features?';
+  RsCantFindFiles    = 'Can not find installation files, check your installation.';
+  RsCloseRADTool     = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
+  RsConfirmInstall   = 'Are you sure to install all selected features?';
   RsConfirmUninstall = 'Do you really want to uninstall the JCL?';
-  RsInstallSuccess = 'Installation finished';
-  RsInstallFailure = 'Installation failed.'#10'Check compiler output for details.';
-  RsNoInstall =
-    'There is no Delphi/C++Builder installation on this machine. Installer will close.';
-  RsUpdateNeeded = 'You should install latest Update Pack #%d for %s.'#13#10 +
-    'Would you like to open Borland support web page?';
-  RsHintTarget = 'Installation target';
+  RsInstallSuccess   = 'Installation finished';
+  RsInstallFailure   = 'Installation failed.'#10'Check compiler output for details.';
+  RsNoInstall        = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
+  RsUpdateNeeded     = 'You should install latest Update Pack #%d for %s.'#13#10 +
+                       'Would you like to open Borland support web page?';
+  RsHintTarget       = 'Installation target';
 
 implementation
 
@@ -312,7 +288,7 @@ begin
   if Closing then
     Exit;
   FClosing := True;
-
+  
   for Index := FProducts.Size - 1 downto 0 do
     (FProducts.GetObject(Index) as IJediProduct).Close;
   FProducts.Clear;
@@ -324,7 +300,7 @@ end;
 constructor TJediInstallCore.Create;
 begin
   inherited Create(nil);
-
+  
   FOptions := TStringList.Create;
   FProducts := TJclIntfArrayList.Create;
   FClosing := False;
@@ -484,12 +460,10 @@ begin
 
   if IsCompileFileLine(Line) then
   begin
-    LineType := clFileProgress;
+    LineType:= clFileProgress;
     Result := '';
   end
-  else
-  if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ', 'conseil: ']) then
- // do not localize
+  else if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ', 'conseil: ']) then // do not localize
   begin
     // hide hint about getter/setter names
     if (Pos(' H2369 ', Line) = 0) then
@@ -501,9 +475,7 @@ begin
     else
       Result := '';
   end
-  else
-  if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then
- // do not localize
+  else if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
   begin
     // hide platform warnings
     if (Pos(' W1002 ', Line) = 0) then
@@ -515,23 +487,19 @@ begin
     else
       Result := '';
   end
-  else
-  if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
+  else if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
   begin
     LineType := clError;
     if Assigned(Page) then
       Page.AddError(Line);
   end
-  else
-  if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then
- // do not localize
+  else if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
   begin
     LineType := clFatal;
     if Assigned(Page) then
       Page.AddFatal(Line);
   end
-  else
-  if Assigned(Page) then
+  else if Assigned(Page) then
     Page.AddText(Line);
 end;
 
@@ -547,6 +515,6 @@ initialization
 
 finalization
 
-  InternalInstallCore.Free;
+InternalInstallCore.Free;
 
 end.

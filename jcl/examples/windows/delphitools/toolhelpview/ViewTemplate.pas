@@ -90,8 +90,7 @@ end;
 
 procedure TViewForm.TextLabels1Execute(Sender: TObject);
 begin
-  with TextLabels1 do
-    Checked := not Checked;
+  with TextLabels1 do Checked := not Checked;
   UpdateTextLabels;
 end;
 
@@ -145,8 +144,7 @@ end;
 procedure TViewForm.Find1Update(Sender: TObject);
 begin
   TAction(Sender).Enabled :=
-    (ActiveControl is TListView) and not
-    TListView(ActiveControl).HideSelection;
+    (ActiveControl is TListView) and not TListView(ActiveControl).HideSelection;
 end;
 
 procedure TViewForm.Find1Execute(Sender: TObject);

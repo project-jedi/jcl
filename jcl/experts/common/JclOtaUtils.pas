@@ -69,7 +69,7 @@ type
 //  - notifier callback functions
 //  - ... (non exhaustive list)
 
-  EJclExpertException = class(Exception)
+  EJclExpertException = class (Exception)
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;
@@ -82,7 +82,7 @@ type
   {$ENDIF MSWINDOWS}
   end;
 
-  TJclOTASettings = class(TObject)
+  TJclOTASettings = class (TObject)
   private
     FKeyName: string;
     FBaseKeyName: string;
@@ -107,7 +107,7 @@ type
   // between this unit and the JclOtaConfigurationForm unit.
   IJclOTAOptionsCallback = interface;
 
-  TJclOTAAddPageFunc = procedure(AControl: TControl; PageName: string;
+  TJclOTAAddPageFunc = procedure (AControl: TControl; PageName: string;
     Expert: IJclOTAOptionsCallback) of object;
 
   IJclOTAOptionsCallback = interface
@@ -142,8 +142,7 @@ type
     class function GetExpertCount: Integer;
     class function GetExpert(Index: Integer): TJclOTAExpertBase;
     class function ConfigurationDialog(StartName: string = ''): Boolean;
-    class procedure CheckToolBarButton(AToolBar: TToolBar;
-      AAction: TCustomAction);
+    class procedure CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
     class function GetActionCount: Integer;
     class function GetAction(Index: Integer): TAction;
     class function ActionSettings: TJclOtaSettings;
@@ -152,7 +151,7 @@ type
     destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-
+    
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
     function GetDrcFileName(const Project: IOTAProject): string;
@@ -163,8 +162,7 @@ type
     function SubstitutePath(const Path: string): string;
 
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
-    procedure ConfigurationClosed(AControl: TControl;
-      SaveChanges: Boolean); virtual;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); virtual;
 
     procedure RegisterCommands; virtual;
     procedure UnregisterCommands; virtual;
@@ -247,10 +245,10 @@ begin
   try
     Result := nil;
     if Assigned(GlobalActionList) then
-      for Index := 0 to GlobalActionList.Count - 1 do
+      for Index := 0 to GlobalActionList.Count-1 do
       begin
         TestAction := TCustomAction(GlobalActionList.Items[Index]);
-        if (CompareText(Name, TestAction.Name) = 0) then
+        if (CompareText(Name,TestAction.Name) = 0) then
           Result := TestAction;
       end;
     {$IFNDEF COMPILER6_UP}
@@ -327,13 +325,12 @@ var
 begin
   inherited Create;
 
-  Supports(BorlandIDEServices, IOTAServices, OTAServices);
+  Supports(BorlandIDEServices,IOTAServices,OTAServices);
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
-  FBaseKeyName := StrEnsureSuffix(AnsiBackSlash,
-    OTAServices.GetBaseRegistryKey);
-
+  FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
+  
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
@@ -484,8 +481,7 @@ end;
 type
   TAccessToolButton = class(TToolButton);
 
-class procedure TJclOTAExpertBase.CheckToolBarButton(AToolBar: TToolBar;
-  AAction: TCustomAction);
+class procedure TJclOTAExpertBase.CheckToolBarButton(AToolBar: TToolBar; AAction: TCustomAction);
 var
   Index: Integer;
   AButton: TAccessToolButton;
@@ -535,7 +531,7 @@ begin
   end;
 end;
 
-procedure TJclOTAExpertBase.AddConfigurationPages(
+procedure TJclOTAExpertBase.AddConfigurationPages(  
   AddPageFunc: TJclOTAAddPageFunc);
 begin
   // AddPageFunc uses '\' as a separator in PageName to build a tree
@@ -569,7 +565,7 @@ begin
   RegisterSplashScreen;
   RegisterAboutBox;
   {$ENDIF BDS}
-
+  
   Supports(BorlandIDEServices, IOTAServices, FServices);
   if not Assigned(FServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
@@ -607,8 +603,7 @@ begin
   inherited Destroy;
 end;
 
-function TJclOTAExpertBase.FindExecutableName(
-  const MapFileName, OutputDirectory: string;
+function TJclOTAExpertBase.FindExecutableName(const MapFileName, OutputDirectory: string;
   var ExecutableFileName: string): Boolean;
 var
   Se: TSearchRec;
@@ -678,7 +673,7 @@ function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
-
+    
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
@@ -705,8 +700,7 @@ begin
   LibSuffix := '';
   {$ENDIF ~RTL140_UP}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
-    PathExtractFileNameNoExt(ProjectFileName) + LibSuffix +
-    CompilerExtensionMAP;
+    PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + CompilerExtensionMAP;
 end;
 
 function TJclOTAExpertBase.GetModuleHInstance: Cardinal;
@@ -716,13 +710,12 @@ begin
     raise EJclExpertException.CreateTrace(RsBadModuleHInstance);
 end;
 
-function TJclOTAExpertBase.GetOutputDirectory(
-  const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
-    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
   if IsPackage(Project) then
   begin
@@ -747,8 +740,7 @@ begin
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
-  else
-  if not PathIsAbsolute(Result) then
+  else if not PathIsAbsolute(Result) then
     Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
@@ -808,12 +800,10 @@ begin
   begin
     //(usc) another possibility for D7 or higher is to use IOTAServices.GetRootDirectory
     {$IFDEF MSWINDOWS}
-    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE,
-      Settings.BaseKeyName, DelphiRootDirKeyValue, '');
+    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     // (rom) bugfix if using -r switch of D9 by Dan Miser
     if FRootDir = '' then
-      FRootDir := RegReadStringDef(HKEY_CURRENT_USER,
-        Settings.BaseKeyName, DelphiRootDirKeyValue, '');
+      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     {$ENDIF MSWINDOWS}
     {$IFDEF KYLIX}
     RADToolsInstallations := TJclBorRADToolInstallations.Create;
@@ -839,8 +829,7 @@ begin
   Result := FRootDir;
 end;
 
-function TJclOTAExpertBase.IsInstalledPackage(
-  const Project: IOTAProject): Boolean;
+function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
   PackageFileName, ExecutableNameNoExt: string;
   APackageServices: IOTAPackageServices;
@@ -868,12 +857,9 @@ begin
 
       for I := 0 to APackageServices.PackageCount - 1 do
       begin
-        PackageFileName :=
-          ChangeFileExt(APackageServices.PackageNames[I], BinaryExtensionPackage);
-        PackageFileName :=
-          GetModulePath(GetModuleHandle(PChar(PackageFileName)));
-        if AnsiSameText(ChangeFileExt(PackageFileName, ''),
-          ExecutableNameNoExt) then
+        PackageFileName := ChangeFileExt(APackageServices.PackageNames[I], BinaryExtensionPackage);
+        PackageFileName := GetModulePath(GetModuleHandle(PChar(PackageFileName)));
+        if AnsiSameText(ChangeFileExt(PackageFileName, ''), ExecutableNameNoExt) then
         begin
           Result := True;
           Break;
@@ -888,8 +874,7 @@ var
   FileName, FileExtension: string;
   Index: Integer;
   ProjectFile: TJclSimpleXML;
-  PersonalityNode, SourceNode, ProjectExtensions,
-  ProjectTypeNode: TJclSimpleXMLElem;
+  PersonalityNode, SourceNode, ProjectExtensions, ProjectTypeNode: TJclSimpleXMLElem;
   NameProp: TJclSimpleXMLProp;
 begin
   if not Assigned(Project) then
@@ -898,20 +883,17 @@ begin
   FileName := Project.FileName;
   FileExtension := ExtractFileExt(FileName);
 
-  if AnsiSameText(FileExtension, SourceExtensionDProject) and
-    FileExists(FileName) then
+  if AnsiSameText(FileExtension, SourceExtensionDProject) and FileExists(FileName) then
   begin
     Result := False;
     ProjectFile := TJclSimpleXML.Create;
     try
       ProjectFile.Options := ProjectFile.Options - [sxoAutoCreate];
       ProjectFile.LoadFromFile(FileName);
-      ProjectExtensions :=
-        ProjectFile.Root.Items.ItemNamed['ProjectExtensions'];
+      ProjectExtensions := ProjectFile.Root.Items.ItemNamed['ProjectExtensions'];
       if Assigned(ProjectExtensions) then
       begin
-        ProjectTypeNode :=
-          ProjectExtensions.Items.ItemNamed['Borland.ProjectType'];
+        ProjectTypeNode := ProjectExtensions.Items.ItemNamed['Borland.ProjectType'];
         if Assigned(ProjectTypeNode) then
           Result := AnsiSameText(ProjectTypeNode.Value, 'Package');
       end;
@@ -920,19 +902,16 @@ begin
     end;
   end
   else
-  if AnsiSameText(FileExtension, SourceExtensionBDSProject) and
-    FileExists(FileName) then
+  if AnsiSameText(FileExtension, SourceExtensionBDSProject) and FileExists(FileName) then
   begin
     Result := False;
     ProjectFile := TJclSimpleXML.Create;
     try
       ProjectFile.Options := ProjectFile.Options - [sxoAutoCreate];
       ProjectFile.LoadFromFile(FileName);
-      PersonalityNode := ProjectFile.Root.Items.ItemNamed[
-        'Delphi.Personality'];
+      PersonalityNode := ProjectFile.Root.Items.ItemNamed['Delphi.Personality'];
       if not Assigned(PersonalityNode) then
-        PersonalityNode :=
-          ProjectFile.Root.Items.ItemNamed['CPlusPlusBuilder.Personality'];
+        PersonalityNode := ProjectFile.Root.Items.ItemNamed['CPlusPlusBuilder.Personality'];
 
       if Assigned(PersonalityNode) then
       begin
@@ -941,16 +920,14 @@ begin
         begin
           for Index := 0 to SourceNode.Items.Count - 1 do
             if AnsiSameText(SourceNode.Items.Item[0].Name, 'Source') then
+          begin
+            NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
+            if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
             begin
-              NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
-              if Assigned(NameProp) and AnsiSameText(NameProp.Value,
-                'MainSource') then
-              begin
-                Result := AnsiSameText(
-                  ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
-                Break;
-              end;
+              Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
+              Break;
             end;
+          end;
         end;
       end;
     finally
@@ -1040,7 +1017,7 @@ begin
       Result := StringReplace(Result, Format('$(%s)', [Name]),
         FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
     end;
-  while Pos('\\', Result) > 0 do
+  While Pos('\\', Result) > 0 do
     Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
 end;
 
@@ -1049,8 +1026,7 @@ begin
   if Action.Name <> '' then
   begin
     Action.Tag := Action.ShortCut;  // to restore settings
-    Action.ShortCut := ActionSettings.LoadInteger(Action.Name,
-      Action.ShortCut);
+    Action.ShortCut := ActionSettings.LoadInteger(Action.Name, Action.ShortCut);
   end;
 
   if not Assigned(GlobalActionList) then
@@ -1074,7 +1050,7 @@ procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
 begin
   if Action.Name <> '' then
     ActionSettings.SaveInteger(Action.Name, Action.ShortCut);
-
+    
   if Assigned(GlobalActionList) then
   begin
     GlobalActionList.Remove(Action);
@@ -1112,8 +1088,7 @@ begin
   begin
     Category := '';
     for Index := 0 to NTAServices.ActionList.ActionCount - 1 do
-      if CompareText(NTAServices.ActionList.Actions[Index].Name,
-        'ToolsOptionsCommand') = 0 then
+      if CompareText(NTAServices.ActionList.Actions[Index].Name, 'ToolsOptionsCommand') = 0 then
         Category := NTAServices.ActionList.Actions[Index].Category;
 
     ConfigurationAction := TAction.Create(nil);
@@ -1135,7 +1110,7 @@ begin
     ConfigurationAction.ActionList := NTAServices.ActionList;
     RegisterAction(ConfigurationAction);
   end;
-
+  
   if not Assigned(ConfigurationMenuItem) then
   begin
     IDEMenuItem := NTAServices.MainMenu.Items;
@@ -1264,25 +1239,25 @@ end;
 
 initialization
 
-  Classes.RegisterClass(TJclWizardForm);
-  Classes.RegisterClass(TJclWizardFrame);
+Classes.RegisterClass(TJclWizardForm);
+Classes.RegisterClass(TJclWizardFrame);
 
 finalization
 
-  try
+try
   {$IFDEF BDS}
   UnregisterAboutBox;
   {$ENDIF BDS}
-    FreeAndNil(GlobalActionList);
-    FreeAndNil(GlobalActionSettings);
-    FreeAndNil(GlobalExpertList);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+  FreeAndNil(GlobalActionList);
+  FreeAndNil(GlobalActionSettings);
+  FreeAndNil(GlobalExpertList);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 //=== Helper routines ========================================================
 

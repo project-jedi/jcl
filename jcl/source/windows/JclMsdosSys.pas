@@ -42,7 +42,7 @@ uses
 
 type
   IJclMsdosSys = interface
-    ['{3E1C7E48-49E5-408B-86D2-9924D223B5C5}']
+  ['{3E1C7E48-49E5-408B-86D2-9924D223B5C5}']
     // Property access methods
     function GetAutoScan: Boolean;
     function GetBootDelay: Cardinal;
@@ -94,17 +94,14 @@ type
     property UninstallDir: Char read GetUninstallDir write SetUninstallDir;
     property WinDir: string read GetWinDir write SetWinDir;
     property WinBootDir: string read GetWinBootDir write SetWinBootDir;
-    property HostWinBootDrv: Char read GetHostWinBootDrv
-      write SetHostWinBootDrv;
+    property HostWinBootDrv: Char read GetHostWinBootDrv write SetHostWinBootDrv;
     property AutoScan: Boolean read GetAutoScan write SetAutoScan;
     property BootDelay: Cardinal read GetBootDelay write SetBootDelay;
     property BootGUI: Boolean read GetBootGUI write SetBootGUI;
     property BootKeys: Boolean read GetBootKeys write SetBootKeys;
     property BootMenu: Boolean read GetBootMenu write SetBootMenu;
-    property BootMenuDefault: Cardinal
-      read GetBootMenuDefault write SetBootMenuDefault;
-    property BootMenuDelay: Cardinal read GetBootMenuDelay
-      write SetBootMenuDelay;
+    property BootMenuDefault: Cardinal read GetBootMenuDefault write SetBootMenuDefault;
+    property BootMenuDelay: Cardinal read GetBootMenuDelay write SetBootMenuDelay;
     property BootMulti: Boolean read GetBootMulti write SetBootMulti;
     property BootSafe: Boolean read GetBootSafe write SetBootSafe;
     property BootWarn: Boolean read GetBootWarn write SetBootWarn;
@@ -214,17 +211,14 @@ type
     property UninstallDir: Char read GetUninstallDir write SetUninstallDir;
     property WinDir: string read GetWinDir write SetWinDir;
     property WinBootDir: string read GetWinBootDir write SetWinBootDir;
-    property HostWinBootDrv: Char read GetHostWinBootDrv
-      write SetHostWinBootDrv;
+    property HostWinBootDrv: Char read GetHostWinBootDrv write SetHostWinBootDrv;
     property AutoScan: Boolean read GetAutoScan write SetAutoScan;
     property BootDelay: Cardinal read GetBootDelay write SetBootDelay;
     property BootGUI: Boolean read GetBootGUI write SetBootGUI;
     property BootKeys: Boolean read GetBootKeys write SetBootKeys;
     property BootMenu: Boolean read GetBootMenu write SetBootMenu;
-    property BootMenuDefault: Cardinal
-      read GetBootMenuDefault write SetBootMenuDefault;
-    property BootMenuDelay: Cardinal read GetBootMenuDelay
-      write SetBootMenuDelay;
+    property BootMenuDefault: Cardinal read GetBootMenuDefault write SetBootMenuDefault;
+    property BootMenuDelay: Cardinal read GetBootMenuDelay write SetBootMenuDelay;
     property BootMulti: Boolean read GetBootMulti write SetBootMulti;
     property BootSafe: Boolean read GetBootSafe write SetBootSafe;
     property BootWarn: Boolean read GetBootWarn write SetBootWarn;
@@ -579,69 +573,69 @@ begin
   if not FileExists(cMsDosSys) then
     Exit;
   with TStringList.Create do
-    try
-      Add('[Paths]');
-      if UninstallDir <> #0 then
-        Add('UninstallDir=' + UninstallDir);
-      if WinDir <> '' then
-        Add('WinDir=' + WinDir);
-      if WinBootDir <> '' then
-        Add('WinBootDir=' + WinBootDir);
-      if HostWinBootDrv <> #0 then
-        Add('HostWinBootDrv=' + HostWinBootDrv);
-      Add('');
+  try
+    Add('[Paths]');
+    if UninstallDir <> #0 then
+      Add('UninstallDir=' + UninstallDir);
+    if WinDir <> '' then
+      Add('WinDir=' + WinDir);
+    if WinBootDir <> '' then
+      Add('WinBootDir=' + WinBootDir);
+    if HostWinBootDrv <> #0 then
+      Add('HostWinBootDrv=' + HostWinBootDrv);
+    Add('');
 
-      Add('[Options]');
-      if not AutoScan then
-        Add('AutoScan=0');
-      if BootDelay <> 2 then
-        Add('BootDelay=' + IntToStr(BootDelay));
-      if not BootGUI then
-        Add('BootGUI=0');
-      if not BootKeys then
-        Add('BootKeys=0');
-      if BootMenu then
-        Add('BootMenu=1');
-      if BootMenuDefault <> 1 then
-        Add('BootMenuDefault=' + IntToStr(BootMenuDefault));
-      if BootMenuDelay <> 30 then
-        Add('BootMenuDelay=' + IntToStr(BootMenuDelay));
-      if BootMulti then
-        Add('BootMulti=1');
-      if BootSafe then
-        Add('BootSafe=1');
-      if not BootWarn then
-        Add('BootWarn=0');
-      if not BootWin then
-        Add('BootWin=0');
-      if not DBLSpace then
-        Add('DBLSpace=0');
-      if not DRVSpace then
-        Add('DRVSpace=0');
-      if DoubleBuffer then
-        Add('DoubleBuffer=1');
-      if not LoadTop then
-        Add('LoadTop=0');
-      if not Logo then
-        Add('Logo=0');
-      if Network then
-        Add('Network=1');
-      if WinVer <> '' then
-        Add('WinVer=' + WinVer);
+    Add('[Options]');
+    if not AutoScan then
+      Add('AutoScan=0');
+    if BootDelay <> 2 then
+      Add('BootDelay=' + IntToStr(BootDelay));
+    if not BootGUI then
+      Add('BootGUI=0');
+    if not BootKeys then
+      Add('BootKeys=0');
+    if BootMenu then
+      Add('BootMenu=1');
+    if BootMenuDefault <> 1 then
+      Add('BootMenuDefault=' + IntToStr(BootMenuDefault));
+    if BootMenuDelay <> 30 then
+      Add('BootMenuDelay=' + IntToStr(BootMenuDelay));
+    if BootMulti then
+      Add('BootMulti=1');
+    if BootSafe then
+      Add('BootSafe=1');
+    if not BootWarn then
+      Add('BootWarn=0');
+    if not BootWin then
+      Add('BootWin=0');
+    if not DBLSpace then
+      Add('DBLSpace=0');
+    if not DRVSpace then
+      Add('DRVSpace=0');
+    if DoubleBuffer then
+      Add('DoubleBuffer=1');
+    if not LoadTop then
+      Add('LoadTop=0');
+    if not Logo then
+      Add('Logo=0');
+    if Network then
+      Add('Network=1');
+    if WinVer <> '' then
+      Add('WinVer=' + WinVer);
 
-      Add(';');
-      Add(';The following lines are required for compatibility with other programs.');
-      Add(';Do not remove them(MSDOS.SYS needs to be >1024 bytes).');
-      Line := ';' + StringOfChar('x', 69);
-      for I := 'a' to 's' do
-        Add(Line + I);
-      Attributes := FileGetAttr(cMsDosSys) and not faReadOnly;
-      FileSetAttr(cMsDosSys, Attributes);
-      SaveToFile(cMsDosSys);
-      FileSetAttr(cMsDosSys, Attributes or faReadOnly);
-    finally
-      Free;
-    end;
+    Add(';');
+    Add(';The following lines are required for compatibility with other programs.');
+    Add(';Do not remove them(MSDOS.SYS needs to be >1024 bytes).');
+    Line := ';' + StringOfChar('x', 69);
+    for I := 'a' to 's' do
+      Add(Line+I);
+    Attributes := FileGetAttr(cMsDosSys) and not faReadOnly;
+    FileSetAttr(cMsDosSys, Attributes);
+    SaveToFile(cMsDosSys);
+    FileSetAttr(cMsDosSys, Attributes or faReadOnly);
+  finally
+    Free;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

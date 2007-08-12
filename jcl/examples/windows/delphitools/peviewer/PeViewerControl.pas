@@ -51,8 +51,7 @@ uses ComServ, PeViewerMain;
 
 procedure TPeViewerControl.OpenFile(const FileName: WideString);
 begin
-  if Length(FileName) > 0 then
-    MainForm.OpenFile(FileName, True);
+  if Length(FileName) > 0 then MainForm.OpenFile(FileName, True);
 end;
 
 procedure TPeViewerControl.BringToFront;

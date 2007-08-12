@@ -44,15 +44,12 @@ uses
   JclBase;
 
 type
-  TScheduleRecurringKind = (srkOneShot, srkDaily, srkWeekly,
-    srkMonthly, srkYearly);
+  TScheduleRecurringKind = (srkOneShot, srkDaily, srkWeekly, srkMonthly, srkYearly);
   TScheduleEndKind = (sekNone, sekDate, sekTriggerCount, sekDayCount);
-  TScheduleWeekDay = (swdMonday, swdTuesday, swdWednesday,
-    swdThursday, swdFriday, swdSaturday,
+  TScheduleWeekDay = (swdMonday, swdTuesday, swdWednesday, swdThursday, swdFriday, swdSaturday,
     swdSunday);
   TScheduleWeekDays = set of TScheduleWeekDay;
-  TScheduleIndexKind = (sikNone, sikDay, sikWeekDay, sikWeekendDay,
-    sikMonday, sikTuesday,
+  TScheduleIndexKind = (sikNone, sikDay, sikWeekDay, sikWeekendDay, sikMonday, sikTuesday,
     sikWednesday, sikThursday, sikFriday, sikSaturday, sikSunday);
 
 const
@@ -89,18 +86,15 @@ type
     function DayCount: Cardinal;
     function LastTriggered: TTimeStamp;
 
-    procedure InitToSavedState(const LastTriggerStamp: TTimeStamp;
-      const LastTriggerCount,
+    procedure InitToSavedState(const LastTriggerStamp: TTimeStamp; const LastTriggerCount,
       LastDayCount: Cardinal);
     procedure Reset;
     function NextEvent(CountMissedEvents: Boolean = False): TTimeStamp;
-    function NextEventFrom(const FromEvent: TTimeStamp;
-      CountMissedEvent: Boolean = False): TTimeStamp;
+    function NextEventFrom(const FromEvent: TTimeStamp; CountMissedEvent: Boolean = False): TTimeStamp;
     function NextEventFromNow(CountMissedEvents: Boolean = False): TTimeStamp;
 
     property StartDate: TTimeStamp read GetStartDate write SetStartDate;
-    property RecurringType: TScheduleRecurringKind
-      read GetRecurringType write SetRecurringType;
+    property RecurringType: TScheduleRecurringKind read GetRecurringType write SetRecurringType;
     property EndType: TScheduleEndKind read GetEndType write SetEndType;
     property EndDate: TTimeStamp read GetEndDate write SetEndDate;
     property EndCount: Cardinal read GetEndCount write SetEndCount;
@@ -138,8 +132,7 @@ type
     procedure SetDaysOfWeek(Value: TScheduleWeekDays);
     procedure SetInterval(Value: Cardinal);
 
-    property DaysOfWeek: TScheduleWeekDays
-      read GetDaysOfWeek write SetDaysOfWeek;
+    property DaysOfWeek: TScheduleWeekDays read GetDaysOfWeek write SetDaysOfWeek;
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
@@ -154,8 +147,7 @@ type
     procedure SetDay(Value: Cardinal);
     procedure SetInterval(Value: Cardinal);
 
-    property IndexKind: TScheduleIndexKind
-      read GetIndexKind write SetIndexKind;
+    property IndexKind: TScheduleIndexKind read GetIndexKind write SetIndexKind;
     property IndexValue: Integer read GetIndexValue write SetIndexValue;
     property Day: Cardinal read GetDay write SetDay;
     property Interval: Cardinal read GetInterval write SetInterval;
@@ -174,8 +166,7 @@ type
     procedure SetMonth(Value: Cardinal);
     procedure SetInterval(Value: Cardinal);
 
-    property IndexKind: TScheduleIndexKind
-      read GetIndexKind write SetIndexKind;
+    property IndexKind: TScheduleIndexKind read GetIndexKind write SetIndexKind;
     property IndexValue: Integer read GetIndexValue write SetIndexValue;
     property Day: Cardinal read GetDay write SetDay;
     property Month: Cardinal read GetMonth write SetMonth;
@@ -197,12 +188,12 @@ const
 implementation
 
 uses
-  JclDateTime, JclResources;
+  JclDateTime, JclResources;  
 
 {$IFNDEF RTL140_UP}
 
 const
-  S_OK = $00000000;
+  S_OK    = $00000000;
   E_NOINTERFACE = HRESULT($80004002);
 
 type
@@ -223,8 +214,7 @@ type
   TContainedObject = class(TAggregatedObject, IUnknown)
   protected
     { IUnknown }
-    function QueryInterface(const IID: TGUID; out Obj): HResult;
-      virtual; stdcall;
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
   end;
 
 //=== { TAggregatedObject } ==================================================
@@ -258,8 +248,7 @@ end;
 
 function TContainedObject.QueryInterface(const IID: TGUID; out Obj): HResult;
 begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK else Result := E_NOINTERFACE;
+  if GetInterface(IID, Obj) then Result := S_OK else Result := E_NOINTERFACE;
 end;
 
 {$ENDIF ~RTL140_UP}
@@ -276,8 +265,7 @@ type
 
     function ValidStamp(const Stamp: TTimeStamp): Boolean; virtual; abstract;
     procedure MakeValidStamp(var Stamp: TTimeStamp); virtual; abstract;
-    function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
-      virtual; abstract;
+    function NextValidStamp(const Stamp: TTimeStamp): TTimeStamp; virtual; abstract;
   end;
 
 procedure TScheduleAggregate.CheckInterfaceAllowed;
@@ -337,8 +325,7 @@ end;
 
 function TDailyFreq.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
-  Result := (Cardinal(Stamp.Time) >= FStartTime) and
-    (Cardinal(Stamp.Time) <= FEndTime) and
+  Result := (Cardinal(Stamp.Time) >= FStartTime) and (Cardinal(Stamp.Time) <= FEndTime) and
     ((Cardinal(Stamp.Time) - FStartTime) mod FInterval = 0);
 end;
 
@@ -349,8 +336,7 @@ begin
     Result.Time := FStartTime
   else
   if ((Cardinal(Stamp.Time) - FStartTime) mod FInterval) <> 0 then
-    Result.Time := Stamp.Time + Integer(FInterval -
-      (Cardinal(Stamp.Time) - FStartTime) mod FInterval)
+    Result.Time := Stamp.Time + Integer(FInterval-(Cardinal(Stamp.Time) - FStartTime) mod FInterval)
   else
     Result.Time := Stamp.Time + Integer(FInterval);
   if (Result.Time < 0) or (Cardinal(Result.Time) > FEndTime) then
@@ -452,8 +438,7 @@ end;
 function TDailySchedule.ValidStamp(const Stamp: TTimeStamp): Boolean;
 begin
   Result := (FEveryWeekDay and (TimeStampDOW(Stamp) < 6)) or
-    (not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod
-    Interval = 0));
+    (not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval = 0));
 end;
 
 procedure TDailySchedule.MakeValidStamp(var Stamp: TTimeStamp);
@@ -461,10 +446,8 @@ begin
   if FEveryWeekDay and (TimeStampDOW(Stamp) >= 6) then
     Inc(Stamp.Date, 2 - (TimeStampDOW(Stamp) - 6))
   else
-  if not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod
-    Interval <> 0) then
-    Inc(Stamp.Date, Interval - Cardinal(Stamp.Date -
-      Schedule.StartDate.Date) mod Interval);
+  if not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval <> 0) then
+    Inc(Stamp.Date, Interval - Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval);
 end;
 
 function TDailySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
@@ -480,8 +463,7 @@ begin
       MakeValidStamp(Result);     // Skip over the weekend.
     end
     else
-      Inc(Result.Date, Interval);
- // always valid as we started with a valid stamp
+      Inc(Result.Date, Interval); // always valid as we started with a valid stamp
   end;
 end;
 
@@ -538,8 +520,7 @@ type
     procedure SetDaysOfWeek(Value: TScheduleWeekDays);
     procedure SetInterval(Value: Cardinal);
 
-    property DaysOfWeek: TScheduleWeekDays
-      read GetDaysOfWeek write SetDaysOfWeek;
+    property DaysOfWeek: TScheduleWeekDays read GetDaysOfWeek write SetDaysOfWeek;
     property Interval: Cardinal read GetInterval write SetInterval;
   end;
 
@@ -567,11 +548,9 @@ begin
     Inc(Stamp.Date);
   if (Stamp.Date - Schedule.StartDate.Date) <> 0 then
   begin
-    if Cardinal((Stamp.Date - Schedule.StartDate.Date) div 7) mod
-      Interval <> 0 then
+    if Cardinal((Stamp.Date - Schedule.StartDate.Date) div 7) mod Interval <> 0 then
       Inc(Stamp.Date, 7 * (Interval -
-        (Cardinal((Stamp.Date - Schedule.StartDate.Date) div 7) mod
-        Interval)));
+        (Cardinal((Stamp.Date - Schedule.StartDate.Date) div 7) mod Interval)));
   end;
 end;
 
@@ -642,11 +621,10 @@ type
     function GetInterval: Cardinal;
     procedure SetIndexKind(Value: TScheduleIndexKind);
     procedure SetIndexValue(Value: Integer);
-    procedure SetDay(Value: Cardinal);
+    procedure SetDay(Value: Cardinal); 
     procedure SetInterval(Value: Cardinal);
 
-    property IndexKind: TScheduleIndexKind
-      read GetIndexKind write SetIndexKind;
+    property IndexKind: TScheduleIndexKind read GetIndexKind write SetIndexKind;
     property IndexValue: Integer read GetIndexValue write SetIndexValue;
     property Day: Cardinal read GetDay write SetDay;
     property Interval: Cardinal read GetInterval write SetInterval;
@@ -673,8 +651,7 @@ var
 begin
   DecodeDate(TimeStampToDateTime(Schedule.StartDate), SYear, SMonth, SDay);
   DecodeDate(TimeStampToDateTime(Stamp), TYear, TMonth, TDay);
-  Result := (((TYear * 12 + TMonth) - (SYear * 12 + SMonth)) mod
-    Integer(Interval) = 0) and
+  Result := (((TYear * 12 + TMonth) - (SYear * 12 + SMonth)) mod Integer(Interval) = 0) and
     ValidStampMonthIndex(TYear, TMonth, TDay);
 end;
 
@@ -698,8 +675,7 @@ begin
     TDay := 1;
   end;
   MakeValidStampMonthIndex(TYear, TMonth, TDay);
-  while DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date <
-    Stamp.Date do
+  while DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date < Stamp.Date do
   begin
     Inc(TMonth, Integer(Interval));
     if TMonth > 12 then
@@ -709,8 +685,7 @@ begin
     end;
     MakeValidStampMonthIndex(TYear, TMonth, TDay);
   end;
-  Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear,
-    TMonth, TDay)).Date;
+  Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date;
 end;
 
 function TMonthlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
@@ -725,8 +700,7 @@ begin
   end;
 end;
 
-function TMonthlySchedule.ValidStampMonthIndex(
-  const TYear, TMonth, TDay: Word): Boolean;
+function TMonthlySchedule.ValidStampMonthIndex(const TYear, TMonth, TDay: Word): Boolean;
 var
   DIM: Integer;
   TempDay: Integer;
@@ -739,184 +713,173 @@ begin
       Result :=
         ((IndexValue = sivLast) and (TDay = DIM)) or
         ((IndexValue <> sivLast) and (
-        (TDay = IndexValue) or (
-        (IndexValue > DIM) and
-        (TDay = DIM)
-        ) or (
-        (IndexValue < 0) and (
-        (TDay = DIM + 1 + IndexValue) or (
-        (-IndexValue > DIM) and
-        (TDay = 1)
-        )
-        )
-        )
+          (TDay = IndexValue) or (
+            (IndexValue > DIM) and
+            (TDay = DIM)
+          ) or (
+            (IndexValue < 0) and (
+              (TDay = DIM + 1 + IndexValue) or (
+                (-IndexValue > DIM) and
+                (TDay = 1)
+              )
+            )
+          )
         ));
     sikWeekDay:
-    begin
-      case IndexValue of
-        sivFirst:
-          TempDay := FirstWeekDay(TYear, TMonth);
-        sivLast:
-          TempDay := LastWeekDay(TYear, TMonth);
-        else
-          TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay := LastWeekDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TempDay := FirstWeekDay(TYear, TMonth);
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TempDay := FirstWeekDay(TYear, TMonth);
+          sivLast:
+            TempDay := LastWeekDay(TYear, TMonth);
+          else
+            TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
+            if TempDay = 0 then
+            begin
+              if IndexValue > 0 then
+                TempDay := LastWeekDay(TYear, TMonth)
+              else
+              if IndexValue < 0 then
+                TempDay := FirstWeekDay(TYear, TMonth);
+            end;
+        end;
+        Result := TDay = TempDay;
       end;
-      Result := TDay = TempDay;
-    end;
     sikWeekendDay:
-    begin
-      case IndexValue of
-        sivFirst:
-          TempDay := FirstWeekendDay(TYear, TMonth);
-        sivLast:
-          TempDay := LastWeekendDay(TYear, TMonth);
-        else
-          TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay := LastWeekendDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TempDay := FirstWeekendDay(TYear, TMonth);
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TempDay := FirstWeekendDay(TYear, TMonth);
+          sivLast:
+            TempDay := LastWeekendDay(TYear, TMonth);
+          else
+            TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
+            if TempDay = 0 then
+            begin
+              if IndexValue > 0 then
+                TempDay := LastWeekendDay(TYear, TMonth)
+              else
+              if IndexValue < 0 then
+                TempDay := FirstWeekendDay(TYear, TMonth);
+            end;
+        end;
+        Result := TDay = TempDay;
       end;
-      Result := TDay = TempDay;
-    end;
     sikMonday..sikSunday:
-    begin
-      case IndexValue of
-        sivFirst:
-          TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-            Ord(sikWeekendDay));
-        sivLast:
-          TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-            Ord(sikWeekendDay));
-        else
-          TempDay := IndexedDayOfWeek(TYear, TMonth,
-            Ord(IndexKind) - Ord(sikWeekendDay),
-            IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay :=
-                LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-            else
-            if IndexValue < 0 then
-              TempDay :=
-                FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+          sivLast:
+            TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+          else
+            TempDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+              IndexValue);
+            if TempDay = 0 then
+            begin
+              if IndexValue > 0 then
+                TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+              else
+              if IndexValue < 0 then
+                TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+            end;
+        end;
+        Result := TDay = TempDay;
       end;
-      Result := TDay = TempDay;
-    end;
     else
       Result := False;
   end;
 end;
 
-procedure TMonthlySchedule.MakeValidStampMonthIndex(
-  var TYear, TMonth, TDay: Word);
+procedure TMonthlySchedule.MakeValidStampMonthIndex(var TYear, TMonth, TDay: Word);
 var
   DIM: Integer;
 begin
   DIM := DaysInMonth(JclDateTime.EncodeDate(TYear, TMonth, 1));
   case IndexKind of
     sikNone:
-    begin
-      TDay := Day;
-      if Integer(Day) > DIM then
-        TDay := DIM;
-    end;
-    sikDay:
-    begin
-      if (IndexValue = sivLast) or (Integer(IndexValue) > DIM) then
-        TDay := DIM
-      else
-      if IndexValue > 0 then
-        TDay := IndexValue
-      else
       begin
-        if -IndexValue > DIM then
-          TDay := 1
-        else
-          TDay := DIM + 1 + IndexValue;
+        TDay := Day;
+        if Integer(Day) > DIM then
+          TDay := DIM;
       end;
-    end;
+    sikDay:
+      begin
+        if (IndexValue = sivLast) or (Integer(IndexValue) > DIM) then
+          TDay := DIM
+        else
+        if IndexValue > 0 then
+          TDay := IndexValue
+        else
+        begin
+          if -IndexValue > DIM then
+            TDay := 1
+          else
+            TDay := DIM + 1 + IndexValue;
+        end;
+      end;
     sikWeekDay:
-    begin
-      case IndexValue of
-        sivFirst:
-          TDay := FirstWeekDay(TYear, TMonth);
-        sivLast:
-          TDay := LastWeekDay(TYear, TMonth);
-        else
-        begin
-          TDay := IndexedWeekDay(TYear, TMonth, IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastWeekDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TDay := FirstWeekDay(TYear, TMonth);
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TDay := FirstWeekDay(TYear, TMonth);
+          sivLast:
+            TDay := LastWeekDay(TYear, TMonth);
+          else
+            begin
+              TDay := IndexedWeekDay(TYear, TMonth, IndexValue);
+              if TDay = 0 then
+              begin
+                if IndexValue > 0 then
+                  TDay := LastWeekDay(TYear, TMonth)
+                else
+                if IndexValue < 0 then
+                  TDay := FirstWeekDay(TYear, TMonth);
+              end;
+            end;
         end;
       end;
-    end;
     sikWeekendDay:
-    begin
-      case IndexValue of
-        sivFirst:
-          TDay := FirstWeekendDay(TYear, TMonth);
-        sivLast:
-          TDay := LastWeekendDay(TYear, TMonth);
-        else
-        begin
-          TDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastWeekendDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TDay := FirstWeekendDay(TYear, TMonth);
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TDay := FirstWeekendDay(TYear, TMonth);
+          sivLast:
+            TDay := LastWeekendDay(TYear, TMonth);
+          else
+            begin
+              TDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
+              if TDay = 0 then
+              begin
+                if IndexValue > 0 then
+                  TDay := LastWeekendDay(TYear, TMonth)
+                else
+                if IndexValue < 0 then
+                  TDay := FirstWeekendDay(TYear, TMonth);
+              end;
+            end;
         end;
       end;
-    end;
     sikMonday..sikSunday:
-    begin
-      case IndexValue of
-        sivFirst:
-          TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-            Ord(sikWeekendDay));
-        sivLast:
-          TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-            Ord(sikWeekendDay));
-        else
-          TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-            Ord(sikWeekendDay),
-            IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-                Ord(sikWeekendDay))
-            else
-            if IndexValue < 0 then
-              TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) -
-                Ord(sikWeekendDay));
-          end;
+      begin
+        case IndexValue of
+          sivFirst:
+            TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+          sivLast:
+            TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+          else
+            TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+              IndexValue);
+            if TDay = 0 then
+            begin
+              if IndexValue > 0 then
+                TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+              else
+              if IndexValue < 0 then
+                TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+            end;
+        end;
       end;
-    end;
   end;
 end;
 
@@ -997,7 +960,7 @@ type
     // IJclYearlySchedule
     function GetMonth: Cardinal;
     procedure SetMonth(Value: Cardinal);
-
+    
     property Month: Cardinal read GetMonth write SetMonth;
   end;
 
@@ -1017,11 +980,9 @@ var
   SYear, SMonth, SDay: Word;
   TYear, TMonth, TDay: Word;
 begin
-  JclDateTime.DecodeDate(TimeStampToDateTime(Schedule.StartDate),
-    SYear, SMonth, SDay);
+  JclDateTime.DecodeDate(TimeStampToDateTime(Schedule.StartDate), SYear, SMonth, SDay);
   JclDateTime.DecodeDate(TimeStampToDateTime(Stamp), TYear, TMonth, TDay);
-  Result := ((TYear - SYear) mod Integer(Interval) = 0) and
-    (TMonth = Month) and
+  Result := ((TYear - SYear) mod Integer(Interval) = 0) and (TMonth = Month) and
     ValidStampMonthIndex(TYear, TMonth, TDay);
 end;
 
@@ -1031,8 +992,7 @@ var
   TYear, TMonth, TDay: Word;
   YearDiff: Integer;
 begin
-  JclDateTime.DecodeDate(TimeStampToDateTime(Schedule.StartDate),
-    SYear, SMonth, SDay);
+  JclDateTime.DecodeDate(TimeStampToDateTime(Schedule.StartDate), SYear, SMonth, SDay);
   JclDateTime.DecodeDate(TimeStampToDateTime(Stamp), TYear, TMonth, TDay);
   YearDiff := TYear - SYear;
   if YearDiff mod Integer(Interval) <> 0 then
@@ -1042,16 +1002,14 @@ begin
     TDay := 1;
   end;
   MakeValidStampMonthIndex(TYear, TMonth, TDay);
-  while DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date <
-    Stamp.Date do
+  while DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date < Stamp.Date do
   begin
     Inc(TYear, Integer(Interval));
     TMonth := Month;
     TDay := 1;
     MakeValidStampMonthIndex(TYear, TMonth, TDay);
   end;
-  Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear,
-    TMonth, TDay)).Date;
+  Stamp.Date := DateTimeToTimeStamp(JclDateTime.EncodeDate(TYear, TMonth, TDay)).Date;
 end;
 
 function TYearlySchedule.NextValidStamp(const Stamp: TTimeStamp): TTimeStamp;
@@ -1083,8 +1041,7 @@ end;
 //=== { TSchedule } ==========================================================
 
 type
-  TSchedule = class(TInterfacedObject, IJclSchedule,
-    IJclScheduleDayFrequency, IJclDailySchedule,
+  TSchedule = class(TInterfacedObject, IJclSchedule, IJclScheduleDayFrequency, IJclDailySchedule,
     IJclWeeklySchedule, IJclMonthlySchedule, IJclYearlySchedule)
   private
     FStartDate: TTimeStamp;
@@ -1104,16 +1061,11 @@ type
 
     function GetNextEventStamp(const From: TTimeStamp): TTimeStamp;
 
-    property DailyFreq: TDailyFreq
-      read FDailyFreq implements IJclScheduleDayFrequency;
-    property DailySchedule: TDailySchedule
-      read FDailySchedule implements IJclDailySchedule;
-    property WeeklySchedule: TWeeklySchedule
-      read FWeeklySchedule implements IJclWeeklySchedule;
-    property MonthlySchedule: TMonthlySchedule
-      read FMonthlySchedule implements IJclMonthlySchedule;
-    property YearlySchedule: TYearlySchedule
-      read FYearlySchedule implements IJclYearlySchedule;
+    property DailyFreq: TDailyFreq read FDailyFreq implements IJclScheduleDayFrequency;
+    property DailySchedule: TDailySchedule read FDailySchedule implements IJclDailySchedule;
+    property WeeklySchedule: TWeeklySchedule read FWeeklySchedule implements IJclWeeklySchedule;
+    property MonthlySchedule: TMonthlySchedule read FMonthlySchedule implements IJclMonthlySchedule;
+    property YearlySchedule: TYearlySchedule read FYearlySchedule implements IJclYearlySchedule;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1134,8 +1086,7 @@ type
     function DayCount: Cardinal;
     function LastTriggered: TTimeStamp;
 
-    procedure InitToSavedState(const LastTriggerStamp: TTimeStamp;
-      const LastTriggerCount,
+    procedure InitToSavedState(const LastTriggerStamp: TTimeStamp; const LastTriggerCount,
       LastDayCount: Cardinal);
     procedure Reset;
     function NextEvent(CountMissedEvents: Boolean = False): TTimeStamp;
@@ -1144,8 +1095,7 @@ type
     function NextEventFromNow(CountMissedEvents: Boolean = False): TTimeStamp;
 
     property StartDate: TTimeStamp read GetStartDate write SetStartDate;
-    property RecurringType: TScheduleRecurringKind
-      read GetRecurringType write SetRecurringType;
+    property RecurringType: TScheduleRecurringKind read GetRecurringType write SetRecurringType;
     property EndType: TScheduleEndKind read GetEndType write SetEndType;
     property EndDate: TTimeStamp read GetEndDate write SetEndDate;
     property EndCount: Cardinal read GetEndCount write SetEndCount;
@@ -1162,8 +1112,7 @@ begin
   FMonthlySchedule := TMonthlySchedule.Create(Self);
   FYearlySchedule := TYearlySchedule.Create(Self);
   InitialStamp := DateTimeToTimeStamp(Now);
-  InitialStamp.Time := 1000 * (InitialStamp.Time div 1000);
- // strip of milliseconds
+  InitialStamp.Time := 1000 * (InitialStamp.Time div 1000); // strip of milliseconds
   StartDate := InitialStamp;
   EndType := sekNone;
   RecurringType := srkOneShot;
@@ -1195,62 +1144,61 @@ begin
       if TriggerCount = 0 then
         Result := StartDate;
     srkDaily:
-    begin
-      Result := DailyFreq.NextValidStamp(UseFrom);
-      if IsNullTimeStamp(Result) then
       begin
-        Result.Date := UseFrom.Date;
-        Result.Time := DailyFreq.StartTime;
-        Result := DailySchedule.NextValidStamp(Result);
-      end
-      else
-        DailySchedule.MakeValidStamp(Result);
-    end;
+        Result := DailyFreq.NextValidStamp(UseFrom);
+        if IsNullTimeStamp(Result) then
+        begin
+          Result.Date := UseFrom.Date;
+          Result.Time := DailyFreq.StartTime;
+          Result := DailySchedule.NextValidStamp(Result);
+        end
+        else
+          DailySchedule.MakeValidStamp(Result);
+      end;
     srkWeekly:
-    begin
-      Result := DailyFreq.NextValidStamp(UseFrom);
-      if IsNullTimeStamp(Result) then
       begin
-        Result.Date := UseFrom.Date;
-        Result.Time := DailyFreq.StartTime;
-        Result := WeeklySchedule.NextValidStamp(Result);
-      end
-      else
-        WeeklySchedule.MakeValidStamp(Result);
-    end;
+        Result := DailyFreq.NextValidStamp(UseFrom);
+        if IsNullTimeStamp(Result) then
+        begin
+          Result.Date := UseFrom.Date;
+          Result.Time := DailyFreq.StartTime;
+          Result := WeeklySchedule.NextValidStamp(Result);
+        end
+        else
+          WeeklySchedule.MakeValidStamp(Result);
+      end;
     srkMonthly:
-    begin
-      Result := DailyFreq.NextValidStamp(UseFrom);
-      if IsNullTimeStamp(Result) then
       begin
-        Result.Date := UseFrom.Date;
-        Result.Time := DailyFreq.StartTime;
-        Result := MonthlySchedule.NextValidStamp(Result);
-      end
-      else
-        MonthlySchedule.MakeValidStamp(Result);
-    end;
+        Result := DailyFreq.NextValidStamp(UseFrom);
+        if IsNullTimeStamp(Result) then
+        begin
+          Result.Date := UseFrom.Date;
+          Result.Time := DailyFreq.StartTime;
+          Result := MonthlySchedule.NextValidStamp(Result);
+        end
+        else
+          MonthlySchedule.MakeValidStamp(Result);
+      end;
     srkYearly:
-    begin
-      Result := DailyFreq.NextValidStamp(UseFrom);
-      if IsNullTimeStamp(Result) then
       begin
-        Result.Date := UseFrom.Date;
-        Result.Time := DailyFreq.StartTime;
-        Result := YearlySchedule.NextValidStamp(Result);
-      end
-      else
-        YearlySchedule.MakeValidStamp(Result);
-    end;
+        Result := DailyFreq.NextValidStamp(UseFrom);
+        if IsNullTimeStamp(Result) then
+        begin
+          Result.Date := UseFrom.Date;
+          Result.Time := DailyFreq.StartTime;
+          Result := YearlySchedule.NextValidStamp(Result);
+        end
+        else
+          YearlySchedule.MakeValidStamp(Result);
+      end;
   end;
   if CompareTimeStamps(Result, UseFrom) < 0 then
     Result := NullStamp;
   if not IsNullTimeStamp(Result) then
   begin
     if ((EndType = sekDate) and (CompareTimeStamps(Result, EndDate) > 0)) or
-      ((EndType = sekDayCount) and (DayCount = EndCount) and
-      (UseFrom.Date <> Result.Date)) or
-      ((EndType = sekTriggerCount) and (TriggerCount = EndCount)) then
+        ((EndType = sekDayCount) and (DayCount = EndCount) and (UseFrom.Date <> Result.Date)) or
+        ((EndType = sekTriggerCount) and (TriggerCount = EndCount)) then
       Result := NullStamp
     else
     begin
@@ -1327,8 +1275,7 @@ begin
   Result := FLastEvent;
 end;
 
-procedure TSchedule.InitToSavedState(const LastTriggerStamp: TTimeStamp;
-  const LastTriggerCount,
+procedure TSchedule.InitToSavedState(const LastTriggerStamp: TTimeStamp; const LastTriggerCount,
   LastDayCount: Cardinal);
 begin
   FLastEvent := LastTriggerStamp;
@@ -1356,15 +1303,13 @@ begin
     Result := FLastEvent;
     repeat
       Result := GetNextEventStamp(Result);
-    until IsNullTimeStamp(Result) or
-      (CompareTimeStamps(FromEvent, Result) <= 0);
+    until IsNullTimeStamp(Result) or (CompareTimeStamps(FromEvent, Result) <= 0);
   end
   else
     Result := GetNextEventStamp(FromEvent);
 end;
 
-function TSchedule.NextEventFromNow(CountMissedEvents: Boolean =
-  False): TTimeStamp;
+function TSchedule.NextEventFromNow(CountMissedEvents: Boolean = False): TTimeStamp;
 begin
   Result := NextEventFrom(DateTimeToTimeStamp(Now), CountMissedEvents);
 end;

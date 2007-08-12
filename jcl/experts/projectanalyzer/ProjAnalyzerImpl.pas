@@ -59,7 +59,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclOtaConsts,
+  JclDebug, JclFileUtils, JclOtaConsts, 
   JclOtaResources;
 
 procedure Register;
@@ -100,8 +100,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -112,8 +112,7 @@ begin
     if not Assigned(OTAWizardServices) then
       raise EJclExpertException.CreateTrace(RsENoWizardServices);
 
-    JCLWizardIndex := OTAWizardServices.AddWizard(
-      TJclProjectAnalyzerExpert.Create);
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclProjectAnalyzerExpert.Create);
 
     Result := True;
   except
@@ -159,19 +158,17 @@ begin
     ProjOptions := TempActiveProject.ProjectOptions;
     if not Assigned(ProjOptions) then
       raise EJclExpertException.CreateTrace(RsENoProjectOptions);
-
+      
     OutputDirectory := GetOutputDirectory(TempActiveProject);
     MapFileName := GetMapFileName(TempActiveProject);
 
     if ProjectAnalyzerForm = nil then
     begin
-      ProjectAnalyzerForm :=
-        TProjectAnalyzerForm.Create(Application, Settings);
+      ProjectAnalyzerForm := TProjectAnalyzerForm.Create(Application, Settings);
       ProjectAnalyzerForm.Show;
     end;
     ProjectAnalyzerForm.ClearContent;
-    ProjectAnalyzerForm.StatusBarText :=
-      Format(RsBuildingProject, [ProjectName]);
+    ProjectAnalyzerForm.StatusBarText := Format(RsBuildingProject, [ProjectName]);
 
     SaveMapFile := ProjOptions.Values[MapFileOptionName];
     ProjOptions.Values[MapFileOptionName] := MapFileOptionDetailed;
@@ -179,8 +176,7 @@ begin
     ProjOptions.ModifiedState := True;
     //TempActiveProject.Save(False, True);
 
-    BuildOK := TempActiveProject.ProjectBuilder.BuildProject(
-      cmOTABuild, False);
+    BuildOK := TempActiveProject.ProjectBuilder.BuildProject(cmOTABuild, False);
 
     ProjOptions.Values[MapFileOptionName] := SaveMapFile;
     // workaround for MsBuild, the project has to be saved (seems useless with Delphi 2007 update 1)
@@ -189,12 +185,10 @@ begin
 
     if BuildOK then
     begin // Build was successful, continue ...
-      Succ := FileExists(MapFileName) and FindExecutableName(
-        MapFileName, OutputDirectory, ExecutableFileName);
+      Succ := FileExists(MapFileName) and FindExecutableName(MapFileName, OutputDirectory, ExecutableFileName);
       if Succ then
       begin // MAP files was created
-        ProjectAnalyzerForm.SetFileName(ExecutableFileName,
-          MapFileName, ProjectName);
+        ProjectAnalyzerForm.SetFileName(ExecutableFileName, MapFileName, ProjectName);
         ProjectAnalyzerForm.Show;
       end;
       if Integer(SaveMapFile) <> MapFileOptionDetailed then
@@ -260,8 +254,7 @@ begin
   FBuildAction.Name := JclProjectAnalyzeActionName;
   ImageBmp := TBitmap.Create;
   try
-    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance),
-      'PROJANALYZER');
+    ImageBmp.LoadFromResourceName(FindResourceHInstance(ModuleHInstance), 'PROJANALYZER');
     FBuildAction.ImageIndex := NTAServices.AddMasked(ImageBmp, clOlive);
   finally
     ImageBmp.Free;

@@ -109,11 +109,9 @@ begin
   Result := CreateComObject(CLASS_PeViewerControl) as IPeViewerControl;
 end;
 
-class function CoPeViewerControl.CreateRemote(
-  const MachineName: string): IPeViewerControl;
+class function CoPeViewerControl.CreateRemote(const MachineName: string): IPeViewerControl;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_PeViewerControl) as
-    IPeViewerControl;
+  Result := CreateRemoteComObject(MachineName, CLASS_PeViewerControl) as IPeViewerControl;
 end;
 
 end.

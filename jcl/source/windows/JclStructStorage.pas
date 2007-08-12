@@ -72,8 +72,7 @@ uses
 
 type
   EJclStructStorageError = class(EJclError);
-  TJclStructStorageAccessMode = (smOpenRead, smOpenWrite,
-    smCreate, smShareDenyRead, smShareDenyWrite, smTransacted);
+  TJclStructStorageAccessMode = (smOpenRead, smOpenWrite, smCreate, smShareDenyRead, smShareDenyWrite, smTransacted);
   TJclStructStorageAccessModes = set of TJclStructStorageAccessMode;
 
   TJclStructStorageFolder = class(TPersistent)
@@ -113,15 +112,13 @@ type
     // and the destination storage must be open. Also, the destination object
     // and element cannot be the same storage object/element name as the source
     // of the copy. That is, you cannot copy an element to itself.
-    function CopyTo(const OldName, NewName: string;
-      Dest: TJclStructStorageFolder): Boolean;
+    function CopyTo(const OldName, NewName: string; Dest: TJclStructStorageFolder): Boolean;
     // Moves a sub storage or stream to another storage
     // Before calling this method, the element to be moved must be closed,
     // and the destination storage must be open. Also, the destination object
     // and element cannot be the same storage object/element name as the source
     // of the move. That is, you cannot move an element to itself.
-    function MoveTo(const OldName, NewName: string;
-      Dest: TJclStructStorageFolder): Boolean;
+    function MoveTo(const OldName, NewName: string; Dest: TJclStructStorageFolder): Boolean;
     // Commits any changes when smTransacted is true
     // When smTransacted  is false, changes are comitted immediately and thus cannot be comitted
     function Commit: Boolean;
@@ -131,8 +128,7 @@ type
     // Create a new or open an existing structured file (or subfolder) depending on AccessMode.
     // NOTE that the file will not actually be opened or created until you call
     // one of the methods in this class (except for Destroy). To force a direct open of the file, set OpenDirect to true
-    constructor Create(const FileName: string;
-      AccessMode: TJclStructStorageAccessModes;
+    constructor Create(const FileName: string; AccessMode: TJclStructStorageAccessModes;
       OpenDirect: Boolean = False); virtual;
     // Destroys the class instance and releases the compound file (or subfolder)
     destructor Destroy; override;
@@ -159,8 +155,7 @@ type
     // as passed into the constructor, except for any smCreate and with sharing set to [smShareDenyRead,smShareDenyWrite]
     // because the MS implementation doesn't support opening the same storage more than once
     // from the same parent storage
-    function GetFolder(const Name: string;
-      out Storage: TJclStructStorageFolder): Boolean;
+    function GetFolder(const Name: string; out Storage: TJclStructStorageFolder): Boolean;
     // Returns an existing file stream by name. The stream is opened using the same AccessMode
     // as passed into the constructor, except for any smCreate and with sharing set to [smShareDenyRead,smShareDenyWrite]
     // because the MS implementation doesn't support opening the same stream more than once
@@ -257,16 +252,12 @@ type
   {$EXTERNALSYM tagSTGOPTIONS}
   TStgOptions = tagSTGOPTIONS;
 
-  TStgCreateStorageExFunc = function(pwcsName: POleStr;
-    grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
     PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT;
-    stdcall;
-  TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint;
-    StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
+  TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
     PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT;
-    stdcall;
+    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
 
 var
   // replacements for StgCreateDocFile and StgOpenStorage on Win2k and XP - not currently used
@@ -318,21 +309,17 @@ begin
 
   // access:
   if AccessMode * [smOpenRead, smOpenWrite] = [smOpenRead, smOpenWrite] then
-    Result := Result or STGM_READWRITE
- // this is *not* the same as (STGM_READ or STGM_WRITE)
+    Result := Result or STGM_READWRITE // this is *not* the same as (STGM_READ or STGM_WRITE)
   else
   if smOpenWrite in AccessMode then
     Result := Result or STGM_WRITE
   else
-  if smOpenRead in AccessMode then
- // not strictly necessary, since STGM_READ = 0, but makes it more self-documenting
+  if smOpenRead in AccessMode then // not strictly necessary, since STGM_READ = 0, but makes it more self-documenting
     Result := Result or STGM_READ;
 
   // sharing:
-  if AccessMode * [smShareDenyRead, smShareDenyWrite] =
-    [smShareDenyRead, smShareDenyWrite] then
-    Result := Result or STGM_SHARE_EXCLUSIVE
- // *not* the same as (STGM_SHARE_READ or STGM_SHARE_WRITE)!
+  if AccessMode * [smShareDenyRead, smShareDenyWrite] = [smShareDenyRead, smShareDenyWrite] then
+    Result := Result or STGM_SHARE_EXCLUSIVE // *not* the same as (STGM_SHARE_READ or STGM_SHARE_WRITE)!
   else
   if smShareDenyRead in AccessMode then
     Result := Result or STGM_SHARE_DENY_READ
@@ -352,7 +339,7 @@ begin
     Result := nil
   else
   begin
-    Result := AllocMem((Length(S) + 1) * SizeOf(WideChar));
+    Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
     // (outchy) length(S) is the number of characters, not the size in bytes
     // (rom) fixed output buffer size (see Win32 help)
@@ -368,8 +355,7 @@ end;
 
 //=== { TJclStructStorageFolder } ============================================
 
-constructor TJclStructStorageFolder.Create(const FileName: string;
-  AccessMode: TJclStructStorageAccessModes;
+constructor TJclStructStorageFolder.Create(const FileName: string; AccessMode: TJclStructStorageAccessModes;
   OpenDirect: Boolean = False);
 begin
   inherited Create;
@@ -400,11 +386,9 @@ begin
   try
     // always overwrite existing (fails if storage/stream exists and is open)
     if IsFolder then
-      Result := CheckResult(FStorage.CreateStorage(AName,
-        STGM_CREATE or STGM_SHARE_EXCLUSIVE, 0, 0, Strg))
+      Result := CheckResult(FStorage.CreateStorage(AName, STGM_CREATE or STGM_SHARE_EXCLUSIVE, 0, 0, Strg))
     else
-      Result := CheckResult(FStorage.CreateStream(AName,
-        STGM_CREATE or STGM_SHARE_EXCLUSIVE, 0, 0, Stm));
+      Result := CheckResult(FStorage.CreateStream(AName, STGM_CREATE or STGM_SHARE_EXCLUSIVE, 0, 0, Stm));
   finally
     FreeWChar(AName);
   end;
@@ -450,8 +434,7 @@ begin
   FLastError := HR;
 end;
 
-function TJclStructStorageFolder.GetFileStream(const Name: string;
-  out Stream: TStream): Boolean;
+function TJclStructStorageFolder.GetFileStream(const Name: string; out Stream: TStream): Boolean;
 var
   AName: PWideChar;
   Stm: IStream;
@@ -462,8 +445,7 @@ begin
     // Streams don't support transactions, so always create in direct mode
     // Streams only support STGM_SHARE_EXCLUSIVE so add this explicitly
     if Succeeded(FStorage.OpenStream(AName, nil,
-      AccessToMode(FAccessMode - [smCreate] +
-      [smShareDenyRead, smShareDenyWrite]), 0, Stm)) then
+      AccessToMode(FAccessMode - [smCreate] + [smShareDenyRead, smShareDenyWrite]), 0, Stm)) then
     begin
       Stream := TJclStructStorageStream.Create;
       TJclStructStorageStream(Stream).FStream := Stm;
@@ -480,8 +462,7 @@ begin
   end;
 end;
 
-function TJclStructStorageFolder.GetFolder(const Name: string;
-  out Storage: TJclStructStorageFolder): Boolean;
+function TJclStructStorageFolder.GetFolder(const Name: string; out Storage: TJclStructStorageFolder): Boolean;
 var
   AName: PWideChar;
   AMode: UINT;
@@ -491,8 +472,7 @@ begin
   AName := StrToWChar(Name);
   try
     // Sub storages only supports STGM_SHARE_EXCLUSIVE, so add explicitly
-    AMode := AccessToMode(FAccessMode - [smCreate] +
-      [smShareDenyRead, smShareDenyWrite]);
+    AMode := AccessToMode(FAccessMode - [smCreate] + [smShareDenyRead, smShareDenyWrite]);
     if Succeeded(FStorage.OpenStorage(AName, nil,
       AMode, nil, 0, Strg)) then
     begin
@@ -528,22 +508,21 @@ begin
     if not Result then
       Exit;
     while Succeeded(Enum.Next(1, Stat, @NumFetch)) and (NumFetch = 1) do
-      try
-        if Folders and (Stat.dwType = STGTY_STORAGE) then
-          Strings.Add(WideCharToString(Stat.pwcsName))
-        else
-        if not Folders and (Stat.dwType = STGTY_STREAM) then
-          Strings.Add(WideCharToString(Stat.pwcsName));
-      finally
-        CoMallocFree(Stat.pwcsName);
-      end;
+    try
+      if Folders and (Stat.dwType = STGTY_STORAGE) then
+        Strings.Add(WideCharToString(Stat.pwcsName))
+      else
+      if not Folders and (Stat.dwType = STGTY_STREAM) then
+        Strings.Add(WideCharToString(Stat.pwcsName));
+    finally
+      CoMallocFree(Stat.pwcsName);
+    end;
   finally
     Strings.EndUpdate;
   end;
 end;
 
-function TJclStructStorageFolder.Rename(
-  const OldName, NewName: string): Boolean;
+function TJclStructStorageFolder.Rename(const OldName, NewName: string): Boolean;
 var
   PWO, PWN: PWideChar;
 begin
@@ -559,8 +538,7 @@ begin
   end;
 end;
 
-class function TJclStructStorageFolder.IsStructured(
-  const FileName: string): HRESULT;
+class function TJclStructStorageFolder.IsStructured(const FileName: string): HRESULT;
 var
   AName: PWideChar;
 begin
@@ -572,8 +550,7 @@ begin
   end;
 end;
 
-class function TJclStructStorageFolder.Convert(
-  const FileName: string): HRESULT;
+class function TJclStructStorageFolder.Convert(const FileName: string): HRESULT;
 var
   Strg: IStorage;
   AName: PWideChar;
@@ -583,8 +560,7 @@ begin
   begin
     AName := StrToWChar(FileName);
     try
-      Result := StgCreateDocFile(AName, STGM_READWRITE or
-        STGM_SHARE_EXCLUSIVE or STGM_CONVERT, 0, Strg);
+      Result := StgCreateDocFile(AName, STGM_READWRITE or STGM_SHARE_EXCLUSIVE or STGM_CONVERT, 0, Strg);
 //      Result := (HR = S_OK) or (HR = STG_S_CONVERTED);
     finally
       FreeWChar(AName);
@@ -592,8 +568,7 @@ begin
   end;
 end;
 
-function TJclStructStorageFolder.GetStats(out Stat: TStatStg;
-  IncludeName: Boolean): Boolean;
+function TJclStructStorageFolder.GetStats(out Stat: TStatStg; IncludeName: Boolean): Boolean;
 const
   Flags: array [Boolean] of Longint =
     (STATFLAG_NONAME, STATFLAG_DEFAULT);
@@ -602,8 +577,7 @@ begin
   Result := CheckResult(FStorage.Stat(Stat, Flags[IncludeName]));
 end;
 
-function TJclStructStorageFolder.SetElementTimes(const Name: string;
-  Stat: TStatStg): Boolean;
+function TJclStructStorageFolder.SetElementTimes(const Name: string; Stat: TStatStg): Boolean;
 var
   AName: PWideChar;
 begin
@@ -611,8 +585,7 @@ begin
   AName := StrToWChar(Name);
   try
     with Stat do
-      Result := CheckResult(FStorage.SetElementTimes(AName,
-        ctime, atime, mtime));
+      Result := CheckResult(FStorage.SetElementTimes(AName, ctime, atime, mtime));
   finally
     FreeWChar(AName);
   end;
@@ -631,8 +604,7 @@ begin
   Result := CheckResult(FStorage.Revert);
 end;
 
-function TJclStructStorageFolder.CopyTo(const OldName, NewName: string;
-  Dest: TJclStructStorageFolder): Boolean;
+function TJclStructStorageFolder.CopyTo(const OldName, NewName: string; Dest: TJclStructStorageFolder): Boolean;
 var
   PWO, PWN: PWideChar;
 begin
@@ -644,8 +616,7 @@ begin
   PWO := StrToWChar(OldName);
   PWN := StrToWChar(NewName);
   try
-    Result := CheckResult(FStorage.MoveElementTo(PWO, Dest.FStorage,
-      PWN, STGMOVE_COPY));
+    Result := CheckResult(FStorage.MoveElementTo(PWO, Dest.FStorage, PWN, STGMOVE_COPY));
   finally
     FreeWChar(PWO);
     FreeWChar(PWN);
@@ -658,8 +629,7 @@ begin
   begin
     Check;
     TJclStructStorageFolder(Dest).Check;
-    CheckResult(FStorage.CopyTo(0, nil, nil,
-      TJclStructStorageFolder(Dest).FStorage));
+    CheckResult(FStorage.CopyTo(0, nil, nil, TJclStructStorageFolder(Dest).FStorage));
   end
   else
     inherited AssignTo(Dest);
@@ -678,8 +648,7 @@ begin
   PWO := StrToWChar(OldName);
   PWN := StrToWChar(NewName);
   try
-    Result := CheckResult(FStorage.MoveElementTo(PWO, Dest.FStorage,
-      PWN, STGMOVE_MOVE));
+    Result := CheckResult(FStorage.MoveElementTo(PWO, Dest.FStorage, PWN, STGMOVE_MOVE));
   finally
     FreeWChar(PWO);
     FreeWChar(PWN);
@@ -690,8 +659,7 @@ function TJclStructStorageFolder.GetName: string;
 var
   Stat: StatStg;
 begin
-  if (FStorage <> nil) and CheckResult(FStorage.Stat(Stat,
-    STATFLAG_DEFAULT)) then
+  if (FStorage <> nil) and CheckResult(FStorage.Stat(Stat, STATFLAG_DEFAULT)) then
   begin
     Result := WideCharToString(Stat.pwcsName);
     CoMallocFree(Stat.pwcsName);
@@ -759,8 +727,7 @@ function TJclStructStorageStream.GetName: string;
 var
   Stat: StatStg;
 begin
-  if (FStream <> nil) and CheckResult(FStream.Stat(Stat,
-    STATFLAG_DEFAULT)) then
+  if (FStream <> nil) and CheckResult(FStream.Stat(Stat, STATFLAG_DEFAULT)) then
   begin
     Result := WideCharToString(Stat.pwcsName);
     CoMallocFree(Stat.pwcsName);
@@ -769,8 +736,7 @@ begin
     Result := Fname;
 end;
 
-function TJclStructStorageStream.GetStats(out Stat: TStatStg;
-  IncludeName: Boolean): Boolean;
+function TJclStructStorageStream.GetStats(out Stat: TStatStg; IncludeName: Boolean): Boolean;
 const
   Flags: array [Boolean] of Longint =
     (STATFLAG_NONAME, STATFLAG_DEFAULT);
@@ -819,3 +785,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

@@ -64,8 +64,7 @@ uses
 
 {$IFNDEF CLR}
 // Pointer manipulation
-procedure GetAndFillMem(var P: Pointer; const Size: Integer;
-  const Value: Byte);
+procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
 function PCharOrNil(const S: string): PChar;
 function PAnsiCharOrNil(const S: AnsiString): PAnsiChar;
@@ -87,7 +86,7 @@ type
     property Item: Pointer read GetItem;
   end;
 
-  IMultiSafeGuard = interface(IInterface)
+  IMultiSafeGuard = interface (IInterface)
     function AddItem(Item: Pointer): Pointer;
     procedure FreeItem(Index: Integer);
     function GetCount: Integer;
@@ -100,10 +99,8 @@ type
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
 
-function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer;
-  overload;
-function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject;
-  overload;
+function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
+function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
@@ -152,27 +149,22 @@ function SharedCloseMem(var p{: Pointer}): Boolean;
 {$ENDIF MSWINDOWS}
 
 // Binary search
-function SearchSortedList(List: TList; SortFunc: TListSortCompare;
-  Item: Pointer;
+function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer;
   Nearest: Boolean = False): Integer;
 
 type
-  TUntypedSearchCompare = function(Param: Pointer; ItemIndex: Integer;
-    const Value): Integer;
+  TUntypedSearchCompare = function(Param: Pointer; ItemIndex: Integer; const Value): Integer;
 
-function SearchSortedUntyped(Param: Pointer; ItemCount: Integer;
-  SearchFunc: TUntypedSearchCompare;
+function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
   const Value; Nearest: Boolean = False): Integer;
 
 // Dynamic array sort and search routines
 type
-  TDynArraySortCompare = function(Item1, Item2: Pointer): Integer;
+  TDynArraySortCompare = function (Item1, Item2: Pointer): Integer;
 
-procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal;
-  SortFunc: TDynArraySortCompare);
+procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
 // Usage: SortDynArray(Array, SizeOf(Array[0]), SortFunction);
-function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal;
-  SortFunc: TDynArraySortCompare;
+function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
   ValuePtr: Pointer; Nearest: Boolean = False): Integer;
 // Usage: SearchDynArray(Array, SizeOf(Array[0]), SortFunction, @SearchedValue);
 
@@ -228,27 +220,17 @@ type
 function CreateAutoPtr(Value: TObject): IAutoPtr;
 
 // Replacement for the C ternary conditional operator ? :
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: string): string; overload;
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char;
-  overload;
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte;
-  overload;
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Integer): Integer; overload;
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Cardinal): Cardinal; overload;
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Float): Float; overload;
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Boolean): Boolean; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Char): Char; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Byte): Byte; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Integer; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
 {$IFNDEF CLR}
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Pointer): Pointer; overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 {$ENDIF ~CLR}
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Int64): Int64;
-  overload;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
 {$IFDEF SUPPORTS_VARIANT}
 {$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
 // because Compiler 5 can not differentiate between Variant and Byte, Integer, ... in case of overload
@@ -266,8 +248,7 @@ type
 function GetVirtualMethodCount(AClass: TClass): Integer;
 {$ENDIF ~FPC}
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
-procedure SetVirtualMethod(AClass: TClass; const Index: Integer;
-  const Method: Pointer);
+procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 
 // Dynamic Methods
 type
@@ -332,8 +313,7 @@ type
   end;
 
 function GetMethodTable(AClass: TClass): PMethodTable;
-function GetMethodEntry(MethodTable: PMethodTable;
-  Index: Integer): PMethodEntry;
+function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 
 // Class Parent
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
@@ -379,8 +359,7 @@ type
     procedure SetPositiveSign(const Value: Char);
     procedure SetExpDivision(const Value: Integer);
   protected
-    function IntToStr(const Value: Int64; out FirstDigitPos: Integer): string;
-      overload;
+    function IntToStr(const Value: Int64; out FirstDigitPos: Integer): string; overload;
     function ShowSign(const Value: Float): Boolean; overload;
     function ShowSign(const Value: Int64): Boolean; overload;
     function SignChar(const Value: Float): Char; overload;
@@ -392,27 +371,21 @@ type
     function DigitValue(Digit: Char): TDigitValue;
     function IsDigit(Value: Char): Boolean;
     function Sign(Value: Char): Integer;
-    procedure GetMantissaExp(const Value: Float; out Mantissa: string;
-      out Exponent: Integer);
+    procedure GetMantissaExp(const Value: Float; out Mantissa: string; out Exponent: Integer);
     function FloatToHTML(const Value: Float): string;
     function IntToStr(const Value: Int64): string; overload;
     function FloatToStr(const Value: Float): string; overload;
     function StrToInt(const Value: string): Int64;
     property Base: TNumericSystemBase read FBase write SetBase;
     property Precision: TDigitCount read FPrecision write SetPrecision;
-    property NumberOfFractionalDigits: TDigitCount
-      read FNumberOfFractionalDigits write FNumberOfFractionalDigits;
+    property NumberOfFractionalDigits: TDigitCount read FNumberOfFractionalDigits write FNumberOfFractionalDigits;
     property ExponentDivision: Integer read FExpDivision write SetExpDivision;
-    property DigitBlockSize: TDigitCount
-      read FDigitBlockSize write FDigitBlockSize;
-    property DigitBlockSeparator: Char
-      read FDigitBlockSeparator write FDigitBlockSeparator;
-    property FractionalPartSeparator: Char
-      read FFractionalPartSeparator write FFractionalPartSeparator;
+    property DigitBlockSize: TDigitCount read FDigitBlockSize write FDigitBlockSize;
+    property DigitBlockSeparator: Char read FDigitBlockSeparator write FDigitBlockSeparator;
+    property FractionalPartSeparator: Char read FFractionalPartSeparator write FFractionalPartSeparator;
     property Multiplier: string read FMultiplier write FMultiplier;
     property PaddingChar: Char read FPaddingChar write FPaddingChar;
-    property ShowPositiveSign: Boolean
-      read FShowPositiveSign write FShowPositiveSign;
+    property ShowPositiveSign: Boolean read FShowPositiveSign write FShowPositiveSign;
     property Width: TDigitCount read FWidth write FWidth;
     property NegativeSign: Char read GetNegativeSign write SetNegativeSign;
     property PositiveSign: Char read GetPositiveSign write SetPositiveSign;
@@ -433,11 +406,9 @@ type
 const
   ABORT_EXIT_CODE = {$IFDEF MSWINDOWS} ERROR_CANCELLED {$ELSE} 1223 {$ENDIF};
 
-function Execute(const CommandLine: string; OutputLineCallback: TTextHandler;
-  RawOutput: Boolean = False;
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
-function Execute(const CommandLine: string; var Output: string;
-  RawOutput: Boolean = False;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
 
 // Console Utilities
@@ -456,16 +427,12 @@ const
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
-function LoadModuleEx(var Module: TModuleHandle; FileName: string;
-  Flags: Cardinal): Boolean;
+function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
 procedure UnloadModule(var Module: TModuleHandle);
 function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
-function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string;
-  var Accu: Boolean): Pointer;
-function ReadModuleData(Module: TModuleHandle; SymbolName: string;
-  var Buffer; Size: Cardinal): Boolean;
-function WriteModuleData(Module: TModuleHandle; SymbolName: string;
-  var Buffer; Size: Cardinal): Boolean;
+function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 {$ENDIF ~CLR}
 
 // Conversion Utilities
@@ -537,7 +504,7 @@ type
 
 {$IFNDEF CLR}
 type
-  TJclSimpleLog = class(TObject)
+  TJclSimpleLog = class (TObject)
   private
     FLogFileHandle: Integer;
     FLogFileName: string;
@@ -595,8 +562,7 @@ uses
 {$IFNDEF CLR}
 
 // Pointer manipulation
-procedure GetAndFillMem(var P: Pointer; const Size: Integer;
-  const Value: Byte);
+procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 begin
   GetMem(P, Size);
   FillChar(P^, Size, Value);
@@ -640,15 +606,15 @@ type
 const
   cThisUsedFlag = 2;
   cPrevFreeFlag = 1;
-  cFillerFlag = Integer($80000000);
-  cFlags = cThisUsedFlag or cPrevFreeFlag or cFillerFlag;
+  cFillerFlag   = Integer($80000000);
+  cFlags        = cThisUsedFlag or cPrevFreeFlag or cFillerFlag;
 
 function SizeOfMem(const APointer: Pointer): Integer;
 var
   U: PUsed;
 begin
   if IsMemoryManagerSet then
-    Result := -1
+    Result:= -1
   else
   begin
     Result := 0;
@@ -688,18 +654,16 @@ begin
   if Size > 0 then
   begin
     // (outchy) VirtualProtect for DEP issues
-    Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE,
-      OldProtect);
+    Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
     if Result then
-      try
-        Move(Buffer^, BaseAddress^, Size);
-        WrittenBytes := Size;
-        if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ,
-          PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
-          FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
-      finally
-        VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
-      end;
+    try
+      Move(Buffer^, BaseAddress^, Size);
+      WrittenBytes := Size;
+      if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
+        FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
+    finally
+      VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+    end;
   end;
   Result := WrittenBytes = Size;
 end;
@@ -874,8 +838,7 @@ begin
   FItems.Delete(Index);
 end;
 
-function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer;
-  overload;
+function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
 begin
   if SafeGuard = nil then
     SafeGuard := TMultiSafeGuard.Create;
@@ -890,8 +853,7 @@ begin
   FItems.Delete(Index);
 end;
 
-function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject;
-  overload;
+function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 begin
   if SafeGuard = nil then
     SafeGuard := TObjMultiSafeGuard.Create;
@@ -968,12 +930,12 @@ begin
 
   if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and
     ((Name = '') or (Pos('\', Name) > 0)) then
-    raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
+      raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
   {$IFDEF THREADSAFE}
   HandleListAccess := GetAccessToHandleList;
   {$ENDIF THREADSAFE}
-
+  
   // search for same name
   Iterate := MMFHandleList;
   while Iterate <> nil do
@@ -994,10 +956,10 @@ begin
   begin
     if Size = 0 then
       raise ESharedMemError.CreateResFmt(@RsInvalidMMFEmpty, [Name]);
-
+      
     Protect := PAGE_READWRITE;
     if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
-      (DesiredAccess = FILE_MAP_COPY) then
+       (DesiredAccess = FILE_MAP_COPY) then
       Protect := PAGE_WRITECOPY;
 
     FileMappingHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, Protect,
@@ -1009,12 +971,12 @@ begin
   case GetLastError of
     ERROR_ALREADY_EXISTS:
       Result := ERROR_ALREADY_EXISTS;
-    else
-      if FileMappingHandle = 0 then
+  else
+    if FileMappingHandle = 0 then
       {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
       {$ELSE}
-        RaiseLastWin32Error;
+      RaiseLastWin32Error;
       {$ENDIF COMPILER6_UP}
   end;
 
@@ -1056,11 +1018,10 @@ end;
 function SharedAllocMem(const Name: string; Size: Cardinal;
   DesiredAccess: Cardinal = FILE_MAP_ALL_ACCESS): Pointer;
 begin
-  if (SharedGetMem(Result, Name, Size, DesiredAccess) <>
-    ERROR_ALREADY_EXISTS) and
+  if (SharedGetMem(Result, Name, Size, DesiredAccess) <> ERROR_ALREADY_EXISTS) and
     ((DesiredAccess and (FILE_MAP_WRITE or FILE_MAP_COPY)) <> 0) and
     (Size > 0) and (Result <> nil) then
-    FillChar(Pointer(Result)^, Size, 0);
+      FillChar(Pointer(Result)^, Size, 0);
 end;
 
 function SharedFreeMem(var p{: Pointer}): Boolean;
@@ -1155,8 +1116,7 @@ end;
 
 //=== Binary search ==========================================================
 
-function SearchSortedList(List: TList; SortFunc: TListSortCompare;
-  Item: Pointer; Nearest: Boolean): Integer;
+function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer; Nearest: Boolean): Integer;
 var
   L, H, I, C: Integer;
   B: Boolean;
@@ -1191,8 +1151,7 @@ begin
   end;
 end;
 
-function SearchSortedUntyped(Param: Pointer; ItemCount: Integer;
-  SearchFunc: TUntypedSearchCompare;
+function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
   const Value; Nearest: Boolean): Integer;
 var
   L, H, I, C: Integer;
@@ -1230,8 +1189,7 @@ end;
 
 //=== Dynamic array sort and search routines =================================
 
-procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal;
-  SortFunc: TDynArraySortCompare);
+procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
 var
   TempBuf: TDynByteArray;
 
@@ -1260,27 +1218,27 @@ var
           JPtr := ArrayItemPointer(J);
           case ElementSize of
             SizeOf(Byte):
-            begin
-              T := PByte(IPtr)^;
-              PByte(IPtr)^ := PByte(JPtr)^;
-              PByte(JPtr)^ := T;
-            end;
+              begin
+                T := PByte(IPtr)^;
+                PByte(IPtr)^ := PByte(JPtr)^;
+                PByte(JPtr)^ := T;
+              end;
             SizeOf(Word):
-            begin
-              T := PWord(IPtr)^;
-              PWord(IPtr)^ := PWord(JPtr)^;
-              PWord(JPtr)^ := T;
-            end;
+              begin
+                T := PWord(IPtr)^;
+                PWord(IPtr)^ := PWord(JPtr)^;
+                PWord(JPtr)^ := T;
+              end;
             SizeOf(Integer):
-            begin
-              T := PInteger(IPtr)^;
-              PInteger(IPtr)^ := PInteger(JPtr)^;
-              PInteger(JPtr)^ := T;
-            end;
-            else
-              Move(IPtr^, TempBuf[0], ElementSize);
-              Move(JPtr^, IPtr^, ElementSize);
-              Move(TempBuf[0], JPtr^, ElementSize);
+              begin
+                T := PInteger(IPtr)^;
+                PInteger(IPtr)^ := PInteger(JPtr)^;
+                PInteger(JPtr)^ := T;
+              end;
+          else
+            Move(IPtr^, TempBuf[0], ElementSize);
+            Move(JPtr^, IPtr^, ElementSize);
+            Move(TempBuf[0], JPtr^, ElementSize);
           end;
           if P = IPtr then
             P := JPtr
@@ -1305,8 +1263,7 @@ begin
   end;
 end;
 
-function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal;
-  SortFunc: TDynArraySortCompare;
+function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
   ValuePtr: Pointer; Nearest: Boolean): Integer;
 var
   L, H, I, C: Integer;
@@ -1321,8 +1278,7 @@ begin
     while L <= H do
     begin
       I := (L + H) shr 1;
-      C := SortFunc(Pointer(Cardinal(ArrayPtr) + (Cardinal(I) * ElementSize)),
-        ValuePtr);
+      C := SortFunc(Pointer(Cardinal(ArrayPtr) + (Cardinal(I) * ElementSize)), ValuePtr);
       if C < 0 then
         L := I + 1
       else
@@ -1465,8 +1421,7 @@ begin
         end;
         TObject(List[I]).Free;
         if (not (List is TComponentList))
-          and ((not (List is TObjectList)) or not
-          TObjectList(List).OwnsObjects) then
+          and ((not(List is TObjectList)) or not TObjectList(List).OwnsObjects) then
           List[I] := nil;
       end;
     end;
@@ -1487,8 +1442,7 @@ end;
 
 {$IFNDEF CLR}
 
-constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer;
-  Size: Longint);
+constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
 begin
   {$IFDEF MSWINDOWS}
   Assert(not IsBadReadPtr(Ptr, Size));
@@ -1497,8 +1451,7 @@ begin
   SetPointer(Ptr, Size);
 end;
 
-function TJclReferenceMemoryStream.Write(const Buffer;
-  Count: Longint): Longint;
+function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EJclError.CreateRes(@RsCannotWriteRefStream);
 end;
@@ -1558,8 +1511,7 @@ end;
 
 //=== replacement for the C distfix operator ? : =============================
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: string): string;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string;
 begin
   if Condition then
     Result := TruePart
@@ -1583,8 +1535,7 @@ begin
     Result := FalsePart;
 end;
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Integer): Integer;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Integer): Integer;
 begin
   if Condition then
     Result := TruePart
@@ -1592,8 +1543,7 @@ begin
     Result := FalsePart;
 end;
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Cardinal): Cardinal;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Cardinal): Cardinal;
 begin
   if Condition then
     Result := TruePart
@@ -1601,8 +1551,7 @@ begin
     Result := FalsePart;
 end;
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Float): Float;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 begin
   if Condition then
     Result := TruePart
@@ -1610,8 +1559,7 @@ begin
     Result := FalsePart;
 end;
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Boolean): Boolean;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean;
 begin
   if Condition then
     Result := TruePart
@@ -1620,8 +1568,7 @@ begin
 end;
 
 {$IFNDEF CLR}
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Pointer): Pointer;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer;
 begin
   if Condition then
     Result := TruePart
@@ -1630,8 +1577,7 @@ begin
 end;
 {$ENDIF ~CLR}
 
-function Iff(const Condition: Boolean;
-  const TruePart, FalsePart: Int64): Int64;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64;
 begin
   if Condition then
     Result := TruePart
@@ -1663,14 +1609,11 @@ var
   PatchAddress: PPointer;
 begin
   PatchAddress := Pointer(Integer(AClass) + Offset);
-  if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value),
-    WrittenBytes) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
-      [SysErrorMessage(GetLastError)]);
+  if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
 
   if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
-      [IntToStr(WrittenBytes)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
 
   // make sure that everything keeps working in a dual processor setting
   // (outchy) done by WriteProtectedMemory
@@ -1698,7 +1641,7 @@ begin
   repeat
     TablePointer := PLongint(Longint(AClass) + I)^;
     if (TablePointer <> 0) and (TablePointer >= BeginVMT) and
-      (TablePointer < EndVMT) then
+       (TablePointer < EndVMT) then
       EndVMT := Longint(TablePointer);
     Inc(I, SizeOf(Pointer));
   until I >= vmtClassName;
@@ -1712,8 +1655,7 @@ begin
   Result := PPointer(Integer(AClass) + Index * SizeOf(Pointer))^;
 end;
 
-procedure SetVirtualMethod(AClass: TClass; const Index: Integer;
-  const Method: Pointer);
+procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 begin
   SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
@@ -1728,26 +1670,26 @@ type
 
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
-  MOV     EAX, [EAX].vmtDynamicTable
-  TEST    EAX, EAX
-  JE      @@Exit
-  MOVZX   EAX, WORD PTR [EAX]
-  @@Exit:
+        MOV     EAX, [EAX].vmtDynamicTable
+        TEST    EAX, EAX
+        JE      @@Exit
+        MOVZX   EAX, WORD PTR [EAX]
+@@Exit:
 end;
 
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
-  MOV     EAX, [EAX].vmtDynamicTable
-  ADD     EAX, 2
+        MOV     EAX, [EAX].vmtDynamicTable
+        ADD     EAX, 2
 end;
 
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
 asm
-  MOV     EAX, [EAX].vmtDynamicTable
-  MOVZX   EDX, Word ptr [EAX]
-  ADD     EAX, EDX
-  ADD     EAX, EDX
-  ADD     EAX, 2
+        MOV     EAX, [EAX].vmtDynamicTable
+        MOVZX   EDX, Word ptr [EAX]
+        ADD     EAX, EDX
+        ADD     EAX, EDX
+        ADD     EAX, 2
 end;
 
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean; assembler;
@@ -1756,38 +1698,38 @@ asm
         { ->    EAX     vmt of class            }
         {       DX      dynamic method index    }
 
-  PUSH    EDI
-  XCHG    EAX, EDX
-  JMP     @@HaveVMT
-  @@OuterLoop:
-  MOV     EDX, [EDX]
-  @@HaveVMT:
-  MOV     EDI, [EDX].vmtDynamicTable
-  TEST    EDI, EDI
-  JE      @@Parent
-  MOVZX   ECX, WORD PTR [EDI]
-  PUSH    ECX
-  ADD     EDI,2
-  REPNE   SCASW
-  JE      @@Found
-  POP     ECX
-  @@Parent:
-  MOV     EDX,[EDX].vmtParent
-  TEST    EDX,EDX
-  JNE     @@OuterLoop
-  MOV     EAX, 0
-  JMP     @@Exit
-  @@Found:
-  POP     EAX
-  MOV     EAX, 1
-  @@Exit:
-  POP     EDI
+        PUSH    EDI
+        XCHG    EAX, EDX
+        JMP     @@HaveVMT
+@@OuterLoop:
+        MOV     EDX, [EDX]
+@@HaveVMT:
+        MOV     EDI, [EDX].vmtDynamicTable
+        TEST    EDI, EDI
+        JE      @@Parent
+        MOVZX   ECX, WORD PTR [EDI]
+        PUSH    ECX
+        ADD     EDI,2
+        REPNE   SCASW
+        JE      @@Found
+        POP     ECX
+@@Parent:
+        MOV     EDX,[EDX].vmtParent
+        TEST    EDX,EDX
+        JNE     @@OuterLoop
+        MOV     EAX, 0
+        JMP     @@Exit
+@@Found:
+        POP     EAX
+        MOV     EAX, 1
+@@Exit:
+        POP     EDI
 end;
 
 {$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
-  CALL    System.@FindDynaClass
+        CALL    System.@FindDynaClass
 end;
 {$ENDIF ~FPC}
 
@@ -1795,21 +1737,20 @@ end;
 
 function GetInitTable(AClass: TClass): PTypeInfo; assembler;
 asm
-  MOV     EAX, [EAX].vmtInitTable
+        MOV     EAX, [EAX].vmtInitTable
 end;
 
 function GetFieldTable(AClass: TClass): PFieldTable; assembler;
 asm
-  MOV     EAX, [EAX].vmtFieldTable
+        MOV     EAX, [EAX].vmtFieldTable
 end;
 
 function GetMethodTable(AClass: TClass): PMethodTable; assembler;
 asm
-  MOV     EAX, [EAX].vmtMethodTable
+        MOV     EAX, [EAX].vmtMethodTable
 end;
 
-function GetMethodEntry(MethodTable: PMethodTable;
-  Index: Integer): PMethodEntry;
+function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
   Result := Pointer(Cardinal(MethodTable) + 2);
   for Index := Index downto 1 do
@@ -1824,13 +1765,10 @@ var
   PatchAddress: Pointer;
 begin
   PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
-  if not WriteProtectedMemory(PatchAddress, @NewClassParent,
-    SizeOf(Pointer), WrittenBytes) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
-      [SysErrorMessage(GetLastError)]);
+  if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
   if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
-      [IntToStr(WrittenBytes)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
   // make sure that everything keeps working in a dual processor setting
   // (outchy) done by WriteProtectedMemory
   // FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
@@ -1838,23 +1776,23 @@ end;
 
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
-  MOV     EAX, [EAX].vmtParent
-  TEST    EAX, EAX
-  JE      @@Exit
-  MOV     EAX, [EAX]
-  @@Exit:
+        MOV     EAX, [EAX].vmtParent
+        TEST    EAX, EAX
+        JE      @@Exit
+        MOV     EAX, [EAX]
+@@Exit:
 end;
 
 {$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean; assembler;
 asm
-  CMP     Address, Address.vmtSelfPtr
-  JNZ     @False
-  MOV     Result, True
-  JMP     @Exit
-  @False:
-  MOV     Result, False
-  @Exit:
+        CMP     Address, Address.vmtSelfPtr
+        JNZ     @False
+        MOV     Result, True
+        JMP     @Exit
+@False:
+        MOV     Result, False
+@Exit:
 end;
 {$ENDIF ~FPC}
 
@@ -1862,14 +1800,14 @@ end;
 function IsObject(Address: Pointer): Boolean; assembler;
 asm
 // or IsClass(Pointer(Address^));
-  MOV     EAX, [Address]
-  CMP     EAX, EAX.vmtSelfPtr
-  JNZ     @False
-  MOV     Result, True
-  JMP     @Exit
-  @False:
-  MOV     Result, False
-  @Exit:
+        MOV     EAX, [Address]
+        CMP     EAX, EAX.vmtSelfPtr
+        JNZ     @False
+        MOV     Result, True
+        JMP     @Exit
+@False:
+        MOV     Result, False
+@Exit:
 end;
 {$ENDIF ~FPC}
 
@@ -1906,8 +1844,8 @@ begin
           Inc(PChar(Result), QueryInterfaceThunk.AdjustmentByte);
         AddLong:
           Inc(PChar(Result), QueryInterfaceThunk.AdjustmentLong);
-        else
-          Result := nil;
+      else
+        Result := nil;
       end;
     end;
   except
@@ -2023,8 +1961,7 @@ var
   Exponent: Integer;
 begin
   GetMantissaExp(Value, Mantissa, Exponent);
-  Result := Format('%s %s %d<sup>%d</sup>',
-    [Mantissa, Multiplier, Base, Exponent]);
+  Result := Format('%s %s %d<sup>%d</sup>', [Mantissa, Multiplier, Base, Exponent]);
 end;
 
 procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
@@ -2198,8 +2135,7 @@ has not been investigated if ExponentDivision <= 12 is safe. }
         else
           Mantissa[I] := '0'
       else
-      if Mantissa[I] in [AnsiChar(DigitBlockSeparator),
-        AnsiChar(FractionalPartSeparator)] then
+      if Mantissa[I] in [AnsiChar(DigitBlockSeparator), AnsiChar(FractionalPartSeparator)] then
         Continue
       else
       begin
@@ -2233,8 +2169,7 @@ begin
   Result := IntToStr(Value, FirstDigitPos);
 end;
 
-function TJclNumericFormat.IntToStr(const Value: Int64;
-  out FirstDigitPos: Integer): string;
+function TJclNumericFormat.IntToStr(const Value: Int64; out FirstDigitPos: Integer): string;
 const
   MaxResultLen = 64 + 63 + 1; // max. digits + max. group separators + sign
 var
@@ -2293,7 +2228,7 @@ begin
   end;
 
   FirstDigitPos := I + 1;
-
+  
   if HasSign then
     Result[I] := SignChar(Value)
   else
@@ -2382,8 +2317,8 @@ begin
           InvalidDigit(C);
       end
       else
-      if C = DigitBlockSeparator then
-        Continue
+        if C = DigitBlockSeparator then
+          Continue
       else
         InvalidDigit(C);
     end;
@@ -2451,33 +2386,32 @@ begin
   EndPos := OutPos;
   for BufPos := 1 to Length(RawOutput) do
   begin
-    if OutPos >= Length(Result) - 2 then
+    if OutPos >= Length(Result)-2 then
       SetLength(Result, Length(Result) + Delta);
     C := RawOutput[BufPos];
     case C of
       AnsiCarriageReturn:
         OutPos := LfPos;
       AnsiLineFeed:
-      begin
-        OutPos := EndPos;
-        Result[OutPos] := AnsiCarriageReturn;
-        Inc(OutPos);
-        Result[OutPos] := C;
-        Inc(OutPos);
-        EndPos := OutPos;
-        LfPos := OutPos;
-      end;
-      else
-        Result[OutPos] := C;
-        Inc(OutPos);
-        EndPos := OutPos;
+        begin
+          OutPos := EndPos;
+          Result[OutPos] := AnsiCarriageReturn;
+          Inc(OutPos);
+          Result[OutPos] := C;
+          Inc(OutPos);
+          EndPos := OutPos;
+          LfPos := OutPos;
+        end;
+    else
+      Result[OutPos] := C;
+      Inc(OutPos);
+      EndPos := OutPos;
     end;
   end;
   SetLength(Result, OutPos - 1);
 end;
 
-function InternalExecute(const CommandLine: string; var Output: string;
-  OutputLineCallback: TTextHandler;
+function InternalExecute(const CommandLine: string; var Output: string; OutputLineCallback: TTextHandler;
   RawOutput: Boolean; AbortPtr: PBoolean): Cardinal;
 const
   BufferSize = 255;
@@ -2490,8 +2424,7 @@ var
   begin
     if RawOutput or (TempOutput[LineEnd] <> AnsiCarriageReturn) then
     begin
-      while (LineEnd > 0) and (TempOutput[LineEnd] in
-          [AnsiLineFeed, AnsiCarriageReturn]) do
+      while (LineEnd > 0) and (TempOutput[LineEnd] in [AnsiLineFeed, AnsiCarriageReturn]) do
         Dec(LineEnd);
       OutputLineCallback(Copy(TempOutput, 1, LineEnd));
     end;
@@ -2504,19 +2437,19 @@ var
     Buffer[PipeBytesRead] := #0;
     TempOutput := TempOutput + Buffer;
     if Assigned(OutputLineCallback) then
-      repeat
-        CR := Pos(AnsiCarriageReturn, TempOutput);
-        if CR = Length(TempOutput) then
-          CR := 0;        // line feed at CR + 1 might be missing
-        LF := Pos(AnsiLineFeed, TempOutput);
-        if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
-          LF := CR;       // accept CR as line end
-        if LF > 0 then
-        begin
-          ProcessLine(LF);
-          Delete(TempOutput, 1, LF);
-        end;
-      until LF = 0;
+    repeat
+      CR := Pos(AnsiCarriageReturn, TempOutput);
+      if CR = Length(TempOutput) then
+        CR := 0;        // line feed at CR + 1 might be missing
+      LF := Pos(AnsiLineFeed, TempOutput);
+      if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
+        LF := CR;       // accept CR as line end
+      if LF > 0 then
+      begin
+        ProcessLine(LF);
+        Delete(TempOutput, 1, LF);
+      end;
+    until LF = 0;
   end;
 
 {$IFDEF MSWINDOWS}
@@ -2543,23 +2476,20 @@ begin
   StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
   StartupInfo.hStdOutput := PipeWrite;
   StartupInfo.hStdError := PipeWrite;
-  if CreateProcess(nil, PChar(CommandLine), nil, nil, True,
-    NORMAL_PRIORITY_CLASS,
+  if CreateProcess(nil, PChar(CommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS,
     nil, nil, StartupInfo, ProcessInfo) then
   begin
     CloseHandle(PipeWrite);
     if AbortPtr <> nil then
       AbortPtr^ := False;
     while ((AbortPtr = nil) or not AbortPtr^) and
-      ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and
-      (PipeBytesRead > 0) do
+      ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
       ProcessBuffer;
     if (AbortPtr <> nil) and AbortPtr^ then
       TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
-    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) =
-      WAIT_OBJECT_0) and
+    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
       not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-      Result := $FFFFFFFF;
+        Result := $FFFFFFFF;
     CloseHandle(ProcessInfo.hThread);
     CloseHandle(ProcessInfo.hProcess);
   end
@@ -2589,18 +2519,17 @@ begin
       // (shouldn't happen, but you never know)
       ProcessLine(Length(TempOutput))
     else
-    if RawOutput then
-      Output := Output + TempOutput
-    else
-      Output := Output + MuteCRTerminatedLines(TempOutput);
+      if RawOutput then
+        Output := Output + TempOutput
+      else
+        Output := Output + MuteCRTerminatedLines(TempOutput);
 end;
 
 { TODO -cHelp :
 RawOutput: Do not process isolated carriage returns (#13).
 That is, for RawOutput = False, lines not terminated by a line feed (#10) are deleted from Output. }
 
-function Execute(const CommandLine: string; var Output: string;
-  RawOutput: Boolean = False;
+function Execute(const CommandLine: string; var Output: string; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal;
 begin
   Result := InternalExecute(CommandLine, Output, nil, RawOutput, AbortPtr);
@@ -2610,14 +2539,12 @@ end;
 Author: Robert Rossmair
 OutputLineCallback called once per line of output. }
 
-function Execute(const CommandLine: string; OutputLineCallback: TTextHandler;
-  RawOutput: Boolean = False;
+function Execute(const CommandLine: string; OutputLineCallback: TTextHandler; RawOutput: Boolean = False;
   AbortPtr: PBoolean = nil): Cardinal; overload;
 var
   Dummy: string;
 begin
-  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback,
-    RawOutput, AbortPtr);
+  Result := InternalExecute(CommandLine, Dummy, OutputLineCallback, RawOutput, AbortPtr);
 end;
 
 //=== Console Utilities ======================================================
@@ -2700,8 +2627,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function LoadModuleEx(var Module: TModuleHandle; FileName: string;
-  Flags: Cardinal): Boolean;
+function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
 {$IFDEF MSWINDOWS}
 begin
   if Module = INVALID_MODULEHANDLE_VALUE then
@@ -2749,8 +2675,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string;
-  var Accu: Boolean): Pointer;
+function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 {$IFDEF MSWINDOWS}
 begin
   Result := nil;
@@ -2768,8 +2693,7 @@ begin
 end;
 {$ENDIF UNIX}
 
-function ReadModuleData(Module: TModuleHandle; SymbolName: string;
-  var Buffer; Size: Cardinal): Boolean;
+function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin
@@ -2779,8 +2703,7 @@ begin
     Move(Sym^, Buffer, Size);
 end;
 
-function WriteModuleData(Module: TModuleHandle; SymbolName: string;
-  var Buffer; Size: Cardinal): Boolean;
+function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 var
   Sym: Pointer;
 begin
@@ -2795,11 +2718,11 @@ end;
 //=== Conversion Utilities ===================================================
 
 const
-  DefaultTrueBoolStr = 'True';  // DO NOT LOCALIZE
+  DefaultTrueBoolStr  = 'True';  // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
-  DefaultYesBoolStr = 'Yes';   // DO NOT LOCALIZE
-  DefaultNoBoolStr = 'No';    // DO NOT LOCALIZE
+  DefaultYesBoolStr   = 'Yes';   // DO NOT LOCALIZE
+  DefaultNoBoolStr    = 'No';    // DO NOT LOCALIZE
 
 function StrToBoolean(const S: string): Boolean;
 var
@@ -2809,17 +2732,13 @@ begin
   { TODO : Lower case constants }
   LowerCasedText := LowerCase(S);
   Result := ((S = '1') or
-    (LowerCasedText = LowerCase(DefaultTrueBoolStr)) or
-    (LowerCasedText = LowerCase(DefaultYesBoolStr))) or
-    (LowerCasedText = LowerCase(DefaultTrueBoolStr[1])) or
-    (LowerCasedText = LowerCase(DefaultYesBoolStr[1]));
+    (LowerCasedText = LowerCase(DefaultTrueBoolStr)) or (LowerCasedText = LowerCase(DefaultYesBoolStr))) or
+    (LowerCasedText = LowerCase(DefaultTrueBoolStr[1])) or (LowerCasedText = LowerCase(DefaultYesBoolStr[1]));
   if not Result then
   begin
     Result := not ((S = '0') or
-      (LowerCasedText = LowerCase(DefaultFalseBoolStr)) or
-      (LowerCasedText = LowerCase(DefaultNoBoolStr)) or
-      (LowerCasedText = LowerCase(DefaultFalseBoolStr[1])) or
-      (LowerCasedText = LowerCase(DefaultNoBoolStr[1])));
+      (LowerCasedText = LowerCase(DefaultFalseBoolStr)) or (LowerCasedText = LowerCase(DefaultNoBoolStr)) or
+      (LowerCasedText = LowerCase(DefaultFalseBoolStr[1])) or (LowerCasedText = LowerCase(DefaultNoBoolStr[1])));
     if Result then
       {$IFDEF CLR}
       raise EJclConversionError.CreateFmt(RsStringToBoolean, [S]);
@@ -2874,7 +2793,7 @@ begin
   {$ELSE}
   Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
     [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
-    GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
+     GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
   {$ENDIF CLR}
 end;
 
@@ -3008,8 +2927,7 @@ begin
 end;
 
 // delete one item
-procedure ListDelItem(var List: string; const Separator: string;
-  const Index: Integer);
+procedure ListDelItem(var List: string; const Separator: string; const Index: Integer);
 var
   StrList: TStringList;
 begin
@@ -3041,8 +2959,7 @@ begin
 end;
 
 // return the Nth item
-function ListGetItem(const List, Separator: string;
-  const Index: Integer): string;
+function ListGetItem(const List, Separator: string; const Index: Integer): string;
 var
   StrList: TStringList;
 begin
@@ -3117,8 +3034,7 @@ begin
   Result := 0;
 end;
 
-function TJclIntfCriticalSection.QueryInterface(const IID: TGUID;
-  out Obj): HRESULT;
+function TJclIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 begin
   if GetInterface(IID, Obj) then
     Result := S_OK
@@ -3203,8 +3119,7 @@ begin
       SL.Text := Text;
       for I := 0 to SL.Count - 1 do
       begin
-        S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf,
-          TrimRight(SL[I]));
+        S := StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
         FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally

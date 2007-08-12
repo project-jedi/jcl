@@ -46,8 +46,7 @@ type
     FThreadsStatusListView: TListView;
     function GetThreadsStatusListView: TListView;
     function GetThreadsStatusListViewFound: Boolean;
-    procedure ListViewChange(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
+    procedure ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
     function UpdateItem(Item: TListItem): Boolean;
   public
     constructor Create; reintroduce;
@@ -55,8 +54,7 @@ type
     procedure UpdateContent;
     property ProcessesCount: Integer read FProcessesCount;
     property ThreadsStatusListView: TListView read GetThreadsStatusListView;
-    property ThreadsStatusListViewFound: Boolean
-      read GetThreadsStatusListViewFound;
+    property ThreadsStatusListViewFound: Boolean read GetThreadsStatusListViewFound;
   end;
 
   TDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier)
@@ -103,7 +101,7 @@ uses
 
 const
   ThreadsStatusListViewFindPeriod = 2000;
-  ReadNameTimeout = 500;
+  ReadNameTimeout                 = 500;
 
 procedure Register;
 begin
@@ -143,8 +141,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -174,10 +172,8 @@ begin
   inherited Create(JclThreadsExpertName);
   DebuggerServices := BorlandIDEServices as IOTADebuggerServices;
   FSharedThreadNames := TSharedThreadNames.Create(True);
-  FNotifierIndex := DebuggerServices.AddNotifier(
-    TDebuggerNotifier.Create(Self));
-  FNameChangeThread := TNameChangeThread.Create(Self,
-    FSharedThreadNames.NotifyEvent);
+  FNotifierIndex := DebuggerServices.AddNotifier(TDebuggerNotifier.Create(Self));
+  FNameChangeThread := TNameChangeThread.Create(Self, FSharedThreadNames.NotifyEvent);
 end;
 
 destructor TJclThreadsExpert.Destroy;
@@ -209,7 +205,7 @@ begin
         end;
     if F <> nil then
       with F do
-        for I := 0 to ControlCount - 1 do
+        for I := 0 to ControlCount -1 do
           if Controls[I] is TListView then
           begin
             FThreadsStatusListView := TListView(Controls[I]);
@@ -226,8 +222,7 @@ begin
   Result := Assigned(FThreadsStatusListView);
 end;
 
-procedure TJclThreadsExpert.ListViewChange(Sender: TObject;
-  Item: TListItem; Change: TItemChange);
+procedure TJclThreadsExpert.ListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
 begin
   try
     if Change = ctText then
@@ -250,13 +245,13 @@ begin
     begin
       {Items.BeginUpdate;
       try}
-      for I := 0 to Items.Count - 1 do
-        if not UpdateItem(Items[I]) then
-          Break;
+        for I := 0 to Items.Count - 1 do
+          if not UpdateItem(Items[I]) then
+            Break;
       {finally
         Items.EndUpdate;
       end;}
-    end;
+    end;          
   except
     on ExceptionObj: TObject do
     begin
@@ -282,8 +277,7 @@ begin
   begin
     Caption := Copy(Caption, 1, 9);
     TID := StrToInt(Caption);
-    Result := FSharedThreadNames.ThreadNameTimoeut(TID,
-      ReadNameTimeout, ThreadName);
+    Result := FSharedThreadNames.ThreadNameTimoeut(TID, ReadNameTimeout, ThreadName);
     if Result then
     begin
       CaptionChanging := True;
@@ -341,8 +335,7 @@ end;
 
 //=== { TNameChangeThread } ==================================================
 
-constructor TNameChangeThread.Create(AExpert: TJclThreadsExpert;
-  ANotifyEvent: TJclEvent);
+constructor TNameChangeThread.Create(AExpert: TJclThreadsExpert; ANotifyEvent: TJclEvent);
 begin
   inherited Create(True);
   Priority := tpLowest;
@@ -371,10 +364,10 @@ begin
       WAIT_OBJECT_0:
         Break;
       WAIT_OBJECT_0 + 1:
-      begin
-        Synchronize(UpdateRequest);
-        Sleep(30); // To prevent overload the IDE by many update requests
-      end;
+        begin
+          Synchronize(UpdateRequest);
+          Sleep(30); // To prevent overload the IDE by many update requests
+        end;
       WAIT_TIMEOUT:
         if FExpert.ProcessesCount > 0 then
         begin

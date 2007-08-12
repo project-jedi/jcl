@@ -110,8 +110,7 @@ type
     procedure Show;
     // IJediInstallPage
     procedure AddInstallOption(Id: Integer; Options: TJediInstallGUIOptions;
-      const Caption: string = ''; const Hint: string = '';
-      Parent: Integer = -1);
+      const Caption: string = ''; const Hint: string = ''; Parent: Integer = -1);
     procedure InitDisplay;
     function GetOptionChecked(Id: Integer): Boolean;
     procedure SetOptionChecked(Id: Integer; Value: Boolean);
@@ -158,16 +157,16 @@ uses
 
 const
   // Icon indexes
-  IcoUnchecked = 0;
-  IcoChecked = 1;
+  IcoUnchecked      = 0;
+  IcoChecked        = 1;
   IcoRadioUnchecked = 2;
-  IcoRadioChecked = 3;
-  IcoNotInstalled = 4;
-  IcoFailed = 5;
-  IcoInstalled = 6;
+  IcoRadioChecked   = 3;
+  IcoNotInstalled   = 4;
+  IcoFailed         = 5;
+  IcoInstalled      = 6;
 
   IconIndexes: array [Boolean {RadioButton}, Boolean {Checked}] of Integer =
-    ((IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked));
+   ( (IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked) ); 
 
 type
   TNodeRec = record
@@ -186,9 +185,9 @@ type
   PDirectoryRec = ^TDirectoryRec;
 
 resourcestring
-  RsSelectPath = 'Select path';
-  RsEnterValidPath = '(Enter valid path)';
-  RsInvalidOption = 'Invalid option: %d';
+  RsSelectPath      = 'Select path';
+  RsEnterValidPath  = '(Enter valid path)';
+  RsInvalidOption   = 'Invalid option: %d';
   //RsDuplicateOption = 'Duplicate option: %s';
   //RsCannotFindNode  = 'Cannot find node for Id %d';
 
@@ -422,20 +421,17 @@ procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomViewControl; Item:
   Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage; 
   var DefaultDraw: Boolean);
 {$ELSE}
-procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView;
-  Node: TTreeNode;
+procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; 
   State: TCustomDrawState; var DefaultDraw: Boolean);
 {$ENDIF}
 begin
   case TTreeNode({$IFDEF VisualCLX}Item{$ELSE}Node{$ENDIF}).Level of
-    0:
-    begin
+    0: begin
          {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold, fsUnderline];
-    end;
-    1:
-    begin
+       end;
+    1: begin
          {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold];
-    end;
+       end;
   end;
 end;
 
@@ -487,11 +483,11 @@ var
 begin
   if not FInstalling then
     with TTreeView(Sender) do
-    begin
-      Node := GetNodeAt(X, Y);
-      if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
-        ToggleNodeChecked(Node);
-    end;
+  begin
+    Node := GetNodeAt(X, Y);
+    if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
+      ToggleNodeChecked(Node);
+  end;
 end;
 
 {$IFDEF VCL}
@@ -518,8 +514,7 @@ end;
 procedure TInstallFrame.SetCaption(const Value: string);
 begin
   (Parent as TTabSheet).Caption := Value;
-  AddInstallOption(JediTargetOption, [goExpandable, goChecked],
-    Value, RsHintTarget, -1);
+  AddInstallOption(JediTargetOption, [goExpandable, goChecked], Value, RsHintTarget, -1);
 end;
 
 function TInstallFrame.GetHintAtPos(ScreenX, ScreenY: Integer): string;
@@ -529,8 +524,7 @@ var
 begin
   TreeViewCoord := TreeView.ScreenToClient(Point(ScreenX, ScreenY));
   if (TreeViewCoord.X >= 0) and (TreeViewCoord.Y >= 0) and
-    (TreeViewCoord.X < TreeView.Width) and (TreeViewCoord.Y <
-    TreeView.Height) then
+    (TreeViewCoord.X < TreeView.Width) and (TreeViewCoord.Y < TreeView.Height) then
   begin
     ANode := TreeView.GetNodeAt(TreeViewCoord.X, TreeViewCoord.Y);
     if Assigned(ANode) then
@@ -547,8 +541,7 @@ begin
 end;
 
 // IJediInstallPage
-procedure TInstallFrame.AddInstallOption(Id: Integer;
-  Options: TJediInstallGUIOptions;
+procedure TInstallFrame.AddInstallOption(Id: Integer; Options: TJediInstallGUIOptions;
   const Caption: string = ''; const Hint: string = ''; Parent: Integer = -1);
 var
   NodeRec: PNodeRec;
@@ -653,29 +646,24 @@ begin
   ADirectoryRec^.Button.Anchors := [akTop, akRight];
 
   ButtonWidth := 2 * ALabel.Height;
-  LabelRight := (ALabel.Width div 16) * 16 + 32 + ALabel.Left;
- // make edits aligned when label widths are nearly equals
+  LabelRight := (ALabel.Width div 16) * 16 + 32 + ALabel.Left; // make edits aligned when label widths are nearly equals
 
   ADirectoryRec^.Edit.SetBounds(LabelRight, ControlTop,
     OptionsGroupBox.ClientWidth - LabelRight - ButtonWidth - 16,
     ADirectoryRec^.Edit.Height);
-  ADirectoryRec^.Button.SetBounds(OptionsGroupBox.ClientWidth -
-    ButtonWidth - 8,
+  ADirectoryRec^.Button.SetBounds(OptionsGroupBox.ClientWidth - ButtonWidth - 8,
     ControlTop, ButtonWidth, ADirectoryRec^.Edit.Height);
-  ALabel.SetBounds(8, ControlTop + (ADirectoryRec^.Edit.Height -
-    ALabel.Height) div 2,
+  ALabel.SetBounds(8, ControlTop + (ADirectoryRec^.Edit.Height - ALabel.Height) div 2,
     ALabel.Width, ALabel.Height);
 
   ADirectoryRec^.Edit.OnChange := DirectoryEditChange;
   ADirectoryRec^.Button.OnClick := DirectorySelectBtnClick;
 
-  OptionsGroupBox.ClientHeight :=
-    ADirectoryRec^.Edit.Top + ADirectoryRec^.Edit.Height + 10;
+  OptionsGroupBox.ClientHeight := ADirectoryRec^.Edit.Top + ADirectoryRec^.Edit.Height + 10;
   {$IFDEF VisualCLX}
   InfoDisplay.Height := InfoPanel.Height + OptionsGroupBox.Top - 8;
   {$ELSE ~VisualCLX}
-  OptionsGroupBox.Top := TreeView.Height + TreeView.Top -
-    OptionsGroupBox.Height;
+  OptionsGroupBox.Top := TreeView.Height + TreeView.Top - OptionsGroupBox.Height;
   InfoDisplay.Height := OptionsGroupBox.Top - InfoDisplay.Top - 8;
   {$ENDIF ~VisualCLX}
 
@@ -843,8 +831,7 @@ begin
   AddLogLine(Line);
 end;
 
-procedure TInstallFrame.CompilationProgress(const FileName: string;
-  LineNumber: Integer);
+procedure TInstallFrame.CompilationProgress(const FileName: string; LineNumber: Integer);
 begin
   {$IFDEF VCL}
   GetFormCompile.CompilationProgress(FileName, LineNumber);
@@ -852,3 +839,5 @@ begin
 end;
 
 end.
+
+

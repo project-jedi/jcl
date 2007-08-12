@@ -46,8 +46,7 @@ uses
   Types,
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QButtons, QComCtrls, QImgList,
   {$ELSE}
-  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus,
-  Buttons, ComCtrls, ImgList,
+  Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, Buttons, ComCtrls, ImgList,
   {$ENDIF}
   JclBorlandTools, JclContainerIntf, JediInstall;
 
@@ -81,8 +80,7 @@ type
     procedure ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE ~VisualCLX}string{$ENDIF ~VisualCLX}; var CanShow: Boolean;
       var HintInfo: THintInfo);
     // IJediInstallGUI
-    function Dialog(const Text: string;
-      DialogType: TDialogType = dtInformation;
+    function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
       Options: TDialogResponses = [drOK]): TDialogResponse;
     function CreateReadmePage: IJediReadmePage;
     function CreateInstallPage: IJediInstallPage;
@@ -121,7 +119,7 @@ uses
   {$ENDIF ~VisualCLX}
 
 const
-  DelphiJediURL = 'http://www.delphi-jedi.org/';
+  DelphiJediURL     = 'http://www.delphi-jedi.org/';
 
 function CreateMainForm: IJediInstallGUI;
 var
@@ -188,8 +186,7 @@ begin
   begin
     ScreenPos := HintInfo.HintControl.ClientToScreen(HintInfo.CursorPos);
     ATabSheet := ProductsPageControl.ActivePage;
-    HintStr := (FPages.GetObject(ATabSheet.PageIndex) as
-      IJediPage).GetHintAtPos(ScreenPos.X, ScreenPos.Y);
+    HintStr := (FPages.GetObject(ATabSheet.PageIndex) as IJediPage).GetHintAtPos(ScreenPos.X, ScreenPos.Y);
     HintInfo.ReshowTimeout := 100;
   end;
   CanShow := HintStr <> '';
@@ -209,28 +206,25 @@ begin
   IconHandle := 0;
 
   if SameText(ExtractFileName(FileName), '.ico') then
-    IconHandle := LoadImage(0, PChar(FileName), IMAGE_ICON,
-      ImageList.Width, ImageList.Height,
+    IconHandle := LoadImage(0, PChar(FileName), IMAGE_ICON, ImageList.Width, ImageList.Height,
       LR_LOADFROMFILE or LR_LOADTRANSPARENT)
   else
   begin
-    ModuleHandle := LoadLibraryEx(PChar(FileName), 0,
-      DONT_RESOLVE_DLL_REFERENCES);
+    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, DONT_RESOLVE_DLL_REFERENCES);
     if ModuleHandle <> 0 then
-      try
-        IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON,
-          ImageList.Width, ImageList.Height,
-          LR_LOADTRANSPARENT);
-      finally
-        FreeLibrary(ModuleHandle);
-      end;
+    try
+      IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
+        LR_LOADTRANSPARENT);
+    finally
+      FreeLibrary(ModuleHandle);
+    end;
   end;
   if IconHandle <> 0 then
-    try
-      ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
-    finally
-      DestroyIcon(IconHandle);
-    end;
+  try
+    ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
+  finally
+    DestroyIcon(IconHandle);
+  end;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -267,14 +261,11 @@ begin
   {$ENDIF MSWINDOWS}
 end;
 
-function TMainForm.Dialog(const Text: string;
-  DialogType: TDialogType = dtInformation;
+function TMainForm.Dialog(const Text: string; DialogType: TDialogType = dtInformation;
   Options: TDialogResponses = [drOK]): TDialogResponse;
 const
-  DlgType: array[TDialogType] of TMsgDlgType =
-    (mtWarning, mtError, mtInformation, mtConfirmation);
-  DlgButton: array[TDialogResponse] of TMsgDlgBtn =
-    (mbYes, mbNo, mbOK, mbCancel);
+  DlgType: array[TDialogType] of TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation);
+  DlgButton: array[TDialogResponse] of TMsgDlgBtn = (mbYes, mbNo, mbOK, mbCancel);
   DlgResult: array[TDialogResponse] of Word = (mrYes, mrNo, mrOK, mrCancel);
 var
   Buttons: TMsgDlgButtons;
@@ -393,6 +384,6 @@ end;
 
 initialization
 
-  InstallCore.InstallGUICreator := CreateMainForm;
+InstallCore.InstallGUICreator := CreateMainForm;
 
 end.

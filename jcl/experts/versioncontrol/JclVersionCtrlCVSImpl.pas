@@ -35,23 +35,19 @@ uses
   VersionControlImpl;
 
 type
-  TJclVersionControlCVS = class(TJclVersionControlPlugin)
+  TJclVersionControlCVS = class (TJclVersionControlPlugin)
   private
     FTortoiseCVSAct: string;
   protected
     function GetSupportedActions: TJclVersionControlActions; override;
-    function GetFileActions(const FileName: string): TJclVersionControlActions;
-      override;
-    function GetSandboxActions(
-      const SdBxName: string): TJclVersionControlActions; override;
-    function GetIcon(const Action: TJclVersionControlAction): Integer;
-      override;
+    function GetFileActions(const FileName: string): TJclVersionControlActions; override;
+    function GetSandboxActions(const SdBxName: string): TJclVersionControlActions; override;
+    function GetIcon(const Action: TJclVersionControlAction): Integer; override;
     function GetEnabled: Boolean; override;
     function GetName: string; override;
   public
     constructor Create(const AExpert: TJclVersionControlExpert); override;
-    function GetSandboxNames(const FileName: string;
-      SdBxNames: TStrings): Boolean; override;
+    function GetSandboxNames(const FileName: string; SdBxNames: TStrings): Boolean; override;
     function ExecuteAction(const FileName: string;
       const Action: TJclVersionControlAction): Boolean; override;
   end;
@@ -93,16 +89,14 @@ resourcestring
 
 //=== TJclVersionControlCVS ==================================================
 
-constructor TJclVersionControlCVS.Create(
-  const AExpert: TJclVersionControlExpert);
+constructor TJclVersionControlCVS.Create(const AExpert: TJclVersionControlExpert);
 begin
   inherited Create(AExpert);
   FTortoiseCVSAct := RegReadStringDef(HKLM, JclVersionCtrlCVSRegKeyName,
     JclVersionCtrlCVSRegValueName, '');
 
   if FTortoiseCVSAct <> '' then
-    FTortoiseCVSAct := PathAddSeparator(FTortoiseCVSAct) +
-      JclVersionCtrlCVSTortoiseAct;
+    FTortoiseCVSAct := PathAddSeparator(FTortoiseCVSAct) + JclVersionCtrlCVSTortoiseAct;
 end;
 
 function TJclVersionControlCVS.ExecuteAction(const FileName: string;
@@ -113,8 +107,8 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: string;
     ProcessInfo: TProcessInformation;
     CurrentDir, CommandLine: string;
   begin
-    FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
-    FillChar(ProcessInfo, SizeOf(TProcessInformation), #0);
+    FillChar(StartupInfo,SizeOf(TStartupInfo),#0);
+    FillChar(ProcessInfo,SizeOf(TProcessInformation),#0);
     startupInfo.cb := SizeOf(TStartupInfo);
     startupInfo.dwFlags := STARTF_USESHOWWINDOW;
     startupInfo.wShowWindow := SW_SHOW;
@@ -128,9 +122,8 @@ function TJclVersionControlCVS.ExecuteAction(const FileName: string;
       CurrentDir := FileName
     else
       CurrentDir := ExtractFilePath(FileName);
-
-    CommandLine := Format('%s %s -l "%s"', [FTortoiseCVSAct,
-      ActionName, PathRemoveSeparator(FileName)]);
+      
+    CommandLine := Format('%s %s -l "%s"', [FTortoiseCVSAct, ActionName, PathRemoveSeparator(FileName)]);
 
     Result := CreateProcess(nil, PChar(CommandLine), nil,
       nil, False, 0, nil, PChar(CurrentDir), StartupInfo, ProcessInfo);
@@ -204,10 +197,8 @@ var
 begin
   Result := inherited GetFileActions(FileName);
 
-  CvsDirectory := PathAddSeparator(ExtractFilePath(FileName)) +
-    JclVersionCtrlCVSDirectory;
-  FileNameLine := Format('/%s/',
-    [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
+  CvsDirectory := PathAddSeparator(ExtractFilePath(FileName)) + JclVersionCtrlCVSDirectory;
+  FileNameLine := Format('/%s/', [ExtractFileName(AnsiUpperCaseFileName(FileName))]);
 
   if DirectoryExists(CvsDirectory) and Enabled then
   begin
@@ -221,17 +212,15 @@ begin
         Added := False;
         for Index := 0 to Entries.Count - 1 do
           if Pos(FileNameLine, AnsiUpperCase(Entries.Strings[Index])) = 1 then
-          begin
-            Added := True;
-            Break;
-          end;
+        begin
+          Added := True;
+          Break;
+        end;
 
         if Added then
         // TODO: check modifications
-          Result := Result + [vcaBlame, vcaBranch, vcaCommit,
-            vcaDiff, vcaGraph,
-            vcaLog, vcaLock, vcaStatus, vcaTag, vcaUpdate,
-            vcaUpdateTo, vcaUnlock]
+          Result := Result + [vcaBlame, vcaBranch, vcaCommit, vcaDiff, vcaGraph,
+            vcaLog, vcaLock, vcaStatus, vcaTag, vcaUpdate, vcaUpdateTo, vcaUnlock]
         else
           Result := Result + [vcaAdd];
       end;
@@ -246,11 +235,10 @@ begin
   Result := inherited GetSupportedActions;
   if Enabled then
     Result := Result + [vcaAdd, vcaAddSandbox, vcaBlame, vcaBranch,
-      vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox,
-      vcaDiff, vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox,
-      vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
-      vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock,
-      vcaUnlockSandbox];
+    vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox,
+    vcaDiff, vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox,
+    vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
+    vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
 end;
 
 function TJclVersionControlCVS.GetIcon(
@@ -258,8 +246,7 @@ function TJclVersionControlCVS.GetIcon(
 var
   LibraryName: string;
 begin
-  LibraryName := PathAddSeparator(ExtractFilePath(FTortoiseCVSAct)) +
-    JclVersionCtrlCVSTrtseShlDLL;
+  LibraryName := PathAddSeparator(ExtractFilePath(FTortoiseCVSAct)) + JclVersionCtrlCVSTrtseShlDLL;
 
   case Action of
     vcaAdd,
@@ -340,11 +327,11 @@ begin
     if Enabled then
       for Index := Length(FileName) downto 1 do
         if FileName[Index] = DirDelimiter then
-        begin
-          DirectoryName := Copy(FileName, 1, Index);
-          if DirectoryExists(DirectoryName + JclVersionCtrlCVSDirectory) then
-            SdBxNames.Add(DirectoryName);
-        end;
+    begin
+      DirectoryName := Copy(FileName, 1, Index);
+      if DirectoryExists(DirectoryName + JclVersionCtrlCVSDirectory) then
+        SdBxNames.Add(DirectoryName);
+    end;
 
     if SdBxNames.Count = 0 then
       Result := inherited GetSandboxNames(FileName, SdBxNames);
@@ -355,26 +342,26 @@ end;
 
 initialization
 
-  try
-    TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlCVS);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlCVS);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 finalization
 
-  try
-    TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlCVS);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlCVS);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 end.

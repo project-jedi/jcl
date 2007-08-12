@@ -56,8 +56,7 @@ type
     procedure UpdatePreview;
     procedure UpdateCheckBoxes;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams);
-      reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
     destructor Destroy; override;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
@@ -192,15 +191,14 @@ var
   AStack: TJclStackInfoList;
 begin
   MemoStack.Lines.Clear;
-
+  
   if CheckBoxAllThreads.Checked then
     MemoStack.Lines.Add('Main thread stack trace');
 
   AStack := TJclStackInfoList.Create(CheckBoxRawData.Checked, 0, nil, False);
   try
     AStack.AddToStrings(MemoStack.Lines, CheckBoxModuleName.Checked,
-      CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked,
-      CheckBoxVirtualAddress.Checked);
+      CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked, CheckBoxVirtualAddress.Checked);
   finally
     AStack.Free;
   end;
@@ -208,14 +206,11 @@ begin
   if CheckBoxAllThreads.Checked then
   begin
     MemoStack.Lines.Add('');
-    MemoStack.Lines.Add(Format('Stack trace for thread: "%s" (%s)',
-      [FTestThread.ThreadName, FTestThread.ClassName]));
-    AStack := JclCreateThreadStackTrace(CheckBoxRawData.Checked,
-      FTestThread.Handle);
+    MemoStack.Lines.Add(Format('Stack trace for thread: "%s" (%s)', [FTestThread.ThreadName, FTestThread.ClassName]));
+    AStack := JclCreateThreadStackTrace(CheckBoxRawData.Checked, FTestThread.Handle);
     try
       AStack.AddToStrings(MemoStack.Lines, CheckBoxModuleName.Checked,
-        CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked,
-        CheckBoxVirtualAddress.Checked);
+        CheckBoxModuleOffset.Checked, CheckBoxCodeDetails.Checked, CheckBoxVirtualAddress.Checked);
     finally
       AStack.Free;
     end;

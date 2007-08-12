@@ -44,7 +44,7 @@ uses
 
 type
   TStereoChannel = (scLeft, scRight);
-
+  
   // MIDI Out
   IJclWinMidiOut = interface(IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
@@ -54,8 +54,7 @@ type
     function GetVolume: Word;
     procedure SetVolume(const Value: Word);
     // properties
-    property ChannelVolume[Channel: TStereoChannel]: Word
-      read GetChannelVolume write SetChannelVolume;
+    property ChannelVolume[Channel: TStereoChannel]: Word read GetChannelVolume write SetChannelVolume;
     property Volume: Word read GetVolume write SetVolume;
   end;
 
@@ -106,9 +105,8 @@ end;
 
 function GetMidiInErrorMessage(const ErrorCode: MMRESULT): string;
 begin
-  SetLength(Result, MAXERRORLENGTH - 1);
-  if midiInGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) =
-    MMSYSERR_NOERROR then
+  SetLength(Result, MAXERRORLENGTH-1);
+  if midiInGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) = MMSYSERR_NOERROR then
     StrResetLength(Result)
   else
     Result := Format(RsMidiInUnknownError, [ErrorCode]);
@@ -116,9 +114,8 @@ end;
 
 function GetMidiOutErrorMessage(const ErrorCode: MMRESULT): string;
 begin
-  SetLength(Result, MAXERRORLENGTH - 1);
-  if midiOutGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) =
-    MMSYSERR_NOERROR then
+  SetLength(Result, MAXERRORLENGTH-1);
+  if midiOutGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) = MMSYSERR_NOERROR then
     StrResetLength(Result)
   else
     Result := Format(RsMidiOutUnknownError, [ErrorCode]);
@@ -159,8 +156,7 @@ type
     destructor Destroy; override;
     property DeviceID: Cardinal read FDeviceID;
     property Name: string read GetName;
-    property ChannelVolume[Channel: TStereoChannel]: Word
-      read GetChannelVolume write SetChannelVolume;
+    property ChannelVolume[Channel: TStereoChannel]: Word read GetChannelVolume write SetChannelVolume;
     property Volume: Word read GetVolume write SetVolume;
   end;
 
@@ -191,10 +187,8 @@ end;
 constructor TMidiOut.Create(ADeviceID: Cardinal);
 begin
   inherited Create;
-  FVolume := $FFFFFFFF;
- // max. volume, in case Get/SetChannelVolume not supported
-  MidiOutCheck(midiOutGetDevCaps(ADeviceID, @FDeviceCaps,
-    SizeOf(FDeviceCaps)));
+  FVolume := $FFFFFFFF; // max. volume, in case Get/SetChannelVolume not supported
+  MidiOutCheck(midiOutGetDevCaps(ADeviceID, @FDeviceCaps, SizeOf(FDeviceCaps)));
   MidiOutCheck(midiOutOpen(@FHandle, ADeviceID, 0, 0, 0));
   MidiOutCheck(midiOutGetID(FHandle, @FDeviceID));
 end;
@@ -230,10 +224,10 @@ procedure TMidiOut.DoSendMessage(const Data: array of Byte);
 var
   I: Integer;
   Msg: packed record
-    case Integer of
-      0:
+  case Integer of
+    0:
       (Bytes: array [0..2] of Byte);
-      1:
+    1:
       (DWord: LongWord);
   end;
 begin
@@ -253,8 +247,7 @@ begin
   Result := FVolume;
 end;
 
-procedure TMidiOut.SetChannelVolume(Channel: TStereoChannel;
-  const Value: Word);
+procedure TMidiOut.SetChannelVolume(Channel: TStereoChannel; const Value: Word);
 begin
   if Channel = scLeft then
     SetLRVolume(Value, ChannelVolume[scRight])

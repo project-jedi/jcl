@@ -54,10 +54,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property Active: Boolean read GetActive write SetActive;
-    property ConfirmChanges: Boolean read GetConfirmChanges
-      write SetConfirmChanges;
-    property ConfigFileName: TFileName
-      read GetConfigFileName write SetConfigFileName;
+    property ConfirmChanges: Boolean read GetConfirmChanges write SetConfirmChanges;
+    property ConfigFileName: TFileName read GetConfigFileName write SetConfigFileName;
   end;
 
 implementation

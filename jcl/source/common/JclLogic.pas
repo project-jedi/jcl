@@ -82,15 +82,11 @@ function BitsLowest(X: Integer): Integer; overload;
 function BitsLowest(X: Int64): Integer; overload;
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
-function ClearBit(const Value: Shortint; const Bit: TBitRange): Shortint;
-  overload;
-function ClearBit(const Value: Smallint; const Bit: TBitRange): Smallint;
-  overload;
+function ClearBit(const Value: Shortint; const Bit: TBitRange): Shortint; overload;
+function ClearBit(const Value: Smallint; const Bit: TBitRange): Smallint; overload;
 function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
-function ClearBit(const Value: Integer; const Bit: TBitRange): Integer;
-  overload;
-function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
-  overload;
+function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
+function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 procedure ClearBitBuffer(var Value; const Bit: Cardinal);
 
@@ -134,34 +130,25 @@ function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function RRot(const Value: Word; const Count: TBitRange): Word; overload;
 function RRot(const Value: Integer; const Count: TBitRange): Integer; overload;
 
-function Sar(const Value: Shortint; const Count: TBitRange): Shortint;
-  overload;
-function Sar(const Value: Smallint; const Count: TBitRange): Smallint;
-  overload;
+function Sar(const Value: Shortint; const Count: TBitRange): Shortint; overload;
+function Sar(const Value: Smallint; const Count: TBitRange): Smallint; overload;
 function Sar(const Value: Integer; const Count: TBitRange): Integer; overload;
 
 function SetBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
-function SetBit(const Value: Shortint; const Bit: TBitRange): Shortint;
-  overload;
-function SetBit(const Value: Smallint; const Bit: TBitRange): Smallint;
-  overload;
+function SetBit(const Value: Shortint; const Bit: TBitRange): Shortint; overload;
+function SetBit(const Value: Smallint; const Bit: TBitRange): Smallint; overload;
 function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
-function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
-  overload;
+function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 procedure SetBitBuffer(var Value; const Bit: Cardinal);
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
-function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean;
-  overload;
-function TestBit(const Value: Smallint; const Bit: TBitRange): Boolean;
-  overload;
+function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean; overload;
+function TestBit(const Value: Smallint; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
-function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean;
-  overload;
-function TestBit(const Value: Integer; const Bit: TBitRange): Boolean;
-  overload;
+function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
+function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
 function TestBitBuffer(const Value; const Bit: Cardinal): Boolean;
 
@@ -174,15 +161,11 @@ function TestBits(const Value, Mask: Integer): Boolean; overload;
 function TestBits(const Value, Mask: Int64): Boolean; overload;
 
 function ToggleBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
-function ToggleBit(const Value: Shortint; const Bit: TBitRange): Shortint;
-  overload;
-function ToggleBit(const Value: Smallint; const Bit: TBitRange): Smallint;
-  overload;
+function ToggleBit(const Value: Shortint; const Bit: TBitRange): Shortint; overload;
+function ToggleBit(const Value: Smallint; const Bit: TBitRange): Smallint; overload;
 function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
-function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
-  overload;
-function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer;
-  overload;
+function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
+function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 procedure ToggleBitBuffer(var Value; const Bit: Cardinal);
 
@@ -191,14 +174,10 @@ procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Integer; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Int64; const B: TBooleanArray); overload;
 
-procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray;
-  AllBits: Boolean = False); overload;
-procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray;
-  AllBits: Boolean = False); overload;
-procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray;
-  AllBits: Boolean = False); overload;
-procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray;
-  AllBits: Boolean = False); overload;
+procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean = False); overload;
+procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean = False); overload;
+procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean = False); overload;
+procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean = False); overload;
 
 function BitsNeeded(const X: Byte): Integer; overload;
 function BitsNeeded(const X: Word): Integer; overload;
@@ -225,65 +204,37 @@ procedure SwapOrd(var I, J: Integer); overload;
 procedure SwapOrd(var I, J: Cardinal); overload;
 procedure SwapOrd(var I, J: Int64); overload;
 
-function IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte;
-  overload;
-function IncLimit(var B: Shortint; const Limit: Shortint;
-  const Incr: Shortint = 1): Shortint; overload;
-function IncLimit(var B: Smallint; const Limit: Smallint;
-  const Incr: Smallint = 1): Smallint; overload;
-function IncLimit(var B: Word; const Limit: Word; const Incr: Word = 1): Word;
-  overload;
-function IncLimit(var B: Integer; const Limit: Integer;
-  const Incr: Integer = 1): Integer; overload;
-function IncLimit(var B: Cardinal; const Limit: Cardinal;
-  const Incr: Cardinal = 1): Cardinal; overload;
-function IncLimit(var B: Int64; const Limit: Int64;
-  const Incr: Int64 = 1): Int64; overload;
+function IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
+function IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimit(var B: Smallint; const Limit: Smallint; const Incr: Smallint = 1): Smallint; overload;
+function IncLimit(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
+function IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
+function IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
+function IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 = 1): Int64; overload;
 
-function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte;
-  overload;
-function DecLimit(var B: Shortint; const Limit: Shortint;
-  const Decr: Shortint = 1): Shortint; overload;
-function DecLimit(var B: Smallint; const Limit: Smallint;
-  const Decr: Smallint = 1): Smallint; overload;
-function DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1): Word;
-  overload;
-function DecLimit(var B: Integer; const Limit: Integer;
-  const Decr: Integer = 1): Integer; overload;
-function DecLimit(var B: Cardinal; const Limit: Cardinal;
-  const Decr: Cardinal = 1): Cardinal; overload;
-function DecLimit(var B: Int64; const Limit: Int64;
-  const Decr: Int64 = 1): Int64; overload;
+function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
+function DecLimit(var B: Shortint; const Limit: Shortint; const Decr: Shortint = 1): Shortint; overload;
+function DecLimit(var B: Smallint; const Limit: Smallint; const Decr: Smallint = 1): Smallint; overload;
+function DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
+function DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
+function DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
+function DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
 
-function IncLimitClamp(var B: Byte; const Limit: Byte;
-  const Incr: Byte = 1): Byte; overload;
-function IncLimitClamp(var B: Shortint; const Limit: Shortint;
-  const Incr: Shortint = 1): Shortint; overload;
-function IncLimitClamp(var B: Smallint; const Limit: Smallint;
-  const Incr: Smallint = 1): Smallint; overload;
-function IncLimitClamp(var B: Word; const Limit: Word;
-  const Incr: Word = 1): Word; overload;
-function IncLimitClamp(var B: Integer; const Limit: Integer;
-  const Incr: Integer = 1): Integer; overload;
-function IncLimitClamp(var B: Cardinal; const Limit: Cardinal;
-  const Incr: Cardinal = 1): Cardinal; overload;
-function IncLimitClamp(var B: Int64; const Limit: Int64;
-  const Incr: Int64 = 1): Int64; overload;
+function IncLimitClamp(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
+function IncLimitClamp(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimitClamp(var B: Smallint; const Limit: Smallint; const Incr: Smallint = 1): Smallint; overload;
+function IncLimitClamp(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
+function IncLimitClamp(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
+function IncLimitClamp(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
+function IncLimitClamp(var B: Int64; const Limit: Int64; const Incr: Int64 = 1): Int64; overload;
 
-function DecLimitClamp(var B: Byte; const Limit: Byte;
-  const Decr: Byte = 1): Byte; overload;
-function DecLimitClamp(var B: Shortint; const Limit: Shortint;
-  const Decr: Shortint = 1): Shortint; overload;
-function DecLimitClamp(var B: Smallint; const Limit: Smallint;
-  const Decr: Smallint = 1): Smallint; overload;
-function DecLimitClamp(var B: Word; const Limit: Word;
-  const Decr: Word = 1): Word; overload;
-function DecLimitClamp(var B: Integer; const Limit: Integer;
-  const Decr: Integer = 1): Integer; overload;
-function DecLimitClamp(var B: Cardinal; const Limit: Cardinal;
-  const Decr: Cardinal = 1): Cardinal; overload;
-function DecLimitClamp(var B: Int64; const Limit: Int64;
-  const Decr: Int64 = 1): Int64; overload;
+function DecLimitClamp(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
+function DecLimitClamp(var B: Shortint; const Limit: Shortint; const Decr: Shortint = 1): Shortint; overload;
+function DecLimitClamp(var B: Smallint; const Limit: Smallint; const Decr: Smallint = 1): Smallint; overload;
+function DecLimitClamp(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
+function DecLimitClamp(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
+function DecLimitClamp(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
+function DecLimitClamp(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
 
 function Max(const B1, B2: Byte): Byte; overload;
 function Max(const B1, B2: Shortint): Shortint; overload;
@@ -304,35 +255,35 @@ function Min(const B1, B2: Int64): Int64; overload;
 const
   // Constants defining the number of bits in each Integer type
 
-  BitsPerNibble = 4;
-  BitsPerByte = 8;
+  BitsPerNibble   = 4;
+  BitsPerByte     = 8;
   BitsPerShortint = SizeOf(Shortint) * BitsPerByte;
   BitsPerSmallint = SizeOf(Smallint) * BitsPerByte;
-  BitsPerWord = SizeOf(Word) * BitsPerByte;
-  BitsPerInteger = SizeOf(Integer) * BitsPerByte;
+  BitsPerWord     = SizeOf(Word) * BitsPerByte;
+  BitsPerInteger  = SizeOf(Integer) * BitsPerByte;
   BitsPerCardinal = SizeOf(Cardinal) * BitsPerByte;
-  BitsPerInt64 = SizeOf(Int64) * BitsPerByte;
+  BitsPerInt64    = SizeOf(Int64) * BitsPerByte;
 
   // Constants defining the number of nibbles in each Integer type
 
-  NibblesPerByte = BitsPerByte div BitsPerNibble;
+  NibblesPerByte     = BitsPerByte div BitsPerNibble;
   NibblesPerShortint = SizeOf(Shortint) * NibblesPerByte;
   NibblesPerSmallint = SizeOf(Smallint) * NibblesPerByte;
-  NibblesPerWord = SizeOf(Word) * NibblesPerByte;
-  NibblesPerInteger = SizeOf(Integer) * NibblesPerByte;
+  NibblesPerWord     = SizeOf(Word) * NibblesPerByte;
+  NibblesPerInteger  = SizeOf(Integer) * NibblesPerByte;
   NibblesPerCardinal = SizeOf(Cardinal) * NibblesPerByte;
-  NibblesPerInt64 = SizeOf(Int64) * NibblesPerByte;
+  NibblesPerInt64    = SizeOf(Int64) * NibblesPerByte;
 
   // Constants defining a mask with all bits set for each Integer type
 
-  NibbleMask = $F;
-  ByteMask = Byte($FF);
-  ShortintMask = Shortint($FF);
-  SmallintMask = Smallint($FFFF);
-  WordMask = Word($FFFF);
-  IntegerMask = Integer($FFFFFFFF);
-  CardinalMask = Cardinal($FFFFFFFF);
-  Int64Mask = Int64($FFFFFFFFFFFFFFFF);
+  NibbleMask      = $F;
+  ByteMask        = Byte($FF);
+  ShortintMask    = Shortint($FF);
+  SmallintMask    = Smallint($FFFF);
+  WordMask        = Word($FFFF);
+  IntegerMask     = Integer($FFFFFFFF);
+  CardinalMask    = Cardinal($FFFFFFFF);
+  Int64Mask       = Int64($FFFFFFFFFFFFFFFF);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -454,9 +405,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSR     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -473,9 +424,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSR     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -527,9 +478,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSF     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -546,9 +497,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSF     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -594,7 +545,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerByte - 1   // modulo BitsPerByte
+  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -606,7 +557,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
+  AND    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -618,7 +569,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
+  AND    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -630,7 +581,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerWord - 1   // modulo BitsPerWord
+  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -688,13 +639,13 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTR[Value], Bit
+  BTR    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}
 
 const
-  BitSetPerNibble: array[0..15] of Byte = (0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
+  BitSetPerNibble: array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
 
 function CountBitsSet(X: Cardinal): Integer;
 var
@@ -763,7 +714,7 @@ begin
   while Count > 0 do
   begin
     b := PByte(P)^;
-
+    
     // lower Nibble
     Inc(Result, BitSetPerNibble[b and $0F]);
     // upper Nibble
@@ -780,8 +731,7 @@ begin
   {$IFDEF CLR}
   Result := CountBitsSet(X and $00000000FFFFFFFF) + CountBitsSet(X shr 32);
   {$ELSE}
-  Result := CountBitsSet(TULargeInteger(X).LowPart) +
-    CountBitsSet(TULargeInteger(X).HighPart);
+  Result := CountBitsSet(TULargeInteger(X).LowPart) + CountBitsSet(TULargeInteger(X).HighPart);
   {$ENDIF CLR}
 end;
 
@@ -863,12 +813,11 @@ end;
 
 function LRot(const Value: Word; const Count: TBitRange): Word; assembler;
 asm
-  MOV     CL, Count
-  ROL     AX, CL
+   MOV     CL, Count
+   ROL     AX, CL
 end;
 
-function LRot(const Value: Integer; const Count: TBitRange): Integer;
-  assembler;
+function LRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
   MOV     CL, Count
   ROL     EAX, CL
@@ -939,10 +888,8 @@ begin
   Result := (Int64(ReverseBits(Value shr 32)) shl 32) or
             (ReverseBits(Value and $00000000FFFFFFFF));
   {$ELSE}
-  TULargeInteger(Result).LowPart :=
-    ReverseBits(TULargeInteger(Value).HighPart);
-  TULargeInteger(Result).HighPart :=
-    ReverseBits(TULargeInteger(Value).LowPart);
+  TULargeInteger(Result).LowPart := ReverseBits(TULargeInteger(Value).HighPart);
+  TULargeInteger(Result).HighPart := ReverseBits(TULargeInteger(Value).LowPart);
   {$ENDIF CLR}
 end;
 
@@ -1066,8 +1013,7 @@ asm
   MOV     Result, AX
 end;
 
-function RRot(const Value: Integer; const Count: TBitRange): Integer;
-  assembler;
+function RRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
   MOV     CL, Count
   MOV     EAX, Value
@@ -1075,15 +1021,13 @@ asm
   MOV     Result, EAX
 end;
 
-function Sar(const Value: Shortint; const Count: TBitRange): Shortint;
-  assembler;
+function Sar(const Value: Shortint; const Count: TBitRange): Shortint; assembler;
 asm
   MOV     CL, DL
   SAR     AL, CL
 end;
 
-function Sar(const Value: Smallint; const Count: TBitRange): Smallint;
-  assembler;
+function Sar(const Value: Smallint; const Count: TBitRange): Smallint; assembler;
 asm
   MOV     CL, DL
   SAR     AX, CL
@@ -1103,7 +1047,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerByte - 1   // modulo BitsPerByte
+  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1115,7 +1059,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
+  AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1127,7 +1071,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
+  AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1139,7 +1083,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerWord - 1   // modulo BitsPerWord
+  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1197,7 +1141,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTS[Value], Bit
+  BTS    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}
@@ -1260,7 +1204,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BT[Value], Bit
+  BT     [Value], Bit
   SETC   AL
 end;
 {$ENDIF PUREPASCAL}
@@ -1362,7 +1306,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTC[Value], Bit
+  BTC    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}
@@ -1411,8 +1355,7 @@ begin
       Dest := SetBit(Dest, TBitRange(I));
 end;
 
-procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray;
-  AllBits: Boolean);
+procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
@@ -1424,8 +1367,7 @@ begin
     B[I] := TestBit(Bits, TBitRange(I));
 end;
 
-procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray;
-  AllBits: Boolean);
+procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
@@ -1437,8 +1379,7 @@ begin
     B[I] := TestBit(Bits, TBitRange(I));
 end;
 
-procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray;
-  AllBits: Boolean);
+procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
@@ -1450,8 +1391,7 @@ begin
     B[I] := TestBit(Bits, TBitRange(I));
 end;
 
-procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray;
-  AllBits: Boolean);
+procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin

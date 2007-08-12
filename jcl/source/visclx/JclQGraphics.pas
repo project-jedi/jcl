@@ -76,8 +76,7 @@ type
   { stretch filter }
   TStretchFilter = (sfNearest, sfLinear, sfSpline);
 
-  TConversionKind = (ckRed, ckGreen, ckBlue, ckAlpha, ckUniformRGB,
-    ckWeightedRGB);
+  TConversionKind = (ckRed, ckGreen, ckBlue, ckAlpha, ckUniformRGB, ckWeightedRGB);
 
   { resampling support types }
   TResamplingFilter =
@@ -130,12 +129,10 @@ type
 
   TJclTransformation = class(TObject)
   public
-    function GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
+    function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
     procedure PrepareTransform; virtual; abstract;
-    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer);
-      virtual; abstract;
-    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer);
-      virtual; abstract;
+    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); virtual; abstract;
+    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); virtual; abstract;
   end;
 
   TJclLinearTransformation = class(TJclTransformation)
@@ -150,12 +147,10 @@ type
     F: Integer;
   public
     constructor Create; virtual;
-    function GetTransformedBounds(const Src: TRect): TRect; override;
+    function  GetTransformedBounds(const Src: TRect): TRect; override;
     procedure PrepareTransform; override;
-    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer);
-      override;
-    procedure Transform256(DstX, DstY: Integer;
-      out SrcX256, SrcY256: Integer); override;
+    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); override;
+    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); override;
     procedure Clear;
     procedure Rotate(Cx, Cy, Alpha: Extended); // degrees
     procedure Skew(Fx, Fy: Extended);
@@ -183,8 +178,7 @@ function IconToBitmap(Icon: HICON): HBITMAP;
 
 {$IFDEF MSWINDOWS}
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-  overload;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 {$ENDIF MSWINDOWS}
 
 
@@ -230,16 +224,16 @@ type
 
   PContributor = ^TContributor;
   TContributor = record
-    Weight: Integer; // Pixel Weight
-    Pixel: Integer;  // Source Pixel
+   Weight: Integer; // Pixel Weight
+   Pixel: Integer;  // Source Pixel
   end;
 
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
   TContributorEntry = record
-    N: Integer;
-    Contributors: TContributors;
+   N: Integer;
+   Contributors: TContributors;
   end;
 
   TContributorList = array of TContributorEntry;
@@ -486,7 +480,7 @@ end;
 
 const
   FilterList: array [TResamplingFilter] of TBitmapFilterFunction =
-    (
+   (
     BitmapBoxFilter,
     BitmapTriangleFilter,
     BitmapHermiteFilter,
@@ -494,7 +488,7 @@ const
     BitmapSplineFilter,
     BitmapLanczos3Filter,
     BitmapMitchellFilter
-    );
+   );
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
 var
@@ -554,8 +548,7 @@ end;
 // sufficient size. Source must contain valid data, Radius must not be 0 and
 // Filter must not be nil.
 
-procedure DoStretch(Filter: TBitmapFilterFunction; Radius: Single;
-  Source, Target: TBitmap);
+procedure DoStretch(Filter: TBitmapFilterFunction; Radius: Single; Source, Target: TBitmap);
 var
   ScaleX, ScaleY: Single; // Zoom scale factors
   I, J, K, N: Integer;    // Loop variables
@@ -948,7 +941,7 @@ begin
     Target.Width := NewWidth;
     Target.Height := NewHeight;
 
-    DoStretch(FilterList[Filter], Radius, Temp, Target);
+      DoStretch(FilterList[Filter], Radius, Temp, Target);
   finally
     Temp.Free;
   end;
@@ -1050,7 +1043,7 @@ begin
   RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
   RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
   AreaWidth := ARect.Right - ARect.Left;
-  AreaHeight := ARect.Bottom - ARect.Top;
+  AreaHeight :=  ARect.Bottom - ARect.Top;
   case ADirection of
     gdHorizontal:
       RectOffset := AreaWidth / ColorCount;
@@ -1065,11 +1058,9 @@ begin
       StartRGB[2] + Round((I + 1) * RGBKoef[2])));
     case ADirection of
       gdHorizontal:
-        SetRect(ColorRect, Round(RectOffset * I), 0,
-          Round(RectOffset * (I + 1)), AreaHeight);
+        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
       gdVertical:
-        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth,
-          Round(RectOffset * (I + 1)));
+        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
     end;
     OffsetRect(ColorRect, ARect.Left, ARect.Top);
     FillRect(DC, ColorRect, Brush);
@@ -1089,8 +1080,7 @@ begin
   Result := a1 * b2 - a2 * b1;
 end;
 
-function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended;
-  overload;
+function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended; overload;
 begin
   Result :=
     a1 * (b2 * c3 - b3 * c2) -
@@ -1116,17 +1106,17 @@ begin
   c2 := M.A[2, 1];
   c3 := M.A[2, 2];
 
-  M.A[0, 0] := _DET(b2, b3, c2, c3);
-  M.A[0, 1] := -_DET(a2, a3, c2, c3);
-  M.A[0, 2] := _DET(a2, a3, b2, b3);
+  M.A[0, 0]:=  _DET(b2, b3, c2, c3);
+  M.A[0, 1]:= -_DET(a2, a3, c2, c3);
+  M.A[0, 2]:=  _DET(a2, a3, b2, b3);
 
-  M.A[1, 0] := -_DET(b1, b3, c1, c3);
-  M.A[1, 1] := _DET(a1, a3, c1, c3);
-  M.A[1, 2] := -_DET(a1, a3, b1, b3);
+  M.A[1, 0]:= -_DET(b1, b3, c1, c3);
+  M.A[1, 1]:=  _DET(a1, a3, c1, c3);
+  M.A[1, 2]:= -_DET(a1, a3, b1, b3);
 
-  M.A[2, 0] := _DET(b1, b2, c1, c2);
-  M.A[2, 1] := -_DET(a1, a2, c1, c2);
-  M.A[2, 2] := _DET(a1, a2, b1, b2);
+  M.A[2, 0]:=  _DET(b1, b2, c1, c2);
+  M.A[2, 1]:= -_DET(a1, a2, c1, c2);
+  M.A[2, 2]:=  _DET(a1, a2, b1, b2);
 end;
 
 function Determinant(const M: TMatrix3d): Extended;
@@ -1196,8 +1186,7 @@ begin
   FMatrix := IdentityMatrix;
 end;
 
-function TJclLinearTransformation.GetTransformedBounds(
-  const Src: TRect): TRect;
+function TJclLinearTransformation.GetTransformedBounds(const Src: TRect): TRect;
 var
   V1, V2, V3, V4: TVector3d;
 begin
@@ -1222,9 +1211,9 @@ begin
   V3 := VectorTransform(Matrix, V3);
   V4 := VectorTransform(Matrix, V4);
 
-  Result.Left := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
-  Result.Right := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
-  Result.Top := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
+  Result.Left   := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
+  Result.Right  := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
+  Result.Top    := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
   Result.Bottom := Round(Max(Max(V1[1], V2[1]), Max(V3[1], V4[1])) + 0.5);
 end;
 

@@ -127,8 +127,7 @@ begin
   begin
     Idx := UnitVersioning.IndexOf('unit500.pas');
     if Idx <> -1 then
-      ShowMessage(Format('IndexOf %s = %d',
-        [UnitVersioning.Items[Idx].RCSfile, Idx]))
+      ShowMessage(Format('IndexOf %s = %d', [UnitVersioning.Items[Idx].RCSfile, Idx]))
     else
       ShowMessage('IndexOf failed');
   end;
@@ -164,8 +163,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TDummyUnitVersioningProvider.LoadModuleUnitVersioningInfo(
-  Instance: THandle);
+procedure TDummyUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
 begin
   if (Instance = HInstance) and not Assigned(FUV) then
   begin
@@ -180,8 +178,7 @@ begin
   end;
 end;
 
-procedure TfrmUnitVersioningTestMain.btnTestDummyProviderClick(
-  Sender: TObject);
+procedure TfrmUnitVersioningTestMain.btnTestDummyProviderClick(Sender: TObject);
 var
   UnitVersioning: TUnitVersioning;
   Idx: Integer;
@@ -191,15 +188,13 @@ begin
   UnitVersioning.LoadModuleUnitVersioningInfo(HInstance);
   Idx := UnitVersioning.IndexOf('DummyUnit.pas');
   if Idx <> -1 then
-    ShowMessage(Format('IndexOf %s=%d Revision=%s',
-      [UnitVersioning.Items[Idx].RCSfile,
+    ShowMessage(Format('IndexOf %s=%d Revision=%s', [UnitVersioning.Items[Idx].RCSfile,
       Idx, UnitVersioning.Items[Idx].Revision]))
   else
     ShowMessage('DummyProvider Test failed');
 end;
 
-procedure TfrmUnitVersioningTestMain.btnTestGetLocationInfoStrClick(
-  Sender: TObject);
+procedure TfrmUnitVersioningTestMain.btnTestGetLocationInfoStrClick(Sender: TObject);
 var
   S: string;
 begin
@@ -218,16 +213,14 @@ begin
   UnitVersioning := GetUnitVersioning;
   UnitVersioning.RegisterProvider(TJclDefaultUnitVersioningProvider);
   for I := 0 to Pred(UnitVersioning.ModuleCount) do
-    UnitVersioning.LoadModuleUnitVersioningInfo(
-      UnitVersioning.Modules[I].Instance);
+    UnitVersioning.LoadModuleUnitVersioningInfo(UnitVersioning.Modules[I].Instance);
   tv.Items.BeginUpdate;
   try
     tv.Items.Clear;
     for I := 0 to Pred(UnitVersioning.ModuleCount) do
     begin
       tnModule := tv.Items.Add(nil, Format('%s [%d units]',
-        [GetModulePath(UnitVersioning.Modules[I].Instance),
-        UnitVersioning.Modules[I].Count]));
+        [GetModulePath(UnitVersioning.Modules[I].Instance), UnitVersioning.Modules[I].Count]));
       for J := 0 to Pred(UnitVersioning.Modules[I].Count) do
         with UnitVersioning.Modules[I][J] do
         begin
@@ -235,8 +228,7 @@ begin
           if LongFileName <> '' then
             LongFileName := PathAddSeparator(LongFileName);
           LongFileName := LongFileName + RCSfile;
-          tv.Items.AddChild(tnModule, Format('%s  %s  %s',
-            [LongFileName, Revision, Date]));
+          tv.Items.AddChild(tnModule, Format('%s  %s  %s', [LongFileName, Revision, Date]));
         end;
     end;
   finally
@@ -282,8 +274,7 @@ begin
           UnitList.Add(UnitVersionInfo);
         end;
         if not InsertUnitVersioningSection(TestDLLFileName, UnitList) then
-          ShowMessage(Format(
-            'Inserting UnitVersion information section into %s failed',
+          ShowMessage(Format('Inserting UnitVersion information section into %s failed',
             [TestDLLFileName]));
       finally
         UnitList.Free;

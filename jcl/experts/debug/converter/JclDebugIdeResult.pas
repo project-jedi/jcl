@@ -44,8 +44,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     property Settings: TJclOtaSettings read FSettings;
   public
-    constructor Create(AOwner: TComponent; ASettings: TJclOTASettings);
-      reintroduce;
+    constructor Create(AOwner: TComponent; ASettings: TJclOTASettings); reintroduce;
   end;
 
 implementation
@@ -90,8 +89,7 @@ begin
       begin
         ColWidths[0] := Max(ColWidths[0], Length(Trim(Items[R].Caption)));
         for C := 0 to Items[R].SubItems.Count - 1 do
-          ColWidths[C + 1] :=
-            Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
+          ColWidths[C + 1] := Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
       end;
     Strings.BeginUpdate;
     try
@@ -109,13 +107,13 @@ begin
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
-          with Items[R] do
-          begin
-            S := MakeCellStr(Caption, 0);
-            for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-              S := S + MakeCellStr(SubItems[C], C + 1);
-            AddLine;
-          end;
+        with Items[R] do
+        begin
+          S := MakeCellStr(Caption, 0);
+          for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
+            S := S + MakeCellStr(SubItems[C], C + 1);
+          AddLine;
+        end;
     finally
       Strings.EndUpdate;
     end;
@@ -142,8 +140,7 @@ begin
   OkBtn.Left := ClientWidth div 2 - OkBtn.Width div 2;
 end;
 
-constructor TJclDebugResultForm.Create(AOwner: TComponent;
-  ASettings: TJclOTASettings);
+constructor TJclDebugResultForm.Create(AOwner: TComponent; ASettings: TJclOTASettings);
 begin
   inherited Create(AOwner);
   FSettings := ASettings;
@@ -157,8 +154,7 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else
-  if Assigned(Application.MainForm) then
+  else if Assigned (Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -169,14 +165,13 @@ var
   Index: Integer;
 begin
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-    Settings.LoadInteger(JclTop, Top),
-    Settings.LoadInteger(JclWidth, Width),
-    Settings.LoadInteger(JclHeight, Height));
+            Settings.LoadInteger(JclTop, Top),
+            Settings.LoadInteger(JclWidth, Width),
+            Settings.LoadInteger(JclHeight, Height));
 
   with ResultListView.Columns do
     for Index := 0 to Count - 1 do
-      Items[Index].Width :=
-        Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
+      Items[Index].Width := Settings.LoadInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 end;
 
 procedure TJclDebugResultForm.FormDestroy(Sender: TObject);
@@ -193,8 +188,7 @@ begin
       Settings.SaveInteger(Format(ColumnRegName, [Index]), Items[Index].Width);
 end;
 
-procedure TJclDebugResultForm.FormKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
+procedure TJclDebugResultForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = Ord('C')) then
   begin

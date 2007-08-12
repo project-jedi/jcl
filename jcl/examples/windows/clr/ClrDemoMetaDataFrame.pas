@@ -35,20 +35,20 @@ var
 begin
   with ACLR.Metadata do
   begin
-    edtVer.Text := Version;
+    edtVer.Text    := Version;
     edtVerStr.Text := VersionString;
 
     with lstStream.Items do
     begin
       Clear;
-      for I := 0 to StreamCount - 1 do
-        with Add do
-        begin
-          Caption := Streams[I].Name;
-          Data := Streams[I];
-          SubItems.Add('$' + IntToHex(Streams[I].Offset, 8));
-          SubItems.Add(IntToStr(Streams[I].Size));
-        end;
+      for I:=0 to StreamCount-1 do
+      with Add do
+      begin
+        Caption := Streams[I].Name;
+        Data    := Streams[I];
+        SubItems.Add('$' + IntToHex(Streams[I].Offset, 8));
+        SubItems.Add(IntToStr(Streams[I].Size));
+      end;
     end;
   end;
 end;

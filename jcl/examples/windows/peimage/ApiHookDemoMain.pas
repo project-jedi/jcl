@@ -55,8 +55,7 @@ begin
     @NewMessageBeep, @OldMessageBeep) then
     AddMsg('MessageBeep hooked ...')
   else
-    AddMsg(Format('MessageBeep hooking error - %s',
-      [SysErrorMessage(GetLastError)]));
+    AddMsg(Format('MessageBeep hooking error - %s', [SysErrorMessage(GetLastError)]));
 end;
 
 procedure TForm1.UnhookBtnClick(Sender: TObject);
@@ -65,9 +64,8 @@ begin
   begin
     @OldMessageBeep := nil;
     AddMsg('MessageBeep unhooked ...');
-  end
-  else
-    AddMsg('MessageBeep wasn''t hooked');
+  end else
+    AddMsg('MessageBeep wasn''t hooked')
 end;
 
 procedure TForm1.BeepBtnClick(Sender: TObject);

@@ -79,8 +79,7 @@ const
   RDFN_MaximumUsage = 'MaximumUsage';           // For Segment Only
   RDFN_OwnerLoopId = 'OwnerLoopId';             // ...
   RDFN_ParentLoopId = 'ParentLoopId';           // ...
-  RDFN_MaximumLoopRepeat = 'MaximumLoopRepeat';
- // For Loop however saved in segment that begins loop
+  RDFN_MaximumLoopRepeat = 'MaximumLoopRepeat'; // For Loop however saved in segment that begins loop
   RDFN_Type = 'Type';                           // For Element Only
   RDFN_MinimumLength = 'MinimumLength';         // ...
   RDFN_MaximumLength = 'MaximumLength';         // ...
@@ -142,8 +141,7 @@ type
     property Position: Integer read FPosition write FPosition;
     property Description: string read FDescription write FDescription;
     property Notes: string read FNotes write FNotes;
-    property RequirementDesignator: string
-      read FRequirementDesignator write FRequirementDesignator;
+    property RequirementDesignator: string read FRequirementDesignator write FRequirementDesignator;
     property ElementType: string read FType write FType;
     property MinimumLength: Integer read FMinimumLength write FMinimumLength;
     property MaximumLength: Integer read FMaximumLength write FMaximumLength;
@@ -160,16 +158,13 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     //
     function AddElement: Integer;
     function AppendElement(Element: TEDIElement): Integer;
     function InsertElement(InsertIndex: Integer): Integer; overload;
-    function InsertElement(InsertIndex: Integer;
-      Element: TEDIElement): Integer;
-      overload;
+    function InsertElement(InsertIndex: Integer; Element: TEDIElement): Integer; overload;
     procedure DeleteElement(Index: Integer); overload;
     procedure DeleteElement(Element: TEDIElement); overload;
     //
@@ -184,8 +179,7 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
     //
-    property Element[Index: Integer]: TEDIElement
-      read GetElement write SetElement; default;
+    property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
     property Elements: TEDIDataObjectList read FEDIDataObjects;
   published
     property SegmentId: string read FSegmentId write FSegmentId;
@@ -196,22 +190,19 @@ type
 
   TEDITransactionSetSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIInterchangeControlSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
@@ -229,8 +220,7 @@ type
     FParentLoopId: string;
     function GetReservedData: TStrings;
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     procedure AssembleReservedData(ReservedData: TStrings); virtual;
     procedure DisassembleReservedData(ReservedData: TStrings); virtual;
@@ -245,8 +235,7 @@ type
     property Description: string read FDescription write FDescription;
     property Notes: string read FNotes write FNotes;
     property Section: string read FSection write FSection;
-    property RequirementDesignator: string
-      read FRequirementDesignator write FRequirementDesignator;
+    property RequirementDesignator: string read FRequirementDesignator write FRequirementDesignator;
     property MaximumUsage: Integer read FMaximumUsage write FMaximumUsage;
     property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
     property ParentLoopId: string read FParentLoopId write FParentLoopId;
@@ -254,46 +243,39 @@ type
 
   TEDITransactionSetSegmentSpec = class(TEDISegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDITransactionSetSegmentSTSpec = class(TEDITransactionSetSegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     procedure AssembleReservedData(ReservedData: TStrings); override;
     procedure DisassembleReservedData(ReservedData: TStrings); override;
   end;
 
   TEDIFunctionalGroupSegmentSpec = class(TEDISegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegmentGSSpec = class(TEDIFunctionalGroupSegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     procedure AssembleReservedData(ReservedData: TStrings); override;
     procedure DisassembleReservedData(ReservedData: TStrings); override;
   end;
 
   TEDIInterchangeControlSegmentSpec = class(TEDISegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
-  TEDIInterchangeControlSegmentISASpec =
-    class(TEDIInterchangeControlSegmentSpec)
+  TEDIInterchangeControlSegmentISASpec = class(TEDIInterchangeControlSegmentSpec)
   public
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function Assemble: string; override;
     procedure Disassemble; override;
     procedure AssembleReservedData(ReservedData: TStrings); override;
@@ -307,26 +289,21 @@ type
     FSESegment: TEDISegment;
     function GetSegment(Index: Integer): TEDISegment;
     procedure SetSegment(Index: Integer; Segment: TEDISegment);
-    procedure SetSTSegment({$IFNDEF BCB6} const {$ENDIF} STSegment:
-      TEDISegment);
-    procedure SetSESegment({$IFNDEF BCB6} const {$ENDIF} SESegment:
-      TEDISegment);
+    procedure SetSTSegment({$IFNDEF BCB6} const {$ENDIF} STSegment: TEDISegment);
+    procedure SetSESegment({$IFNDEF BCB6} const {$ENDIF} SESegment: TEDISegment);
   protected
     procedure InternalCreateHeaderTrailerSegments; virtual;
     function InternalCreateSegment: TEDISegment; virtual;
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject; SegmentCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; SegmentCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddSegment: Integer;
     function AppendSegment(Segment: TEDISegment): Integer;
     function InsertSegment(InsertIndex: Integer): Integer; overload;
-    function InsertSegment(InsertIndex: Integer;
-      Segment: TEDISegment): Integer;
-      overload;
+    function InsertSegment(InsertIndex: Integer; Segment: TEDISegment): Integer; overload;
     procedure DeleteSegment(Index: Integer); overload;
     procedure DeleteSegment(Segment: TEDISegment); overload;
 
@@ -341,8 +318,7 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
 
-    property Segment[Index: Integer]: TEDISegment
-      read GetSegment write SetSegment; default;
+    property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
     property Segments: TEDIDataObjectList read FEDIDataObjects;
   published
     property SegmentST: TEDISegment read FSTSegment write SetSTSegment;
@@ -363,8 +339,7 @@ type
     procedure ValidateSegmentIndexPositions;
   published
     property Id: string read FTransactionSetId write FTransactionSetId;
-    property TransactionSetId: string read FTransactionSetId
-      write FTransactionSetId;
+    property TransactionSetId: string read FTransactionSetId write FTransactionSetId;
     property TSDescription: string read FTSDescription write FTSDescription;
   end;
 
@@ -384,10 +359,8 @@ type
     //
     //  ToDo:  More procedures and functions to manage internal structures
     //
-    function FindLoop(LoopId: string;
-      var StartIndex: Integer): TEDITransactionSetLoop;
-    function FindSegment(SegmentId: string;
-      var StartIndex: Integer): TEDISegment; overload;
+    function FindLoop(LoopId: string; var StartIndex: Integer): TEDITransactionSetLoop;
+    function FindSegment(SegmentId: string; var StartIndex: Integer): TEDISegment; overload;
     function FindSegment(SegmentId: string; var StartIndex: Integer;
       ElementConditions: TStrings): TEDISegment; overload;
     //
@@ -397,8 +370,7 @@ type
   published
     property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
     property ParentLoopId: string read FParentLoopId write FParentLoopId;
-    property ParentTransactionSet: TEDITransactionSet
-      read FParentTransactionSet
+    property ParentTransactionSet: TEDITransactionSet read FParentTransactionSet
       write FParentTransactionSet;
   end;
 
@@ -414,10 +386,8 @@ type
     // References
     FEDITransactionSet: TEDITransactionSet;
     FEDITransactionSetSpec: TEDITransactionSetSpec;
-    function ValidateSegSpecIndex(DataSegmentId: string;
-      SpecStartIndex: Integer): Integer;
-    function AdvanceSegSpecIndex(DataIndex, SpecStartIndex,
-      SpecEndIndex: Integer): Integer;
+    function ValidateSegSpecIndex(DataSegmentId: string; SpecStartIndex: Integer): Integer;
+    function AdvanceSegSpecIndex(DataIndex, SpecStartIndex, SpecEndIndex: Integer): Integer;
     procedure AddLoopToDoc(StackRecord: TEDILoopStackRecord;
       SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
     procedure SetSpecificationPointers(DataSegment, SpecSegment: TEDISegment);
@@ -428,8 +398,7 @@ type
       var DataIndex, SpecIndex: Integer;
       var ErrorOccured: Boolean); virtual;
   public
-    constructor Create(Parent: TEDIDataObject;
-      EDITransactionSet: TEDITransactionSet;
+    constructor Create(Parent: TEDIDataObject; EDITransactionSet: TEDITransactionSet;
       EDITransactionSetSpec: TEDITransactionSetSpec); reintroduce;
     destructor Destroy; override;
     //
@@ -437,8 +406,7 @@ type
     //
     procedure FormatDocument; virtual;
   published
-    property EDITSDOptions: TEDITransactionSetDocumentOptions
-      read FEDITSDOptions
+    property EDITSDOptions: TEDITransactionSetDocumentOptions read FEDITSDOptions
       write FEDITSDOptions;
     property ErrorOccured: Boolean read FErrorOccured;
   end;
@@ -451,8 +419,7 @@ type
     FGSSegment: TEDISegment;
     FGESegment: TEDISegment;
     function GetTransactionSet(Index: Integer): TEDITransactionSet;
-    procedure SetTransactionSet(Index: Integer;
-      TransactionSet: TEDITransactionSet);
+    procedure SetTransactionSet(Index: Integer; TransactionSet: TEDITransactionSet);
     procedure SetGSSegment(const GSSegment: TEDISegment);
     procedure SetGESegment(const GESegment: TEDISegment);
   protected
@@ -461,8 +428,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject;
-      TransactionSetCount: Integer = 0); reintroduce;
+    constructor Create(Parent: TEDIDataObject; TransactionSetCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddTransactionSet: Integer;
@@ -471,14 +437,11 @@ type
     function InsertTransactionSet(InsertIndex: Integer;
       TransactionSet: TEDITransactionSet): Integer; overload;
     procedure DeleteTransactionSet(Index: Integer); overload;
-    procedure DeleteTransactionSet(TransactionSet: TEDITransactionSet);
-      overload;
+    procedure DeleteTransactionSet(TransactionSet: TEDITransactionSet); overload;
 
     function AddTransactionSets(Count: Integer): Integer;
-    function AppendTransactionSets(TransactionSetArray:
-      TEDITransactionSetArray): Integer;
-    function InsertTransactionSets(InsertIndex, Count: Integer): Integer;
-      overload;
+    function AppendTransactionSets(TransactionSetArray: TEDITransactionSetArray): Integer;
+    function InsertTransactionSets(InsertIndex, Count: Integer): Integer; overload;
     function InsertTransactionSets(InsertIndex: Integer;
       TransactionSetArray: TEDITransactionSetArray): Integer; overload;
     procedure DeleteTransactionSets; overload;
@@ -487,8 +450,7 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
 
-    property TransactionSet[Index: Integer]: TEDITransactionSet
-      read GetTransactionSet
+    property TransactionSet[Index: Integer]: TEDITransactionSet read GetTransactionSet
       write SetTransactionSet; default;
     property TransactionSets: TEDIDataObjectList read FEDIDataObjects;
   published
@@ -509,16 +471,13 @@ type
   public
     procedure InternalCreateHeaderTrailerSegments; override;
     function InternalCreateTransactionSet: TEDITransactionSet; override;
-    function FindTransactionSetSpec(TransactionSetId: string):
-      TEDITransactionSetSpec;
+    function FindTransactionSetSpec(TransactionSetId: string): TEDITransactionSetSpec;
   published
     property Id: string read FFunctionalGroupId write FFunctionalGroupId;
-    property FunctionalGroupId: string
-      read FFunctionalGroupId write FFunctionalGroupId;
+    property FunctionalGroupId: string read FFunctionalGroupId write FFunctionalGroupId;
     property FGDescription: string read FFGDescription write FFGDescription;
     property AgencyCodeId: string read FAgencyCodeId write FAgencyCodeId;
-    property VersionReleaseId: string read FVersionReleaseId
-      write FVersionReleaseId;
+    property VersionReleaseId: string read FVersionReleaseId write FVersionReleaseId;
   end;
 
   //  EDI Interchange Control
@@ -528,8 +487,7 @@ type
     FIEASegment: TEDISegment;
     FTA1Segments: TEDIObjectList;
     function GetFunctionalGroup(Index: Integer): TEDIFunctionalGroup;
-    procedure SetFunctionalGroup(Index: Integer;
-      FunctionalGroup: TEDIFunctionalGroup);
+    procedure SetFunctionalGroup(Index: Integer; FunctionalGroup: TEDIFunctionalGroup);
     procedure SetISASegment(const ISASegment: TEDISegment);
     procedure SetIEASegment(const IEASegment: TEDISegment);
   protected
@@ -538,25 +496,20 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject;
-      FunctionalGroupCount: Integer = 0); reintroduce;
+    constructor Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddFunctionalGroup: Integer;
-    function AppendFunctionalGroup(FunctionalGroup:
-      TEDIFunctionalGroup): Integer;
+    function AppendFunctionalGroup(FunctionalGroup: TEDIFunctionalGroup): Integer;
     function InsertFunctionalGroup(InsertIndex: Integer): Integer; overload;
     function InsertFunctionalGroup(InsertIndex: Integer;
       FunctionalGroup: TEDIFunctionalGroup): Integer; overload;
     procedure DeleteFunctionalGroup(Index: Integer); overload;
-    procedure DeleteFunctionalGroup(FunctionalGroup: TEDIFunctionalGroup);
-      overload;
+    procedure DeleteFunctionalGroup(FunctionalGroup: TEDIFunctionalGroup); overload;
 
     function AddFunctionalGroups(Count: Integer): Integer;
-    function AppendFunctionalGroups(FunctionalGroupArray:
-      TEDIFunctionalGroupArray): Integer;
-    function InsertFunctionalGroups(InsertIndex, Count: Integer): Integer;
-      overload;
+    function AppendFunctionalGroups(FunctionalGroupArray: TEDIFunctionalGroupArray): Integer;
+    function InsertFunctionalGroups(InsertIndex, Count: Integer): Integer; overload;
     function InsertFunctionalGroups(InsertIndex: Integer;
       FunctionalGroupArray: TEDIFunctionalGroupArray): Integer; overload;
     procedure DeleteFunctionalGroups; overload;
@@ -565,8 +518,7 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
 
-    property FunctionalGroup[Index: Integer]: TEDIFunctionalGroup
-      read GetFunctionalGroup
+    property FunctionalGroup[Index: Integer]: TEDIFunctionalGroup read GetFunctionalGroup
       write SetFunctionalGroup; default;
     property FunctionalGroups: TEDIDataObjectList read FEDIDataObjects;
   published
@@ -589,8 +541,7 @@ type
     function InternalCreateFunctionalGroup: TEDIFunctionalGroup; override;
     function FindFunctionalGroupSpec(FunctionalGroupId, AgencyCodeId,
       VersionReleaseId: string): TEDIFunctionalGroupSpec;
-    function FindTransactionSetSpec(FunctionalGroupId, AgencyCodeId,
-      VersionReleaseId,
+    function FindTransactionSetSpec(FunctionalGroupId, AgencyCodeId, VersionReleaseId,
       TransactionSetId: string): TEDITransactionSetSpec;
   published
     property StandardId: string read FStandardId write FStandardId;
@@ -599,8 +550,7 @@ type
   end;
 
   //  EDI File
-  TEDIFileOptions = set of
-    (foVariableDelimiterDetection, foUseAltDelimiterDetection, foRemoveCrLf,
+  TEDIFileOptions = set of (foVariableDelimiterDetection, foUseAltDelimiterDetection, foRemoveCrLf,
     foRemoveCr, foRemoveLf, foIgnoreGarbageAtEndOfFile);
 
   TEDIFile = class(TEDIDataObjectGroup)
@@ -609,8 +559,7 @@ type
     FFileName: string;
     FEDIFileOptions: TEDIFileOptions;
     function GetInterchangeControl(Index: Integer): TEDIInterchangeControl;
-    procedure SetInterchangeControl(Index: Integer;
-      Interchange: TEDIInterchangeControl);
+    procedure SetInterchangeControl(Index: Integer; Interchange: TEDIInterchangeControl);
     procedure InternalLoadFromFile;
   protected
     procedure InternalDelimitersDetection(StartPos: Integer); virtual;
@@ -619,8 +568,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0);
-      reintroduce;
+    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     procedure LoadFromFile(const FileName: string);
@@ -639,8 +587,7 @@ type
     function AddInterchanges(Count: Integer): Integer;
     function AppendInterchanges(
       InterchangeControlArray: TEDIInterchangeControlArray): Integer;
-    function InsertInterchanges(InsertIndex, Count: Integer): Integer;
-      overload;
+    function InsertInterchanges(InsertIndex, Count: Integer): Integer; overload;
     function InsertInterchanges(InsertIndex: Integer;
       InterchangeControlArray: TEDIInterchangeControlArray): Integer; overload;
     procedure DeleteInterchanges; overload;
@@ -649,15 +596,13 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
 
-    property Interchange[Index: Integer]: TEDIInterchangeControl
-      read GetInterchangeControl
+    property Interchange[Index: Integer]: TEDIInterchangeControl read GetInterchangeControl
       write SetInterchangeControl; default;
     property Interchanges: TEDIDataObjectList read FEDIDataObjects;
   published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
-    property Options: TEDIFileOptions read FEDIFileOptions
-      write FEDIFileOptions;
+    property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
     property InterchangeControlCount: Integer read GetCount;
   end;
 
@@ -666,19 +611,14 @@ type
   //  EDI File Specification
   TEDIFileSpec = class(TEDIFile)
   public
-    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0);
-      reintroduce;
-    function FindTransactionSetSpec(StandardId, VersionId,
-      FunctionalGroupId, AgencyCodeId,
+    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0); reintroduce;
+    function FindTransactionSetSpec(StandardId, VersionId, FunctionalGroupId, AgencyCodeId,
       VersionReleaseId, TransactionSetId: string): TEDITransactionSetSpec;
-    function FindFunctionalGroupSpec(StandardId, VersionId,
-      FunctionalGroupId, AgencyCodeId,
+    function FindFunctionalGroupSpec(StandardId, VersionId, FunctionalGroupId, AgencyCodeId,
       VersionReleaseId: string): TEDIFunctionalGroupSpec;
-    function FindInterchangeControlSpec(StandardId, VersionId: string):
-      TEDIInterchangeControlSpec;
+    function FindInterchangeControlSpec(StandardId, VersionId: string): TEDIInterchangeControlSpec;
     procedure InternalDelimitersDetection(StartPos: Integer); override;
-    function InternalCreateInterchangeControl: TEDIInterchangeControl;
-      override;
+    function InternalCreateInterchangeControl: TEDIInterchangeControl; override;
   end;
 
 {$IFNDEF EDI_WEAK_PACKAGE_UNITS}
@@ -878,8 +818,7 @@ begin
     I := AddElement;
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FEDIDataObjects[I].Data :=
-        Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
+      FEDIDataObjects[I].Data := Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
         (SearchResult - StartPos));
       FEDIDataObjects[I].Disassemble;
     end;
@@ -893,8 +832,7 @@ begin
     I := AddElement;
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FEDIDataObjects[I].Data :=
-        Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
+      FEDIDataObjects[I].Data := Copy(FData, ((StartPos + FDelimiters.EDLen) - 1),
         (SearchResult - StartPos));
       FEDIDataObjects[I].Disassemble;
     end;
@@ -913,14 +851,12 @@ begin
   Result := InsertEDIDataObject(InsertIndex);
 end;
 
-function TEDISegment.InsertElement(InsertIndex: Integer;
-  Element: TEDIElement): Integer;
+function TEDISegment.InsertElement(InsertIndex: Integer; Element: TEDIElement): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex, Element);
 end;
 
-function TEDISegment.InsertElements(InsertIndex: Integer;
-  ElementArray: TEDIElementArray): Integer;
+function TEDISegment.InsertElements(InsertIndex: Integer; ElementArray: TEDIElementArray): Integer;
 {$IFDEF CLR}
 var
   HelpArray: TEDIDataObjectArray;
@@ -933,8 +869,7 @@ begin
     HelpArray[I] := TEDIDataObject(ElementArray[I]);
   Result := InsertEDIDataObjects(InsertIndex, HelpArray);
   {$ELSE}
-  Result := InsertEDIDataObjects(InsertIndex,
-    TEDIDataObjectArray(ElementArray));
+  Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(ElementArray));
   {$ENDIF CLR}
 end;
 
@@ -956,8 +891,7 @@ begin
         Exit;
       end;
       // Get the delimiters from the functional group
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIFunctionalGroup) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIFunctionalGroup) then
       begin
         if Assigned(Parent.Parent.Delimiters) then
         begin
@@ -965,8 +899,7 @@ begin
           Exit;
         end;
         // Get the delimiters from the interchange control header
-        if Assigned(Parent.Parent.Parent) and
-          (Parent.Parent.Parent is TEDIInterchangeControl) then
+        if Assigned(Parent.Parent.Parent) and (Parent.Parent.Parent is TEDIInterchangeControl) then
           Result := Parent.Parent.Parent.Delimiters;
       end;
     end;
@@ -989,8 +922,7 @@ end;
 
 //=== { TEDITransactionSetSegment } ==========================================
 
-constructor TEDITransactionSetSegment.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDITransactionSetSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDITransactionSet) then
@@ -1004,8 +936,7 @@ end;
 
 //=== { TEDIFunctionalGroupSegment } =========================================
 
-constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
@@ -1026,24 +957,21 @@ begin
         Exit;
       end;
       // Get the delimiters from the interchange control
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIInterchangeControl) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
         Result := Parent.Parent.Delimiters;
     end;
 end;
 
 //=== {  TEDIInterchangeControlSegment } =====================================
 
-constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
     FParent := Parent;
 end;
 
-function TEDIInterchangeControlSegment.InternalAssignDelimiters:
-TEDIDelimiters;
+function TEDIInterchangeControlSegment.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
   // Attempt to assign the delimiters
@@ -1055,8 +983,7 @@ end;
 
 //=== { TEDITransactionSet } =================================================
 
-constructor TEDITransactionSet.Create(Parent: TEDIDataObject;
-  SegmentCount: Integer);
+constructor TEDITransactionSet.Create(Parent: TEDIDataObject; SegmentCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
     inherited Create(Parent, SegmentCount)
@@ -1088,8 +1015,7 @@ begin
   Result := AppendEDIDataObject(Segment);
 end;
 
-function TEDITransactionSet.AppendSegments(SegmentArray:
-  TEDISegmentArray): Integer;
+function TEDITransactionSet.AppendSegments(SegmentArray: TEDISegmentArray): Integer;
 {$IFDEF CLR}
 var
   HelpArray: TEDIDataObjectArray;
@@ -1238,14 +1164,12 @@ begin
   Result := InsertEDIDataObject(InsertIndex);
 end;
 
-function TEDITransactionSet.InsertSegment(InsertIndex: Integer;
-  Segment: TEDISegment): Integer;
+function TEDITransactionSet.InsertSegment(InsertIndex: Integer; Segment: TEDISegment): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex, Segment);
 end;
 
-function TEDITransactionSet.InsertSegments(InsertIndex, Count:
-  Integer): Integer;
+function TEDITransactionSet.InsertSegments(InsertIndex, Count: Integer): Integer;
 begin
   Result := InsertEDIDataObjects(InsertIndex, Count);
 end;
@@ -1264,8 +1188,7 @@ begin
     HelpArray[I] := TEDIDataObject(SegmentArray[I]);
   Result := InsertEDIDataObjects(InsertIndex, HelpArray);
   {$ELSE}
-  Result := InsertEDIDataObjects(InsertIndex,
-    TEDIDataObjectArray(SegmentArray));
+  Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(SegmentArray));
   {$ENDIF CLR}
 end;
 
@@ -1280,8 +1203,7 @@ begin
         Result := Parent.Delimiters;
         Exit;
       end;
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIInterchangeControl) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
         Result := Parent.Parent.Delimiters;
     end;
 end;
@@ -1302,8 +1224,7 @@ begin
   SetEDIDataObject(Index, Segment);
 end;
 
-procedure TEDITransactionSet.SetSESegment({$IFNDEF BCB6}
-  const {$ENDIF} SESegment: TEDISegment);
+procedure TEDITransactionSet.SetSESegment({$IFNDEF BCB6} const {$ENDIF} SESegment: TEDISegment);
 begin
   FreeAndNil(FSESegment);
   FSESegment := SESegment;
@@ -1311,8 +1232,7 @@ begin
     FSESegment.Parent := Self;
 end;
 
-procedure TEDITransactionSet.SetSTSegment({$IFNDEF BCB6}
-  const {$ENDIF} STSegment: TEDISegment);
+procedure TEDITransactionSet.SetSTSegment({$IFNDEF BCB6} const {$ENDIF} STSegment: TEDISegment);
 begin
   FreeAndNil(FSTSegment);
   FSTSegment := STSegment;
@@ -1327,8 +1247,7 @@ end;
 
 //=== { TEDIFunctionalGroup } ================================================
 
-constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject;
-  TransactionSetCount: Integer);
+constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject; TransactionSetCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
     inherited Create(Parent, TransactionSetCount)
@@ -1355,8 +1274,7 @@ begin
   Result := AddEDIDataObjects(Count);
 end;
 
-function TEDIFunctionalGroup.AppendTransactionSet(TransactionSet:
-  TEDITransactionSet): Integer;
+function TEDIFunctionalGroup.AppendTransactionSet(TransactionSet: TEDITransactionSet): Integer;
 begin
   Result := AppendEDIDataObject(TransactionSet);
 end;
@@ -1420,8 +1338,7 @@ begin
   DeleteEDIDataObject(Index);
 end;
 
-procedure TEDIFunctionalGroup.DeleteTransactionSet(TransactionSet:
-  TEDITransactionSet);
+procedure TEDIFunctionalGroup.DeleteTransactionSet(TransactionSet: TEDITransactionSet);
 begin
   DeleteEDIDataObject(TransactionSet);
 end;
@@ -1459,15 +1376,13 @@ begin
   // Find Functional Group Header Segment
   StartPos := 1;
   // Search for Functional Group Header
-  if FGHSegmentId + FDelimiters.ED =
-    Copy(FData, 1, Length(FGHSegmentId + FDelimiters.ED)) then
+  if FGHSegmentId + FDelimiters.ED = Copy(FData, 1, Length(FGHSegmentId + FDelimiters.ED)) then
   begin
     // Search for Functional Group Header Segment Terminator
     SearchResult := StrSearch(FDelimiters.SD, FData, 1);
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FGSSegment.Data := Copy(FData, 1,
-        (SearchResult + FDelimiters.SDLen) - 1);
+      FGSSegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
       FGSSegment.Disassemble;
     end
     else
@@ -1484,8 +1399,7 @@ begin
     raise EJclEDIError.CreateRes(@RsEDIError022);
     {$ENDIF CLR}
   // Search for Transaction Set Header
-  SearchResult := StrSearch(FDelimiters.SD + TSHSegmentId +
-    FDelimiters.ED, FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.SD + TSHSegmentId + FDelimiters.ED, FData, StartPos);
   if SearchResult <= 0 then
     {$IFDEF CLR}
     raise EJclEDIError.Create(RsEDIError027);
@@ -1498,21 +1412,18 @@ begin
   while SearchResult <> 0 do
   begin
     // Search for Transaction Set Trailer
-    SearchResult := StrSearch(FDelimiters.SD + TSTSegmentId +
-      FDelimiters.ED, FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.SD + TSTSegmentId + FDelimiters.ED, FData, StartPos);
     if SearchResult <> 0 then
     begin
       // Set the next start position
-      SearchResult := SearchResult + FDelimiters.SDLen;
- // Move past the delimiter
+      SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
       // Search for the end of Transaction Set Trailer
       SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
       if SearchResult <> 0 then
       begin
         I := AddTransactionSet;
         FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.SDLen));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
         FEDIDataObjects[I].Disassemble;
       end
       else
@@ -1533,7 +1444,7 @@ begin
     //
     // Verify the next record is a Transaction Set Header
     if (TSHSegmentId + FDelimiters.ED) <>
-      Copy(FData, StartPos, (Length(TSHSegmentId) + FDelimiters.EDLen)) then
+       Copy(FData, StartPos, (Length(TSHSegmentId) + FDelimiters.EDLen)) then
       Break;
   end;
   // Set the next start position
@@ -1543,12 +1454,10 @@ begin
     Copy(FData, StartPos, Length(FGTSegmentId + FDelimiters.ED)) then
   begin
     // Find Functional Group Trailer Segment Terminator
-    SearchResult := StrSearch(FDelimiters.SD, FData, StartPos +
-      FDelimiters.SDLen);
+    SearchResult := StrSearch(FDelimiters.SD, FData, StartPos + FDelimiters.SDLen);
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FGESegment.Data := Copy(FData, StartPos,
-        (SearchResult + FDelimiters.SDLen));
+      FGESegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
       FGESegment.Disassemble;
     end
     else
@@ -1568,14 +1477,12 @@ begin
   FState := ediDisassembled;
 end;
 
-function TEDIFunctionalGroup.GetTransactionSet(Index: Integer):
-TEDITransactionSet;
+function TEDIFunctionalGroup.GetTransactionSet(Index: Integer): TEDITransactionSet;
 begin
   Result := TEDITransactionSet(GetEDIDataObject(Index));
 end;
 
-function TEDIFunctionalGroup.InsertTransactionSet(InsertIndex:
-  Integer): Integer;
+function TEDIFunctionalGroup.InsertTransactionSet(InsertIndex: Integer): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex);
 end;
@@ -1600,13 +1507,11 @@ begin
     HelpArray[I] := TEDIDataObject(TransactionSetArray[I]);
   Result := InsertEDIDataObjects(InsertIndex, HelpArray);
   {$ELSE}
-  Result := InsertEDIDataObjects(InsertIndex,
-    TEDIDataObjectArray(TransactionSetArray));
+  Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(TransactionSetArray));
   {$ENDIF CLR}
 end;
 
-function TEDIFunctionalGroup.InsertTransactionSets(InsertIndex,
-  Count: Integer): Integer;
+function TEDIFunctionalGroup.InsertTransactionSets(InsertIndex, Count: Integer): Integer;
 begin
   Result := InsertEDIDataObjects(InsertIndex, Count);
 end;
@@ -1631,8 +1536,7 @@ begin
   FGESegment := TEDIFunctionalGroupSegment.Create(Self);
 end;
 
-procedure TEDIFunctionalGroup.SetTransactionSet(Index: Integer;
-  TransactionSet: TEDITransactionSet);
+procedure TEDIFunctionalGroup.SetTransactionSet(Index: Integer; TransactionSet: TEDITransactionSet);
 begin
   SetEDIDataObject(Index, TransactionSet);
 end;
@@ -1660,8 +1564,7 @@ end;
 
 //== { TEDIInterchangeControl } ==============================================
 
-constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject;
-  FunctionalGroupCount: Integer);
+constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIFile) then
     inherited Create(Parent, FunctionalGroupCount)
@@ -1788,14 +1691,12 @@ begin
 
   StartPos := 1;
   // Search for Interchange Control Header
-  if ICHSegmentId + FDelimiters.ED =
-    Copy(FData, 1, Length(ICHSegmentId + FDelimiters.ED)) then
+  if ICHSegmentId + FDelimiters.ED = Copy(FData, 1, Length(ICHSegmentId + FDelimiters.ED)) then
   begin
     SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FISASegment.Data :=
-        Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
+      FISASegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
       FISASegment.Disassemble;
     end
     else
@@ -1812,13 +1713,10 @@ begin
     raise EJclEDIError.CreateRes(@RsEDIError015);
     {$ENDIF CLR}
   // Search for Functional Group Header
-  SearchResult := StrSearch(FDelimiters.SD + FGHSegmentId +
-    FDelimiters.ED, FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.SD + FGHSegmentId + FDelimiters.ED, FData, StartPos);
   // Check for TA1 Segment
-  I := StrSearch(FDelimiters.SD + TA1SegmentId + FDelimiters.ED,
-    FData, StartPos);
-  if ((I < SearchResult) or ((I > SearchResult) and (SearchResult = 0))) and
-    (I <> 0) then
+  I := StrSearch(FDelimiters.SD + TA1SegmentId + FDelimiters.ED, FData, StartPos);
+  if ((I < SearchResult) or ((I > SearchResult) and (SearchResult = 0))) and (I <> 0) then
   begin
     ProcessTA1 := True;
     SearchResult := I;
@@ -1832,27 +1730,23 @@ begin
   // Set next start positon
   StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
   // Continue
-  while ((StartPos + Length(FGHSegmentId)) < Length(FData)) and
-    (SearchResult > 0) do
+  while ((StartPos + Length(FGHSegmentId)) < Length(FData)) and (SearchResult > 0) do
   begin
     if not ProcessTA1 then
     begin
       // Search for Functional Group Trailer
-      SearchResult := StrSearch(FDelimiters.SD + FGTSegmentId +
-        FDelimiters.ED, FData, StartPos);
+      SearchResult := StrSearch(FDelimiters.SD + FGTSegmentId + FDelimiters.ED, FData, StartPos);
       if SearchResult > 0 then
       begin
         // Set next start positon
-        SearchResult := SearchResult + FDelimiters.SDLen;
- // Move past the delimiter
+        SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
         // Search for end of Functional Group Trailer Segment Terminator
         SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
         if SearchResult > 0 then
         begin
           I := AddFunctionalGroup;
           FEDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) +
-            FDelimiters.SDLen));
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
           FEDIDataObjects[I].Disassemble;
         end
         else
@@ -1888,8 +1782,7 @@ begin
       //ShowMessage('"' + Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen)) + '"');
       TA1Segment := TEDIInterchangeControlSegment.Create(Self);
       FTA1Segments.Add(TA1Segment);
-      TA1Segment.Data := Copy(FData, StartPos,
-        ((SearchResult - StartPos) + FDelimiters.SDLen));
+      TA1Segment.Data := Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
       TA1Segment.Disassemble;
       // Set next start positon
       StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
@@ -1911,8 +1804,7 @@ begin
     SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
     if (SearchResult - StartPos) > 0 then // data exists
     begin
-      FIEASegment.Data := Copy(FData, StartPos,
-        (SearchResult + FDelimiters.SDLen));
+      FIEASegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
       FIEASegment.Disassemble;
     end
     else
@@ -1932,8 +1824,7 @@ begin
   FState := ediDisassembled;
 end;
 
-function TEDIInterchangeControl.GetFunctionalGroup(Index: Integer):
-TEDIFunctionalGroup;
+function TEDIInterchangeControl.GetFunctionalGroup(Index: Integer): TEDIFunctionalGroup;
 begin
   Result := TEDIFunctionalGroup(GetEDIDataObject(Index));
 end;
@@ -1944,14 +1835,12 @@ begin
   Result := InsertEDIDataObject(InsertIndex, FunctionalGroup);
 end;
 
-function TEDIInterchangeControl.InsertFunctionalGroup(
-  InsertIndex: Integer): Integer;
+function TEDIInterchangeControl.InsertFunctionalGroup(InsertIndex: Integer): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex);
 end;
 
-function TEDIInterchangeControl.InsertFunctionalGroups(
-  InsertIndex, Count: Integer): Integer;
+function TEDIInterchangeControl.InsertFunctionalGroups(InsertIndex, Count: Integer): Integer;
 begin
   Result := InsertEDIDataObjects(InsertIndex, Count);
 end;
@@ -1970,8 +1859,7 @@ begin
     HelpArray[I] := TEDIDataObject(FunctionalGroupArray[I]);
   Result := InsertEDIDataObjects(InsertIndex, HelpArray);
   {$ELSE}
-  Result := InsertEDIDataObjects(InsertIndex,
-    TEDIDataObjectArray(FunctionalGroupArray));
+  Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(FunctionalGroupArray));
   {$ENDIF CLR}
 end;
 
@@ -1981,8 +1869,7 @@ begin
   SetEDIDataObject(Index, FunctionalGroup);
 end;
 
-function TEDIInterchangeControl.InternalCreateFunctionalGroup:
-TEDIFunctionalGroup;
+function TEDIInterchangeControl.InternalCreateFunctionalGroup: TEDIFunctionalGroup;
 begin
   Result := TEDIFunctionalGroup.Create(Self);
 end;
@@ -2009,8 +1896,7 @@ begin
     FISASegment.Parent := Self;
 end;
 
-procedure TEDIInterchangeControl.DeleteFunctionalGroup(
-  FunctionalGroup: TEDIFunctionalGroup);
+procedure TEDIInterchangeControl.DeleteFunctionalGroup(FunctionalGroup: TEDIFunctionalGroup);
 begin
   DeleteEDIDataObject(FunctionalGroup);
 end;
@@ -2030,8 +1916,7 @@ end;
 constructor TEDIFile.Create(Parent: TEDIDataObject; InterchangeCount: Integer);
 begin
   inherited Create(nil, InterchangeCount);
-  FEDIFileOptions := [foVariableDelimiterDetection, foRemoveCrLf,
-    foRemoveCr, foRemoveLf];
+  FEDIFileOptions := [foVariableDelimiterDetection, foRemoveCrLf, foRemoveCr, foRemoveLf];
   FEDIDOT := ediFile;
 end;
 
@@ -2050,14 +1935,12 @@ begin
   Result := AddEDIDataObjects(Count);
 end;
 
-function TEDIFile.AppendInterchange(Interchange:
-  TEDIInterchangeControl): Integer;
+function TEDIFile.AppendInterchange(Interchange: TEDIInterchangeControl): Integer;
 begin
   Result := AppendEDIDataObject(Interchange);
 end;
 
-function TEDIFile.AppendInterchanges(InterchangeControlArray:
-  TEDIInterchangeControlArray): Integer;
+function TEDIFile.AppendInterchanges(InterchangeControlArray: TEDIInterchangeControlArray): Integer;
 {$IFDEF CLR}
 var
   HelpArray: TEDIDataObjectArray;
@@ -2133,8 +2016,7 @@ begin
     {$ENDIF OPTIMIZED_STRINGREPLACE}
   if foRemoveCr in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
-    FData := JclEDI.StringReplace(FData, AnsiCarriageReturn,
-      '', [rfReplaceAll]);
+    FData := JclEDI.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
     {$ELSE}
     FData := SysUtils.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
     {$ENDIF OPTIMIZED_STRINGREPLACE}
@@ -2149,7 +2031,7 @@ begin
   // Search for Interchange Control Header
   if ICHSegmentId = Copy(FData, StartPos, Length(ICHSegmentId)) then
   begin
-    if foVariableDelimiterDetection in FEDIFileOptions then
+    if foVariableDelimiterDetection in FEDIFileOptions then          
       if foUseAltDelimiterDetection in FEDIFileOptions then
         InternalAlternateDelimitersDetection(StartPos)
       else
@@ -2165,23 +2047,19 @@ begin
   while (StartPos + Length(ICHSegmentId)) < Length(FData) do
   begin
     // Search for Interchange Control Trailer
-    SearchResult := StrSearch(FDelimiters.SD + ICTSegmentId +
-      FDelimiters.ED, FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.SD + ICTSegmentId + FDelimiters.ED, FData, StartPos);
     if SearchResult > 0 then
     begin
-      SearchResult := SearchResult + FDelimiters.SDLen;
- // Move past the delimiter
+      SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
       // Search for the end of Interchange Control Trailer
       SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
       if SearchResult > 0 then
       begin
         I := AddInterchange;
         FEDIDataObjects[I].Delimiters :=
-          TEDIDelimiters.Create(FDelimiters.SD, FDelimiters.ED,
-          FDelimiters.SS);
+          TEDIDelimiters.Create(FDelimiters.SD, FDelimiters.ED, FDelimiters.SS);
         FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.SDLen));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
         FEDIDataObjects[I].Disassemble;
       end
       else
@@ -2225,8 +2103,7 @@ begin
   FState := ediDisassembled;
 end;
 
-function TEDIFile.GetInterchangeControl(Index: Integer):
-TEDIInterchangeControl;
+function TEDIFile.GetInterchangeControl(Index: Integer): TEDIInterchangeControl;
 begin
   Result := TEDIInterchangeControl(GetEDIDataObject(Index));
 end;
@@ -2261,8 +2138,7 @@ begin
     HelpArray[I] := TEDIDataObject(InterchangeControlArray[I]);
   Result := InsertEDIDataObjects(InsertIndex, HelpArray);
   {$ELSE}
-  Result := InsertEDIDataObjects(InsertIndex,
-    TEDIDataObjectArray(InterchangeControlArray));
+  Result := InsertEDIDataObjects(InsertIndex, TEDIDataObjectArray(InterchangeControlArray));
   {$ENDIF CLR}
 end;
 
@@ -2276,8 +2152,7 @@ begin
   FData := '';
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
       {$IFDEF CLR}
       SetLength(Buf, EDIFileStream.Size);
@@ -2318,8 +2193,7 @@ begin
   FFileName := FileName;
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmCreate or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
       {$IFDEF CLR}
       EDIFileStream.Write(BytesOf(FData), Length(FData));
@@ -2344,8 +2218,7 @@ var
 begin
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmCreate or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
       {$IFDEF CLR}
       EDIFileStream.Write(BytesOf(FData), Length(FData));
@@ -2364,8 +2237,7 @@ begin
     {$ENDIF CLR}
 end;
 
-procedure TEDIFile.SetInterchangeControl(Index: Integer;
-  Interchange: TEDIInterchangeControl);
+procedure TEDIFile.SetInterchangeControl(Index: Integer; Interchange: TEDIInterchangeControl);
 begin
   SetEDIDataObject(Index, Interchange);
 end;
@@ -2380,7 +2252,7 @@ begin
   begin
     SearchResult := StrSearch(FDelimiters.ED, FData, SearchResult);
     SearchResult := SearchResult + 1;
-  end;
+  end;                                                            
   FDelimiters.SS := Copy(FData, SearchResult, 1);
   if Copy(FData, SearchResult + 1, 2) = AnsiCrLf then
     FDelimiters.SD := Copy(FData, SearchResult + 1, 2)
@@ -2394,10 +2266,9 @@ var
 begin
   SearchResult := 1;
   FDelimiters.ED := Copy(FData, StartPos + Length(ICHSegmentId), 1);
-  SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData,
-    SearchResult);
+  SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData, SearchResult);
   if SearchResult = 0 then
-    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1);
+    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1); 
   if Copy(FData, SearchResult - 2, 2) = AnsiCrLf then
   begin
     FDelimiters.SS := Copy(FData, SearchResult - 3, 1);
@@ -2515,8 +2386,7 @@ end;
 
 //=== { TEDISegmentSpec } ====================================================
 
-constructor TEDISegmentSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDISegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   FReservedData := TStringList.Create;
@@ -2623,8 +2493,7 @@ end;
 
 //=== { TEDITransactionSetSegmentSpec } ======================================
 
-constructor TEDITransactionSetSegmentSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDITransactionSetSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDITransactionSet) then
@@ -2633,24 +2502,21 @@ begin
   FMaximumUsage := 1;
 end;
 
-function TEDITransactionSetSegmentSpec.InternalAssignDelimiters:
-TEDIDelimiters;
+function TEDITransactionSetSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := inherited InternalAssignDelimiters;
 end;
 
 //=== { TEDITransactionSetSegmentSTSpec } ====================================
 
-constructor TEDITransactionSetSegmentSTSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDITransactionSetSegmentSTSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   FSegmentId := TSHSegmentId;
   FPosition := 0;
 end;
 
-procedure TEDITransactionSetSegmentSTSpec.AssembleReservedData(
-  ReservedData: TStrings);
+procedure TEDITransactionSetSegmentSTSpec.AssembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDITransactionSetSpec;
 begin
@@ -2672,8 +2538,7 @@ begin
   inherited AssembleReservedData(ReservedData);
 end;
 
-procedure TEDITransactionSetSegmentSTSpec.DisassembleReservedData(
-  ReservedData: TStrings);
+procedure TEDITransactionSetSegmentSTSpec.DisassembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDITransactionSetSpec;
 begin
@@ -2692,8 +2557,7 @@ end;
 
 //=== { TEDIFunctionalGroupSegmentSpec } =====================================
 
-constructor TEDIFunctionalGroupSegmentSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDIFunctionalGroupSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
@@ -2702,8 +2566,7 @@ begin
   FMaximumUsage := 1;
 end;
 
-function TEDIFunctionalGroupSegmentSpec.InternalAssignDelimiters:
-TEDIDelimiters;
+function TEDIFunctionalGroupSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
   // Attempt to assign the delimiters
@@ -2717,24 +2580,21 @@ begin
         Exit;
       end;
       // Get the delimiters from the interchange control
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIInterchangeControl) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
         Result := Parent.Parent.Delimiters;
     end;
 end;
 
 //=== { TEDIFunctionalGroupSegmentGSSpec } ===================================
 
-constructor TEDIFunctionalGroupSegmentGSSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDIFunctionalGroupSegmentGSSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   FSegmentId := FGHSegmentId;
   FPosition := -1;
 end;
 
-procedure TEDIFunctionalGroupSegmentGSSpec.AssembleReservedData(
-  ReservedData: TStrings);
+procedure TEDIFunctionalGroupSegmentGSSpec.AssembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDIFunctionalGroupSpec;
 begin
@@ -2762,8 +2622,7 @@ begin
   inherited AssembleReservedData(ReservedData);
 end;
 
-procedure TEDIFunctionalGroupSegmentGSSpec.DisassembleReservedData(
-  ReservedData: TStrings);
+procedure TEDIFunctionalGroupSegmentGSSpec.DisassembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDIFunctionalGroupSpec;
 begin
@@ -2789,8 +2648,7 @@ end;
 
 //=== { TEDIInterchangeControlSegmentSpec } ==================================
 
-constructor TEDIInterchangeControlSegmentSpec.Create(Parent: TEDIDataObject;
-  ElementCount: Integer);
+constructor TEDIInterchangeControlSegmentSpec.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
@@ -2799,8 +2657,7 @@ begin
   FMaximumUsage := 1;
 end;
 
-function TEDIInterchangeControlSegmentSpec.InternalAssignDelimiters:
-TEDIDelimiters;
+function TEDIInterchangeControlSegmentSpec.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
   // Attempt to assign the delimiters
@@ -2825,12 +2682,10 @@ begin
   // Because the last element carries specification data and not the subelement separator
   // the subelement separator must be added as an additional element.
   Result := inherited Assemble;
-  Result := Copy(Result, 1, Length(Result) - 1) + FDelimiters.ED +
-    FDelimiters.SS + FDelimiters.SD;
+  Result := Copy(Result, 1, Length(Result)-1) + FDelimiters.ED + FDelimiters.SS + FDelimiters.SD;
 end;
 
-procedure TEDIInterchangeControlSegmentISASpec.AssembleReservedData(
-  ReservedData: TStrings);
+procedure TEDIInterchangeControlSegmentISASpec.AssembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDIInterchangeControlSpec;
 begin
@@ -2872,13 +2727,11 @@ begin
   end;
   SearchResult := StrSearch(FDelimiters.ED + FDelimiters.SS, FData, 1);
   if SearchResult <> 0 then
-    FData := StringReplace(FData, FDelimiters.ED + FDelimiters.SS,
-      '', [rfReplaceAll]);
+    FData := StringReplace(FData, FDelimiters.ED + FDelimiters.SS, '', [rfReplaceAll]);
   inherited Disassemble;
 end;
 
-procedure TEDIInterchangeControlSegmentISASpec.DisassembleReservedData(
-  ReservedData: TStrings);
+procedure TEDIInterchangeControlSegmentISASpec.DisassembleReservedData(ReservedData: TStrings);
 var
   Spec: TEDIInterchangeControlSpec;
 begin
@@ -2930,8 +2783,7 @@ begin
   FGESegment := TEDIFunctionalGroupSegmentSpec.Create(Self);
 end;
 
-function TEDIFunctionalGroupSpec.InternalCreateTransactionSet:
-TEDITransactionSet;
+function TEDIFunctionalGroupSpec.InternalCreateTransactionSet: TEDITransactionSet;
 begin
   Result := TEDITransactionSetSpec.Create(Self);
 end;
@@ -2962,28 +2814,24 @@ begin
   FIEASegment := TEDIInterchangeControlSegmentSpec.Create(Self);
 end;
 
-function TEDIInterchangeControlSpec.InternalCreateFunctionalGroup:
-TEDIFunctionalGroup;
+function TEDIInterchangeControlSpec.InternalCreateFunctionalGroup: TEDIFunctionalGroup;
 begin
   Result := TEDIFunctionalGroupSpec.Create(Self);
 end;
 
-function TEDIInterchangeControlSpec.FindTransactionSetSpec(
-  FunctionalGroupId, AgencyCodeId,
+function TEDIInterchangeControlSpec.FindTransactionSetSpec(FunctionalGroupId, AgencyCodeId,
   VersionReleaseId, TransactionSetId: string): TEDITransactionSetSpec;
 var
   EDIFunctionalGroupSpec: TEDIFunctionalGroupSpec;
 begin
   Result := nil;
-  EDIFunctionalGroupSpec :=
-    FindFunctionalGroupSpec(FunctionalGroupId, AgencyCodeId,
+  EDIFunctionalGroupSpec := FindFunctionalGroupSpec(FunctionalGroupId, AgencyCodeId,
     VersionReleaseId);
   if EDIFunctionalGroupSpec <> nil then
     Result := EDIFunctionalGroupSpec.FindTransactionSetSpec(TransactionSetId);
 end;
 
-function TEDIInterchangeControlSpec.FindFunctionalGroupSpec(
-  FunctionalGroupId, AgencyCodeId,
+function TEDIInterchangeControlSpec.FindFunctionalGroupSpec(FunctionalGroupId, AgencyCodeId,
   VersionReleaseId: string): TEDIFunctionalGroupSpec;
 var
   F: Integer;
@@ -3005,12 +2853,10 @@ end;
 
 //=== { TEDIFileSpec } =======================================================
 
-constructor TEDIFileSpec.Create(Parent: TEDIDataObject;
-  InterchangeCount: Integer);
+constructor TEDIFileSpec.Create(Parent: TEDIDataObject; InterchangeCount: Integer);
 begin
   inherited Create(Parent, InterchangeCount);
-  FEDIFileOptions := [foVariableDelimiterDetection,
-    foUseAltDelimiterDetection];
+  FEDIFileOptions := [foVariableDelimiterDetection, foUseAltDelimiterDetection];
 end;
 
 procedure TEDIFileSpec.InternalDelimitersDetection(StartPos: Integer);
@@ -3023,32 +2869,27 @@ begin
   Result := TEDIInterchangeControlSpec.Create(Self);
 end;
 
-function TEDIFileSpec.FindTransactionSetSpec(StandardId, VersionId,
-  FunctionalGroupId, AgencyCodeId,
+function TEDIFileSpec.FindTransactionSetSpec(StandardId, VersionId, FunctionalGroupId, AgencyCodeId,
   VersionReleaseId, TransactionSetId: string): TEDITransactionSetSpec;
 var
   EDIFunctionalGroupSpec: TEDIFunctionalGroupSpec;
 begin
   Result := nil;
-  EDIFunctionalGroupSpec :=
-    FindFunctionalGroupSpec(StandardId, VersionId, FunctionalGroupId,
+  EDIFunctionalGroupSpec := FindFunctionalGroupSpec(StandardId, VersionId, FunctionalGroupId,
     AgencyCodeId, VersionReleaseId);
   if EDIFunctionalGroupSpec <> nil then
     Result := EDIFunctionalGroupSpec.FindTransactionSetSpec(TransactionSetId);
 end;
 
-function TEDIFileSpec.FindFunctionalGroupSpec(StandardId,
-  VersionId, FunctionalGroupId,
+function TEDIFileSpec.FindFunctionalGroupSpec(StandardId, VersionId, FunctionalGroupId,
   AgencyCodeId, VersionReleaseId: string): TEDIFunctionalGroupSpec;
 var
   EDIInterchangeControlSpec: TEDIInterchangeControlSpec;
 begin
   Result := nil;
-  EDIInterchangeControlSpec :=
-    FindInterchangeControlSpec(StandardId, VersionId);
+  EDIInterchangeControlSpec := FindInterchangeControlSpec(StandardId, VersionId);
   if EDIInterchangeControlSpec <> nil then
-    Result := EDIInterchangeControlSpec.FindFunctionalGroupSpec(
-      FunctionalGroupId,
+    Result := EDIInterchangeControlSpec.FindFunctionalGroupSpec(FunctionalGroupId,
       AgencyCodeId, VersionReleaseId);
 end;
 
@@ -3061,10 +2902,9 @@ begin
   Result := nil;
   for I := 0 to GetCount - 1 do
   begin
-    EDIInterchangeControlSpec :=
-      TEDIInterchangeControlSpec(FEDIDataObjects[I]);
+    EDIInterchangeControlSpec := TEDIInterchangeControlSpec(FEDIDataObjects[I]);
     if (EDIInterchangeControlSpec.StandardId = StandardId) and
-      (EDIInterchangeControlSpec.VersionId = VersionId) then
+       (EDIInterchangeControlSpec.VersionId = VersionId) then
       Result := EDIInterchangeControlSpec;
   end;
 end;
@@ -3074,14 +2914,13 @@ end;
 constructor TEDITransactionSetLoop.Create(Parent: TEDIDataObject);
 begin
   inherited Create(Parent);
-  FCreateObjectType := ediLoop;
+  FCreateObjectType := ediLoop;  
   FGroupIsParent := False;
   if Assigned(Parent) and (Parent is TEDITransactionSet) then
     FParentTransactionSet := TEDITransactionSet(Parent)
   else
   if Assigned(Parent) and (Parent is TEDITransactionSetLoop) then
-    FParentTransactionSet :=
-      TEDITransactionSetLoop(Parent).ParentTransactionSet
+    FParentTransactionSet := TEDITransactionSetLoop(Parent).ParentTransactionSet
   else
     FParentTransactionSet := nil;
   FEDIDOT := ediLoop;
@@ -3094,8 +2933,7 @@ begin
   inherited Destroy;
 end;
 
-function TEDITransactionSetLoop.AddLoop(OwnerLoopId, ParentLoopId:
-  string): Integer;
+function TEDITransactionSetLoop.AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
 var
   Loop: TEDITransactionSetLoop;
 begin
@@ -3169,8 +3007,7 @@ begin
     StartIndex := J;
 end;
 
-function TEDITransactionSetLoop.FindSegment(SegmentId: string;
-  var StartIndex: Integer): TEDISegment;
+function TEDITransactionSetLoop.FindSegment(SegmentId: string; var StartIndex: Integer): TEDISegment;
 var
   I, J: Integer;
 begin
@@ -3194,8 +3031,7 @@ begin
     StartIndex := J;
 end;
 
-function TEDITransactionSetLoop.FindSegment(SegmentId: string;
-  var StartIndex: Integer;
+function TEDITransactionSetLoop.FindSegment(SegmentId: string; var StartIndex: Integer;
   ElementConditions: TStrings): TEDISegment;
 var
   I, TrueCount, ElementIndex: Integer;
@@ -3236,8 +3072,8 @@ begin
       TEDITransactionSetLoop(Result).ParentLoopId := ParentLoopId;
       TEDITransactionSetLoop(Result).Parent := Self;
     end;
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 
@@ -3279,50 +3115,34 @@ begin
   if doLinkSpecToDataObject in FEDITSDOptions then
   begin
     FEDITransactionSet.SpecPointer := FEDITransactionSetSpec;
-    FEDITransactionSet.SegmentST.SpecPointer :=
-      FEDITransactionSetSpec.SegmentST;
-    SetSpecificationPointers(FEDITransactionSet.SegmentST,
-      FEDITransactionSetSpec.SegmentST);
-    FEDITransactionSet.SegmentSE.SpecPointer :=
-      FEDITransactionSetSpec.SegmentSE;
-    SetSpecificationPointers(FEDITransactionSet.SegmentSE,
-      FEDITransactionSetSpec.SegmentSE);
+    FEDITransactionSet.SegmentST.SpecPointer := FEDITransactionSetSpec.SegmentST;
+    SetSpecificationPointers(FEDITransactionSet.SegmentST, FEDITransactionSetSpec.SegmentST);
+    FEDITransactionSet.SegmentSE.SpecPointer := FEDITransactionSetSpec.SegmentSE;
+    SetSpecificationPointers(FEDITransactionSet.SegmentSE, FEDITransactionSetSpec.SegmentSE);
     if FEDITransactionSet.Parent <> nil then
     begin
       EDIFunctionalGroup := TEDIFunctionalGroup(FEDITransactionSet.Parent);
-      EDIFunctionalGroupSpec :=
-        TEDIFunctionalGroupSpec(FEDITransactionSetSpec.Parent);
+      EDIFunctionalGroupSpec := TEDIFunctionalGroupSpec(FEDITransactionSetSpec.Parent);
       EDIFunctionalGroup.SpecPointer := EDIFunctionalGroupSpec;
-      EDIFunctionalGroup.SegmentGS.SpecPointer :=
-        EDIFunctionalGroupSpec.SegmentGS;
-      SetSpecificationPointers(EDIFunctionalGroup.SegmentGS,
-        EDIFunctionalGroupSpec.SegmentGS);
-      EDIFunctionalGroup.SegmentGE.SpecPointer :=
-        EDIFunctionalGroupSpec.SegmentGE;
-      SetSpecificationPointers(EDIFunctionalGroup.SegmentGE,
-        EDIFunctionalGroupSpec.SegmentGE);
+      EDIFunctionalGroup.SegmentGS.SpecPointer := EDIFunctionalGroupSpec.SegmentGS;
+      SetSpecificationPointers(EDIFunctionalGroup.SegmentGS, EDIFunctionalGroupSpec.SegmentGS);
+      EDIFunctionalGroup.SegmentGE.SpecPointer := EDIFunctionalGroupSpec.SegmentGE;
+      SetSpecificationPointers(EDIFunctionalGroup.SegmentGE, EDIFunctionalGroupSpec.SegmentGE);
       if EDIFunctionalGroup.Parent <> nil then
       begin
-        EDIInterchangeControl :=
-          TEDIInterchangeControl(EDIFunctionalGroup.Parent);
-        EDIInterchangeControlSpec :=
-          TEDIInterchangeControlSpec(EDIFunctionalGroupSpec.Parent);
+        EDIInterchangeControl := TEDIInterchangeControl(EDIFunctionalGroup.Parent);
+        EDIInterchangeControlSpec := TEDIInterchangeControlSpec(EDIFunctionalGroupSpec.Parent);
         EDIInterchangeControl.SpecPointer := EDIInterchangeControlSpec;
-        EDIInterchangeControl.SegmentISA.SpecPointer :=
-          EDIInterchangeControlSpec.SegmentISA;
-        SetSpecificationPointers(EDIInterchangeControl.SegmentISA,
-          EDIInterchangeControlSpec.SegmentISA);
-        EDIInterchangeControl.SegmentIEA.SpecPointer :=
-          EDIInterchangeControlSpec.SegmentIEA;
-        SetSpecificationPointers(EDIInterchangeControl.SegmentIEA,
-          EDIInterchangeControlSpec.SegmentIEA);
+        EDIInterchangeControl.SegmentISA.SpecPointer := EDIInterchangeControlSpec.SegmentISA;
+        SetSpecificationPointers(EDIInterchangeControl.SegmentISA, EDIInterchangeControlSpec.SegmentISA);
+        EDIInterchangeControl.SegmentIEA.SpecPointer := EDIInterchangeControlSpec.SegmentIEA;
+        SetSpecificationPointers(EDIInterchangeControl.SegmentIEA, EDIInterchangeControlSpec.SegmentIEA);
       end;
     end;
   end;
   // Initialize the stack
   FEDILoopStack.Flags := FEDILoopStack.Flags - [ediLoopRepeated];
-  LSR := FEDILoopStack.ValidateLoopStack(
-    FEDITransactionSet.Segment[I].SegmentID,
+  LSR := FEDILoopStack.ValidateLoopStack(FEDITransactionSet.Segment[I].SegmentID,
     NA_LoopId, NA_LoopId, 0, Self);
   //
   while (I <= FEDITransactionSet.SegmentCount - 1) and
@@ -3337,8 +3157,7 @@ begin
     if DataSegment.SegmentID = SpecSegment.SegmentID then
     begin
       // Retrieve the correct record to use from the stack
-      LSR := FEDILoopStack.ValidateLoopStack(SpecSegment.SegmentID,
-        SpecSegment.OwnerLoopId,
+      LSR := FEDILoopStack.ValidateLoopStack(SpecSegment.SegmentID, SpecSegment.OwnerLoopId,
         SpecSegment.ParentLoopId, J, LSR.EDIObject);
       //
       // Debug - Keep the following here in case someone wants to debug what happens to the stack.
@@ -3347,8 +3166,7 @@ begin
       //             FEDILoopStack.Debug);
       //
       // Do error checking and data validation in decendent class
-      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment,
-        I, J, FErrorOccured);
+      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment, I, J, FErrorOccured);
       if FErrorOccured then
         Exit;
       // Process Segment Id
@@ -3362,8 +3180,7 @@ begin
     else
     begin
       // Do error checking and data validation in decendent class
-      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment,
-        I, J, FErrorOccured);
+      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment, I, J, FErrorOccured);
       if FErrorOccured then
         Exit;
       //
@@ -3373,8 +3190,7 @@ begin
       //             FEDILoopStack.Debug);
       //
       // Move to the next specification segment
-      J := AdvanceSegSpecIndex(I, J, FEDITransactionSetSpec.SegmentCount - 1);
- //Inc(J);
+      J := AdvanceSegSpecIndex(I, J, FEDITransactionSetSpec.SegmentCount - 1); //Inc(J);
     end;
   end;
 end;
@@ -3387,8 +3203,7 @@ begin
   ErrorOccured := False;
 end;
 
-function TEDITransactionSetDocument.AdvanceSegSpecIndex(
-  DataIndex, SpecStartIndex,
+function TEDITransactionSetDocument.AdvanceSegSpecIndex(DataIndex, SpecStartIndex,
   SpecEndIndex: Integer): Integer;
 var
   DataSegment: TEDISegment;
@@ -3409,8 +3224,7 @@ begin
   end;
 end;
 
-procedure TEDITransactionSetDocument.SetSpecificationPointers(
-  DataSegment, SpecSegment: TEDISegment);
+procedure TEDITransactionSetDocument.SetSpecificationPointers(DataSegment, SpecSegment: TEDISegment);
 var
   I, J: Integer;
 begin
@@ -3425,7 +3239,7 @@ begin
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
       {$ENDIF CLR}
         [IntToStr(I), DataSegment.SegmentID,
-        IntToStr(DataSegment.GetIndexPositionFromParent)]);
+         IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Element[I];
   end;
 end;
@@ -3449,8 +3263,7 @@ begin
   end;
 end;
 
-procedure TEDITransactionSetDocument.AddLoopToDoc(StackRecord:
-  TEDILoopStackRecord;
+procedure TEDITransactionSetDocument.AddLoopToDoc(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
 var
   I: Integer;

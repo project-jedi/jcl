@@ -55,7 +55,7 @@ type
     le131, le132, le133, le134, le135, le136, le137, le138, le139, le140,
     le141, le142, le143, le144, le145, le146, le147, le148, le149, le150,
     le151, le152, le153, le154, le155, le156, le157, le158, le159, le160);
-
+    
   TLargeSet = set of TLargeEnum;
   TLargeSubEnum = le019 .. le150;
   TLargeSubSet = set of TLargeSubEnum;
@@ -167,33 +167,19 @@ begin
   Writer.Indent;
   try
     Writer.Writeln('StrToSet with string=''[le019..le023, le033, le045..le049]''');
-    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet,
-      '[le019..le023, le033, le045..le049]');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
-      ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
-      ''', with WantRanges=False');
+    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, '[le019..le023, le033, le045..le049]');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
     Writer.Writeln('');
     Writer.Writeln('StrToSet with string=''''');
     JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, '');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
-      ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
-      ''', with WantRanges=False');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
     Writer.Writeln('');
     Writer.Writeln('StrToSet with string=''le019    ..    le023,le033     , le045 ..           le049           ''');
-    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet,
-      'le019    ..    le023,le033     , le045 ..           le049           ');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
-      ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' +
-      JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
-      ''', with WantRanges=False');
+    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, 'le019    ..    le023,le033     , le045 ..           le049           ');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
     Writer.Writeln('');
   finally
     Writer.Outdent;
@@ -339,8 +325,7 @@ initialization
     'Third value', 'Fourth value', 'Fifth value']);
   MySubRange := JclGenerateSubRange(MyEnum, 'MySubRange', 1, 3);
   MySet := JclGenerateSetType(MyEnum, 'MySet');
-  MyCutLowerEnum := JclGenerateEnumTypeBasedOn('MyCutLower',
-    TypeInfo(TLargeEnum),
+  MyCutLowerEnum := JclGenerateEnumTypeBasedOn('MyCutLower', TypeInfo(TLargeEnum),
     PREFIX_CUT_LOWERCASE);
 
 end.

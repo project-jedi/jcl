@@ -57,10 +57,8 @@ type
     procedure UpdateMixerLine(MixerHandle: HMIXER; LineID: DWORD);
     procedure UpdateSelectedMixerInfo;
     procedure UpdateMixerSpeakerControls;
-    procedure WMMmMixmControlChange(var Message: TMessage);
-      message MM_MIXM_CONTROL_CHANGE;
-    procedure WMMmMixmLineChange(var Message: TMessage);
-      message MM_MIXM_LINE_CHANGE;
+    procedure WMMmMixmControlChange(var Message: TMessage); message MM_MIXM_CONTROL_CHANGE;
+    procedure WMMmMixmLineChange(var Message: TMessage); message MM_MIXM_LINE_CHANGE;
     function GetSelectedMixerTreeObject: TObject;
   public
     function ComponentTypeConstToString(ComponentType: DWORD): string;
@@ -101,106 +99,56 @@ end;
 
 procedure TMainForm.BuildTypesList;
 begin
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_UNDEFINED',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_UNDEFINED));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_DIGITAL',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_DIGITAL));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_LINE',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_LINE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_MONITOR',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_MONITOR));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_SPEAKERS',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_HEADPHONES',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_HEADPHONES));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_TELEPHONE',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_TELEPHONE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_WAVEIN',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_VOICEIN',
-    Pointer(MIXERLINE_COMPONENTTYPE_DST_VOICEIN));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_DIGITAL',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_DIGITAL));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_LINE',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_LINE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_ANALOG',
-    Pointer(MIXERLINE_COMPONENTTYPE_SRC_ANALOG));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_CUSTOM',
-    Pointer(MIXERCONTROL_CONTROLTYPE_CUSTOM));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BOOLEANMETER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_BOOLEANMETER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SIGNEDMETER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_SIGNEDMETER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PEAKMETER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_PEAKMETER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_UNSIGNEDMETER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_UNSIGNEDMETER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BOOLEAN',
-    Pointer(MIXERCONTROL_CONTROLTYPE_BOOLEAN));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_ONOFF',
-    Pointer(MIXERCONTROL_CONTROLTYPE_ONOFF));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MUTE',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MUTE));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MONO',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MONO));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_LOUDNESS',
-    Pointer(MIXERCONTROL_CONTROLTYPE_LOUDNESS));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_STEREOENH',
-    Pointer(MIXERCONTROL_CONTROLTYPE_STEREOENH));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BUTTON',
-    Pointer(MIXERCONTROL_CONTROLTYPE_BUTTON));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_DECIBELS',
-    Pointer(MIXERCONTROL_CONTROLTYPE_DECIBELS));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SIGNED',
-    Pointer(MIXERCONTROL_CONTROLTYPE_SIGNED));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_UNSIGNED',
-    Pointer(MIXERCONTROL_CONTROLTYPE_UNSIGNED));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PERCENT',
-    Pointer(MIXERCONTROL_CONTROLTYPE_PERCENT));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SLIDER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_SLIDER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PAN',
-    Pointer(MIXERCONTROL_CONTROLTYPE_PAN));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_QSOUNDPAN',
-    Pointer(MIXERCONTROL_CONTROLTYPE_QSOUNDPAN));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_FADER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_FADER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_VOLUME',
-    Pointer(MIXERCONTROL_CONTROLTYPE_VOLUME));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BASS',
-    Pointer(MIXERCONTROL_CONTROLTYPE_BASS));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_TREBLE',
-    Pointer(MIXERCONTROL_CONTROLTYPE_TREBLE));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_EQUALIZER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_EQUALIZER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SINGLESELECT',
-    Pointer(MIXERCONTROL_CONTROLTYPE_SINGLESELECT));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MUX',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MUX));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MIXER',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MIXER));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MICROTIME',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MICROTIME));
-  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MILLITIME',
-    Pointer(MIXERCONTROL_CONTROLTYPE_MILLITIME));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_UNDEFINED', Pointer(MIXERLINE_COMPONENTTYPE_DST_UNDEFINED));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_DIGITAL', Pointer(MIXERLINE_COMPONENTTYPE_DST_DIGITAL));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_LINE', Pointer(MIXERLINE_COMPONENTTYPE_DST_LINE));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_MONITOR', Pointer(MIXERLINE_COMPONENTTYPE_DST_MONITOR));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_SPEAKERS', Pointer(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_HEADPHONES', Pointer(MIXERLINE_COMPONENTTYPE_DST_HEADPHONES));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_TELEPHONE', Pointer(MIXERLINE_COMPONENTTYPE_DST_TELEPHONE));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_WAVEIN', Pointer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_DST_VOICEIN', Pointer(MIXERLINE_COMPONENTTYPE_DST_VOICEIN));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED', Pointer(MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_DIGITAL', Pointer(MIXERLINE_COMPONENTTYPE_SRC_DIGITAL));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_LINE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_LINE));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER', Pointer(MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC', Pointer(MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER', Pointer(MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT', Pointer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY', Pointer(MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_ANALOG', Pointer(MIXERLINE_COMPONENTTYPE_SRC_ANALOG));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_CUSTOM', Pointer(MIXERCONTROL_CONTROLTYPE_CUSTOM));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BOOLEANMETER', Pointer(MIXERCONTROL_CONTROLTYPE_BOOLEANMETER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SIGNEDMETER', Pointer(MIXERCONTROL_CONTROLTYPE_SIGNEDMETER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PEAKMETER', Pointer(MIXERCONTROL_CONTROLTYPE_PEAKMETER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_UNSIGNEDMETER', Pointer(MIXERCONTROL_CONTROLTYPE_UNSIGNEDMETER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BOOLEAN', Pointer(MIXERCONTROL_CONTROLTYPE_BOOLEAN));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_ONOFF', Pointer(MIXERCONTROL_CONTROLTYPE_ONOFF));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MUTE', Pointer(MIXERCONTROL_CONTROLTYPE_MUTE));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MONO', Pointer(MIXERCONTROL_CONTROLTYPE_MONO));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_LOUDNESS', Pointer(MIXERCONTROL_CONTROLTYPE_LOUDNESS));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_STEREOENH', Pointer(MIXERCONTROL_CONTROLTYPE_STEREOENH));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BUTTON', Pointer(MIXERCONTROL_CONTROLTYPE_BUTTON));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_DECIBELS', Pointer(MIXERCONTROL_CONTROLTYPE_DECIBELS));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SIGNED', Pointer(MIXERCONTROL_CONTROLTYPE_SIGNED));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_UNSIGNED', Pointer(MIXERCONTROL_CONTROLTYPE_UNSIGNED));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PERCENT', Pointer(MIXERCONTROL_CONTROLTYPE_PERCENT));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SLIDER', Pointer(MIXERCONTROL_CONTROLTYPE_SLIDER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_PAN', Pointer(MIXERCONTROL_CONTROLTYPE_PAN));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_QSOUNDPAN', Pointer(MIXERCONTROL_CONTROLTYPE_QSOUNDPAN));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_FADER', Pointer(MIXERCONTROL_CONTROLTYPE_FADER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_VOLUME', Pointer(MIXERCONTROL_CONTROLTYPE_VOLUME));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_BASS', Pointer(MIXERCONTROL_CONTROLTYPE_BASS));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_TREBLE', Pointer(MIXERCONTROL_CONTROLTYPE_TREBLE));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_EQUALIZER', Pointer(MIXERCONTROL_CONTROLTYPE_EQUALIZER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_SINGLESELECT', Pointer(MIXERCONTROL_CONTROLTYPE_SINGLESELECT));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MUX', Pointer(MIXERCONTROL_CONTROLTYPE_MUX));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT', Pointer(MIXERCONTROL_CONTROLTYPE_MULTIPLESELECT));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MIXER', Pointer(MIXERCONTROL_CONTROLTYPE_MIXER));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MICROTIME', Pointer(MIXERCONTROL_CONTROLTYPE_MICROTIME));
+  FControlTypes.AddObject('MIXERCONTROL_CONTROLTYPE_MILLITIME', Pointer(MIXERCONTROL_CONTROLTYPE_MILLITIME));
 end;
 
 function TMainForm.ComponentTypeConstToString(ComponentType: DWORD): string;
@@ -298,14 +246,10 @@ begin
   Screen.Cursor := crHourGlass;
   AudioInfoMemo.Lines.BeginUpdate;
   try
-    AudioInfoMemo.Lines.Add('Product                : ' +
-      GetCdInfo(miProduct, SelectedDrive));
-    AudioInfoMemo.Lines.Add('Identity               : ' +
-      GetCdInfo(miIdentity, SelectedDrive));
-    AudioInfoMemo.Lines.Add('Universal Product Code : ' +
-      GetCdInfo(miUPC, SelectedDrive));
-    TotalTimeStr := GetCDAudioTrackList(AudioInfoMemo.Lines,
-      True, SelectedDrive);
+    AudioInfoMemo.Lines.Add('Product                : ' + GetCdInfo(miProduct, SelectedDrive));
+    AudioInfoMemo.Lines.Add('Identity               : ' + GetCdInfo(miIdentity, SelectedDrive));
+    AudioInfoMemo.Lines.Add('Universal Product Code : ' + GetCdInfo(miUPC, SelectedDrive));
+    TotalTimeStr := GetCDAudioTrackList(AudioInfoMemo.Lines, True, SelectedDrive);
     AudioInfoMemo.Lines.Add('Total time:       ' + TotalTimeStr);
   finally
     AudioInfoMemo.Lines.EndUpdate;
@@ -336,33 +280,28 @@ begin
       for DeviceIndex := 0 to FMixer.DeviceCount - 1 do
       begin
         Device := FMixer.Devices[DeviceIndex];
-        DeviceNode := Items.AddChildObjectFirst(nil,
-          Device.ProductName, Device);
+        DeviceNode := Items.AddChildObjectFirst(nil, Device.ProductName, Device);
 
         for DestionationIndex := 0 to Device.DestinationCount - 1 do
         begin
           Destination := Device.Destinations[DestionationIndex];
-          DestionationNode :=
-            Items.AddChildObjectFirst(DeviceNode, Destination.Name, Destination);
+          DestionationNode := Items.AddChildObjectFirst(DeviceNode, Destination.Name, Destination);
 
           for LineControlIndex := 0 to Destination.LineControlCount - 1 do
           begin
             LineControl := Destination.LineControls[LineControlIndex];
-            Items.AddChildObjectFirst(DestionationNode,
-              LineControl.Name, LineControl);
+            Items.AddChildObjectFirst(DestionationNode, LineControl.Name, LineControl);
           end;
 
           for SourceIndex := 0 to Destination.SourceCount - 1 do
           begin
             SourceLine := Destination.Sources[SourceIndex];
-            SourceNode := Items.AddChildObjectFirst(DestionationNode,
-              SourceLine.Name, SourceLine);
+            SourceNode := Items.AddChildObjectFirst(DestionationNode, SourceLine.Name, SourceLine);
 
             for LineControlIndex := 0 to SourceLine.LineControlCount - 1 do
             begin
               LineControl := SourceLine.LineControls[LineControlIndex];
-              Items.AddChildObjectFirst(SourceNode, LineControl.Name,
-                LineControl);
+              Items.AddChildObjectFirst(SourceNode, LineControl.Name, LineControl);
             end;
 
           end;
@@ -404,24 +343,18 @@ begin
       Node := MixerTreeView.Items[I];
       UpdateMixerDetails(TObject(Node.Data));
       case Node.Level of
-        0:
-          C := ' ';
-        1:
-          C := '=';
-        2:
-          C := '+';
-        3:
-          C := '-';
-        else
-          C := '!';
+        0: C := ' ';
+        1: C := '=';
+        2: C := '+';
+        3: C := '-';
+      else
+        C := '!';
       end;
-      List.Add(Format('%*s%s %s', [Node.Level * 2, '', Node.Text,
-        StringOfChar(C, 119 - Node.Level * 2 - Length(Node.Text))]));
+      List.Add(Format('%*s%s %s', [Node.Level * 2, '', Node.Text, StringOfChar(C, 119 - Node.Level * 2 - Length(Node.Text))]));
       with MixerDetailListView.Items do
         for D := 0 to Count - 1 do
         begin
-          List.Add(Format('%*s%s=%s', [Node.Level * 2, '',
-            Item[D].Caption, Item[D].SubItems[0]]));
+          List.Add(Format('%*s%s=%s', [Node.Level * 2, '', Item[D].Caption, Item[D].SubItems[0]]));
         end;
       List.Add('');
     end;
@@ -470,8 +403,7 @@ procedure TMainForm.UpdateMixerDetails(MixerObject: TObject);
       DisplayName := ComponentString;
       if DisplayName = '' then
         DisplayName := Format('(%.8x)', [LineInfo.dwComponentType]);
-      AddLine('Component type', Format('%s [%s]',
-        [DisplayName, ComponentTypeConstToString(LineInfo.dwComponentType)]));
+      AddLine('Component type', Format('%s [%s]', [DisplayName, ComponentTypeConstToString(LineInfo.dwComponentType)]));
       AddLine('ID', IntToHex(ID, 8));
       AddLine('Channels', IntToStr(LineInfo.cChannels));
       AddLine('Connections', IntToStr(LineInfo.cConnections));
@@ -494,9 +426,7 @@ procedure TMainForm.UpdateMixerDetails(MixerObject: TObject);
     with LineControl do
     begin
       AddLine('ID', IntToHex(ControlInfo.dwControlID, 8));
-      AddLine('Control type', Format('%.8x [%s]',
-        [ControlInfo.dwControlType, ControlTypeConstToString(
-        ControlInfo.dwControlType)]));
+      AddLine('Control type', Format('%.8x [%s]', [ControlInfo.dwControlType, ControlTypeConstToString(ControlInfo.dwControlType)]));
       AddLine('Disabled', BooleanToStr(IsDisabled));
       AddLine('List', BooleanToStr(IsList));
       AddLine('Multiple', BooleanToStr(IsMultiple));
@@ -556,8 +486,7 @@ begin
   begin
     if Line = SelectedMixerTreeObject then
       UpdateSelectedMixerInfo;
-    if Line.LineInfo.dwComponentType =
-      MIXERLINE_COMPONENTTYPE_DST_SPEAKERS then
+    if Line.LineInfo.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_SPEAKERS then
       UpdateMixerSpeakerControls;
   end;
 end;

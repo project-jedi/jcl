@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date$                                                      } 
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -50,8 +50,7 @@ function IsPeViewerRegistred: Boolean;
 
 procedure LVColumnClick(Column: TListColumn);
 
-procedure LVCompare(ListView: TListView; Item1, Item2: TListItem;
-  var Compare: Integer);
+procedure LVCompare(ListView: TListView; Item1, Item2: TListItem; var Compare: Integer);
 
 procedure ListViewFocusFirstItem(ListView: TListView);
 
@@ -62,8 +61,7 @@ procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
 
 function MessBox(const Text: string; Flags: Word): Integer;
 
-function MessBoxFmt(const Fmt: string; const Args: array of const;
-  Flags: Word): Integer;
+function MessBoxFmt(const Fmt: string; const Args: array of const; Flags: Word): Integer;
 
 function SafeSubItemString(Item: TListItem; SubItemIndex: Integer): string;
 
@@ -103,8 +101,7 @@ begin
     OleCheck(Unknown.QueryInterface(IDispatch, Result))
   else
   begin
-    if Res <> MK_E_UNAVAILABLE then
-      OleError(Res);
+    if Res <> MK_E_UNAVAILABLE then OleError(Res);
     OleCheck(CoCreateInstance(ClassID, nil, CLSCTX_INPROC_SERVER or
       CLSCTX_LOCAL_SERVER, IDispatch, Result));
   end;
@@ -116,8 +113,7 @@ var
 begin
   I := 1;
   while I <= Length(S) do
-    if not (S[I] in ['0'..'9', '-']) then
-      Delete(S, I, 1) else Inc(I);
+    if not (S[I] in ['0'..'9', '-']) then Delete(S, I, 1) else Inc(I);
   Result := StrToIntDef(S, 0);
 end;
 
@@ -153,24 +149,22 @@ function InfoTipVersionString(const FileName: TFileName): string;
 begin
   Result := '';
   if VersionResourceAvailable(FileName) then
+  try
+    with TJclFileVersionInfo.Create(FileName) do
     try
-      with TJclFileVersionInfo.Create(FileName) do
-        try
-          if not StrEmpty(FileVersion) then
-            Result := FileVersion;
-          if not StrEmpty(FileDescription) then
-            Result := Format('%s'#13#10'%s', [Result, FileDescription])
-        finally
-          Free;
-        end;
-    except
+      if not StrEmpty(FileVersion) then Result := FileVersion;
+      if not StrEmpty(FileDescription) then
+        Result := Format('%s'#13#10'%s', [Result, FileDescription])
+    finally
+      Free;
     end;
+  except
+  end;
 end;
 
 function IsPeViewerRegistred: Boolean;
 begin
-  Result := RegReadStringDef(HKEY_CLASSES_ROOT, PeViewerClassName,
-    '', '') <> '';
+  Result := RegReadStringDef(HKEY_CLASSES_ROOT, PeViewerClassName, '', '') <> '';
 end;
 
 procedure LVColumnClick(Column: TListColumn);
@@ -187,13 +181,11 @@ begin
     else
       Tag := ColIndex;
     AlphaSort;
-    if Selected <> nil then
-      Selected.MakeVisible(False);
+    if Selected <> nil then Selected.MakeVisible(False);
   end;
 end;
 
-procedure LVCompare(ListView: TListView; Item1, Item2: TListItem;
-  var Compare: Integer);
+procedure LVCompare(ListView: TListView; Item1, Item2: TListItem; var Compare: Integer);
 var
   ColIndex: Integer;
 begin
@@ -205,19 +197,15 @@ begin
       if ColIndex = -1 then
         Compare := AnsiCompareText(Item1.Caption, Item2.Caption)
       else
-        Compare := AnsiCompareText(Item1.SubItems[ColIndex],
-          Item2.SubItems[ColIndex]);
-    end
-    else
+        Compare := AnsiCompareText(Item1.SubItems[ColIndex], Item2.SubItems[ColIndex]);
+    end else
     begin
       if ColIndex = -1 then
         Compare := FmtStrToInt(Item1.Caption) - FmtStrToInt(Item2.Caption)
       else
-        Compare := FmtStrToInt(Item1.SubItems[ColIndex]) -
-          FmtStrToInt(Item2.SubItems[ColIndex]);
+        Compare := FmtStrToInt(Item1.SubItems[ColIndex]) - FmtStrToInt(Item2.SubItems[ColIndex]);
     end;
-    if Tag and $100 <> 0 then
-      Compare := -Compare;
+    if Tag and $100 <> 0 then Compare := -Compare;
   end;
 end;
 
@@ -239,25 +227,23 @@ var
   Data: Integer;
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
-  with ListView do
-    if MultiSelect then
-    begin
-      Items.BeginUpdate;
-      SaveOnSelectItem := OnSelectItem;
-      Screen.Cursor := crHourGlass;
-      try
-        H := Handle;
-        OnSelectItem := nil;
-        if Deselect then
-          Data := 0 else Data := LVIS_SELECTED;
-        for I := 0 to Items.Count - 1 do
-          ListView_SetItemState(H, I, Data, LVIS_SELECTED);
-      finally
-        OnSelectItem := SaveOnSelectItem;
-        Items.EndUpdate;
-        Screen.Cursor := crDefault;
-      end;
+  with ListView do if MultiSelect then
+  begin
+    Items.BeginUpdate;
+    SaveOnSelectItem := OnSelectItem;
+    Screen.Cursor := crHourGlass;
+    try
+      H := Handle;
+      OnSelectItem := nil;
+      if Deselect then Data := 0 else Data := LVIS_SELECTED;
+      for I := 0 to Items.Count - 1 do
+        ListView_SetItemState(H, I, Data, LVIS_SELECTED);
+    finally
+      OnSelectItem := SaveOnSelectItem;
+      Items.EndUpdate;
+      Screen.Cursor := crDefault;
     end;
+  end;
 end;
 
 procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
@@ -268,18 +254,18 @@ var
   S: String;
 
   procedure AddLine;
-  begin
-    Strings.Add(TrimRight(S));
-  end;
+begin
+  Strings.Add(TrimRight(S));
+end;
 
   function MakeCellStr(const Text: String; Index: Integer): String;
-  begin
-    with ListView.Columns[Index] do
-      if Alignment = taLeftJustify then
-        Result := StrPadRight(Text, ColWidths[Index] + 1)
-      else
-        Result := StrPadLeft(Text, ColWidths[Index]) + ' ';
-  end;
+begin
+  with ListView.Columns[Index] do
+    if Alignment = taLeftJustify then
+      Result := StrPadRight(Text, ColWidths[Index] + 1)
+    else
+      Result := StrPadLeft(Text, ColWidths[Index]) + ' ';
+end;
 
 begin
   SetLength(S, 256);
@@ -294,8 +280,7 @@ begin
       begin
         ColWidths[0] := Max(ColWidths[0], Length(Trim(Items[R].Caption)));
         for C := 0 to Items[R].SubItems.Count - 1 do
-          ColWidths[C + 1] :=
-            Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
+          ColWidths[C + 1] := Max(ColWidths[C + 1], Length(Trim(Items[R].SubItems[C])));
       end;
     Strings.BeginUpdate;
     try
@@ -313,13 +298,13 @@ begin
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
-          with Items[R] do
-          begin
-            S := MakeCellStr(Caption, 0);
-            for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-              S := S + MakeCellStr(SubItems[C], C + 1);
-            AddLine;
-          end;
+        with Items[R] do
+        begin
+          S := MakeCellStr(Caption, 0);
+          for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
+            S := S + MakeCellStr(SubItems[C], C + 1);
+          AddLine;
+        end;
     finally
       Strings.EndUpdate;
     end;
@@ -328,12 +313,10 @@ end;
 
 function MessBox(const Text: string; Flags: Word): Integer;
 begin
-  with Application do
-    Result := MessageBox(PChar(Text), PChar(Title), Flags);
+  with Application do Result := MessageBox(PChar(Text), PChar(Title), Flags);
 end;
 
-function MessBoxFmt(const Fmt: string; const Args: array of const;
-  Flags: Word): Integer;
+function MessBoxFmt(const Fmt: string; const Args: array of const; Flags: Word): Integer;
 begin
   Result := MessBox(Format(Fmt, Args), Flags);
 end;
@@ -343,7 +326,7 @@ begin
   if Item.SubItems.Count > SubItemIndex then
     Result := Item.SubItems[SubItemIndex]
   else
-    Result := '';
+    Result := ''
 end;
 
 procedure SendEmail;
@@ -360,8 +343,7 @@ function Win32HelpFileName: TFileName;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE,
     'SOFTWARE\Borland\Borland Shared\MSHelp', 'RootDir', '') + '\Win32.hlp';
-  if not FileExists(Result) then
-    Result := '';
+  if not FileExists(Result) then Result := '';
 end;
 
 procedure Fix_ListViewBeforeClose(Form: TForm);
@@ -372,8 +354,7 @@ begin
     for I := 0 to ComponentCount - 1 do
       if Components[I] is TListView then
         with TListView(Components[I]) do
-          if OwnerData then
-            Items.Count := 0;
+          if OwnerData then Items.Count := 0;
 end;
 
 procedure D4FixCoolBarResizePaint(CoolBar: TObject);

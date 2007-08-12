@@ -56,7 +56,7 @@ unit MSHelpServices_TLB;
 interface
 
 uses ActiveX, Classes;
-
+  
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -111,8 +111,7 @@ const
   IID_IHxInitialize: TGUID = '{314111AE-A502-11D2-BBCA-00C04F8EC294}';
   IID_IHxCancel: TGUID = '{31411225-A502-11D2-BBCA-00C04F8EC294}';
   DIID_IHxSessionEvents: TGUID = '{314111ED-A502-11D2-BBCA-00C04F8EC294}';
-  DIID_IHxRegisterSessionEvents: TGUID =
-    '{31411223-A502-11D2-BBCA-00C04F8EC294}';
+  DIID_IHxRegisterSessionEvents: TGUID = '{31411223-A502-11D2-BBCA-00C04F8EC294}';
   CLASS_HxSession: TGUID = '{31411198-A502-11D2-BBCA-00C04F8EC294}';
   CLASS_HxRegistryWalker: TGUID = '{314111F0-A502-11D2-BBCA-00C04F8EC294}';
   CLASS_HxRegisterSession: TGUID = '{31411219-A502-11D2-BBCA-00C04F8EC294}';
@@ -390,21 +389,17 @@ type
     function HasChild(hNode: Integer): WordBool; safecall;
     function GetSyncInfo(const pURL: WideString): PSafeArray; safecall;
     function GetTitle(hNode: Integer): WideString; safecall;
-    function GetImageIndexes(hNode: Integer; out pOpen: Integer): Integer;
-      safecall;
+    function GetImageIndexes(hNode: Integer; out pOpen: Integer): Integer; safecall;
     function GetURL(hNode: Integer): WideString; safecall;
     function OnNavigation(const pbstrURL: WideString): WordBool; safecall;
     procedure OnHierarchyNavigation(hNode: Integer); safecall;
-    function GetProperty(propid: HxHierarchyPropId;
-      hNode: Integer): OleVariant;
-      safecall;
+    function GetProperty(propid: HxHierarchyPropId; hNode: Integer): OleVariant; safecall;
     function GetNextFromNode(hNode: Integer): Integer; safecall;
     function GetPrevFromNode(hNode: Integer): Integer; safecall;
     function GetTopic(hNode: Integer): IHxTopic; safecall;
     function GetOpenImageIndex(hNode: Integer): Integer; safecall;
     function GetClosedImageIndex(hNode: Integer): Integer; safecall;
-    procedure PrintNode(hwnd: Integer; hNode: Integer;
-      options: HxHierarchy_PrintNode_Options); safecall;
+    procedure PrintNode(hwnd: Integer; hNode: Integer; options: HxHierarchy_PrintNode_Options); safecall;
   end;
 
 // *********************************************************************//
@@ -423,24 +418,19 @@ type
     function GetType(hNode: Integer): HxHierarchyNodeType; dispid 66567;
     function IsNew(hNode: Integer): WordBool; dispid 66568;
     function HasChild(hNode: Integer): WordBool; dispid 66569;
-    function GetSyncInfo(const pURL: WideString): {??PSafeArray}OleVariant;
-      dispid 66570;
+    function GetSyncInfo(const pURL: WideString): {??PSafeArray}OleVariant; dispid 66570;
     function GetTitle(hNode: Integer): WideString; dispid 66571;
-    function GetImageIndexes(hNode: Integer; out pOpen: Integer): Integer;
-      dispid 66572;
+    function GetImageIndexes(hNode: Integer; out pOpen: Integer): Integer; dispid 66572;
     function GetURL(hNode: Integer): WideString; dispid 66573;
     function OnNavigation(const pbstrURL: WideString): WordBool; dispid 66574;
     procedure OnHierarchyNavigation(hNode: Integer); dispid 66575;
-    function GetProperty(propid: HxHierarchyPropId;
-      hNode: Integer): OleVariant;
-      dispid 66576;
+    function GetProperty(propid: HxHierarchyPropId; hNode: Integer): OleVariant; dispid 66576;
     function GetNextFromNode(hNode: Integer): Integer; dispid 66577;
     function GetPrevFromNode(hNode: Integer): Integer; dispid 66578;
     function GetTopic(hNode: Integer): IHxTopic; dispid 66579;
     function GetOpenImageIndex(hNode: Integer): Integer; dispid 66580;
     function GetClosedImageIndex(hNode: Integer): Integer; dispid 66581;
-    procedure PrintNode(hwnd: Integer; hNode: Integer;
-      options: HxHierarchy_PrintNode_Options); dispid 66582;
+    procedure PrintNode(hwnd: Integer; hNode: Integer; options: HxHierarchy_PrintNode_Options); dispid 66582;
   end;
   {$EXTERNALSYM IHxHierarchyDisp}
 
@@ -451,23 +441,19 @@ type
 // *********************************************************************//
   IHxTopic = interface(IDispatch)
     ['{31411196-A502-11D2-BBCA-00C04F8EC294}']
-    function Get_Title(optType: HxTopicGetTitleType;
-      optDef: HxTopicGetTitleDefVal): WideString; safecall;
+    function Get_Title(optType: HxTopicGetTitleType; optDef: HxTopicGetTitleDefVal): WideString; safecall;
     function Get_URL: WideString; safecall;
     function Get_Location: WideString; safecall;
     function Get_Rank: Integer; safecall;
     function Get_Attributes: IHxAttributeList; safecall;
-    procedure GetInfo(out pTitle: WideString; out pURL: WideString;
-      out pLocation: WideString;
-      out pRank: Integer); safecall;
+    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString; 
+                      out pRank: Integer); safecall;
     function GetProperty(propid: HxTopicPropId): OleVariant; safecall;
     procedure SetProperty(propid: HxTopicPropId; var_: OleVariant); safecall;
-    function HasAttribute(const Name: WideString;
-      const Value: WideString): WordBool; safecall;
+    function HasAttribute(const Name: WideString; const Value: WideString): WordBool; safecall;
     function HasAttrName(const Name: WideString): WordBool; safecall;
     procedure HighlightDocument(const pIDispatch: IDispatch); safecall;
-    property Title[optType: HxTopicGetTitleType;
-      optDef: HxTopicGetTitleDefVal]: WideString read Get_Title;
+    property Title[optType: HxTopicGetTitleType; optDef: HxTopicGetTitleDefVal]: WideString read Get_Title;
     property URL: WideString read Get_URL;
     property Location: WideString read Get_Location;
     property Rank: Integer read Get_Rank;
@@ -481,20 +467,16 @@ type
 // *********************************************************************//
   IHxTopicDisp = dispinterface
     ['{31411196-A502-11D2-BBCA-00C04F8EC294}']
-    property Title[optType: HxTopicGetTitleType;
-      optDef: HxTopicGetTitleDefVal]: WideString readonly dispid 68097;
+    property Title[optType: HxTopicGetTitleType; optDef: HxTopicGetTitleDefVal]: WideString readonly dispid 68097;
     property URL: WideString readonly dispid 68098;
     property Location: WideString readonly dispid 68099;
     property Rank: Integer readonly dispid 68100;
     property Attributes: IHxAttributeList readonly dispid 68101;
-    procedure GetInfo(out pTitle: WideString; out pURL: WideString;
-      out pLocation: WideString;
-      out pRank: Integer); dispid 68102;
+    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString; 
+                      out pRank: Integer); dispid 68102;
     function GetProperty(propid: HxTopicPropId): OleVariant; dispid 68103;
-    procedure SetProperty(propid: HxTopicPropId; var_: OleVariant);
-      dispid 68104;
-    function HasAttribute(const Name: WideString;
-      const Value: WideString): WordBool; dispid 68105;
+    procedure SetProperty(propid: HxTopicPropId; var_: OleVariant); dispid 68104;
+    function HasAttribute(const Name: WideString; const Value: WideString): WordBool; dispid 68105;
     function HasAttrName(const Name: WideString): WordBool; dispid 68106;
     procedure HighlightDocument(const pIDispatch: IDispatch); dispid 68107;
   end;
@@ -509,8 +491,7 @@ type
     ['{314111AB-A502-11D2-BBCA-00C04F8EC294}']
     function Get_Count: Integer; safecall;
     function ItemAt(index: Integer): IHxAttribute; safecall;
-    function EnumAttribute(filter: Integer;
-      options: Integer): IEnumHxAttribute; safecall;
+    function EnumAttribute(filter: Integer; options: Integer): IEnumHxAttribute; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Item(index: OleVariant): IHxAttribute; safecall;
     property Count: Integer read Get_Count;
@@ -526,9 +507,7 @@ type
     ['{314111AB-A502-11D2-BBCA-00C04F8EC294}']
     property Count: Integer readonly dispid 70400;
     function ItemAt(index: Integer): IHxAttribute; dispid 70401;
-    function EnumAttribute(filter: Integer;
-      options: Integer): IEnumHxAttribute;
-      dispid 70402;
+    function EnumAttribute(filter: Integer; options: Integer): IEnumHxAttribute; dispid 70402;
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttribute; dispid 70403;
   end;
@@ -561,8 +540,7 @@ type
   IHxAttributeDisp = dispinterface
     ['{314111A9-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxQueryPropId): OleVariant; dispid 69888;
-    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant);
-      dispid 69889;
+    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant); dispid 69889;
     property Name: WideString readonly dispid 69890;
     property Value: WideString readonly dispid 69891;
     property DisplayName: WideString readonly dispid 69892;
@@ -577,8 +555,7 @@ type
 // *********************************************************************//
   IEnumHxAttribute = interface(IUnknown)
     ['{314111AD-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttribute: IHxAttribute;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxAttribute: IHxAttribute; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttribute): HResult; stdcall;
@@ -591,34 +568,24 @@ type
 // *********************************************************************//
   IHxRegister = interface(IDispatch)
     ['{314111BC-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterNamespace(const bstrNamespace: WideString;
-      const bstrCollection: WideString;
-      const bstrDescription: WideString); safecall;
+    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString; 
+                                const bstrDescription: WideString); safecall;
     function IsNamespace(const bstrNamespace: WideString): WordBool; safecall;
-    function GetCollection(const bstrNamespace: WideString): WideString;
-      safecall;
-    function GetDescription(const bstrNamespace: WideString): WideString;
-      safecall;
+    function GetCollection(const bstrNamespace: WideString): WideString; safecall;
+    function GetDescription(const bstrNamespace: WideString): WideString; safecall;
     procedure RemoveNamespace(const bstrNamespace: WideString); safecall;
-    procedure RegisterHelpFile(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer;
-      const bstrHelpFile: WideString); safecall;
-    function RegisterMedia(const bstrNamespace: WideString;
-      const bstrFriendly: WideString;
-      const bstrPath: WideString): Integer; safecall;
-    procedure RemoveHelpFile(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer); safecall;
-    procedure RegisterHelpFileSet(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer; const bstrHxs: WideString;
-      const bstrHxi: WideString;
-      const bstrHxq: WideString;
-      const bstrHxr: WideString;
-      lHxsMediaId: Integer;
-      lHxqMediaId: Integer; lHxrMediaId: Integer;
-      lSampleMediaId: Integer); safecall;
+    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                               LangId: Integer; const bstrHelpFile: WideString); safecall;
+    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString; 
+                           const bstrPath: WideString): Integer; safecall;
+    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                             LangId: Integer); safecall;
+    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString; 
+                                  LangId: Integer; const bstrHxs: WideString; 
+                                  const bstrHxi: WideString; const bstrHxq: WideString; 
+                                  const bstrHxr: WideString; lHxsMediaId: Integer; 
+                                  lHxqMediaId: Integer; lHxrMediaId: Integer; 
+                                  lSampleMediaId: Integer); safecall;
   end;
 
 // *********************************************************************//
@@ -628,36 +595,24 @@ type
 // *********************************************************************//
   IHxRegisterDisp = dispinterface
     ['{314111BC-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterNamespace(const bstrNamespace: WideString;
-      const bstrCollection: WideString;
-      const bstrDescription: WideString);
-      dispid 66817;
-    function IsNamespace(const bstrNamespace: WideString): WordBool;
-      dispid 66818;
-    function GetCollection(const bstrNamespace: WideString): WideString;
-      dispid 66830;
-    function GetDescription(const bstrNamespace: WideString): WideString;
-      dispid 66829;
+    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString; 
+                                const bstrDescription: WideString); dispid 66817;
+    function IsNamespace(const bstrNamespace: WideString): WordBool; dispid 66818;
+    function GetCollection(const bstrNamespace: WideString): WideString; dispid 66830;
+    function GetDescription(const bstrNamespace: WideString): WideString; dispid 66829;
     procedure RemoveNamespace(const bstrNamespace: WideString); dispid 66819;
-    procedure RegisterHelpFile(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer;
-      const bstrHelpFile: WideString); dispid 66822;
-    function RegisterMedia(const bstrNamespace: WideString;
-      const bstrFriendly: WideString;
-      const bstrPath: WideString): Integer; dispid 66823;
-    procedure RemoveHelpFile(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer); dispid 66825;
-    procedure RegisterHelpFileSet(const bstrNamespace: WideString;
-      const bstrId: WideString;
-      LangId: Integer; const bstrHxs: WideString;
-      const bstrHxi: WideString;
-      const bstrHxq: WideString;
-      const bstrHxr: WideString;
-      lHxsMediaId: Integer;
-      lHxqMediaId: Integer; lHxrMediaId: Integer;
-      lSampleMediaId: Integer); dispid 66831;
+    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                               LangId: Integer; const bstrHelpFile: WideString); dispid 66822;
+    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString; 
+                           const bstrPath: WideString): Integer; dispid 66823;
+    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                             LangId: Integer); dispid 66825;
+    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString; 
+                                  LangId: Integer; const bstrHxs: WideString; 
+                                  const bstrHxi: WideString; const bstrHxq: WideString; 
+                                  const bstrHxr: WideString; lHxsMediaId: Integer; 
+                                  lHxqMediaId: Integer; lHxrMediaId: Integer; 
+                                  lSampleMediaId: Integer); dispid 66831;
   end;
   {$EXTERNALSYM IHxRegisterDisp}
 
@@ -674,14 +629,11 @@ type
     function GetLevelFromSlot(iSlot: Integer): Integer; safecall;
     function GetSlotFromString(const bszLink: WideString): Integer; safecall;
     function GetTopicsFromSlot(uiSlot: Integer): IHxTopicList; safecall;
-    function GetTopicsFromString(const bszLink: WideString;
-      options: Integer): IHxTopicList; safecall;
-    function GetInfoFromSlot(iSlot: Integer; out piLevel: Integer): WideString;
-      safecall;
+    function GetTopicsFromString(const bszLink: WideString; options: Integer): IHxTopicList; safecall;
+    function GetInfoFromSlot(iSlot: Integer; out piLevel: Integer): WideString; safecall;
     function GetProperty(propid: HxIndexPropId): OleVariant; safecall;
     function GetCrossRef(iSlot: Integer): WideString; safecall;
-    function GetFullStringFromSlot(iSlot: Integer;
-      const sep: WideString): WideString; safecall;
+    function GetFullStringFromSlot(iSlot: Integer; const sep: WideString): WideString; safecall;
     function GetCrossRefSlot(iSlot: Integer): Integer; safecall;
     property Count: Integer read Get_Count;
   end;
@@ -697,17 +649,13 @@ type
     property Count: Integer readonly dispid 67073;
     function GetStringFromSlot(iSlot: Integer): WideString; dispid 67074;
     function GetLevelFromSlot(iSlot: Integer): Integer; dispid 67078;
-    function GetSlotFromString(const bszLink: WideString): Integer;
-      dispid 67075;
+    function GetSlotFromString(const bszLink: WideString): Integer; dispid 67075;
     function GetTopicsFromSlot(uiSlot: Integer): IHxTopicList; dispid 67076;
-    function GetTopicsFromString(const bszLink: WideString;
-      options: Integer): IHxTopicList; dispid 67077;
-    function GetInfoFromSlot(iSlot: Integer; out piLevel: Integer): WideString;
-      dispid 67079;
+    function GetTopicsFromString(const bszLink: WideString; options: Integer): IHxTopicList; dispid 67077;
+    function GetInfoFromSlot(iSlot: Integer; out piLevel: Integer): WideString; dispid 67079;
     function GetProperty(propid: HxIndexPropId): OleVariant; dispid 67080;
     function GetCrossRef(iSlot: Integer): WideString; dispid 67081;
-    function GetFullStringFromSlot(iSlot: Integer;
-      const sep: WideString): WideString; dispid 67082;
+    function GetFullStringFromSlot(iSlot: Integer; const sep: WideString): WideString; dispid 67082;
     function GetCrossRefSlot(iSlot: Integer): Integer; dispid 67083;
   end;
   {$EXTERNALSYM IHxIndexDisp}
@@ -719,26 +667,17 @@ type
 // *********************************************************************//
   IHxSession = interface(IDispatch)
     ['{31411192-A502-11D2-BBCA-00C04F8EC294}']
-    procedure Initialize(const NameSpace: WideString;
-      options: Integer); safecall;
-    function Query(const keywords: WideString;
-      const NavDataMoniker: WideString; options: Integer;
-      const FilterMoniker: WideString): IHxTopicList; safecall;
-    function QueryForTopic(const keywords: WideString;
-      const NavDataMoniker: WideString;
-      options: Integer;
-      const FilterMoniker: WideString): IHxTopic; safecall;
-    function QueryForUrl(const keywords: WideString;
-      const NavDataMoniker: WideString;
-      options: Integer;
-      const FilterMoniker: WideString): WideString; safecall;
-    function GetNavigationInterface(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString;
-      var refiid: TGUID): IDispatch; safecall;
-    function GetNavigationObject(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString): IDispatch; safecall;
-    function GetQueryObject(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString): IHxQuery; safecall;
+    procedure Initialize(const NameSpace: WideString; options: Integer); safecall;
+    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer; 
+                   const FilterMoniker: WideString): IHxTopicList; safecall;
+    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString; 
+                           options: Integer; const FilterMoniker: WideString): IHxTopic; safecall;
+    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString; 
+                         options: Integer; const FilterMoniker: WideString): WideString; safecall;
+    function GetNavigationInterface(const NavDataMoniker: WideString; 
+                                    const FilterMoniker: WideString; var refiid: TGUID): IDispatch; safecall;
+    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch; safecall;
+    function GetQueryObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IHxQuery; safecall;
     function Get_Collection: IHxCollection; safecall;
     function Get_LangId: Smallint; safecall;
     procedure Set_LangId(piHelpLangId: Smallint); safecall;
@@ -754,27 +693,17 @@ type
 // *********************************************************************//
   IHxSessionDisp = dispinterface
     ['{31411192-A502-11D2-BBCA-00C04F8EC294}']
-    procedure Initialize(const NameSpace: WideString; options: Integer);
-      dispid 65792;
-    function Query(const keywords: WideString;
-      const NavDataMoniker: WideString; options: Integer;
-      const FilterMoniker: WideString): IHxTopicList;
-      dispid 65793;
-    function QueryForTopic(const keywords: WideString;
-      const NavDataMoniker: WideString;
-      options: Integer;
-      const FilterMoniker: WideString): IHxTopic; dispid 65794;
-    function QueryForUrl(const keywords: WideString;
-      const NavDataMoniker: WideString;
-      options: Integer;
-      const FilterMoniker: WideString): WideString; dispid 65795;
-    function GetNavigationInterface(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString;
-      var refiid: {??TGUID}OleVariant): IDispatch; dispid 65796;
-    function GetNavigationObject(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString): IDispatch; dispid 65797;
-    function GetQueryObject(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString): IHxQuery; dispid 65798;
+    procedure Initialize(const NameSpace: WideString; options: Integer); dispid 65792;
+    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer; 
+                   const FilterMoniker: WideString): IHxTopicList; dispid 65793;
+    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString; 
+                           options: Integer; const FilterMoniker: WideString): IHxTopic; dispid 65794;
+    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString; 
+                         options: Integer; const FilterMoniker: WideString): WideString; dispid 65795;
+    function GetNavigationInterface(const NavDataMoniker: WideString; 
+                                    const FilterMoniker: WideString; var refiid: {??TGUID}OleVariant): IDispatch; dispid 65796;
+    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch; dispid 65797;
+    function GetQueryObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IHxQuery; dispid 65798;
     property Collection: IHxCollection readonly dispid 65799;
     property LangId: Smallint dispid 65803;
     function GetFilterList: IHxRegFilterList; dispid 65805;
@@ -790,8 +719,7 @@ type
     ['{31411194-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxTopic; safecall;
     function ItemAt(index: Integer): IHxTopic; safecall;
-    function EnumTopics(filter: Integer; options: Integer): IEnumHxTopic;
-      safecall;
+    function EnumTopics(filter: Integer; options: Integer): IEnumHxTopic; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Get_Count: Integer; safecall;
     property _NewEnum: IUnknown read Get__NewEnum;
@@ -807,8 +735,7 @@ type
     ['{31411194-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxTopic; dispid 0;
     function ItemAt(index: Integer): IHxTopic; dispid 67584;
-    function EnumTopics(filter: Integer; options: Integer): IEnumHxTopic;
-      dispid 67585;
+    function EnumTopics(filter: Integer; options: Integer): IEnumHxTopic; dispid 67585;
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 67586;
   end;
@@ -821,8 +748,7 @@ type
 // *********************************************************************//
   IEnumHxTopic = interface(IUnknown)
     ['{31411195-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxTopic: IHxTopic;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxTopic: IHxTopic; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxTopic): HResult; stdcall;
@@ -835,12 +761,9 @@ type
 // *********************************************************************//
   IHxQuery = interface(IDispatch)
     ['{31411193-A502-11D2-BBCA-00C04F8EC294}']
-    function Query(const keywords: WideString;
-      options: HxQuery_Options): IHxTopicList; safecall;
-    function QueryForTopic(const keywords: WideString;
-      options: HxQuery_Options): IHxTopic; safecall;
-    function QueryForUrl(const keywords: WideString;
-      options: HxQuery_Options): WideString; safecall;
+    function Query(const keywords: WideString; options: HxQuery_Options): IHxTopicList; safecall;
+    function QueryForTopic(const keywords: WideString; options: HxQuery_Options): IHxTopic; safecall;
+    function QueryForUrl(const keywords: WideString; options: HxQuery_Options): WideString; safecall;
   end;
 
 // *********************************************************************//
@@ -850,12 +773,9 @@ type
 // *********************************************************************//
   IHxQueryDisp = dispinterface
     ['{31411193-A502-11D2-BBCA-00C04F8EC294}']
-    function Query(const keywords: WideString;
-      options: HxQuery_Options): IHxTopicList; dispid 67328;
-    function QueryForTopic(const keywords: WideString;
-      options: HxQuery_Options): IHxTopic; dispid 67329;
-    function QueryForUrl(const keywords: WideString;
-      options: HxQuery_Options): WideString; dispid 67330;
+    function Query(const keywords: WideString; options: HxQuery_Options): IHxTopicList; dispid 67328;
+    function QueryForTopic(const keywords: WideString; options: HxQuery_Options): IHxTopic; dispid 67329;
+    function QueryForUrl(const keywords: WideString; options: HxQuery_Options): WideString; dispid 67330;
   end;
   {$EXTERNALSYM IHxQueryDisp}
 
@@ -867,15 +787,13 @@ type
   IHxCollection = interface(IDispatch)
     ['{314111A1-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxCollectionPropId): OleVariant; safecall;
-    procedure SetProperty(propid: HxCollectionPropId;
-      var_: OleVariant); safecall;
+    procedure SetProperty(propid: HxCollectionPropId; var_: OleVariant); safecall;
     function Get_URL: WideString; safecall;
     function Get_AttributeNames: IHxAttrNameList; safecall;
     function Get_Filters: IHxFilters; safecall;
     function Get_Title: WideString; safecall;
     procedure MergeIndex; safecall;
-    function GetFilterTopicCount(const bstrQuery: WideString): Integer;
-      safecall;
+    function GetFilterTopicCount(const bstrQuery: WideString): Integer; safecall;
     property URL: WideString read Get_URL;
     property AttributeNames: IHxAttrNameList read Get_AttributeNames;
     property Filters: IHxFilters read Get_Filters;
@@ -890,15 +808,13 @@ type
   IHxCollectionDisp = dispinterface
     ['{314111A1-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxCollectionPropId): OleVariant; dispid 68352;
-    procedure SetProperty(propid: HxCollectionPropId; var_: OleVariant);
-      dispid 68353;
+    procedure SetProperty(propid: HxCollectionPropId; var_: OleVariant); dispid 68353;
     property URL: WideString readonly dispid 68354;
     property AttributeNames: IHxAttrNameList readonly dispid 68357;
     property Filters: IHxFilters readonly dispid 68358;
     property Title: WideString readonly dispid 68359;
     procedure MergeIndex; dispid 68360;
-    function GetFilterTopicCount(const bstrQuery: WideString): Integer;
-      dispid 68361;
+    function GetFilterTopicCount(const bstrQuery: WideString): Integer; dispid 68361;
   end;
   {$EXTERNALSYM IHxCollectionDisp}
 
@@ -911,8 +827,7 @@ type
     ['{314111CE-A502-11D2-BBCA-00C04F8EC294}']
     function Get_Count: Integer; safecall;
     function ItemAt(index: Integer): IHxAttrName; safecall;
-    function EnumAttrName(filter: Integer; options: Integer): IEnumHxAttrName;
-      safecall;
+    function EnumAttrName(filter: Integer; options: Integer): IEnumHxAttrName; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Item(index: OleVariant): IHxAttrName; safecall;
     property Count: Integer read Get_Count;
@@ -928,8 +843,7 @@ type
     ['{314111CE-A502-11D2-BBCA-00C04F8EC294}']
     property Count: Integer readonly dispid 71168;
     function ItemAt(index: Integer): IHxAttrName; dispid 71169;
-    function EnumAttrName(filter: Integer; options: Integer): IEnumHxAttrName;
-      dispid 71170;
+    function EnumAttrName(filter: Integer; options: Integer): IEnumHxAttrName; dispid 71170;
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttrName; dispid 71171;
   end;
@@ -962,8 +876,7 @@ type
   IHxAttrNameDisp = dispinterface
     ['{314111D2-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxQueryPropId): OleVariant; dispid 70656;
-    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant);
-      dispid 70657;
+    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant); dispid 70657;
     property Name: WideString readonly dispid 70658;
     property DisplayName: WideString readonly dispid 70659;
     property Flag: Integer readonly dispid 70660;
@@ -980,8 +893,7 @@ type
     ['{314111D4-A502-11D2-BBCA-00C04F8EC294}']
     function Get_Count: Integer; safecall;
     function ItemAt(index: Integer): IHxAttrValue; safecall;
-    function EnumAttrValue(filter: Integer;
-      options: Integer): IEnumHxAttrValue; safecall;
+    function EnumAttrValue(filter: Integer; options: Integer): IEnumHxAttrValue; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Item(index: OleVariant): IHxAttrValue; safecall;
     property Count: Integer read Get_Count;
@@ -997,9 +909,7 @@ type
     ['{314111D4-A502-11D2-BBCA-00C04F8EC294}']
     property Count: Integer readonly dispid 71936;
     function ItemAt(index: Integer): IHxAttrValue; dispid 71937;
-    function EnumAttrValue(filter: Integer;
-      options: Integer): IEnumHxAttrValue;
-      dispid 71938;
+    function EnumAttrValue(filter: Integer; options: Integer): IEnumHxAttrValue; dispid 71938;
     property _NewEnum: IUnknown readonly dispid -4;
     function Item(index: OleVariant): IHxAttrValue; dispid 71939;
   end;
@@ -1030,8 +940,7 @@ type
   IHxAttrValueDisp = dispinterface
     ['{314111D8-A502-11D2-BBCA-00C04F8EC294}']
     function GetProperty(propid: HxQueryPropId): OleVariant; dispid 71424;
-    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant);
-      dispid 71425;
+    procedure SetProperty(propid: HxQueryPropId; var_: OleVariant); dispid 71425;
     property Value: WideString readonly dispid 71426;
     property DisplayValue: WideString readonly dispid 71427;
     property Flag: Integer readonly dispid 71428;
@@ -1045,8 +954,7 @@ type
 // *********************************************************************//
   IEnumHxAttrValue = interface(IUnknown)
     ['{314111D6-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttrValue: IHxAttrValue;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxAttrValue: IHxAttrValue; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttrValue): HResult; stdcall;
@@ -1059,8 +967,7 @@ type
 // *********************************************************************//
   IEnumHxAttrName = interface(IUnknown)
     ['{314111D0-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxAttrName: IHxAttrName;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxAttrName: IHxAttrName; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxAttrName): HResult; stdcall;
@@ -1074,12 +981,10 @@ type
   IHxFilters = interface(IDispatch)
     ['{314111E3-A502-11D2-BBCA-00C04F8EC294}']
     function Count: Integer; safecall;
-    function GetFilter(iIndex: Integer; out pbstrName: WideString): WideString;
-      safecall;
+    function GetFilter(iIndex: Integer; out pbstrName: WideString): WideString; safecall;
     function GetFilterName(iIndex: Integer): WideString; safecall;
     function GetFilterQuery(iIndex: Integer): WideString; safecall;
-    procedure RegisterFilter(const bstrName: WideString;
-      const bstrQuery: WideString); safecall;
+    procedure RegisterFilter(const bstrName: WideString; const bstrQuery: WideString); safecall;
     procedure RemoveFilter(const bstrName: WideString); safecall;
     function FindFilter(const bstrName: WideString): WideString; safecall;
     procedure SetNamespace(const bstrName: WideString); safecall;
@@ -1094,12 +999,10 @@ type
   IHxFiltersDisp = dispinterface
     ['{314111E3-A502-11D2-BBCA-00C04F8EC294}']
     function Count: Integer; dispid 66048;
-    function GetFilter(iIndex: Integer; out pbstrName: WideString): WideString;
-      dispid 66049;
+    function GetFilter(iIndex: Integer; out pbstrName: WideString): WideString; dispid 66049;
     function GetFilterName(iIndex: Integer): WideString; dispid 66054;
     function GetFilterQuery(iIndex: Integer): WideString; dispid 66055;
-    procedure RegisterFilter(const bstrName: WideString;
-      const bstrQuery: WideString); dispid 66050;
+    procedure RegisterFilter(const bstrName: WideString; const bstrQuery: WideString); dispid 66050;
     procedure RemoveFilter(const bstrName: WideString); dispid 66051;
     function FindFilter(const bstrName: WideString): WideString; dispid 66052;
     procedure SetNamespace(const bstrName: WideString); dispid 66053;
@@ -1116,12 +1019,10 @@ type
     ['{31411212-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegFilter; safecall;
     function ItemAt(index: Integer): IHxRegFilter; safecall;
-    function EnumRegFilter(filter: Integer;
-      options: Integer): IEnumHxRegFilter; safecall;
+    function EnumRegFilter(filter: Integer; options: Integer): IEnumHxRegFilter; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Get_Count: Integer; safecall;
-    function FindFilter(const bstrFilterName: WideString): IHxRegFilter;
-      safecall;
+    function FindFilter(const bstrFilterName: WideString): IHxRegFilter; safecall;
     property _NewEnum: IUnknown read Get__NewEnum;
     property Count: Integer read Get_Count;
   end;
@@ -1135,13 +1036,10 @@ type
     ['{31411212-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegFilter; dispid 0;
     function ItemAt(index: Integer): IHxRegFilter; dispid 75776;
-    function EnumRegFilter(filter: Integer;
-      options: Integer): IEnumHxRegFilter;
-      dispid 75777;
+    function EnumRegFilter(filter: Integer; options: Integer): IEnumHxRegFilter; dispid 75777;
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 75778;
-    function FindFilter(const bstrFilterName: WideString): IHxRegFilter;
-      dispid 75779;
+    function FindFilter(const bstrFilterName: WideString): IHxRegFilter; dispid 75779;
   end;
   {$EXTERNALSYM IHxRegFilterListDisp}
 
@@ -1173,8 +1071,7 @@ type
 // *********************************************************************//
   IEnumHxRegFilter = interface(IUnknown)
     ['{3141121C-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegFilter: IHxRegFilter;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxRegFilter: IHxRegFilter; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegFilter): HResult; stdcall;
@@ -1187,10 +1084,8 @@ type
 // *********************************************************************//
   IHxSampleCollection = interface(IDispatch)
     ['{314111E6-A502-11D2-BBCA-00C04F8EC294}']
-    function GetSampleFromId(const bstrTopicUrl: WideString;
-      const bstrId: WideString;
-      const bstrSFLName: WideString): IHxSample;
-      safecall;
+    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString; 
+                             const bstrSFLName: WideString): IHxSample; safecall;
   end;
 
 // *********************************************************************//
@@ -1200,10 +1095,8 @@ type
 // *********************************************************************//
   IHxSampleCollectionDisp = dispinterface
     ['{314111E6-A502-11D2-BBCA-00C04F8EC294}']
-    function GetSampleFromId(const bstrTopicUrl: WideString;
-      const bstrId: WideString;
-      const bstrSFLName: WideString): IHxSample;
-      dispid 72448;
+    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString; 
+                             const bstrSFLName: WideString): IHxSample; dispid 72448;
   end;
   {$EXTERNALSYM IHxSampleCollectionDisp}
 
@@ -1220,10 +1113,9 @@ type
     function Get_ProjectFileExt: WideString; safecall;
     function Get_FileCount: Integer; safecall;
     function GetFileNameAtIndex(index: Integer): WideString; safecall;
-    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString;
-      option: HxSampleFileCopyOption); safecall;
-    function ChooseDirectory(const bstrDefaultDir: WideString;
-      const bstrTitle: WideString): WideString; safecall;
+    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString; 
+                              option: HxSampleFileCopyOption); safecall;
+    function ChooseDirectory(const bstrDefaultDir: WideString; const bstrTitle: WideString): WideString; safecall;
     function GetFileTextAtIndex(index: Integer): WideString; safecall;
     property SampleId: WideString read Get_SampleId;
     property LoadString: WideString read Get_LoadString;
@@ -1245,10 +1137,9 @@ type
     property ProjectFileExt: WideString readonly dispid 72707;
     property FileCount: Integer readonly dispid 72709;
     function GetFileNameAtIndex(index: Integer): WideString; dispid 72710;
-    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString;
-      option: HxSampleFileCopyOption); dispid 72711;
-    function ChooseDirectory(const bstrDefaultDir: WideString;
-      const bstrTitle: WideString): WideString; dispid 72713;
+    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString; 
+                              option: HxSampleFileCopyOption); dispid 72711;
+    function ChooseDirectory(const bstrDefaultDir: WideString; const bstrTitle: WideString): WideString; dispid 72713;
     function GetFileTextAtIndex(index: Integer): WideString; dispid 72714;
   end;
   {$EXTERNALSYM IHxSampleDisp}
@@ -1260,11 +1151,8 @@ type
 // *********************************************************************//
   IHxRegistryWalker = interface(IDispatch)
     ['{314111EF-A502-11D2-BBCA-00C04F8EC294}']
-    function Get_RegisteredNamespaceList(
-      const bstrStart: WideString): IHxRegNamespaceList; safecall;
-    property RegisteredNamespaceList[
-      const bstrStart: WideString]: IHxRegNamespaceList
-      read Get_RegisteredNamespaceList;
+    function Get_RegisteredNamespaceList(const bstrStart: WideString): IHxRegNamespaceList; safecall;
+    property RegisteredNamespaceList[const bstrStart: WideString]: IHxRegNamespaceList read Get_RegisteredNamespaceList;
   end;
 
 // *********************************************************************//
@@ -1274,8 +1162,7 @@ type
 // *********************************************************************//
   IHxRegistryWalkerDisp = dispinterface
     ['{314111EF-A502-11D2-BBCA-00C04F8EC294}']
-    property RegisteredNamespaceList[
-      const bstrStart: WideString]: IHxRegNamespaceList readonly dispid 72960;
+    property RegisteredNamespaceList[const bstrStart: WideString]: IHxRegNamespaceList readonly dispid 72960;
   end;
   {$EXTERNALSYM IHxRegistryWalkerDisp}
 
@@ -1288,8 +1175,7 @@ type
     ['{314111F3-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegNamespace; safecall;
     function ItemAt(index: Integer): IHxRegNamespace; safecall;
-    function EnumRegNamespace(filter: Integer;
-      options: Integer): IEnumHxRegNamespace; safecall;
+    function EnumRegNamespace(filter: Integer; options: Integer): IEnumHxRegNamespace; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Get_Count: Integer; safecall;
     property _NewEnum: IUnknown read Get__NewEnum;
@@ -1305,8 +1191,7 @@ type
     ['{314111F3-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegNamespace; dispid 0;
     function ItemAt(index: Integer): IHxRegNamespace; dispid 73472;
-    function EnumRegNamespace(filter: Integer;
-      options: Integer): IEnumHxRegNamespace; dispid 73473;
+    function EnumRegNamespace(filter: Integer; options: Integer): IEnumHxRegNamespace; dispid 73473;
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 73474;
   end;
@@ -1333,8 +1218,7 @@ type
   IHxRegNamespaceDisp = dispinterface
     ['{314111F1-A502-11D2-BBCA-00C04F8EC294}']
     property Name: WideString readonly dispid 73216;
-    function GetProperty(propid: HxRegNamespacePropId): OleVariant;
-      dispid 73217;
+    function GetProperty(propid: HxRegNamespacePropId): OleVariant; dispid 73217;
     function IsTitle(const bstrTitle: WideString): WordBool; dispid 73218;
   end;
   {$EXTERNALSYM IHxRegNamespaceDisp}
@@ -1346,8 +1230,7 @@ type
 // *********************************************************************//
   IEnumHxRegNamespace = interface(IUnknown)
     ['{314111F5-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegNamespace: IHxRegNamespace;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxRegNamespace: IHxRegNamespace; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegNamespace): HResult; stdcall;
@@ -1383,8 +1266,7 @@ type
     ['{31411203-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegTitle; safecall;
     function ItemAt(index: Integer): IHxRegTitle; safecall;
-    function EnumRegTitle(filter: Integer; options: Integer): IEnumHxRegTitle;
-      safecall;
+    function EnumRegTitle(filter: Integer; options: Integer): IEnumHxRegTitle; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Get_Count: Integer; safecall;
     property _NewEnum: IUnknown read Get__NewEnum;
@@ -1400,8 +1282,7 @@ type
     ['{31411203-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegTitle; dispid 0;
     function ItemAt(index: Integer): IHxRegTitle; dispid 74240;
-    function EnumRegTitle(filter: Integer; options: Integer): IEnumHxRegTitle;
-      dispid 74241;
+    function EnumRegTitle(filter: Integer; options: Integer): IEnumHxRegTitle; dispid 74241;
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 74242;
   end;
@@ -1414,8 +1295,7 @@ type
 // *********************************************************************//
   IEnumHxRegTitle = interface(IUnknown)
     ['{31411204-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegTitle: IHxRegTitle;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxRegTitle: IHxRegTitle; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegTitle): HResult; stdcall;
@@ -1451,8 +1331,7 @@ type
     ['{3141120B-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegPlugIn; safecall;
     function ItemAt(index: Integer): IHxRegPlugIn; safecall;
-    function EnumRegPlugIn(filter: Integer;
-      options: Integer): IEnumHxRegPlugIn; safecall;
+    function EnumRegPlugIn(filter: Integer; options: Integer): IEnumHxRegPlugIn; safecall;
     function Get__NewEnum: IUnknown; safecall;
     function Get_Count: Integer; safecall;
     property _NewEnum: IUnknown read Get__NewEnum;
@@ -1468,9 +1347,7 @@ type
     ['{3141120B-A502-11D2-BBCA-00C04F8EC294}']
     function Item(index: OleVariant): IHxRegPlugIn; dispid 0;
     function ItemAt(index: Integer): IHxRegPlugIn; dispid 75008;
-    function EnumRegPlugIn(filter: Integer;
-      options: Integer): IEnumHxRegPlugIn;
-      dispid 75009;
+    function EnumRegPlugIn(filter: Integer; options: Integer): IEnumHxRegPlugIn; dispid 75009;
     property _NewEnum: IUnknown readonly dispid -4;
     property Count: Integer readonly dispid 75010;
   end;
@@ -1483,8 +1360,7 @@ type
 // *********************************************************************//
   IEnumHxRegPlugIn = interface(IUnknown)
     ['{3141120C-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegPlugIn: IHxRegPlugIn;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxRegPlugIn: IHxRegPlugIn; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegPlugIn): HResult; stdcall;
@@ -1497,14 +1373,12 @@ type
 // *********************************************************************//
   IHxRegisterSession = interface(IDispatch)
     ['{31411218-A502-11D2-BBCA-00C04F8EC294}']
-    function CreateTransaction(const bstrInToken: WideString): WideString;
-      safecall;
+    function CreateTransaction(const bstrInToken: WideString): WideString; safecall;
     function PostponeTransaction: WideString; safecall;
     procedure ContinueTransaction(const bstrToken: WideString); safecall;
     procedure CommitTransaction; safecall;
     procedure RevertTransaction; safecall;
-    function GetRegistrationObject(type_: HxRegisterSession_InterfaceType):
-      IDispatch; safecall;
+    function GetRegistrationObject(type_: HxRegisterSession_InterfaceType): IDispatch; safecall;
   end;
 
 // *********************************************************************//
@@ -1514,14 +1388,12 @@ type
 // *********************************************************************//
   IHxRegisterSessionDisp = dispinterface
     ['{31411218-A502-11D2-BBCA-00C04F8EC294}']
-    function CreateTransaction(const bstrInToken: WideString): WideString;
-      dispid 75265;
+    function CreateTransaction(const bstrInToken: WideString): WideString; dispid 75265;
     function PostponeTransaction: WideString; dispid 75268;
     procedure ContinueTransaction(const bstrToken: WideString); dispid 75269;
     procedure CommitTransaction; dispid 75266;
     procedure RevertTransaction; dispid 75267;
-    function GetRegistrationObject(type_: HxRegisterSession_InterfaceType):
-      IDispatch; dispid 75270;
+    function GetRegistrationObject(type_: HxRegisterSession_InterfaceType): IDispatch; dispid 75270;
   end;
   {$EXTERNALSYM IHxRegisterSessionDisp}
 
@@ -1532,17 +1404,13 @@ type
 // *********************************************************************//
   IHxPlugIn = interface(IDispatch)
     ['{314111DA-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString;
-      const bstrNamespace: WideString;
-      const bstrHxt: WideString;
-      const bstrHxa: WideString;
-      options: Integer); safecall;
-    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString;
-      const bstrNamespace: WideString;
-      const bstrHxt: WideString;
-      const bstrHxa: WideString); safecall;
+    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString; 
+                                 const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                                 const bstrHxt: WideString; const bstrHxa: WideString; 
+                                 options: Integer); safecall;
+    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString; 
+                               const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                               const bstrHxt: WideString; const bstrHxa: WideString); safecall;
   end;
 
 // *********************************************************************//
@@ -1552,17 +1420,13 @@ type
 // *********************************************************************//
   IHxPlugInDisp = dispinterface
     ['{314111DA-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString;
-      const bstrNamespace: WideString;
-      const bstrHxt: WideString;
-      const bstrHxa: WideString;
-      options: Integer); dispid 66304;
-    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString;
-      const bstrNamespace: WideString;
-      const bstrHxt: WideString;
-      const bstrHxa: WideString); dispid 66305;
+    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString; 
+                                 const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                                 const bstrHxt: WideString; const bstrHxa: WideString; 
+                                 options: Integer); dispid 66304;
+    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString; 
+                               const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                               const bstrHxt: WideString; const bstrHxa: WideString); dispid 66305;
   end;
   {$EXTERNALSYM IHxPlugInDisp}
 
@@ -1573,8 +1437,7 @@ type
 // *********************************************************************//
   IHxInitialize = interface(IDispatch)
     ['{314111AE-A502-11D2-BBCA-00C04F8EC294}']
-    procedure Initialize(const InitString: WideString;
-      options: Integer); safecall;
+    procedure Initialize(const InitString: WideString; options: Integer); safecall;
     function Get_filter: WideString; safecall;
     procedure Set_filter(const pFilterMoniker: WideString); safecall;
     property filter: WideString read Get_filter write Set_filter;
@@ -1587,8 +1450,7 @@ type
 // *********************************************************************//
   IHxInitializeDisp = dispinterface
     ['{314111AE-A502-11D2-BBCA-00C04F8EC294}']
-    procedure Initialize(const InitString: WideString; options: Integer);
-      dispid 72192;
+    procedure Initialize(const InitString: WideString; options: Integer); dispid 72192;
     property filter: WideString dispid 72193;
   end;
   {$EXTERNALSYM IHxInitializeDisp}
@@ -1623,14 +1485,10 @@ type
 // *********************************************************************//
   IHxSessionEvents = dispinterface
     ['{314111ED-A502-11D2-BBCA-00C04F8EC294}']
-    procedure QueryCancel(const pSession: IDispatch;
-      const pCancel: IDispatch; status: Integer); dispid 65800;
-    procedure IndexMergeStatus(const pSession: IDispatch;
-      const pCancel: IDispatch; status: Integer); dispid 65801;
-    procedure PrintMergeStatus(const pSession: IDispatch;
-      const pCancel: IDispatch; status: Integer); dispid 65802;
-    procedure MergeIndexFileName(const pDisp: IDispatch;
-      const bstrFile: WideString); dispid 65804;
+    procedure QueryCancel(const pSession: IDispatch; const pCancel: IDispatch; status: Integer); dispid 65800;
+    procedure IndexMergeStatus(const pSession: IDispatch; const pCancel: IDispatch; status: Integer); dispid 65801;
+    procedure PrintMergeStatus(const pSession: IDispatch; const pCancel: IDispatch; status: Integer); dispid 65802;
+    procedure MergeIndexFileName(const pDisp: IDispatch; const bstrFile: WideString); dispid 65804;
   end;
   {$EXTERNALSYM IHxSessionEvents}
 
@@ -1641,8 +1499,7 @@ type
 // *********************************************************************//
   IHxRegisterSessionEvents = dispinterface
     ['{31411223-A502-11D2-BBCA-00C04F8EC294}']
-    procedure FiltersChanged(const pDisp: IDispatch; var pvar: OleVariant);
-      dispid 75271;
+    procedure FiltersChanged(const pDisp: IDispatch; var pvar: OleVariant); dispid 75271;
   end;
   {$EXTERNALSYM IHxRegisterSessionEvents}
 
@@ -1714,8 +1571,7 @@ type
 // *********************************************************************//
   CoHxRegisterProtocol = class
     class function Create: IHxRegisterProtocol;
-    class function CreateRemote(
-      const MachineName: string): IHxRegisterProtocol;
+    class function CreateRemote(const MachineName: string): IHxRegisterProtocol;
   end;
 
 implementation
@@ -1737,11 +1593,9 @@ begin
   Result := CreateComObject(CLASS_HxRegistryWalker) as IHxRegistryWalker;
 end;
 
-class function CoHxRegistryWalker.CreateRemote(
-  const MachineName: string): IHxRegistryWalker;
+class function CoHxRegistryWalker.CreateRemote(const MachineName: string): IHxRegistryWalker;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_HxRegistryWalker) as
-    IHxRegistryWalker;
+  Result := CreateRemoteComObject(MachineName, CLASS_HxRegistryWalker) as IHxRegistryWalker;
 end;
 
 class function CoHxRegisterSession.Create: IHxRegisterSession;
@@ -1749,11 +1603,9 @@ begin
   Result := CreateComObject(CLASS_HxRegisterSession) as IHxRegisterSession;
 end;
 
-class function CoHxRegisterSession.CreateRemote(
-  const MachineName: string): IHxRegisterSession;
+class function CoHxRegisterSession.CreateRemote(const MachineName: string): IHxRegisterSession;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterSession) as
-    IHxRegisterSession;
+  Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterSession) as IHxRegisterSession;
 end;
 
 class function CoHxRegisterProtocol.Create: IHxRegisterProtocol;
@@ -1761,11 +1613,9 @@ begin
   Result := CreateComObject(CLASS_HxRegisterProtocol) as IHxRegisterProtocol;
 end;
 
-class function CoHxRegisterProtocol.CreateRemote(
-  const MachineName: string): IHxRegisterProtocol;
+class function CoHxRegisterProtocol.CreateRemote(const MachineName: string): IHxRegisterProtocol;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterProtocol) as
-    IHxRegisterProtocol;
+  Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterProtocol) as IHxRegisterProtocol;
 end;
 
 end.

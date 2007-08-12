@@ -40,7 +40,7 @@ type
     wAnsi: Word;
     wId: Word;
     padding: Word;
-  end;
+  end;  
   {$EXTERNALSYM ACCELTABLEENTRY}
   TAccelTableEntry = ACCELTABLEENTRY;
 
@@ -338,8 +338,7 @@ type
   protected
     procedure CreateList; virtual;
   public
-    constructor Create(AResImage: TPeResImage;
-      AResourceItem: TJclPeResourceItem); virtual;
+    constructor Create(AResImage: TPeResImage; AResourceItem: TJclPeResourceItem); virtual;
     destructor Destroy; override;
     function IsList: Boolean; virtual;
     function Offset: Integer;
@@ -378,14 +377,12 @@ type
     procedure AssignTo(Dest: TPersistent); override;
   public
     function FileExt: string; override;
-    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False);
-      virtual; abstract;
+    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False); virtual; abstract;
   end;
 
   TPeResAccelerator = class(TPeResUnkStrings)
   public
-    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False);
-      override;
+    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False); override;
   end;
 
   TPeResAvi = class(TPeResUnknown)
@@ -443,8 +440,7 @@ type
     procedure DFMToStrings(Strings: TStrings);
     procedure PackageInfoToStrings(Strings: TStrings);
   public
-    constructor Create(AResImage: TPeResImage;
-      AResourceItem: TJclPeResourceItem); override;
+    constructor Create(AResImage: TPeResImage; AResourceItem: TJclPeResourceItem); override;
     function FileExt: string; override;
     property DataKind: TPeResDataKind read FDataKind;
   end;
@@ -473,20 +469,17 @@ type
 
   TPeMessageTable = class(TPeResUnkStrings)
   public
-    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False);
-      override;
+    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False); override;
   end;
 
   TPeResString = class(TPeResUnkStrings)
   public
-    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False);
-      override;
+    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False); override;
   end;
 
   TPeResVersion = class(TPeResUnkStrings)
   public
-    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False);
-      override;
+    procedure FillStrings(Strings: TStrings; StripCrLf: Boolean = False); override;
   end;
 
   TPeResImage = class(TObjectList)
@@ -515,8 +508,7 @@ type
     property PeImage: TJclPeImage read FPeImage write SetPeImage;
   end;
 
-function LangNameFromName(const Name: string;
-  ShortName: Boolean = False): string;
+  function LangNameFromName(const Name: string; ShortName: Boolean = False): string;
 
 implementation
 
@@ -648,11 +640,10 @@ begin
       Result := 'PROCESSKEY';
     $F6..$FE:
       Result := KNF6FE[KeyCode];
-    else
-      Result := '';
+  else
+    Result := '';
   end;
-  if Result <> '' then
-    Result := 'VK_' + Result;
+  if Result <> '' then Result := 'VK_' + Result;
 end;
 
 function LangNameFromName(const Name: string; ShortName: Boolean): string;
@@ -662,23 +653,20 @@ var
 begin
   LangID := PRIMARYLANGID(StrToIntDef(Name, 0));
   if LangID = LANG_NEUTRAL then
-    if ShortName then
-      Result := '' else Result := RsNeutralLang
+    if ShortName then Result := '' else Result := RsNeutralLang
   else
   begin
     Locale := JclLocalesList.ItemFromLangIDPrimary[LangID];
     if Locale <> nil then
-      with Locale do
-        if ShortName then
-          Result := AbbreviatedLangName else Result := EnglishLangName
+      with Locale do if ShortName then
+        Result := AbbreviatedLangName else Result := EnglishLangName
     else
       Result := RsUnknownLang;
   end;
 end;
 
 
-function GetResItemKind(Item: TJclPeResourceItem;
-  var Kind: TPeResKind): Boolean;
+function GetResItemKind(Item: TJclPeResourceItem; var Kind: TPeResKind): Boolean;
 begin
   Result := True;
   Kind := rkUnknown;
@@ -689,12 +677,10 @@ begin
       rtCursorEntry, rtIconEntry, rtFont:
         Result := False;
       rtUserDefined:
-      begin
-        if Name = 'AVI' then
-          Kind := rkAvi;
-        if Name = '2110' then
-          Kind := rkHTML;
-      end;
+        begin
+          if Name = 'AVI' then Kind := rkAvi;
+          if Name = '2110' then Kind := rkHTML;
+        end;
       rtBitmap:
         Kind := rkBitmap;
       rtMenu:
@@ -737,8 +723,7 @@ const
 
 function WideCharToStr(WStr: PWChar; Len: Integer): string;
 begin
-  if Len = 0 then
-    Len := -1;
+  if Len = 0 then Len := -1;
   Len := WideCharToMultiByte(CP_ACP, 0, WStr, Len, nil, 0, nil, nil);
   SetLength(Result, Len);
   WideCharToMultiByte(CP_ACP, 0, WStr, Len, PChar(Result), Len, nil, nil);
@@ -746,8 +731,7 @@ end;
 
 { TPeResItem }
 
-constructor TPeResItem.Create(AResImage: TPeResImage;
-  AResourceItem: TJclPeResourceItem);
+constructor TPeResItem.Create(AResImage: TPeResImage; AResourceItem: TJclPeResourceItem);
 begin
   FList := TObjectList.Create(True);
   FResImage := AResImage;
@@ -784,11 +768,9 @@ function TPeResItem.GetItemCount: Integer;
 begin
   if IsList then
   begin
-    if FList.Count = 0 then
-      CreateList;
+    if FList.Count = 0 then CreateList;
     Result := FList.Count;
-  end
-  else
+  end else
     Result := -1;
 end;
 
@@ -812,10 +794,9 @@ end;
 function TPeResItem.Offset: Integer;
 begin
   if IsList then
-    Result := FResourceItem.Entry^.OffsetToData and not
-      (IMAGE_RESOURCE_DATA_IS_DIRECTORY)
+    Result := FResourceItem.Entry^.OffsetToData and not (IMAGE_RESOURCE_DATA_IS_DIRECTORY)
   else
-    Result := FResourceItem.DataEntry^.OffsetToData;
+    Result := FResourceItem.DataEntry^.OffsetToData
 end;
 
 function TPeResItem.RawData: Pointer;
@@ -883,8 +864,7 @@ begin
   if StrToIntDef(FResourceItem.Name, 0) = LANG_NEUTRAL then
     Result := FResourceItem.ParentItem.Name
   else
-    Result := Format('%s > %s', [FResourceItem.ParentItem.Name,
-      LangNameFromName(FResourceItem.Name)]);
+    Result := Format('%s > %s', [FResourceItem.ParentItem.Name, LangNameFromName(FResourceItem.Name)]);
 end;
 
 { TPeResUnkStrings }
@@ -921,8 +901,7 @@ var
 
   function AnsiToChar(A: Word): string;
   begin
-    if A >= 32 then
-      Result := Chr(A) else Result := '';
+    if A >= 32 then Result := Chr(A) else Result := '';
   end;
 
 begin
@@ -935,27 +914,20 @@ begin
         IsLast := fFlags and $80 <> 0;
         if fFlags and FVIRTKEY <> 0 then
         begin
-          S := Format('Virtual Key: %.2u "%s" ',
-            [wAnsi, VirtualKeyNameFromCode(wAnsi)]);
-          if fFlags and FSHIFT <> 0 then
-            S := S + 'SHIFT ';
-          if fFlags and FCONTROL <> 0 then
-            S := S + 'CTRL ';
-          if fFlags and FALT <> 0 then
-            S := S + 'ALT ';
-        end
-        else
-          S := Format('ANSI character: %.2u "%s" ',
-            [wAnsi, AnsiToChar(wAnsi)]);
-        if fFlags and FNOINVERT <> 0 then
-          S := S + 'NOINVERT';
+          S := Format('Virtual Key: %.2u "%s" ', [wAnsi, VirtualKeyNameFromCode(wAnsi)]);
+          if fFlags and FSHIFT <> 0 then S := S + 'SHIFT ';
+          if fFlags and FCONTROL <> 0 then S := S + 'CTRL ';
+          if fFlags and FALT <> 0 then S := S + 'ALT ';
+        end else
+          S := Format('ANSI character: %.2u "%s" ', [wAnsi, AnsiToChar(wAnsi)]);
+        if fFlags and FNOINVERT <> 0 then S := S + 'NOINVERT';
       end;
       Strings.Add(TrimRight(S));
       Inc(TableEntry);
     until IsLast;
   finally
     Strings.EndUpdate;
-  end;
+  end;    
 end;
 
 { TPeResAvi }
@@ -1011,7 +983,7 @@ begin
       BitMap.LoadFromStream(MemStream);
     finally
       MemStream.Free;
-    end;
+    end
   end
   else
     inherited;
@@ -1033,8 +1005,7 @@ begin
     Result.Width := BI.biWidth;
     Result.Height := BI.biHeight;
     Result.BitsPerPixel := BI.biPlanes * BI.biBitCount;
-  end
-  else
+  end else
   begin
     BC := PBitmapCoreHeader(RawData);
     Result.Width := BC.bcWidth;
@@ -1048,10 +1019,9 @@ procedure TPeResBitmap.SaveToStream(Stream: TStream);
   function GetDInColors(BitCount: Word): Integer;
   begin
     case BitCount of
-      1, 4, 8:
-        Result := 1 shl BitCount;
-      else
-        Result := 0;
+      1, 4, 8: Result := 1 shl BitCount;
+    else
+      Result := 0;
     end;
   end;
 
@@ -1068,17 +1038,14 @@ begin
   if BI.biSize = SizeOf(TBitmapInfoHeader) then
   begin
     ClrUsed := BI.biClrUsed;
-    if ClrUsed = 0 then
-      ClrUsed := GetDInColors(BI.biBitCount);
-    BH.bfOffBits := ClrUsed * SizeOf(TRgbQuad) +
-      SizeOf(TBitmapInfoHeader) + SizeOf(BH);
+    if ClrUsed = 0 then ClrUsed := GetDInColors(BI.biBitCount);
+    BH.bfOffBits :=  ClrUsed * SizeOf(TRgbQuad) + SizeOf(TBitmapInfoHeader) + SizeOf(BH);
   end
   else
   begin
     BC := PBitmapCoreHeader(RawData);
     ClrUsed := GetDInColors(BC.bcBitCount);
-    BH.bfOffBits := ClrUsed * SizeOf(TRGBTriple) +
-      SizeOf(TBitmapCoreHeader) + SizeOf(BH);
+    BH.bfOffBits :=  ClrUsed * SizeOf(TRGBTriple) + SizeOf(TBitmapCoreHeader) + SizeOf(BH);
   end;
   Stream.Write(BH, SizeOf(BH));
   Stream.Write(RawData^, Size);
@@ -1089,8 +1056,7 @@ end;
 procedure TPeResCursorItem.AssignTo(Dest: TPersistent);
 begin
   if Dest is TPicture then
-    TPicture(Dest).Icon.Handle :=
-      CreateIconFromResource(RawData, Size, ResType = rtIconEntry, $30000)
+    TPicture(Dest).Icon.Handle := CreateIconFromResource(RawData, Size, ResType = rtIconEntry, $30000)
   else
     inherited;
 end;
@@ -1122,13 +1088,12 @@ end;
 procedure TPeResCursorItem.SaveToStream(Stream: TStream);
 begin
   with TIcon.Create do
-    try
-      Handle := CreateIconFromResource(RawData, Self.Size, ResType =
-        rtIconEntry, $30000);
-      SaveToStream(Stream);
-    finally
-      Free;
-    end;
+  try
+    Handle := CreateIconFromResource(RawData, Self.Size, ResType = rtIconEntry, $30000);
+    SaveToStream(Stream);
+  finally
+    Free;
+  end;
 end;
 { TODO : Saving monochrome icons and cursors doesn't work }
 
@@ -1147,8 +1112,7 @@ begin
   begin
     ResList := FResImage.FCursorEntry;
     ItemClass := TPeResCursorItem;
-  end
-  else
+  end else
   begin
     ResList := FResImage.FIconEntry;
     ItemClass := TPeResIconItem;
@@ -1198,12 +1162,11 @@ begin
             Add(PWideChar(RawData));
           dkPackageInfo:
             PackageInfoToStrings(TStrings(Dest));
-        end;
+        end;    
       finally
         EndUpdate;
       end;
-    end
-  else
+  end else
     inherited;
 end;
 
@@ -1271,29 +1234,28 @@ var
   I: Integer;
 begin
   with TJclPePackageInfo.Create(FResImage.LibHandle) do
-    try
-      Strings.Add('Contains');
-      Strings.Add(StringOfChar('-', 80));
-      for I := 0 to ContainsCount - 1 do
-        Strings.Add(Format('  %s [%s]', [ContainsNames[I],
-          UnitInfoFlagsToString(ContainsFlags[I])]));
-      if RequiresCount > 0 then
-      begin
-        Strings.Add('');
-        Strings.Add('Requires');
-        Strings.Add(StringOfChar('-', 80));
-        for I := 0 to RequiresCount - 1 do
-          Strings.Add(Format('  %s', [RequiresNames[I]]));
-      end;
+  try
+    Strings.Add('Contains');
+    Strings.Add(StringOfChar('-', 80));
+    for I := 0 to ContainsCount - 1 do
+      Strings.Add(Format('  %s [%s]', [ContainsNames[I], UnitInfoFlagsToString(ContainsFlags[I])]));
+    if RequiresCount > 0 then
+    begin
       Strings.Add('');
-      Strings.Add('Package Info flags');
+      Strings.Add('Requires');
       Strings.Add(StringOfChar('-', 80));
-      Strings.Add(Format('Options    : %s', [PackageOptionsToString(Flags)]));
-      Strings.Add(Format('Module type: %s', [PackageModuleTypeToString(Flags)]));
-      Strings.Add(Format('Producer   : %s', [ProducerToString(Flags)]));
-    finally
-      Free;
-    end;
+      for I := 0 to RequiresCount - 1 do
+        Strings.Add(Format('  %s', [RequiresNames[I]]));
+    end;    
+    Strings.Add('');
+    Strings.Add('Package Info flags');
+    Strings.Add(StringOfChar('-', 80));
+    Strings.Add(Format('Options    : %s', [PackageOptionsToString(Flags)]));
+    Strings.Add(Format('Module type: %s', [PackageModuleTypeToString(Flags)]));
+    Strings.Add(Format('Producer   : %s', [ProducerToString(Flags)]));
+  finally
+    Free;
+  end;
 end;
 
 { TPeResDialog }
@@ -1309,13 +1271,12 @@ var
   MemHandle: THandle;
   P: Windows.PDlgTemplate;
 
-  function DialogProc(hwndDlg: HWND; uMsg: UINT; W: WPARAM;
-    L: LPARAM): BOOL; stdcall;
+  function DialogProc(hwndDlg: HWND; uMsg: UINT; W: WPARAM; L: LPARAM): BOOL; stdcall;
   begin
     Result := False;
     case uMsg of
       WM_INITDIALOG:
-        Result := True;
+         Result := True;
       WM_LBUTTONDBLCLK:
         EndDialog(hwndDlg, 0);
       WM_RBUTTONUP:
@@ -1342,14 +1303,12 @@ end;
 
 function TPeResHTML.FileExt: string;
 begin
-  Result := Copy(ExtractFileExt(FResourceItem.ParentItem.ParameterName),
-    2, 20);
+  Result := Copy(ExtractFileExt(FResourceItem.ParentItem.ParameterName), 2, 20);
 end;
 
 function TPeResHTML.ResPath: string;
 begin
-  Result := Format('res://%s/%s', [FResImage.FileName,
-    FResourceItem.ParentItem.ParameterName]);
+  Result := Format('res://%s/%s', [FResImage.FileName, FResourceItem.ParentItem.ParameterName]);
 end;
 
 { TPeResIconItem }
@@ -1404,8 +1363,7 @@ begin
           S := WideCharToStr(PWideChar(Text), lstrlenW(PWideChar(Text)))
         else
           SetString(S, PAnsiChar(Text), StrLen(Text));
-        if StripCrLf then
-          S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+        if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
         Strings.AddObject(S, Pointer(E));
       end;
       Entry := Pointer(PChar(Entry) + Entry^.Length);
@@ -1434,12 +1392,10 @@ begin
       Inc(P);
       ID := ((FResourceItem.ParentItem.Entry^.Name - 1) shl 4) + Cnt;
       S := WideCharToStr(P, Len);
-      if StripCrLf then
-        S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+      if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
       Strings.AddObject(S, Pointer(ID));
       Inc(P, Len);
-    end
-    else
+    end else
       Inc(P);
     Inc(Cnt);
   end;
@@ -1453,24 +1409,24 @@ var
 begin
   Strings.Clear;
   with TJclFileVersionInfo.Attach(RawData, Size) do
-    try
-      for I := 0 to LanguageCount - 1 do
-      begin
-        LanguageIndex := I;
-        Strings.Add(Format('[%s] %s', [LanguageIds[I], LanguageNames[I]]));
-        Strings.Add(StringOfChar('-', 80));
-        Strings.AddStrings(Items);
-        Strings.Add(BinFileVersion);
-        Strings.Add(OSIdentToString(FileOS));
-        Strings.Add(OSFileTypeToString(FileType, FileSubType));
-        Strings.Add('');
-      end;
-      Strings.Add(RsTranslations);
-      for I := 0 to TranslationCount - 1 do
-        Strings.Add(VersionLanguageId(Translations[I]));
-    finally
-      Free;
+  try
+    for I := 0 to LanguageCount - 1 do
+    begin
+      LanguageIndex := I;
+      Strings.Add(Format('[%s] %s', [LanguageIds[I], LanguageNames[I]]));
+      Strings.Add(StringOfChar('-', 80));
+      Strings.AddStrings(Items);
+      Strings.Add(BinFileVersion);
+      Strings.Add(OSIdentToString(FileOS));
+      Strings.Add(OSFileTypeToString(FileType, FileSubType));
+      Strings.Add('');
     end;
+    Strings.Add(RsTranslations);
+    for I := 0 to TranslationCount - 1 do
+      Strings.Add(VersionLanguageId(Translations[I]));
+  finally
+    Free;
+  end;
 end;
 
 { TPeResImage }
@@ -1480,8 +1436,7 @@ begin
   inherited;
   if Assigned(FPeImage) then
   begin
-    if not FImageAttached then
-      FreeAndNil(FPeImage) else FPeImage := nil;
+    if not FImageAttached then FreeAndNil(FPeImage) else FPeImage := nil;
   end;
 end;
 
@@ -1506,15 +1461,14 @@ begin
         ResItem := TPeResItem.Create(Self, Item);
         ResItem.FKind := Kind;
         Self.Add(ResItem);
-      end
-      else
-        case Item.ResourceType of
-          rtCursorEntry:
-            FCursorEntry := Item.List;
-          rtIconEntry:
-            FIconEntry := Item.List;
-        end;
-    end;
+      end else
+      case Item.ResourceType of
+        rtCursorEntry:
+          FCursorEntry := Item.List;
+        rtIconEntry:
+          FIconEntry := Item.List;
+      end;
+    end;  
 end;
 
 destructor TPeResImage.Destroy;
@@ -1525,8 +1479,7 @@ end;
 
 function TPeResImage.GetFileName: TFileName;
 begin
-  if Assigned(FPeImage) then
-    Result := FPeImage.FileName else Result := '';
+  if Assigned(FPeImage) then Result := FPeImage.FileName else Result := '';
 end;
 
 function TPeResImage.GetItems(Index: Integer): TPeResItem;
@@ -1539,9 +1492,8 @@ begin
   if FLibHandle = 0 then
   begin
     FLibHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE);
-    if FLibHandle = 0 then
-      RaiseLastOSError;
-  end;
+    if FLibHandle = 0 then RaiseLastOSError;
+  end;  
   Result := FLibHandle;
 end;
 

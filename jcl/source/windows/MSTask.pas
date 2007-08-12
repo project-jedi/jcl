@@ -297,8 +297,7 @@ type
 
 type
 {$EXTERNALSYM _TASK_TRIGGER}
-  _TASK_TRIGGER = record
- // SP: removed packed record statement as seemed to affect SetTrigger
+  _TASK_TRIGGER = record // SP: removed packed record statement as seemed to affect SetTrigger
     cbTriggerSize: WORD; // Structure size.
     Reserved1: WORD; // Reserved. Must be zero.
     wBeginYear: WORD; // Trigger beginning date year.
@@ -345,8 +344,7 @@ type
 // {148BD52B-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM IID_ITaskTrigger}
-  IID_ITaskTrigger: TIID = (D1: $148BD52B; D2: $A2AB; D3: $11CE;
-    D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  IID_ITaskTrigger: TIID = (D1: $148BD52B; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 
 // interface ITaskTrigger;
@@ -374,8 +372,7 @@ type
 // {a6b952f0-a4b1-11d0-997d-00aa006887ec}
 const
 {$EXTERNALSYM IID_IScheduledWorkItem}
-  IID_IScheduledWorkItem: TIID = (D1: $A6B952F0; D2: $A4B1;
-    D3: $11D0; D4: ($99, $7D, $00, $AA, $00, $68, $87, $EC));
+  IID_IScheduledWorkItem: TIID = (D1: $A6B952F0; D2: $A4B1; D3: $11D0; D4: ($99, $7D, $00, $AA, $00, $68, $87, $EC));
 
 
 // interface IScheduledWorkItem;
@@ -384,37 +381,30 @@ type
   IScheduledWorkItem = interface(IUnknown)
     ['{A6B952F0-A4B1-11D0-997D-00AA006887EC}']
 // Methods concerning scheduling:
-    function CreateTrigger(out piNewTrigger: WORD;
-      out ppTrigger: ITaskTrigger): HRESULT; stdcall;
+    function CreateTrigger(out piNewTrigger: WORD; out ppTrigger: ITaskTrigger): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} WORD * piNewTrigger, {out} ITaskTrigger ** ppTrigger |*)
     function DeleteTrigger(iTrigger: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD iTrigger |*)
     function GetTriggerCount(out pwCount: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} WORD * pwCount |*)
-    function GetTrigger(iTrigger: WORD;
-      out ppTrigger: ITaskTrigger): HRESULT; stdcall;
+    function GetTrigger(iTrigger: WORD; out ppTrigger: ITaskTrigger): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD iTrigger, {out} ITaskTrigger ** ppTrigger |*)
-    function GetTriggerString(iTrigger: WORD;
-      out ppwszTrigger: LPWSTR): HRESULT; stdcall;
+    function GetTriggerString(iTrigger: WORD; out ppwszTrigger: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD iTrigger, {out} LPWSTR * ppwszTrigger |*)
-    function GetRunTimes(pstBegin: PSystemTime; pstEnd: PSystemTime;
-      var pCount: WORD; out rgstTaskTimes: PSystemTime): HRESULT; stdcall;
+    function GetRunTimes(pstBegin: PSystemTime; pstEnd: PSystemTime; var pCount: WORD; out rgstTaskTimes: PSystemTime): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} const LPSYSTEMTIME pstBegin, {in} const LPSYSTEMTIME pstEnd, {in; out} WORD * pCount, {out} LPSYSTEMTIME * rgstTaskTimes |*)
     function GetNextRunTime(var pstNextRun: SYSTEMTIME): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in; out} SYSTEMTIME * pstNextRun |*)
-    function SetIdleWait(wIdleMinutes: WORD;
-      wDeadlineMinutes: WORD): HRESULT; stdcall;
+    function SetIdleWait(wIdleMinutes: WORD; wDeadlineMinutes: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD wIdleMinutes, {in} WORD wDeadlineMinutes |*)
-    function GetIdleWait(out pwIdleMinutes: WORD;
-      out pwDeadlineMinutes: WORD): HRESULT; stdcall;
+    function GetIdleWait(out pwIdleMinutes: WORD; out pwDeadlineMinutes: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} WORD * pwIdleMinutes, {out} WORD * pwDeadlineMinutes |*)
 // Other methods:
     function Run(): HRESULT; stdcall;
     function Terminate(): HRESULT; stdcall;
     function EditWorkItem(hParent: HWND; dwReserved: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} HWND hParent, {in} DWORD dwReserved |*)
-    function GetMostRecentRunTime(out pstLastRun: SYSTEMTIME): HRESULT;
-      stdcall;
+    function GetMostRecentRunTime(out pstLastRun: SYSTEMTIME): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} SYSTEMTIME * pstLastRun |*)
     function GetStatus(out phrStatus: HRESULT): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} HRESULT * phrStatus |*)
@@ -431,8 +421,7 @@ type
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszCreator |*)
     function SetWorkItemData(cbData: WORD; rgbData: PByte): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD cbData, {in} BYTE rgbData[] |*)
-    function GetWorkItemData(out pcbData: WORD;
-      out prgbData: PByte): HRESULT; stdcall;
+    function GetWorkItemData(out pcbData: WORD; out prgbData: PByte): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} WORD * pcbData, {out} BYTE ** prgbData |*)
     function SetErrorRetryCount(wRetryCount: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD wRetryCount |*)
@@ -440,18 +429,15 @@ type
     (*| Parameter(s) was/were [CPP]: {out} WORD * pwRetryCount |*)
     function SetErrorRetryInterval(wRetryInterval: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD wRetryInterval |*)
-    function GetErrorRetryInterval(out pwRetryInterval: WORD): HRESULT;
-      stdcall;
+    function GetErrorRetryInterval(out pwRetryInterval: WORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} WORD * pwRetryInterval |*)
     function SetFlags(dwFlags: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} DWORD dwFlags |*)
     function GetFlags(out pdwFlags: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} DWORD * pdwFlags |*)
-    function SetAccountInformation(pwszAccountName: LPCWSTR;
-      pwszPassword: LPCWSTR): HRESULT; stdcall;
+    function SetAccountInformation(pwszAccountName: LPCWSTR; pwszPassword: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszAccountName, {in} LPCWSTR pwszPassword |*)
-    function GetAccountInformation(out ppwszAccountName: LPWSTR): HRESULT;
-      stdcall;
+    function GetAccountInformation(out ppwszAccountName: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszAccountName |*)
   end;
 
@@ -466,8 +452,7 @@ type
 // {148BD524-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM IID_ITask}
-  IID_ITask: TIID = (D1: $148BD524; D2: $A2AB; D3: $11CE;
-    D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  IID_ITask: TIID = (D1: $148BD524; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 
 // interface ITask;
@@ -476,21 +461,17 @@ type
   ITask = interface(IScheduledWorkItem)
     ['{148BD524-A2AB-11CE-B11F-00AA00530503}']
 // Properties that correspond to parameters of CreateProcess:
-    function SetApplicationName(pwszApplicationName: LPCWSTR): HRESULT;
-      stdcall;
+    function SetApplicationName(pwszApplicationName: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszApplicationName |*)
-    function GetApplicationName(out ppwszApplicationName: LPWSTR): HRESULT;
-      stdcall;
+    function GetApplicationName(out ppwszApplicationName: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszApplicationName |*)
     function SetParameters(pwszParameters: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszParameters |*)
     function GetParameters(out ppwszParameters: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszParameters |*)
-    function SetWorkingDirectory(pwszWorkingDirectory: LPCWSTR): HRESULT;
-      stdcall;
+    function SetWorkingDirectory(pwszWorkingDirectory: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszWorkingDirectory |*)
-    function GetWorkingDirectory(out ppwszWorkingDirectory: LPWSTR): HRESULT;
-      stdcall;
+    function GetWorkingDirectory(out ppwszWorkingDirectory: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszWorkingDirectory |*)
     function SetPriority(dwPriority: DWORD): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} DWORD dwPriority |*)
@@ -518,8 +499,7 @@ type
 // {148BD528-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM IID_IEnumWorkItems}
-  IID_IEnumWorkItems: TIID = (D1: $148BD528; D2: $A2AB; D3: $11CE;
-    D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  IID_IEnumWorkItems: TIID = (D1: $148BD528; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 
 // interface IEnumWorkItems;
@@ -528,8 +508,7 @@ type
   IEnumWorkItems = interface(IUnknown)
     ['{148BD528-A2AB-11CE-B11F-00AA00530503}']
 // Methods:
-    function Next(celt: ULONG; out rgpwszNames: PLPWSTR;
-      out pceltFetched: ULONG): HRESULT; stdcall;
+    function Next(celt: ULONG; out rgpwszNames: PLPWSTR; out pceltFetched: ULONG): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} ULONG celt, {out} LPWSTR ** rgpwszNames, {out} ULONG * pceltFetched |*)
     function Skip(celt: ULONG): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} ULONG celt |*)
@@ -550,8 +529,7 @@ type
 // {148BD527-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM IID_ITaskScheduler}
-  IID_ITaskScheduler: TIID = (D1: $148BD527; D2: $A2AB; D3: $11CE;
-    D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  IID_ITaskScheduler: TIID = (D1: $148BD527; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 
 // interface ITaskScheduler;
@@ -566,16 +544,13 @@ type
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszComputer |*)
     function Enum(out ppEnumWorkItems: IEnumWorkItems): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} IEnumWorkItems ** ppEnumWorkItems |*)
-    function Activate(pwszName: LPCWSTR; const riid: TIID;
-      out ppUnk: IUnknown): HRESULT; stdcall;
+    function Activate(pwszName: LPCWSTR; const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
     function Delete(pwszName: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName |*)
-    function NewWorkItem(pwszTaskName: LPCWSTR; const rclsid: TCLSID;
-      const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
+    function NewWorkItem(pwszTaskName: LPCWSTR; const rclsid: TCLSID; const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} REFCLSID rclsid, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
-    function AddWorkItem(pwszTaskName: LPCWSTR;
-      const pWorkItem: IScheduledWorkItem): HRESULT; stdcall;
+    function AddWorkItem(pwszTaskName: LPCWSTR; const pWorkItem: IScheduledWorkItem): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} IScheduledWorkItem * pWorkItem |*)
     function IsOfType(pwszName: LPCWSTR; const riid: TIID): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid |*)
@@ -587,14 +562,12 @@ type
 // {148BD520-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM CLSID_CTask}
-  CLSID_CTask: TCLSID = (D1: $148BD520; D2: $A2AB; D3: $11CE;
-    D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  CLSID_CTask: TCLSID = (D1: $148BD520; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 // {148BD52A-A2AB-11CE-B11F-00AA00530503}
 const
 {$EXTERNALSYM CLSID_CTaskScheduler}
-  CLSID_CTaskScheduler: TCLSID = (D1: $148BD52A; D2: $A2AB;
-    D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  CLSID_CTaskScheduler: TCLSID = (D1: $148BD52A; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 
 
@@ -639,8 +612,7 @@ type
 // {4086658a-cbbb-11cf-b604-00c04fd8d565}
 const
 {$EXTERNALSYM IID_IProvideTaskPage}
-  IID_IProvideTaskPage: TIID = (D1: $4086658A; D2: $CBBB;
-    D3: $11CF; D4: ($B6, $04, $00, $C0, $4F, $D8, $D5, $65));
+  IID_IProvideTaskPage: TIID = (D1: $4086658A; D2: $CBBB; D3: $11CF; D4: ($B6, $04, $00, $C0, $4F, $D8, $D5, $65));
 
 
 // interface IProvideTaskPage;
@@ -649,9 +621,7 @@ type
   IProvideTaskPage = interface(IUnknown)
     ['{4086658A-CBBB-11CF-B604-00C04FD8D565}']
 // Methods:
-    function GetPage(tpType: TTaskPage; fPersistChanges: BOOL;
-      out phPage: HPROPSHEETPAGE): HRESULT; stdcall;
- // OS: Changed TASKPAGE to TTaskPage
+    function GetPage(tpType: TTaskPage; fPersistChanges: BOOL; out phPage: HPROPSHEETPAGE): HRESULT; stdcall; // OS: Changed TASKPAGE to TTaskPage
     (*| Parameter(s) was/were [CPP]: {in} TASKPAGE tpType, {in} BOOL fPersistChanges, {out} HPROPSHEETPAGE * phPage |*)
   end;
 
@@ -666,14 +636,13 @@ type
 
 const
 {$EXTERNALSYM IID_ISchedulingAgent}
-  IID_ISchedulingAgent: TIID = (D1: $148BD527; D2: $A2AB;
-    D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  IID_ISchedulingAgent: TIID = (D1: $148BD527; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 const
 {$EXTERNALSYM CLSID_CSchedulingAgent}
-  CLSID_CSchedulingAgent: TCLSID = (D1: $148BD52A; D2: $A2AB;
-    D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
+  CLSID_CSchedulingAgent: TCLSID = (D1: $148BD52A; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
 implementation
 
 end.
+

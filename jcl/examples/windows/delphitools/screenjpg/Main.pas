@@ -114,12 +114,10 @@ begin
   Result := not Modified;
   if not Result then
     case MessBox(RsSaveImage, MB_ICONEXCLAMATION or MB_YESNOCANCEL) of
-      ID_YES:
-        Result := SaveFile;
-      ID_NO:
-        Result := True;
-      else
-        Result := False;
+      ID_YES: Result := SaveFile;
+      ID_NO: Result := True;
+    else
+      Result := False;
     end;
 end;
 
@@ -127,8 +125,7 @@ procedure TMainForm.CompressPicture;
 var
   Ratio: Integer;
 begin
-  with RatioComboBox do
-    Ratio := Integer(Items.Objects[ItemIndex]);
+  with RatioComboBox do Ratio := Integer(Items.Objects[ItemIndex]);
   FJpegImage.Grayscale := (ColorComboBox.ItemIndex = 0);
   FJpegImage.CompressionQuality := Ratio;
   FJpegImage.Assign(FOriginalPicture.Graphic);
@@ -180,7 +177,7 @@ end;
 
 procedure TMainForm.UpdatePicture;
 var
-  MemStream: TMemoryStream;
+  MemStream : TMemoryStream;
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -189,8 +186,7 @@ begin
     MemStream := TMemoryStream.Create;
     try
       FJpegImage.SaveToStream(MemStream);
-      StatusBar1.Panels[0].Text :=
-        Format(RsJpegSize, [IntToExtended(MemStream.Size)]);
+      StatusBar1.Panels[0].Text := Format(RsJpegSize, [IntToExtended(MemStream.Size)]);
       MemStream.Position := 0;
       FJpegImage.LoadFromStream(MemStream);
       Image1.Picture.Assign(FJpegImage);
@@ -218,8 +214,7 @@ begin
   with RatioComboBox do
   begin
     for I := Low(QualityTable) to High(QualityTable) do
-      Items.AddObject(Format('%d%%', [QualityTable[I]]),
-        Pointer(QualityTable[I]));
+      Items.AddObject(Format('%d%%', [QualityTable[I]]), Pointer(QualityTable[I]));
     ItemIndex := 8;
   end;
   ColorComboBox.ItemIndex := 1;
@@ -244,7 +239,7 @@ begin
     FFileName := '';
     UpdatePicture;
     FModified := True;
-  end;
+  end;  
 end;
 
 procedure TMainForm.Paste1Update(Sender: TObject);

@@ -238,15 +238,13 @@ begin
   edtPageFileFree.Text := IntToStr(GetFreePageFileMemory);
 
   if IsWinNT then
-    LabelSysResources.Caption :=
-      'System resources meter is not available on NT systems'
+    LabelSysResources.Caption := 'System resources meter is not available on NT systems'
   else
   if not IsSystemResourcesMeterPresent then
     LabelSysResources.Caption := 'System resources meter tool is not installed'
   else
     with GetFreeSystemResources do
-      LabelSysResources.Caption :=
-        Format('User: %d%%,  System: %d%%,  Gdi: %d%%', [UserRes, SystemRes, GdiRes]);
+      LabelSysResources.Caption := Format('User: %d%%,  System: %d%%,  Gdi: %d%%', [UserRes, SystemRes, GdiRes]);
 
   // Keyboard
   if GetNumLockKeyState = true then
@@ -265,13 +263,11 @@ begin
     edtCapsLockState.Text := 'OFF';
 
   // BIOS
-  if IsWinNT then
-  begin
+  if IsWinNT then begin
     grpBIOS.Caption := ' BIOS (Currently only availabe under Windows 9x) ';
     edtBIOSDate.Text := DateToStr(GetBiosDate);
   end
-  else
-  begin
+  else begin
     edtBIOSName.Text := GetBIOSName;
     edtBIOSCopyright.Text := GetBiosCopyright;
     edtBIOSExtendedInfo.Text := GetBIOSExtendedInfo;

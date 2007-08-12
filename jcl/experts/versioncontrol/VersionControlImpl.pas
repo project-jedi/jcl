@@ -83,7 +83,7 @@ type
     vcaUpdateSandboxTo,   // update sandbox to...
     vcaUnlock,            // unlock current file
     vcaUnlockSandbox      // unlock sandbox
-    );
+  );
 
   TJclVersionControlActions = set of TJclVersionControlAction;
 
@@ -96,11 +96,9 @@ type
     // get supported actions by the plugin
     function GetSupportedActions: TJclVersionControlActions; virtual;
     // get actions for the current file
-    function GetFileActions(const FileName: string): TJclVersionControlActions;
-      virtual;
+    function GetFileActions(const FileName: string): TJclVersionControlActions; virtual;
     // get actions for the current sandbox (sandbox can be not yet initialized)
-    function GetSandboxActions(
-      const SdBxName: string): TJclVersionControlActions; virtual;
+    function GetSandboxActions(const SdBxName: string): TJclVersionControlActions; virtual;
     // get icon for the action
     function GetIcon(const Action: TJclVersionControlAction): Integer; virtual;
     // true if the plugin is supported (third-party tools present)
@@ -108,24 +106,18 @@ type
     // friendly name of the plugin
     function GetName: string; virtual;
   public
-    constructor Create(const AExpert: TJclVersionControlExpert);
-      reintroduce; virtual;
+    constructor Create(const AExpert: TJclVersionControlExpert); reintroduce; virtual;
     // returns sandbox names
     // returns true and initialized sandbox names if presents
     // returns false and all parent directories names if no sandbox is present
-    function GetSandboxNames(const FileName: string;
-      SdBxNames: TStrings): Boolean; virtual;
+    function GetSandboxNames(const FileName: string; SdBxNames: TStrings): Boolean; virtual;
     // execute the action of a file or on a sandbox
     function ExecuteAction(const FileName: string;
       const Action: TJclVersionControlAction): Boolean; virtual;
-    property SupportActions: TJclVersionControlActions
-      read GetSupportedActions;
-    property FileActions[const FileName: string]: TJclVersionControlActions
-      read GetFileActions;
-    property SandboxActions[const SdBxName: string]: TJclVersionControlActions
-      read GetSandboxActions;
-    property Icons[const Action: TJclVersionControlAction]: Integer
-      read GetIcon;
+    property SupportActions: TJclVersionControlActions read GetSupportedActions;
+    property FileActions[const FileName: string]: TJclVersionControlActions read GetFileActions;
+    property SandboxActions[const SdBxName: string]: TJclVersionControlActions read GetSandboxActions;
+    property Icons[const Action: TJclVersionControlAction]: Integer read GetIcon;
     property Enabled: Boolean read GetEnabled;
     property Expert: TJclVersionControlExpert read FExpert;
     property Name: string read GetName;
@@ -133,7 +125,7 @@ type
 
   TJclVersionControlPluginClass = class of TJclVersionControlPlugin;
 
-  TJclVersionControlCache = class(TObject)
+  TJclVersionControlCache = class (TObject)
   private
     FSandboxList: TList;
     FFileName: string;
@@ -152,13 +144,12 @@ type
     property FileName: string read FFileName;
     property Actions: TJclVersionControlActions read FActions;
     property SandBoxes[Index: Integer]: string read GetSandBox;
-    property SandBoxActions[Index: Integer]: TJclVersionControlActions
-      read GetSandboxAction;
+    property SandBoxActions[Index: Integer]: TJclVersionControlActions read GetSandboxAction;
     property SandBoxCount: Integer read GetSandboxCount;
     property Supported: Boolean read FSupported;
   end;
 
-  TJclVersionControlExpert = class(TJclOTAExpert)
+  TJclVersionControlExpert = class (TJclOTAExpert)
   private
     FVersionCtrlMenu: TMenuItem;
     FActions: array [TJclVersionControlAction] of TCustomAction;
@@ -197,25 +188,18 @@ type
     procedure RegisterCommands; override;
     procedure UnregisterCommands; override;
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); override;
-    procedure ConfigurationClosed(AControl: TControl;
-      SaveChanges: Boolean); override;
-    function CacheResourceIcon(const ResourceFile: string;
-      const ResourceID: Integer): Integer; overload;
-    function CacheResourceIcon(const ResourceFile: string;
-      const ResourceName: string): Integer; overload;
+    procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); override;
+    function CacheResourceIcon(const ResourceFile: string; const ResourceID: Integer): Integer; overload;
+    function CacheResourceIcon(const ResourceFile: string; const ResourceName: string): Integer; overload;
     function SaveModules(const FileName: string;
       const IncludeSubDirectories: Boolean): Boolean;
-    function GetFileCache(const FileName: string;
-      const Plugin: TJclVersionControlPlugin): TJclVersionControlCache;
+    function GetFileCache(const FileName: string; const Plugin: TJclVersionControlPlugin): TJclVersionControlCache;
 
     property ModuleServices: IOTAModuleServices read FModuleServices;
-    property ActOnTopSandbox: Boolean read FActOnTopSandbox
-      write FActOnTopSandbox;
-    property DisableActions: Boolean
-      read FDisableActions write FDisableActions;
+    property ActOnTopSandbox: Boolean read FActOnTopSandbox write FActOnTopSandbox;
+    property DisableActions: Boolean read FDisableActions write FDisableActions;
     property HideActions: Boolean read FHideActions write FHideActions;
-    property SaveConfirmation: Boolean
-      read FSaveConfirmation write FSaveConfirmation;
+    property SaveConfirmation: Boolean read FSaveConfirmation write FSaveConfirmation;
     property IconType: Integer read FIconType write SetIconType;
     property CurrentCache: TJclVersionControlCache read GetCurrentCache;
     property CurrentPlugin: TJclVersionControlPlugin read GetCurrentPlugin;
@@ -224,31 +208,23 @@ type
     property Plugins[Index: Integer]: TJclVersionControlPlugin read GetPlugin;
   // plugin functions
   private
-    procedure ClassRegistered(
-      const APluginClass: TJclVersionControlPluginClass);
-    procedure ClassUnregistered(
-      const APluginClass: TJclVersionControlPluginClass);
+    procedure ClassRegistered(const APluginClass: TJclVersionControlPluginClass);
+    procedure ClassUnregistered(const APluginClass: TJclVersionControlPluginClass);
   public
-    class procedure RegisterPluginClass(
-      const APluginClass: TJclVersionControlPluginClass);
-    class procedure UnregisterPluginClass(
-      const APluginClass: TJclVersionControlPluginClass);
+    class procedure RegisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
+    class procedure UnregisterPluginClass(const APluginClass: TJclVersionControlPluginClass);
   end;
 
-  TJclVersionControlSystemPlugin = class(TJclVersionControlPlugin)
+  TJclVersionControlSystemPlugin = class (TJclVersionControlPlugin)
   protected
     function GetSupportedActions: TJclVersionControlActions; override;
-    function GetFileActions(const FileName: string): TJclVersionControlActions;
-      override;
-    function GetSandboxActions(
-      const SdBxName: string): TJclVersionControlActions; override;
-    function GetIcon(const Action: TJclVersionControlAction): Integer;
-      override;
+    function GetFileActions(const FileName: string): TJclVersionControlActions; override;
+    function GetSandboxActions(const SdBxName: string): TJclVersionControlActions; override;
+    function GetIcon(const Action: TJclVersionControlAction): Integer; override;
     function GetEnabled: Boolean; override;
     function GetName: string; override;
   public
-    function GetSandboxNames(const FileName: string;
-      SdBxNames: TStrings): Boolean; override;
+    function GetSandboxNames(const FileName: string; SdBxNames: TStrings): Boolean; override;
     function ExecuteAction(const FileName: string;
       const Action: TJclVersionControlAction): Boolean; override;
   end;
@@ -291,8 +267,7 @@ const
   // vcaBranchSandbox
   JclVersionCtrlBranchSandboxActionName = 'JclVersionCtrlBranchSandboxCommand';
   // vcaCheckoutSandbox
-  JclVersionCtrlCheckoutSandboxActionName =
-    'JclVersionCtrlCheckOutSandboxCommand';
+  JclVersionCtrlCheckoutSandboxActionName = 'JclVersionCtrlCheckOutSandboxCommand';
   // vcaCommit
   JclVersionCtrlCommitActionName = 'JclVersionCtrlCommitCommand';
   // vcaCommitSandbox
@@ -304,8 +279,7 @@ const
   // vcaExplore
   JclVersionCtrlExploreActionName = 'JclVersionCtrlExploreCommand';
   // vcaExploreSandbox
-  JclVersionCtrlExploreSandboxActionName =
-    'JclVersionCtrlExploreSandboxCommand';
+  JclVersionCtrlExploreSandboxActionName = 'JclVersionCtrlExploreSandboxCommand';
   // vcaGraph
   JclVersionCtrlGraphActionName = 'JclVersionCtrlGraphCommand';
   // vcaLog
@@ -323,8 +297,7 @@ const
   // vcaProperties
   JclVersionCtrlPropertiesActionName = 'JclVersionCtrlPropertiesCommand';
   // vcaPropertiesSandbox
-  JclVersionCtrlPropertiesSandboxActionName =
-    'JclVersionCtrlPropertiesSandboxCommand';
+  JclVersionCtrlPropertiesSandboxActionName = 'JclVersionCtrlPropertiesSandboxCommand';
   // vcaRename
   JclVersionCtrlRenameActionName = 'JclVersionCtrlRenameCommand';
   // vcaRepoBrowser
@@ -348,8 +321,7 @@ const
   // vcaUpdateTo
   JclVersionCtrlUpdateToActionName = 'JclVersionCtrlUpdateToCommand';
   // vcaUpdateSandboxTo
-  JclVersionCtrlUpdateSandboxToActionName =
-    'JclVersionCtrlUpdateSandboxToCommand';
+  JclVersionCtrlUpdateSandboxToActionName = 'JclVersionCtrlUpdateSandboxToCommand';
   // vcaUnlock
   JclVersionCtrlUnlockActionName = 'JclVersionCtrlUnlockCommand';
   // vcaUnlockSandbox
@@ -368,67 +340,40 @@ const
 resourcestring
   RsVersionCtrlMenuCaption = 'Jcl &Version';
   RsVersionCtrlAddCaption = '&Add';                                 // vcaAdd
-  RsVersionCtrlAddSandboxCaption = 'Add ...';
-                       // vcaAddSandbox
+  RsVersionCtrlAddSandboxCaption = 'Add ...';                       // vcaAddSandbox
   RsVersionCtrlBlameCaption = '&Blame';                             // vcaBlame
-  RsVersionCtrlBranchCaption = 'Branc&h';
-                           // vcaBranch
-  RsVersionCtrlBranchSandboxCaption = 'Branch ...';
-                 // vcaBranchSandbox
-  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';
-           // vcaCreateSandbox
-  RsVersionCtrlCommitCaption = 'Co&mmit';
-                           // vcaCommit
-  RsVersionCtrlCommitSandboxCaption = 'Commit ...';
-                 // vcaCommitSandbox
-  RsVersionCtrlContextMenuCaption = 'Co&ntext Menu (right-click)';
-  // vcaContextMenu
+  RsVersionCtrlBranchCaption = 'Branc&h';                           // vcaBranch
+  RsVersionCtrlBranchSandboxCaption = 'Branch ...';                 // vcaBranchSandbox
+  RsVersionCtrlCheckOutSandboxCaption = 'C&heck out ...';           // vcaCreateSandbox
+  RsVersionCtrlCommitCaption = 'Co&mmit';                           // vcaCommit
+  RsVersionCtrlCommitSandboxCaption = 'Commit ...';                 // vcaCommitSandbox
+  RsVersionCtrlContextMenuCaption = 'Co&ntext Menu (right-click)';  // vcaContextMenu
   RsVersionCtrlDiffCaption = '&Diff';                               // vcaDiff
-  RsVersionCtrlExploreCaption = 'E&xplore Folder';
-                  // vcaExplore
-  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';
-              // vcaExploreSandbox
+  RsVersionCtrlExploreCaption = 'E&xplore Folder';                  // vcaExplore
+  RsVersionCtrlExploreSandboxCaption = 'E&xplore ...';              // vcaExploreSandbox
   RsVersionCtrlGraphCaption = 'Revision Gr&aph';                    // vcaGraph
   RsVersionCtrlLogCaption = '&Log';                                 // vcaLog
-  RsVersionCtrlLogSandboxCaption = 'Log ...';
-                       // vcaLogSandbox
+  RsVersionCtrlLogSandboxCaption = 'Log ...';                       // vcaLogSandbox
   RsVersionCtrlLockCaption = 'Loc&k';                               // vcaLock
-  RsVersionCtrlLockSandboxCaption = 'Lock ...';
-                     // vcaLockSandbox
+  RsVersionCtrlLockSandboxCaption = 'Lock ...';                     // vcaLockSandbox
   RsVersionCtrlMergeCaption = '&Merge';                             // vcaMerge
-  RsVersionCtrlMergeSandboxCaption = 'Merge ...';
-                   // vcaMergeSandbox
-  RsVersionCtrlPropertiesCaption = 'Pr&operties';
-                   // vcaProperties
-  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...';
-         // vcaPropertiesSandbox
-  RsVersionCtrlRenameCaption = '&Rename';
-                           // vcaRename
-  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';
-          // vcaRepoBrowser
-  RsVersionCtrlRevertCaption = '&Revert';
-                           // vcaRevert
-  RsVersionCtrlRevertSandboxCaption = 'Revert ...';
-                 // vcaRevertSandbox
-  RsVersionCtrlStatusCaption = 'S&tatus';
-                           // vcaStatus
-  RsVersionCtrlStatusSandboxCaption = 'Status ...';
-                 // vcaStatusSandbox
+  RsVersionCtrlMergeSandboxCaption = 'Merge ...';                   // vcaMergeSandbox
+  RsVersionCtrlPropertiesCaption = 'Pr&operties';                   // vcaProperties
+  RsVersionCtrlPropertiesSandboxCaption = 'Properties ...';         // vcaPropertiesSandbox
+  RsVersionCtrlRenameCaption = '&Rename';                           // vcaRename
+  RsVersionCtrlRepoBrowserCaption = 'Repositor&y Browser';          // vcaRepoBrowser
+  RsVersionCtrlRevertCaption = '&Revert';                           // vcaRevert
+  RsVersionCtrlRevertSandboxCaption = 'Revert ...';                 // vcaRevertSandbox
+  RsVersionCtrlStatusCaption = 'S&tatus';                           // vcaStatus
+  RsVersionCtrlStatusSandboxCaption = 'Status ...';                 // vcaStatusSandbox
   RsVersionCtrlTagCaption = 'Ta&g';                                 // vcaTag
-  RsVersionCtrlTagSandboxCaption = 'Tag ...';
-                       // vcaTagSandBox
-  RsVersionCtrlUpdateCaption = 'U&pdate';
-                           // vcaUpdate
-  RsVersionCtrlUpdateSandboxCaption = 'Update ...';
-                 // vcaUpdateSandbox
-  RsVersionCtrlUpdateToCaption = 'Update &to ';
-                     // vcaUpdateTo
-  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';
-            // vcaUpdateSandboxTo
-  RsVersionCtrlUnlockCaption = '&Unlock';
-                           // vcaUnlock
-  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';
-                 // vcaUnlockSandbox
+  RsVersionCtrlTagSandboxCaption = 'Tag ...';                       // vcaTagSandBox
+  RsVersionCtrlUpdateCaption = 'U&pdate';                           // vcaUpdate
+  RsVersionCtrlUpdateSandboxCaption = 'Update ...';                 // vcaUpdateSandbox
+  RsVersionCtrlUpdateToCaption = 'Update &to ';                     // vcaUpdateTo
+  RsVersionCtrlUpdateSandboxToCaption = 'Update to ...';            // vcaUpdateSandboxTo
+  RsVersionCtrlUnlockCaption = '&Unlock';                           // vcaUnlock
+  RsVersionCtrlUnlockSandboxCaption = 'Unlock ...';                 // vcaUnlockSandbox
 
   RsSvnMenuItemNotInserted = 'Can''t insert the ''%s'' menu item';
   RsENoToolsMenuItem = 'Tools menu item not found';
@@ -474,8 +419,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -486,8 +431,7 @@ begin
     if not Assigned(OTAWizardServices) then
       raise EJclExpertException.CreateTrace(RsENoWizardServices);
 
-    JCLWizardIndex := OTAWizardServices.AddWizard(
-      TJclVersionControlExpert.Create);
+    JCLWizardIndex := OTAWizardServices.AddWizard(TJclVersionControlExpert.Create);
 
     Result := True;
   except
@@ -506,10 +450,10 @@ begin
   Result := 0;
   for Index := 1 to Length(Item) do
     if not (Item[Index] in AnsiDecDigits) then
-    begin
-      Result := StrToInt(Copy(Item, 1, Index - 1));
-      Exit;
-    end;
+  begin
+    Result := StrToInt(Copy(Item, 1, Index - 1));
+    Exit;
+  end;
   Abort;
 end;
 
@@ -520,11 +464,11 @@ begin
   Result := -1;
   for Index := Length(Item) downto 1 do
     if not (Item[Index] in AnsiDecDigits) then
-    begin
-      if Index < Length(Item) then
-        Result := StrToInt(Copy(Item, Index + 1, Length(Item) - Index));
-      Exit;
-    end;
+  begin
+    if Index < Length(Item) then
+      Result := StrToInt(Copy(Item, Index + 1, Length(Item) - Index));
+    Exit;
+  end;
 end;
 
 function GetItemName(const Item: string): string;
@@ -533,11 +477,11 @@ var
 begin
   for Index1 := 1 to Length(Item) do
     if not (Item[Index1] in AnsiDecDigits) then
-    begin
-      if Index1 = 1 then
-        Abort;
-      Break;
-    end;
+  begin
+    if Index1 = 1 then
+      Abort;
+    Break;
+  end;
 
   for Index2 := Length(Item) downto 1 do
     if not (Item[Index2] in AnsiDecDigits) then
@@ -546,8 +490,7 @@ begin
   Result := Copy(Item, Index1, Index2 - Index1 + 1);
 end;
 
-function MenuOrganizationSort(List: TStringList;
-  Index1, Index2: Integer): Integer;
+function MenuOrganizationSort(List: TStringList; Index1, Index2: Integer): Integer;
 var
   Item1, Item2: string;
   Index1A, Index1B, Index2A, Index2B: Integer;
@@ -561,14 +504,11 @@ begin
 
   if Index1A < Index2A then
     Result := -1
-  else
-  if Index1A > Index2A then
+  else if Index1A > Index2A then
     Result := 1
-  else
-  if Index1B < Index2B then
+  else if Index1B < Index2B then
     Result := -1
-  else
-  if Index1B > Index2B then
+  else if Index1B > Index2B then
     Result := 1
   else
     Result := 0;
@@ -584,189 +524,188 @@ type
   end;
 
 const
-  VersionControlActionInfos: array [TJclVersionControlAction] of
-    TJclVersionControlActionRec =
-    ((SandBox: False;                          // vcaAdd
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlAddCaption;
-    ActionName: JclVersionCtrlAddActionName),
-    (SandBox: True;                           // vcaAddSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlAddSandboxCaption;
-    ActionName: JclVersionCtrlAddSandboxActionName),
-    (SandBox: False;                          // vcaBlame
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlBlameCaption;
-    ActionName: JclVersionCtrlBlameActionName),
-    (SandBox: False;                          // vcaBranch
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlBranchCaption;
-    ActionName: JclVersionCtrlBranchActionName),
-    (SandBox: True;                           // vcaBranchSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlBranchSandboxCaption;
-    ActionName: JclVersionCtrlBranchSandboxActionName),
-    (SandBox: True;                           // vcaCheckOutSandbox
-    SaveFile: True;
-    AllPlugins: True;
-    Caption: RsVersionCtrlCheckOutSandboxCaption;
-    ActionName: JclVersionCtrlCheckOutSandboxActionName),
-    (SandBox: False;                          // vcaCommit
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlCommitCaption;
-    ActionName: JclVersionCtrlCommitActionName),
-    (SandBox: True;                           // vcaCommitSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlCommitSandboxCaption;
-    ActionName: JclVersionCtrlCommitSandboxActionName),
-    (SandBox: False;                          // vcaContextMenu
-    SaveFile: False;
-    AllPlugins: True;
-    Caption: RsVersionCtrlContextMenuCaption;
-    ActionName: JclVersionCtrlContextMenuActionName),
-    (SandBox: False;                          // vcaDiff
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlDiffCaption;
-    ActionName: JclVersionCtrlDiffActionName),
-    (SandBox: False;                           // vcaExplore
-    SaveFile: False;
-    AllPlugins: True;
-    Caption: RsVersionCtrlExploreCaption;
-    ActionName: JclVersionCtrlExploreActionName),
-    (SandBox: True;                           // vcaExploreSandbox
-    SaveFile: False;
-    AllPlugins: True;
-    Caption: RsVersionCtrlExploreSandboxCaption;
-    ActionName: JclVersionCtrlExploreSandboxActionName),
-    (SandBox: False;                          // vcaGraph
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlGraphCaption;
-    ActionName: JclVersionCtrlGraphActionName),
-    (SandBox: False;                          // vcaLog
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlLogCaption;
-    ActionName: JclVersionCtrlLogActionName),
-    (SandBox: True;                           // vcaLogSandbox
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlLogSandboxCaption;
-    ActionName: JclVersionCtrlLogSandboxActionName),
-    (SandBox: False;                          // vcaLock
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlLockCaption;
-    ActionName: JclVersionCtrlLockActionName),
-    (SandBox: True;                           // vcaLockSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlLockSandboxCaption;
-    ActionName: JclVersionCtrlLockSandboxActionName),
-    (SandBox: False;                          // vcaMerge
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlMergeCaption;
-    ActionName: JclVersionCtrlMergeActionName),
-    (SandBox: True;                           // vcaMergeSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlMergeSandboxCaption;
-    ActionName: JclVersionCtrlMergeSandboxActionName),
-    (SandBox: False;                          // vcaProperties
-    SaveFile: True;
-    AllPlugins: True;
-    Caption: RsVersionCtrlPropertiesCaption;
-    ActionName: JclVersionCtrlPropertiesActionName),
-    (SandBox: True;                           // vcaPropertiesSandbox
-    SaveFile: True;
-    AllPlugins: True;
-    Caption: RsVersionCtrlPropertiesSandboxCaption;
-    ActionName: JclVersionCtrlPropertiesSandboxActionName),
-    (SandBox: False;                          // vcaRename
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlRenameCaption;
-    ActionName: JclVersionCtrlRenameActionName),
-    (SandBox: False;                          // vcaRepoBrowser
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlRepoBrowserCaption;
-    ActionName: JclVersionCtrlRepoBrowserActionName),
-    (SandBox: False;                          // vcaRevert
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlRevertCaption;
-    ActionName: JclVersionCtrlRevertActionName),
-    (SandBox: True;                           // vcaRevertSandbox
-    SaveFile: False;
-    AllPlugins: False;
-    Caption: RsVersionCtrlRevertSandboxCaption;
-    ActionName: JclVersionCtrlRevertSandboxActionName),
-    (SandBox: False;                          // vcaStatus
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlStatusCaption;
-    ActionName: JclVersionCtrlStatusActionName),
-    (SandBox: True;                           // vcaStatusSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlStatusSandboxCaption;
-    ActionName: JclVersionCtrlStatusSandboxActionName),
-    (SandBox: False;                          // vcaTag
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlTagCaption;
-    ActionName: JclVersionCtrlTagActionName),
-    (SandBox: True;                           // vcaTagSandBox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlTagSandboxCaption;
-    ActionName: JclVersionCtrlTagSandboxActionName),
-    (SandBox: False;                          // vcaUpdate
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUpdateCaption;
-    ActionName: JclVersionCtrlUpdateActionName),
-    (SandBox: True;                           // vcaUpdateSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUpdateSandboxCaption;
-    ActionName: JclVersionCtrlUpdateSandboxActionName),
-    (SandBox: False;                          // vcaUpdateTo
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUpdateToCaption;
-    ActionName: JclVersionCtrlUpdateToActionName),
-    (SandBox: True;                           // vcaUpdateSandboxTo
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUpdateSandboxToCaption;
-    ActionName: JclVersionCtrlUpdateSandboxToActionName),
-    (SandBox: False;                          // vcaUnlock
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUnlockCaption;
-    ActionName: JclVersionCtrlUnlockActionName),
-    (SandBox: True;                           // vcaUnlockSandbox
-    SaveFile: True;
-    AllPlugins: False;
-    Caption: RsVersionCtrlUnlockSandboxCaption;
-    ActionName: JclVersionCtrlUnlockSandboxActionName)
-    );
+  VersionControlActionInfos: array [TJclVersionControlAction] of TJclVersionControlActionRec =
+   ( (SandBox: False;                          // vcaAdd
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlAddCaption;
+      ActionName: JclVersionCtrlAddActionName),
+     (SandBox: True;                           // vcaAddSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlAddSandboxCaption;
+      ActionName: JclVersionCtrlAddSandboxActionName),
+     (SandBox: False;                          // vcaBlame
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlBlameCaption;
+      ActionName: JclVersionCtrlBlameActionName),
+     (SandBox: False;                          // vcaBranch
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlBranchCaption;
+      ActionName: JclVersionCtrlBranchActionName),
+     (SandBox: True;                           // vcaBranchSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlBranchSandboxCaption;
+      ActionName: JclVersionCtrlBranchSandboxActionName),
+     (SandBox: True;                           // vcaCheckOutSandbox
+      SaveFile: True;
+      AllPlugins: True;
+      Caption: RsVersionCtrlCheckOutSandboxCaption;
+      ActionName: JclVersionCtrlCheckOutSandboxActionName),
+     (SandBox: False;                          // vcaCommit
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlCommitCaption;
+      ActionName: JclVersionCtrlCommitActionName),
+     (SandBox: True;                           // vcaCommitSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlCommitSandboxCaption;
+      ActionName: JclVersionCtrlCommitSandboxActionName),
+     (SandBox: False;                          // vcaContextMenu
+      SaveFile: False;
+      AllPlugins: True;
+      Caption: RsVersionCtrlContextMenuCaption;
+      ActionName: JclVersionCtrlContextMenuActionName),
+     (SandBox: False;                          // vcaDiff
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlDiffCaption;
+      ActionName: JclVersionCtrlDiffActionName),
+     (SandBox: False;                           // vcaExplore
+      SaveFile: False;
+      AllPlugins: True;
+      Caption: RsVersionCtrlExploreCaption;
+      ActionName: JclVersionCtrlExploreActionName),
+     (SandBox: True;                           // vcaExploreSandbox
+      SaveFile: False;
+      AllPlugins: True;
+      Caption: RsVersionCtrlExploreSandboxCaption;
+      ActionName: JclVersionCtrlExploreSandboxActionName),
+     (SandBox: False;                          // vcaGraph
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlGraphCaption;
+      ActionName: JclVersionCtrlGraphActionName),
+     (SandBox: False;                          // vcaLog
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlLogCaption;
+      ActionName: JclVersionCtrlLogActionName),
+     (SandBox: True;                           // vcaLogSandbox
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlLogSandboxCaption;
+      ActionName: JclVersionCtrlLogSandboxActionName),
+     (SandBox: False;                          // vcaLock
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlLockCaption;
+      ActionName: JclVersionCtrlLockActionName),
+     (SandBox: True;                           // vcaLockSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlLockSandboxCaption;
+      ActionName: JclVersionCtrlLockSandboxActionName),
+     (SandBox: False;                          // vcaMerge
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlMergeCaption;
+      ActionName: JclVersionCtrlMergeActionName),
+     (SandBox: True;                           // vcaMergeSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlMergeSandboxCaption;
+      ActionName: JclVersionCtrlMergeSandboxActionName),
+     (SandBox: False;                          // vcaProperties
+      SaveFile: True;
+      AllPlugins: True;
+      Caption: RsVersionCtrlPropertiesCaption;
+      ActionName: JclVersionCtrlPropertiesActionName),
+     (SandBox: True;                           // vcaPropertiesSandbox
+      SaveFile: True;
+      AllPlugins: True;
+      Caption: RsVersionCtrlPropertiesSandboxCaption;
+      ActionName: JclVersionCtrlPropertiesSandboxActionName),
+     (SandBox: False;                          // vcaRename
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlRenameCaption;
+      ActionName: JclVersionCtrlRenameActionName),
+     (SandBox: False;                          // vcaRepoBrowser
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlRepoBrowserCaption;
+      ActionName: JclVersionCtrlRepoBrowserActionName),
+     (SandBox: False;                          // vcaRevert
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlRevertCaption;
+      ActionName: JclVersionCtrlRevertActionName),
+     (SandBox: True;                           // vcaRevertSandbox
+      SaveFile: False;
+      AllPlugins: False;
+      Caption: RsVersionCtrlRevertSandboxCaption;
+      ActionName: JclVersionCtrlRevertSandboxActionName),
+     (SandBox: False;                          // vcaStatus
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlStatusCaption;
+      ActionName: JclVersionCtrlStatusActionName),
+     (SandBox: True;                           // vcaStatusSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlStatusSandboxCaption;
+      ActionName: JclVersionCtrlStatusSandboxActionName),
+     (SandBox: False;                          // vcaTag
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlTagCaption;
+      ActionName: JclVersionCtrlTagActionName),
+     (SandBox: True;                           // vcaTagSandBox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlTagSandboxCaption;
+      ActionName: JclVersionCtrlTagSandboxActionName),
+     (SandBox: False;                          // vcaUpdate
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUpdateCaption;
+      ActionName: JclVersionCtrlUpdateActionName),
+     (SandBox: True;                           // vcaUpdateSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUpdateSandboxCaption;
+      ActionName: JclVersionCtrlUpdateSandboxActionName),
+     (SandBox: False;                          // vcaUpdateTo
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUpdateToCaption;
+      ActionName: JclVersionCtrlUpdateToActionName),
+     (SandBox: True;                           // vcaUpdateSandboxTo
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUpdateSandboxToCaption;
+      ActionName: JclVersionCtrlUpdateSandboxToActionName),
+     (SandBox: False;                          // vcaUnlock
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUnlockCaption;
+      ActionName: JclVersionCtrlUnlockActionName),
+     (SandBox: True;                           // vcaUnlockSandbox
+      SaveFile: True;
+      AllPlugins: False;
+      Caption: RsVersionCtrlUnlockSandboxCaption;      
+      ActionName: JclVersionCtrlUnlockSandboxActionName)
+   );
 
 //=== { TJclIconCacheInfo } ==========================================================
 
 type
-  TJclIconCacheInfo = class(TObject)
+  TJclIconCacheInfo = class (TObject)
   private
     FFileName: string;
     FIconIndex: Integer;
@@ -793,8 +732,7 @@ begin
   PluginClassList.Add(APluginClass);
   if Assigned(ExpertInstanceList) then
     for Index := 0 to ExpertInstanceList.Count - 1 do
-      TJclVersionControlExpert(
-        ExpertInstanceList.Items[Index]).ClassRegistered(APluginClass);
+      TJclVersionControlExpert(ExpertInstanceList.Items[Index]).ClassRegistered(APluginClass);
 end;
 
 class procedure TJclVersionControlExpert.UnregisterPluginClass(
@@ -806,8 +744,7 @@ begin
     PluginClassList.Remove(APluginClass);
   if Assigned(ExpertInstanceList) then
     for Index := 0 to ExpertInstanceList.Count - 1 do
-      TJclVersionControlExpert(
-        ExpertInstanceList.Items[Index]).ClassUnregistered(APluginClass);
+      TJclVersionControlExpert(ExpertInstanceList.Items[Index]).ClassUnregistered(APluginClass);
 end;
 
 {function TJclVersionControlExpert.ActiveModuleFileName(ASave, IncludeFamily: Boolean): string;
@@ -865,70 +802,66 @@ var
 begin
   try
     AAction := Sender as TCustomAction;
-    for AControlAction := Low(TJclVersionControlAction)
-      to High(TJclVersionControlAction) do
+    for AControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
       if FActions[AControlAction] = AAction then
+    begin
+      if VersionControlActionInfos[AControlAction].Sandbox then
       begin
-        if VersionControlActionInfos[AControlAction].Sandbox then
+        AFileCache := CurrentCache;
+        if not Assigned(AFileCache) or VersionControlActionInfos[AControlAction].AllPlugins then
+          Exit;
+        if ActOnTopSandbox then
         begin
-          AFileCache := CurrentCache;
-          if not Assigned(AFileCache) or
-            VersionControlActionInfos[AControlAction].AllPlugins then
+          for Index := AFileCache.SandboxCount - 1 downto 0 do
+            if AControlAction in AFileCache.SandboxActions[Index] then
+          begin
+            if VersionControlActionInfos[AControlAction].SaveFile then
+              SaveModules(AFileCache.SandBoxes[Index], True);
+            AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], AControlAction);
             Exit;
-          if ActOnTopSandbox then
-          begin
-            for Index := AFileCache.SandboxCount - 1 downto 0 do
-              if AControlAction in AFileCache.SandboxActions[Index] then
-              begin
-                if VersionControlActionInfos[AControlAction].SaveFile then
-                  SaveModules(AFileCache.SandBoxes[Index], True);
-                AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index],
-                  AControlAction);
-                Exit;
-              end;
-          end
-          else
-          begin
-            for Index := 0 to AFileCache.SandboxCount - 1 do
-              if AControlAction in AFileCache.SandboxActions[Index] then
-              begin
-                if VersionControlActionInfos[AControlAction].SaveFile then
-                  SaveModules(AFileCache.SandBoxes[Index], True);
-                AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index],
-                  AControlAction);
-                Exit;
-              end;
           end;
         end
         else
         begin
-          AFileName := CurrentFileName;
-          if VersionControlActionInfos[AControlAction].SaveFile then
-            SaveModules(AFileName, False);
-
-          if VersionControlActionInfos[AControlAction].AllPlugins then
+          for Index := 0 to AFileCache.SandboxCount - 1 do
+            if AControlAction in AFileCache.SandboxActions[Index] then
           begin
-            for Index := 0 to FPluginList.Count - 1 do
-            begin
-              AFileCache := GetFileCache(AFileName,
-                TJclVersionControlPlugin(FPluginList.Items[Index]));
-
-              if AControlAction in AFileCache.Actions then
-              begin
-                AFileCache.Plugin.ExecuteAction(AFileName, AControlAction);
-                Exit;
-              end;
-            end;
-          end
-          else
-          begin
-            APlugin := CurrentPlugin;
-            if Assigned(APlugin) then
-              APlugin.ExecuteAction(AFileName, AControlAction);
+            if VersionControlActionInfos[AControlAction].SaveFile then
+              SaveModules(AFileCache.SandBoxes[Index], True);
+            AFileCache.Plugin.ExecuteAction(AFileCache.SandBoxes[Index], AControlAction);
+            Exit;
           end;
         end;
-        Exit;
+      end
+      else
+      begin
+        AFileName := CurrentFileName;
+        if VersionControlActionInfos[AControlAction].SaveFile then
+          SaveModules(AFileName, False);
+          
+        if VersionControlActionInfos[AControlAction].AllPlugins then
+        begin
+          for Index := 0 to FPluginList.Count - 1 do
+          begin
+            AFileCache := GetFileCache(AFileName,
+              TJclVersionControlPlugin(FPluginList.Items[Index]));
+
+            if AControlAction in AFileCache.Actions then
+            begin
+              AFileCache.Plugin.ExecuteAction(AFileName, AControlAction);
+              Exit;
+            end;
+          end;
+        end
+        else
+        begin
+          APlugin := CurrentPlugin;
+          if Assigned(APlugin) then
+            APlugin.ExecuteAction(AFileName, AControlAction);
+        end;
       end;
+      Exit;
+    end;
   except
     on ExceptionObj: TObject do
     begin
@@ -949,7 +882,7 @@ begin
   try
     AAction := Sender as TCustomAction;
     AFileCache := CurrentCache;
-
+    
     if IconType = -1 then
     begin
       if Assigned(AFileCache) then
@@ -958,88 +891,83 @@ begin
         FLastPlugin := nil;
       RefreshIcon(AAction);
     end;
-
-    for AControlAction := Low(TJclVersionControlAction)
-      to High(TJclVersionControlAction) do
+    
+    for AControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
       if FActions[AControlAction] = AAction then
-      begin
-        if HideActions and not
-          VersionControlActionInfos[AControlAction].AllPlugins then
-          AAction.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
-            and (AControlAction in AFileCache.Plugin.SupportActions)
-        else
-          AAction.Visible := True;
+    begin
+      if HideActions and not VersionControlActionInfos[AControlAction].AllPlugins then
+        AAction.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
+          and (AControlAction in AFileCache.Plugin.SupportActions)
+      else
+        AAction.Visible := True;
 
-        if DisableActions then
+      if DisableActions then
+      begin
+        if VersionControlActionInfos[AControlAction].Sandbox then
         begin
-          if VersionControlActionInfos[AControlAction].Sandbox then
+          if VersionControlActionInfos[AControlAction].AllPlugins then
           begin
-            if VersionControlActionInfos[AControlAction].AllPlugins then
+            AFileName := CurrentFileName;
+            for IndexPlugin := 0 to FPluginList.Count - 1 do
             begin
-              AFileName := CurrentFileName;
-              for IndexPlugin := 0 to FPluginList.Count - 1 do
+              AFileCache := GetFileCache(AFileName,
+                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
+              for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
+                if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
               begin
-                AFileCache := GetFileCache(AFileName,
-                  TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
-                for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
-                  if AControlAction in
-                    AFileCache.SandBoxActions[IndexSandbox] then
-                  begin
-                    AAction.Enabled := True;
-                    Exit;
-                  end;
-                AAction.Enabled := False;
+                AAction.Enabled := True;
                 Exit;
               end;
-            end
-            else // work for all plugin
-            begin
-              if Assigned(AFileCache) then
-              begin
-                for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
-                  if AControlAction in
-                    AFileCache.SandBoxActions[IndexSandbox] then
-                  begin
-                    AAction.Enabled := True;
-                    Exit;
-                  end;
-                AAction.Enabled := False;
-                Exit;
-              end
-              else
-                AAction.Enabled := False;
+              AAction.Enabled := False;
+              Exit;
             end;
-            Exit;
           end
-          else // file
+          else // work for all plugin
           begin
-            if VersionControlActionInfos[AControlAction].AllPlugins then
+            if Assigned(AFileCache) then
             begin
-              AFileName := CurrentFileName;
-              for IndexPlugin := 0 to FPluginList.Count - 1 do
+              for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
+                if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
               begin
-                AFileCache := GetFileCache(AFileName,
-                  TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
-                if AControlAction in AFileCache.Actions then
-                begin
-                  AAction.Enabled := True;
-                  Exit;
-                end;
+                AAction.Enabled := True;
+                Exit;
               end;
               AAction.Enabled := False;
               Exit;
             end
-            else // only the current plugin
-            begin
-              AFileCache := CurrentCache;
-              AAction.Enabled :=
-                Assigned(AFileCache) and (AControlAction in AFileCache.Actions);
-            end;
+            else
+              AAction.Enabled := False;
           end;
+          Exit;
         end
-        else
-          AAction.Enabled := True;
-      end;
+        else // file
+        begin
+          if VersionControlActionInfos[AControlAction].AllPlugins then
+          begin
+            AFileName := CurrentFileName;
+            for IndexPlugin := 0 to FPluginList.Count - 1 do
+            begin
+              AFileCache := GetFileCache(AFileName,
+                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
+              if AControlAction in AFileCache.Actions then
+              begin
+                AAction.Enabled := True;
+                Exit;
+              end;
+            end;
+            AAction.Enabled := False;
+            Exit;
+          end
+          else // only the current plugin
+          begin
+            AFileCache := CurrentCache;
+            AAction.Enabled := Assigned(AFileCache) and (AControlAction in AFileCache.Actions);
+          end;
+        end;
+      end
+      else
+        AAction.Enabled := True;
+    end;
   except
     on ExceptionObj: TObject do
     begin
@@ -1064,8 +992,7 @@ begin
   IconTypeNames := TStringList.Create;
   try
     for Index := 0 to FPluginList.Count - 1 do
-      IconTypeNames.Add(TJclVersionControlPlugin(
-        FPluginList.Items[Index]).Name);
+      IconTypeNames.Add(TJclVersionControlPlugin(FPluginList.Items[Index]).Name);
     FOptionsFrame.SetIconTypeNames(IconTypeNames);
   finally
     IconTypeNames.Free;
@@ -1100,7 +1027,7 @@ begin
   begin
     AIconCacheInfo := TJclIconCacheInfo(FIconCache.Items[Index]);
     if (CompareText(AIconCacheInfo.ResourceName, ResourceName) = 0) and
-      (CompareText(AIconCacheInfo.FileName, ResourceFile) = 0) then
+       (CompareText(AIconCacheInfo.FileName, ResourceFile) = 0) then
     begin
       Result := AIconCacheInfo.IconIndex;
       Exit;
@@ -1110,27 +1037,25 @@ begin
   AIconCacheInfo := TJclIconCacheInfo.Create;
   AIconCacheInfo.FileName := ResourceFile;
   AIconCacheInfo.ResourceName := ResourceName;
-  FileModule := LoadLibraryEx(PChar(ResourceFile), 0,
-    LOAD_LIBRARY_AS_DATAFILE);
+  FileModule := LoadLibraryEx(PChar(ResourceFile), 0, LOAD_LIBRARY_AS_DATAFILE);
   if FileModule <> 0 then
+  try
+    AIcon := TIcon.Create;
     try
-      AIcon := TIcon.Create;
-      try
-        if (Length(ResourceName) = 4) and (ResourceName[3] = #0) and
-          (ResourceName[4] = #0) then
-        begin
-          Move(ResourceName[1], ResourceID, SizeOf(ResourceID));
-          AIcon.Handle := LoadIcon(FileModule, PChar(ResourceID));
-        end
-        else
-          AIcon.Handle := LoadIcon(FileModule, PChar(ResourceName));
-        Result := NTAServices.ImageList.AddIcon(AIcon);
-      finally
-        AIcon.Free;
-      end;
+      if (Length(ResourceName) = 4) and (ResourceName[3] = #0) and (ResourceName[4] = #0) then
+      begin
+        Move(ResourceName[1], ResourceID, SizeOf(ResourceID));
+        AIcon.Handle := LoadIcon(FileModule, PChar(ResourceID));
+      end
+      else
+        AIcon.Handle := LoadIcon(FileModule, PChar(ResourceName));
+      Result := NTAServices.ImageList.AddIcon(AIcon);
     finally
-      FreeLibrary(FileModule);
+      AIcon.Free;
     end;
+  finally
+    FreeLibrary(FileModule);
+  end;
 
   AIconCacheInfo := TJclIconCacheInfo.Create;
   AIconCacheInfo.FileName := ResourceFile;
@@ -1166,8 +1091,7 @@ begin
   for Index := FFileCache.Count downto 0 do
   begin
     AFileCache := TJclVersionControlCache(FFileCache.Items[Index]);
-    if Assigned(AFileCache.Plugin) and
-      (AFileCache.Plugin.ClassType = APluginClass) then
+    if Assigned(AFileCache.Plugin) and (AFileCache.Plugin.ClassType = APluginClass) then
     begin
       AFileCache.Free;
       FFileCache.Delete(Index);
@@ -1182,11 +1106,11 @@ var
 begin
   if Assigned(AMenuItem) then
     for Index := AMenuItem.Count - 1 downto 0 do
-    begin
-      BMenuItem := AMenuItem.Items[Index];
-      CleanSubMenus(BMenuItem);
-      BMenuItem.Free;
-    end;
+  begin
+    BMenuItem := AMenuItem.Items[Index];
+    CleanSubMenus(BMenuItem);
+    BMenuItem.Free;
+  end;
 end;
 
 procedure TJclVersionControlExpert.ConfigurationClosed(AControl: TControl;
@@ -1217,15 +1141,14 @@ begin
   Supports(BorlandIDEServices, IOTAModuleServices, FModuleServices);
   if not Assigned(FModuleServices) then
     raise EJclExpertException.CreateTrace(RsENoModuleServices);
-
+    
   FMenuOrganization := TStringList.Create;
   FPluginList := TList.Create;
   FIconCache := TList.Create;
   FFileCache := TList.Create;
 
   for Index := 0 to PluginClassList.Count - 1 do
-    FPluginList.Add(TJclVersionControlPluginClass(
-      PluginClassList.Items[Index]).Create(Self));
+    FPluginList.Add(TJclVersionControlPluginClass(PluginClassList.Items[Index]).Create(Self));
 
   inherited Create('JclVersionControlExpert');
 
@@ -1280,16 +1203,14 @@ begin
           TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-          begin
-            AMenuItem := TMenuItem.Create(nil);
-            AMenuItem.Caption :=
-              Format('%s | %s', [AFileCache.Plugin.Name,
-              AFileCache.SandBoxes[IndexSandbox]]);
-            AMenuItem.Tag := APopupMenu.Tag;
-            AMenuItem.OnClick := SubItemClick;
-            AMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
-            APopupMenu.Items.Add(AMenuItem);
-          end;
+        begin
+          AMenuItem := TMenuItem.Create(nil);
+          AMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
+          AMenuItem.Tag := APopupMenu.Tag;
+          AMenuItem.OnClick := SubItemClick;
+          AMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
+          APopupMenu.Items.Add(AMenuItem);
+        end;
       end;
     end
     else
@@ -1298,14 +1219,14 @@ begin
       if Assigned(AFileCache) then
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-          begin
-            AMenuItem := TMenuItem.Create(nil);
-            AMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
-            AMenuItem.Tag := APopupMenu.Tag;
-            AMenuItem.OnClick := SubItemClick;
-            AMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
-            APopupMenu.Items.Add(AMenuItem);
-          end;
+      begin
+        AMenuItem := TMenuItem.Create(nil);
+        AMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
+        AMenuItem.Tag := APopupMenu.Tag;
+        AMenuItem.OnClick := SubItemClick;
+        AMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
+        APopupMenu.Items.Add(AMenuItem);
+      end;
     end;
   except
     on ExceptionObj: TObject do
@@ -1389,8 +1310,7 @@ begin
       AFileCache.Free;
       FFileCache.Delete(Index);
     end
-    else
-    if (AFileCache.FileName = FileName) and (AFileCache.Plugin = Plugin) then
+    else if (AFileCache.FileName = FileName) and (AFileCache.Plugin = Plugin) then
     begin
       Result := AFileCache;
       Break;
@@ -1438,16 +1358,14 @@ begin
           TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-          begin
-            SubMenuItem := TMenuItem.Create(nil);
-            SubMenuItem.Caption :=
-              Format('%s | %s', [AFileCache.Plugin.Name,
-              AFileCache.SandBoxes[IndexSandbox]]);
-            SubMenuItem.Tag := Integer(AControlAction);
-            SubMenuItem.OnClick := SubItemClick;
-            SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
-            AMenuItem.Add(SubMenuItem);
-          end;
+        begin
+          SubMenuItem := TMenuItem.Create(nil);
+          SubMenuItem.Caption := Format('%s | %s', [AFileCache.Plugin.Name, AFileCache.SandBoxes[IndexSandbox]]);
+          SubMenuItem.Tag := Integer(AControlAction);
+          SubMenuItem.OnClick := SubItemClick;
+          SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
+          AMenuItem.Add(SubMenuItem);
+        end;
       end;
     end
     else
@@ -1457,14 +1375,14 @@ begin
       if Assigned(AFileCache) then
         for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
           if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
-          begin
-            SubMenuItem := TMenuItem.Create(nil);
-            SubMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
-            SubMenuItem.Tag := Integer(AControlAction);
-            SubMenuItem.OnClick := SubItemClick;
-            SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
-            AMenuItem.Add(SubMenuItem);
-          end;
+      begin
+        SubMenuItem := TMenuItem.Create(nil);
+        SubMenuItem.Caption := AFileCache.SandBoxes[IndexSandbox];
+        SubMenuItem.Tag := Integer(AControlAction);
+        SubMenuItem.OnClick := SubItemClick;
+        SubMenuItem.ImageIndex := AFileCache.Plugin.Icons[AControlAction];
+        AMenuItem.Add(SubMenuItem);
+      end;
     end;
   except
     on ExceptionObj: TObject do
@@ -1491,8 +1409,7 @@ procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick(Sender: TObject);
       BMenuItem := AMenuItem.Items[IndexMenu];
       if BMenuItem.Tag = -1 then
         UpdateMenuItem(BMenuItem)
-      else
-      if BMenuItem.Tag >= 0 then
+      else if BMenuItem.Tag >= 0 then
       begin
         AControlAction := TJclVersionControlAction(BMenuItem.Tag);
         if VersionControlActionInfos[AControlAction].Sandbox then
@@ -1506,23 +1423,19 @@ procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick(Sender: TObject);
               BMenuItem.ImageIndex := -1;
               for IndexPlugin := 0 to FPluginList.Count - 1 do
               begin
-                BMenuItem.ImageIndex :=
-                  TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[AControlAction];
+                BMenuItem.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[AControlAction];
                 if BMenuItem.ImageIndex > -1 then
                   Break;
               end;
             end
-            else
-            if Assigned(AFileCache) and Assigned(AFileCache.Plugin) then
+            else if Assigned(AFileCache) and Assigned(AFileCache.Plugin) then
               BMenuItem.ImageIndex := AFileCache.Plugin.GetIcon(AControlAction)
             else
               BMenuItem.ImageIndex := -1;
           end;
 
-          if HideActions and not
-            VersionControlActionInfos[AControlAction].AllPlugins then
-            BMenuItem.Visible :=
-              Assigned(AFileCache) and Assigned(AFileCache.Plugin)
+          if HideActions and not VersionControlActionInfos[AControlAction].AllPlugins then
+            BMenuItem.Visible := Assigned(AFileCache) and Assigned(AFileCache.Plugin)
               and (AControlAction in AFileCache.Plugin.SupportActions)
           else
             BMenuItem.Visible := True;
@@ -1538,27 +1451,24 @@ procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick(Sender: TObject);
                 AFileCache := GetFileCache(AFileName,
                   TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]));
                 for IndexSandbox := 0 to AFileCache.SandBoxCount - 1 do
-                  if AControlAction in
-                    AFileCache.SandBoxActions[IndexSandbox] then
-                  begin
-                    AEnabled := True;
-                    Break;
-                  end;
+                  if AControlAction in AFileCache.SandBoxActions[IndexSandbox] then
+                begin
+                  AEnabled := True;
+                  Break;
+                end;
 
                 if AEnabled then
                   Break;
               end;
             end
-            else
-            if Assigned(AFileCache) then
+            else if Assigned(AFileCache) then
             begin
               for IndexSandbox := 0 to AFileCache.SandboxCount - 1 do
-                if AControlAction in
-                  AFileCache.SandboxActions[IndexSandbox] then
-                begin
-                  AEnabled := True;
-                  Break;
-                end;
+                if AControlAction in AFileCache.SandboxActions[IndexSandbox] then
+              begin
+                AEnabled := True;
+                Break;
+              end;
             end;
             BMenuItem.Enabled := AEnabled;
           end
@@ -1588,47 +1498,44 @@ begin
   if not Assigned(AAction) then
     Exit;
 
-  for ControlAction := Low(TJclVersionControlAction)
-    to High(TJclVersionControlAction) do
+  for ControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
     if FActions[ControlAction] = AAction then
-    begin
-      case IconType of
+  begin
+    case IconType of
       // No icon
-        -3:
-          AAction.ImageIndex := -1;
+      -3 :
+        AAction.ImageIndex := -1;
       // JCL icons
       // TODO: create resources
-        -2:
-          AAction.ImageIndex := -1;
+      -2 :
+        AAction.ImageIndex := -1;
       // auto icons
-        -1:
-          if VersionControlActionInfos[ControlAction].AllPlugins then
+      -1 :
+        if VersionControlActionInfos[ControlAction].AllPlugins then
+        begin
+          for IndexPlugin := 0 to FPluginList.Count - 1 do
           begin
-            for IndexPlugin := 0 to FPluginList.Count - 1 do
-            begin
-              AAction.ImageIndex :=
-                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[ControlAction];
-              if AAction.ImageIndex > -1 then
-                Break;
-            end;
-          end
-          else
-          begin
-            if Assigned(FLastPlugin) then
-              AAction.ImageIndex := FLastPlugin.GetIcon(ControlAction)
-            else
-              AAction.ImageIndex := -1;
+            AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[ControlAction];
+            if AAction.ImageIndex > -1 then
+              Break;
           end;
-      // Specific icons
-        0..High(Integer):
-          if IconType < FPluginList.Count then
-            AAction.ImageIndex :=
-              TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[ControlAction]
+        end
+        else
+        begin
+          if Assigned(FLastPlugin) then
+            AAction.ImageIndex := FLastPlugin.GetIcon(ControlAction)
           else
             AAction.ImageIndex := -1;
-      end;
-      Exit;
+        end;
+      // Specific icons
+      0..High(Integer) :
+        if IconType < FPluginList.Count then
+          AAction.ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[ControlAction]
+        else
+          AAction.ImageIndex := -1;
     end;
+    Exit;
+  end;
 end;
 
 procedure TJclVersionControlExpert.RefreshIcons;
@@ -1636,47 +1543,43 @@ var
   ControlAction: TJclVersionControlAction;
   IndexPlugin: Integer;
 begin
-  for ControlAction := Low(TJclVersionControlAction)
-    to High(TJclVersionControlAction) do
+  for ControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
     if Assigned(FActions[ControlAction]) then
-    begin
-      case IconType of
+  begin
+    case IconType of
       // No icon
-        -3:
-          FActions[ControlAction].ImageIndex := -1;
+      -3 :
+        FActions[ControlAction].ImageIndex := -1;
       // JCL icons
       // TODO: create resources
-        -2:
-          FActions[ControlAction].ImageIndex := -1;
+      -2 :
+        FActions[ControlAction].ImageIndex := -1;
       // Auto icons
-        -1:
-          if VersionControlActionInfos[ControlAction].AllPlugins then
+      -1 :
+        if VersionControlActionInfos[ControlAction].AllPlugins then
+        begin
+          for IndexPlugin := 0 to FPluginList.Count - 1 do
           begin
-            for IndexPlugin := 0 to FPluginList.Count - 1 do
-            begin
-              FActions[ControlAction].ImageIndex :=
-                TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[ControlAction];
-              if FActions[ControlAction].ImageIndex > -1 then
-                Break;
-            end;
-          end
-          else
-          begin
-            if Assigned(FLastPlugin) then
-              FActions[ControlAction].ImageIndex :=
-                FLastPlugin.Icons[ControlAction]
-            else
-              FActions[ControlAction].ImageIndex := -1;
+            FActions[ControlAction].ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IndexPlugin]).Icons[ControlAction];
+            if FActions[ControlAction].ImageIndex > -1 then
+              Break;
           end;
-      // Specific icons
-        0..High(Integer):
-          if IconType < FPluginList.Count then
-            FActions[ControlAction].ImageIndex :=
-              TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[ControlAction]
+        end
+        else
+        begin
+          if Assigned(FLastPlugin) then
+            FActions[ControlAction].ImageIndex := FLastPlugin.Icons[ControlAction]
           else
             FActions[ControlAction].ImageIndex := -1;
-      end;
+        end;
+      // Specific icons
+      0..High(Integer) :
+        if IconType < FPluginList.Count then
+          FActions[ControlAction].ImageIndex := TJclVersionControlPlugin(FPluginList.Items[IconType]).Icons[ControlAction]
+        else
+          FActions[ControlAction].ImageIndex := -1;
     end;
+  end;
 end;
 
 procedure TJclVersionControlExpert.RefreshMenu;
@@ -1685,10 +1588,8 @@ procedure TJclVersionControlExpert.RefreshMenu;
     Action: TJclVersionControlAction;
   begin
     FMenuOrganization.Clear;
-    for Action := Low(TJclVersionControlAction)
-      to High(TJclVersionControlAction) do
-      FMenuOrganization.Add(Format('%d%s', [Integer(Action),
-        GetEnumName(TypeInfo(TJclVersionControlAction), Integer(Action))]));
+    for Action := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
+      FMenuOrganization.Add(Format('%d%s', [Integer(Action), GetEnumName(TypeInfo(TJclVersionControlAction), Integer(Action))]));
   end;
 var
   Index, IndexA, IndexB, ActionIndex: Integer;
@@ -1699,11 +1600,11 @@ begin
   CleanSubMenus(FVersionCtrlMenu);
 
   if FMenuOrganization.Count > 0 then
-    try
-      FMenuOrganization.CustomSort(MenuOrganizationSort);
-    except
-      LoadDefaultMenu;
-    end
+  try
+    FMenuOrganization.CustomSort(MenuOrganizationSort);
+  except
+    LoadDefaultMenu;
+  end
   else
     LoadDefaultMenu;
 
@@ -1801,36 +1702,31 @@ begin
   inherited RegisterCommands;
 
   Settings.LoadStrings(JclVersionCtrlMenuOrganizationName, FMenuOrganization);
-  SaveConfirmation := Settings.LoadBool(
-    JclVersionCtrlSaveConfirmationName, True);
+  SaveConfirmation := Settings.LoadBool(JclVersionCtrlSaveConfirmationName, True);
   DisableActions := Settings.LoadBool(JclVersionCtrlDisableActionsName, True);
   HideActions := Settings.LoadBool(JclVersionCtrlHideActionsName, False);
-  IconTypeStr := Settings.LoadString(JclVersionCtrlIconTypeName,
-    JclVersionCtrlIconTypeAutoValue);
-  ActOnTopSandbox := Settings.LoadBool(
-    JclVersionCtrlActOnTopSandboxName, False);
+  IconTypeStr := Settings.LoadString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeAutoValue);
+  ActOnTopSandbox := Settings.LoadBool(JclVersionCtrlActOnTopSandboxName, False);
 
   FIconType := -1;
   if IconTypeStr = JclVersionCtrlIconTypeNoIconValue then
     FIconType := -3
-  else
-  if IconTypeStr = JclVersionCtrlIconTypeJclIconValue then
+  else if IconTypeStr = JclVersionCtrlIconTypeJclIconValue then
     FIconType := -2
-  else
-  if IconTypeStr = JclVersionCtrlIconTypeAutoValue then
+  else if IconTypeStr = JclVersionCtrlIconTypeAutoValue then
     FIconType := -1
   else for I := 0 to FPluginList.Count - 1 do
-      if IconTypeStr = TJclVersionControlPlugin(FPluginList.Items[I]).Name then
-        FIconType := I;
+    if IconTypeStr = TJclVersionControlPlugin(FPluginList.Items[I]).Name then
+      FIconType := I;
 
   IDEMainMenu := NTAServices.MainMenu;
   IDEToolsItem := nil;
   for I := 0 to IDEMainMenu.Items.Count - 1 do
     if IDEMainMenu.Items[I].Name = 'ToolsMenu' then
-    begin
-      IDEToolsItem := IDEMainMenu.Items[I];
-      Break;
-    end;
+  begin
+    IDEToolsItem := IDEMainMenu.Items[I];
+    Break;
+  end;
   if not Assigned(IDEToolsItem) then
     raise EJclExpertException.CreateTrace(RsENoToolsMenuItem);
 
@@ -1842,11 +1738,9 @@ begin
   FVersionCtrlMenu.OnClick := IDEVersionCtrlMenuClick;
   IDEMainMenu.Items.Insert(IDEToolsItem.MenuIndex + 1, FVersionCtrlMenu);
   if not Assigned(FVersionCtrlMenu.Parent) then
-    raise EJclExpertException.CreateTrace(
-      Format(RsSvnMenuItemNotInserted, [FVersionCtrlMenu.Caption]));
+    raise EJclExpertException.CreateTrace(Format(RsSvnMenuItemNotInserted, [FVersionCtrlMenu.Caption]));
 
-  for ControlAction := Low(TJclVersionControlAction)
-    to High(TJclVersionControlAction) do
+  for ControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
   begin
     if VersionControlActionInfos[ControlAction].Sandbox then
     begin
@@ -1929,8 +1823,7 @@ begin
       ControlAction := TJclVersionControlAction(AAction.Tag);
       Directory := AAction.Caption;
     end
-    else
-    if Sender is TMenuItem then
+    else if Sender is TMenuItem then
     begin
       AMenuItem := TMenuItem(Sender);
       ControlAction := TJclVersionControlAction(AMenuItem.Tag);
@@ -1961,7 +1854,7 @@ begin
     if VersionControlActionInfos[ControlAction].SaveFile then
       SaveModules(Directory, True);
     if Assigned(APlugin) then
-      APlugin.ExecuteAction(Directory, ControlAction);
+      APlugin.ExecuteAction(Directory , ControlAction);
   except
     on ExceptionObj: TObject do
     begin
@@ -1985,21 +1878,16 @@ begin
   Settings.SaveBool(JclVersionCtrlActOnTopSandboxName, ActOnTopSandbox);
   case FIconType of
     -3:
-      Settings.SaveString(JclVersionCtrlIconTypeName,
-        JclVersionCtrlIconTypeNoIconValue);
+      Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeNoIconValue);
     -2:
-      Settings.SaveString(JclVersionCtrlIconTypeName,
-        JclVersionCtrlIconTypeJclIconValue);
+      Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeJclIconValue);
     -1:
-      Settings.SaveString(JclVersionCtrlIconTypeName,
-        JclVersionCtrlIconTypeAutoValue);
+      Settings.SaveString(JclVersionCtrlIconTypeName, JclVersionCtrlIconTypeAutoValue);
     0..High(Integer):
-      Settings.SaveString(JclVersionCtrlIconTypeName,
-        TJclVersionControlPlugin(FPluginList.Items[IconType]).Name);
+      Settings.SaveString(JclVersionCtrlIconTypeName, TJclVersionControlPlugin(FPluginList.Items[IconType]).Name);
   end;
 
-  for ControlAction := Low(TJclVersionControlAction)
-    to High(TJclVersionControlAction) do
+  for ControlAction := Low(TJclVersionControlAction) to High(TJclVersionControlAction) do
   begin
     UnregisterAction(FActions[ControlAction]);
     if FActions[ControlAction] is TDropDownAction then
@@ -2021,8 +1909,7 @@ end;
 
 //=== TJclVersionControlPlugin ===============================================
 
-constructor TJclVersionControlPlugin.Create(
-  const AExpert: TJclVersionControlExpert);
+constructor TJclVersionControlPlugin.Create(const AExpert: TJclVersionControlExpert);
 begin
   inherited Create;
   FExpert := AExpert;
@@ -2045,8 +1932,7 @@ begin
   Result := [];
 end;
 
-function TJclVersionControlPlugin.GetSupportedActions:
-TJclVersionControlActions;
+function TJclVersionControlPlugin.GetSupportedActions: TJclVersionControlActions;
 begin
   Result := [];
 end;
@@ -2074,15 +1960,15 @@ var
   Index: Integer;
 begin
   Result := False;
-
+  
   SdBxNames.BeginUpdate;
   try
     SdBxNames.Clear;
     for Index := Length(FileName) downto 1 do
       if FileName[Index] = DirDelimiter then
-      begin
-        SdBxNames.Add(Copy(FileName, 1, Index));
-      end;
+    begin
+      SdBxNames.Add(Copy(FileName, 1, Index));
+    end;
   finally
     SdBxNames.EndUpdate;
   end;
@@ -2097,8 +1983,7 @@ begin
     vcaContextMenu:
       Result := DisplayContextMenu(0, FileName, Mouse.CursorPos);
     vcaExplore:
-      Result := OpenFolder(PathExtractFileDirFixed(FileName),
-        Application.Handle, True);
+      Result := OpenFolder(PathExtractFileDirFixed(FileName), Application.Handle, True);
     vcaExploreSandbox:
       Result := OpenFolder(FileName, Application.Handle, True);
     vcaProperties,
@@ -2117,8 +2002,7 @@ end;
 function TJclVersionControlSystemPlugin.GetFileActions(
   const FileName: string): TJclVersionControlActions;
 begin
-  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox,
-    vcaProperties, vcaPropertiesSandbox];
+  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
 end;
 
 function TJclVersionControlSystemPlugin.GetIcon(
@@ -2155,17 +2039,15 @@ begin
   Result := inherited GetSandboxNames(FileName, SdBxNames);
 end;
 
-function TJclVersionControlSystemPlugin.GetSupportedActions:
-TJclVersionControlActions;
+function TJclVersionControlSystemPlugin.GetSupportedActions: TJclVersionControlActions;
 begin
-  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox,
-    vcaProperties, vcaPropertiesSandbox];
+  Result := [vcaContextMenu, vcaExplore, vcaExploreSandbox, vcaProperties, vcaPropertiesSandbox];
 end;
 
 //=== TJclVersionControlActionsCache =========================================
 
 type
-  TJclVersionControlActionsCache = class(TObject)
+  TJclVersionControlActionsCache = class (TObject)
   private
     FSandbox: string;
     FActions: TJclVersionControlActions;
@@ -2204,10 +2086,8 @@ begin
   try
     FSupported := APlugin.GetSandboxNames(FileName, SandboxNames);
 
-    for Index := 0 to SandboxNames.Count - 1 do
-      FSandboxList.Add(TJclVersionControlActionsCache.Create(
-        SandboxNames.Strings[Index],
-        APlugin.SandboxActions[SandboxNames.Strings[Index]]));
+  for Index := 0 to SandboxNames.Count - 1 do
+    FSandboxList.Add(TJclVersionControlActionsCache.Create(SandboxNames.Strings[Index], APlugin.SandboxActions[SandboxNames.Strings[Index]]));
   finally
     SandboxNames.Free;
   end;
@@ -2220,7 +2100,7 @@ begin
   for Index := 0 to FSandboxList.Count - 1 do
     TJclVersionControlActionsCache(FSandboxList.Items[Index]).Free;
   FSandboxList.Free;
-
+  
   inherited Destroy;
 end;
 
@@ -2247,28 +2127,28 @@ end;
 
 initialization
 
-  try
-    TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSystemPlugin);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSystemPlugin);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 finalization
 
-  try
-    TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSystemPlugin);
-    FreeAndNil(ExpertInstanceList);
-    FreeAndNil(PluginClassList);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSystemPlugin);
+  FreeAndNil(ExpertInstanceList);
+  FreeAndNil(PluginClassList);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 end.

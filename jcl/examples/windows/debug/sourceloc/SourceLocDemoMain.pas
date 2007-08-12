@@ -93,14 +93,14 @@ begin
   try
     StartCount(C);
     with TJclStackInfoList.Create(RawCheckBox.Checked, 0, nil) do
-      try
-        AddToStrings(SL, False, True, True);
-        T := StopCount(C);
-        Memo1.Lines.AddStrings(SL);
-        ReportTime(T);
-      finally
-        Free;
-      end;
+    try
+      AddToStrings(SL, False, True, True);
+      T := StopCount(C);
+      Memo1.Lines.AddStrings(SL);
+      ReportTime(T);
+    finally
+      Free;
+    end;
   finally
     SL.Free;
   end;

@@ -100,8 +100,7 @@ uses About, ToolsUtils, JclLogic, JclShell, JclSysUtils;
 
 resourcestring
   RsCheckApp = 'It is recommended to check the application. Would you like to start it ?';
-  RsDescriptionURL =
-    'http://support.microsoft.com/support/kb/articles/Q182/8/19.asp';
+  RsDescriptionURL = 'http://support.microsoft.com/support/kb/articles/Q182/8/19.asp';
   RsFixed = 'File was fixed';
   RsNoFixes = 'Not fixes needed';
 
@@ -141,8 +140,7 @@ begin
   with OpenFileDialog do
   begin
     FileName := '';
-    if Execute then
-      OpenFile(FileName);
+    if Execute then OpenFile(FileName);
   end;
 end;
 
@@ -183,7 +181,7 @@ var
           SubItems.Add(Item.ParentItem.Name);
           SubItems.Add(Format('%u', [Size]));
           SubItems.Add('');
-        end;
+        end;  
       end;
     end;
   end;
@@ -199,20 +197,17 @@ var
       if Item.IsDirectory then
         FixResources(Item.List)
       else
-      if Item.ResourceType in [rtCursor, rtIcon, rtCursorEntry,
-        rtIconEntry] then
-      begin
-        Size := Item.DataEntry^.Size;
-        if (Size mod ScalingFactor <> 0) or (Size < ScalingFactor * 2) then
+        if Item.ResourceType in [rtCursor, rtIcon, rtCursorEntry, rtIconEntry] then
         begin
-          Size := Max((Size div ScalingFactor + 1) *
-            ScalingFactor, ScalingFactor * 2);
-          Item.DataEntry^.Size := Size;
-          AnyFixes := True;
-          ResListView.FindData(0, Item, True, False).SubItems[2] :=
-            Format('%u', [Size]);
+          Size := Item.DataEntry^.Size;
+          if (Size mod ScalingFactor <> 0) or (Size < ScalingFactor * 2) then
+          begin
+            Size := Max((Size div ScalingFactor + 1) * ScalingFactor, ScalingFactor * 2);
+            Item.DataEntry^.Size := Size;
+            AnyFixes := True;
+            ResListView.FindData(0, Item, True, False).SubItems[2] := Format('%u', [Size]);
+          end;
         end;
-      end;
     end;
   end;
 
@@ -232,22 +227,20 @@ begin
 
     NeedFix := (MaxResSize >= 65536) and (MinResSize mod ScalingFactor <> 0);
     AnyFixes := False;
-    if NeedFix then
-      FixResources(FPeImage.ResourceList);
+    if NeedFix then FixResources(FPeImage.ResourceList);
     FPeImage.FileName := '';
     ListViewFocusFirstItem(ResListView);
   finally
     ResListView.Items.EndUpdate;
   end;
   with StatusBar.Panels[0] do
-    if AnyFixes then
-    begin
-      Text := RsFixed;
-      if MessBox(RsCheckApp, MB_YESNO or MB_ICONQUESTION) = ID_YES then
-        ShellExecEx(FileName);
-    end
-    else
-      Text := RsNoFixes;
+  if AnyFixes then
+  begin
+    Text := RsFixed;
+    if MessBox(RsCheckApp, MB_YESNO or MB_ICONQUESTION) = ID_YES then
+      ShellExecEx(FileName);
+  end else
+    Text := RsNoFixes;
 end;
 
 procedure TMainForm.ResListViewCustomDrawItem(Sender: TCustomListView;

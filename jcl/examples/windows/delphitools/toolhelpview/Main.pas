@@ -187,8 +187,7 @@ type
     procedure ViewsMenuClick(Sender: TObject);
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMMenuChar(var Msg: TWMMenuChar); message WM_MENUCHAR;
-    procedure UMActivateMainForm(var Msg: TMessage);
-      message UM_ACTIVATEMAINFORM;
+    procedure UMActivateMainForm(var Msg: TMessage); message UM_ACTIVATEMAINFORM;
   public
     procedure AddToViewsMenu(AForm: TForm; const ACaption: string);
     procedure DeleteFromViewsMenu(AForm: TForm);
@@ -219,22 +218,19 @@ resourcestring
   sNotRelocated = '[base]';
 
 const
-  PROCESS_CLASS_IDLE = 4;
-  PROCESS_CLASS_NORMAL = 8;
-  PROCESS_CLASS_HIGH = 13;
-  PROCESS_CLASS_TIMECRITICAL = 24;
+  PROCESS_CLASS_IDLE          = 4;
+  PROCESS_CLASS_NORMAL        = 8;
+  PROCESS_CLASS_HIGH          = 13;
+  PROCESS_CLASS_TIMECRITICAL  = 24;
 
 function GetPriorityIconIndex(Priority: DWORD): Integer;
 begin
   case Priority of
-    PROCESS_CLASS_IDLE:
-      Result := 0;
-    PROCESS_CLASS_HIGH:
-      Result := 1;
-    PROCESS_CLASS_TIMECRITICAL:
-      Result := 2;
-    else
-      Result := -1;
+    PROCESS_CLASS_IDLE: Result := 0;
+    PROCESS_CLASS_HIGH: Result := 1;
+    PROCESS_CLASS_TIMECRITICAL: Result := 2;
+  else
+    Result := -1;
   end;
 end;
 
@@ -244,10 +240,8 @@ var
 begin
   C[0] := Chr(Lo(LOWORD(Version)));
   C[1] := Chr(Hi(LOWORD(Version)));
-  if C[0] < #32 then
-    C[0] := '_';
-  if C[1] < #32 then
-    C[1] := '_';
+  if C[0] < #32 then C[0] := '_';
+  if C[1] < #32 then C[1] := '_';
   C[2] := #0;
   Result := Format('%s %d.%d', [C, Hi(HIWORD(Version)), Lo(HIWORD(Version))]);
 end;
@@ -269,8 +263,7 @@ begin
   LoadSettings;
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
     SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
-  SendMessage(ProcessListView.Handle, LVM_SETIMAGELIST, LVSIL_SMALL,
-    ImageListHandle);
+  SendMessage(ProcessListView.Handle, LVM_SETIMAGELIST, LVSIL_SMALL, ImageListHandle);
   SetTimer(Handle, 1, 500, nil);
   BuildProcessList;
 end;
@@ -296,142 +289,122 @@ var
   Added, Changed: Boolean;
 
   procedure CheckChanged;
-  begin
-    if ProcessListView.ItemFocused = FindItem then
-      Changed := True;
-  end;
+begin
+  if ProcessListView.ItemFocused = FindItem then Changed := True;
+end;
 
 begin
-  if FDisableUpdate then
-    Exit;
+  if FDisableUpdate then Exit;
   ProcList := TList.Create;
   Added := False;
   Changed := False;
   with ProcessListView do
+  try
+    FDisableUpdate := True;
     try
-      FDisableUpdate := True;
-      try
-        if Rebuild then
+      if Rebuild then
+      begin
+        Screen.Cursor := crHourGlass;
+        Items.BeginUpdate;
+        Items.Clear;
+        FProcess_Cnt := 0;
+        FThreads_Cnt := 0;
+      end else
+        SendMessage(Handle, WM_SETREDRAW, 0, 0);
+      SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+      if SnapProcHandle <> THandle(-1) then
+      begin
+        ProcessEntry.dwSize := Sizeof(ProcessEntry);
+        Next := Process32First(SnapProcHandle, ProcessEntry);
+        while Next do
         begin
-          Screen.Cursor := crHourGlass;
-          Items.BeginUpdate;
-          Items.Clear;
-          FProcess_Cnt := 0;
-          FThreads_Cnt := 0;
-        end
-        else
-          SendMessage(Handle, WM_SETREDRAW, 0, 0);
-        SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-        if SnapProcHandle <> THandle(-1) then
-        begin
-          ProcessEntry.dwSize := Sizeof(ProcessEntry);
-          Next := Process32First(SnapProcHandle, ProcessEntry);
-          while Next do
-          begin
-            ProcList.Add(Pointer(ProcessEntry.th32ProcessID));
-            FindItem := FindData(0, Pointer(ProcessEntry.th32ProcessID),
-              True, False);
-            with ProcessEntry do
-              if FindItem = nil then
-              begin // New Process
-                Added := True;
-                if IsWin2k then
-                begin
-                  ProcessHandle :=
-                    OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False,
-                    th32ProcessID);
-                  if Handle <> 0 then
-                  begin
-                    if GetModuleFileNameEx(ProcessHandle, 0, szExeFile,
-                      SizeOf(szExeFile)) = 0 then
-                      StrPCopy(szExeFile, '[Idle]');
-                    CloseHandle(ProcessHandle);
-                  end;
-                end;
-                ProcessVersion :=
-                  SHGetFileInfo(szExeFile, 0, FileInfo, Sizeof(FileInfo), SHGFI_EXETYPE);
-                SHGetFileInfo(szExeFile, 0, FileInfo, Sizeof(FileInfo),
-                  SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
-                with Items.Add, ProcessEntry do
-                begin
-                  Caption := AnsiLowerCase(ExtractFileName(szExeFile));
-                  Data := Pointer(th32ProcessID);
-                  ImageIndex := FileInfo.iIcon;
-                  StateIndex := GetPriorityIconIndex(pcPriClassBase);
-                  SubItems.AddObject(Format('%.8x', [th32ProcessID]),
-                    Pointer(th32ProcessID));
-                  SubItems.AddObject(Format('%d', [pcPriClassBase]),
-                    Pointer(pcPriClassBase));
-                  SubItems.AddObject(Format('%d', [cntThreads]),
-                    Pointer(cntThreads));
-                  SubItems.AddObject(GetProcessVersion(ProcessVersion),
-                    Pointer(ProcessVersion));
-                  SubItems.Add(szExeFile);
-                  SubItems.AddObject(Format('(%.8x)', [th32ParentProcessID]),
-                    Pointer(th32ParentProcessID));
-                  Inc(FProcess_Cnt);
-                  Inc(FThreads_Cnt, cntThreads);
-                end;
-              end
-              else
-                with FindItem do
-                begin // Any changes in existing process ?
-                  if SubItems.Objects[1] <> Pointer(pcPriClassBase) then
-                  begin
-                    SubItems.Objects[1] := Pointer(pcPriClassBase);
-                    SubItems.Strings[1] := Format('%d', [pcPriClassBase]);
-                    StateIndex := GetPriorityIconIndex(pcPriClassBase);
-                  end;
-                  if SubItems.Objects[2] <> Pointer(cntThreads) then
-                  begin
-                    Inc(FThreads_Cnt, cntThreads - DWORD(SubItems.Objects[2]));
-                    SubItems.Objects[2] := Pointer(cntThreads);
-                    SubItems.Strings[2] := Format('%d', [cntThreads]);
-                    CheckChanged;
-                  end;
-                end;
-            Next := Process32Next(SnapProcHandle, ProcessEntry);
+          ProcList.Add(Pointer(ProcessEntry.th32ProcessID));
+          FindItem := FindData(0, Pointer(ProcessEntry.th32ProcessID), True, False);
+          with ProcessEntry do if FindItem = nil then
+          begin // New Process
+            Added := True;
+            if IsWin2k then
+            begin
+              ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, th32ProcessID);
+              if Handle <> 0 then
+              begin
+                if GetModuleFileNameEx(ProcessHandle, 0, szExeFile, SizeOf(szExeFile)) = 0 then
+                  StrPCopy(szExeFile, '[Idle]');
+                CloseHandle(ProcessHandle);
+              end;
+            end;
+            ProcessVersion := SHGetFileInfo(szExeFile, 0, FileInfo, Sizeof(FileInfo), SHGFI_EXETYPE);
+            SHGetFileInfo(szExeFile, 0, FileInfo, Sizeof(FileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+            with Items.Add, ProcessEntry do
+            begin
+              Caption := AnsiLowerCase(ExtractFileName(szExeFile));
+              Data := Pointer(th32ProcessID);
+              ImageIndex := FileInfo.iIcon;
+              StateIndex := GetPriorityIconIndex(pcPriClassBase);
+              SubItems.AddObject(Format('%.8x', [th32ProcessID]), Pointer(th32ProcessID));
+              SubItems.AddObject(Format('%d', [pcPriClassBase]), Pointer(pcPriClassBase));
+              SubItems.AddObject(Format('%d', [cntThreads]), Pointer(cntThreads));
+              SubItems.AddObject(GetProcessVersion(ProcessVersion), Pointer(ProcessVersion));
+              SubItems.Add(szExeFile);
+              SubItems.AddObject(Format('(%.8x)', [th32ParentProcessID]), Pointer(th32ParentProcessID));
+              Inc(FProcess_Cnt);
+              Inc(FThreads_Cnt, cntThreads);
+            end;
+          end else
+          with FindItem do
+          begin // Any changes in existing process ?
+            if SubItems.Objects[1] <> Pointer(pcPriClassBase) then
+            begin
+              SubItems.Objects[1] := Pointer(pcPriClassBase);
+              SubItems.Strings[1] := Format('%d', [pcPriClassBase]);
+              StateIndex := GetPriorityIconIndex(pcPriClassBase);
+            end;
+            if SubItems.Objects[2] <> Pointer(cntThreads) then
+            begin
+              Inc(FThreads_Cnt, cntThreads - DWORD(SubItems.Objects[2]));
+              SubItems.Objects[2] := Pointer(cntThreads);
+              SubItems.Strings[2] := Format('%d', [cntThreads]);
+              CheckChanged;
+            end;
           end;
-          CloseHandle(SnapProcHandle);
+          Next := Process32Next(SnapProcHandle, ProcessEntry);
         end;
-        if Added then // find the names of parent processes
-        begin
-          for I := 0 to Items.Count - 1 do
-          begin
-            FindItem := FindData(0, Items[I].SubItems.Objects[5], True, False);
-            if FindItem <> nil then
-              Items[I].SubItems[5] := FindItem.Caption;
-          end;
-          AlphaSort;
-        end;
-        for I := Items.Count - 1 downto 0 do // delete non-existing processes
-          if ProcList.IndexOf(Items[I].Data) = -1 then
-          begin
-            Dec(FProcess_Cnt);
-            Dec(FThreads_Cnt, DWORD(Items[I].SubItems.Objects[2]));
-            Items.Delete(I);
-          end;
-        if GetNextItem(nil, sdAll, [isSelected]) = nil then
-        begin
-          if ItemFocused = nil then
-            ItemFocused := Items[0];
-          ItemFocused.Selected := True;
-        end
-        else
-        if Changed then
-          BuildThreadsList(DWORD(ItemFocused.Data));
-        UpdateStatusLine(True);
-      finally
-        if Rebuild then
-          Items.EndUpdate
-        else
-          SendMessage(Handle, WM_SETREDRAW, 1, 0);
+        CloseHandle(SnapProcHandle);
       end;
+      if Added then // find the names of parent processes
+      begin
+        for I := 0 to Items.Count - 1 do
+        begin
+          FindItem := FindData(0, Items[I].SubItems.Objects[5], True, False);
+          if FindItem <> nil then Items[I].SubItems[5] := FindItem.Caption;
+        end;
+        AlphaSort;
+      end;
+      for I := Items.Count - 1 downto 0 do // delete non-existing processes
+        if ProcList.IndexOf(Items[I].Data) = -1 then
+        begin
+          Dec(FProcess_Cnt);
+          Dec(FThreads_Cnt, DWORD(Items[I].SubItems.Objects[2]));
+          Items.Delete(I);
+        end;
+      if GetNextItem(nil, sdAll, [isSelected]) = nil then
+      begin
+        if ItemFocused = nil then ItemFocused := Items[0];
+        ItemFocused.Selected := True;
+      end else
+        if Changed then BuildThreadsList(DWORD(ItemFocused.Data));
+      UpdateStatusLine(True);
     finally
-      FDisableUpdate := False;
-      ProcList.Free;
-      Screen.Cursor := crDefault;
+      if Rebuild then
+        Items.EndUpdate
+      else
+        SendMessage(Handle, WM_SETREDRAW, 1, 0);
     end;
+  finally
+    FDisableUpdate := False;
+    ProcList.Free;
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 procedure TMainForm.BuildThreadsList(ProcessID: DWORD);
@@ -441,33 +414,32 @@ var
   Next: Boolean;
 begin
   with ThreadsListView do
-    try
-      Items.BeginUpdate;
-      Items.Clear;
-      SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-      if SnapProcHandle <> THandle(-1) then
+  try
+    Items.BeginUpdate;
+    Items.Clear;
+    SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+    if SnapProcHandle <> THandle(-1) then
+    begin
+      ThreadEntry.dwSize := Sizeof(ThreadEntry);
+      Next := Thread32First(SnapProcHandle, ThreadEntry);
+      while Next do
       begin
-        ThreadEntry.dwSize := Sizeof(ThreadEntry);
-        Next := Thread32First(SnapProcHandle, ThreadEntry);
-        while Next do
-        begin
-          if ThreadEntry.th32OwnerProcessID = ProcessID then
-            with Items.Add, ThreadEntry do
-            begin
-              Caption := Format('%.8x', [th32ThreadID]);
-              Data := Pointer(th32ThreadID);
-              SubItems.AddObject(Format('%d', [tpDeltaPri]),
-                Pointer(tpDeltaPri));
-            end;
-          Next := Thread32Next(SnapProcHandle, ThreadEntry);
-        end;
-        CloseHandle(SnapProcHandle);
+        if ThreadEntry.th32OwnerProcessID = ProcessID then
+          with Items.Add, ThreadEntry do
+          begin
+            Caption := Format('%.8x', [th32ThreadID]);
+            Data := Pointer(th32ThreadID);
+            SubItems.AddObject(Format('%d', [tpDeltaPri]), Pointer(tpDeltaPri));
+          end;
+        Next := Thread32Next(SnapProcHandle, ThreadEntry);
       end;
-      AlphaSort;
-      ListViewFocusFirstItem(ThreadsListView);
-    finally
-      Items.EndUpdate;
+      CloseHandle(SnapProcHandle);
     end;
+    AlphaSort;
+    ListViewFocusFirstItem(ThreadsListView);
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 procedure TMainForm.BuildModulesList(ProcessID: DWORD);
@@ -478,56 +450,49 @@ var
   ImageBase: DWORD;
 begin
   with ModulesListView do
-    try
-      Items.BeginUpdate;
-      Items.Clear;
-      FModules_Cnt := 0;
-      FModules_Size := 0;
-      SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessID);
-      if SnapProcHandle <> THandle(-1) then
+  try
+    Items.BeginUpdate;
+    Items.Clear;
+    FModules_Cnt := 0;
+    FModules_Size := 0;
+    SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessID);
+    if SnapProcHandle <> THandle(-1) then
+    begin
+      ModuleEntry.dwSize := Sizeof(ModuleEntry);
+      Next := Module32First(SnapProcHandle, ModuleEntry);
+      while Next do
       begin
-        ModuleEntry.dwSize := Sizeof(ModuleEntry);
-        Next := Module32First(SnapProcHandle, ModuleEntry);
-        while Next do
+        with Items.Add, ModuleEntry do
         begin
-          with Items.Add, ModuleEntry do
+          Caption := AnsiLowerCase(szModule);
+          SubItems.AddObject(Format('%.8x', [th32ModuleID]), Pointer(th32ModuleID));
+          if CheckImageBase1.Checked then
           begin
-            Caption := AnsiLowerCase(szModule);
-            SubItems.AddObject(Format('%.8x', [th32ModuleID]),
-              Pointer(th32ModuleID));
-            if CheckImageBase1.Checked then
-            begin
-              ImageBase := GetImageBase(szExePath);
-              if ImageBase = DWORD(modBaseAddr) then
-                SubItems.AddObject(sNotRelocated, Pointer(0))
-              else
-                SubItems.AddObject(Format('%.8x', [ImageBase]),
-                  Pointer(ImageBase));
-            end
+            ImageBase := GetImageBase(szExePath);
+            if ImageBase = DWORD(modBaseAddr) then
+              SubItems.AddObject(sNotRelocated, Pointer(0))
             else
-              SubItems.Add('');
-            SubItems.AddObject(Format('%p', [modBaseAddr]),
-              Pointer(modBaseAddr));
-            SubItems.AddObject(Format('%.0n', [IntToExtended(modBaseSize)]),
-              Pointer(modBaseSize));
-            SubItems.AddObject(Format('%d', [GlblcntUsage]),
-              Pointer(GlblcntUsage));
-            SubItems.AddObject(Format('%d', [ProccntUsage]),
-              Pointer(ProccntUsage));
-            SubItems.AddObject(Format('%.8x', [hModule]), Pointer(hModule));
-            SubItems.Add(szExePath);
-            Inc(FModules_Cnt);
-            Inc(FModules_Size, modBaseSize);
-          end;
-          Next := Module32Next(SnapProcHandle, ModuleEntry);
+             SubItems.AddObject(Format('%.8x', [ImageBase]), Pointer(ImageBase));
+          end else
+            SubItems.Add('');
+          SubItems.AddObject(Format('%p', [modBaseAddr]), Pointer(modBaseAddr));
+          SubItems.AddObject(Format('%.0n', [IntToExtended(modBaseSize)]), Pointer(modBaseSize));
+          SubItems.AddObject(Format('%d', [GlblcntUsage]), Pointer(GlblcntUsage));
+          SubItems.AddObject(Format('%d', [ProccntUsage]), Pointer(ProccntUsage));
+          SubItems.AddObject(Format('%.8x', [hModule]), Pointer(hModule));
+          SubItems.Add(szExePath);
+          Inc(FModules_Cnt);
+          Inc(FModules_Size, modBaseSize);
         end;
-        CloseHandle(SnapProcHandle);
+        Next := Module32Next(SnapProcHandle, ModuleEntry);
       end;
-      AlphaSort;
-      ListViewFocusFirstItem(ModulesListView);
-    finally
-      Items.EndUpdate;
+      CloseHandle(SnapProcHandle);
     end;
+    AlphaSort;
+    ListViewFocusFirstItem(ModulesListView);
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 function TMainForm.CheckProcessesChange: Boolean;
@@ -548,15 +513,13 @@ begin
     while Next and (not Result) do
     begin
       Inc(ProcessCount);
-      FindItem := ProcessListView.FindData(0,
-        Pointer(ProcessEntry.th32ProcessID), True, False);
+      FindItem := ProcessListView.FindData(0, Pointer(ProcessEntry.th32ProcessID), True, False);
       if FindItem = nil then
         Result := True
       else
-        with FindItem do
-          Result := (SubItems.Objects[1] <>
-            Pointer(ProcessEntry.pcPriClassBase)) or
-            (SubItems.Objects[2] <> Pointer(ProcessEntry.cntThreads));
+      with FindItem do
+        Result := (SubItems.Objects[1] <> Pointer(ProcessEntry.pcPriClassBase)) or
+         (SubItems.Objects[2] <> Pointer(ProcessEntry.cntThreads));
       Next := Process32Next(SnapProcHandle, ProcessEntry);
     end;
     CloseHandle(SnapProcHandle);
@@ -566,21 +529,18 @@ end;
 
 function TMainForm.FocusedFileName: TFileName;
 begin
-  if (ActiveControl = ProcessListView) and
-    (ProcessListView.ItemFocused <> nil) then
+  if (ActiveControl = ProcessListView) and (ProcessListView.ItemFocused <> nil) then
     Result := ProcessListView.ItemFocused.SubItems[4] else
-  if (ActiveControl = ModulesListView) and
-    (ModulesListView.ItemFocused <> nil) then
+  if (ActiveControl = ModulesListView) and (ModulesListView.ItemFocused <> nil) then
     Result := ModulesListView.ItemFocused.SubItems[7] else
-    Result := '';
+  Result := '';
 end;
 
 procedure TMainForm.KillProcess(ProcessID: DWORD);
 var
   ProcessHandle: THandle;
 begin
-  ProcessHandle := OpenProcess(PROCESS_ALL_ACCESS{PROCESS_TERMINATE},
-    False, ProcessID);
+  ProcessHandle := OpenProcess(PROCESS_ALL_ACCESS{PROCESS_TERMINATE}, False, ProcessID);
   if ProcessHandle <> 0 then
   begin
     TerminateProcess(ProcessHandle, 0);
@@ -588,29 +548,25 @@ begin
       MessBox(sWaitTimeout, MB_ICONWARNING);
     CloseHandle(ProcessHandle);
     BuildProcessList;
-  end
-  else
+  end else
     MessBox(sCantOpenForTerminate, MB_ICONERROR);
 end;
 
 function TMainForm.SummaryInfo: string;
 begin
   if (ActiveControl = ProcessListView) then
-    Result := Format(sProcessesSummary, [FProcess_Cnt, FThreads_Cnt]) else
+    Result := Format(sProcessesSummary , [FProcess_Cnt, FThreads_Cnt]) else
   if (ActiveControl = ModulesListView) then
-    Result := Format(sModulesSummary,
-      [FModules_Cnt, IntToExtended(FModules_Size)]) else
-    Result := '';
+    Result := Format(sModulesSummary , [FModules_Cnt, IntToExtended(FModules_Size)]) else
+  Result := '';
 end;
 
 procedure TMainForm.TimerRefresh;
 begin
-  if not Application.Terminated and IsWindowEnabled(Handle) and
-    CheckProcessesChange then
+  if not Application.Terminated and IsWindowEnabled(Handle) and CheckProcessesChange then
   begin
     BuildProcessList;
-    if BeepOnChange1.Checked then
-      MessageBeep(MB_OK);
+    if BeepOnChange1.Checked then MessageBeep(MB_OK);
   end;
 end;
 
@@ -627,17 +583,16 @@ begin
       Items[0].Text := '';
       Items[1].Text := '';
       if VersionResourceAvailable(FileName) then
+      try
+        with TJclFileVersionInfo.Create(FileName) do
         try
-          with TJclFileVersionInfo.Create(FileName) do
-            try
-              StatusBar.Panels.Items[0].Text := FileVersion;
-              StatusBar.Panels.Items[1].Text := FileDescription;
-            finally
-              Free;
-            end;
-        except
-        end
-      else
+          StatusBar.Panels.Items[0].Text := FileVersion;
+          StatusBar.Panels.Items[1].Text := FileDescription;
+        finally
+          Free;
+        end;
+      except
+      end else
         Items[0].Text := sNotFound;
     end;
     Items[2].Text := SummaryInfo;
@@ -696,17 +651,14 @@ begin
   with CheckImageBase1 do
   begin
     Checked := not Checked;
-    ProcessListViewSelectItem(nil, ProcessListView.Selected,
-      Assigned(ProcessListView.Selected));
-  end;
+    ProcessListViewSelectItem(nil, ProcessListView.Selected, Assigned(ProcessListView.Selected));
+  end;    
 end;
 
 procedure TMainForm.Terminate1Execute(Sender: TObject);
 begin
-  with ProcessListView do
-    if (ItemFocused <> nil) and
-      (MessBoxFmt(sKill, [ItemFocused.Caption], MB_ICONEXCLAMATION or
-      MB_YESNO or MB_DEFBUTTON2) = ID_YES) then
+  with ProcessListView do if (ItemFocused <> nil) and
+    (MessBoxFmt(sKill, [ItemFocused.Caption], MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2) = ID_YES) then
       KillProcess(DWORD(ItemFocused.Data));
 end;
 
@@ -723,12 +675,12 @@ end;
 procedure TMainForm.ChangePriority1Execute(Sender: TObject);
 begin
   with TChangePriorityDlg.Create(Application) do
-    try
-      ProcessID := DWORD(ProcessListView.ItemFocused.Data);
-      ShowModal;
-    finally
-      Free;
-    end;
+  try
+    ProcessID := DWORD(ProcessListView.ItemFocused.Data);
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 procedure TMainForm.Terminate1Update(Sender: TObject);
@@ -749,11 +701,9 @@ begin
   if ActiveControl = ProcessListView then
     FileName := sSaveProcessesList else
   if ActiveControl = ThreadsListView then
-    FileName := Format(sSaveThreadsList,
-      [ProcessListView.ItemFocused.Caption]) else
+    FileName := Format(sSaveThreadsList, [ProcessListView.ItemFocused.Caption]) else
   if ActiveControl = ModulesListView then
-    FileName := Format(sSaveModulesList,
-      [ProcessListView.ItemFocused.Caption]);
+    FileName := Format(sSaveModulesList, [ProcessListView.ItemFocused.Caption]);
   GlobalModule.ListViewToFile(ActiveControl as TListView, FileName);
 end;
 
@@ -822,8 +772,7 @@ begin
   begin
     TimerRefresh;
     Msg.Result := 0;
-  end
-  else inherited;
+  end else inherited;
 end;
 
 procedure TMainForm.WMMenuChar(var Msg: TWMMenuChar);
@@ -850,8 +799,7 @@ begin
   try
     with THeapDumpForm.Create(Application) do
     begin
-      with ProcessListView.ItemFocused do
-        SetParams(DWORD(Data), Caption);
+      with ProcessListView.ItemFocused do SetParams(DWORD(Data), Caption);
       Show;
     end;
   finally
@@ -864,14 +812,13 @@ begin
   FDisableUpdate := True;
   try
     with TMemoryDumpForm.Create(Application) do
-      try
-        with ProcessListView.ItemFocused do
-          SetParams(DWORD(Data), Caption);
-        Show;
-      except
-        Free;
-        raise
-      end;
+    try
+      with ProcessListView.ItemFocused do SetParams(DWORD(Data), Caption);
+      Show;
+    except
+      Free;
+      raise
+    end;
   finally
     FDisableUpdate := False;
   end;
@@ -891,8 +838,7 @@ end;
 procedure TMainForm.ModulesListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  if Selected and TWinControl(Sender).Focused then
-    UpdateStatusLine;
+  if Selected and TWinControl(Sender).Focused then UpdateStatusLine;
 end;
 
 procedure TMainForm.ProcessListViewInfoTip(Sender: TObject;
@@ -915,13 +861,10 @@ begin
     Top := ReadInteger(Name, 'Top', Top);
     Width := ReadInteger(Name, 'Width', Width);
     Height := ReadInteger(Name, 'Height', Height);
-    HotTrack1.Checked := ReadBool('Options', HotTrack1.Name,
-      HotTrack1.Checked);
+    HotTrack1.Checked := ReadBool('Options', HotTrack1.Name, HotTrack1.Checked);
     InfoTip1.Checked := ReadBool('Options', InfoTip1.Name, InfoTip1.Checked);
-    BeepOnChange1.Checked :=
-      ReadBool('Options', BeepOnChange1.Name, BeepOnChange1.Checked);
-    CheckImageBase1.Checked :=
-      ReadBool('Options', CheckImageBase1.Name, CheckImageBase1.Checked);
+    BeepOnChange1.Checked := ReadBool('Options', BeepOnChange1.Name, BeepOnChange1.Checked);
+    CheckImageBase1.Checked := ReadBool('Options', CheckImageBase1.Name, CheckImageBase1.Checked);
   end;
   UpdateListViewsOptions;
 end;
@@ -967,13 +910,12 @@ end;
 
 procedure TMainForm.DumpPE1Update(Sender: TObject);
 begin
-  DumpPE1.Enabled := GlobalModule.PeViewerRegistred and
-    (Length(FocusedFileName) > 0);
+  DumpPE1.Enabled := GlobalModule.PeViewerRegistred and (Length(FocusedFileName) > 0);
 end;
 
 procedure TMainForm.ProcessListViewDblClick(Sender: TObject);
 begin
-  DumpPE1.Execute;
+  DumpPE1.Execute; 
 end;
 
 procedure TMainForm.DumpPE1Execute(Sender: TObject);

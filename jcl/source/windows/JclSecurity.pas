@@ -71,12 +71,9 @@ function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 function GetUserObjectName(hUserObject: THandle): string;
 
 // Account Information
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString);
-  overload;
-procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString);
-  overload;
-procedure QueryTokenInformation(Token: THandle;
-  InformationClass: TTokenInformationClass; var Buffer: Pointer);
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: AnsiString); overload;
+procedure LookupAccountBySid(Sid: PSID; out Name, Domain: WideString); overload;
+procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
 procedure FreeTokenInformation(var Buffer: Pointer);
 function GetInteractiveUserName: string;
 
@@ -120,10 +117,8 @@ begin
     try
       Sa.nLength := SizeOf(Sa);
       Sa.bInheritHandle := Inheritable;
-      Win32Check(InitializeSecurityDescriptor(Sa.lpSecurityDescriptor,
-        SECURITY_DESCRIPTOR_REVISION));
-      Win32Check(SetSecurityDescriptorDacl(Sa.lpSecurityDescriptor,
-        True, nil, False));
+      Win32Check(InitializeSecurityDescriptor(Sa.lpSecurityDescriptor, SECURITY_DESCRIPTOR_REVISION));
+      Win32Check(SetSecurityDescriptorDacl(Sa.lpSecurityDescriptor, True, nil, False));
       Result := @Sa;
     except
       FreeMem(Sa.lpSecurityDescriptor);
@@ -186,16 +181,14 @@ begin
         SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
         psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
-        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
-        RaiseLastOSError;
-      TokenInfo := PTokenGroups(AllocMem(Count));
-      Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo,
-        Count, Count));
+       (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+         RaiseLastOSError;
+      TokenInfo := PTokenGroups(AllocMem(Count));  
+      Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       {$ENDIF FPC}
       for I := 0 to TokenInfo^.GroupCount - 1 do
       begin
-        {$RANGECHECKS OFF}
- // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
+        {$RANGECHECKS OFF} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
         Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
         {$IFDEF RANGECHECKS_ON}
         {$RANGECHECKS ON}
@@ -230,8 +223,7 @@ begin
     TokenPriv.PrivilegeCount := 1;
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
-    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv,
-      SizeOf(TokenPriv), nil, nil);
+    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv), nil, nil);
     Result := GetLastError = ERROR_SUCCESS;
     CloseHandle(Token);
   end;
@@ -253,15 +245,13 @@ begin
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_ADJUST_PRIVILEGES,
     False, Token);
   if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
-    HaveToken := OpenProcessToken(GetCurrentProcess,
-      TOKEN_ADJUST_PRIVILEGES, Token);
+    HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token);
   if HaveToken then
   begin
     TokenPriv.PrivilegeCount := 1;
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
-    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv,
-      SizeOf(TokenPriv), nil, nil);
+    JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv), nil, nil);
     Result := GetLastError = ERROR_SUCCESS;
     CloseHandle(Token);
   end;
@@ -298,17 +288,15 @@ var
 begin
   if IsWinNT then
   begin
-    Count := 0;
+    Count  := 0;
     LangID := LANG_USER_DEFAULT;
 
     // have the the API function determine the required string length
-    if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName),
-      PChar(Result), Count, LangID) then
+    if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
       Count := 256;
     SetLength(Result, Count + 1);
 
-    if LookupPrivilegeDisplayName(nil, PChar(PrivilegeName),
-      PChar(Result), Count, LangID) then
+    if LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
       StrResetLength(Result)
     else
       Result := '';
@@ -346,8 +334,7 @@ begin
     GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
     SetLength(Result, Count + 1);
 
-    if GetUserObjectInformation(hUserObject, UOI_NAME,
-      PChar(Result), Count, Count) then
+    if GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), Count, Count) then
       StrResetLength(Result)
     else
       Result := '';
@@ -367,12 +354,10 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
-    Win32Check(LookupAccountSidA(nil, Sid, nil, NameSize, nil,
-      DomainSize, Use));
+    Win32Check(LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use));
     SetLength(Name, NameSize);
     SetLength(Domain, DomainSize);
-    Win32Check(LookupAccountSidA(nil, Sid, PAnsiChar(Name),
-      NameSize, PAnsiChar(Domain), DomainSize, Use));
+    Win32Check(LookupAccountSidA(nil, Sid, PAnsiChar(Name), NameSize, PAnsiChar(Domain), DomainSize, Use));
   end
   else
   begin             // if Win9x, then function return ''
@@ -390,12 +375,10 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
-    Win32Check(LookupAccountSidW(nil, Sid, nil, NameSize, nil,
-      DomainSize, Use));
+    Win32Check(LookupAccountSidW(nil, Sid, nil, NameSize, nil, DomainSize, Use));
     SetLength(Name, NameSize);
     SetLength(Domain, DomainSize);
-    Win32Check(LookupAccountSidW(nil, Sid, PWideChar(Name),
-      NameSize, PWideChar(Domain), DomainSize, Use));
+    Win32Check(LookupAccountSidW(nil, Sid, PWideChar(Name), NameSize, PWideChar(Domain), DomainSize, Use));
   end
   else
   begin
@@ -425,8 +408,7 @@ begin
     {$IFDEF FPC}
     Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
     {$ELSE}
-    Ret := GetTokenInformation(Token, InformationClass, Buffer,
-      Length, Length);
+    Ret := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
     {$ENDIF FPC}
     if not Ret then
     begin
@@ -485,7 +467,7 @@ begin
 
   // Validate the binary SID.
   if not IsValidSid(ASid) then
-    raise EJclSecurityError.CreateRes(@RsInvalidSID);
+    Raise EJclSecurityError.CreateRes(@RsInvalidSID);
 
   // Get the identifier authority value from the SID.
   SidIdAuthority := GetSidIdentifierAuthority(ASid);
@@ -497,30 +479,30 @@ begin
   // S-SID_REVISION- + IdentifierAuthority- + subauthorities- + NULL
   SidSize := (15 + 12 + (12 * SubAuthorities) + 1) * SizeOf(CHAR);
 
-  SetLength(Result, SidSize + 1);
+  SetLength(Result, SidSize+1);
 
   // Add 'S' prefix and revision number to the string.
-  Result := Format('S-%u-', [SidRev]);
+  Result := Format('S-%u-',[SidRev]);
 
   // Add SID identifier authority to the string.
   if (SidIdAuthority^.Value[0] <> 0) or (SidIdAuthority^.Value[1] <> 0) then
     Result := Result + AnsiLowerCase(Format('0x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x',
-      [USHORT(SidIdAuthority^.Value[0]),
-      USHORT(SidIdAuthority^.Value[1]),
-      USHORT(SidIdAuthority^.Value[2]),
-      USHORT(SidIdAuthority^.Value[3]),
-      USHORT(SidIdAuthority^.Value[4]),
-      USHORT(SidIdAuthority^.Value[5])]))
+        [USHORT(SidIdAuthority^.Value[0]),
+         USHORT(SidIdAuthority^.Value[1]),
+         USHORT(SidIdAuthority^.Value[2]),
+         USHORT(SidIdAuthority^.Value[3]),
+         USHORT(SidIdAuthority^.Value[4]),
+         USHORT(SidIdAuthority^.Value[5])]))
   else
     Result := Result + Format('%u',
-      [ULONG(SidIdAuthority^.Value[5]) +
-      ULONG(SidIdAuthority^.Value[4] shl 8) +
-      ULONG(SidIdAuthority^.Value[3] shl 16) +
-      ULONG(SidIdAuthority^.Value[2] shl 24)]);
+        [ULONG(SidIdAuthority^.Value[5])+
+         ULONG(SidIdAuthority^.Value[4] shl 8)+
+         ULONG(SidIdAuthority^.Value[3] shl 16)+
+         ULONG(SidIdAuthority^.Value[2] shl 24)]);
 
   // Add SID subauthorities to the string.
-  for Counter := 0 to SubAuthorities - 1 do
-    Result := Result + Format('-%u', [GetSidSubAuthority(ASid, Counter)^]);
+  for Counter := 0 to SubAuthorities-1 do
+    Result := Result + Format('-%u',[GetSidSubAuthority(ASid, Counter)^]);
 end;
 
 procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
@@ -530,12 +512,10 @@ var
   AuthorityValue, RequiredSize: DWORD;
   Authority: string;
 begin
-  if (Length(SIDString) <= 3) or (SIDString[1] <> 'S') or
-    (SIDString[2] <> '-') then
+  if (Length (SIDString) <= 3) or (SIDString [1] <> 'S') or (SIDString [2] <> '-') then
     raise EJclSecurityError.CreateRes(@RsInvalidSID);
 
-  RequiredSize := SizeOf(_SID) - SizeOf(DWORD);
- // _SID.Revision + _SID.SubAuthorityCount + _SID.IdentifierAuthority
+  RequiredSize := SizeOf(_SID) - SizeOf(DWORD); // _SID.Revision + _SID.SubAuthorityCount + _SID.IdentifierAuthority
   if cbSID < RequiredSize then
     raise EJclSecurityError.CreateRes(@RsSIDBufferTooSmall);
 
@@ -549,40 +529,30 @@ begin
   Inc(CurrentPos);
   TempPos := StrFind('-', SIDString, CurrentPos);
   if TempPos = 0 then
-    Authority := Copy(SIDString, CurrentPos, Length(SIDString) -
-      CurrentPos + 1)
+    Authority := Copy(SIDString, CurrentPos, Length(SIDString) - CurrentPos + 1)
   else
     Authority := Copy(SIDString, CurrentPos, TempPos - CurrentPos);
 
   if Length(Authority) < 1 then
     raise EJclSecurityError.CreateRes(@RsInvalidSID);
-  if (Length(Authority) = 14) and (Authority[1] = '0') and
-    (Authority[2] = 'x') then
+  if (Length(Authority) = 14) and (Authority[1] = '0') and (Authority[2] = 'x') then
   begin
-    ASID^.IdentifierAuthority.Value[0] :=
-      StrToInt(AnsiHexPrefix + Authority[3] + Authority[4]);
-    ASID^.IdentifierAuthority.Value[1] :=
-      StrToInt(AnsiHexPrefix + Authority[5] + Authority[6]);
-    ASID^.IdentifierAuthority.Value[2] :=
-      StrToInt(AnsiHexPrefix + Authority[7] + Authority[8]);
-    ASID^.IdentifierAuthority.Value[3] :=
-      StrToInt(AnsiHexPrefix + Authority[9] + Authority[10]);
-    ASID^.IdentifierAuthority.Value[4] :=
-      StrToInt(AnsiHexPrefix + Authority[11] + Authority[12]);
-    ASID^.IdentifierAuthority.Value[5] :=
-      StrToInt(AnsiHexPrefix + Authority[13] + Authority[14]);
+    ASID^.IdentifierAuthority.Value[0] := StrToInt(AnsiHexPrefix + Authority[3] + Authority[4]);
+    ASID^.IdentifierAuthority.Value[1] := StrToInt(AnsiHexPrefix + Authority[5] + Authority[6]);
+    ASID^.IdentifierAuthority.Value[2] := StrToInt(AnsiHexPrefix + Authority[7] + Authority[8]);
+    ASID^.IdentifierAuthority.Value[3] := StrToInt(AnsiHexPrefix + Authority[9] + Authority[10]);
+    ASID^.IdentifierAuthority.Value[4] := StrToInt(AnsiHexPrefix + Authority[11] + Authority[12]);
+    ASID^.IdentifierAuthority.Value[5] := StrToInt(AnsiHexPrefix + Authority[13] + Authority[14]);
   end
   else
   begin
     ASID^.IdentifierAuthority.Value[0] := 0;
     ASID^.IdentifierAuthority.Value[1] := 0;
     AuthorityValue := StrToInt(Authority);
-    ASID^.IdentifierAuthority.Value[2] :=
-      (AuthorityValue and $FF000000) shr 24;
-    ASID^.IdentifierAuthority.Value[3] :=
-      (AuthorityValue and $00FF0000) shr 16;
+    ASID^.IdentifierAuthority.Value[2] := (AuthorityValue and $FF000000) shr 24;
+    ASID^.IdentifierAuthority.Value[3] := (AuthorityValue and $00FF0000) shr 16;
     ASID^.IdentifierAuthority.Value[4] := (AuthorityValue and $0000FF00) shr 8;
-    ASID^.IdentifierAuthority.Value[5] := AuthorityValue and $000000FF;
+    ASID^.IdentifierAuthority.Value[5] :=  AuthorityValue and $000000FF;
   end;
 
   CurrentPos := TempPos + 1;
@@ -597,8 +567,7 @@ begin
       raise EJclSecurityError.CreateRes(@RsSIDBufferTooSmall);
 
     if TempPos = 0 then
-      Authority := Copy(SIDString, CurrentPos, Length(SIDString) -
-        CurrentPos + 1)
+      Authority := Copy(SIDString, CurrentPos, Length(SIDString) - CurrentPos + 1)
     else
       Authority := Copy(SIDString, CurrentPos, TempPos - CurrentPos);
 
@@ -611,7 +580,7 @@ end;
 
 //=== Computer Information ===================================================
 
-function LsaNTCheck(NTResult: Cardinal): Cardinal;
+function LsaNTCheck(NTResult: Cardinal) : Cardinal;
 var
   WinError: Cardinal;
 begin
@@ -620,8 +589,7 @@ begin
   begin
     WinError := LsaNtStatusToWinError(NTResult);
     if WinError <> ERROR_SUCCESS then
-      raise EJclSecurityError.CreateResFmt(@RsLsaError,
-        [NTResult, SysErrorMessage(WinError)]);
+      raise EJclSecurityError.CreateResFmt(@RsLsaError, [NTResult, SysErrorMessage(WinError)]);
   end;
 end;
 
@@ -633,18 +601,17 @@ var
 begin
   if IsWinNT then
   begin
-    ZeroMemory(@ObjectAttributes, SizeOf(ObjectAttributes));
+    ZeroMemory(@ObjectAttributes,SizeOf(ObjectAttributes));
 
     LsaNTCheck(LsaOpenPolicy(nil, // Use local system
       ObjectAttributes, //Object attributes.
       POLICY_VIEW_LOCAL_INFORMATION, // We're just looking
       PolicyHandle)); //Receives the policy handle.
     try
-      LsaNTCheck(LsaQueryInformationPolicy(PolicyHandle,
-        PolicyAccountDomainInformation,
+      LsaNTCheck(LsaQueryInformationPolicy(PolicyHandle, PolicyAccountDomainInformation,
         Pointer(Info)));
       try
-        Result := CopySid(cbSID, SID, Info^.DomainSid);
+        Result := CopySid(cbSID,SID,Info^.DomainSid);
       finally
         LsaFreeMemory(Info);
       end;

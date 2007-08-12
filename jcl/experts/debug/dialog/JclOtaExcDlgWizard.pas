@@ -55,7 +55,7 @@ implementation
 {$R *.dfm}
 
 uses
-  JclOtaResources,
+  JclOtaResources, 
   JclOtaExcDlgFileFrame, JclOtaExcDlgFormFrame,
   JclOtaExcDlgSystemFrame, JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
 

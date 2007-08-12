@@ -96,10 +96,8 @@ begin
     if PosSeparator > 0 then
     begin
       NodeName := Copy(PageName, 1, PosSeparator - 1);
-      PageName := Copy(PageName, PosSeparator + 1, Length(PageName) -
-        PosSeparator);
-      while Assigned(ChildNode) and
-        (CompareText(NodeName, ChildNode.Text) <> 0) do
+      PageName := Copy(PageName, PosSeparator + 1, Length(PageName) - PosSeparator);
+      while Assigned(ChildNode) and (CompareText(NodeName, ChildNode.Text) <> 0) do
         ChildNode := ChildNode.getNextSibling;
       if not Assigned(ChildNode) then
       begin
@@ -111,8 +109,7 @@ begin
     end
     else
     begin
-      while Assigned(ParentNode) and
-        (CompareText(NodeName, ParentNode.Text) <> 0) do
+      while Assigned(ParentNode) and (CompareText(NodeName, ParentNode.Text) <> 0) do
         ParentNode := ParentNode.getNextSibling;
     end;
   until PosSeparator = 0;
@@ -131,8 +128,7 @@ begin
   end;
 
   AControl.Parent := PanelOptions;
-  AControl.SetBounds(8, 8, PanelOptions.ClientWidth - 16,
-    PanelOptions.ClientHeight - 16);
+  AControl.SetBounds(8, 8, PanelOptions.ClientWidth - 16, PanelOptions.ClientHeight - 16);
   AControl.Visible := False;
 
   AItemDataRec := TItemDataRec.Create;
@@ -155,8 +151,7 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else
-  if Assigned(Application.MainForm) then
+  else if Assigned (Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -202,9 +197,9 @@ begin
   LabelHomePage.Caption := RsHomePage;
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-    Settings.LoadInteger(JclTop, Top),
-    Settings.LoadInteger(JclWidth, Width),
-    Settings.LoadInteger(JclHeight, Height));
+            Settings.LoadInteger(JclTop, Top),
+            Settings.LoadInteger(JclWidth, Width),
+            Settings.LoadInteger(JclHeight, Height));
   PanelTree.Width := Settings.LoadInteger(JclPanelTreeWidth, PanelTree.Width);
 end;
 
@@ -233,8 +228,7 @@ begin
   else
     AControl := LabelSelectPage;
   for Index := 0 to PanelOptions.ControlCount - 1 do
-    PanelOptions.Controls[Index].Visible :=
-      PanelOptions.Controls[Index] = AControl;
+    PanelOptions.Controls[Index].Visible := PanelOptions.Controls[Index] = AControl;
 end;
 
 end.

@@ -93,10 +93,8 @@ var
 begin
   FreeAndNil(LocalesList);
   case LocalesRadioGroup.ItemIndex of
-    0:
-      LocalesList := TJclLocalesList.Create(lkSupported);
-    1:
-      LocalesList := TJclLocalesList.Create(lkInstalled);
+    0: LocalesList := TJclLocalesList.Create(lkSupported);
+    1: LocalesList := TJclLocalesList.Create(lkInstalled);
   end;
   with LocalesListView do
   begin
@@ -136,8 +134,7 @@ procedure TMainForm.UpdateView(ListItem: TListItem);
 var
   I: Integer;
 begin
-  if ListItem = nil then
-    Exit;
+  if ListItem = nil then Exit;
   with TJclLocaleInfo(ListItem.Data) do
   begin
     UseSystemACP := False;
@@ -178,16 +175,14 @@ begin
     begin
       Font.Charset := FontCharset;
       Items.Assign(Calendars);
-    end;
+    end;  
     UseSystemACP := True;
   end;
 end;
 
-procedure TMainForm.LocalesListViewSelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
+procedure TMainForm.LocalesListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
-  if Selected then
-    UpdateView(Item);
+  if Selected then UpdateView(Item);
 end;
 
 procedure TMainForm.UpdateKeybLayouts(Sender: TObject);
@@ -200,7 +195,7 @@ begin
     try
       Items.Clear;
       for I := 0 to KeyboardLayoutList.Count - 1 do
-        Items.AddObject(Format('[%.8x] %s', [KeyboardLayoutList[I].Layout,
+        Items.AddObject(Format('[%.8x] %s', [ KeyboardLayoutList[I].Layout,
           KeyboardLayoutList[I].DisplayName]), KeyboardLayoutList[I]);
     finally
       Items.EndUpdate;
@@ -224,7 +219,7 @@ procedure TMainForm.LocalesListViewCustomDrawSubItem(
   Sender: TCustomListView; Item: TListItem; SubItem: Integer;
   State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  with Sender.Canvas.Font do
+  with Sender.Canvas.Font do 
     if SubItem = 5 then
       Charset := TJclLocaleInfo(Item.Data).FontCharset
     else
@@ -264,8 +259,7 @@ end;
 
 procedure TMainForm.LoadBtnClick(Sender: TObject);
 begin
-  Win32Check(TJclAvailableKeybLayout(
-    AvailableLayoutsListView.Selected.Data).Load([]));
+  Win32Check(TJclAvailableKeybLayout(AvailableLayoutsListView.Selected.Data).Load([]));
 end;
 
 procedure TMainForm.UnloadBtnClick(Sender: TObject);

@@ -57,36 +57,36 @@ uses
 
 const
   Bernstein: Float = 0.2801694990238691330364364912307;  // Bernstein constant
-  Cbrt2: Float = 1.2599210498948731647672106072782;  // CubeRoot(2)
-  Cbrt3: Float = 1.4422495703074083823216383107801;  // CubeRoot(3)
-  Cbrt10: Float = 2.1544346900318837217592935665194;  // CubeRoot(10)
-  Cbrt100: Float = 4.6415888336127788924100763509194;  // CubeRoot(100)
-  CbrtPi: Float = 1.4645918875615232630201425272638;  // CubeRoot(PI)
-  Catalan: Float = 0.9159655941772190150546035149324;  // Catalan constant
-  Pi: Float = 3.1415926535897932384626433832795;  // PI
-  PiOn2: Float = 1.5707963267948966192313216916398;  // PI / 2
-  PiOn3: Float = 1.0471975511965977461542144610932;  // PI / 3
-  PiOn4: Float = 0.78539816339744830961566084581988; // PI / 4
-  Sqrt2: Float = 1.4142135623730950488016887242097;  // Sqrt(2)
-  Sqrt3: Float = 1.7320508075688772935274463415059;  // Sqrt(3)
-  Sqrt5: Float = 2.2360679774997896964091736687313;  // Sqrt(5)
-  Sqrt10: Float = 3.1622776601683793319988935444327;  // Sqrt(10)
-  SqrtPi: Float = 1.7724538509055160272981674833411;  // Sqrt(PI)
-  Sqrt2Pi: Float = 2.506628274631000502415765284811;   // Sqrt(2 * PI)
-  TwoPi: Float = 6.283185307179586476925286766559;   // 2 * PI
-  ThreePi: Float = 9.4247779607693797153879301498385;  // 3 * PI
-  Ln2: Float = 0.69314718055994530941723212145818; // Ln(2)
-  Ln10: Float = 2.3025850929940456840179914546844;  // Ln(10)
-  LnPi: Float = 1.1447298858494001741434273513531;  // Ln(PI)
-  Log2: Float = 0.30102999566398119521373889472449; // Log10(2)
-  Log3: Float = 0.47712125471966243729502790325512; // Log10(3)
-  LogPi: Float = 0.4971498726941338543512682882909;  // Log10(PI)
-  LogE: Float = 0.43429448190325182765112891891661; // Log10(E)
-  E: Float = 2.7182818284590452353602874713527;  // Natural constant
-  hLn2Pi: Float = 0.91893853320467274178032973640562; // Ln(2*PI)/2
-  inv2Pi: Float = 0.159154943091895;                  // 0.5 / Pi
+  Cbrt2: Float     = 1.2599210498948731647672106072782;  // CubeRoot(2)
+  Cbrt3: Float     = 1.4422495703074083823216383107801;  // CubeRoot(3)
+  Cbrt10: Float    = 2.1544346900318837217592935665194;  // CubeRoot(10)
+  Cbrt100: Float   = 4.6415888336127788924100763509194;  // CubeRoot(100)
+  CbrtPi: Float    = 1.4645918875615232630201425272638;  // CubeRoot(PI)
+  Catalan: Float   = 0.9159655941772190150546035149324;  // Catalan constant
+  Pi: Float        = 3.1415926535897932384626433832795;  // PI
+  PiOn2: Float     = 1.5707963267948966192313216916398;  // PI / 2
+  PiOn3: Float     = 1.0471975511965977461542144610932;  // PI / 3
+  PiOn4: Float     = 0.78539816339744830961566084581988; // PI / 4
+  Sqrt2: Float     = 1.4142135623730950488016887242097;  // Sqrt(2)
+  Sqrt3: Float     = 1.7320508075688772935274463415059;  // Sqrt(3)
+  Sqrt5: Float     = 2.2360679774997896964091736687313;  // Sqrt(5)
+  Sqrt10: Float    = 3.1622776601683793319988935444327;  // Sqrt(10)
+  SqrtPi: Float    = 1.7724538509055160272981674833411;  // Sqrt(PI)
+  Sqrt2Pi: Float   = 2.506628274631000502415765284811;   // Sqrt(2 * PI)
+  TwoPi: Float     = 6.283185307179586476925286766559;   // 2 * PI
+  ThreePi: Float   = 9.4247779607693797153879301498385;  // 3 * PI
+  Ln2: Float       = 0.69314718055994530941723212145818; // Ln(2)
+  Ln10: Float      = 2.3025850929940456840179914546844;  // Ln(10)
+  LnPi: Float      = 1.1447298858494001741434273513531;  // Ln(PI)
+  Log2: Float      = 0.30102999566398119521373889472449; // Log10(2)
+  Log3: Float      = 0.47712125471966243729502790325512; // Log10(3)
+  LogPi: Float     = 0.4971498726941338543512682882909;  // Log10(PI)
+  LogE: Float      = 0.43429448190325182765112891891661; // Log10(E)
+  E: Float         = 2.7182818284590452353602874713527;  // Natural constant
+  hLn2Pi: Float    = 0.91893853320467274178032973640562; // Ln(2*PI)/2
+  inv2Pi: Float    = 0.159154943091895;                  // 0.5 / Pi
   TwoToPower63: Float = 9223372036854775808.0;           // 2^63
-  GoldenMean: Float = 1.618033988749894848204586834365638;  // GoldenMean
+  GoldenMean: Float   = 1.618033988749894848204586834365638;  // GoldenMean
   EulerMascheroni: Float = 0.5772156649015328606065120900824;  // Euler GAMMA
 
 const
@@ -113,12 +113,12 @@ const
 
 const
   PiExt = 3.1415926535897932384626433832795;
-  RatioDegToRad: Extended = PiExt / 180.0;
-  RatioRadToDeg: Extended = 180.0 / PiExt;
-  RatioGradToRad: Extended = PiExt / 200.0;
-  RatioRadToGrad: Extended = 200.0 / PiExt;
-  RatioDegToGrad: Extended = 200.0 / 180.0;
-  RatioGradToDeg: Extended = 180.0 / 200.0;
+  RatioDegToRad : Extended = PiExt / 180.0;
+  RatioRadToDeg : Extended = 180.0 / PiExt;
+  RatioGradToRad : Extended = PiExt / 200.0;
+  RatioRadToGrad : Extended = 200.0 / PiExt;
+  RatioDegToGrad : Extended = 200.0 / 180.0;
+  RatioGradToDeg : Extended = 180.0 / 200.0;
 
 var
   PrecisionTolerance: Float = 0.0000001;
@@ -143,67 +143,49 @@ function DoubleToHex(const D: Double): string; {$IFDEF SUPPORTS_INLINE}inline;{$
 function HexToDouble(const Hex: string): Double;
 
 // Converts degrees to radians.
-function DegToRad(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function DegToRad(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function DegToRad(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastDegToRad;
 {$ENDIF CPU386}
 
 // Converts radians to degrees.
-function RadToDeg(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function RadToDeg(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function RadToDeg(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastRadToDeg;
 {$ENDIF CPU386}
 
 // Converts grads to radians.
-function GradToRad(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function GradToRad(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function GradToRad(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToRad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToRad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToRad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastGradToRad;
 {$ENDIF CPU386}
 
 // Converts radians to grads.
-function RadToGrad(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function RadToGrad(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function RadToGrad(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function RadToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastRadToGrad;
 {$ENDIF CPU386}
 
 // Converts degrees to grads.
-function DegToGrad(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function DegToGrad(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function DegToGrad(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToGrad(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToGrad(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function DegToGrad(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastDegToGrad;
 {$ENDIF CPU386}
 
 // Converts grads to degrees.
-function GradToDeg(const Value: Extended): Extended;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function GradToDeg(const Value: Double): Double;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function GradToDeg(const Value: Single): Single;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToDeg(const Value: Extended): Extended; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToDeg(const Value: Double): Double; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function GradToDeg(const Value: Single): Single; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$IFDEF CPU386}
 procedure FastGradToDeg;
 {$ENDIF CPU386}
@@ -252,10 +234,8 @@ function TanH(X: Float): Float; overload;
 
 { Coordinate conversion }
 
-function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float;
- // obsolete (see JclUnitConv)
-procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float);
- // obsolete (see JclUnitConv)
+function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float; // obsolete (see JclUnitConv)
+procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obsolete (see JclUnitConv)
 
 { Exponential }
 
@@ -263,8 +243,7 @@ function Exp(const X: Float): Float; overload;
 function Power(const Base, Exponent: Float): Float; overload;
 function PowerInt(const X: Float; N: Integer): Float; overload;
 function TenToY(const Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function TruncPower(const Base, Exponent: Float): Float;
- {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function TruncPower(const Base, Exponent: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function TwoToY(const Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 { Floating point numbers support routines }
@@ -275,8 +254,7 @@ function MaxFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$EN
 function MinFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function ModFloat(const X, Y: Float): Float;
 function RemainderFloat(const X, Y: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function SetPrecisionTolerance(NewTolerance: Float): Float;
- {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function SetPrecisionTolerance(NewTolerance: Float): Float; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 procedure SwapFloats(var X, Y: Float); {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 procedure CalcMachineEpsSingle;
 procedure CalcMachineEpsDouble;
@@ -307,8 +285,7 @@ function EnsureRange(const AValue, AMin, AMax: Double): Double; overload;
 
 { Prime numbers }
 
-function IsRelativePrime(const X, Y: Cardinal): Boolean;
- {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsRelativePrime(const X, Y: Cardinal): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function IsPrimeTD(N: Cardinal): Boolean;
 {$IFDEF CPU386}
 function IsPrimeRM(N: Cardinal): Boolean;
@@ -348,9 +325,9 @@ type
   TNaNTag = -$3FFFFF..$3FFFFE;
 
 const
-  Infinity = 1 / 0;       // tricky
+  Infinity    = 1/0;       // tricky
   {$EXTERNALSYM Infinity}
-  NaN = 0 / 0;       // tricky
+  NaN         = 0/0;       // tricky
   {$EXTERNALSYM NaN}
   NegInfinity = -Infinity;
   {$EXTERNALSYM NegInfinity}
@@ -359,19 +336,13 @@ const
 {$HPPEMIT 'static const NaN         =  0.0 / 0.0;'}
 {$HPPEMIT 'static const NegInfinity = -1.0 / 0.0;'}
 
-function IsInfinite(const Value: Single): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function IsInfinite(const Value: Double): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function IsInfinite(const Value: Extended): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsInfinite(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsInfinite(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsInfinite(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-function IsNaN(const Value: Single): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function IsNaN(const Value: Double): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-function IsNaN(const Value: Extended): Boolean;
-  overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsNaN(const Value: Single): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsNaN(const Value: Double): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function IsNaN(const Value: Extended): Boolean; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 function IsSpecialValue(const X: Float): Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
@@ -414,14 +385,11 @@ type
   protected
   {$ENDIF}
     function GetBit(const Idx: Integer): Boolean; virtual; abstract;
-    procedure SetBit(const Idx: Integer; const Value: Boolean);
-      virtual; abstract;
+    procedure SetBit(const Idx: Integer; const Value: Boolean); virtual; abstract;
     procedure Clear; virtual; abstract;
     procedure Invert; virtual; abstract;
-    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
-      virtual; abstract;
-    procedure SetRange(const Low, High: Integer; const Value: Boolean);
-      virtual; abstract;
+    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean; virtual; abstract;
+    procedure SetRange(const Low, High: Integer; const Value: Boolean); virtual; abstract;
   end;
 
 type
@@ -433,11 +401,9 @@ type
     destructor Destroy; override;
     procedure Clear; override;
     procedure Invert; override;
-    procedure SetRange(const Low, High: Integer; const Value: Boolean);
-      override;
+    procedure SetRange(const Low, High: Integer; const Value: Boolean); override;
     function GetBit(const Idx: Integer): Boolean; override;
-    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
-      override;
+    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean; override;
     procedure SetBit(const Idx: Integer; const Value: Boolean); override;
   end;
 
@@ -465,10 +431,8 @@ type
     procedure Invert; override;
     function GetBit(const Idx: Integer): Boolean; override;
     procedure SetBit(const Idx: Integer; const Value: Boolean); override;
-    procedure SetRange(const Low, High: Integer; const Value: Boolean);
-      override;
-    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
-      override;
+    procedure SetRange(const Low, High: Integer; const Value: Boolean); override;
+    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean; override;
   end;
 {$ENDIF ~CLR}
 
@@ -488,8 +452,7 @@ type
   public
     constructor Create; overload;
     constructor Create(const R: Float); overload;
-    constructor Create(const Numerator: Integer;
-      const Denominator: Integer = 1); overload;
+    constructor Create(const Numerator: Integer; const Denominator: Integer = 1); overload;
 
     property Numerator: Integer read FT;
     property Denominator: Integer read FN;
@@ -498,20 +461,15 @@ type
 
     procedure Assign(const R: TJclRational); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Assign(const R: Float); overload;
-    procedure Assign(const Numerator: Integer; const Denominator: Integer = 1);
-      overload;
+    procedure Assign(const Numerator: Integer; const Denominator: Integer = 1); overload;
 
     procedure AssignZero; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure AssignOne; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function Duplicate: TJclRational; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
-    function IsEqual(const R: TJclRational): Boolean;
-      reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function IsEqual(const Numerator: Integer;
-      const Denominator: Integer = 1): Boolean;
-      reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function IsEqual(const R: Float): Boolean;
-      reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsEqual(const R: TJclRational): Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsEqual(const Numerator: Integer; const Denominator: Integer = 1) : Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function IsEqual(const R: Float): Boolean; reintroduce; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     function IsZero: Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function IsOne: Boolean; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -580,8 +538,7 @@ function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer;
 function CheckCrc16_A(var X: array of Byte; Crc: Word): Integer;
 
 function Crc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
-function Crc32(const X: array of Byte; N: Integer;
-  Crc: Cardinal = 0): Cardinal;
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
 
 function CheckCrc32_P(X: PJclByteArray; N: Integer; Crc: Cardinal): Integer;
@@ -623,11 +580,9 @@ type
     {$ENDIF SUPPORTS_CLASS_OPERATORS}
   end;
 
-function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex;
-  overload;
+function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex; overload;
 function RectComplex(const Z: TPolarComplex): TRectComplex; overload;
-function PolarComplex(const Radius: Float;
-  const Angle: Float = 0): TPolarComplex; overload;
+function PolarComplex(const Radius: Float; const Angle: Float = 0): TPolarComplex; overload;
 function PolarComplex(const Z: TRectComplex): TPolarComplex; overload;
 
 function Equal(const Z1, Z2: TRectComplex): Boolean; overload;
@@ -658,12 +613,9 @@ function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
 
 function Ln(const Z: TPolarComplex): TRectComplex;
 function Exp(const Z: TRectComplex): TPolarComplex; overload;
-function Power(const Z: TPolarComplex;
-  const Exponent: TRectComplex): TPolarComplex; overload;
-function Power(const Z: TPolarComplex; const Exponent: Float): TPolarComplex;
-  overload;
-function PowerInt(const Z: TPolarComplex;
-  const Exponent: Integer): TPolarComplex; overload;
+function Power(const Z: TPolarComplex; const Exponent: TRectComplex): TPolarComplex; overload;
+function Power(const Z: TPolarComplex; const Exponent: Float): TPolarComplex; overload;
+function PowerInt(const Z: TPolarComplex; const Exponent: Integer): TPolarComplex; overload;
 function Root(const Z: TPolarComplex; const K, N: Cardinal): TPolarComplex;
 
 function Cos(const Z: TRectComplex): TRectComplex; overload;
@@ -710,7 +662,7 @@ uses
 function GetGOT: Pointer; export;
 begin
   asm
-    MOV Result, EBX
+        MOV Result, EBX
   end;
 end;
 {$ENDIF PIC}
@@ -798,14 +750,14 @@ end;
 // ST(0) := ST(0) * PI / 180
 procedure FastDegToRad; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioDegToRad]
-  {$ELSE}
-  FLD     [RatioDegToRad]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioDegToRad]
+        {$ELSE}
+        FLD     [RatioDegToRad]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -831,14 +783,14 @@ end;
 // ST(0) := ST(0) * (180 / PI);
 procedure FastRadToDeg; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioRadToDeg]
-  {$ELSE}
-  FLD     [RatioRadToDeg]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioRadToDeg]
+        {$ELSE}
+        FLD     [RatioRadToDeg]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -864,14 +816,14 @@ end;
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToRad; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioGradToRad]
-  {$ELSE}
-  FLD     [RatioGradToRad]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioGradToRad]
+        {$ELSE}
+        FLD     [RatioGradToRad]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -897,14 +849,14 @@ end;
 // ST(0) := ST(0) * (200 / PI);
 procedure FastRadToGrad; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioRadToGrad]
-  {$ELSE}
-  FLD     [RatioRadToGrad]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioRadToGrad]
+        {$ELSE}
+        FLD     [RatioRadToGrad]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -930,14 +882,14 @@ end;
 // ST(0) := ST(0) * (200 / 180);
 procedure FastDegToGrad; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioDegToGrad]
-  {$ELSE}
-  FLD     [RatioDegToGrad]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioDegToGrad]
+        {$ELSE}
+        FLD     [RatioDegToGrad]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -963,14 +915,14 @@ end;
 // ST(0) := ST(0) * PI / 200
 procedure FastGradToDeg; assembler;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  FLD     [EAX][RatioGradToDeg]
-  {$ELSE}
-  FLD     [RatioGradToDeg]
-  {$ENDIF PIC}
-  FMULP
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        FLD     [EAX][RatioGradToDeg]
+        {$ELSE}
+        FLD     [RatioGradToDeg]
+        {$ENDIF PIC}
+        FMULP
+        FWAIT
 end;
 {$ENDIF CPU386}
 
@@ -991,10 +943,10 @@ function LogBase10(X: Float): Float;
   {$IFDEF CPU386}
   function FLogBase10(X: Float): Float; assembler;
   asm
-    FLDLG2
-    FLD     X
-    FYL2X
-    FWAIT
+          FLDLG2
+          FLD     X
+          FYL2X
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1012,10 +964,10 @@ function LogBase2(X: Float): Float;
   {$IFDEF CPU386}
   function FLogBase2(X: Float): Float; assembler;
   asm
-    FLD1
-    FLD     X
-    FYL2X
-    FWAIT
+          FLD1
+          FLD     X
+          FYL2X
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1033,14 +985,14 @@ function LogBaseN(Base, X: Float): Float;
   {$IFDEF CPU386}
   function FLogBaseN(Base, X: Float): Float; assembler;
   asm
-    FLD1
-    FLD     X
-    FYL2X
-    FLD1
-    FLD     Base
-    FYL2X
-    FDIV
-    FWAIT
+          FLD1
+          FLD     X
+          FYL2X
+          FLD1
+          FLD     Base
+          FYL2X
+          FDIV
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1060,15 +1012,15 @@ function ArcCos(X: Float): Float;
   {$IFDEF CPU386}
   function FArcCos(X: Float): Float; assembler;
   asm
-    FLD     X
-    FLD     ST(0)
-    FMUL    ST(0), ST
-    FLD1
-    FSUBRP  ST(1), ST
-    FSQRT
-    FXCH
-    FPATAN
-    FWAIT
+          FLD     X
+          FLD     ST(0)
+          FMUL    ST(0), ST
+          FLD1
+          FSUBRP  ST(1), ST
+          FSQRT
+          FXCH
+          FPATAN
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1089,7 +1041,7 @@ end;
 
 function ArcCsc(X: Float): Float;
 begin
-  Result := ArcSec(X / Sqrt(X * X - 1));
+  Result := ArcSec(X / Sqrt(X * X -1));
 end;
 
 function ArcSec(X: Float): Float;
@@ -1097,10 +1049,10 @@ function ArcSec(X: Float): Float;
   {$IFDEF CPU386}
   function FArcTan(X: Float): Float; assembler;
   asm
-    FLD     X
-    FLD1
-    FPATAN
-    FWAIT
+          FLD     X
+          FLD1
+          FPATAN
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1108,7 +1060,7 @@ begin
   {$IFDEF CLR}
   Result := System.Math.Atan(Sqrt(X*X - 1))
   {$ELSE}
-  Result := FArcTan(Sqrt(X * X - 1));
+  Result := FArcTan(Sqrt(X*X - 1));
   {$ENDIF CLR}
 end;
 
@@ -1117,14 +1069,14 @@ function ArcSin(X: Float): Float;
   {$IFDEF CPU386}
   function FArcSin(X: Float): Float; assembler;
   asm
-    FLD     X
-    FLD     ST(0)
-    FMUL    ST(0), ST
-    FLD1
-    FSUBRP  ST(1), ST
-    FSQRT
-    FPATAN
-    FWAIT
+          FLD     X
+          FLD     ST(0)
+          FMUL    ST(0), ST
+          FLD1
+          FSUBRP  ST(1), ST
+          FSQRT
+          FPATAN
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1143,12 +1095,12 @@ begin
   Result := ArcTan2(X, 1);
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 asm
-  FLD     X
-  FLD1
-  FPATAN
-  FWAIT
+        FLD     X
+        FLD1
+        FPATAN
+        FWAIT
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -1160,10 +1112,10 @@ end;
 {$ELSE}
 function ArcTan2(Y, X: Float): Float; assembler;
 asm
-  FLD     Y
-  FLD     X
-  FPATAN
-  FWAIT
+        FLD     Y
+        FLD     X
+        FPATAN
+        FWAIT
 end;
 {$ENDIF CLR}
 
@@ -1172,9 +1124,9 @@ function Cos(X: Float): Float;
   {$IFDEF CPU386}
   function FCos(X: Float): Float; assembler;
   asm
-    FLD     X
-    FCOS
-    FWAIT
+          FLD     X
+          FCOS
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1192,10 +1144,10 @@ function Cot(X: Float): Float;
   {$IFDEF CPU386}
   function FCot(X: Float): Float; assembler;
   asm
-    FLD     X
-    FPTAN
-    FDIVRP
-    FWAIT
+          FLD     X
+          FPTAN
+          FDIVRP
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1240,11 +1192,11 @@ function Sec(X: Float): Float;
   {$IFDEF CPU386}
   function FSec(X: Float): Float; assembler;
   asm
-    FLD     X
-    FCOS
-    FLD1
-    FDIVRP
-    FWAIT
+          FLD     X
+          FCOS
+          FLD1
+          FDIVRP
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1263,9 +1215,9 @@ function Sin(X: Float): Float;
   {$IFDEF CPU386}
   function FSin(X: Float): Float; assembler;
   asm
-    FLD     X
-    FSIN
-    FWAIT
+          FLD     X
+          FSIN
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1285,11 +1237,11 @@ procedure SinCos(X: Float; var Sin, Cos: Float);
   {$IFDEF CPU386}
   procedure FSinCos(X: Float; var Sin, Cos: Float); assembler;
   asm
-    FLD     X
-    FSINCOS
-    FSTP    Float PTR [EDX]
-    FSTP    Float PTR [EAX]
-    FWAIT
+          FLD     X
+          FSINCOS
+          FSTP    Float PTR [EDX]
+          FSTP    Float PTR [EAX]
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1308,10 +1260,10 @@ function Tan(X: Float): Float;
   {$IFDEF CPU386}
   function FTan(X: Float): Float; assembler;
   asm
-    FLD     X
-    FPTAN
-    FSTP    ST(0)
-    FWAIT
+          FLD     X
+          FPTAN
+          FSTP    ST(0)
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1336,15 +1288,15 @@ function ArcCosH(X: Float): Float;
   {$IFDEF CPU386}
   function FArcCosH(X: Float): Float; assembler;
   asm
-    FLDLN2
-    FLD     X
-    FLD     ST(0)
-    FMUL    ST(0), ST
-    FLD1
-    FSUBP   ST(1), ST
-    FSQRT
-    FADDP   ST(1), ST
-    FYL2X
+          FLDLN2
+          FLD     X
+          FLD     ST(0)
+          FMUL    ST(0), ST
+          FLD1
+          FSUBP   ST(1), ST
+          FSQRT
+          FADDP   ST(1), ST
+          FYL2X
   end;
   {$ENDIF CPU386}
 
@@ -1393,17 +1345,17 @@ begin
   Result := System.Math.Log(X + Sqrt(X * X + 1));
 end;
 {$ELSE}
-  assembler;
+assembler;
 asm
-  FLDLN2
-  FLD     X
-  FLD     ST(0)
-  FMUL    ST(0), ST
-  FLD1
-  FADDP   ST(1), ST
-  FSQRT
-  FADDP   ST(1), ST
-  FYL2X
+        FLDLN2
+        FLD     X
+        FLD     ST(0)
+        FMUL    ST(0), ST
+        FLD1
+        FADDP   ST(1), ST
+        FSQRT
+        FADDP   ST(1), ST
+        FYL2X
 end;
 {$ENDIF CLR}
 
@@ -1412,18 +1364,18 @@ function ArcTanH(X: Float): Float;
   {$IFDEF CPU386}
   function FArcTanH(X: Float): Float; assembler;
   asm
-    FLDLN2
-    FLD     X
-    FLD     ST(0)
-    FLD1
-    FADDP   ST(1), ST
-    FXCH
-    FLD1
-    FSUBRP  ST(1), ST
-    FDIVP   ST(1), ST
-    FSQRT
-    FYL2X
-    FWAIT
+          FLDLN2
+          FLD     X
+          FLD     ST(0)
+          FLD1
+          FADDP   ST(1), ST
+          FXCH
+          FLD1
+          FSUBRP  ST(1), ST
+          FDIVP   ST(1), ST
+          FSQRT
+          FYL2X
+          FWAIT
   end;
   {$ENDIF CPU386}
 
@@ -1448,38 +1400,38 @@ const
 var
   ControlWW: Word;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  {$ENDIF PIC}
-  FLD     X    { TODO : Legal values for X? }
-  FLDL2E
-  FMULP   ST(1), ST
-  FSTCW   ControlWW
-  {$IFDEF PIC}
-  FLDCW   [EAX].RoundDown
-  {$ELSE}
-  FLDCW   RoundDown
-  {$ENDIF PIC}
-  FLD     ST(0)
-  FRNDINT
-  FLDCW   ControlWW
-  FXCH
-  FSUB    ST, ST(1)
-  F2XM1
-  FLD1
-  FADDP   ST(1), ST
-  FSCALE
-  FST     ST(1)
-  FLD1
-  FDIVRP  ST(1), ST
-  FADDP   ST(1), ST
-  {$IFDEF PIC}
-  FLD     [EAX].OneHalf
-  {$ELSE}
-  FLD     OneHalf
-  {$ENDIF PIC}
-  FMULP   ST(1), ST
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        {$ENDIF PIC}
+        FLD     X    { TODO : Legal values for X? }
+        FLDL2E
+        FMULP   ST(1), ST
+        FSTCW   ControlWW
+        {$IFDEF PIC}
+        FLDCW   [EAX].RoundDown
+        {$ELSE}
+        FLDCW   RoundDown
+        {$ENDIF PIC}
+        FLD     ST(0)
+        FRNDINT
+        FLDCW   ControlWW
+        FXCH
+        FSUB    ST, ST(1)
+        F2XM1
+        FLD1
+        FADDP   ST(1), ST
+        FSCALE
+        FST     ST(1)
+        FLD1
+        FDIVRP  ST(1), ST
+        FADDP   ST(1), ST
+        {$IFDEF PIC}
+        FLD     [EAX].OneHalf
+        {$ELSE}
+        FLD     OneHalf
+        {$ENDIF PIC}
+        FMULP   ST(1), ST
+        FWAIT
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -1508,45 +1460,45 @@ begin
   Result := System.Math.Sinh(X);
 end;
 {$ELSE ~CLR}
-  assembler;
+assembler;
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
 var
   ControlWW: Word;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  {$ENDIF PIC}
-  FLD     X  { TODO : Legal values for X? }
-  FLDL2E
-  FMULP   ST(1), ST
-  FSTCW   ControlWW
-  {$IFDEF PIC}
-  FLDCW   [EAX].RoundDown
-  {$ELSE}
-  FLDCW   RoundDown
-  {$ENDIF PIC}
-  FLD     ST(0)
-  FRNDINT
-  FLDCW   ControlWW
-  FXCH
-  FSUB    ST, ST(1)
-  F2XM1
-  FLD1
-  FADDP   ST(1), ST
-  FSCALE
-  FST     ST(1)
-  FLD1
-  FDIVRP  ST(1), ST
-  FSUBP   ST(1), ST
-  {$IFDEF PIC}
-  FLD     [EAX].OneHalf
-  {$ELSE}
-  FLD     OneHalf
-  {$ENDIF PIC}
-  FMULP   ST(1), ST
-  FWAIT
+        {$IFDEF PIC}
+        CALL    GetGOT
+        {$ENDIF PIC}
+        FLD     X  { TODO : Legal values for X? }
+        FLDL2E
+        FMULP   ST(1), ST
+        FSTCW   ControlWW
+        {$IFDEF PIC}
+        FLDCW   [EAX].RoundDown
+        {$ELSE}
+        FLDCW   RoundDown
+        {$ENDIF PIC}
+        FLD     ST(0)
+        FRNDINT
+        FLDCW   ControlWW
+        FXCH
+        FSUB    ST, ST(1)
+        F2XM1
+        FLD1
+        FADDP   ST(1), ST
+        FSCALE
+        FST     ST(1)
+        FLD1
+        FDIVRP  ST(1), ST
+        FSUBP   ST(1), ST
+        {$IFDEF PIC}
+        FLD     [EAX].OneHalf
+        {$ELSE}
+        FLD     OneHalf
+        {$ENDIF PIC}
+        FMULP   ST(1), ST
+        FWAIT
 end;
 {$ENDIF ~CLR}
 
@@ -1574,8 +1526,7 @@ begin
   Result := Degs + (Mins / 60.0) + (Secs / 3600.0);
 end;
 
-procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float);
- // obsolete
+procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obsolete
 var
   Y: Float;
 begin
@@ -1730,13 +1681,13 @@ begin
   try
     if Y = 0 then
       // catch exact equality
-      Result := (X = Y) or (Abs(1 - Y / X) <= PrecisionTolerance)
+      Result := (X = Y) or (Abs(1 - Y/X ) <= PrecisionTolerance)
     else
       // catch exact equality
-      Result := (X = Y) or (Abs(1 - X / Y) <= PrecisionTolerance);
+      Result := (X = Y) or (Abs(1 - X/Y ) <= PrecisionTolerance);
   except
     Result := False;  // catch real rare overflow e.g.  1.0e3000/1.0e-3000
-  end;
+  end
 end;
 
 function MaxFloat(const X, Y: Float): Float;
@@ -2031,19 +1982,18 @@ begin
   end;
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 { Euclid's algorithm }
 asm
-  JMP     @01
-// We start with EAX <- X, EDX <- Y, and check to see if Y=0
-  @00:
-  MOV     ECX, EDX // ECX <- EDX prepare for division
-  xor     EDX, EDX // clear EDX for Division
-  div     ECX      // EAX <- EDX:EAX div ECX, EDX <- EDX:EAX mod ECX
-  MOV     EAX, ECX // EAX <- ECX, and repeat if EDX <> 0
-  @01:
-  and     EDX, EDX // test to see if EDX is zero, without changing EDX
-  JNZ     @00      // when EDX is zero EAX has the Result
+        JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
+@00:
+        MOV     ECX, EDX // ECX <- EDX prepare for division
+        XOR     EDX, EDX // clear EDX for Division
+        DIV     ECX      // EAX <- EDX:EAX div ECX, EDX <- EDX:EAX mod ECX
+        MOV     EAX, ECX // EAX <- ECX, and repeat if EDX <> 0
+@01:
+        AND     EDX, EDX // test to see if EDX is zero, without changing EDX
+        JNZ     @00      // when EDX is zero EAX has the Result
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -2062,23 +2012,23 @@ begin
   until b > I;
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 asm
-  PUSH    EBX
+        PUSH    EBX
 
-  MOV     CX, AX  // load argument
-  MOV     AX, -1  // init Result
-  CWD             // init odd numbers to -1
-  xor     BX, BX  // init perfect squares to 0
-  @LOOP:
-  INC     AX      // increment Result
-  INC     DX      // compute
-  INC     DX      // next odd number
-  ADD     BX, DX  // next perfect square
-  CMP     BX, CX  // perfect square > argument ?
-  JBE     @LOOP   // until square greater than argument
+        MOV     CX, AX  // load argument
+        MOV     AX, -1  // init Result
+        CWD             // init odd numbers to -1
+        XOR     BX, BX  // init perfect squares to 0
+@LOOP:
+        INC     AX      // increment Result
+        INC     DX      // compute
+        INC     DX      // next odd number
+        ADD     BX, DX  // next perfect square
+        CMP     BX, CX  // perfect square > argument ?
+        JBE     @LOOP   // until square greater than argument
 
-  POP     EBX
+        POP     EBX
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -2241,8 +2191,7 @@ begin
   Result := FBits[Idx];
 end;
 
-function TJclFlatSet.GetRange(const Low, High: Integer;
-  const Value: Boolean): Boolean;
+function TJclFlatSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
 var
   I: Integer;
 begin
@@ -2295,8 +2244,7 @@ var
 begin
   for F := 0 to FSetListEntries - 1 do
     if FSetList^[F] <> nil then
-      PDelphiSet(FSetList^[F])^ :=
-        CompleteDelphiSet - PDelphiSet(FSetList^[F])^;
+      PDelphiSet(FSetList^[F])^ := CompleteDelphiSet - PDelphiSet(FSetList^[F])^;
 end;
 
 function TJclSparseFlatSet.GetBit(const Idx: Integer): Boolean;
@@ -2337,8 +2285,7 @@ begin
   Include(S^, Byte(Idx and $FF));
 end;
 
-procedure TJclSparseFlatSet.SetRange(const Low, High: Integer;
-  const Value: Boolean);
+procedure TJclSparseFlatSet.SetRange(const Low, High: Integer; const Value: Boolean);
 var
   I, LowSet, HighSet: Integer;
 
@@ -2384,8 +2331,7 @@ begin
   end;
 end;
 
-function TJclSparseFlatSet.GetRange(const Low, High: Integer;
-  const Value: Boolean): Boolean;
+function TJclSparseFlatSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
 var
   I: Integer;
 begin
@@ -2446,7 +2392,7 @@ var
 
 procedure InitPrimeSet;
 var
-  I, J, MaxI, MaxJ: Integer;
+  I, J, MaxI, MaxJ : Integer;
 begin
   PrimeSet := TJclFlatSet.Create;
   PrimeSet.SetRange(1, PrimeCacheLimit div 2, True);
@@ -2459,8 +2405,8 @@ begin
       MaxJ := PrimeCacheLimit div I;
       J := 3;
       repeat
-        PrimeSet.SetBit((I * J) div 2, False);
-        Inc(J, 2);
+        PrimeSet.SetBit((I*J) div 2, False);
+        Inc(J,2);
       until J > MaxJ;
     end;
     Inc(I, 2);
@@ -2484,13 +2430,13 @@ begin
     Exit;
   end;
   if PrimeSet = nil then // initialize look-up table
-    InitPrimeSet;
+     InitPrimeSet;
   if N <= PrimeCacheLimit then // do look-up
     Result := PrimeSet.GetBit(N div 2)
   else
   begin // calculate
     R := N;
-    Max := Round(Sqrt(R));
+    Max := Round(Sqrt (R));
     if Max > PrimeCacheLimit then
     begin
       {$IFDEF CLR}
@@ -2502,7 +2448,7 @@ begin
     end;
     I := 1;
     repeat
-      Inc(I, 2);
+      Inc(I,2);
       if PrimeSet.GetBit(I div 2) then
         if N mod I = 0 then
         begin
@@ -2519,102 +2465,88 @@ end;
 
 function IsPrimeRM(N: Cardinal): Boolean;
 asm
-  TEST  EAX,1            // Odd(N) ??
-  JNZ   @@1
-  CMP   EAX,2            // N == 2 ??
-  SETE  AL
-  RET
-@@1:
-  CMP   EAX,73
-  JBE   @@C
-  PUSH  ESI
-  PUSH  EDI
-  PUSH  EBX
-  PUSH  EBP
-  PUSH  EAX              // save N as Param for @@5
-  LEA   EBP,[EAX - 1]    // M == N -1, Exponent
-  MOV   ECX,32           // calc remaining Bits of M and shift M'
-  MOV   ESI,EBP
-@@2:
-  DEC   ECX
-  SHL   ESI,1
-  JNC   @@2
-  PUSH  ECX              // save Bits as Param for @@5
-  PUSH  ESI              // save M' as Param for @@5
-  CMP   EAX,08A8D7Fh     // N >= 9080191 ??
-  JAE   @@3
+        TEST  EAX,1            // Odd(N) ??
+        JNZ   @@1
+        CMP   EAX,2            // N == 2 ??
+        SETE  AL
+        RET
+@@1:    CMP   EAX,73
+        JBE   @@C
+        PUSH  ESI
+        PUSH  EDI
+        PUSH  EBX
+        PUSH  EBP
+        PUSH  EAX              // save N as Param for @@5
+        LEA   EBP,[EAX - 1]    // M == N -1, Exponent
+        MOV   ECX,32           // calc remaining Bits of M and shift M'
+        MOV   ESI,EBP
+@@2:    DEC   ECX
+        SHL   ESI,1
+        JNC   @@2
+        PUSH  ECX              // save Bits as Param for @@5
+        PUSH  ESI              // save M' as Param for @@5
+        CMP   EAX,08A8D7Fh     // N >= 9080191 ??
+        JAE   @@3
 // now if (N < 9080191) and SPP(31, N) and SPP(73, N) then N is prime
-  MOV   EAX,31
-  CALL  @@5
-  JC    @@4
-  MOV   EAX,73
-  PUSH  OFFSET @@4
-  JMP   @@5
+        MOV   EAX,31
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,73
+        PUSH  OFFSET @@4
+        JMP   @@5
 // now if (N < 4759123141) and SPP(2, N) and SPP(7, N) and SPP(61, N) then N is prime
-@@3:
-  MOV   EAX,2
-  CALL  @@5
-  JC    @@4
-  MOV   EAX,7
-  CALL  @@5
-  JC    @@4
-  MOV   EAX,61
-  CALL  @@5
-@@4:
-  SETNC AL
-  ADD   ESP,4 * 3
-  POP   EBP
-  POP   EBX
-  POP   EDI
-  POP   ESI
-  RET
+@@3:    MOV   EAX,2
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,7
+        CALL  @@5
+        JC    @@4
+        MOV   EAX,61
+        CALL  @@5
+@@4:    SETNC AL
+        ADD   ESP,4 * 3
+        POP   EBP
+        POP   EBX
+        POP   EDI
+        POP   ESI
+        RET
 // do a Strong Pseudo Prime Test
-@@5:
-  MOV   EBX,[ESP + 12]   // N on stack
-  MOV   ECX,[ESP +  8]   // remaining Bits
-  MOV   ESI,[ESP +  4]   // M'
-  MOV   EDI,EAX          // T = b, temp. Base
-@@6:
-  DEC   ECX
-  MUL   EAX
-  DIV   EBX
-  MOV   EAX,EDX
-  SHL   ESI,1
-  JNC   @@7
-  MUL   EDI
-  DIV   EBX
-  AND   ESI,ESI
-  MOV   EAX,EDX
-@@7:
-  JNZ   @@6
-  CMP   EAX,1            // b^((N -1)(2^s)) mod N ==  1 mod N ??
-  JE    @@A
-@@8:
-  CMP   EAX,EBP          // b^((N -1)(2^s)) mod N == -1 mod N ??
-  JE    @@A
-  DEC   ECX              // second part to 2^s
-  JNG   @@9
-  MUL   EAX
-  DIV   EBX
-  CMP   EDX,1
-  MOV   EAX,EDX
-  JNE   @@8
-@@9:
-  STC
-@@A:
-  RET
-@@B:
-  DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
-@@C:
-  MOV   EDX,OFFSET @@B
-  MOV   ECX,19
-@@D:
-  CMP   AL,[EDX + ECX]
-  JE    @@E
-  DEC   ECX
-  JNL   @@D
-@@E:
-  SETE  AL
+@@5:    MOV   EBX,[ESP + 12]   // N on stack
+        MOV   ECX,[ESP +  8]   // remaining Bits
+        MOV   ESI,[ESP +  4]   // M'
+        MOV   EDI,EAX          // T = b, temp. Base
+@@6:    DEC   ECX
+        MUL   EAX
+        DIV   EBX
+        MOV   EAX,EDX
+        SHL   ESI,1
+        JNC   @@7
+        MUL   EDI
+        DIV   EBX
+        AND   ESI,ESI
+        MOV   EAX,EDX
+@@7:    JNZ   @@6
+        CMP   EAX,1            // b^((N -1)(2^s)) mod N ==  1 mod N ??
+        JE    @@A
+@@8:    CMP   EAX,EBP          // b^((N -1)(2^s)) mod N == -1 mod N ??
+        JE    @@A
+        DEC   ECX              // second part to 2^s
+        JNG   @@9
+        MUL   EAX
+        DIV   EBX
+        CMP   EDX,1
+        MOV   EAX,EDX
+        JNE   @@8
+@@9:    STC
+@@A:    RET
+@@B:    DB    3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73
+@@C:    MOV   EDX,OFFSET @@B
+        MOV   ECX,19
+@@D:    CMP   AL,[EDX + ECX]
+        JE    @@E
+        DEC   ECX
+        JNL   @@D
+@@E:    SETE  AL
 end;
 {$ENDIF CPU386}
 
@@ -2647,7 +2579,7 @@ begin
     end;
     I := 3;                  // test all odd factors
     repeat
-      if (N mod I = 0) and IsPrime(I) then
+      if (N mod I = 0) and IsPrime(I)  then
       begin                  // I is a prime factor
         Inc(L);
         SetLength(Result, L);
@@ -2709,52 +2641,52 @@ function _FPClass: TFloatingPointClass;
 // In: ST(0) Value to examine
 //     ECX   address of GOT (PIC only)
 asm
-  FXAM
-  XOR     EDX, EDX
-  FNSTSW  AX
-  FFREE   ST(0)
-  FINCSTP
-  BT      EAX, 14 // C3
-  RCL     EDX, 1
-  BT      EAX, 10 // C2
-  RCL     EDX, 1
-  BT      EAX, 8  // C0
-  RCL     EDX, 1
-  {$IFDEF PIC}
-  MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
-  {$ELSE}
-  MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
-  {$ENDIF PIC}
+        FXAM
+        XOR     EDX, EDX
+        FNSTSW  AX
+        FFREE   ST(0)
+        FINCSTP
+        BT      EAX, 14 // C3
+        RCL     EDX, 1
+        BT      EAX, 10 // C2
+        RCL     EDX, 1
+        BT      EAX, 8  // C0
+        RCL     EDX, 1
+        {$IFDEF PIC}
+        MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
+        {$ELSE}
+        MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
+        {$ENDIF PIC}
 end;
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  MOV     ECX, EAX
-  {$ENDIF PIC}
-  FLD     Value
-  CALL    _FPClass
+        {$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+        {$ENDIF PIC}
+        FLD     Value
+        CALL    _FPClass
 end;
 
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  MOV     ECX, EAX
-  {$ENDIF PIC}
-  FLD     Value
-  CALL    _FPClass
+        {$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+        {$ENDIF PIC}
+        FLD     Value
+        CALL    _FPClass
 end;
 
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 asm
-  {$IFDEF PIC}
-  CALL    GetGOT
-  MOV     ECX, EAX
-  {$ENDIF PIC}
-  FLD     Value
-  CALL    _FPClass
+        {$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+        {$ENDIF PIC}
+        FLD     Value
+        CALL    _FPClass
 end;
 {$ENDIF CPU386}
 
@@ -2801,9 +2733,9 @@ type
   dFractionBits = 0..51; // Double type fraction bits
   xFractionBits = 0..62; // Extended type fraction bits
 
-  sExponentBits = 23..sSignBit - 1;
-  dExponentBits = 52..dSignBit - 1;
-  xExponentBits = 64..xSignBit - 1;
+  sExponentBits = 23..sSignBit-1;
+  dExponentBits = 52..dSignBit-1;
+  xExponentBits = 64..xSignBit-1;
 
   QWord = Int64;
 
@@ -3040,22 +2972,22 @@ var
     Result := rtUndef;
     NNN := (Lo(OpCode) shr 3) and 7;   // NNN field of ModR/M byte
     if Lo(OpCode) <= $BF then
-      case Hi(OpCode) of   // 3 least significant bits of first opcode byte
-        0:
+    case Hi(OpCode) of   // 3 least significant bits of first opcode byte
+      0:
+        Result := rtSingle;
+      1:
+        if NNN < 4 then
           Result := rtSingle;
-        1:
-          if NNN < 4 then
-            Result := rtSingle;
       // Extended signaling NaNs don't cause exceptions on FLD/FST(P) ?!
-        3:
-          if NNN = 5 then
-            Result := rtExtended;
-        4:
+      3:
+        if NNN = 5 then
+          Result := rtExtended;
+      4:
+        Result := rtDouble;
+      5:
+        if NNN = 0 then
           Result := rtDouble;
-        5:
-          if NNN = 0 then
-            Result := rtDouble;
-      end;
+    end;
   end;
 
 begin
@@ -3090,16 +3022,14 @@ procedure InitExceptObjProc;
 
   function IsInitialized: Boolean;
   asm
-    MOV       AL, True
-    LOCK XCHG AL, ExceptObjProcInitialized
+          MOV       AL, True
+          LOCK XCHG AL, ExceptObjProcInitialized
   end;
 
 begin
-  if not IsInitialized then
+ if not IsInitialized then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
-      PrevExceptObjProc :=
-        Pointer(InterlockedExchange(Integer(ExceptObjProc),
-        Integer(@GetExceptionObject)));
+      PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
 end;
 {$ENDIF ~FPC}
 {$ENDIF MSWINDOWS}
@@ -3182,8 +3112,7 @@ begin
     Bits := ZeroTag
   else
     Bits := Abs(Tag);
-  TExtendedRec(X).Significand :=
-    (Bits shl xNaNTagShift) or QuietNaNSignificand;
+  TExtendedRec(X).Significand := (Bits shl xNaNTagShift) or QuietNaNSignificand;
   TExtendedRec(X).Exponent := QuietNaNExponent;
   if Tag < 0 then
     {$IFDEF FPC}
@@ -3342,8 +3271,7 @@ end;
 
 //=== { TJclRational } =======================================================
 
-constructor TJclRational.Create(const Numerator: Integer;
-  const Denominator: Integer);
+constructor TJclRational.Create(const Numerator: Integer; const Denominator: Integer);
 begin
   inherited Create;
   Assign(Numerator, Denominator);
@@ -3355,7 +3283,7 @@ begin
   AssignZero;
 end;
 
-constructor TJclRational.Create(const R: Float);
+constructor TJclRational.Create(const R: Float); 
 begin
   inherited Create;
   Assign(R);
@@ -3379,8 +3307,7 @@ begin
   FN := FN div I;
 end;
 
-procedure TJclRational.Assign(const Numerator: Integer;
-  const Denominator: Integer);
+procedure TJclRational.Assign(const Numerator: Integer; const Denominator: Integer);
 begin
   if Denominator = 0 then
     {$IFDEF CLR}
@@ -3410,8 +3337,7 @@ var
     I: Float;
     Z: Integer;
   begin
-    if IsFloatZero(R) or (Level = 12) then
- // 0 (if Level = 12 we get an approximation)
+    if IsFloatZero(R) or (Level = 12) then // 0 (if Level = 12 we get an approximation)
       Result := TJclRational.Create
     else
     if FloatsEqual(R, 1.0) then // 1
@@ -3455,8 +3381,7 @@ begin
   FN := 1;
 end;
 
-function TJclRational.IsEqual(const Numerator: Integer;
-  const Denominator: Integer): Boolean;
+function TJclRational.IsEqual(const Numerator: Integer; const Denominator: Integer): Boolean;
 var
   R: TJclRational;
 begin
@@ -3503,8 +3428,7 @@ begin
   if F = 0 then
     Assign(StrToFloat(S))
   else
-    Assign(StrToInt(Trim(Copy(S, 1, F - 1))),
-      StrToInt(Trim(Copy(S, F + 1, Length(s)))));
+    Assign(StrToInt(Trim(Copy(S,1,F - 1))), StrToInt(Trim(Copy(S, F + 1,Length(s)))));
 end;
 
 function TJclRational.GetAsFloat: Float;
@@ -3760,7 +3684,7 @@ const
     $7C26, $6C07, $5C64, $4C45, $3CA2, $2C83, $1CE0, $0CC1,
     $EF1F, $FF3E, $CF5D, $DF7C, $AF9B, $BFBA, $8FD9, $9FF8,
     $6E17, $7E36, $4E55, $5E74, $2E93, $3EB2, $0ED1, $1EF0
-    );
+   );
   Crc16Start: Cardinal = $FFFF;
 
 const
@@ -3804,16 +3728,13 @@ var
   I: Integer;
 begin
   Result := Crc16Start;
-  for I := 0 to N - 1 do
- // The CRC Bytes are located at the end of the information
+  for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
     // a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
-    Result := Crc16Table[Result shr (CRC16Bits - 8)] xor Word(
-      (Result shl 8)) xor X[I];
+    Result := Crc16Table[Result shr (CRC16Bits - 8)] xor Word((Result shl 8)) xor X[I];
   for I := 0 to Crc16Bytes - 1 do
   begin
     // a 16 bit value shr 8 is a Byte, explictit type conversion to Byte adds an ASM instruction
-    Result := Crc16Table[Result shr (CRC16Bits - 8)] xor Word(
-      (Result shl 8)) xor (Crc shr (CRC16Bits - 8));
+    Result := Crc16Table[Result shr (CRC16Bits-8)] xor Word((Result shl 8)) xor (Crc shr (CRC16Bits-8));
     Crc := Word(Crc shl 8);
   end;
 end;
@@ -3945,70 +3866,38 @@ const
 {$ENDIF CRCINIT}
   //  CRC32Polynom = $04C11DB7;
   Crc32Table: array [0..255] of Cardinal = (
-    $00000000, $04C11DB7, $09823B6E, $0D4326D9, $130476DC,
-    $17C56B6B, $1A864DB2, $1E475005,
-    $2608EDB8, $22C9F00F, $2F8AD6D6, $2B4BCB61, $350C9B64,
-    $31CD86D3, $3C8EA00A, $384FBDBD,
-    $4C11DB70, $48D0C6C7, $4593E01E, $4152FDA9, $5F15ADAC,
-    $5BD4B01B, $569796C2, $52568B75,
-    $6A1936C8, $6ED82B7F, $639B0DA6, $675A1011, $791D4014,
-    $7DDC5DA3, $709F7B7A, $745E66CD,
-    $9823B6E0, $9CE2AB57, $91A18D8E, $95609039, $8B27C03C,
-    $8FE6DD8B, $82A5FB52, $8664E6E5,
-    $BE2B5B58, $BAEA46EF, $B7A96036, $B3687D81, $AD2F2D84,
-    $A9EE3033, $A4AD16EA, $A06C0B5D,
-    $D4326D90, $D0F37027, $DDB056FE, $D9714B49, $C7361B4C,
-    $C3F706FB, $CEB42022, $CA753D95,
-    $F23A8028, $F6FB9D9F, $FBB8BB46, $FF79A6F1, $E13EF6F4,
-    $E5FFEB43, $E8BCCD9A, $EC7DD02D,
-    $34867077, $30476DC0, $3D044B19, $39C556AE, $278206AB,
-    $23431B1C, $2E003DC5, $2AC12072,
-    $128E9DCF, $164F8078, $1B0CA6A1, $1FCDBB16, $018AEB13,
-    $054BF6A4, $0808D07D, $0CC9CDCA,
-    $7897AB07, $7C56B6B0, $71159069, $75D48DDE, $6B93DDDB,
-    $6F52C06C, $6211E6B5, $66D0FB02,
-    $5E9F46BF, $5A5E5B08, $571D7DD1, $53DC6066, $4D9B3063,
-    $495A2DD4, $44190B0D, $40D816BA,
-    $ACA5C697, $A864DB20, $A527FDF9, $A1E6E04E, $BFA1B04B,
-    $BB60ADFC, $B6238B25, $B2E29692,
-    $8AAD2B2F, $8E6C3698, $832F1041, $87EE0DF6, $99A95DF3,
-    $9D684044, $902B669D, $94EA7B2A,
-    $E0B41DE7, $E4750050, $E9362689, $EDF73B3E, $F3B06B3B,
-    $F771768C, $FA325055, $FEF34DE2,
-    $C6BCF05F, $C27DEDE8, $CF3ECB31, $CBFFD686, $D5B88683,
-    $D1799B34, $DC3ABDED, $D8FBA05A,
-    $690CE0EE, $6DCDFD59, $608EDB80, $644FC637, $7A089632,
-    $7EC98B85, $738AAD5C, $774BB0EB,
-    $4F040D56, $4BC510E1, $46863638, $42472B8F, $5C007B8A,
-    $58C1663D, $558240E4, $51435D53,
-    $251D3B9E, $21DC2629, $2C9F00F0, $285E1D47, $36194D42,
-    $32D850F5, $3F9B762C, $3B5A6B9B,
-    $0315D626, $07D4CB91, $0A97ED48, $0E56F0FF, $1011A0FA,
-    $14D0BD4D, $19939B94, $1D528623,
-    $F12F560E, $F5EE4BB9, $F8AD6D60, $FC6C70D7, $E22B20D2,
-    $E6EA3D65, $EBA91BBC, $EF68060B,
-    $D727BBB6, $D3E6A601, $DEA580D8, $DA649D6F, $C423CD6A,
-    $C0E2D0DD, $CDA1F604, $C960EBB3,
-    $BD3E8D7E, $B9FF90C9, $B4BCB610, $B07DABA7, $AE3AFBA2,
-    $AAFBE615, $A7B8C0CC, $A379DD7B,
-    $9B3660C6, $9FF77D71, $92B45BA8, $9675461F, $8832161A,
-    $8CF30BAD, $81B02D74, $857130C3,
-    $5D8A9099, $594B8D2E, $5408ABF7, $50C9B640, $4E8EE645,
-    $4A4FFBF2, $470CDD2B, $43CDC09C,
-    $7B827D21, $7F436096, $7200464F, $76C15BF8, $68860BFD,
-    $6C47164A, $61043093, $65C52D24,
-    $119B4BE9, $155A565E, $18197087, $1CD86D30, $029F3D35,
-    $065E2082, $0B1D065B, $0FDC1BEC,
-    $3793A651, $3352BBE6, $3E119D3F, $3AD08088, $2497D08D,
-    $2056CD3A, $2D15EBE3, $29D4F654,
-    $C5A92679, $C1683BCE, $CC2B1D17, $C8EA00A0, $D6AD50A5,
-    $D26C4D12, $DF2F6BCB, $DBEE767C,
-    $E3A1CBC1, $E760D676, $EA23F0AF, $EEE2ED18, $F0A5BD1D,
-    $F464A0AA, $F9278673, $FDE69BC4,
-    $89B8FD09, $8D79E0BE, $803AC667, $84FBDBD0, $9ABC8BD5,
-    $9E7D9662, $933EB0BB, $97FFAD0C,
-    $AFB010B1, $AB710D06, $A6322BDF, $A2F33668, $BCB4666D,
-    $B8757BDA, $B5365D03, $B1F740B4
+    $00000000, $04C11DB7, $09823B6E, $0D4326D9, $130476DC, $17C56B6B, $1A864DB2, $1E475005,
+    $2608EDB8, $22C9F00F, $2F8AD6D6, $2B4BCB61, $350C9B64, $31CD86D3, $3C8EA00A, $384FBDBD,
+    $4C11DB70, $48D0C6C7, $4593E01E, $4152FDA9, $5F15ADAC, $5BD4B01B, $569796C2, $52568B75,
+    $6A1936C8, $6ED82B7F, $639B0DA6, $675A1011, $791D4014, $7DDC5DA3, $709F7B7A, $745E66CD,
+    $9823B6E0, $9CE2AB57, $91A18D8E, $95609039, $8B27C03C, $8FE6DD8B, $82A5FB52, $8664E6E5,
+    $BE2B5B58, $BAEA46EF, $B7A96036, $B3687D81, $AD2F2D84, $A9EE3033, $A4AD16EA, $A06C0B5D,
+    $D4326D90, $D0F37027, $DDB056FE, $D9714B49, $C7361B4C, $C3F706FB, $CEB42022, $CA753D95,
+    $F23A8028, $F6FB9D9F, $FBB8BB46, $FF79A6F1, $E13EF6F4, $E5FFEB43, $E8BCCD9A, $EC7DD02D,
+    $34867077, $30476DC0, $3D044B19, $39C556AE, $278206AB, $23431B1C, $2E003DC5, $2AC12072,
+    $128E9DCF, $164F8078, $1B0CA6A1, $1FCDBB16, $018AEB13, $054BF6A4, $0808D07D, $0CC9CDCA,
+    $7897AB07, $7C56B6B0, $71159069, $75D48DDE, $6B93DDDB, $6F52C06C, $6211E6B5, $66D0FB02,
+    $5E9F46BF, $5A5E5B08, $571D7DD1, $53DC6066, $4D9B3063, $495A2DD4, $44190B0D, $40D816BA,
+    $ACA5C697, $A864DB20, $A527FDF9, $A1E6E04E, $BFA1B04B, $BB60ADFC, $B6238B25, $B2E29692,
+    $8AAD2B2F, $8E6C3698, $832F1041, $87EE0DF6, $99A95DF3, $9D684044, $902B669D, $94EA7B2A,
+    $E0B41DE7, $E4750050, $E9362689, $EDF73B3E, $F3B06B3B, $F771768C, $FA325055, $FEF34DE2,
+    $C6BCF05F, $C27DEDE8, $CF3ECB31, $CBFFD686, $D5B88683, $D1799B34, $DC3ABDED, $D8FBA05A,
+    $690CE0EE, $6DCDFD59, $608EDB80, $644FC637, $7A089632, $7EC98B85, $738AAD5C, $774BB0EB,
+    $4F040D56, $4BC510E1, $46863638, $42472B8F, $5C007B8A, $58C1663D, $558240E4, $51435D53,
+    $251D3B9E, $21DC2629, $2C9F00F0, $285E1D47, $36194D42, $32D850F5, $3F9B762C, $3B5A6B9B,
+    $0315D626, $07D4CB91, $0A97ED48, $0E56F0FF, $1011A0FA, $14D0BD4D, $19939B94, $1D528623,
+    $F12F560E, $F5EE4BB9, $F8AD6D60, $FC6C70D7, $E22B20D2, $E6EA3D65, $EBA91BBC, $EF68060B,
+    $D727BBB6, $D3E6A601, $DEA580D8, $DA649D6F, $C423CD6A, $C0E2D0DD, $CDA1F604, $C960EBB3,
+    $BD3E8D7E, $B9FF90C9, $B4BCB610, $B07DABA7, $AE3AFBA2, $AAFBE615, $A7B8C0CC, $A379DD7B,
+    $9B3660C6, $9FF77D71, $92B45BA8, $9675461F, $8832161A, $8CF30BAD, $81B02D74, $857130C3,
+    $5D8A9099, $594B8D2E, $5408ABF7, $50C9B640, $4E8EE645, $4A4FFBF2, $470CDD2B, $43CDC09C,
+    $7B827D21, $7F436096, $7200464F, $76C15BF8, $68860BFD, $6C47164A, $61043093, $65C52D24,
+    $119B4BE9, $155A565E, $18197087, $1CD86D30, $029F3D35, $065E2082, $0B1D065B, $0FDC1BEC,
+    $3793A651, $3352BBE6, $3E119D3F, $3AD08088, $2497D08D, $2056CD3A, $2D15EBE3, $29D4F654,
+    $C5A92679, $C1683BCE, $CC2B1D17, $C8EA00A0, $D6AD50A5, $D26C4D12, $DF2F6BCB, $DBEE767C,
+    $E3A1CBC1, $E760D676, $EA23F0AF, $EEE2ED18, $F0A5BD1D, $F464A0AA, $F9278673, $FDE69BC4,
+    $89B8FD09, $8D79E0BE, $803AC667, $84FBDBD0, $9ABC8BD5, $9E7D9662, $933EB0BB, $97FFAD0C,
+    $AFB010B1, $AB710D06, $A6322BDF, $A2F33668, $BCB4666D, $B8757BDA, $B5365D03, $B1F740B4
     );
   Crc32Start: Cardinal = $FFFFFFFF;
 
@@ -4050,17 +3939,15 @@ var
   I: Integer;
 begin
   Result := Crc32Start;
-  for I := 0 to N - 1 do
- // The CRC Bytes are located at the end of the information
+  for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
   begin
     // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
-    Result := Crc32Table[Result shr (CRC32Bits - 8)] xor (Result shl 8) xor X[I];
+    Result := Crc32Table[Result shr (CRC32Bits-8)] xor (Result shl 8) xor X[I];
   end;
   for I := 0 to Crc32Bytes - 1 do
   begin
     // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
-    Result := Crc32Table[Result shr (CRC32Bits - 8)] xor
-      (Result shl 8) xor (Crc shr (CRC32Bits - 8));
+    Result := Crc32Table[Result shr (CRC32Bits-8)] xor (Result shl 8) xor (Crc shr (CRC32Bits-8));
     Crc := Crc shl 8;
   end;
 end;
@@ -4095,8 +3982,7 @@ begin
   end;
 end;
 
-function Crc32(const X: array of Byte; N: Integer;
-  Crc: Cardinal = 0): Cardinal;
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 begin
   {$IFDEF CLR}
   Result := Crc32_P(X, N, Crc);
@@ -4207,8 +4093,7 @@ begin
   Result.Im := Z.Radius * ASin;
 end;
 
-function PolarComplex(const Radius: Float;
-  const Angle: Float = 0): TPolarComplex;
+function PolarComplex(const Radius: Float; const Angle: Float = 0): TPolarComplex;
 begin
   Result.Radius := Radius;
   Result.Angle := Angle;
@@ -4227,8 +4112,7 @@ end;
 
 function Equal(const Z1, Z2: TPolarComplex): Boolean;
 begin
-  Result := (Z1.Radius = Z2.Radius) and
-    IsFloatZero(NormalizeAngle(Z1.Angle - Z2.Angle));
+  Result := (Z1.Radius = Z2.Radius) and IsFloatZero(NormalizeAngle(Z1.Angle - Z2.Angle));
 end;
 
 function IsZero(const Z: TRectComplex): Boolean;
@@ -4273,13 +4157,13 @@ end;
 
 function Conjugate(const Z: TRectComplex): TRectComplex; overload;
 begin
-  Result.Re := Z.Re;
+  Result.Re :=  Z.Re;
   Result.Im := -Z.Im;
 end;
 
 function Conjugate(const Z: TPolarComplex): TPolarComplex; overload;
 begin
-  Result.Radius := Z.Radius;
+  Result.Radius :=  Z.Radius;
   Result.Angle := -Z.Angle;
 end;
 
@@ -4288,14 +4172,14 @@ var
   Denom: Float;
 begin
   Denom := Sqr(Z.Re) + Sqr(Z.Im);
-  Result.Re := Z.Re / Denom;
+  Result.Re :=  Z.Re / Denom;
   Result.Im := -Z.Im / Denom;
 end;
 
 function Inv(const Z: TPolarComplex): TPolarComplex;
 begin
   Result.Radius := 1 / Z.Radius;
-  Result.Angle := -Z.Angle;
+  Result.Angle := - Z.Angle;
 end;
 
 function Neg(const Z: TRectComplex): TRectComplex; overload;
@@ -4373,14 +4257,12 @@ begin
   Result.Angle := NormalizeAngle(Exponent * Z.Angle);
 end;
 
-function Power(const Z: TPolarComplex;
-  const Exponent: TRectComplex): TPolarComplex;
+function Power(const Z: TPolarComplex; const Exponent: TRectComplex): TPolarComplex;
 begin
   Result := Exp(Product(Exponent, Ln(Z)));
 end;
 
-function PowerInt(const Z: TPolarComplex;
-  const Exponent: Integer): TPolarComplex;
+function PowerInt(const Z: TPolarComplex; const Exponent: Integer): TPolarComplex;
 begin
   Result.Radius := PowerInt(Z.Radius, Exponent);
   Result.Angle := NormalizeAngle(Exponent * Z.Angle);
@@ -4399,7 +4281,7 @@ var
   ACos, ASin: Float;
 begin
   SinCos(Z.Re, ASin, ACos);
-  Result.Re := ACos * CosH(Z.Im);
+  Result.Re :=  ACos * CosH(Z.Im);
   Result.Im := -ASin * SinH(Z.Im);
 end;
 

@@ -61,44 +61,43 @@ uses
 }
 
 const
-  BZ_RUN = 0;
-  BZ_FLUSH = 1;
-  BZ_FINISH = 2;
+  BZ_RUN              = 0;
+  BZ_FLUSH            = 1;
+  BZ_FINISH           = 2;
 
-  BZ_OK = 0;
-  BZ_RUN_OK = 1;
-  BZ_FLUSH_OK = 2;
-  BZ_FINISH_OK = 3;
-  BZ_STREAM_END = 4;
-  BZ_SEQUENCE_ERROR = -1;
-  BZ_PARAM_ERROR = -2;
-  BZ_MEM_ERROR = -3;
-  BZ_DATA_ERROR = -4;
+  BZ_OK               = 0;
+  BZ_RUN_OK           = 1;
+  BZ_FLUSH_OK         = 2;
+  BZ_FINISH_OK        = 3;
+  BZ_STREAM_END       = 4;
+  BZ_SEQUENCE_ERROR   = -1;
+  BZ_PARAM_ERROR      = -2;
+  BZ_MEM_ERROR        = -3;
+  BZ_DATA_ERROR       = -4;
   BZ_DATA_ERROR_MAGIC = -5;
-  BZ_IO_ERROR = -6;
-  BZ_UNEXPECTED_EOF = -7;
-  BZ_OUTBUFF_FULL = -8;
-  BZ_CONFIG_ERROR = -9;
+  BZ_IO_ERROR         = -6;
+  BZ_UNEXPECTED_EOF   = -7;
+  BZ_OUTBUFF_FULL     = -8;
+  BZ_CONFIG_ERROR     = -9;
 
 type
-  bz_stream = record
-    next_in: PByte;
-    avail_in: Cardinal;
-    total_in_lo32: Cardinal;
-    total_in_hi32: Cardinal;
+   bz_stream = record
+      next_in: PByte;
+      avail_in: Cardinal;
+      total_in_lo32: Cardinal;
+      total_in_hi32: Cardinal;
 
-    next_out: PByte;
-    avail_out: Cardinal;
-    total_out_lo32: Cardinal;
-    total_out_hi32: Cardinal;
+      next_out: PByte;
+      avail_out: Cardinal;
+      total_out_lo32: Cardinal;
+      total_out_hi32: Cardinal;
 
-    state: Pointer;
+      state: Pointer;
 
-    bzalloc: function(opaque: Pointer; n, m: Integer): Pointer;
-        cdecl; // returns n*m bytes
-    bzfree: procedure(opaque, p: Pointer); cdecl; // free p
-    opaque: Pointer;
-  end;
+      bzalloc: function (opaque: Pointer; n, m: Integer): Pointer; cdecl; // returns n*m bytes
+      bzfree: procedure (opaque, p: Pointer); cdecl; // free p
+      opaque: Pointer;
+   end;
 
 {$IFNDEF BZIP2_LINKONREQUEST}
 //-- Core (low-level) library functions --
@@ -206,14 +205,12 @@ BZ_EXTERN void BZ_API(BZ2_bzWriteClose64) (
 
 //- Utility functions --
 
-function BZ2_bzBuffToBuffCompress(dest: PByte; destLen: PCardinal;
-  source: PByte;
+function BZ2_bzBuffToBuffCompress(dest: PByte; destLen: PCardinal; source: PByte;
   sourceLen: Cardinal; blockSize100k, verbosity, workFactor: Integer): Integer;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
 
-function BZ2_bzBuffToBuffDecompress(dest: PByte; destLen: PCardinal;
-  source: PByte;
+function BZ2_bzBuffToBuffDecompress(dest: PByte; destLen: PCardinal; source: PByte;
   sourceLen: Cardinal; small, verbosity: Integer): Integer;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}

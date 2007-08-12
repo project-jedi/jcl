@@ -30,12 +30,12 @@ uses
 class procedure TfrmGuid.Execute(const AStream: TJclCLRGuidStream);
 begin
   with TfrmGuid.Create(nil) do
-    try
-      ShowGuids(AStream);
-      ShowModal;
-    finally
-      Free;
-    end;
+  try
+    ShowGuids(AStream);
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 procedure TfrmGuid.ShowGuids(const AStream: TJclCLRGuidStream);

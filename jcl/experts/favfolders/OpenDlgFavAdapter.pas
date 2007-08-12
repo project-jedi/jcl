@@ -37,7 +37,7 @@ uses
   JclPeImage;
 
 type
-  TFavOpenDialog = class(TObject)
+  TFavOpenDialog = class (TObject)
   private
     FAddButton: TButton;
     FDeleteMode: Boolean;
@@ -71,8 +71,7 @@ type
     procedure DoShow;
     procedure ParentWndProc(var Message: TMessage); virtual;
     procedure WndProc(var Message: TMessage); virtual;
-    property CurrentFolder: string read GetCurrentFolder
-      write SetCurrentFolder;
+    property CurrentFolder: string read GetCurrentFolder write SetCurrentFolder;
     property DeleteMode: Boolean read FDeleteMode write SetDeleteMode;
     property FileNameEditWnd: HWND read GetFileNameEditWnd;
   public
@@ -81,14 +80,11 @@ type
     procedure HookDialogs;
     procedure LoadFavorites(const FileName: string);
     procedure UnhookDialogs;
-    property DisableHelpButton: Boolean
-      read FDisableHelpButton write FDisableHelpButton;
-    property DisablePlacesBar: Boolean
-      read FDisablePlacesBar write FDisablePlacesBar;
+    property DisableHelpButton: Boolean read FDisableHelpButton write FDisableHelpButton;
+    property DisablePlacesBar: Boolean read FDisablePlacesBar write FDisablePlacesBar;
     property FavoriteFolders: TStrings read FFavoriteFolders;
     property IsOpenPictDialog: Boolean read FIsOpenPictDialog;
-    property PictureDialogLastFolder: string
-      read FPictureDialogLastFolder write FPictureDialogLastFolder;
+    property PictureDialogLastFolder: string read FPictureDialogLastFolder write FPictureDialogLastFolder;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
@@ -108,24 +104,21 @@ uses
 {$R FavDlg.res}
 
 type
-  TGetOpenFileName = function(var OpenFile: TOpenFilename): Bool; stdcall;
+  TGetOpenFileName = function (var OpenFile: TOpenFilename): Bool; stdcall;
 
 var
   OldGetOpenFileName: TGetOpenFileName;
   OldGetSaveFileName: TGetOpenFileName;
-  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM;
-  lParam: LPARAM): UINT stdcall;
+  OldExplorerHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): UINT stdcall;
   FavOpenDialog: TFavOpenDialog;
 
-function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM;
-  LParam: LPARAM): UINT; stdcall;
+function NewExplorerHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
 begin
   Result := OldExplorerHook(Wnd, Msg, WParam, LParam);
   if (Msg = WM_INITDIALOG) and Assigned(FavOpenDialog) then
   begin
     FavOpenDialog.FHandle := Wnd;
-    FavOpenDialog.FOldWndInstance :=
-      Pointer(SetWindowLong(Wnd, GWL_WNDPROC, Longint(FavOpenDialog.FWndInstance)));
+    FavOpenDialog.FOldWndInstance := Pointer(SetWindowLong(Wnd, GWL_WNDPROC, Longint(FavOpenDialog.FWndInstance)));
     CallWindowProc(FavOpenDialog.FWndInstance, Wnd, Msg, WParam, LParam);
   end;
 end;
@@ -157,8 +150,7 @@ begin
         end;
       end
       else
-      if (StrIComp(lpTemplateName, OpenPictDialogTemplateName) = 0) and
-        Assigned(FavOpenDialog) then
+      if (StrIComp(lpTemplateName, OpenPictDialogTemplateName) = 0) and Assigned(FavOpenDialog) then
       begin
         FavOpenDialog.FIsOpenPictDialog := True;
         OldExplorerHook := lpfnHook;
@@ -169,7 +161,7 @@ begin
         else
           FavOpenDialog.PictureDialogLastFolder := '';
       end;
-    end;
+   end;
 end;
 
 function NewGetOpenFileName(var OpenFile: TOpenFilename): Bool; stdcall;
@@ -255,8 +247,7 @@ begin
   begin
     I := FFavoriteComboBox.ItemIndex;
     Path := FFavoriteComboBox.Items[I];
-    if MessageBox(FHandle, PChar(Format(RsDelConfirm, [Path])),
-      PChar(RsConfirmation),
+    if MessageBox(FHandle, PChar(Format(RsDelConfirm, [Path])), PChar(RsConfirmation),
       MB_YESNO or MB_ICONQUESTION or MB_DEFBUTTON2) = ID_YES then
     begin
       FFavoriteComboBox.Items.Delete(I);
@@ -303,8 +294,7 @@ begin
   if IsWin2k or IsWinXP then
     FAddButton.Width := 65;
   FFavoritePanel.Width := OkButtonRect.Left - 1;
-  FFavoriteComboBox.Width :=
-    FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
+  FFavoriteComboBox.Width := FFavoritePanel.Width - FFavoriteComboBox.Left - FAddButton.Width - 16;
   FAddButton.Left := FFavoriteComboBox.Width + 14;
 end;
 
@@ -327,22 +317,21 @@ begin
   FParentWnd := GetParent(FHandle);
   if IsOpenPictDialog then
     DoShow
-  else
+  else  
   begin
     GetClientRect(FHandle, PreviewRect);
     PreviewRect.Top := PreviewRect.Bottom - 43;
     FFavoritePanel.BoundsRect := PreviewRect;
     FFavoritePanel.ParentWindow := FHandle;
     if IsWin2k or IsWinXP then
-      FOldParentWndInstance :=
-        Pointer(SetWindowLong(FParentWnd, GWL_WNDPROC, Longint(FParentWndInstance)));
+      FOldParentWndInstance := Pointer(SetWindowLong(FParentWnd, GWL_WNDPROC, Longint(FParentWndInstance)));
     AdjustControlPos;
     try
       DoShow;
     finally
       FFavoriteComboBox.Items.Assign(FavoriteFolders);
     end;
-  end;
+  end;  
 end;
 
 procedure TFavOpenDialog.DoClose;
@@ -360,7 +349,7 @@ end;
 procedure TFavOpenDialog.FavoriteComboBoxClick(Sender: TObject);
 begin
   with FFavoriteComboBox do
-    if ItemIndex <> -1 then
+    if ItemIndex <> - 1 then
       CurrentFolder := FFavoriteComboBox.Items[ItemIndex];
 end;
 
@@ -368,8 +357,7 @@ function TFavOpenDialog.GetCurrentFolder: string;
 var
   Path: array [0..MAX_PATH] of Char;
 begin
-  SetString(Result, Path, SendMessage(FParentWnd, CDM_GETFOLDERPATH,
-    SizeOf(Path), Integer(@Path)));
+  SetString(Result, Path, SendMessage(FParentWnd, CDM_GETFOLDERPATH, SizeOf(Path), Integer(@Path)));
   StrResetLength(Result);
 end;
 
@@ -387,10 +375,8 @@ procedure TFavOpenDialog.HookDialogs;
   begin
     if ModuleBase <> nil then
     begin
-      FHooks.HookImport(ModuleBase, comdlg32, 'GetOpenFileNameA',
-        @NewGetOpenFileName, @OldGetOpenFileName);
-      FHooks.HookImport(ModuleBase, comdlg32, 'GetSaveFileNameA',
-        @NewGetSaveFileName, @OldGetSaveFileName);
+      FHooks.HookImport(ModuleBase, comdlg32, 'GetOpenFileNameA', @NewGetOpenFileName, @OldGetOpenFileName);
+      FHooks.HookImport(ModuleBase, comdlg32, 'GetSaveFileNameA', @NewGetSaveFileName, @OldGetSaveFileName);
     end;
   end;
 var
@@ -407,8 +393,7 @@ begin
     begin
       HookImportsForModule(Pointer(HookedModule));
       for I := 0 to Pe.ImportList.UniqueLibItemCount - 1 do
-        HookImportsForModule(
-          Pointer(GetModuleHandle(PChar(Pe.ImportList.UniqueLibItems[I].FileName))));
+        HookImportsForModule(Pointer(GetModuleHandle(PChar(Pe.ImportList.UniqueLibItems[I].FileName))));
     end;
   finally
     Pe.Free;
@@ -427,8 +412,7 @@ procedure TFavOpenDialog.ParentWndProc(var Message: TMessage);
 begin
   with Message do
   begin
-    Result := CallWindowProc(FOldParentWndInstance, FParentWnd,
-      Msg, WParam, LParam);
+    Result := CallWindowProc(FOldParentWndInstance, FParentWnd, Msg, WParam, LParam);
     if Msg = WM_SIZE then
       AdjustControlPos;
   end;
@@ -445,8 +429,7 @@ begin
     FileNameBuffer := GetWindowCaption(FileNameEditWnd);
     SendMessage(FParentWnd, CDM_SETCONTROLTEXT, edt1, LPARAM(PChar(Value)));
     SendMessage(GetDlgItem(FParentWnd, 1), BM_CLICK, 0, 0);
-    SendMessage(FParentWnd, CDM_SETCONTROLTEXT, edt1,
-      LPARAM(PChar(FileNameBuffer)));
+    SendMessage(FParentWnd, CDM_SETCONTROLTEXT, edt1, LPARAM(PChar(FileNameBuffer)));
     SetFocus(LastFocus);
   end;
 end;
@@ -487,39 +470,39 @@ begin
   begin
     case Message.Msg of
       WM_NOTIFY:
-      begin
-        case (POFNotify(Message.LParam)^.hdr.code) of
-          CDN_INITDONE:
-            DialogShow;
-          CDN_FOLDERCHANGE:
-            if not IsOpenPictDialog then
-              DialogFolderChange;
-          CDN_FILEOK:
-            if IsOpenPictDialog then
-              FPictureDialogLastFolder := CurrentFolder;
-        end;
-        Default;
-      end;
-      WM_DESTROY:
-      begin
-        if not IsOpenPictDialog then
-          FavoriteFolders.Assign(FFavoriteComboBox.Items);
-        try
-          DoClose;
+        begin
+          case (POFNotify(Message.LParam)^.hdr.code) of
+            CDN_INITDONE:
+              DialogShow;
+            CDN_FOLDERCHANGE:
+              if not IsOpenPictDialog then
+                DialogFolderChange;
+            CDN_FILEOK:
+              if IsOpenPictDialog then
+                FPictureDialogLastFolder := CurrentFolder;
+          end;
           Default;
-        finally
-          if not IsOpenPictDialog then
-            FFavoritePanel.ParentWindow := 0;
-          FParentWnd := 0;
         end;
-      end;
+      WM_DESTROY:
+        begin
+          if not IsOpenPictDialog then
+            FavoriteFolders.Assign(FFavoriteComboBox.Items);
+          try
+            DoClose;
+            Default;
+          finally
+            if not IsOpenPictDialog then
+              FFavoritePanel.ParentWindow := 0;
+            FParentWnd := 0;
+          end;
+        end;
       WM_NCDESTROY:
-      begin
-        Default;
-        FHandle := 0;
-      end;
-      else
-        Default;
+        begin
+          Default;
+          FHandle := 0;
+        end;
+    else
+      Default;
     end;
   end;
 end;
@@ -528,14 +511,14 @@ initialization
 
 finalization
 
-  try
-    FreeAndNil(FavOpenDialog);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  FreeAndNil(FavOpenDialog);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 end.

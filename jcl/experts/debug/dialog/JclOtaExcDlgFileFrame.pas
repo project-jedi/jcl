@@ -101,9 +101,8 @@ procedure TJclOtaExcDlgFilePage.ButtonFileBrowseClick(Sender: TObject);
   begin
     AFilter := SaveDialogFileName.Filter;
     if AFilter <> '' then
-      AFilter := StrEnsureSuffix('|', AFilter);
-    AFilter := Format('%s%s (*%s)|*%s', [AFilter, NewDescription,
-      NewExtension, NewExtension]);
+      AFilter := StrEnsureSuffix('|',AFilter);
+    AFilter := Format('%s%s (*%s)|*%s',[AFilter, NewDescription, NewExtension, NewExtension]);
     SaveDialogFileName.Filter := AFilter;
   end;
 begin
@@ -112,17 +111,16 @@ begin
 
   SaveDialogFileName.Filter := '';
   AddFilter('All files', '.*');
-  if (bpDelphi32 in Params.Languages) or (bpBCBuilder32 in
-    Params.Languages) then
+  if (bpDelphi32 in Params.Languages) or (bpBCBuilder32 in Params.Languages) then
     AddFilter(SourceDescriptionPAS, SourceExtensionPAS);
   if bpBCBuilder32 in Params.Languages then
     AddFilter(SourceDescriptionCPP, SourceExtensionCPP);
 
   if ComboBoxLanguage.ItemIndex > -1 then
     case SelectedLanguage of
-      bpDelphi32:
+      bpDelphi32 :
         SaveDialogFileName.FilterIndex := 2;
-      bpBCBuilder32:
+      bpBCBuilder32 :
         SaveDialogFileName.FilterIndex := 3;
       else
         SaveDialogFileName.FilterIndex := 1;
@@ -145,7 +143,7 @@ constructor TJclOtaExcDlgFilePage.Create(AOwner: TComponent;
 begin
   FParams := AParams;
   inherited Create(AOwner);
-
+  
   Caption := RsExcDlgFileOptions;
   LabelLanguage.Caption := RsLanguage;
   LabelFileName.Caption := RsFileName;
@@ -156,18 +154,16 @@ end;
 function TJclOtaExcDlgFilePage.GetSelectedLanguage: TJclBorPersonality;
 begin
   if ComboBoxLanguage.ItemIndex > -1 then
-    Result := TJclBorPersonality(
-      ComboBoxLanguage.Items.Objects[ComboBoxLanguage.ItemIndex])
+    Result := TJclBorPersonality(ComboBoxLanguage.Items.Objects[ComboBoxLanguage.ItemIndex])
   else
     Result := bpUnknown;
 end;
 
 function TJclOtaExcDlgFilePage.GetSupportsNext: Boolean;
 begin
-  Result := (ComboBoxLanguage.ItemIndex > -1) and
-    (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
-    and ((SelectedLanguage = Params.ActivePersonality)
-    or (EditFileName.Text <> ''));
+  Result := (ComboBoxLanguage.ItemIndex > -1) and (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
+    and (( SelectedLanguage = Params.ActivePersonality)
+         or (EditFileName.Text <> ''));
 end;
 
 procedure TJclOtaExcDlgFilePage.PageActivated(Direction: TJclWizardDirection);
@@ -181,12 +177,11 @@ begin
 
   for Language := Low(TJclBorPersonality) to High(TJclBorPersonality) do
     if Language in Params.Languages then
-    begin
-      ItemIndex := ComboBoxLanguage.Items.AddObject(
-        JclBorPersonalityDescription[Language], TObject(Language));
-      if Language = Params.Language then
-        ComboBoxLanguage.ItemIndex := ItemIndex;
-    end;
+  begin
+    ItemIndex := ComboBoxLanguage.Items.AddObject(JclBorPersonalityDescription[Language], TObject(Language));
+    if Language = Params.Language then
+      ComboBoxLanguage.ItemIndex := ItemIndex;
+  end;
 
   EditFileName.Text := Params.FileName;
   EditFormName.Text := Params.FormName;

@@ -120,8 +120,7 @@ begin
   end;
 end;
 
-procedure TJclOtaActionConfigureFrame.ListViewActionsSelectItem(
-  Sender: TObject;
+procedure TJclOtaActionConfigureFrame.ListViewActionsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   if Selected then

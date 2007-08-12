@@ -43,8 +43,7 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-  TJclIntfVector = class(TJclAbstractContainer, IJclIntfCollection,
-    IJclIntfList,
+  TJclIntfVector = class(TJclAbstractContainer, IJclIntfCollection, IJclIntfList,
     IJclIntfArray, IJclIntfCloneable)
   private
     FCount: Integer;
@@ -71,8 +70,7 @@ type
     function Size: Integer;
     { IJclIntfList }
     procedure Insert(Index: Integer; const AInterface: IInterface); overload;
-    function InsertAll(Index: Integer;
-      const ACollection: IJclIntfCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
@@ -91,8 +89,7 @@ type
   end;
 
   //Daniele Teti 02/03/2005
-  TJclStrVector = class(TJclStrCollection, IJclStrList,
-    IJclStrArray, IJclCloneable)
+  TJclStrVector = class(TJclStrCollection, IJclStrList, IJclStrArray, IJclCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -103,26 +100,21 @@ type
     function Clone: TObject;
     { IJclStrCollection }
     function Add(const AString: string): Boolean; overload; override;
-    function AddAll(const ACollection: IJclStrCollection): Boolean;
-      overload; override;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; overload; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean;
-      override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
     function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; overload; override;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean;
-      override;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean;
-      override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
     function Size: Integer; override;
     { IJclStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
-    function InsertAll(Index: Integer;
-      const ACollection: IJclStrCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -140,8 +132,7 @@ type
     property Items: TDynStringArray read FItems;
   end;
 
-  TJclVector = class(TJclAbstractContainer, IJclCollection,
-    IJclList, IJclArray,
+  TJclVector = class(TJclAbstractContainer, IJclCollection, IJclList, IJclArray,
     IJclCloneable)
   private
     FCount: Integer;
@@ -167,8 +158,7 @@ type
     function Size: Integer;
     { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
-    function InsertAll(Index: Integer;
-      const ACollection: IJclCollection): Boolean; overload;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -178,8 +168,7 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsObjects: Boolean = True);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     {$IFNDEF CLR}
     procedure AfterConstruction; override;
@@ -548,8 +537,7 @@ end;
 
 //=== { TJclIntfVector } =====================================================
 
-constructor TJclIntfVector.Create(ACapacity: Integer =
-  DefaultContainerCapacity);
+constructor TJclIntfVector.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -590,8 +578,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.InsertAll(Index: Integer;
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   Size: Integer;
@@ -668,8 +655,7 @@ begin
     end;
 end;
 
-function TJclIntfVector.ContainsAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -801,8 +787,7 @@ begin
     end;
 end;
 
-function TJclIntfVector.RemoveAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -814,8 +799,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclIntfVector.RetainAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfVector.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   I: Integer;
 begin
@@ -827,8 +811,7 @@ begin
       Remove(I);
 end;
 
-procedure TJclIntfVector.SetObject(Index: Integer;
-  const AInterface: IInterface);
+procedure TJclIntfVector.SetObject(Index: Integer; const AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
     {$IFDEF CLR}
@@ -869,8 +852,7 @@ end;
 
 //=== { TJclStrVector } ======================================================
 
-constructor TJclStrVector.Create(ACapacity: Integer =
-  DefaultContainerCapacity);
+constructor TJclStrVector.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -999,8 +981,7 @@ begin
     end;
 end;
 
-function TJclStrVector.ContainsAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.ContainsAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -1132,8 +1113,7 @@ begin
   Dec(FCount);
 end;
 
-function TJclStrVector.RemoveAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.RemoveAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -1145,8 +1125,7 @@ begin
     Remove(It.Next);
 end;
 
-function TJclStrVector.RetainAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrVector.RetainAll(const ACollection: IJclStrCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1290,8 +1269,7 @@ function TJclVector.Clone: TObject;
 var
   NewList: TJclVector;
 begin
-  NewList := TJclVector.Create(FCapacity, False);
- // Only one can have FOwnsObject = True
+  NewList := TJclVector.Create(FCapacity, False); // Only one can have FOwnsObject = True
   NewList.AddAll(Self);
   Result := NewList;
 end;
@@ -1526,3 +1504,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

@@ -105,8 +105,7 @@ uses
 
 //=== { TJclIntfQueue } ======================================================
 
-constructor TJclIntfQueue.Create(ACapacity: Integer =
-  DefaultContainerCapacity);
+constructor TJclIntfQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FHead := 0;

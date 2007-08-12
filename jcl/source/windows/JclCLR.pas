@@ -59,14 +59,13 @@ type
   IMAGE_COR_VTABLEFIXUP = _IMAGE_COR_VTABLEFIXUP;
   TImageCorVTableFixup = _IMAGE_COR_VTABLEFIXUP;
   PImageCorVTableFixup = ^TImageCorVTableFixup;
-  TImageCorVTableFixupArray = array [0..MaxWord - 1] of TImageCorVTableFixup;
+  TImageCorVTableFixupArray = array [0..MaxWord-1] of TImageCorVTableFixup;
   PImageCorVTableFixupArray = ^TImageCorVTableFixupArray;
 
 type
   PClrStreamHeader = ^TClrStreamHeader;
   TClrStreamHeader = packed record
-    Offset: DWORD;
- // Memory offset to start of this stream from start of the metadata root
+    Offset: DWORD; // Memory offset to start of this stream from start of the metadata root
     Size: DWORD;   // Size of this stream in bytes, shall be a multiple of 4.
     // Name of the stream as null terminated variable length
     // array of ASCII characters, padded with \0 characters
@@ -80,8 +79,7 @@ type
     MinorVersion: Byte; // Minor version of table schemata, always 0
     HeapSizes: Byte;    // Bit vector for heap sizes.
     Reserved2: Byte;    // Reserved, always 1
-    Valid: Int64;
-       // Bit vector of present tables, let n be the number of bits that are 1.
+    Valid: Int64;       // Bit vector of present tables, let n be the number of bits that are 1.
     Sorted: Int64;      // Bit vector of sorted tables.
     // Array of n four byte unsigned integers indicating the number of rows
     // for each present table.
@@ -240,8 +238,7 @@ type
   public
     destructor Destroy; override;
     function At(const Offset: DWORD): TJclClrBlobRecord;
-    property Blobs[const Idx: Integer]: TJclClrBlobRecord read GetBlob;
-      default;
+    property Blobs[const Idx: Integer]: TJclClrBlobRecord read GetBlob; default;
     property BlobCount: Integer read GetBlobCount;
   end;
 
@@ -317,11 +314,9 @@ type
     function ReadWord: Word;
     function ReadDWord: DWORD;
     function ReadIndex(const HeapKind: TJclClrHeapKind): DWORD; overload;
-    function ReadIndex(const TableKinds: array of TJclClrTableKind): DWORD;
-      overload;
+    function ReadIndex(const TableKinds: array of TJclClrTableKind): DWORD; overload;
     function IsWideIndex(const HeapKind: TJclClrHeapKind): Boolean; overload;
-    function IsWideIndex(const TableKinds: array of TJclClrTableKind): Boolean;
-      overload;
+    function IsWideIndex(const TableKinds: array of TJclClrTableKind): Boolean; overload;
     function GetCodedIndexTag(const CodedIndex, TagWidth: DWORD;
       const WideIndex: Boolean): DWORD;
     function GetCodedIndexValue(const CodedIndex, TagWidth: DWORD;
@@ -355,8 +350,7 @@ type
       var ATable: TJclClrTable): Boolean;
     property Header: PClrTableStreamHeader read FHeader;
     property VersionString: string read GetVersionString;
-    property BigHeap[const AHeapKind: TJclClrHeapKind]: Boolean
-      read GetBigHeap;
+    property BigHeap[const AHeapKind: TJclClrHeapKind]: Boolean read GetBigHeap;
     property Tables[const AKind: TJclClrTableKind]: TJclClrTable read GetTable;
     property TableCount: Integer read FTableCount;
   end;
@@ -392,10 +386,8 @@ type
   public
     destructor Destroy; override;
     function DumpIL: string;
-    function FindStream(const AName: string;
-      var Stream: TJclClrStream): Boolean; overload;
-    function FindStream(const AClass: TJclClrStreamClass;
-      var Stream: TJclClrStream): Boolean; overload;
+    function FindStream(const AName: string; var Stream: TJclClrStream): Boolean; overload;
+    function FindStream(const AClass: TJclClrStreamClass; var Stream: TJclClrStream): Boolean; overload;
     function StringAt(const Offset: DWORD): WideString;
     function UserStringAt(const Offset: DWORD): WideString;
     function BlobAt(const Offset: DWORD): TJclClrBlobRecord;
@@ -403,15 +395,13 @@ type
     class function TokenTable(const Token: TJclClrToken): TJclClrTableKind;
     class function TokenIndex(const Token: TJclClrToken): Integer;
     class function TokenCode(const Token: TJclClrToken): Integer;
-    class function MakeToken(const Table: TJclClrTableKind;
-      const Idx: Integer): TJclClrToken;
+    class function MakeToken(const Table: TJclClrTableKind; const Idx: Integer): TJclClrToken;
     property Image: TJclPeImage read FImage;
     property Header: PClrMetadataHeader read FHeader;
     property Version: string read GetVersion;
     property VersionString: WideString read GetVersionString;
     property Flags: Word read GetFlags;
-    property Streams[const Idx: Integer]: TJclClrStream read GetStream;
-      default;
+    property Streams[const Idx: Integer]: TJclClrStream read GetStream; default;
     property StreamCount: Integer read GetStreamCount;
     property Strings[const Idx: Integer]: WideString read GetString;
     property StringCount: Integer read GetStringCount;
@@ -432,16 +422,14 @@ type
     FOffset: DWORD;
     FRVA: DWORD;
   protected
-    constructor Create(const AData: PChar; const AOffset: DWORD;
-      const ARVA: DWORD);
+    constructor Create(const AData: PChar; const AOffset: DWORD; const ARVA: DWORD);
   public
     property Data: Pointer read FData;
     property Offset: DWORD read FOffset;
     property RVA: DWORD read FRVA;
   end;
 
-  TJclClrVTableKind = (vtk32Bit, vtk64Bit, vtkFromUnmanaged,
-    vtkCallMostDerived);
+  TJclClrVTableKind = (vtk32Bit, vtk64Bit, vtkFromUnmanaged, vtkCallMostDerived);
   TJclClrVTableKinds = set of TJclClrVTableKind;
 
   TJclClrVTableFixupRecord = class(TObject)
@@ -452,20 +440,16 @@ type
     function GetRVA: DWORD;
   protected
     constructor Create(AData: PImageCorVTableFixup);
-    class function VTableKinds(const Kinds: TJclClrVTableKinds): DWORD;
-      overload;
-    class function VTableKinds(const Kinds: DWORD): TJclClrVTableKinds;
-      overload;
+    class function VTableKinds(const Kinds: TJclClrVTableKinds): DWORD; overload;
+    class function VTableKinds(const Kinds: DWORD): TJclClrVTableKinds; overload;
   public
     property Data: PImageCorVTableFixup read FData;
     property RVA: DWORD read GetRVA;                  // RVA of Vtable
-    property Count: DWORD read GetCount;
-              // Number of entries in Vtable
+    property Count: DWORD read GetCount;              // Number of entries in Vtable
     property Kinds: TJclClrVTableKinds read GetKinds; // Type of the entries
   end;
 
-  TJclClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged,
-    cifTrackDebugData);
+  TJclClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
   TJclClrImageFlags = set of TJclClrImageFlag;
 
   TJclClrHeaderEx = class(TJclPeClrHeader)
@@ -491,20 +475,15 @@ type
     function HasStrongNameSignature: Boolean;
     function HasVTableFixup: Boolean;
     function ResourceAt(const Offset: DWORD): TJclClrResourceRecord;
-    class function ClrImageFlag(const Flags: DWORD): TJclClrImageFlags;
-      overload;
-    class function ClrImageFlag(const Flags: TJclClrImageFlags): DWORD;
-      overload;
+    class function ClrImageFlag(const Flags: DWORD): TJclClrImageFlags; overload;
+    class function ClrImageFlag(const Flags: TJclClrImageFlags): DWORD; overload;
     property Metadata: TJclPeMetadata read GetMetadata;
     property Flags: TJclClrImageFlags read FFlags;
     property EntryPointToken: TJclClrTableRow read GetEntryPointToken;
-    property StrongNameSignature: TCustomMemoryStream
-      read GetStrongNameSignature;
-    property Resources[const Idx: Integer]: TJclClrResourceRecord
-      read GetResource;
+    property StrongNameSignature: TCustomMemoryStream read GetStrongNameSignature;
+    property Resources[const Idx: Integer]: TJclClrResourceRecord read GetResource;
     property ResourceCount: Integer read GetResourceCount;
-    property VTableFixups[const Idx: Integer]: TJclClrVTableFixupRecord
-      read GetVTableFixup;
+    property VTableFixups[const Idx: Integer]: TJclClrVTableFixupRecord read GetVTableFixup;
     property VTableFixupCount: Integer read GetVTableFixupCount;
   end;
 
@@ -577,34 +556,29 @@ const
 
 // CLR Header entry point flags.
 const
-  COMIMAGE_FLAGS_ILONLY = $00000001;  // Always 1 (see Section 23.1).
-  COMIMAGE_FLAGS_32BITREQUIRED = $00000002;
+  COMIMAGE_FLAGS_ILONLY           = $00000001;  // Always 1 (see Section 23.1).
+  COMIMAGE_FLAGS_32BITREQUIRED    = $00000002;
     // Image may only be loaded into a 32-bit process,
     // for instance if there are 32-bit vtablefixups,
     // or casts from native integers to int32.
     // CLI implementations that have 64 bit native integers shall refuse
     // loading binaries with this flag set.
-  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;
-  // Image has a strong name signature.
-  COMIMAGE_FLAGS_TRACKDEBUGDATA = $00010000;  // Always 0 (see Section 23.1).
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;  // Image has a strong name signature.
+  COMIMAGE_FLAGS_TRACKDEBUGDATA   = $00010000;  // Always 0 (see Section 23.1).
   ClrImageFlagMapping: array [TJclClrImageFlag] of DWORD =
     (COMIMAGE_FLAGS_ILONLY, COMIMAGE_FLAGS_32BITREQUIRED,
-    COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
+     COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
 
 // V-table constants
 const
-  COR_VTABLE_32BIT = $01;
-          // V-table slots are 32-bits in size.
-  COR_VTABLE_64BIT = $02;
-          // V-table slots are 64-bits in size.
-  COR_VTABLE_FROM_UNMANAGED = $04;
-          // If set, transition from unmanaged.
-  COR_VTABLE_CALL_MOST_DERIVED = $10;
-          // Call most derived method described by
+  COR_VTABLE_32BIT             = $01;          // V-table slots are 32-bits in size.
+  COR_VTABLE_64BIT             = $02;          // V-table slots are 64-bits in size.
+  COR_VTABLE_FROM_UNMANAGED    = $04;          // If set, transition from unmanaged.
+  COR_VTABLE_CALL_MOST_DERIVED = $10;          // Call most derived method described by
 
   ClrVTableKindMapping: array [TJclClrVTableKind] of DWORD =
     (COR_VTABLE_32BIT, COR_VTABLE_64BIT,
-    COR_VTABLE_FROM_UNMANAGED, COR_VTABLE_CALL_MOST_DERIVED);
+     COR_VTABLE_FROM_UNMANAGED, COR_VTABLE_CALL_MOST_DERIVED);
 
 //=== { TJclClrStream } ======================================================
 
@@ -700,7 +674,7 @@ begin
   inherited Create(AMetadata, AHeader);
   SetLength(FGuids, Size div SizeOf(TGuid));
   pg := Data;
-  for I := 0 to GetGuidCount - 1 do
+  for I := 0 to GetGuidCount-1 do
   begin
     FGuids[I] := pg^;
     Inc(pg);
@@ -720,8 +694,7 @@ end;
 
 //=== { TJclClrBlobRecord } ==================================================
 
-constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream;
-  APtr: PJclByteArray);
+constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream; APtr: PJclByteArray);
 var
   b: Byte;
   AData: Pointer;
@@ -740,8 +713,7 @@ begin
   if ((b and $C0) = $C0) and ((b and $20) = 0) then    // 110bs
   begin
     AData := @FPtr[4];
-    ASize := ((b and $1F) shl 24) + (FPtr[1] shl 16) +
-      (FPtr[2] shl 8) + FPtr[3];
+    ASize := ((b and $1F) shl 24) + (FPtr[1] shl 16) + (FPtr[2] shl 8) + FPtr[3];
   end
   else
   if ((b and $80) = $80) and ((b and $40) = 0) then    // 10bs
@@ -769,7 +741,7 @@ var
     I: Integer;
     HexStr, AsciiStr: string;
   begin
-    for I := 0 to Size - 1 do
+    for I := 0 to Size-1 do
     begin
       HexStr := HexStr + IntToHex(Integer(Buf[I]), 2) + ' ';
       if CharIsPrintable(Buf[I]) and ((Byte(Buf[I]) and $80) <> $80) then
@@ -779,31 +751,28 @@ var
     end;
 
     if IsTail then
-      Result := HexStr + ')' + StrRepeat(' ', (BufSize - Size) * 3) +
-        ' // ' + AsciiStr
+      Result := HexStr + ')' + StrRepeat(' ', (BufSize-Size)*3) + ' // ' + AsciiStr
     else
-      Result := HexStr + ' ' + StrRepeat(' ', (BufSize - Size) * 3) +
-        ' // ' + AsciiStr;
+      Result := HexStr + ' ' + StrRepeat(' ', (BufSize-Size)*3) + ' // ' + AsciiStr;
     if IsHead then
       Result := Indent + '( ' + Result
     else
-      Result := StrRepeat(' ', Length(Indent) + 2) + Result;
+      Result := StrRepeat(' ', Length(Indent)+2) + Result;
   end;
 
 begin
   with TStringList.Create do
-    try
-      Len := (Size + BufSize - 1) div BufSize;
-      for I := 0 to Len - 1 do
-        if I = Len - 1 then
-          Add(DumpBuf(PChar(Memory) + I * BufSize, Size - I *
-            BufSize, I = 0, I = Len - 1))
-        else
-          Add(DumpBuf(PChar(Memory) + I * BufSize, BufSize, I = 0, I = Len - 1));
-      Result := Text;
-    finally
-      Free;
-    end;
+  try
+    Len := (Size + BufSize - 1) div BufSize;
+    for I := 0 to Len-1 do
+      if I = Len - 1 then
+        Add(DumpBuf(PChar(Memory) + I * BufSize, Size - I * BufSize, I=0, I=Len-1))
+      else
+        Add(DumpBuf(PChar(Memory) + I * BufSize, BufSize, I=0, I=Len-1));
+    Result := Text;
+  finally
+    Free;
+  end;
 end;
 
 function TJclClrBlobRecord.GetData: PJclByteArray;
@@ -825,10 +794,8 @@ begin
   begin
     if ABlob.Size > 0 then
       FBlobs.Add(ABlob);
-    if (Integer(ABlob.Memory) + ABlob.Size) <
-      (Integer(Self.Data) + Integer(Self.Size)) then
-      ABlob := TJclClrBlobRecord.Create(Self,
-        Pointer(Integer(ABlob.Memory) + ABlob.Size))
+    if (Integer(ABlob.Memory) + ABlob.Size) < (Integer(Self.Data) + Integer(Self.Size)) then
+      ABlob := TJclClrBlobRecord.Create(Self, Pointer(Integer(ABlob.Memory) + ABlob.Size))
     else
       ABlob := nil;
   end;
@@ -844,7 +811,7 @@ function TJclClrBlobStream.At(const Offset: DWORD): TJclClrBlobRecord;
 var
   I: Integer;
 begin
-  for I := 0 to FBlobs.Count - 1 do
+  for I := 0 to FBlobs.Count-1 do
   begin
     Result := TJclClrBlobRecord(FBlobs.Items[I]);
     if Result.Offset = Offset then
@@ -855,7 +822,7 @@ end;
 
 function TJclClrBlobStream.GetBlob(const Idx: Integer): TJclClrBlobRecord;
 begin
-  Result := TJclClrBlobRecord(FBlobs.Items[Idx]);
+  Result := TJclClrBlobRecord(FBlobs.Items[Idx])
 end;
 
 function TJclClrBlobStream.GetBlobCount: Integer;
@@ -865,8 +832,7 @@ end;
 
 //=== { TJclClrUserStringStream } ============================================
 
-function TJclClrUserStringStream.BlobToString(
-  const ABlob: TJclClrBlobRecord): WideString;
+function TJclClrUserStringStream.BlobToString(const ABlob: TJclClrBlobRecord): WideString;
 begin
   if Assigned(ABlob) then
   begin
@@ -906,8 +872,7 @@ begin
   FIndex := Table.RealRowCount;
 end;
 
-function TJclClrTableRow.DecodeResolutionScope(
-  const Encoded: DWORD): TJclClrTableRow;
+function TJclClrTableRow.DecodeResolutionScope(const Encoded: DWORD): TJclClrTableRow;
 const
   ResolutionScopeEncoded: array [0..3] of TJclClrTableKind =
     (ttModule, ttModuleRef, ttAssemblyRef, ttTypeRef);
@@ -915,8 +880,7 @@ begin
   Result := Table.Stream.Tables[ResolutionScopeEncoded[Encoded and 3]].Rows[Encoded shr 2 - 1];
 end;
 
-function TJclClrTableRow.DecodeTypeDefOrRef(
-  const Encoded: DWORD): TJclClrTableRow;
+function TJclClrTableRow.DecodeTypeDefOrRef(const Encoded: DWORD): TJclClrTableRow;
 const
   TypeDefOrRefEncoded: array [0..2] of TJclClrTableKind =
     (ttTypeDef, ttTypeRef, ttTypeSpec);
@@ -936,8 +900,7 @@ function TJclClrTableRow.GetToken: TJclClrToken;
     for Result := Low(TJclClrTableKind) to High(TJclClrTableKind) do
       if ValidTableMapping[Result] = Table.ClassType then
         Exit;
-    raise EJclError.CreateResFmt(@RsUnknownTableFmt,
-      [LoadResString(@RsUnknownTable), ClassName]);
+    raise EJclError.CreateResFmt(@RsUnknownTableFmt, [LoadResString(@RsUnknownTable), ClassName]);
   end;
 
 begin
@@ -957,7 +920,7 @@ begin
   inherited Create;
   FStream := AStream;
   FData := Ptr;
-  FRows := nil; // Create on demand
+  FRows  := nil; // Create on demand
   FRowCount := ARowCount;
   Reset;
   Load;
@@ -982,7 +945,7 @@ begin
   Assert(RowCount > 0);
 
   if TableRowClass <> TJclClrTableRow then
-    for I := 0 to RowCount - 1 do
+    for I := 0 to RowCount-1 do
       AddRow(TableRowClass.Create(Self));
 end;
 
@@ -994,8 +957,7 @@ end;
 
 function TJclClrTable.GetOffset: DWORD;
 begin
-  Result := DWORD(Data) - DWORD(
-    Stream.Metadata.Image.LoadedImage.MappedAddress);
+  Result := DWORD(Data) - DWORD(Stream.Metadata.Image.LoadedImage.MappedAddress);
 end;
 
 function TJclClrTable.GetRow(const Idx: Integer): TJclClrTableRow;
@@ -1031,8 +993,7 @@ begin
     Result := ReadWord;
 end;
 
-function TJclClrTable.ReadIndex(
-  const TableKinds: array of TJclClrTableKind): DWORD;
+function TJclClrTable.ReadIndex(const TableKinds: array of TJclClrTableKind): DWORD;
 begin
   if IsWideIndex(TableKinds) then
     Result := ReadDWord
@@ -1045,8 +1006,7 @@ begin
   Result := Stream.BigHeap[HeapKind];
 end;
 
-function TJclClrTable.IsWideIndex(
-  const TableKinds: array of TJclClrTableKind): Boolean;
+function TJclClrTable.IsWideIndex(const TableKinds: array of TJclClrTableKind): Boolean;
 var
   I: Integer;
   ATable: TJclClrTable;
@@ -1112,8 +1072,8 @@ var
   I: Integer;
 begin
   if Assigned(FRows) then
-    for I := 0 to RowCount - 1 do
-      Rows[I].Update;
+  for I := 0 to RowCount-1 do
+    Rows[I].Update;
 end;
 
 function TJclClrTable.GetCodedIndexTag(const CodedIndex, TagWidth: DWORD;
@@ -1122,7 +1082,7 @@ var
   I, TagMask: DWORD;
 begin
   TagMask := 0;
-  for I := 0 to TagWidth - 1 do
+  for I := 0 to TagWidth-1 do
     TagMask := TagMask or (1 shl I);
   Result := CodedIndex and TagMask;
 end;
@@ -1135,7 +1095,7 @@ var
   I, ValueMask: DWORD;
 begin
   ValueMask := 0;
-  for I := TagWidth to IndexBits[WideIndex] - 1 do
+  for I := TagWidth to IndexBits[WideIndex]-1 do
     ValueMask := ValueMask or (1 shl I);
   Result := (CodedIndex and ValueMask) shr TagWidth;
 end;
@@ -1180,8 +1140,7 @@ constructor TJclClrTableStream.Create(const AMetadata: TJclPeMetadata;
     begin
       if (Header.Valid and (Int64(1) shl Integer(AKind))) <> 0 then
       begin
-        FTables[AKind] := ValidTableMapping[AKind].Create(Self,
-          pTable, Header.Rows[FTableCount]);
+        FTables[AKind] := ValidTableMapping[AKind].Create(Self, pTable, Header.Rows[FTableCount]);
         pTable := Pointer(DWORD(pTable) + FTables[AKind].Size);
         Inc(FTableCount);
       end
@@ -1207,14 +1166,12 @@ begin
   Result := FormatVersionString(Header.MajorVersion, Header.MinorVersion);
 end;
 
-function TJclClrTableStream.GetTable(
-  const AKind: TJclClrTableKind): TJclClrTable;
+function TJclClrTableStream.GetTable(const AKind: TJclClrTableKind): TJclClrTable;
 begin
   Result := TJclClrTable(FTables[AKind]);
 end;
 
-function TJclClrTableStream.GetBigHeap(
-  const AHeapKind: TJclClrHeapKind): Boolean;
+function TJclClrTableStream.GetBigHeap(const AHeapKind: TJclClrHeapKind): Boolean;
 const
   HeapSizesMapping: array [TJclClrHeapKind] of DWORD = (1, 2, 4);
 begin
@@ -1284,15 +1241,14 @@ constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
     I: Integer;
     TableStream: TJclClrTableStream;
   begin
-    pStreamPart := PStreamPartitionHeader(DWORD(@Header.Version[0]) +
-      Header.Length);
+    pStreamPart := PStreamPartitionHeader(DWORD(@Header.Version[0]) + Header.Length);
     pStream := @pStreamPart.StreamHeaders[0];
-    for I := 0 to pStreamPart.StreamCount - 1 do
+    for I := 0 to pStreamPart.StreamCount-1 do
     begin
       FStreams.Add(GetStreamClass(pStream.Name).Create(Self, pStream));
 
       pStream := PClrStreamHeader(DWORD(@pStream.Name[0]) +
-        DWORD((((StrLen(@pStream.Name[0]) + 1) + 3) and (not $3))));
+        DWORD((((StrLen(@pStream.Name[0])+1)+3) and (not $3))));
     end;
     if FindStream(TJclClrTableStream, TJclClrStream(TableStream)) then
       TableStream.Update;
@@ -1329,10 +1285,10 @@ function TJclPeMetadata.GetVersionString: WideString;
 var
   VerStr: string;
 begin
-  SetLength(VerStr, Header.Length + 1);
+  SetLength(VerStr, Header.Length+1);
   StrlCopy(PChar(VerStr), @Header.Version[0], Header.Length);
   SetLength(VerStr, StrLen(PChar(VerStr)));
-  Result := UTF8ToWideString(VerStr);
+  Result := UTF8ToWideString(VerStr)
 end;
 
 function TJclPeMetadata.GetVersion: string;
@@ -1342,8 +1298,7 @@ end;
 
 function TJclPeMetadata.GetFlags: Word;
 begin
-  Result := PWord(PChar(@Header.Version[0]) + (Header.Length + 3) and
-    (not 3))^;
+  Result := PWord(PChar(@Header.Version[0]) + (Header.Length + 3) and (not 3))^;
 end;
 
 function TJclPeMetadata.GetStream(const Idx: Integer): TJclClrStream;
@@ -1361,7 +1316,7 @@ function TJclPeMetadata.FindStream(const AName: string;
 var
   I: Integer;
 begin
-  for I := 0 to GetStreamCount - 1 do
+  for I := 0 to GetStreamCount-1 do
   begin
     Stream := Streams[I];
     if CompareText(Stream.Name, AName) = 0 then
@@ -1379,7 +1334,7 @@ function TJclPeMetadata.FindStream(const AClass: TJclClrStreamClass;
 var
   I: Integer;
 begin
-  for I := 0 to GetStreamCount - 1 do
+  for I := 0 to GetStreamCount-1 do
   begin
     Stream := Streams[I];
     if Stream.ClassType = AClass then
@@ -1397,17 +1352,17 @@ begin
   if AToken = 0 then
     Result := nil
   else
-    try
-      Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken) - 1];
-    except
-      Result := nil;
-    end;
+  try
+    Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken)-1];
+  except
+    Result := nil;
+  end;
 end;
 
 function TJclPeMetadata.GetString(const Idx: Integer): WideString;
 begin
   if Assigned(FStringStream) or
-    FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
+     FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
     Result := FStringStream.Strings[Idx]
   else
     Result := '';
@@ -1416,7 +1371,7 @@ end;
 function TJclPeMetadata.GetStringCount: Integer;
 begin
   if Assigned(FStringStream) or
-    FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
+     FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
     Result := FStringStream.StringCount
   else
     Result := 0;
@@ -1425,8 +1380,8 @@ end;
 function TJclPeMetadata.UserGetString(const Idx: Integer): WideString;
 begin
   if Assigned(FUserStringStream) or
-    FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
-    Result := FUserStringStream.Strings[Idx - 1]
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+    Result := FUserStringStream.Strings[Idx-1]
   else
     Result := '';
 end;
@@ -1434,7 +1389,7 @@ end;
 function TJclPeMetadata.UserGetStringCount: Integer;
 begin
   if Assigned(FUserStringStream) or
-    FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
     Result := FUserStringStream.StringCount
   else
     Result := 0;
@@ -1443,7 +1398,7 @@ end;
 function TJclPeMetadata.StringAt(const Offset: DWORD): WideString;
 begin
   if Assigned(FStringStream) or
-    FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
+     FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
     Result := FStringStream.At(Offset)
   else
     Result := '';
@@ -1452,7 +1407,7 @@ end;
 function TJclPeMetadata.UserStringAt(const Offset: DWORD): WideString;
 begin
   if Assigned(FUserStringStream) or
-    FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
     Result := TJclClrUserStringStream(FUserStringStream).At(Offset)
   else
     Result := '';
@@ -1461,7 +1416,7 @@ end;
 function TJclPeMetadata.BlobAt(const Offset: DWORD): TJclClrBlobRecord;
 begin
   if Assigned(FBlobStream) or
-    FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
+     FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
     Result := TJclClrBlobStream(FBlobStream).At(Offset)
   else
     Result := nil;
@@ -1470,7 +1425,7 @@ end;
 function TJclPeMetadata.GetGuid(const Idx: Integer): TGUID;
 begin
   if Assigned(FGuidStream) or
-    FindStream(TJclClrGuidStream, TJclClrStream(FGuidStream)) then
+     FindStream(TJclClrGuidStream, TJclClrStream(FGuidStream)) then
     Result := FGuidStream.Guids[Idx]
   else
     Result := GUID_NULL;
@@ -1479,7 +1434,7 @@ end;
 function TJclPeMetadata.GetGuidCount: Integer;
 begin
   if Assigned(FGuidStream) or
-    FindStream(TJclClrGuidStream, TJclClrStream(FGuidStream)) then
+     FindStream(TJclClrGuidStream, TJclClrStream(FGuidStream)) then
     Result := FGuidStream.GuidCount
   else
     Result := 0;
@@ -1488,7 +1443,7 @@ end;
 function TJclPeMetadata.GetBlob(const Idx: Integer): TJclClrBlobRecord;
 begin
   if Assigned(FBlobStream) or
-    FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
+     FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
     Result := FBlobStream.Blobs[Idx]
   else
     Result := nil;
@@ -1497,7 +1452,7 @@ end;
 function TJclPeMetadata.GetBlobCount: Integer;
 begin
   if Assigned(FBlobStream) or
-    FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
+     FindStream(TJclClrBlobStream, TJclClrStream(FBlobStream)) then
     Result := FBlobStream.BlobCount
   else
     Result := 0;
@@ -1506,7 +1461,7 @@ end;
 function TJclPeMetadata.GetTable(const AKind: TJclClrTableKind): TJclClrTable;
 begin
   if Assigned(FTableStream) or
-    FindStream(TJclClrTableStream, TJclClrStream(FTableStream)) then
+     FindStream(TJclClrTableStream, TJclClrStream(FTableStream)) then
     Result := FTableStream.Tables[AKind]
   else
     Result := nil;
@@ -1515,7 +1470,7 @@ end;
 function TJclPeMetadata.GetTableCount: Integer;
 begin
   if Assigned(FTableStream) or
-    FindStream(TJclClrTableStream, TJclClrStream(FTableStream)) then
+     FindStream(TJclClrTableStream, TJclClrStream(FTableStream)) then
     Result := FTableStream.TableCount
   else
     Result := 0;
@@ -1526,8 +1481,7 @@ begin
   Result := TokenIndex(Token) in [1..Tables[TokenTable(Token)].RowCount];
 end;
 
-class function TJclPeMetadata.TokenTable(
-  const Token: TJclClrToken): TJclClrTableKind;
+class function TJclPeMetadata.TokenTable(const Token: TJclClrToken): TJclClrTableKind;
 begin
   Result := TJclClrTableKind(Token shr 24);
 end;
@@ -1551,34 +1505,31 @@ end;
 function TJclPeMetadata.DumpIL: string;
 begin
   with TStringList.Create do
-    try
-      case Image.Target of
-        taWin32:
+  try
+    case Image.Target of
+      taWin32:
         begin
           Add(Format('.imagebase 0x%.8x', [Image.OptionalHeader32.ImageBase]));
           Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader32.SubSystem]));
-          Add(Format('.file alignment %d',
-            [Image.OptionalHeader32.FileAlignment]));
+          Add(Format('.file alignment %d', [Image.OptionalHeader32.FileAlignment]));
         end;
-        taWin64:
+      taWin64:
         begin
-          Add(Format('.imagebase 0x%.16x',
-            [Image.OptionalHeader64.ImageBase]));
+          Add(Format('.imagebase 0x%.16x', [Image.OptionalHeader64.ImageBase]));
           Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader64.SubSystem]));
-          Add(Format('.file alignment %d',
-            [Image.OptionalHeader64.FileAlignment]));
+          Add(Format('.file alignment %d', [Image.OptionalHeader64.FileAlignment]));
         end;
     //taUnknown: ;
-      end;
-
-      if Assigned(FTableStream) then
-      begin
-        FTableStream.Update;
-        Result := Text + AnsiLineBreak + FTableStream.DumpIL;
-      end;
-    finally
-      Free;
     end;
+
+    if Assigned(FTableStream) then
+    begin
+      FTableStream.Update;
+      Result := Text + AnsiLineBreak + FTableStream.DumpIL;
+    end;
+  finally
+    Free;
+  end;
 end;
 
 //=== { TJclClrResourceRecord } ==============================================
@@ -1589,7 +1540,7 @@ begin
   FData := AData;
   FOffset := AOffset;
   FRVA := ARVA;
-  inherited Create(Pointer(DWORD(Data) + SizeOf(DWORD)), PDWORD(Data)^);
+  inherited Create(Pointer(DWORD(Data)+SizeOf(DWORD)), PDWORD(Data)^);
 end;
 
 //=== { TJclClrVTableFixupRecord } ===========================================
@@ -1615,8 +1566,7 @@ begin
   Result := Data.RVA;
 end;
 
-class function TJclClrVTableFixupRecord.VTableKinds(
-  const Kinds: TJclClrVTableKinds): DWORD;
+class function TJclClrVTableFixupRecord.VTableKinds(const Kinds: TJclClrVTableKinds): DWORD;
 var
   AKind: TJclClrVTableKind;
 begin
@@ -1626,15 +1576,13 @@ begin
       Result := Result or ClrVTableKindMapping[AKind];
 end;
 
-class function TJclClrVTableFixupRecord.VTableKinds(
-  const Kinds: DWORD): TJclClrVTableKinds;
+class function TJclClrVTableFixupRecord.VTableKinds(const Kinds: DWORD): TJclClrVTableKinds;
 var
   AKind: TJclClrVTableKind;
 begin
   Result := [];
   for AKind := Low(TJclClrVTableKind) to High(TJclClrVTableKind) do
-    if (ClrVTableKindMapping[AKind] and Kinds) =
-      ClrVTableKindMapping[AKind] then
+    if (ClrVTableKindMapping[AKind] and Kinds) = ClrVTableKindMapping[AKind] then
       Include(Result, AKind);
 end;
 
@@ -1645,7 +1593,7 @@ constructor TJclClrHeaderEx.Create(const AImage: TJclPeImage);
   procedure UpdateVTableFixups;
   begin
     // (rom) What is this?
-    if Header.VTableFixups.VirtualAddress = 0 then;
+    if Header.VTableFixups.VirtualAddress = 0 then
   end;
 
 begin
@@ -1666,8 +1614,7 @@ begin
   inherited Destroy;
 end;
 
-class function TJclClrHeaderEx.ClrImageFlag(
-  const Flags: DWORD): TJclClrImageFlags;
+class function TJclClrHeaderEx.ClrImageFlag(const Flags: DWORD): TJclClrImageFlags;
 var
   AFlag: TJclClrImageFlag;
 begin
@@ -1677,8 +1624,7 @@ begin
       Include(Result, AFlag);
 end;
 
-class function TJclClrHeaderEx.ClrImageFlag(
-  const Flags: TJclClrImageFlags): DWORD;
+class function TJclClrHeaderEx.ClrImageFlag(const Flags: TJclClrImageFlags): DWORD;
 var
   AFlag: TJclClrImageFlag;
 begin
@@ -1698,31 +1644,30 @@ end;
 function TJclClrHeaderEx.HasStrongNameSignature: Boolean;
 begin
   with Header.StrongNameSignature do
-    Result := Assigned(FStrongNameSignature) or
-      ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+  Result := Assigned(FStrongNameSignature) or
+    ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
 function TJclClrHeaderEx.HasVTableFixup: Boolean;
 begin
   with Header.VTableFixups do
-    Result := Assigned(FVTableFixups) or
-      ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+  Result := Assigned(FVTableFixups) or
+    ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
 function TJclClrHeaderEx.GetStrongNameSignature: TCustomMemoryStream;
 begin
   if not Assigned(FStrongNameSignature) and HasStrongNameSignature then
-    with Header.StrongNameSignature do
-      FStrongNameSignature :=
-        TJClreferenceMemoryStream.Create(Image.RvaToVa(VirtualAddress), Size);
+  with Header.StrongNameSignature do
+    FStrongNameSignature := TJClreferenceMemoryStream.Create(Image.RvaToVa(VirtualAddress), Size);
   Result := FStrongNameSignature;
 end;
 
 function TJclClrHeaderEx.HasResources: Boolean;
 begin
   with Header.Resources do
-    Result := Assigned(FResources) or
-      ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+  Result := Assigned(FResources) or
+    ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
 procedure TJclClrHeaderEx.UpdateResources;
@@ -1735,10 +1680,9 @@ begin
   begin
     Base := Image.RvaToVa(VirtualAddress);
     Ptr := Base;
-    while DWORD(Ptr - Base) < Size do
+    while DWORD(Ptr-Base) < Size do
     begin
-      ARes := TJclClrResourceRecord.Create(Ptr, Ptr - Base,
-        Ptr - Image.LoadedImage.MappedAddress);
+      ARes := TJclClrResourceRecord.Create(Ptr, Ptr-Base, Ptr-Image.LoadedImage.MappedAddress);
       FResources.Add(ARes);
       Ptr := PChar(ARes.Memory) + ARes.Size;
     end;
@@ -1765,7 +1709,7 @@ end;
 
 function TJclClrHeaderEx.GetEntryPointToken: TJclClrTableRow;
 begin
-  Result := Metadata.Tokens[Header.EntryPointToken];
+  Result := Metadata.Tokens[Header.EntryPointToken]
 end;
 
 function TJclClrHeaderEx.GetVTableFixup(
@@ -1780,7 +1724,7 @@ begin
     with Header.VTableFixups do
     begin
       pData := PImageCorVTableFixup(Image.RvaToVa(VirtualAddress));
-      for I := 0 to GetVTableFixupCount - 1 do
+      for I := 0 to GetVTableFixupCount-1 do
       begin
         FVTableFixups.Add(TJclClrVTableFixupRecord.Create(pData));
         Inc(pData);
@@ -1795,13 +1739,12 @@ begin
   Result := Header.VTableFixups.Size div SizeOf(TImageCorVTableFixup);
 end;
 
-function TJclClrHeaderEx.ResourceAt(
-  const Offset: DWORD): TJclClrResourceRecord;
+function TJclClrHeaderEx.ResourceAt(const Offset: DWORD): TJclClrResourceRecord;
 var
   I: Integer;
 begin
   if HasResources then
-    for I := 0 to ResourceCount - 1 do
+    for I := 0 to ResourceCount-1 do
     begin
       Result := Resources[I];
       if Result.Offset = Offset then
@@ -1813,13 +1756,13 @@ end;
 function TJclClrHeaderEx.DumpIL: string;
 begin
   with TStringList.Create do
-    try
-      Add(RsClrCopyright);
-      Add(Format('.corflags 0x%.8x', [Header.Flags]));
-      Result := Text + AnsiLineBreak + Metadata.DumpIL;
-    finally
-      Free;
-    end;
+  try
+    Add(RsClrCopyright);
+    Add(Format('.corflags 0x%.8x', [Header.Flags]));
+    Result := Text + AnsiLineBreak + Metadata.DumpIL;
+  finally
+    Free;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

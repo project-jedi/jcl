@@ -71,23 +71,17 @@ type
   protected
     { IJclStrCollection }
     function Add(const AString: string): Boolean; virtual; abstract;
-    function AddAll(const ACollection: IJclStrCollection): Boolean;
-      virtual; abstract;
+    function AddAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     procedure Clear; virtual; abstract;
     function Contains(const AString: string): Boolean; virtual; abstract;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean;
-      virtual; abstract;
-    function Equals(const ACollection: IJclStrCollection): Boolean;
-      virtual; abstract;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function Equals(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     function First: IJclStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
     function Last: IJclStrIterator; virtual; abstract;
-    function Remove(const AString: string): Boolean;
-      overload; virtual; abstract;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean;
-      virtual; abstract;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean;
-      virtual; abstract;
+    function Remove(const AString: string): Boolean; overload; virtual; abstract;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
     procedure LoadFromStrings(Strings: TStrings);
     procedure SaveToStrings(Strings: TStrings);
@@ -95,10 +89,8 @@ type
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStrings;
     function GetAsDelimited(const Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(const AString: string;
-      const Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(const AString: string;
-      const Separator: string = AnsiLineBreak);
+    procedure AppendDelimited(const AString: string; const Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -258,3 +250,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

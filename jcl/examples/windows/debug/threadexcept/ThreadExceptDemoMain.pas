@@ -95,28 +95,24 @@ end;
 
 procedure TMainForm.DoThreadRegistered(ThreadID: DWORD);
 begin
-  ThreadsRichEdit.Lines.Add(Format('Thread registered: %s',
-    [JclDebugThreadList.ThreadInfos[ThreadID]]));
+  ThreadsRichEdit.Lines.Add(Format('Thread registered: %s', [JclDebugThreadList.ThreadInfos[ThreadID]]));
   ScrollDownRichEdit(ThreadsRichEdit);
 end;
 
 procedure TMainForm.DoThreadSyncException(Thread: TJclDebugThread);
 begin
-  MessageRichEdit.Lines.Add(Format('Exception in thread: %s',
-    [Thread.ThreadInfo]));
+  MessageRichEdit.Lines.Add(Format('Exception in thread: %s', [Thread.ThreadInfo]));
   // Note: JclLastExceptStackList always returns list for *current* thread ID. To simplify getting the
   // stack of thread where an exception occured JclLastExceptStackList returns stack of the thread instead
   // of current thread when called *within* the JclDebugThreadList.OnSyncException handler. This is the
   // *only* exception to the behavior of JclLastExceptStackList described above.
-  JclLastExceptStackList.AddToStrings(MessageRichEdit.Lines,
-    False, True, True);
+  JclLastExceptStackList.AddToStrings(MessageRichEdit.Lines, False, True, True);
   ScrollDownRichEdit(MessageRichEdit);
 end;
 
 procedure TMainForm.DoThreadUnregistered(ThreadID: DWORD);
 begin
-  ThreadsRichEdit.Lines.Add(Format('Thread unregistered: %s',
-    [JclDebugThreadList.ThreadInfos[ThreadID]]));
+  ThreadsRichEdit.Lines.Add(Format('Thread unregistered: %s', [JclDebugThreadList.ThreadInfos[ThreadID]]));
   ScrollDownRichEdit(ThreadsRichEdit);
 end;
 

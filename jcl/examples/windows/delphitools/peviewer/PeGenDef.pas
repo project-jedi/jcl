@@ -41,11 +41,9 @@ type
     FUnitGenFlags: array of TPeUnitGenFlags;
     function GetUnitGenFlags(Index: Integer): TPeUnitGenFlags;
   public
-    procedure GenerateUnit(Strings: TStrings; const LibConst: string;
-      WrapPos: Integer);
+    procedure GenerateUnit(Strings: TStrings; const LibConst: string; WrapPos: Integer);
     procedure ScanExports;
-    property UnitGenFlags[Index: Integer]: TPeUnitGenFlags
-      read GetUnitGenFlags;
+    property UnitGenFlags[Index: Integer]: TPeUnitGenFlags read GetUnitGenFlags;
   end;
 
   TPeGenDefChild = class(TForm)
@@ -89,7 +87,7 @@ uses PeViewerMain, JclFileUtils, ToolsUtils, JclSysUtils;
 {$R *.DFM}
 
 const
-  nfDecoratedName = $01;
+  nfDecoratedName   = $01;
   nfAnsiUnicodePair = $02;
 
 function PascalizeName(const Name: string): string;
@@ -115,8 +113,7 @@ begin
       else
       if not (C in StripLeadingChars) then
         Break; // probably MS C++ or Borland name decoration
-    end
-    else
+    end else
     begin
       if C in ValidChars then
         Result := Result + C
@@ -152,10 +149,8 @@ begin
   begin
     Suffix1 := Name1[L1];
     Suffix2 := Name2[L2];
-    Result := (Suffix1 in AnsiUnicodeSuffixes) and
-      (Suffix2 in AnsiUnicodeSuffixes) and
-      (Suffix1 <> Suffix2) and (Copy(Name1, 1, L1 - 1) =
-      Copy(Name2, 1, L2 - 1));
+    Result := (Suffix1 in AnsiUnicodeSuffixes) and (Suffix2 in AnsiUnicodeSuffixes) and
+      (Suffix1 <> Suffix2) and (Copy(Name1, 1, L1 - 1) = Copy(Name2, 1, L2 - 1));
   end;
 end;
 
@@ -167,8 +162,7 @@ end;
 
 { TPeUnitGenerator }
 
-procedure TPeUnitGenerator.GenerateUnit(Strings: TStrings;
-  const LibConst: string;
+procedure TPeUnitGenerator.GenerateUnit(Strings: TStrings; const LibConst: string;
   WrapPos: Integer);
 var
   I: Integer;
@@ -183,8 +177,7 @@ begin
     with ExportList[I] do
       if FUnitGenFlags[I] = [] then
       begin
-        S := Format('function %s; external %s name ''%s'';',
-          [PascalizeName(Name), LibConst, Name]);
+        S := Format('function %s; external %s name ''%s'';', [PascalizeName(Name), LibConst, Name]);
         if WrapPos > 0 then
           S := WrapText(S, #13#10'  ', [' '], WrapPos);
         Strings.Add(S);
@@ -209,8 +202,7 @@ begin
   ExportList.SortList(esName);
   LastName := '';
   LastAddress := 0;
-  FirstSectionName := ImageSectionNames[0];
- // The first section is code section
+  FirstSectionName := ImageSectionNames[0]; // The first section is code section
   for I := 0 to ExportList.Count - 1 do
     with ExportList[I] do
     begin
@@ -269,8 +261,7 @@ begin
   end;
 end;
 
-procedure TPeGenDefChild.FunctionsListViewData(Sender: TObject;
-  Item: TListItem);
+procedure TPeGenDefChild.FunctionsListViewData(Sender: TObject; Item: TListItem);
 var
   Flags: TPeUnitGenFlags;
 begin
@@ -290,8 +281,7 @@ begin
   end;
 end;
 
-procedure TPeGenDefChild.FunctionsListViewCustomDrawItem(
-  Sender: TCustomListView;
+procedure TPeGenDefChild.FunctionsListViewCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
   Flags: TPeUnitGenFlags;

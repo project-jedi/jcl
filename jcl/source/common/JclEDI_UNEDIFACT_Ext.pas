@@ -71,14 +71,11 @@ type
     // References
     FEDIMessage: TEDIMessage;
     FEDIMessageSpec: TObjectList;
-    function ValidateSegSpecIndex(DataSegmentId: string;
-      SpecStartIndex: Integer): Integer;
-    function AdvanceSegSpecIndex(DataIndex, SpecStartIndex,
-      SpecEndIndex: Integer): Integer;
+    function ValidateSegSpecIndex(DataSegmentId: string; SpecStartIndex: Integer): Integer;
+    function AdvanceSegSpecIndex(DataIndex, SpecStartIndex, SpecEndIndex: Integer): Integer;
     procedure AddLoopToDoc(StackRecord: TEDILoopStackRecord;
       SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
-    procedure SetSpecificationPointers(DataSegment: TEDISegment;
-      SpecSegment: TEDISEFSegment);
+    procedure SetSpecificationPointers(DataSegment: TEDISegment; SpecSegment: TEDISEFSegment);
   protected
     procedure ValidateData(TSDocument: TEDI_UNEDIFACT_Document;
       LoopStack: TEDILoopStack;
@@ -122,7 +119,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDIMessage := AEDIMessage;
-  FEDISEFSet := SEFSet;
+  FEDISEFSet := SEFSet;  
   FEDIMessageSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -166,8 +163,7 @@ begin
     if DataSegment.SegmentID = SpecSegment.SegmentID then
     begin
       // Retrieve the correct record to use from the stack
-      LSR := FEDILoopStack.ValidateLoopStack(SpecSegment.SegmentID,
-        SpecSegment.OwnerLoopId,
+      LSR := FEDILoopStack.ValidateLoopStack(SpecSegment.SegmentID, SpecSegment.OwnerLoopId,
         SpecSegment.ParentLoopId, J, LSR.EDIObject);
       //
       // Debug - Keep the following here in case someone wants to debug what happens to the stack.
@@ -176,8 +172,7 @@ begin
       //             FEDILoopStack.Debug);
       //
       // Do error checking and data validation in decendent class
-      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment,
-        I, J, FErrorOccured);
+      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment, I, J, FErrorOccured);
       if FErrorOccured then
         Exit;
       // Process Segment Id
@@ -195,8 +190,7 @@ begin
     else
     begin
       // Do error checking and data validation in decendent class
-      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment,
-        I, J, FErrorOccured);
+      ValidateData(Self, FEDILoopStack, DataSegment, SpecSegment, I, J, FErrorOccured);
       if FErrorOccured then
         Exit;
       //
@@ -211,17 +205,14 @@ begin
   end;
 end;
 
-procedure TEDI_UNEDIFACT_Document.ValidateData(TSDocument:
-  TEDI_UNEDIFACT_Document;
-  LoopStack: TEDILoopStack; DataSegment: TEDISegment;
-  SpecSegment: TEDISEFSegment;
+procedure TEDI_UNEDIFACT_Document.ValidateData(TSDocument: TEDI_UNEDIFACT_Document;
+  LoopStack: TEDILoopStack; DataSegment: TEDISegment; SpecSegment: TEDISEFSegment;
   var DataIndex, SpecIndex: Integer; var ErrorOccured: Boolean);
 begin
   ErrorOccured := False;
 end;
 
-procedure TEDI_UNEDIFACT_Document.SetSpecificationPointers(
-  DataSegment: TEDISegment;
+procedure TEDI_UNEDIFACT_Document.SetSpecificationPointers(DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment);
 var
   I, J: Integer;
@@ -233,14 +224,13 @@ begin
     if I > J then
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
-        IntToStr(DataSegment.GetIndexPositionFromParent)]);
+         IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.EDIDataObject[I].SpecPointer := SpecSegment.Elements[I];
     // ToDo: Assign SubElement Specs
   end;
 end;
 
-procedure TEDI_UNEDIFACT_Document.AddLoopToDoc(StackRecord:
-  TEDILoopStackRecord;
+procedure TEDI_UNEDIFACT_Document.AddLoopToDoc(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
 var
   I: Integer;

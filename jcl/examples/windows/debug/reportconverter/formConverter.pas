@@ -54,8 +54,7 @@ type
     function FormatInfo(var Info: TJclLocationInfo;
       IncludeAddressOffset: Boolean = True;
       IncludeStartProcLineOffset: Boolean = True): string;
-    function GetVALocationInfo(const VA: DWORD;
-      var Info: TJclLocationInfo): Boolean;
+    function GetVALocationInfo(const VA: DWORD; var Info: TJclLocationInfo): Boolean;
   end;
 
 var
@@ -71,8 +70,7 @@ var
 begin
   if not FileExists(txtReportFile.Text) then
     ShowMessage('Report File does not exist.')
-  else
-  if not FileExists(txtMapFile.Text) then
+  else if not FileExists(txtMapFile.Text) then
     ShowMessage('Map File does not exist.')
   else
   begin
@@ -105,8 +103,7 @@ begin
       if (Copy(ls[i], 1, 3) = '---') then
         if lInStackList then
           Break
-        else
-        if Copy(ls[i + 1], 1, 10) = 'Stack list' then
+        else if Copy(ls[i+1], 1, 10) = 'Stack list' then
         begin
           lInStackList := True;
           Inc(i, 2);
@@ -121,8 +118,7 @@ begin
       Inc(i);
     end;
     ls.SaveToFile(AOutput);
-    ShowMessage('Successfully converted. Output filename:' +
-      #13#10#13#10 + AOutput);
+    ShowMessage('Successfully converted. Output filename:' + #13#10#13#10 + AOutput);
   finally
     ls.Free;
   end;
@@ -139,12 +135,9 @@ begin
   begin
     if LineNumber > 0 then
     begin
-      if IncludeStartProcLineOffset and
-        GetVALocationInfo(DWORD(Cardinal(Info.Address) -
-        Cardinal(Info.OffsetFromProcName)), StartProcInfo) and
-        (StartProcInfo.LineNumber > 0) then
-        StartProcOffsetStr :=
-          Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
+      if IncludeStartProcLineOffset and GetVALocationInfo(DWORD(Cardinal(Info.Address) -
+        Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
+          StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
       else
         StartProcOffsetStr := '';
       if IncludeAddressOffset then
@@ -152,10 +145,9 @@ begin
         if OffsetFromLineNumber >= 0 then
           OffsetStr := Format(' + $%x', [OffsetFromLineNumber])
         else
-          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber]);
+          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber])
       end;
-      Result := Format(' %s.%s (Line %u, "%s"%s)%s',
-        [UnitName, ProcedureName, LineNumber,
+      Result := Format(' %s.%s (Line %u, "%s"%s)%s', [UnitName, ProcedureName, LineNumber,
         SourceName, StartProcOffsetStr, OffsetStr]);
     end
     else
@@ -170,8 +162,7 @@ begin
   end;
 end;
 
-function TfrmConverter.GetVALocationInfo(const VA: DWORD;
-  var Info: TJclLocationInfo): Boolean;
+function TfrmConverter.GetVALocationInfo(const VA: DWORD; var Info: TJclLocationInfo): Boolean;
 begin
   with FScanner do
   begin

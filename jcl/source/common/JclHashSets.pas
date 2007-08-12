@@ -78,17 +78,14 @@ type
     function AddAll(const ACollection: IJclStrCollection): Boolean; override;
     procedure Clear; override;
     function Contains(const AString: string): Boolean; override;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean;
-      override;
+    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
     function Equals(const ACollection: IJclStrCollection): Boolean; override;
     function First: IJclStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclStrIterator; override;
     function Remove(const AString: string): Boolean; override;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean;
-      override;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean;
-      override;
+    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
     function Size: Integer; override;
     { IJclIntfSet }
     procedure Intersect(const ACollection: IJclStrCollection);
@@ -101,8 +98,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJclHashSet = class(TJclAbstractContainer, IJclCollection,
-    IJclSet, IJclCloneable)
+  TJclHashSet = class(TJclAbstractContainer, IJclCollection, IJclSet, IJclCloneable)
   private
     FMap: IJclMap;
   protected
@@ -168,8 +164,7 @@ var
 
 //=== { TJclIntfHashSet } ====================================================
 
-constructor TJclIntfHashSet.Create(ACapacity: Integer =
-  DefaultContainerCapacity);
+constructor TJclIntfHashSet.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FMap := TJclIntfIntfHashMap.Create(ACapacity);
@@ -190,8 +185,7 @@ begin
     FMap.PutValue(AInterface, IRefUnique);
 end;
 
-function TJclIntfHashSet.AddAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.AddAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -223,8 +217,7 @@ begin
   Result := FMap.ContainsKey(AInterface);
 end;
 
-function TJclIntfHashSet.ContainsAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.ContainsAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -236,8 +229,7 @@ begin
     Result := Contains(It.Next);
 end;
 
-function TJclIntfHashSet.Equals(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.Equals(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
   ItMap: IJclIntfIterator;
@@ -280,8 +272,7 @@ begin
   Result := FMap.Remove(AInterface) = IInterface(IRefUnique);
 end;
 
-function TJclIntfHashSet.RemoveAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.RemoveAll(const ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
 begin
@@ -293,8 +284,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclIntfHashSet.RetainAll(
-  const ACollection: IJclIntfCollection): Boolean;
+function TJclIntfHashSet.RetainAll(const ACollection: IJclIntfCollection): Boolean;
 var
   ItMap: IJclIntfIterator;
 begin
@@ -324,8 +314,7 @@ end;
 
 //=== { TJclStrHashSet } =====================================================
 
-constructor TJclStrHashSet.Create(ACapacity: Integer =
-  DefaultContainerCapacity);
+constructor TJclStrHashSet.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FMap := TJclStrHashMap.Create(ACapacity, False);
@@ -376,8 +365,7 @@ begin
   Result := FMap.ContainsKey(AString);
 end;
 
-function TJclStrHashSet.ContainsAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.ContainsAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -432,8 +420,7 @@ begin
   Result := FMap.Remove(AString) = RefUnique;
 end;
 
-function TJclStrHashSet.RemoveAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.RemoveAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -445,8 +432,7 @@ begin
     Result := Remove(It.Next) and Result;
 end;
 
-function TJclStrHashSet.RetainAll(
-  const ACollection: IJclStrCollection): Boolean;
+function TJclStrHashSet.RetainAll(const ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
 begin
@@ -643,3 +629,4 @@ finalization
 
 
 end.
+

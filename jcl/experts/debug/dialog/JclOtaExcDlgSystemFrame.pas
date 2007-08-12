@@ -55,8 +55,7 @@ type
   protected
     function GetSupportsNext: Boolean; override;
   public
-    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams);
-      reintroduce;
+    constructor Create(AOwner: TComponent; AParams: TJclOtaExcDlgParams); reintroduce;
 
     procedure PageActivated(Direction: TJclWizardDirection); override;
     procedure PageDesactivated(Direction: TJclWizardDirection); override;
@@ -100,8 +99,7 @@ begin
   Result := (not CheckBoxLogFile.Checked) or (EditLogFileName.Text <> '');
 end;
 
-procedure TJclOtaExcDlgSystemPage.PageActivated(Direction:
-  TJclWizardDirection);
+procedure TJclOtaExcDlgSystemPage.PageActivated(Direction: TJclWizardDirection);
 begin
   inherited PageActivated(Direction);
 

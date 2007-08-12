@@ -66,8 +66,7 @@ resourcestring
   SConfirm = 'Confirm';
   SRoot = 'Document Root';
   SConfirmConversion = 'Confirm Conversion';
-  SConvertFilePrompt =
-    'This file doesn''t appear to be a compound file. Would you like to convert it?';
+  SConvertFilePrompt = 'This file doesn''t appear to be a compound file. Would you like to convert it?';
   SConvertSuccess = 'File was converted succesfully.';
   SConvertFailFmt = 'Unable to convert file:'#13#10'%s';
   SBytesFloatFmt = '%0.n bytes';
@@ -76,8 +75,7 @@ resourcestring
   SAddFolder = 'Add Folder';
   SFolderNameLabel = '&Name:';
   SErrNameEmpty = 'Name cannot be empty';
-  SErrNameDuplicate =
-    'There is already an item with that name. Use another name.';
+  SErrNameDuplicate = 'There is already an item with that name. Use another name.';
   SAddFile = 'Add File';
   SFileNameLabel = '&Name:';
   SDeletePrompt = 'Delete selected item?';
@@ -120,8 +118,8 @@ begin
       Result := SLockBytes;
     STGTY_PROPERTY:
       Result := SProperty;
-    else
-      Result := SUnknown;
+  else
+    Result := SUnknown;
   end;
 end;
 
@@ -151,23 +149,24 @@ var
 begin
   frmProps := self.Create(Application);
   with frmProps, Stat do
-    try
-      edName.Text := WideCharToString(pwcsName);
+  try
+    edName.Text := WideCharToString(pwcsName);
 
-      edType.Text := StgTypeToStr(dwType);
-      nSize := cbSize;
-      edSize.Text := Format(SBytesFloatFmt, [nSize]);
-      edCreated.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(ctime));
-      edModified.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(mtime));
-      edAccessed.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(atime));
-      edCLSID.Text := MyGUIDToString(clsid);
-      for i := 0 to ComponentCount - 1 do
-        if Components[i] is TEdit then
-          TEdit(Components[i]).Hint := TEdit(Components[i]).Text;
-      ShowModal;
-    finally
-      Free;
-    end;
+    edType.Text := StgTypeToStr(dwType);
+    nSize := cbSize;
+    edSize.Text := Format(SBytesFloatFmt, [nSize]);
+    edCreated.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(ctime));
+    edModified.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(mtime));
+    edAccessed.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(atime));
+    edCLSID.Text := MyGUIDToString(clsid);
+    for i := 0 to ComponentCount - 1 do
+      if Components[i] is TEdit then
+        TEdit(Components[i]).Hint := TEdit(Components[i]).Text;
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 end.
+

@@ -119,8 +119,7 @@ type
   private
     FHashMap: TStringHashMap;
   public
-    constructor Create(ACaseSensitive: Boolean = False;
-      AHashSize: Integer = 127);
+    constructor Create(ACaseSensitive: Boolean = False; AHashSize: Integer = 127);
     destructor Destroy; override;
     procedure Add(ASymbol: TExprSym);
     procedure Remove(const AName: string);
@@ -162,8 +161,7 @@ type
     property CompileParser: TExprCompileParser read FCompileParser
       write FCompileParser;
     property EvalParser: TExprEvalParser read FEvalParser write FEvalParser;
-    property NodeFactory: TExprNodeFactory
-      read FNodeFactory write FNodeFactory;
+    property NodeFactory: TExprNodeFactory read FNodeFactory write FNodeFactory;
   end;
 
   TExprToken = (
@@ -174,12 +172,9 @@ type
 
     // user extension tokens
     etUser0, etUser1, etUser2, etUser3, etUser4, etUser5, etUser6, etUser7,
-    etUser8, etUser9, etUser10, etUser11, etUser12, etUser13,
-    etUser14, etUser15,
-    etUser16, etUser17, etUser18, etUser19, etUser20, etUser21,
-    etUser22, etUser23,
-    etUser24, etUser25, etUser26, etUser27, etUser28, etUser29,
-    etUser30, etUser31,
+    etUser8, etUser9, etUser10, etUser11, etUser12, etUser13, etUser14, etUser15,
+    etUser16, etUser17, etUser18, etUser19, etUser20, etUser21, etUser22, etUser23,
+    etUser24, etUser25, etUser26, etUser27, etUser28, etUser29, etUser30, etUser31,
 
     // compound tokens
     etNotEqual, // <>
@@ -359,7 +354,7 @@ type
     et254, // 'þ' #$FE 254
     et255, // 'ÿ' #$FF 255
     etInvalid // invalid token type
-    );
+  );
 
   TExprLexer = class(TObject)
   protected
@@ -400,75 +395,48 @@ type
     function LoadConst80(AValue: TFloat80): TExprNode; virtual; abstract;
 
     function CallFloatFunc(AFunc: TFloatFunc): TExprNode; virtual; abstract;
-    function CallFloat32Func(AFunc: TFloat32Func): TExprNode;
-      virtual; abstract;
-    function CallFloat64Func(AFunc: TFloat64Func): TExprNode;
-      virtual; abstract;
-    function CallFloat80Func(AFunc: TFloat80Func): TExprNode;
-      virtual; abstract;
-    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode;
-      virtual; abstract;
-    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode;
-      virtual; abstract;
-    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode;
-      virtual; abstract;
-    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode;
-      virtual; abstract;
-    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode;
-      virtual; abstract;
-    function CallBinary32Func(AFunc: TBinary32Func;
-      X, Y: TExprNode): TExprNode; virtual; abstract;
-    function CallBinary64Func(AFunc: TBinary64Func;
-      X, Y: TExprNode): TExprNode; virtual; abstract;
-    function CallBinary80Func(AFunc: TBinary80Func;
-      X, Y: TExprNode): TExprNode; virtual; abstract;
-    function CallTernaryFunc(AFunc: TTernaryFunc;
-      X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    function CallTernary32Func(AFunc: TTernary32Func;
-      X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    function CallTernary64Func(AFunc: TTernary64Func;
-      X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    function CallTernary80Func(AFunc: TTernary80Func;
-      X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    function CallFloat32Func(AFunc: TFloat32Func): TExprNode; virtual; abstract;
+    function CallFloat64Func(AFunc: TFloat64Func): TExprNode; virtual; abstract;
+    function CallFloat80Func(AFunc: TFloat80Func): TExprNode; virtual; abstract;
+    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; virtual; abstract;
+    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; virtual; abstract;
+    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; virtual; abstract;
+    function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; virtual; abstract;
+    function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
+    function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
 
     function Add(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Subtract(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Multiply(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Divide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    function IntegerDivide(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function IntegerDivide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Modulo(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function Negate(AValue: TExprNode): TExprNode; virtual; abstract;
 
     function Compare(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    function CompareEqual(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
-    function CompareNotEqual(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
-    function CompareLess(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
-    function CompareLessEqual(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
-    function CompareGreater(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
-    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function CompareEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareNotEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareLess(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareLessEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareGreater(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
+    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
-    function LogicalAnd(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function LogicalAnd(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function LogicalOr(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    function LogicalXor(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function LogicalXor(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function LogicalNot(AValue: TExprNode): TExprNode; virtual; abstract;
-    function BitwiseAnd(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function BitwiseAnd(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function BitwiseOr(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    function BitwiseXor(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function BitwiseXor(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
     function BitwiseNot(AValue: TExprNode): TExprNode; virtual; abstract;
     function ShiftLeft(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    function ShiftRight(ALeft, ARight: TExprNode): TExprNode;
-      virtual; abstract;
+    function ShiftRight(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
     function LoadVar(ALoc: PFloat32): TExprNode; overload;
     function LoadVar(ALoc: PFloat64): TExprNode; overload;
@@ -580,30 +548,18 @@ type
     function CallFloat32Func(AFunc: TFloat32Func): TExprNode; override;
     function CallFloat64Func(AFunc: TFloat64Func): TExprNode; override;
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; override;
-    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode;
-      override;
-    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode;
-      override;
-    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode;
-      override;
-    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode;
-      override;
-    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode;
-      override;
-    function CallBinary32Func(AFunc: TBinary32Func;
-      X, Y: TExprNode): TExprNode; override;
-    function CallBinary64Func(AFunc: TBinary64Func;
-      X, Y: TExprNode): TExprNode; override;
-    function CallBinary80Func(AFunc: TBinary80Func;
-      X, Y: TExprNode): TExprNode; override;
-    function CallTernaryFunc(AFunc: TTernaryFunc;
-      X, Y, Z: TExprNode): TExprNode; override;
-    function CallTernary32Func(AFunc: TTernary32Func;
-      X, Y, Z: TExprNode): TExprNode; override;
-    function CallTernary64Func(AFunc: TTernary64Func;
-      X, Y, Z: TExprNode): TExprNode; override;
-    function CallTernary80Func(AFunc: TTernary80Func;
-      X, Y, Z: TExprNode): TExprNode; override;
+    function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; override;
+    function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; override;
+    function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; override;
+    function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; override;
+    function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; override;
+    function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; override;
+    function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; override;
+    function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; override;
+    function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; override;
+    function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; override;
 
     function Add(ALeft, ARight: TExprNode): TExprNode; override;
     function Subtract(ALeft, ARight: TExprNode): TExprNode; override;
@@ -619,8 +575,7 @@ type
     function CompareLess(ALeft, ARight: TExprNode): TExprNode; override;
     function CompareLessEqual(ALeft, ARight: TExprNode): TExprNode; override;
     function CompareGreater(ALeft, ARight: TExprNode): TExprNode; override;
-    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode;
-      override;
+    function CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode; override;
 
     function LogicalAnd(ALeft, ARight: TExprNode): TExprNode; override;
     function LogicalOr(ALeft, ARight: TExprNode): TExprNode; override;
@@ -955,8 +910,7 @@ uses
 
 //=== { TExprHashContext } ===================================================
 
-constructor TExprHashContext.Create(ACaseSensitive: Boolean;
-  AHashSize: Integer);
+constructor TExprHashContext.Create(ACaseSensitive: Boolean; AHashSize: Integer);
 begin
   inherited Create;
   if ACaseSensitive then
@@ -1076,8 +1030,7 @@ end;
 
 //=== { TExprCompileParser } =================================================
 
-constructor TExprCompileParser.Create(ALexer: TExprLexer;
-  ANodeFactory: TExprNodeFactory);
+constructor TExprCompileParser.Create(ALexer: TExprLexer; ANodeFactory: TExprNodeFactory);
 begin
   inherited Create;
   FLexer := ALexer;
@@ -1107,20 +1060,18 @@ begin
       etLessThan: // <
         Result := NodeFactory.CompareLess(Result, CompileExprLevel1(True));
       etLessEqual: // <=
-        Result := NodeFactory.CompareLessEqual(Result,
-          CompileExprLevel1(True));
+        Result := NodeFactory.CompareLessEqual(Result, CompileExprLevel1(True));
       etGreaterThan: // >
         Result := NodeFactory.CompareGreater(Result, CompileExprLevel1(True));
       etGreaterEqual: // >=
-        Result := NodeFactory.CompareGreaterEqual(Result,
-          CompileExprLevel1(True));
+        Result := NodeFactory.CompareGreaterEqual(Result, CompileExprLevel1(True));
       etIdentifier: // cmp
         if AnsiSameText(Lexer.TokenAsString, 'cmp') then
           Result := NodeFactory.Compare(Result, CompileExprLevel1(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1148,8 +1099,8 @@ begin
           Result := NodeFactory.BitwiseXor(Result, CompileExprLevel2(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1183,8 +1134,8 @@ begin
           Result := NodeFactory.BitwiseAnd(Result, CompileExprLevel3(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1206,8 +1157,8 @@ begin
         Result := NodeFactory.BitwiseNot(CompileExprLevel3(True))
       else
         Result := CompileFactor;
-    else
-      Result := CompileFactor;
+  else
+    Result := CompileFactor;
   end;
 end;
 
@@ -1217,19 +1168,19 @@ begin
     etIdentifier:
       Result := CompileIdentFactor;
     etLParen:
-    begin
-      Result := CompileExprLevel0(True);
-      if Lexer.CurrTok <> etRParen then
-        raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
-      Lexer.NextTok;
-    end;
+      begin
+        Result := CompileExprLevel0(True);
+        if Lexer.CurrTok <> etRParen then
+          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
+        Lexer.NextTok;
+      end;
     etNumber:
-    begin
-      Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
-      Lexer.NextTok;
-    end;
-    else
-      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
+      begin
+        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
+        Lexer.NextTok;
+      end;
+  else
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
 end;
 
@@ -1339,8 +1290,8 @@ begin
         end
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1357,8 +1308,7 @@ begin
       etIdentifier: // or, xor, bor, bxor
         if AnsiSameText(Lexer.TokenAsString, 'or') then
         begin
-          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then
- // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1379,8 +1329,8 @@ begin
           Result := Round(Result) xor Round(EvalExprLevel2(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1403,8 +1353,7 @@ begin
         else
         if AnsiSameText(Lexer.TokenAsString, 'and') then
         begin
-          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then
- // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1420,8 +1369,8 @@ begin
           Result := Round(Result) and Round(EvalExprLevel3(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1448,8 +1397,8 @@ begin
         Result := not Round(EvalExprLevel3(True))
       else
         Result := EvalFactor;
-    else
-      Result := EvalFactor;
+  else
+    Result := EvalFactor;
   end;
 end;
 
@@ -1459,19 +1408,19 @@ begin
     etIdentifier:
       Result := EvalIdentFactor;
     etLParen:
-    begin
-      Result := EvalExprLevel0(True);
-      if Lexer.CurrTok <> etRParen then
-        raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
-      Lexer.NextTok;
-    end;
+      begin
+        Result := EvalExprLevel0(True);
+        if Lexer.CurrTok <> etRParen then
+          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
+        Lexer.NextTok;
+      end;
     etNumber:
-    begin
-      Result := Lexer.TokenAsNumber;
-      Lexer.NextTok;
-    end;
-    else
-      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
+      begin
+        Result := Lexer.TokenAsNumber;
+        Lexer.NextTok;
+      end;
+  else
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
 end;
 
@@ -1517,16 +1466,12 @@ end;
 procedure TExprSimpleLexer.NextTok;
 const
   CharToTokenMap: array [Char] of TExprToken =
-    (
+  (
     {#0..#31}
-    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
-    etInvalid, etInvalid, etInvalid,
+    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
+    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
+    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
+    etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
     {#32} etInvalid,
     {#33} etBang, {#34} etDoubleQuote, {#35} etHash, {#36} etDollar,
     {#37} etPercent, {#38} etAmpersand, {#39} etSingleQuote, {#40} etLParen,
@@ -1591,7 +1536,7 @@ const
     {#244} et244, {#245} et245, {#246} et246, {#247} et247,
     {#248} et248, {#249} et249, {#250} et250, {#251} et251,
     {#252} et252, {#253} et253, {#254} et254, {#255} et255
-    );
+  );
 var
   { register variable optimization }
   cp: PChar;
@@ -1608,79 +1553,79 @@ begin
     #0:
       FCurrTok := etEof;
     'a'..'z', 'A'..'Z', '_':
-    begin
-      start := cp;
-      Inc(cp);
-      while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
+      begin
+        start := cp;
         Inc(cp);
-      SetString(FTokenAsString, start, cp - start);
-      FCurrTok := etIdentifier;
-    end;
+        while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
+          Inc(cp);
+        SetString(FTokenAsString, start, cp - start);
+        FCurrTok := etIdentifier;
+      end;
     '0'..'9':
-    begin
-      start := cp;
+      begin
+        start := cp;
 
         { read in integer part of mantissa }
-      while cp^ in ['0'..'9'] do
-        Inc(cp);
+        while cp^ in ['0'..'9'] do
+          Inc(cp);
 
         { check for and read in fraction part of mantissa }
-      if (cp^ = '.') or (cp^ = DecimalSeparator) then
-      begin
-        Inc(cp);
-        while cp^ in ['0'..'9'] do
+        if (cp^ = '.') or (cp^ = DecimalSeparator) then
+        begin
           Inc(cp);
-      end;
+          while cp^ in ['0'..'9'] do
+            Inc(cp);
+        end;
 
         { check for and read in exponent }
-      if cp^ in ['e', 'E'] then
-      begin
-        Inc(cp);
-        if cp^ in ['+', '-'] then
+        if cp^ in ['e', 'E'] then
+        begin
           Inc(cp);
-        while cp^ in ['0'..'9'] do
-          Inc(cp);
-      end;
+          if cp^ in ['+', '-'] then
+            Inc(cp);
+          while cp^ in ['0'..'9'] do
+            Inc(cp);
+        end;
 
         { evaluate number }
-      SetString(FTokenAsString, start, cp - start);
-      FTokenAsNumber := StrToFloat(FTokenAsString);
+        SetString(FTokenAsString, start, cp - start);
+        FTokenAsNumber := StrToFloat(FTokenAsString);
 
-      FCurrTok := etNumber;
-    end;
+        FCurrTok := etNumber;
+      end;
     '<':
-    begin
-      Inc(cp);
-      case cp^ of
-        '=':
-        begin
-          FCurrTok := etLessEqual;
-          Inc(cp);
-        end;
-        '>':
-        begin
-          FCurrTok := etNotEqual;
-          Inc(cp);
-        end;
+      begin
+        Inc(cp);
+        case cp^ of
+          '=':
+            begin
+              FCurrTok := etLessEqual;
+              Inc(cp);
+            end;
+          '>':
+            begin
+              FCurrTok := etNotEqual;
+              Inc(cp);
+            end;
         else
           FCurrTok := etLessThan;
+        end;
       end;
-    end;
     '>':
-    begin
-      Inc(cp);
-      if cp^ = '=' then
       begin
-        FCurrTok := etGreaterEqual;
         Inc(cp);
-      end
-      else
-        FCurrTok := etGreaterThan;
-    end;
-    else
+        if cp^ = '=' then
+        begin
+          FCurrTok := etGreaterEqual;
+          Inc(cp);
+        end
+        else
+          FCurrTok := etGreaterThan;
+      end;
+  else
     { map character to token }
-      FCurrTok := CharToTokenMap[cp^];
-      Inc(cp);
+    FCurrTok := CharToTokenMap[cp^];
+    Inc(cp);
   end;
 
   FCurrPos := cp;
@@ -2356,7 +2301,7 @@ end;
 
 procedure TExprNegateVmOp.Execute;
 begin
-  FOutput := -FInput^;
+  FOutput := - FInput^;
 end;
 
 //=== { TExprLogicalNotVmOp } ================================================
@@ -2570,8 +2515,7 @@ end;
 
 //=== { TExprCallTernary32VmOp } =============================================
 
-constructor TExprCallTernary32VmOp.Create(AFunc: TTernary32Func;
-  X, Y, Z: PFloat);
+constructor TExprCallTernary32VmOp.Create(AFunc: TTernary32Func; X, Y, Z: PFloat);
 begin
   inherited Create;
   FFunc := AFunc;
@@ -2587,8 +2531,7 @@ end;
 
 //=== { TExprCallTernary64VmOp } =============================================
 
-constructor TExprCallTernary64VmOp.Create(AFunc: TTernary64Func;
-  X, Y, Z: PFloat);
+constructor TExprCallTernary64VmOp.Create(AFunc: TTernary64Func; X, Y, Z: PFloat);
 begin
   inherited Create;
   FFunc := AFunc;
@@ -2604,8 +2547,7 @@ end;
 
 //=== { TExprCallTernary80VmOp } =============================================
 
-constructor TExprCallTernary80VmOp.Create(AFunc: TTernary80Func;
-  X, Y, Z: PFloat);
+constructor TExprCallTernary80VmOp.Create(AFunc: TTernary80Func; X, Y, Z: PFloat);
 begin
   inherited Create;
   FFunc := AFunc;
@@ -2660,12 +2602,12 @@ begin
     Result := TExprVirtMachOp(FCodeList[FCodeList.Count - 1]).FOutput;
   end
   else
-  begin
-    if (FConstList.Count = 1) then
-      Result := TExprVirtMachOp(FConstList[0]).FOutput
-    else
-      Result := 0;
-  end;
+    begin
+      if (FConstList.Count = 1) then
+        Result := TExprVirtMachOp(FConstList[0]).FOutput
+      else
+        Result := 0;
+    end;
 end;
 
 procedure TExprVirtMach.Add(AOp: TExprVirtMachOp);
@@ -2697,8 +2639,7 @@ type
     property ExprVmCode: TExprVirtMachOp read FExprVmCode;
 
     { this property saves typecasting to access ExprVmCode }
-    property VmDeps[AIndex: Integer]: TExprVirtMachNode read GetVmDeps;
-      default;
+    property VmDeps[AIndex: Integer]: TExprVirtMachNode read GetVmDeps; default;
   end;
 
 function TExprVirtMachNode.GetVmDeps(AIndex: Integer): TExprVirtMachNode;
@@ -2889,8 +2830,7 @@ type
 
 //== { TExprUnaryVmNode } ====================================================
 
-constructor TExprUnaryVmNode.Create(AUnaryClass: TExprUnaryVmOpClass;
-  const ADeps: array of TExprNode);
+constructor TExprUnaryVmNode.Create(AUnaryClass: TExprUnaryVmOpClass; const ADeps: array of TExprNode);
 begin
   FUnaryClass := AUnaryClass;
   inherited Create(ADeps);
@@ -2905,8 +2845,7 @@ end;
 
 //=== { TExprBinaryVmNode } ==================================================
 
-constructor TExprBinaryVmNode.Create(ABinaryClass: TExprBinaryVmOpClass;
-  const ADeps: array of TExprNode);
+constructor TExprBinaryVmNode.Create(ABinaryClass: TExprBinaryVmOpClass; const ADeps: array of TExprNode);
 begin
   FBinaryClass := ABinaryClass;
   inherited Create(ADeps);
@@ -3048,37 +2987,29 @@ begin
   Result := AddNode(TExprBinaryVmNode.Create(TExprAddVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.Subtract(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.Subtract(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprSubtractVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprSubtractVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.Multiply(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.Multiply(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprMultiplyVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprMultiplyVmOp, [ALeft, ARight]));
 end;
 
 function TExprVirtMachNodeFactory.Divide(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprDivideVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprDivideVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.IntegerDivide(ALeft, ARight:
-  TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.IntegerDivide(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprIntegerDivideVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprIntegerDivideVmOp, [ALeft, ARight]));
 end;
 
 function TExprVirtMachNodeFactory.Modulo(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprModuloVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprModuloVmOp, [ALeft, ARight]));
 end;
 
 function TExprVirtMachNodeFactory.Negate(AValue: TExprNode): TExprNode;
@@ -3129,161 +3060,129 @@ begin
   Result := AddNode(TExprCallFloatVmNode.Create(AFunc));
 end;
 
-function TExprVirtMachNodeFactory.CallFloat32Func(AFunc: TFloat32Func):
-TExprNode;
+function TExprVirtMachNodeFactory.CallFloat32Func(AFunc: TFloat32Func): TExprNode;
 begin
   Result := AddNode(TExprCallFloat32VmNode.Create(AFunc));
 end;
 
-function TExprVirtMachNodeFactory.CallFloat64Func(AFunc: TFloat64Func):
-TExprNode;
+function TExprVirtMachNodeFactory.CallFloat64Func(AFunc: TFloat64Func): TExprNode;
 begin
   Result := AddNode(TExprCallFloat64VmNode.Create(AFunc));
 end;
 
-function TExprVirtMachNodeFactory.CallFloat80Func(AFunc: TFloat80Func):
-TExprNode;
+function TExprVirtMachNodeFactory.CallFloat80Func(AFunc: TFloat80Func): TExprNode;
 begin
   Result := AddNode(TExprCallFloat80VmNode.Create(AFunc));
 end;
 
-function TExprVirtMachNodeFactory.CallUnaryFunc(AFunc: TUnaryFunc;
-  X: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallUnaryVmNode.Create(AFunc, X));
 end;
 
-function TExprVirtMachNodeFactory.CallUnary32Func(AFunc: TUnary32Func;
-  X: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallUnary32VmNode.Create(AFunc, X));
 end;
 
-function TExprVirtMachNodeFactory.CallUnary64Func(AFunc: TUnary64Func;
-  X: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallUnary64VmNode.Create(AFunc, X));
 end;
 
-function TExprVirtMachNodeFactory.CallUnary80Func(AFunc: TUnary80Func;
-  X: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallUnary80VmNode.Create(AFunc, X));
 end;
 
-function TExprVirtMachNodeFactory.CallBinaryFunc(AFunc: TBinaryFunc;
-  X, Y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallBinaryVmNode.Create(AFunc, X, Y));
 end;
 
-function TExprVirtMachNodeFactory.CallBinary32Func(AFunc: TBinary32Func;
-  X, Y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallBinary32VmNode.Create(AFunc, X, Y));
 end;
 
-function TExprVirtMachNodeFactory.CallBinary64Func(AFunc: TBinary64Func;
-  X, Y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallBinary64VmNode.Create(AFunc, X, Y));
 end;
 
-function TExprVirtMachNodeFactory.CallBinary80Func(AFunc: TBinary80Func;
-  X, Y: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallBinary80VmNode.Create(AFunc, X, Y));
 end;
 
-function TExprVirtMachNodeFactory.CallTernaryFunc(AFunc: TTernaryFunc;
-  X, Y, Z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallTernaryVmNode.Create(AFunc, X, Y, Z));
 end;
 
-function TExprVirtMachNodeFactory.CallTernary32Func(AFunc: TTernary32Func;
-  X, Y, Z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallTernary32VmNode.Create(AFunc, X, Y, Z));
 end;
 
-function TExprVirtMachNodeFactory.CallTernary64Func(AFunc: TTernary64Func;
-  X, Y, Z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallTernary64VmNode.Create(AFunc, X, Y, Z));
 end;
 
-function TExprVirtMachNodeFactory.CallTernary80Func(AFunc: TTernary80Func;
-  X, Y, Z: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprCallTernary80VmNode.Create(AFunc, X, Y, Z));
 end;
 
 function TExprVirtMachNodeFactory.Compare(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprCompareVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprCompareVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareEqual(ALeft, ARight:
-  TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CompareEqual(ALeft, ARight: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprBinaryVmNode.Create(TExprEqualVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareNotEqual(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.CompareNotEqual(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprNotEqualVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprNotEqualVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareLess(ALeft, ARight:
-  TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CompareLess(ALeft, ARight: TExprNode): TExprNode;
 begin
   Result := AddNode(TExprBinaryVmNode.Create(TExprLessVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareLessEqual(ALeft, ARight:
-  TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CompareLessEqual(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprLessEqualVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLessEqualVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareGreater(ALeft, ARight:
-  TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CompareGreater(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.CompareGreaterEqual(ALeft,
-  ARight: TExprNode): TExprNode;
+function TExprVirtMachNodeFactory.CompareGreaterEqual(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterEqualVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprGreaterEqualVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.LogicalAnd(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.LogicalAnd(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalAndVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalAndVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.LogicalOr(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.LogicalOr(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalOrVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalOrVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.LogicalXor(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.LogicalXor(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalXorVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprLogicalXorVmOp, [ALeft, ARight]));
 end;
 
 function TExprVirtMachNodeFactory.LogicalNot(AValue: TExprNode): TExprNode;
@@ -3291,25 +3190,19 @@ begin
   Result := AddNode(TExprUnaryVmNode.Create(TExprLogicalNotVmOp, [AValue]));
 end;
 
-function TExprVirtMachNodeFactory.BitwiseAnd(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.BitwiseAnd(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseAndVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseAndVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.BitwiseOr(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.BitwiseOr(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseOrVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseOrVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.BitwiseXor(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.BitwiseXor(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseXorVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprBitwiseXorVmOp, [ALeft, ARight]));
 end;
 
 function TExprVirtMachNodeFactory.BitwiseNot(AValue: TExprNode): TExprNode;
@@ -3317,18 +3210,14 @@ begin
   Result := AddNode(TExprUnaryVmNode.Create(TExprBitwiseNotVmOp, [AValue]));
 end;
 
-function TExprVirtMachNodeFactory.ShiftLeft(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.ShiftLeft(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftLeftVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftLeftVmOp, [ALeft, ARight]));
 end;
 
-function TExprVirtMachNodeFactory.ShiftRight(ALeft, ARight: TExprNode):
-TExprNode;
+function TExprVirtMachNodeFactory.ShiftRight(ALeft, ARight: TExprNode): TExprNode;
 begin
-  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftRightVmOp,
-    [ALeft, ARight]));
+  Result := AddNode(TExprBinaryVmNode.Create(TExprShiftRightVmOp, [ALeft, ARight]));
 end;
 
 //=== { TCompiledEvaluator } =================================================
@@ -3574,8 +3463,7 @@ end;
 
 //=== { TExprCallBinary32VmNode } ============================================
 
-constructor TExprCallBinary32VmNode.Create(AFunc: TBinary32Func;
-  X, Y: TExprNode);
+constructor TExprCallBinary32VmNode.Create(AFunc: TBinary32Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y]);
@@ -3592,8 +3480,7 @@ end;
 
 //=== { TExprCallBinary64VmNode } ============================================
 
-constructor TExprCallBinary64VmNode.Create(AFunc: TBinary64Func;
-  X, Y: TExprNode);
+constructor TExprCallBinary64VmNode.Create(AFunc: TBinary64Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y]);
@@ -3610,8 +3497,7 @@ end;
 
 //=== { TExprCallBinary80VmNode } ============================================
 
-constructor TExprCallBinary80VmNode.Create(AFunc: TBinary80Func;
-  X, Y: TExprNode);
+constructor TExprCallBinary80VmNode.Create(AFunc: TBinary80Func; X, Y: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y]);
@@ -3628,8 +3514,7 @@ end;
 
 //=== { TExprCallTernaryVmNode } =============================================
 
-constructor TExprCallTernaryVmNode.Create(AFunc: TTernaryFunc;
-  X, Y, Z: TExprNode);
+constructor TExprCallTernaryVmNode.Create(AFunc: TTernaryFunc; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y, Z]);
@@ -3647,8 +3532,7 @@ end;
 
 //=== { TExprCallTernary32VmNode } ===========================================
 
-constructor TExprCallTernary32VmNode.Create(AFunc: TTernary32Func;
-  X, Y, Z: TExprNode);
+constructor TExprCallTernary32VmNode.Create(AFunc: TTernary32Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y, Z]);
@@ -3666,8 +3550,7 @@ end;
 
 //=== { TExprCallTernary64VmNode } ===========================================
 
-constructor TExprCallTernary64VmNode.Create(AFunc: TTernary64Func;
-  X, Y, Z: TExprNode);
+constructor TExprCallTernary64VmNode.Create(AFunc: TTernary64Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y, Z]);
@@ -3685,8 +3568,7 @@ end;
 
 //=== { TExprCallTernary80VmNode } ===========================================
 
-constructor TExprCallTernary80VmNode.Create(AFunc: TTernary80Func;
-  X, Y, Z: TExprNode);
+constructor TExprCallTernary80VmNode.Create(AFunc: TTernary80Func; X, Y, Z: TExprNode);
 begin
   FFunc := AFunc;
   inherited Create([X, Y, Z]);
@@ -3760,8 +3642,7 @@ end;
 
 //=== { TExprFloat32FuncSym } ================================================
 
-constructor TExprFloat32FuncSym.Create(const AIdent: string;
-  AFunc: TFloat32Func);
+constructor TExprFloat32FuncSym.Create(const AIdent: string; AFunc: TFloat32Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3780,8 +3661,7 @@ end;
 
 //=== { TExprFloat64FuncSym } ================================================
 
-constructor TExprFloat64FuncSym.Create(const AIdent: string;
-  AFunc: TFloat64Func);
+constructor TExprFloat64FuncSym.Create(const AIdent: string; AFunc: TFloat64Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3800,8 +3680,7 @@ end;
 
 //=== { TExprFloat80FuncSym } ================================================
 
-constructor TExprFloat80FuncSym.Create(const AIdent: string;
-  AFunc: TFloat80Func);
+constructor TExprFloat80FuncSym.Create(const AIdent: string; AFunc: TFloat80Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3841,8 +3720,7 @@ end;
 
 //=== { TExprUnary32FuncSym } ================================================
 
-constructor TExprUnary32FuncSym.Create(const AIdent: string;
-  AFunc: TUnary32Func);
+constructor TExprUnary32FuncSym.Create(const AIdent: string; AFunc: TUnary32Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3863,8 +3741,7 @@ end;
 
 //=== { TExprUnary64FuncSym } ================================================
 
-constructor TExprUnary64FuncSym.Create(const AIdent: string;
-  AFunc: TUnary64Func);
+constructor TExprUnary64FuncSym.Create(const AIdent: string; AFunc: TUnary64Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3885,8 +3762,7 @@ end;
 
 //=== { TExprUnary80FuncSym } ================================================
 
-constructor TExprUnary80FuncSym.Create(const AIdent: string;
-  AFunc: TUnary80Func);
+constructor TExprUnary80FuncSym.Create(const AIdent: string; AFunc: TUnary80Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3907,8 +3783,7 @@ end;
 
 //=== { TExprBinaryFuncSym } =================================================
 
-constructor TExprBinaryFuncSym.Create(const AIdent: string;
-  AFunc: TBinaryFunc);
+constructor TExprBinaryFuncSym.Create(const AIdent: string; AFunc: TBinaryFunc);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3940,8 +3815,7 @@ end;
 
 //=== { TExprBinary32FuncSym } ===============================================
 
-constructor TExprBinary32FuncSym.Create(const AIdent: string;
-  AFunc: TBinary32Func);
+constructor TExprBinary32FuncSym.Create(const AIdent: string; AFunc: TBinary32Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -3970,8 +3844,7 @@ end;
 
 //=== { TExprBinary64FuncSym } ===============================================
 
-constructor TExprBinary64FuncSym.Create(const AIdent: string;
-  AFunc: TBinary64Func);
+constructor TExprBinary64FuncSym.Create(const AIdent: string; AFunc: TBinary64Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4000,8 +3873,7 @@ end;
 
 //=== { TExprBinary80FuncSym } ===============================================
 
-constructor TExprBinary80FuncSym.Create(const AIdent: string;
-  AFunc: TBinary80Func);
+constructor TExprBinary80FuncSym.Create(const AIdent: string; AFunc: TBinary80Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4030,8 +3902,7 @@ end;
 
 //=== { TExprTernaryFuncSym } ================================================
 
-constructor TExprTernaryFuncSym.Create(const AIdent: string;
-  AFunc: TTernaryFunc);
+constructor TExprTernaryFuncSym.Create(const AIdent: string; AFunc: TTernaryFunc);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4062,8 +3933,7 @@ end;
 
 //=== { TExprTernary32FuncSym } ==============================================
 
-constructor TExprTernary32FuncSym.Create(const AIdent: string;
-  AFunc: TTernary32Func);
+constructor TExprTernary32FuncSym.Create(const AIdent: string; AFunc: TTernary32Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4094,8 +3964,7 @@ end;
 
 //=== { TExprTernary64FuncSym } ==============================================
 
-constructor TExprTernary64FuncSym.Create(const AIdent: string;
-  AFunc: TTernary64Func);
+constructor TExprTernary64FuncSym.Create(const AIdent: string; AFunc: TTernary64Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4126,8 +3995,7 @@ end;
 
 //=== { TExprTernary80FuncSym } ==============================================
 
-constructor TExprTernary80FuncSym.Create(const AIdent: string;
-  AFunc: TTernary80Func);
+constructor TExprTernary80FuncSym.Create(const AIdent: string; AFunc: TTernary80Func);
 begin
   Assert(Assigned(AFunc));
   inherited Create(AIdent);
@@ -4446,8 +4314,7 @@ type
     Expr: string;
   end;
 
-function IterateFindIce(AUserData: Pointer; const AStr: string;
-  var APtr: Pointer): Boolean;
+function IterateFindIce(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
 var
   PIfr: PIceFindResult;
   Ice: TInternalCompiledExpression;
@@ -4464,8 +4331,7 @@ begin
     PIfr^.Ice := Ice;
     PIfr^.Expr := AStr;
     Result := False;
-  end
-  else
+  end else
     Result := True;
 end;
 

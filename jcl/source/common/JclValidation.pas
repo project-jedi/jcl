@@ -118,8 +118,8 @@ begin
         end
         else
           // Special check digit is allowed to occur only at the end of ISBN.
-        if ISBN[CurPtr] in ISBNSpecialDigits then
-          Exit;
+          if ISBN[CurPtr] in ISBNSpecialDigits then
+            Exit;
 
         // Increment the size of the current ISBN part.
         Inc(PartSizes[Part]);

@@ -65,13 +65,13 @@ uses JclLANMan, JclSysInfo;
 procedure TForm1.btnAddUserClick(Sender: TObject);
 begin
   if CreateLocalAccount(edtUsername.Text,
-    edtFullName.Text,
-    edtPassword.Text,
-    edtComment.Text,
-    edtHomeDir.Text,
-    edtScript.Text) then
+                        edtFullName.Text,
+                        edtPassword.Text,
+                        edtComment.Text,
+                        edtHomeDir.Text,
+                        edtScript.Text) then
   begin
-    ShowMessage('Success');
+    ShowMessage('Success')
   end
   else
     ShowMessage('Failure');
@@ -88,20 +88,13 @@ begin
     SystemName := edtSystemName.Text;
 
   case cboSID.ItemIndex of
-    0:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrAdmins);
-    1:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrUsers);
-    2:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrGuests);
-    3:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrPowerUsers);
-    4:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrBackupOPs);
-    5:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrReplicator);
-    6:
-      edtSIDName.Text := LookupGroupname(SystemName, wkrEveryone);
+    0: edtSIDName.Text := LookupGroupname(SystemName, wkrAdmins);
+    1: edtSIDName.Text := LookupGroupname(SystemName, wkrUsers);
+    2: edtSIDName.Text := LookupGroupname(SystemName, wkrGuests);
+    3: edtSIDName.Text := LookupGroupname(SystemName, wkrPowerUsers);
+    4: edtSIDName.Text := LookupGroupname(SystemName, wkrBackupOPs);
+    5: edtSIDName.Text := LookupGroupname(SystemName, wkrReplicator);
+    6: edtSIDName.Text := LookupGroupname(SystemName, wkrEveryone);
   end;
 end;
 

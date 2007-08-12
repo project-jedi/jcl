@@ -64,8 +64,7 @@ type
     procedure SearchDone(Sender: TObject);
     procedure SearchFound(Sender: TObject; const FileName: TFileName;
       const FunctionName: string; Option: TJclPeNameSearchOption);
-    procedure SearchProcessFile(Sender: TObject; PeImage: TJclPeImage;
-      var Process: Boolean);
+    procedure SearchProcessFile(Sender: TObject; PeImage: TJclPeImage; var Process: Boolean);
     procedure UpdateCounter;
     procedure UpdateButtons;
   public
@@ -104,8 +103,7 @@ begin
   ProcessLabel.Caption := '';
 end;
 
-procedure TPeSearchChild.SearchFound(Sender: TObject;
-  const FileName: TFileName;
+procedure TPeSearchChild.SearchFound(Sender: TObject; const FileName: TFileName;
   const FunctionName: string; Option: TJclPeNameSearchOption);
 begin
   with ResultListView.Items.Add do
@@ -113,21 +111,16 @@ begin
     Caption := FunctionName;
     SubItems.Add(FileName);
     case Option of
-      seImports:
-        ImageIndex := icoImports;
-      seDelayImports:
-        ImageIndex := icoDelayImport;
-      seBoundImports:
-        ImageIndex := icoBoundImport;
-      seExports:
-        ImageIndex := icoExports;
+      seImports: ImageIndex := icoImports;
+      seDelayImports: ImageIndex := icoDelayImport;
+      seBoundImports: ImageIndex := icoBoundImport;
+      seExports: ImageIndex := icoExports;
     end;
   end;
   UpdateCounter;
 end;
 
-procedure TPeSearchChild.SearchProcessFile(Sender: TObject;
-  PeImage: TJclPeImage; var Process: Boolean);
+procedure TPeSearchChild.SearchProcessFile(Sender: TObject; PeImage: TJclPeImage; var Process: Boolean);
 begin
   ProcessLabel.Caption := PeImage.FileName;
 end;
@@ -137,10 +130,8 @@ var
   Options: TJclPeNameSearchOptions;
 begin
   Options := [];
-  if ExportCheckBox.Checked then
-    Include(Options, seExports);
-  if ImportCheckBox.Checked then
-    Options := Options + [seImports, seDelayImports, seBoundImports];
+  if ExportCheckBox.Checked then Include(Options, seExports);
+  if ImportCheckBox.Checked then Options := Options + [seImports, seDelayImports, seBoundImports];
   FSearchThread := TJclPeNameSearch.Create(Trim(FuncNameEdit.Text),
     PathEdit.Text, Options);
   FSearchThread.OnTerminate := SearchDone;
@@ -178,8 +169,7 @@ procedure TPeSearchChild.SelectDirBtnClick(Sender: TObject);
 var
   S: string;
 begin
-  if SelectDirectory('', '', S) then
-    PathEdit.Text := S;
+  if SelectDirectory('', '', S) then PathEdit.Text := S;
 end;
 
 procedure TPeSearchChild.ClearResults;

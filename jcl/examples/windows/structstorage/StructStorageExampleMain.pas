@@ -36,8 +36,7 @@ unit StructStorageExampleMain;
 interface
 
 uses
-  Windows, SysUtils, Classes, Messages, Forms, Menus, StdActns,
-  StdCtrls, ComCtrls,
+  Windows, SysUtils, Classes, Messages, Forms, Menus, StdActns, StdCtrls, ComCtrls,
   ActnList, ImgList, Controls, Dialogs, ExtCtrls, Graphics, HexDump,
   JclStructStorage;
 
@@ -154,11 +153,9 @@ type
     // loads an exsisting or creates a new file with name AFilename
     procedure LoadFile(const AFilename: string; CreateNew: boolean);
     // add Storage as a subnode to ParentNode using the name AName
-    procedure AddFolder(ParentNode: TTreeNode; AName: string;
-      Storage: TJclStructStorageFolder);
+    procedure AddFolder(ParentNode: TTreeNode; AName: string; Storage: TJclStructStorageFolder);
     // add a stream in Storage with name AName as a subnode to ParentNode using the name
-    procedure AddFile(ParentNode: TTreeNode; AName: string;
-      Storage: TJclStructStorageFolder);
+    procedure AddFile(ParentNode: TTreeNode; AName: string; Storage: TJclStructStorageFolder);
     // show the content of Stream
     procedure ViewDetails(Stream: TStream);
     // show the entire content of the laoded document
@@ -171,8 +168,7 @@ type
       Storage: TJclStructStorageFolder);
     // adds Storage to Node without creating a new node. Also adds new nodes for substorages
     // and substreams
-    procedure UpdateFolderData(Node: TTreeNode; const AName: string;
-      Storage: TJclStructStorageFolder);
+    procedure UpdateFolderData(Node: TTreeNode; const AName: string; Storage: TJclStructStorageFolder);
     procedure WmShowAbout(var Msg: TMEssage); message WM_SHOWABOUT;
     function GetModified: boolean;
     procedure SetModified(const Value: boolean);
@@ -200,8 +196,7 @@ const
   cImageDoc = 2;
   cImageMod = 3;
 
-function MinimizeName(const Filename: string; Canvas: TCanvas;
-  MaxLen: Integer): string;
+function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
   R: TRect;
 begin
@@ -211,8 +206,7 @@ begin
     UniqueString(Result);
     R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
     if DrawText(Canvas.Handle, PChar(@Result[1]), Length(Result), R,
-      DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
-      DT_CALCRECT or DT_NOPREFIX) = 0 then
+      DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) = 0 then
       Result := Filename;
   end;
 end;
@@ -221,8 +215,7 @@ end;
 
 function IsFolder(Node: TTreeNode): boolean;
 begin
-  Result := (Node <> nil) and (Node.Data <> nil) and
-    (TObject(Node.Data) is TJclStructStorageFolder);
+  Result := (Node <> nil) and (Node.Data <> nil) and (TObject(Node.Data) is TJclStructStorageFolder);
 end;
 
 // finds and returns the first sibling of ASibling (or ASibling itself) that has
@@ -231,8 +224,7 @@ end;
 function FindSibling(ASibling: TTreeNode; AName: string): TTreeNode;
 begin
   Result := ASibling;
-  if Result = nil then
-    Exit;
+  if Result = nil then Exit;
   // search backwards
   while (Result <> nil) do
   begin
@@ -253,14 +245,12 @@ end;
 
 function YesNoDlg(const Caption, Msg: string): boolean;
 begin
-  Result := Windows.MessageBox(0, PChar(Msg), PChar(Caption),
-    MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
+  Result := Windows.MessageBox(0, PChar(Msg), PChar(Caption), MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
 end;
 
 procedure ErrorDlg(const Caption, Msg: string);
 begin
-  Windows.MessageBox(0, PChar(Msg), PChar(Caption), MB_OK or
-    MB_ICONERROR or MB_TASKMODAL);
+  Windows.MessageBox(0, PChar(Msg), PChar(Caption), MB_OK or MB_ICONERROR or MB_TASKMODAL);
 end;
 
 procedure TfrmMain.LoadFile(const AFilename: string; CreateNew: boolean);
@@ -272,8 +262,7 @@ begin
   Screen.Cursor := crHourGlass;
   FUpdating := true;
   try
-    if (AFilename <> '') and
-      ((TJclStructStorageFolder.IsStructured(AFilename) = S_OK) or CreateNew) then
+    if (AFilename <> '') and ((TJclStructStorageFolder.IsStructured(AFilename) = S_OK)or CreateNew) then
     begin
       FFilename := AFilename;
       tvDocInfo.Items.BeginUpdate;
@@ -282,8 +271,7 @@ begin
         HD.Clear;
         if CreateNew then
           AModes := [smCreate]
-        else
-        if ReadOnly then
+        else if ReadOnly then
           AModes := [smOpenRead]
         else
           AModes := [smOpenRead, smOpenWrite];
@@ -294,8 +282,7 @@ begin
         tvDocInfo.Items.EndUpdate;
       end;
     end
-    else
-    if YesNoDlg(SConfirmConversion, SConvertFilePrompt) then
+    else if YesNoDlg(SConfirmConversion, SConvertFilePrompt) then
     begin
       HR := TJclStructStorageFolder.Convert(AFilename);
       if Succeeded(HR) then
@@ -331,8 +318,7 @@ end;
 
 function TfrmMain.GetStream(Node: TTreeNode): TStream;
 begin
-  if (Node <> nil) and (Node.Data <> nil) and
-    (TObject(Node.Data) is TStream) then
+  if (Node <> nil) and (Node.Data <> nil) and (TObject(Node.Data) is TStream) then
   begin
     Result := TStream(Node.Data);
     Result.Seek(0, soFrombeginning);
@@ -357,8 +343,7 @@ procedure TfrmMain.ViewDetails(Stream: TStream);
 var
   aSize: double;
 begin
-  if acEditData.Checked then
-    acEditDataExecute(nil); // toggle into browse mode
+  if acEditData.Checked then acEditDataExecute(nil); // toggle into browse mode
   HD.LoadFromStream(Stream);
   if Stream <> nil then
   begin
@@ -398,8 +383,7 @@ end;
 
 function TfrmMain.GetFolder(Node: TTreeNode): TJclStructStorageFolder;
 begin
-  if (Node <> nil) and (Node.Data <> nil) and
-    (TObject(Node.Data) is TJclStructStorageFolder) then
+  if (Node <> nil) and (Node.Data <> nil) and (TObject(Node.Data) is TJclStructStorageFolder) then
     Result := TJclStructStorageFolder(Node.Data)
   else
     Result := nil;
@@ -455,8 +439,7 @@ begin
     SS := GetFolder(N);
     if not SS.Add(S, true) then
       OleError(SS.LastError)
-    else
-    if SS.GetFolder(S, SS2) then
+    else if SS.GetFolder(S, SS2) then
     begin
       Modified := true;
       AddFolder(N, S, SS2);
@@ -475,8 +458,7 @@ begin
     N := tvDocInfo.Selected.Parent
   else
     N := tvDocInfo.Selected;
-  if (N = nil) then
-    Exit;
+  if (N = nil) then Exit;
   if InputQuery(SAddFile, SFileNameLabel, S) then
   begin
     if S = '' then
@@ -506,10 +488,8 @@ end;
 procedure TfrmMain.acDeleteExecute(Sender: TObject);
 begin
   if YesNoDlg(SConfirm, SDeletePrompt) then
-    if not TJclStructStorageFolder(tvDocInfo.Selected.Parent.Data).Delete(
-      tvDocInfo.Selected.Text) then
-      OleError(TJclStructStorageFolder(
-        tvDocInfo.Selected.Parent.Data).LastError)
+    if not TJclStructStorageFolder(tvDocInfo.Selected.Parent.Data).Delete(tvDocInfo.Selected.Text) then
+      OleError(TJclStructStorageFolder(tvDocInfo.Selected.Parent.Data).LastError)
     else
     begin
       tvDocInfo.Selected.Delete;
@@ -537,7 +517,7 @@ begin
       lpfnMsgBoxCallback := nil;
       dwLanguageId := GetUserDefaultLangID;
       MessageBoxIndirectW(ParamsW);
-    end;
+    end
   end
   else
     with ParamsA do
@@ -570,8 +550,7 @@ begin
   acAddFolder.Enabled := not IsReadOnly and
     (tvDocInfo.Selected <> nil) and not reDetails.Focused;
   acAddFile.Enabled := acAddFolder.Enabled;
-  acEditData.Enabled := not ReadOnly and
-    (GetStream(tvDocInfo.Selected) <> nil);
+  acEditData.Enabled := not ReadOnly and (GetStream(tvDocInfo.Selected) <> nil);
   acSaveData.Enabled := not IsReadOnly and acEditData.Enabled
     and acEditData.Checked and reDetails.Modified;
   acRename.Enabled := not IsReadOnly and (tvDocInfo.Selected <> nil)
@@ -584,11 +563,9 @@ function TreeSort(lParam1, lParam2, lParamSort: Longint): Integer; stdcall;
 begin
   if IsFolder(TTreeNode(lParam1)) = IsFolder(TTreeNode(lParam2)) then
     Result := AnsiCompareText(TTreeNode(lParam1).Text, TTreeNode(lParam2).Text)
-  else
-  if IsFolder(TTreeNode(lParam1)) then
+  else if IsFolder(TTreeNode(lParam1)) then
     Result := -1
-  else
-  if IsFolder(TTreeNode(lParam2)) then
+  else if IsFolder(TTreeNode(lParam2)) then
     Result := 1
   else
     Result := 0;
@@ -718,8 +695,7 @@ begin
   S := GetStream(tvDocInfo.Selected);
   if (S <> nil) and reDetails.Modified then
   begin
-    S.Size := 0;
- // clear so we don't have old data at the end of the stream (if it's shorter now)
+    S.Size := 0; // clear so we don't have old data at the end of the stream (if it's shorter now)
     reDetails.Lines.SaveToStream(S); // add new
     Modified := true;
     if (tvDocInfo.Selected <> nil) then
@@ -765,8 +741,7 @@ begin
   tvDocInfo.Selected.EditText;
 end;
 
-procedure TfrmMain.UpdateFolderData(Node: TTreeNode;
-  const AName: string; Storage: TJclStructStorageFolder);
+procedure TfrmMain.UpdateFolderData(Node: TTreeNode; const AName: string; Storage: TJclStructStorageFolder);
 var
   SS: TJclStructStorageFolder;
   S: TStringlist;
@@ -805,8 +780,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.UpdateFileData(Node: TTreeNode; const AName: string;
-  Storage: TJclStructStorageFolder);
+procedure TfrmMain.UpdateFileData(Node: TTreeNode; const AName: string; Storage: TJclStructStorageFolder);
 var
   SS: TStream;
 begin
@@ -878,8 +852,7 @@ begin
   B := false;
   if IsFolder(tvDocInfo.Selected) then
     B := TJclStructStorageFolder(tvDocInfo.Selected.Data).GetStats(Stat, true)
-  else
-  if tvDocInfo.Selected <> nil then
+  else if tvDocInfo.Selected <> nil then
     B := TJclStructStorageStream(tvDocInfo.Selected.Data).GetStats(Stat, true);
   if B then
   begin
@@ -951,8 +924,7 @@ begin
   // I know: I could just as well have done a standard FileCopy, but that's not any fun!
   if SaveDialog.Execute then
   begin
-    AFile := TJclStructStorageFolder.Create(SaveDialog.Filename,
-      [smCreate], true);
+    AFile := TJclStructStorageFolder.Create(SaveDialog.Filename, [smCreate], true);
     try
       AFile.Assign(TJclStructStorageFolder(tvDocInfo.Items.GetFirstNode.Data));
     finally
@@ -963,3 +935,4 @@ begin
 end;
 
 end.
+

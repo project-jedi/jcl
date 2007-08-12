@@ -54,8 +54,7 @@ end;
 
 procedure TForm1.EnterButtonClick(Sender: TObject);
 begin
-  Memo1.Lines.Add(ResultAsText(FEvaluator as TEvaluator,
-    ExpressionInput.Text));
+  Memo1.Lines.Add(ResultAsText(FEvaluator as TEvaluator, ExpressionInput.Text));
 end;
 
 procedure TForm1.FuncListClick(Sender: TObject);

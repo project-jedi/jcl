@@ -42,8 +42,7 @@ type
     jwfgluErrorString);
   TJclWin32ExFunctions = set of TJclWin32ExFunction;
 
-function JclTryEnterCriticalSection(lpCriticalSection:
-  TRTLCriticalSection): Boolean;
+function JclTryEnterCriticalSection(lpCriticalSection: TRTLCriticalSection):  Boolean;
 function JclSignalObjectAndWait(hObjectToSignal: THandle;
   hObjectToWaitOn: THandle; dwMilliseconds: Cardinal;
   bAlertable: Boolean): Cardinal;
@@ -51,8 +50,7 @@ function JclSetCriticalSectionSpinCount(lpCriticalSection: TRTLCriticalSection;
   dwSpinCount: Cardinal): Cardinal;
 function JclOpenWaitableTimer(dwDesiredAccess: Cardinal;
   bInheritHandle: Boolean; const lpTimerName: string): THandle;
-function JclInitializeCriticalSectionAndSpinCount(
-  lpCriticalSection: TRTLCriticalSection;
+function JclInitializeCriticalSectionAndSpinCount(lpCriticalSection: TRTLCriticalSection;
   dwSpinCount: Cardinal): Boolean;
 function JclGetFileAttributesEx(const lpFileName: string;
   fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): Boolean;
@@ -89,16 +87,12 @@ uses
   JclBase, JclResources;
 
 type
-  TTryEnterCriticalSectionProc = function(lpCriticalSection:
-    TRTLCriticalSection): BOOL; stdcall;
+  TTryEnterCriticalSectionProc = function(lpCriticalSection: TRTLCriticalSection): BOOL; stdcall;
   TSignalObjectAndWaitProc = function(hObjectToSignal: THandle;
-    hObjectToWaitOn: THandle; dwMilliseconds: DWORD;
-    bAlertable: BOOL): DWORD; stdcall;
-  TSetCriticalSectionSpinCountProc =
-    function(lpCriticalSection: TRTLCriticalSection;
+    hObjectToWaitOn: THandle; dwMilliseconds: DWORD; bAlertable: BOOL): DWORD; stdcall;
+  TSetCriticalSectionSpinCountProc = function(lpCriticalSection: TRTLCriticalSection;
     dwSpincCount: DWORD): DWORD; stdcall;
-  TInitializeCriticalSectionAndSpinCountProc =
-    function(lpCriticalSection: TRTLCriticalSection;
+  TInitializeCriticalSectionAndSpinCountProc = function(lpCriticalSection: TRTLCriticalSection;
     dwSpinCount: DWORD): BOOL; stdcall;
 
   TOpenWaitableTimerAProc = function(dwDesiredAccess: DWORD;
@@ -108,15 +102,14 @@ type
   TCancelWaitableTimerProc = function(hTimer: THandle): BOOL; stdcall;
 
   TGetFileAttributesExAProc = function(lpFileName: PChar;
-    fInfoLevelId: TGetFileExInfoLevels;
-    lpFileInformation: Pointer): BOOL; stdcall;
+    fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): BOOL; stdcall;
 
   TglGetStringProc = function(name: Cardinal): PChar; stdcall;
   TglGetErrorProc = function: Cardinal; stdcall;
 
-  TwglCreateContextProc = function(hdc: HDC): HGLRC; stdcall;
-  TwglDeleteContextProc = function(hglrc: HGLRC): BOOL; stdcall;
-  TwglMakeCurrentProc = function(hdc: HDC; hglrc: HGLRC): BOOL; stdcall;
+  TwglCreateContextProc = function (hdc: HDC): HGLRC; stdcall;
+  TwglDeleteContextProc = function (hglrc: HGLRC): BOOL; stdcall;
+  TwglMakeCurrentProc = function (hdc: HDC; hglrc: HGLRC): BOOL; stdcall;
 
   TgluErrorStringProc = function(errCode: Cardinal): PChar; stdcall;
 
@@ -137,52 +130,51 @@ const
   Glu32 = 'glu32.dll';
 
   Win32ExFunctions: array [TJclWin32ExFunction] of TDllFunctionRec =
-    ( // jwfTryEnterCriticalSection
-    (FunctionName: 'TryEnterCriticalSection'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+   ( // jwfTryEnterCriticalSection
+     (FunctionName: 'TryEnterCriticalSection'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfSignalObjectAndWait
-    (FunctionName: 'SignalObjectAndWait'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'SignalObjectAndWait'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfSetCriticalSectionSpinCount
-    (FunctionName: 'SetCriticalSectionSpinCount'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'SetCriticalSectionSpinCount'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfOpenWaitableTimer
-    (FunctionName: 'OpenWaitableTimerA'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'OpenWaitableTimerA'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfInitializeCriticalSectionAndSpinCount
-    (FunctionName: 'InitializeCriticalSectionAndSpinCount'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'InitializeCriticalSectionAndSpinCount'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfGetFileAttributesEx
-    (FunctionName: 'GetFileAttributesExA'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'GetFileAttributesExA'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfCreateWaitableTimer
-    (FunctionName: 'CreateWaitableTimerA'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'CreateWaitableTimerA'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfCancelWaitableTimer
-    (FunctionName: 'CancelWaitableTimer'; FunctionAddr: nil;
-    DllName: kernel32; DllHandle: @Kernel32DllHandle),
+     (FunctionName: 'CancelWaitableTimer'; FunctionAddr: nil;
+      DllName: kernel32; DllHandle: @Kernel32DllHandle),
      // jwfglGetString
-    (FunctionName: 'glGetString'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @OpenGl32DllHandle),
+     (FunctionName: 'glGetString'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfglGetError
-    (FunctionName: 'glGetError'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @OpenGl32DllHandle),
+     (FunctionName: 'glGetError'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfwglCreateContext
-    (FunctionName: 'wglCreateContext'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @OpenGl32DllHandle),
+     (FunctionName: 'wglCreateContext'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfwglDeleteContext
-    (FunctionName: 'wglDeleteContext'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @OpenGl32DllHandle),
+     (FunctionName: 'wglDeleteContext'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfwglMakeCurrent
-    (FunctionName: 'wglMakeCurrent'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @OpenGl32DllHandle),
+     (FunctionName: 'wglMakeCurrent'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfgluErrorString
-    (FunctionName: 'gluErrorString'; FunctionAddr: nil;
-    DllName: opengl32; DllHandle: @Glu32DllHandle)
-    );
+     (FunctionName: 'gluErrorString'; FunctionAddr: nil;
+      DllName: opengl32; DllHandle: @Glu32DllHandle)
+   );
 
-function LoadWin32ExFunction(
-  const Win32ExFunction: TJclWin32ExFunction): Pointer;
+function LoadWin32ExFunction(const Win32ExFunction: TJclWin32ExFunction): Pointer;
 begin
   with Win32ExFunctions[Win32ExFunction] do
   begin
@@ -195,15 +187,13 @@ begin
       else
         FunctionAddr := GetProcAddress(DllHandle^, PChar(FunctionName));
       if not Assigned(FunctionAddr) then
-        raise EJclError.CreateResFmt(@RsEFunctionNotFound,
-          [DllName, FunctionName]);
+        raise EJclError.CreateResFmt(@RsEFunctionNotFound, [DllName, FunctionName]);
     end;
     Result := FunctionAddr;
   end;
 end;
 
-function JclTryEnterCriticalSection(lpCriticalSection:
-  TRTLCriticalSection): Boolean;
+function JclTryEnterCriticalSection(lpCriticalSection: TRTLCriticalSection): Boolean;
 var
   FunctionAddr: Pointer;
 begin
@@ -214,9 +204,7 @@ begin
   Result := TTryEnterCriticalSectionProc(FunctionAddr)(lpCriticalSection);
 end;
 
-function JclSignalObjectAndWait(hObjectToSignal: THandle;
-  hObjectToWaitOn: THandle; dwMilliseconds: Cardinal;
-  bAlertable: Boolean): Cardinal;
+function JclSignalObjectAndWait(hObjectToSignal: THandle; hObjectToWaitOn: THandle; dwMilliseconds: Cardinal; bAlertable: Boolean): Cardinal;
 var
   FunctionAddr: Pointer;
 begin
@@ -224,12 +212,10 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfSignalObjectAndWait);
 
-  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal,
-    hObjectToSignal, dwMilliseconds, bAlertable);
+  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal, hObjectToSignal, dwMilliseconds, bAlertable);
 end;
 
-function JclSetCriticalSectionSpinCount(lpCriticalSection: TRTLCriticalSection;
-  dwSpinCount: Cardinal): Cardinal;
+function JclSetCriticalSectionSpinCount(lpCriticalSection: TRTLCriticalSection; dwSpinCount: Cardinal): Cardinal;
 var
   FunctionAddr: Pointer;
 begin
@@ -237,12 +223,10 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfSetCriticalSectionSpinCount);
 
-  Result := TSetCriticalSectionSpinCountProc(FunctionAddr)(
-    lpCriticalSection, dwSpinCount);
+  Result := TSetCriticalSectionSpinCountProc(FunctionAddr)(lpCriticalSection, dwSpinCount);
 end;
 
-function JclOpenWaitableTimer(dwDesiredAccess: Cardinal;
-  bInheritHandle: Boolean; const lpTimerName: string): THandle;
+function JclOpenWaitableTimer(dwDesiredAccess: Cardinal; bInheritHandle: Boolean; const lpTimerName: string): THandle;
 var
   FunctionAddr: Pointer;
 begin
@@ -250,27 +234,21 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfOpenWaitableTimer);
 
-  Result := TOpenWaitableTimerAProc(FunctionAddr)(dwDesiredAccess,
-    bInheritHandle, PChar(lpTimerName));
+  Result := TOpenWaitableTimerAProc(FunctionAddr)(dwDesiredAccess, bInheritHandle, PChar(lpTimerName));
 end;
 
-function JclInitializeCriticalSectionAndSpinCount(
-  lpCriticalSection: TRTLCriticalSection; dwSpinCount: Cardinal): Boolean;
+function JclInitializeCriticalSectionAndSpinCount(lpCriticalSection: TRTLCriticalSection; dwSpinCount: Cardinal): Boolean;
 var
   FunctionAddr: Pointer;
 begin
-  FunctionAddr := Win32ExFunctions[
-    jwfInitializeCriticalSectionAndSpinCount].FunctionAddr;
+  FunctionAddr := Win32ExFunctions[jwfInitializeCriticalSectionAndSpinCount].FunctionAddr;
   if not Assigned(FunctionAddr) then
-    FunctionAddr := LoadWin32ExFunction(
-      jwfInitializeCriticalSectionAndSpinCount);
+    FunctionAddr := LoadWin32ExFunction(jwfInitializeCriticalSectionAndSpinCount);
 
-  Result := TInitializeCriticalSectionAndSpinCountProc(
-    FunctionAddr)(lpCriticalSection, dwSpinCount);
+  Result := TInitializeCriticalSectionAndSpinCountProc(FunctionAddr)(lpCriticalSection, dwSpinCount);
 end;
 
-function JclGetFileAttributesEx(const lpFileName: string;
-  fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): Boolean;
+function JclGetFileAttributesEx(const lpFileName: string; fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): Boolean;
 var
   FunctionAddr: Pointer;
 begin
@@ -278,12 +256,10 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfGetFileAttributesEx);
 
-  Result := TGetFileAttributesExAProc(FunctionAddr)(PChar(lpFileName),
-    fInfoLevelId, lpFileInformation);
+  Result := TGetFileAttributesExAProc(FunctionAddr)(PChar(lpFileName), fInfoLevelId, lpFileInformation);
 end;
 
-function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes;
-  bManualReset: Boolean; const lpTimerName: string): THandle;
+function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: Boolean; const lpTimerName: string): THandle;
 var
   FunctionAddr: Pointer;
 begin
@@ -291,8 +267,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfCreateWaitableTimer);
 
-  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes,
-    bManualReset, PChar(lpTimerAttributes));
+  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PChar(lpTimerAttributes));
 end;
 
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;
@@ -389,14 +364,14 @@ var
 begin
   for Index := Low(TJclWin32ExFunction) to High(TJclWin32ExFunction) do
     with Win32ExFunctions[Index] do
+  begin
+    FunctionAddr := nil;
+    if DllHandle^ <> 0 then
     begin
-      FunctionAddr := nil;
-      if DllHandle^ <> 0 then
-      begin
-        FreeLibrary(DllHandle^);
-        DllHandle^ := 0;
-      end;
+      FreeLibrary(DllHandle^);
+      DllHandle^ := 0;
     end;
+  end;
 end;
 
 procedure JclCheckAndInitializeOpenGL;
@@ -419,3 +394,4 @@ finalization
   UnloadLibraries;
 
 end.
+

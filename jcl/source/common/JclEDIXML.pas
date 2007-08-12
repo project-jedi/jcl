@@ -127,19 +127,15 @@ type
     property ETD: string read FEndTagDelimiter write SetEndTagDelimiter;
     property BTDLength: Integer read FBeginTagLength;
     property ETDLength: Integer read FEndTagLength;
-    property BOfETD: string read FBeginOfEndTagDelimiter
-      write SetBeginOfEndTagDelimiter;
+    property BOfETD: string read FBeginOfEndTagDelimiter write SetBeginOfEndTagDelimiter;
     property BOfETDLength: Integer read FBeginOfEndTagLength;
-    property BCDataD: string read FBeginCDataDelimiter
-      write SetBeginCDataDelimiter;
-    property ECDataD: string read FEndCDataDelimiter
-      write SetEndCDataDelimiter;
+    property BCDataD: string read FBeginCDataDelimiter write SetBeginCDataDelimiter;
+    property ECDataD: string read FEndCDataDelimiter write SetEndCDataDelimiter;
     property BCDataLength: Integer read FBeginCDataLength;
     property ECDataLength: Integer read FEndCDataLength;
     //Special Delimiters for Attributes
     property SpaceDelimiter: string read FSpaceDelimiter write FSpaceDelimiter;
-    property AssignmentDelimiter: string
-      read FAssignmentDelimiter write FAssignmentDelimiter;
+    property AssignmentDelimiter: string read FAssignmentDelimiter write FAssignmentDelimiter;
     property SingleQuote: string read FSingleQuote write FSingleQuote;
     property DoubleQuote: string read FDoubleQuote write FDoubleQuote;
   end;
@@ -193,8 +189,7 @@ type
     property Data: string read GetData write SetData;
     property DataLength: Integer read FLength;
     property Parent: TEDIXMLDataObject read FParent write FParent;
-    property Delimiters: TEDIXMLDelimiters
-      read FDelimiters write SetDelimiters;
+    property Delimiters: TEDIXMLDelimiters read FDelimiters write SetDelimiters;
     property Attributes: TEDIXMLAttributes read FAttributes write FAttributes;
   end;
 
@@ -221,13 +216,10 @@ type
   protected
     FEDIDataObjects: TEDIXMLDataObjectArray;
     function GetEDIDataObject(Index: Integer): TEDIXMLDataObject;
-    procedure SetEDIDataObject(Index: Integer;
-      EDIDataObject: TEDIXMLDataObject);
+    procedure SetEDIDataObject(Index: Integer; EDIDataObject: TEDIXMLDataObject);
     function InternalAssignDelimiters: TEDIXMLDelimiters; virtual; abstract;
-    function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
-      virtual; abstract;
-    function SearchForSegmentInDataString(Id: string;
-      StartPos: Integer): Integer;
+    function InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup; virtual; abstract;
+    function SearchForSegmentInDataString(Id: string; StartPos: Integer): Integer;
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce;
     destructor Destroy; override;
@@ -235,8 +227,7 @@ type
     //  ToDo:  More procedures and functions to manage internal structures
     //
     function AppendEDIDataObject(EDIDataObject: TEDIXMLDataObject): Integer;
-    function InsertEDIDataObject(InsertIndex: Integer;
-      EDIDataObject: TEDIXMLDataObject): Integer;
+    function InsertEDIDataObject(InsertIndex: Integer; EDIDataObject: TEDIXMLDataObject): Integer;
     procedure DeleteEDIDataObject(Index: Integer); overload;
     procedure DeleteEDIDataObject(EDIDataObject: TEDIXMLDataObject); overload;
     //
@@ -247,11 +238,9 @@ type
     function InsertGroup(InsertIndex: Integer): Integer; virtual;
     //
     procedure DeleteEDIDataObjects;
-    property EDIDataObject[Index: Integer]: TEDIXMLDataObject
-      read GetEDIDataObject
-      write SetEDIDataObject; default;
-    property EDIDataObjects: TEDIXMLDataObjectArray
-      read FEDIDataObjects write FEDIDataObjects;
+    property EDIDataObject[Index: Integer]: TEDIXMLDataObject read GetEDIDataObject
+    write SetEDIDataObject; default;
+    property EDIDataObjects: TEDIXMLDataObjectArray read FEDIDataObjects write FEDIDataObjects;
   end;
 
   //  EDI Segment Classes
@@ -263,8 +252,7 @@ type
     procedure SetElement(Index: Integer; Element: TEDIXMLElement);
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
-      reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
     destructor Destroy; override;
     //
     function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
@@ -273,8 +261,7 @@ type
     function AddElement: Integer;
     function AppendElement(Element: TEDIXMLElement): Integer;
     function InsertElement(InsertIndex: Integer): Integer; overload;
-    function InsertElement(InsertIndex: Integer;
-      Element: TEDIXMLElement): Integer; overload;
+    function InsertElement(InsertIndex: Integer; Element: TEDIXMLElement): Integer; overload;
     procedure DeleteElement(Index: Integer); overload;
     procedure DeleteElement(Element: TEDIXMLElement); overload;
     //
@@ -289,36 +276,32 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
     function GetIndexPositionFromParent: Integer;
-    property Element[Index: Integer]: TEDIXMLElement
-      read GetElement write SetElement; default;
+    property Element[Index: Integer]: TEDIXMLElement read GetElement write SetElement; default;
     property Elements: TEDIXMLElementArray read FElements write FElements;
   published
     property SegmentID: string read FSegmentID write FSegmentID;
   end;
 
-  TEDIXMLSegmentArray = array of TEDIXMLSegment;
+  TEDIXMLSegmentArray = array of TEDIXMLSegment;  
 
   TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
-      reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
   TEDIXMLFunctionalGroupSegment = class(TEDIXMLSegment)
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
-      reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
   TEDIXMLInterchangeControlSegment = class(TEDIXMLSegment)
   public
     constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
-      reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
     function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
@@ -334,8 +317,7 @@ type
     function Assemble: string; override;
     procedure Disassemble; override;
   published
-    property ParentTransactionSet: TEDIXMLTransactionSet
-      read FParentTransactionSet
+    property ParentTransactionSet: TEDIXMLTransactionSet read FParentTransactionSet
       write FParentTransactionSet;
   end;
 
@@ -408,8 +390,7 @@ type
   published
     property Delimiters: TEDIXMLDelimiters read FDelimiters;
     property Attributes: TEDIXMLAttributes read FAttributes;
-    property XMLNameSpaceOption: TEDIXMLNameSpaceOption
-      read FXMLNameSpaceOption
+    property XMLNameSpaceOption: TEDIXMLNameSpaceOption read FXMLNameSpaceOption
       write FXMLNameSpaceOption;
   end;
 
@@ -445,8 +426,7 @@ type
   private
     procedure ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
       XMLLoop: TEDIXMLTransactionSetLoop);
-    procedure ConvertTransactionSetLoopToEDI(EDITransactionSet:
-      TEDITransactionSet;
+    procedure ConvertTransactionSetLoopToEDI(EDITransactionSet: TEDITransactionSet;
       XMLLoop: TEDIXMLTransactionSetLoop);
   protected
   public
@@ -457,8 +437,7 @@ type
     function ConvertToXMLTransaction(
       EDITransactionSet: TEDITransactionSet): TEDIXMLTransactionSet; overload;
     function ConvertToXMLTransaction(EDITransactionSet: TEDITransactionSet;
-      EDITransactionSetSpec: TEDITransactionSetSpec): TEDIXMLTransactionSet;
-      overload;
+      EDITransactionSetSpec: TEDITransactionSetSpec): TEDIXMLTransactionSet; overload;
     function ConvertToEDISegment(XMLSegment: TEDIXMLSegment): TEDISegment;
     function ConvertToEDITransaction(
       XMLTransactionSet: TEDIXMLTransactionSet): TEDITransactionSet;
@@ -509,7 +488,7 @@ const
   Value_xml = 'xml';
   Value_Version10 = '1.0';
   Value_Windows1252 = 'windows-1252';
-  Value_EDITRANSDOC = 'EDITRANSDOC';
+  Value_EDITRANSDOC = 'EDITRANSDOC';  
 
 //=== { TEDIXMLDelimiters } ==================================================
 
@@ -592,10 +571,8 @@ begin
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.ValueFromIndex[I]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.ValueFromIndex[I]);
     {$ELSE}
-    J := StrSearch(FDelimiters.SingleQuote,
-      FAttributes.Values[FAttributes.Names[I]]);
-    K := StrSearch(FDelimiters.DoubleQuote,
-      FAttributes.Values[FAttributes.Names[I]]);
+    J := StrSearch(FDelimiters.SingleQuote, FAttributes.Values[FAttributes.Names[I]]);
+    K := StrSearch(FDelimiters.DoubleQuote, FAttributes.Values[FAttributes.Names[I]]);
     {$ENDIF COMPILER7_UP}
     if J > K then
       QuoteDelimiter := FDelimiters.SingleQuote
@@ -608,8 +585,7 @@ begin
       QuoteDelimiter + FAttributes.ValueFromIndex[I] + QuoteDelimiter;
     {$ELSE}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
-      QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] +
-      QuoteDelimiter;
+      QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] + QuoteDelimiter;
     {$ENDIF COMPILER7_UP}
   end;
 end;
@@ -650,8 +626,7 @@ begin
   while SearchResult > 0 do
   begin
     // Get the end data delimiter
-    SearchResult := StrSearch(FDelimiters.AssignmentDelimiter,
-      XMLStartTag, AttributeStart);
+    SearchResult := StrSearch(FDelimiters.AssignmentDelimiter, XMLStartTag, AttributeStart);
     if SearchResult > 0 then
     begin
       AttributeLen := SearchResult - AttributeStart;
@@ -668,8 +643,7 @@ begin
         FAttributes.Values[Attribute] := Value;
       end;
       // Search for begin of attribute
-      SearchResult := StrSearch(FDelimiters.SpaceDelimiter,
-        XMLStartTag, SearchResult);
+      SearchResult := StrSearch(FDelimiters.SpaceDelimiter, XMLStartTag, SearchResult);
       AttributeStart := SearchResult + Length(FDelimiters.SpaceDelimiter);
     end;
   end;
@@ -748,16 +722,11 @@ begin
 
   OriginalData := FData;
   // Handle Entity Reference Characters
-  StrReplace(OriginalData, EDIXML_Ampersand, EDIXML_HTMLAmpersand,
-    [rfReplaceAll]);
-  StrReplace(OriginalData, EDIXML_LessThanSign, EDIXML_HTMLLessThanSign,
-    [rfReplaceAll]);
-  StrReplace(OriginalData, EDIXML_GreaterThanSign,
-    EDIXML_HTMLGreaterThanSign, [rfReplaceAll]);
-  StrReplace(OriginalData, EDIXML_QuotationMark, EDIXML_HTMLQuotationMark,
-    [rfReplaceAll]);
-  StrReplace(OriginalData, EDIXML_Apostrophe, EDIXML_HTMLApostrophe,
-    [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_Ampersand, EDIXML_HTMLAmpersand, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_LessThanSign, EDIXML_HTMLLessThanSign, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_GreaterThanSign, EDIXML_HTMLGreaterThanSign, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_QuotationMark, EDIXML_HTMLQuotationMark, [rfReplaceAll]);
+  StrReplace(OriginalData, EDIXML_Apostrophe, EDIXML_HTMLApostrophe, [rfReplaceAll]);
   //
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
@@ -796,8 +765,7 @@ begin
   if SearchResult > 0 then
   begin
     SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
-    XMLStartTag := Copy(FData, StartPos,
-      (SearchResult + FDelimiters.ETDLength) - StartPos);
+    XMLStartTag := Copy(FData, StartPos, (SearchResult + FDelimiters.ETDLength) - StartPos);
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
@@ -813,8 +781,7 @@ begin
     FCData := True;
   end;
   //
-  SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Element,
-    FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Element, FData, StartPos);
   if SearchResult > 0 then
   begin
     EndPos := SearchResult;
@@ -831,12 +798,9 @@ begin
   else
     raise EJclEDIError.CreateRes(@EDIXMLError049);
   // Handle Entity Reference Characters
-  StrReplace(FData, EDIXML_HTMLLessThanSign, EDIXML_LessThanSign,
-    [rfReplaceAll]);
-  StrReplace(FData, EDIXML_HTMLGreaterThanSign, EDIXML_GreaterThanSign,
-    [rfReplaceAll]);
-  StrReplace(FData, EDIXML_HTMLQuotationMark, EDIXML_QuotationMark,
-    [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLLessThanSign, EDIXML_LessThanSign, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLGreaterThanSign, EDIXML_GreaterThanSign, [rfReplaceAll]);
+  StrReplace(FData, EDIXML_HTMLQuotationMark, EDIXML_QuotationMark, [rfReplaceAll]);
   StrReplace(FData, EDIXML_HTMLApostrophe, EDIXML_Apostrophe, [rfReplaceAll]);
   StrReplace(FData, EDIXML_HTMLAmpersand, EDIXML_Ampersand, [rfReplaceAll]);
   //
@@ -849,8 +813,7 @@ var
 begin
   Result := -1;
   if Assigned(Parent) and (Parent is TEDIXMLSegment) then
-    for I := Low(TEDIXMLSegment(Parent).Elements)
-      to High(TEDIXMLSegment(Parent).Elements) do
+    for I := Low(TEDIXMLSegment(Parent).Elements) to High(TEDIXMLSegment(Parent).Elements) do
       if TEDIXMLSegment(Parent).Element[I] = Self then
         Result := I;
 end;
@@ -867,8 +830,7 @@ end;
 
 //=== { TEDIXMLSegment } =====================================================
 
-constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject;
-  ElementCount: Integer);
+constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIXMLTransactionSet) then
     inherited Create(Parent)
@@ -923,8 +885,7 @@ begin
   Result := High(FElements); // Return position of element
 end;
 
-function TEDIXMLSegment.AppendElements(ElementArray:
-  TEDIXMLElementArray): Integer;
+function TEDIXMLSegment.AppendElements(ElementArray: TEDIXMLElementArray): Integer;
 var
   I, J, K: Integer;
 begin
@@ -994,8 +955,7 @@ procedure TEDIXMLSegment.DeleteElement(Index: Integer);
 var
   I: Integer;
 begin
-  if (Length(FElements) > 0) and (Index >= Low(FElements)) and
-    (Index <= High(FElements)) then
+  if (Length(FElements) > 0) and (Index >= Low(FElements)) and (Index <= High(FElements)) then
   begin
     // Delete
     FreeAndNil(FElements[Index]);
@@ -1024,8 +984,7 @@ procedure TEDIXMLSegment.DeleteElements(Index, Count: Integer);
 var
   I: Integer;
 begin
-  if (Length(FElements) > 0) and (Index >= Low(FElements)) and
-    (Index <= High(FElements)) then
+  if (Length(FElements) > 0) and (Index >= Low(FElements)) and (Index <= High(FElements)) then
   begin
     // Delete
     for I := Index to (Index + Count) - 1 do
@@ -1064,8 +1023,7 @@ begin
   begin
     StartPos := SearchResult;
     SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
-    XMLStartTag := Copy(FData, StartPos,
-      (SearchResult + FDelimiters.ETDLength) - StartPos);
+    XMLStartTag := Copy(FData, StartPos, (SearchResult + FDelimiters.ETDLength) - StartPos);
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
@@ -1077,8 +1035,7 @@ begin
   // Search for Segments
   while SearchResult > 0 do
   begin
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Element,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Element, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -1086,8 +1043,7 @@ begin
       begin
         I := AddElement; // Add Element
         FElements[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FElements[I].Disassemble;
       end
       else
@@ -1098,8 +1054,7 @@ begin
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for element
-    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_Element,
-      FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_Element, FData, StartPos);
   end;
   FData := '';
   //
@@ -1159,8 +1114,7 @@ begin
     Result := AddElement;
 end;
 
-function TEDIXMLSegment.InsertElement(InsertIndex: Integer;
-  Element: TEDIXMLElement): Integer;
+function TEDIXMLSegment.InsertElement(InsertIndex: Integer; Element: TEDIXMLElement): Integer;
 var
   I: Integer;
 begin
@@ -1246,8 +1200,7 @@ begin
     begin
       if Assigned(Parent.Delimiters) then
       begin
-        Result := TEDIXMLTransactionSetLoop(
-          Parent).ParentTransactionSet.Delimiters;
+        Result := TEDIXMLTransactionSetLoop(Parent).ParentTransactionSet.Delimiters;
         Exit;
       end;
     end;
@@ -1260,8 +1213,7 @@ begin
         Exit;
       end;
       // Get the delimiters from the functional group
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIXMLFunctionalGroup) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIXMLFunctionalGroup) then
       begin
         if Assigned(Parent.Parent.Delimiters) then
         begin
@@ -1309,16 +1261,14 @@ begin
     FParent := Parent;
 end;
 
-constructor TEDIXMLTransactionSetSegment.Create(Parent: TEDIXMLDataObject;
-  ElementCount: Integer);
+constructor TEDIXMLTransactionSetSegment.Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
   if Assigned(Parent) and (Parent is TEDIXMLTransactionSet) then
     FParent := Parent;
 end;
 
-function TEDIXMLTransactionSetSegment.InternalAssignDelimiters:
-TEDIXMLDelimiters;
+function TEDIXMLTransactionSetSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := inherited InternalAssignDelimiters;
 end;
@@ -1340,8 +1290,7 @@ begin
     FParent := Parent;
 end;
 
-function TEDIXMLFunctionalGroupSegment.InternalAssignDelimiters:
-TEDIXMLDelimiters;
+function TEDIXMLFunctionalGroupSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
   // Attempt to assign the delimiters
@@ -1352,8 +1301,7 @@ begin
         Result := Parent.Delimiters
       else
       // Get the delimiters from the interchange control
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIXMLInterchangeControl) then
+        if Assigned(Parent.Parent) and (Parent.Parent is TEDIXMLInterchangeControl) then
         Result := Parent.Parent.Delimiters;
 end;
 
@@ -1374,8 +1322,7 @@ begin
     FParent := Parent;
 end;
 
-function TEDIXMLInterchangeControlSegment.InternalAssignDelimiters:
-TEDIXMLDelimiters;
+function TEDIXMLInterchangeControlSegment.InternalAssignDelimiters: TEDIXMLDelimiters;
 begin
   Result := nil;
   // Attempt to assign the delimiters
@@ -1414,8 +1361,7 @@ begin
   Result := AppendEDIDataObject(EDISegment);
 end;
 
-function TEDIXMLDataObjectGroup.AppendEDIDataObject(
-  EDIDataObject: TEDIXMLDataObject): Integer;
+function TEDIXMLDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIXMLDataObject): Integer;
 begin
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
   FEDIDataObjects[High(FEDIDataObjects)] := EDIDataObject;
@@ -1423,8 +1369,7 @@ begin
   Result := High(FEDIDataObjects);
 end;
 
-procedure TEDIXMLDataObjectGroup.DeleteEDIDataObject(
-  EDIDataObject: TEDIXMLDataObject);
+procedure TEDIXMLDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIXMLDataObject);
 var
   I: Integer;
 begin
@@ -1462,8 +1407,7 @@ begin
   SetLength(FEDIDataObjects, 0);
 end;
 
-function TEDIXMLDataObjectGroup.GetEDIDataObject(Index: Integer):
-TEDIXMLDataObject;
+function TEDIXMLDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIXMLDataObject;
 begin
   if Length(FEDIDataObjects) > 0 then
     if Index >= Low(FEDIDataObjects) then
@@ -1487,8 +1431,7 @@ var
   I: Integer;
 begin
   Result := InsertIndex;
-  if (Length(FEDIDataObjects) > 0) and (InsertIndex >=
-    Low(FEDIDataObjects)) and
+  if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
     (InsertIndex <= High(FEDIDataObjects)) then
   begin
     // Resize
@@ -1536,8 +1479,7 @@ begin
     SearchResult := StrSearch(FDelimiters.ETD, FData, SegmentTagStartPos);
     if SearchResult > 0 then
     begin
-      SegmentTag := Copy(FData, SegmentTagStartPos,
-        ((SearchResult - SegmentTagStartPos) +
+      SegmentTag := Copy(FData, SegmentTagStartPos, ((SearchResult - SegmentTagStartPos) +
         FDelimiters.ETDLength));
       EDIXMLAttributes.ParseAttributes(SegmentTag);
       Result := EDIXMLAttributes.CheckAttribute(XMLAttribute_Id, Id);
@@ -1548,14 +1490,12 @@ begin
       end;
     end;
     SegmentTagStartPos := SearchResult + FDelimiters.ETDLength;
-    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_Segment,
-      FData, SegmentTagStartPos);
+    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_Segment, FData, SegmentTagStartPos);
   end;
   EDIXMLAttributes.Free;
 end;
 
-procedure TEDIXMLDataObjectGroup.SetEDIDataObject(Index: Integer;
-  EDIDataObject: TEDIXMLDataObject);
+procedure TEDIXMLDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIXMLDataObject);
 begin
   if Length(FEDIDataObjects) > 0 then
     if Index >= Low(FEDIDataObjects) then
@@ -1581,8 +1521,7 @@ begin
     FParentTransactionSet := TEDIXMLTransactionSet(Parent)
   else
   if Assigned(Parent) and (Parent is TEDIXMLTransactionSetLoop) then
-    FParentTransactionSet :=
-      TEDIXMLTransactionSetLoop(Parent).ParentTransactionSet
+    FParentTransactionSet := TEDIXMLTransactionSetLoop(Parent).ParentTransactionSet
   else
     FParentTransactionSet := nil;
   FEDIDOT := ediLoop;
@@ -1611,8 +1550,7 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-    FData := FDelimiters.BTD + XMLTag_TransactionSetLoop +
-      FDelimiters.SpaceDelimiter +
+    FData := FDelimiters.BTD + XMLTag_TransactionSetLoop + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
     FData := FDelimiters.BTD + XMLTag_TransactionSetLoop + FDelimiters.ETD;
@@ -1621,8 +1559,7 @@ begin
     for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
       if Assigned(FEDIDataObjects[I]) then
         FData := FData + FEDIDataObjects[I].Assemble;
-  FData := FData + FDelimiters.BOfETD + XMLTag_TransactionSetLoop +
-    FDelimiters.ETD;
+  FData := FData + FDelimiters.BOfETD + XMLTag_TransactionSetLoop + FDelimiters.ETD;
   FLength := Length(FData);
   Result := FData; // Return assembled string
 
@@ -1648,14 +1585,12 @@ begin
   // Set next start positon
   StartPos := 1;
   // Move past begin loop tag
-  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop,
-    FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop, FData, StartPos);
   if SearchResult > 0 then
   begin
     StartPos := SearchResult;
     SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
-    XMLStartTag := Copy(FData, StartPos,
-      (SearchResult + FDelimiters.ETDLength) - StartPos);
+    XMLStartTag := Copy(FData, StartPos, (SearchResult + FDelimiters.ETDLength) - StartPos);
     FAttributes.ParseAttributes(XMLStartTag);
   end
   else
@@ -1680,8 +1615,7 @@ begin
   begin
     if SearchTag = XMLTag_Segment then
     begin
-      SearchResult := StrSearch(FDelimiters.BOfETD + SearchTag,
-        FData, SearchResult);
+      SearchResult := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult);
       if SearchResult > 0 then
       begin
         SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -1689,8 +1623,7 @@ begin
         begin
           I := AddSegment; // Add Segment
           EDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) +
-            FDelimiters.ETDLength));
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
           EDIDataObjects[I].Disassemble;
         end
         else
@@ -1705,10 +1638,8 @@ begin
       SearchResult := StartPos;
       // Search for the proper end loop tag
       repeat
-        I := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult);
- //Find loop end
-        J := StrSearch(FDelimiters.BTD + SearchTag, FData, SearchResult);
- //Find loop begin
+        I := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult); //Find loop end
+        J := StrSearch(FDelimiters.BTD + SearchTag, FData, SearchResult); //Find loop begin
         if (I < J) or (J <= 0) then
         begin
           Dec(NestedLoopCount);
@@ -1730,8 +1661,7 @@ begin
         begin
           I := AddGroup; // Add Transaction Set Loop
           EDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) +
-            FDelimiters.ETDLength));
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
           EDIDataObjects[I].Disassemble;
         end
         else
@@ -1744,8 +1674,7 @@ begin
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Determine the nearest tag to search for
     I := StrSearch(FDelimiters.BTD + XMLTag_Segment, FData, StartPos);
-    J := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop,
-      FData, StartPos);
+    J := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop, FData, StartPos);
     if (I < J) or (J <= 0) then
       SearchTag := XMLTag_Segment
     else
@@ -1765,8 +1694,7 @@ begin
     Result := Parent.Delimiters;
 end;
 
-function TEDIXMLTransactionSetLoop.InternalCreateDataObjectGroup:
-TEDIXMLDataObjectGroup;
+function TEDIXMLTransactionSetLoop.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSetLoop.Create(Self);
 end;
@@ -1803,8 +1731,7 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-    FData := FDelimiters.BTD + XMLTag_TransactionSet +
-      FDelimiters.SpaceDelimiter +
+    FData := FDelimiters.BTD + XMLTag_TransactionSet + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
     FData := FDelimiters.BTD + XMLTag_TransactionSet + FDelimiters.ETD;
@@ -1813,8 +1740,7 @@ begin
     for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
       if Assigned(FEDIDataObjects[I]) then
         FData := FData + FEDIDataObjects[I].Assemble;
-  FData := FData + FDelimiters.BOfETD + XMLTag_TransactionSet +
-    FDelimiters.ETD;
+  FData := FData + FDelimiters.BOfETD + XMLTag_TransactionSet + FDelimiters.ETD;
   FLength := Length(FData);
   Result := FData; // Return assembled string
 
@@ -1853,8 +1779,7 @@ begin
   begin
     if SearchTag = XMLTag_Segment then
     begin
-      SearchResult := StrSearch(FDelimiters.BOfETD + SearchTag,
-        FData, SearchResult);
+      SearchResult := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult);
       if SearchResult > 0 then
       begin
         SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -1862,8 +1787,7 @@ begin
         begin
           I := AddSegment; //A dd Segment
           EDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) +
-            FDelimiters.ETDLength));
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
           EDIDataObjects[I].Disassemble;
         end
         else
@@ -1878,10 +1802,8 @@ begin
       SearchResult := StartPos;
       // Search for the proper end loop tag
       repeat
-        I := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult);
- //Find loop end
-        J := StrSearch(FDelimiters.BTD + SearchTag, FData, SearchResult);
- //Find loop begin
+        I := StrSearch(FDelimiters.BOfETD + SearchTag, FData, SearchResult); //Find loop end
+        J := StrSearch(FDelimiters.BTD + SearchTag, FData, SearchResult); //Find loop begin
         if (I < J) or (J <= 0) then
         begin
           Dec(NestedLoopCount);
@@ -1903,8 +1825,7 @@ begin
         begin
           I := AddGroup; // Add Transaction Set Loop
           EDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) +
-            FDelimiters.ETDLength));
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
           EDIDataObjects[I].Disassemble;
         end
         else
@@ -1917,8 +1838,7 @@ begin
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Determine the nearest tag to search for
     I := StrSearch(FDelimiters.BTD + XMLTag_Segment, FData, StartPos);
-    J := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop,
-      FData, StartPos);
+    J := StrSearch(FDelimiters.BTD + XMLTag_TransactionSetLoop, FData, StartPos);
     if (I < J) or (J <= 0) then
       SearchTag := XMLTag_Segment
     else
@@ -1932,8 +1852,7 @@ begin
     FSTSegment := TEDIXMLSegment(FEDIDataObjects[0]);
     FSESegment := TEDIXMLSegment(FEDIDataObjects[High(FEDIDataObjects)]);
 
-    if FSTSegment.Attributes.GetAttributeValue(XMLAttribute_Id) =
-      XMLTag_TSHSegmentId then
+    if FSTSegment.Attributes.GetAttributeValue(XMLAttribute_Id) = XMLTag_TSHSegmentId then
     begin
       TempData := FEDIDataObjects[0].Assemble;
       FreeAndNil(FEDIDataObjects[0]);
@@ -1950,8 +1869,7 @@ begin
       raise EJclEDIError.CreateRes(@EDIXMLError059);
     end;
 
-    if FSESegment.Attributes.GetAttributeValue(XMLAttribute_Id) =
-      XMLTag_TSTSegmentId then
+    if FSESegment.Attributes.GetAttributeValue(XMLAttribute_Id) = XMLTag_TSTSegmentId then
     begin
       TempData := FEDIDataObjects[High(FEDIDataObjects)].Assemble;
       FreeAndNil(FEDIDataObjects[High(FEDIDataObjects)]);
@@ -1987,13 +1905,11 @@ begin
       if Assigned(Parent.Delimiters) then
         Result := Parent.Delimiters
       else
-      if Assigned(Parent.Parent) and (Parent.Parent is
-        TEDIXMLInterchangeControl) then
+      if Assigned(Parent.Parent) and (Parent.Parent is TEDIXMLInterchangeControl) then
         Result := Parent.Parent.Delimiters;
 end;
 
-function TEDIXMLTransactionSet.InternalCreateDataObjectGroup:
-TEDIXMLDataObjectGroup;
+function TEDIXMLTransactionSet.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSetLoop.Create(Self);
 end;
@@ -2029,8 +1945,7 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-    FData := FDelimiters.BTD + XMLTag_FunctionalGroup +
-      FDelimiters.SpaceDelimiter +
+    FData := FDelimiters.BTD + XMLTag_FunctionalGroup + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
     FData := FDelimiters.BTD + XMLTag_FunctionalGroup + FDelimiters.ETD;
@@ -2039,8 +1954,7 @@ begin
     for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
       if Assigned(FEDIDataObjects[I]) then
         FData := FData + FEDIDataObjects[I].Assemble;
-  FData := FData + FDelimiters.BOfETD + XMLTag_FunctionalGroup +
-    FDelimiters.ETD;
+  FData := FData + FDelimiters.BOfETD + XMLTag_FunctionalGroup + FDelimiters.ETD;
   FLength := Length(FData);
   Result := FData; // Return assembled string
 
@@ -2067,8 +1981,7 @@ begin
   if SearchResult > 0 then
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2077,8 +1990,7 @@ begin
         FGSSegment := TEDIXMLFunctionalGroupSegment.Create(nil);
         AppendEDIDataObject(FGSSegment);
         FGSSegment.Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FGSSegment.Disassemble;
       end
       else
@@ -2092,13 +2004,11 @@ begin
   // Set next start positon
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Search for Transaction Set
-  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSet,
-    FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSet, FData, StartPos);
   while SearchResult > 0 do
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_TransactionSet,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_TransactionSet, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2106,8 +2016,7 @@ begin
       begin
         I := AddGroup; // Add Transaction Set
         EDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         EDIDataObjects[I].Disassemble;
       end
       else
@@ -2118,16 +2027,14 @@ begin
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Transaction Set
-    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSet,
-      FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_TransactionSet, FData, StartPos);
   end;
   // Search for Functional Group Trailer
   SearchResult := SearchForSegmentInDataString(XMLTag_FGTSegmentId, StartPos);
   if SearchResult > 0 then
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2136,8 +2043,7 @@ begin
         FGESegment := TEDIXMLFunctionalGroupSegment.Create(nil);
         AppendEDIDataObject(FGESegment);
         FGESegment.Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FGESegment.Disassemble;
       end
       else
@@ -2162,8 +2068,7 @@ begin
       Result := Parent.Delimiters;
 end;
 
-function TEDIXMLFunctionalGroup.InternalCreateDataObjectGroup:
-TEDIXMLDataObjectGroup;
+function TEDIXMLFunctionalGroup.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLTransactionSet.Create(Self);
 end;
@@ -2200,8 +2105,7 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-    FData := FDelimiters.BTD + XMLTag_InterchangeControl +
-      FDelimiters.SpaceDelimiter +
+    FData := FDelimiters.BTD + XMLTag_InterchangeControl + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
     FData := FDelimiters.BTD + XMLTag_InterchangeControl + FDelimiters.ETD;
@@ -2210,8 +2114,7 @@ begin
     for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
       if Assigned(FEDIDataObjects[I]) then
         FData := FData + FEDIDataObjects[I].Assemble;
-  FData := FData + FDelimiters.BOfETD + XMLTag_InterchangeControl +
-    FDelimiters.ETD;
+  FData := FData + FDelimiters.BOfETD + XMLTag_InterchangeControl + FDelimiters.ETD;
   FLength := Length(FData);
   Result := FData; // Return assembled string
 
@@ -2238,8 +2141,7 @@ begin
   if SearchResult > 0 then
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2248,8 +2150,7 @@ begin
         FISASegment := TEDIXMLInterchangeControlSegment.Create(nil);
         AppendEDIDataObject(FISASegment);
         FISASegment.Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FISASegment.Disassemble;
       end
       else
@@ -2263,13 +2164,11 @@ begin
   // Set next start position. Move past the delimiter
   StartPos := SearchResult + FDelimiters.ETDLength;
   // Search for Functional Group
-  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_FunctionalGroup,
-    FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_FunctionalGroup, FData, StartPos);
   while SearchResult > 0 do
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD +
-      XMLTag_FunctionalGroup, FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_FunctionalGroup, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2277,8 +2176,7 @@ begin
       begin
         I := AddGroup; // Add Functional Group
         EDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         EDIDataObjects[I].Disassemble;
       end
       else
@@ -2289,16 +2187,14 @@ begin
     // Set next start positon
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Functional Group
-    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_FunctionalGroup,
-      FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_FunctionalGroup, FData, StartPos);
   end;
   // Search for Interchange Control Trailer
   SearchResult := SearchForSegmentInDataString(XMLTag_ICTSegmentId, StartPos);
   if SearchResult > 0 then
   begin
     StartPos := SearchResult;
-    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment,
-      FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_Segment, FData, SearchResult);
     if SearchResult > 0 then
     begin
       SearchResult := StrSearch(FDelimiters.ETD, FData, SearchResult);
@@ -2307,8 +2203,7 @@ begin
         FIEASegment := TEDIXMLInterchangeControlSegment.Create(nil);
         AppendEDIDataObject(FIEASegment);
         FIEASegment.Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FIEASegment.Disassemble;
       end
       else
@@ -2329,8 +2224,7 @@ begin
   Result := TEDIXMLDelimiters.Create;
 end;
 
-function TEDIXMLInterchangeControl.InternalCreateDataObjectGroup:
-TEDIXMLDataObjectGroup;
+function TEDIXMLInterchangeControl.InternalCreateDataObjectGroup: TEDIXMLDataObjectGroup;
 begin
   Result := TEDIXMLFunctionalGroup.Create(Self);
 end;
@@ -2370,8 +2264,7 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-    FData := FData + FDelimiters.BTD + XMLTag_EDIFile +
-      FDelimiters.SpaceDelimiter +
+    FData := FData + FDelimiters.BTD + XMLTag_EDIFile + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
     FData := FData + FDelimiters.BTD + XMLTag_EDIFile + FDelimiters.ETD;
@@ -2412,8 +2305,7 @@ begin
     if SearchResult > 0 then
     begin
       XMLHeader :=
-        Copy(FData, StartPos, ((SearchResult - StartPos) +
-        Length(EDIXMLDelimiter_FileHeaderEnd)));
+        Copy(FData, StartPos, ((SearchResult - StartPos) + Length(EDIXMLDelimiter_FileHeaderEnd)));
       FEDIXMLFileHeader.ParseXMLHeader(XMLHeader);
     end
     else
@@ -2427,14 +2319,12 @@ begin
   end;
   // Search for Interchange
   StartPos := 1;
-  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_InterchangeControl,
-    FData, StartPos);
+  SearchResult := StrSearch(FDelimiters.BTD + XMLTag_InterchangeControl, FData, StartPos);
   StartPos := SearchResult;
   while SearchResult > 0 do
   begin
     // Search for Interchange end tag
-    SearchResult := StrSearch(FDelimiters.BOfETD +
-      XMLTag_InterchangeControl, FData, SearchResult);
+    SearchResult := StrSearch(FDelimiters.BOfETD + XMLTag_InterchangeControl, FData, SearchResult);
     if SearchResult > 0 then
     begin
       // Search for Interchange end tag delimiter
@@ -2444,8 +2334,7 @@ begin
         I := AddGroup; // Add Interchange
         FEDIDataObjects[I].Delimiters := TEDIXMLDelimiters.Create;
         FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) +
-          FDelimiters.ETDLength));
+          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.ETDLength));
         FEDIDataObjects[I].Disassemble;
       end
       else
@@ -2456,8 +2345,7 @@ begin
     // Set next start position. Move past the delimiter
     StartPos := SearchResult + FDelimiters.ETDLength;
     // Search for Interchange
-    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_InterchangeControl,
-      FData, StartPos);
+    SearchResult := StrSearch(FDelimiters.BTD + XMLTag_InterchangeControl, FData, StartPos);
   end;
   FData := '';
 
@@ -2481,8 +2369,7 @@ begin
   FData := '';
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(FData[1], EDIFileStream.Size);
@@ -2513,8 +2400,7 @@ begin
   FFileName := FileName;
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmCreate or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
     finally
@@ -2531,8 +2417,7 @@ var
 begin
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmCreate or
-      fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
     finally
@@ -2551,8 +2436,7 @@ begin
   FAttributes := TEDIXMLAttributes.Create;
   FDelimiters := TEDIXMLDelimiters.Create;
   FAttributes.SetAttribute(EDIXMLAttributeStr_version, Value_Version10);
-  FAttributes.SetAttribute(EDIXMLAttributeStr_encoding, Value_Windows1252);
- // ISO-8859-1
+  FAttributes.SetAttribute(EDIXMLAttributeStr_encoding, Value_Windows1252); // ISO-8859-1
   FXMLNameSpaceOption := nsNone;
   FAttributes.SetAttribute(EDIXMLAttributeStr_xmlns, Value_EDITRANSDOC);
   FAttributes.SetAttribute(EDIXMLAttributeStr_xmlnsEDI, Value_EDITRANSDOC);
@@ -2574,8 +2458,7 @@ function TEDIXMLFileHeader.OutputXMLHeader: string;
 var
   AdditionalAttributes: string;
 begin
-  Result := EDIXMLDelimiter_FileHeaderBegin + Value_xml +
-    Delimiters.SpaceDelimiter +
+  Result := EDIXMLDelimiter_FileHeaderBegin + Value_xml + Delimiters.SpaceDelimiter +
     FAttributes.GetAttributeString(EDIXMLAttributeStr_version);
   case FXMLNameSpaceOption of
     nsNone:
@@ -2583,16 +2466,12 @@ begin
         FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding);
     nsDefault:
       Result := Result +
-        Delimiters.SpaceDelimiter +
-        FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
-        Delimiters.SpaceDelimiter +
-        FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlns);
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlns);
     nsQualified:
       Result := Result +
-        Delimiters.SpaceDelimiter +
-        FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
-        Delimiters.SpaceDelimiter +
-        FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlnsEDI);
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_encoding) +
+        Delimiters.SpaceDelimiter + FAttributes.GetAttributeString(EDIXMLAttributeStr_xmlnsEDI);
   end;
   AdditionalAttributes := OutputAdditionalXMLHeaderAttributes;
   if AdditionalAttributes <> '' then
@@ -2649,21 +2528,18 @@ var
   XMLLoop: TEDIXMLTransactionSetLoop;
 begin
   Result := TEDITransactionSet.Create(nil);
-  for I := Low(XMLTransactionSet.EDIDataObjects)
-    to High(XMLTransactionSet.EDIDataObjects) do
+  for I := Low(XMLTransactionSet.EDIDataObjects) to High(XMLTransactionSet.EDIDataObjects) do
   begin
     if XMLTransactionSet[I] is TEDIXMLSegment then
     begin
       XMLSegment := TEDIXMLSegment(XMLTransactionSet[I]);
-      if XMLSegment.Attributes.GetAttributeValue(XMLAttribute_Id) =
-        XMLTag_TSHSegmentId then
+      if XMLSegment.Attributes.GetAttributeValue(XMLAttribute_Id) = XMLTag_TSHSegmentId then
       begin
         EDISegment := ConvertToEDISegment(XMLSegment);
         Result.SegmentST := TEDITransactionSetSegment(EDISegment);
       end
       else
-      if XMLSegment.Attributes.GetAttributeValue(XMLAttribute_Id) =
-        XMLTag_TSTSegmentId then
+      if XMLSegment.Attributes.GetAttributeValue(XMLAttribute_Id) = XMLTag_TSTSegmentId then
       begin
         EDISegment := ConvertToEDISegment(XMLSegment);
         Result.SegmentSE := TEDITransactionSetSegment(EDISegment);
@@ -2681,8 +2557,7 @@ begin
       ConvertTransactionSetLoopToEDI(Result, XMLLoop);
     end
     else
-      raise EJclEDIError.CreateResFmt(@EDIXMLError062,
-        [XMLTransactionSet[I].ClassName]);
+      raise EJclEDIError.CreateResFmt(@EDIXMLError062, [XMLTransactionSet[I].ClassName]);
   end;
 end;
 
@@ -2825,3 +2700,4 @@ finalization
 {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
 
 end.
+

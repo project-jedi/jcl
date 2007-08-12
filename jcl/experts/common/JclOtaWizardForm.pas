@@ -101,8 +101,7 @@ var
   CurrentPage: TJclWizardFrame;
 begin
   CurrentPage := ActivePage;
-  (Sender as TAction).Enabled :=
-    Assigned(CurrentPage) and CurrentPage.SupportsFinish;
+  (Sender as TAction).Enabled := Assigned(CurrentPage) and CurrentPage.SupportsFinish;
 end;
 
 procedure TJclWizardForm.ActionNextExecute(Sender: TObject);
@@ -171,8 +170,7 @@ begin
   try
     ImageJcl.Picture.Bitmap.TransparentMode := tmAuto;
     ImageJcl.Picture.Bitmap.Transparent := True;
-    ImageJcl.Picture.Bitmap.LoadFromResourceName(
-      FindResourceHInstance(HInstance), 'JCLSPLASH');
+    ImageJcl.Picture.Bitmap.LoadFromResourceName(FindResourceHInstance(HInstance), 'JCLSPLASH');
   except
 
   end;
@@ -231,9 +229,7 @@ begin
   begin
     AFrame.PageActivated(Direction);
     AFrame.Visible := True;
-    LabelProgression.Caption :=
-      Format(RsWizardProgression, [PageIndex + 1 {one based}, PageCount,
-      AFrame.Caption]);
+    LabelProgression.Caption := Format(RsWizardProgression, [PageIndex+1 {one based}, PageCount, AFrame.Caption]);
   end;
 end;
 

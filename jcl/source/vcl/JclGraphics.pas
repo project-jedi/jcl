@@ -74,8 +74,7 @@ type
   { stretch filter }
   TStretchFilter = (sfNearest, sfLinear, sfSpline);
 
-  TConversionKind = (ckRed, ckGreen, ckBlue, ckAlpha, ckUniformRGB,
-    ckWeightedRGB);
+  TConversionKind = (ckRed, ckGreen, ckBlue, ckAlpha, ckUniformRGB, ckWeightedRGB);
 
   { resampling support types }
   TResamplingFilter =
@@ -164,40 +163,27 @@ type
   public
     constructor Create(RegionHandle: HRGN; OwnsHandle: Boolean = True);
     constructor CreateElliptic(const ARect: TRect); overload;
-    constructor CreateElliptic(const Top, Left, Bottom, Right: Integer);
-      overload;
-    constructor CreatePoly(const Points: TDynPointArray;
+    constructor CreateElliptic(const Top, Left, Bottom, Right: Integer); overload;
+    constructor CreatePoly(const Points: TDynPointArray; Count: Integer; FillMode: TPolyFillMode);
+    constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
-    constructor CreatePolyPolygon(const Points: TDynPointArray;
-      const Vertex: TDynIntegerArray;
-      Count: Integer; FillMode: TPolyFillMode);
-    constructor CreateRect(const ARect: TRect; DummyForBCB: Boolean = False);
-      overload;
-    constructor CreateRect(const Top, Left, Bottom, Right: Integer;
-      DummyForBCB: Byte = 0); overload;
-    constructor CreateRoundRect(const ARect: TRect;
-      CornerWidth, CornerHeight: Integer); overload;
-    constructor CreateRoundRect(
-      const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
-    constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor;
-      RegionBitmapMode: TJclRegionBitmapMode);
+    constructor CreateRect(const ARect: TRect; DummyForBCB: Boolean = False); overload;
+    constructor CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0); overload;
+    constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
+    constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
+    constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
-    constructor CreateMapWindow(InitialRegion: TJclRegion;
-      hWndFrom, hWndTo: THandle); overload;
-    constructor CreateMapWindow(InitialRegion: TJclRegion;
-      ControlFrom, ControlTo: TWinControl); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; ControlFrom, ControlTo: TWinControl); overload;
     destructor Destroy; override;
     procedure Clip(Canvas: TCanvas);
-    procedure Combine(DestRegion, SrcRegion: TJclRegion;
-      CombineOp: TJclRegionCombineOperator); overload;
-    procedure Combine(SrcRegion: TJclRegion;
-      CombineOp: TJclRegionCombineOperator); overload;
+    procedure Combine(DestRegion, SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
+    procedure Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
     function Copy: TJclRegion;
     function Equals(CompareRegion: TJclRegion): Boolean;
     procedure Fill(Canvas: TCanvas);
-    procedure FillGradient(Canvas: TCanvas; ColorCount: Integer;
-      StartColor, EndColor: TColor; ADirection: TGradientDirection);
+    procedure FillGradient(Canvas: TCanvas; ColorCount: Integer; StartColor, EndColor: TColor; ADirection: TGradientDirection);
     procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
     procedure Invert(Canvas: TCanvas);
     procedure Offset(X, Y: Integer);
@@ -250,7 +236,7 @@ type
     procedure SetWidth(NewWidth: Integer);
   public
     procedure Delete; virtual;
-    function Empty: Boolean; virtual;
+    function  Empty: Boolean; virtual;
     procedure SetSize(Source: TPersistent); overload;
     procedure SetSize(NewWidth, NewHeight: Integer); overload; virtual;
     property Height: Integer read FHeight write SetHeight;
@@ -275,10 +261,10 @@ type
     FStippleStep: Single;
     FStretchFilter: TStretchFilter;
     FResetAlphaOnAssign: Boolean;
-    function GetPixel(X, Y: Integer): TColor32;
-    function GetPixelS(X, Y: Integer): TColor32;
-    function GetPixelPtr(X, Y: Integer): PColor32;
-    function GetScanLine(Y: Integer): PColor32Array;
+    function  GetPixel(X, Y: Integer): TColor32;
+    function  GetPixelS(X, Y: Integer): TColor32;
+    function  GetPixelPtr(X, Y: Integer): PColor32;
+    function  GetScanLine(Y: Integer): PColor32Array;
     procedure SetDrawMode(Value: TDrawMode);
     procedure SetFont(Value: TFont);
     procedure SetMasterAlpha(Value: Byte);
@@ -293,9 +279,8 @@ type
     RasterXF: Single;
     RasterYF: Single;
     procedure AssignTo(Dst: TPersistent); override;
-    function ClipLine(var X0, Y0, X1, Y1: Integer): Boolean;
-    class function ClipLineF(var X0, Y0, X1, Y1: Single;
-      MinX, MaxX, MinY, MaxY: Single): Boolean;
+    function  ClipLine(var X0, Y0, X1, Y1: Integer): Boolean;
+    class function ClipLineF(var X0, Y0, X1, Y1: Single; MinX, MaxX, MinY, MaxY: Single): Boolean;
     procedure FontChanged(Sender: TObject);
     procedure SET_T256(X, Y: Integer; C: TColor32);
     procedure SET_TS256(X, Y: Integer; C: TColor32);
@@ -309,7 +294,7 @@ type
 
     procedure Assign(Source: TPersistent); override;
     procedure SetSize(NewWidth, NewHeight: Integer); override;
-    function Empty: Boolean; override;
+    function  Empty: Boolean; override;
     procedure Clear; overload;
     procedure Clear(FillColor: TColor32); overload;
     procedure Delete; override;
@@ -332,7 +317,7 @@ type
     procedure DrawTo(hDst: HDC; DstX, DstY: Integer); overload;
     procedure DrawTo(hDst: HDC; DstRect, SrcRect: TRect); overload;
 
-    function GetPixelB(X, Y: Integer): TColor32;
+    function  GetPixelB(X, Y: Integer): TColor32;
     procedure SetPixelT(X, Y: Integer; Value: TColor32); overload;
     procedure SetPixelT(var Ptr: PColor32; Value: TColor32); overload;
     procedure SetPixelTS(X, Y: Integer; Value: TColor32);
@@ -342,7 +327,7 @@ type
     procedure SetStipple(NewStipple: TArrayOfColor32); overload;
     procedure SetStipple(NewStipple: array of TColor32); overload;
     procedure ResetStippleCounter;
-    function GetStippleColor: TColor32;
+    function  GetStippleColor: TColor32;
 
     procedure DrawHorzLine(X1, Y, X2: Integer; Value: TColor32);
     procedure DrawHorzLineS(X1, Y, X2: Integer; Value: TColor32);
@@ -356,22 +341,14 @@ type
     procedure DrawVertLineTS(X, Y1, Y2: Integer; Value: TColor32);
     procedure DrawVertLineTSP(X, Y1, Y2: Integer);
 
-    procedure DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32;
-      L: Boolean = False);
-    procedure DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32;
-      L: Boolean = False);
+    procedure DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean = False);
+    procedure DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean = False);
     procedure DrawLineFP(X1, Y1, X2, Y2: Single; L: Boolean = False);
     procedure DrawLineFSP(X1, Y1, X2, Y2: Single; L: Boolean = False);
 
@@ -394,15 +371,12 @@ type
 
     procedure UpdateFont;
     procedure TextOut(X, Y: Integer; const Text: string); overload;
-    procedure TextOut(X, Y: Integer; const ClipRect: TRect;
-      const Text: string); overload;
-    procedure TextOut(ClipRect: TRect; const Flags: Cardinal;
-      const Text: string); overload;
-    function TextExtent(const Text: string): TSize;
-    function TextHeight(const Text: string): Integer;
-    function TextWidth(const Text: string): Integer;
-    procedure RenderText(X, Y: Integer; const Text: string;
-      AALevel: Integer; Color: TColor32);
+    procedure TextOut(X, Y: Integer; const ClipRect: TRect; const Text: string); overload;
+    procedure TextOut(ClipRect: TRect; const Flags: Cardinal; const Text: string); overload;
+    function  TextExtent(const Text: string): TSize;
+    function  TextHeight(const Text: string): Integer;
+    function  TextWidth(const Text: string): Integer;
+    procedure RenderText(X, Y: Integer; const Text: string; AALevel: Integer; Color: TColor32);
 
     property BitmapHandle: HBITMAP read FHandle;
     property BitmapInfo: TBitmapInfo read FBitmapInfo;
@@ -410,22 +384,17 @@ type
     property Font: TFont read FFont write SetFont;
     property Handle: HDC read FHDC;
     property PenColor: TColor32 read FPenColor write FPenColor;
-    property Pixel[X, Y: Integer]: TColor32 read GetPixel write SetPixel;
-      default;
+    property Pixel[X, Y: Integer]: TColor32 read GetPixel write SetPixel; default;
     property PixelS[X, Y: Integer]: TColor32 read GetPixelS write SetPixelS;
     property PixelPtr[X, Y: Integer]: PColor32 read GetPixelPtr;
     property ScanLine[Y: Integer]: PColor32Array read GetScanLine;
     property StippleStep: Single read FStippleStep write SetStippleStep;
   published
-    property DrawMode: TDrawMode
-      read FDrawMode write SetDrawMode default dmOpaque;
-    property MasterAlpha: Byte
-      read FMasterAlpha write SetMasterAlpha default $FF;
+    property DrawMode: TDrawMode read FDrawMode write SetDrawMode default dmOpaque;
+    property MasterAlpha: Byte read FMasterAlpha write SetMasterAlpha default $FF;
     property OuterColor: TColor32 read FOuterColor write FOuterColor default 0;
-    property StretchFilter: TStretchFilter
-      read FStretchFilter write SetStretchFilter default sfNearest;
-    property ResetAlphaOnAssign: Boolean
-      read FResetAlphaOnAssign write FResetAlphaOnAssign default true;
+    property StretchFilter: TStretchFilter read FStretchFilter write SetStretchFilter default sfNearest;
+    property ResetAlphaOnAssign: Boolean read FResetAlphaOnAssign write FResetAlphaOnAssign default true;
     property OnChanging;
     property OnChange;
   end;
@@ -443,12 +412,11 @@ type
   public
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    function Empty: Boolean; override;
+    function  Empty: Boolean; override;
     procedure Clear(FillValue: Byte);
     procedure ReadFrom(Source: TJclBitmap32; Conversion: TConversionKind);
     procedure SetSize(NewWidth, NewHeight: Integer); override;
-    procedure WriteTo(Dest: TJclBitmap32; Conversion: TConversionKind);
-      overload;
+    procedure WriteTo(Dest: TJclBitmap32; Conversion: TConversionKind); overload;
     procedure WriteTo(Dest: TJclBitmap32; const Palette: TPalette32); overload;
     property Bytes: TDynByteArray read FBytes;
     property ValPtr[X, Y: Integer]: PByte read GetValPtr;
@@ -457,12 +425,10 @@ type
 
   TJclTransformation = class(TObject)
   public
-    function GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
+    function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
     procedure PrepareTransform; virtual; abstract;
-    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer);
-      virtual; abstract;
-    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer);
-      virtual; abstract;
+    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); virtual; abstract;
+    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); virtual; abstract;
   end;
 
   TJclLinearTransformation = class(TJclTransformation)
@@ -477,12 +443,10 @@ type
     F: Integer;
   public
     constructor Create; virtual;
-    function GetTransformedBounds(const Src: TRect): TRect; override;
+    function  GetTransformedBounds(const Src: TRect): TRect; override;
     procedure PrepareTransform; override;
-    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer);
-      override;
-    procedure Transform256(DstX, DstY: Integer;
-      out SrcX256, SrcY256: Integer); override;
+    procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); override;
+    procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); override;
     procedure Clear;
     procedure Rotate(Cx, Cy, Alpha: Extended); // degrees
     procedure Skew(Fx, Fy: Extended);
@@ -510,58 +474,43 @@ procedure JPegToBitmap(const FileName: string);
 procedure SaveIconToFile(Icon: HICON; const FileName: string);
 procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP;
   WriteLength: Boolean = False); overload;
-procedure WriteIcon(Stream: TStream; Icon: HICON;
-  WriteLength: Boolean = False); overload;
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False); overload;
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 
-procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer;
-  DstY: Integer; Src: TJclBitmap32;
+procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
-procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect;
-  Src: TJclBitmap32; SrcRect: TRect;
+procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
 
-procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
-  Transformation: TJclTransformation);
+procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
-  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
-  overload;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer;
-  Window: THandle = HWND_DESKTOP); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect): TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 
 // PolyLines and Polygons
-procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
-procedure PolyLineAS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
-procedure PolyLineFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF;
-  Color: TColor32);
+procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
+procedure PolyLineAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
+procedure PolyLineFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF; Color: TColor32);
 
-procedure PolygonTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
-procedure PolygonAS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
-procedure PolygonFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF;
-  Color: TColor32);
+procedure PolygonTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
+procedure PolygonAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
+procedure PolygonFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF; Color: TColor32);
 
-procedure PolyPolygonTS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArray;
+procedure PolyPolygonTS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
-procedure PolyPolygonAS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArray;
+procedure PolyPolygonAS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
-procedure PolyPolygonFS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArrayF;
+procedure PolyPolygonFS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArrayF;
   Color: TColor32);
 
 // Filters
@@ -614,16 +563,16 @@ type
 
   PContributor = ^TContributor;
   TContributor = record
-    Weight: Integer; // Pixel Weight
-    Pixel: Integer;  // Source Pixel
+   Weight: Integer; // Pixel Weight
+   Pixel: Integer;  // Source Pixel
   end;
 
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
   TContributorEntry = record
-    N: Integer;
-    Contributors: TContributors;
+   N: Integer;
+   Contributors: TContributors;
   end;
 
   TContributorList = array of TContributorEntry;
@@ -888,7 +837,7 @@ end;
 
 const
   FilterList: array [TResamplingFilter] of TBitmapFilterFunction =
-    (
+   (
     BitmapBoxFilter,
     BitmapTriangleFilter,
     BitmapHermiteFilter,
@@ -896,7 +845,7 @@ const
     BitmapSplineFilter,
     BitmapLanczos3Filter,
     BitmapMitchellFilter
-    );
+   );
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
 var
@@ -956,8 +905,7 @@ end;
 // sufficient size. Source must contain valid data, Radius must not be 0 and
 // Filter must not be nil.
 
-procedure DoStretch(Filter: TBitmapFilterFunction; Radius: Single;
-  Source, Target: TBitmap);
+procedure DoStretch(Filter: TBitmapFilterFunction; Radius: Single; Source, Target: TBitmap);
 var
   ScaleX, ScaleY: Single; // Zoom scale factors
   I, J, K, N: Integer;    // Loop variables
@@ -1426,30 +1374,30 @@ begin
           end;
         end;
       dmBlend:
-      begin
-        MstrAlpha := Src.MasterAlpha;
-        if MstrAlpha = 255 then
-          for J := R.Top to R.Bottom - 1 do
-          begin
-            Y := MapY[J - DstY];
-            P := Dst.PixelPtr[R.Left, J];
-            for I := R.Left to R.Right - 1 do
+        begin
+          MstrAlpha := Src.MasterAlpha;
+          if MstrAlpha = 255 then
+            for J := R.Top to R.Bottom - 1 do
             begin
-              BlendMem(Src[MapX[I - DstX], Y], P^);
-              Inc(P);
-            end;
-          end
-        else // Master Alpha is in [1..254] range
-          for J := R.Top to R.Bottom - 1 do
-          begin
-            Y := MapY[J - DstY];
-            P := Dst.PixelPtr[R.Left, J];
-            for I := R.Left to R.Right - 1 do
+              Y := MapY[J - DstY];
+              P := Dst.PixelPtr[R.Left, J];
+              for I := R.Left to R.Right - 1 do
+              begin
+                BlendMem(Src[MapX[I - DstX], Y], P^);
+                Inc(P);
+              end;
+            end
+          else // Master Alpha is in [1..254] range
+            for J := R.Top to R.Bottom - 1 do
             begin
-              BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
-              Inc(P);
+              Y := MapY[J - DstY];
+              P := Dst.PixelPtr[R.Left, J];
+              for I := R.Left to R.Right - 1 do
+              begin
+                BlendMemEx(Src[MapX[I - DstX], Y], P^, MstrAlpha);
+                Inc(P);
+              end;
             end;
-          end;
       end;
     end;
   finally
@@ -1459,8 +1407,7 @@ begin
   end;
 end;
 
-procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer;
-  DstY: Integer; Src: TJclBitmap32;
+procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 var
   SrcX, SrcY: Integer;
@@ -1513,8 +1460,7 @@ begin
   end;
 end;
 
-procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect;
-  Src: TJclBitmap32; SrcRect: TRect;
+procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
 var
   SrcW, SrcH, DstW, DstH: Integer;
@@ -1644,31 +1590,29 @@ var
   X, Y: Integer;
   Line1, Line2, Line: PJclByteArray;
 begin
-  Assert(Bitmap <> nil);
-  if Bitmap.PixelFormat <> pf24bit then
-    Bitmap.PixelFormat := pf24bit;
-  Antialias := TBitmap.Create;
-  with Bitmap do
-  begin
-    Antialias.PixelFormat := pf24bit;
-    Antialias.Width := Width div 2;
-    Antialias.Height := Height div 2;
-    for Y := 0 to Antialias.Height - 1 do
-    begin
-      Line1 := ScanLine[Y * 2];
-      Line2 := ScanLine[Y * 2 + 1];
-      Line := Antialias.ScanLine[Y];
-      for X := 0 to Antialias.Width - 1 do
-      begin
-        Line[X * 3] := (Integer(Line1[X * 6]) + Integer(Line2[X * 6]) +
-          Integer(Line1[X * 6 + 3]) + Integer(Line2[X * 6 + 3])) div 4;
-        Line[X * 3 + 1] := (Integer(Line1[X * 6 + 1]) +
-          Integer(Line2[X * 6 + 1]) +
-          Integer(Line1[X * 6 + 3 + 1]) + Integer(Line2[X * 6 + 3 + 1])) div 4;
-        Line[X * 3 + 2] := (Integer(Line1[X * 6 + 2]) +
-          Integer(Line2[X * 6 + 2]) +
-          Integer(Line1[X * 6 + 3 + 2]) + Integer(Line2[X * 6 + 3 + 2])) div 4;
-      end;
+ Assert(Bitmap <> nil);
+ if Bitmap.PixelFormat <> pf24bit then
+   Bitmap.PixelFormat := pf24bit;
+ Antialias := TBitmap.Create;
+ with Bitmap do
+ begin
+   Antialias.PixelFormat := pf24bit;
+   Antialias.Width := Width div 2;
+   Antialias.Height := Height div 2;
+   for Y := 0 to Antialias.Height - 1 do
+   begin
+     Line1 := ScanLine[Y * 2];
+     Line2 := ScanLine[Y * 2 + 1];
+     Line := Antialias.ScanLine[Y];
+     for X := 0 to Antialias.Width - 1 do
+     begin
+       Line[X * 3] := (Integer(Line1[X * 6]) + Integer(Line2[X * 6]) +
+         Integer(Line1[X * 6 + 3]) + Integer(Line2[X * 6 + 3])) div 4;
+       Line[X * 3 + 1] := (Integer(Line1[X * 6 + 1]) + Integer(Line2[X * 6 + 1]) +
+         Integer(Line1[X * 6 + 3 + 1]) + Integer(Line2[X * 6 + 3 + 1])) div 4;
+       Line[X * 3 + 2] := (Integer(Line1[X * 6 + 2]) + Integer(Line2[X * 6 + 2]) +
+         Integer(Line1[X * 6 + 3 + 2]) + Integer(Line2[X * 6 + 3 + 2])) div 4;
+     end;
     end;
   end;
   Result := Antialias;
@@ -1686,8 +1630,7 @@ begin
     JPeg.LoadFromFile(FileName);
     Bitmap := TBitmap.Create;
     Bitmap.Assign(JPeg);
-    Bitmap.SaveToFile(ChangeFileExt(FileName,
-      LoadResString(@RsBitmapExtension)));
+    Bitmap.SaveToFile(ChangeFileExt(FileName, LoadResString(@RsBitmapExtension)));
   finally
     FreeAndNil(Bitmap);
     FreeAndNil(JPeg);
@@ -1763,17 +1706,17 @@ var
   IconInfo: TIconInfo;
 begin
   with TBitmap.Create do
-    try
-      Assign(Bitmap);
-      if not Transparent then
-        TransparentColor := clNone;
-      IconInfo.fIcon := True;
-      IconInfo.hbmMask := MaskHandle;
-      IconInfo.hbmColor := Handle;
-      Icon.Handle := CreateIconIndirect(IconInfo);
-    finally
-      Free;
-    end;
+  try
+    Assign(Bitmap);
+    if not Transparent then
+      TransparentColor := clNone;
+    IconInfo.fIcon := True;
+    IconInfo.hbmMask := MaskHandle;
+    IconInfo.hbmColor := Handle;
+    Icon.Handle := CreateIconIndirect(IconInfo);
+  finally
+    Free;
+  end;
 end;
 
 const
@@ -1798,8 +1741,7 @@ type
     DIBOffset: Longint;
   end;
 
-procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP;
-  WriteLength: Boolean = False);
+procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBITMAP; WriteLength: Boolean = False);
 var
   MonoInfoSize, ColorInfoSize: DWORD;
   MonoBitsSize, ColorBitsSize: DWORD;
@@ -1859,18 +1801,17 @@ end;
 
 // WriteIcon depends on unit Graphics by use of GetDIBSizes and GetDIB
 
-procedure WriteIcon(Stream: TStream; Icon: HICON;
-  WriteLength: Boolean = False);
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 var
   IconInfo: TIconInfo;
 begin
   if GetIconInfo(Icon, IconInfo) then
-    try
-      WriteIcon(Stream, IconInfo.hbmColor, IconInfo.hbmMask, WriteLength);
-    finally
-      DeleteObject(IconInfo.hbmColor);
-      DeleteObject(IconInfo.hbmMask);
-    end
+  try
+    WriteIcon(Stream, IconInfo.hbmColor, IconInfo.hbmMask, WriteLength);
+  finally
+    DeleteObject(IconInfo.hbmColor);
+    DeleteObject(IconInfo.hbmMask);
+  end
   else
     RaiseLastOSError;
 end;
@@ -1905,8 +1846,8 @@ var
     flrx := X and $FF;
     flry := Y and $FF;
 
-    X := Sar(X, 8);
-    Y := Sar(Y, 8);
+    X := Sar(X,8);
+    Y := Sar(Y,8);
 
     celx := flrx xor 255;
     cely := flry xor 255;
@@ -1923,8 +1864,7 @@ var
       C4 := P^;
       Dec(P);
       C3 := P^;
-      C := CombineReg(CombineReg(C1, C2, celx),
-        CombineReg(C3, C4, celx), cely);
+      C := CombineReg(CombineReg(C1, C2, celx), CombineReg(C3, C4, celx), cely);
       Result := True;
     end
     else
@@ -2042,7 +1982,7 @@ begin
 
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X, Y] = RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
           begin
             Inc(X);
             if X = FBitmap.Width then
@@ -2051,7 +1991,7 @@ begin
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X, Y] <> RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
           begin
             Inc(X);
             if X = FBitmap.Width then
@@ -2065,7 +2005,7 @@ begin
         StartX := X;
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X, Y] <> RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
           begin
             if X = FBitmap.Width then
               Break;
@@ -2074,7 +2014,7 @@ begin
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X, Y] = RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
           begin
             if X = FBitmap.Width then
               Break;
@@ -2100,8 +2040,7 @@ begin
   end;
 end;
 
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer;
-  Window: THandle); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle); overload;
 var
   WinDC: HDC;
   Pal: TMaxLogPalette;
@@ -2117,13 +2056,11 @@ begin
   // Palette-device?
   if (GetDeviceCaps(WinDC, RASTERCAPS) and RC_PALETTE) = RC_PALETTE then
   begin
-    FillChar(Pal, SizeOf(TMaxLogPalette), #0);
-  // fill the structure with zeros
+    FillChar(Pal, SizeOf(TMaxLogPalette), #0);  // fill the structure with zeros
     Pal.palVersion := $300;                     // fill in the palette version
 
     // grab the system palette entries...
-    Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256,
-      Pal.palPalEntry);
+    Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
     if Pal.PalNumEntries <> 0 then
       bm.Palette := CreatePalette(PLogPalette(@Pal)^);
   end;
@@ -2150,7 +2087,7 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect): TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;
 begin
   MapWindowPoints(hWndFrom, hWndTo, ARect, 2);
   Result := ARect;
@@ -2179,7 +2116,7 @@ begin
   RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
   RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
   AreaWidth := ARect.Right - ARect.Left;
-  AreaHeight := ARect.Bottom - ARect.Top;
+  AreaHeight :=  ARect.Bottom - ARect.Top;
   case ADirection of
     gdHorizontal:
       RectOffset := AreaWidth / ColorCount;
@@ -2194,11 +2131,9 @@ begin
       StartRGB[2] + Round((I + 1) * RGBKoef[2])));
     case ADirection of
       gdHorizontal:
-        SetRect(ColorRect, Round(RectOffset * I), 0,
-          Round(RectOffset * (I + 1)), AreaHeight);
+        SetRect(ColorRect, Round(RectOffset * I), 0, Round(RectOffset * (I + 1)), AreaHeight);
       gdVertical:
-        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth,
-          Round(RectOffset * (I + 1)));
+        SetRect(ColorRect, 0, Round(RectOffset * I), AreaWidth, Round(RectOffset * (I + 1)));
     end;
     OffsetRect(ColorRect, ARect.Left, ARect.Top);
     FillRect(DC, ColorRect, Brush);
@@ -2245,8 +2180,7 @@ end;
 
 function TJclRegionInfo.GetBox: TRect;
 begin
-  Result := RectAssign(TRgnData(FData^).rdh.rcBound.Left,
-    TRgnData(FData^).rdh.rcBound.Top,
+  Result := RectAssign(TRgnData(FData^).rdh.rcBound.Left, TRgnData(FData^).rdh.rcBound.Top,
     TRgnData(FData^).rdh.rcBound.Right, TRgnData(FData^).rdh.rcBound.Bottom);
 end;
 
@@ -2260,7 +2194,7 @@ var RectP: PRect;
 begin
   if (Index < 0) or (DWORD(Index) >= TRgnData(FData^).rdh.nCount) then
     raise EJclGraphicsError.CreateRes(@RsRegionDataOutOfBound);
-  RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect) * Index));
+  RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect)*Index));
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
 
@@ -2313,14 +2247,12 @@ begin
   end;
 end;
 
-constructor TJclRegion.CreateRect(const ARect: TRect;
-  DummyForBCB: Boolean = False);
+constructor TJclRegion.CreateRect(const ARect: TRect; DummyForBCB: Boolean = False);
 begin
   Create(CreateRectRgnIndirect(ARect), True);
 end;
 
-constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer;
-  DummyForBCB: Byte = 0);
+constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0);
 begin
   Create(CreateRectRgn(Top, Left, Bottom, Right), True);
 end;
@@ -2332,12 +2264,10 @@ begin
     CornerWidth, CornerHeight), True);
 end;
 
-constructor TJclRegion.CreateRoundRect(
-  const Top, Left, Bottom, Right, CornerWidth,
+constructor TJclRegion.CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth,
   CornerHeight: Integer);
 begin
-  Create(CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth,
-    CornerHeight), True);
+  Create(CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth, CornerHeight), True);
 end;
 
 constructor TJclRegion.CreatePath(Canvas: TCanvas);
@@ -2349,27 +2279,25 @@ constructor TJclRegion.CreateRegionInfo(RegionInfo: TJclRegionInfo);
 begin
   if RegionInfo = nil then
     raise EJclGraphicsError.CreateRes(@RsInvalidRegionInfo);
-  Create(ExtCreateRegion(nil, RegionInfo.FDataSize, TRgnData(
-    RegionInfo.FData^)), True);
+  Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
-constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion;
-  hWndFrom, hWndTo: THandle);
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle);
 var
   RectRegion: HRGN;
-  CurrentRegionInfo: TJclRegionInfo;
+  CurrentRegionInfo : TJclRegionInfo;
   SimpleRect: TRect;
-  Index: integer;
+  Index:integer;
 begin
   Create(CreateRectRgn(0, 0, 0, 0), True);
-  if (hWndFrom <> 0) or (hWndTo <> 0) then
+  if (hWndFrom <> 0) or (hWndTo <> 0 ) then
   begin
     CurrentRegionInfo := InitialRegion.GetRegionInfo;
     try
-      for Index := 0 to CurrentRegionInfo.Count - 1 do
+      for Index := 0 to CurrentRegionInfo.Count-1 do
       begin
         SimpleRect := CurrentRegionInfo.Rectangles[Index];
-        SimpleRect := MapWindowRect(hWndFrom, hWndTo, SimpleRect);
+        SimpleRect := MapWindowRect(hWndFrom,hWndTo,SimpleRect);
         RectRegion := CreateRectRgnIndirect(SimpleRect);
         if RectRegion <> 0 then
         begin
@@ -2387,7 +2315,7 @@ end;
 constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion;
   ControlFrom, ControlTo: TWinControl);
 begin
-  CreateMapWindow(InitialRegion, ControlFrom.Handle, ControlTo.Handle);
+  CreateMapWindow(InitialRegion,ControlFrom.Handle,ControlTo.Handle);
 end;
 
 destructor TJclRegion.Destroy;
@@ -2413,22 +2341,17 @@ procedure TJclRegion.Combine(DestRegion, SrcRegion: TJclRegion;
 begin
   case CombineOp of
     coAnd:
-      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle,
-        FHandle, RGN_AND);
+      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle, FHandle, RGN_AND);
     coOr:
-      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle,
-        FHandle, RGN_OR);
+      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle, FHandle, RGN_OR);
     coDiff:
-      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle,
-        FHandle, RGN_DIFF);
+      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle, FHandle, RGN_DIFF);
     coXor:
-      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle,
-        FHandle, RGN_XOR);
+      FRegionType := CombineRgn(DestRegion.Handle, SrcRegion.Handle, FHandle, RGN_XOR);
   end;
 end;
 
-procedure TJclRegion.Combine(SrcRegion: TJclRegion;
-  CombineOp: TJclRegionCombineOperator);
+procedure TJclRegion.Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator);
 begin
   case CombineOp of
     coAnd:
@@ -2465,15 +2388,13 @@ end;
 procedure TJclRegion.FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
 begin
-  SelectClipRgn(Canvas.Handle, FHandle);
-  JclGraphics.FillGradient(Canvas.Handle, Box, ColorCount,
-    StartColor, EndColor, ADirection);
+  SelectClipRgn(Canvas.Handle,FHandle);
+  JclGraphics.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
 end;
 
 procedure TJclRegion.Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
 begin
-  FrameRgn(Canvas.Handle, FHandle, Canvas.Brush.Handle, FrameWidth,
-    FrameHeight);
+  FrameRgn(Canvas.Handle, FHandle, Canvas.Brush.Handle, FrameWidth, FrameHeight);
 end;
 
 function TJclRegion.GetBox: TRect;
@@ -2491,8 +2412,8 @@ begin
       Result := rkSimple;
     COMPLEXREGION:
       Result := rkComplex;
-    else
-      Result := rkError;
+  else
+    Result := rkError;
   end;
 end;
 
@@ -2541,15 +2462,13 @@ end;
 procedure TJclRegion.SetWindow(Window: THandle; Redraw: Boolean);
 begin
   if SetWindowRgn(Window, FHandle, Redraw) <> 0 then
-    FOwnsHandle := False;
-  // Make sure that we do not release the Handle. If we didn't own it before
+    FOwnsHandle := False;  // Make sure that we do not release the Handle. If we didn't own it before
                            // please take care that the owner doesn't release it.
 end;
 
 function TJclRegion.Copy: TJclRegion;
 begin
-  Result := TJclRegion.CreateRect(0, 0, 0, 0, 0);
- // (rom) call correct overloaded constructor for BCB
+  Result := TJclRegion.CreateRect(0, 0, 0, 0, 0); // (rom) call correct overloaded constructor for BCB
   CombineRgn(Result.Handle, FHandle, 0, RGN_COPY);
   Result.GetBox;
 end;
@@ -2650,7 +2569,7 @@ begin
     if Assigned(WidthInfo) and Assigned(HeightInfo) then
       SetSize(GetOrdProp(Source, WidthInfo), GetOrdProp(Source, HeightInfo))
     else
-      raise EJclGraphicsError.CreateResFmt(@RsMapSizeFmt, [Source.ClassName]);
+      raise EJclGraphicsError.CreateResFmt(@RsMapSizeFmt,[Source.ClassName]);
   end;
 end;
 
@@ -2722,8 +2641,7 @@ begin
         biWidth := NewWidth;
         biHeight := -NewHeight;
       end;
-      FHandle := CreateDIBSection(0, FBitmapInfo, DIB_RGB_COLORS,
-        Pointer(FBits), 0, 0);
+      FHandle := CreateDIBSection(0, FBitmapInfo, DIB_RGB_COLORS, Pointer(FBits), 0, 0);
       if FBits = nil then
         raise EJclGraphicsError.CreateRes(@RsDibHandleAllocation);
 
@@ -2828,8 +2746,7 @@ begin
         else
         begin
           // icons, metafiles etc...
-          SetSize(TPicture(Source).Graphic.Width,
-            TPicture(Source).Graphic.Height);
+          SetSize(TPicture(Source).Graphic.Width, TPicture(Source).Graphic.Height);
           if Empty then
             Exit;
           Canvas := TCanvas.Create;
@@ -2857,8 +2774,7 @@ begin
         Canvas := TCanvas.Create;
         try
           Canvas.Handle := Self.Handle;
-          TJclGraphicAccess(Picture.Graphic).Draw(Canvas,
-            Rect(0, 0, Width, Height));
+          TJclGraphicAccess(Picture.Graphic).Draw(Canvas, Rect(0, 0, Width, Height));
           if ResetAlphaOnAssign then
             ResetAlpha;
         finally
@@ -3003,8 +2919,7 @@ begin
   if Empty or Dst.Empty then
     Exit;
   Dst.Changing;
-  StretchTransfer(Dst, DstRect, Self, Rect(0, 0, Width, Height),
-    StretchFilter, DrawMode);
+  StretchTransfer(Dst, DstRect, Self, Rect(0, 0, Width, Height), StretchFilter, DrawMode);
   Dst.Changed;
 end;
 
@@ -3029,10 +2944,8 @@ begin
   if Empty then
     Exit;
   StretchDIBits(hDst,
-    DstRect.Left, DstRect.Top, DstRect.Right - DstRect.Left,
-    DstRect.Bottom - DstRect.Top,
-    SrcRect.Left, SrcRect.Top, SrcRect.Right - SrcRect.Left,
-    SrcRect.Bottom - SrcRect.Top,
+    DstRect.Left, DstRect.Top, DstRect.Right - DstRect.Left, DstRect.Bottom - DstRect.Top,
+    SrcRect.Left, SrcRect.Top, SrcRect.Right - SrcRect.Left, SrcRect.Bottom - SrcRect.Top,
     Bits, FBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 end;
 
@@ -3047,7 +2960,7 @@ begin
   for I := 0 to Width * Height - 1 do
   begin
     P^ := $FF;
-    Inc(P, 4);
+    Inc(P, 4)
   end;
   Changed;
 end;
@@ -3101,8 +3014,8 @@ begin
   flrx := X and $FF;
   flry := Y and $FF;
 
-  X := Sar(X, 8);
-  Y := Sar(Y, 8);
+  X := Sar(X,8);
+  Y := Sar(Y,8);
 
   celx := A * GAMMA_TABLE[flrx xor 255];
   cely := GAMMA_TABLE[flry xor 255];
@@ -3132,8 +3045,8 @@ begin
   flrx := X and $FF;
   flry := Y and $FF;
 
-  X := Sar(X, 8);
-  Y := Sar(Y, 8);
+  X := Sar(X,8);
+  Y := Sar(Y,8);
 
   if (X >= FWidth) or (Y >= FHeight) then
     Exit;
@@ -3382,8 +3295,7 @@ begin
   end;
 end;
 
-procedure TJclBitmap32.DrawLine(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
   Dy, Dx, Sy, Sx, I, Delta: Integer;
   P: PColor32;
@@ -3636,15 +3548,13 @@ begin
   Result := Accept;
 end;
 
-procedure TJclBitmap32.DrawLineS(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
   if ClipLine(X1, Y1, X2, Y2) then
     DrawLine(X1, Y1, X2, Y2, Value, L);
 end;
 
-procedure TJclBitmap32.DrawLineT(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
   Dy, Dx, Sy, Sx, I, Delta: Integer;
   P: PColor32;
@@ -3657,7 +3567,7 @@ begin
     if Dx > 0 then
       Sx := 1
     else
-    if Dx < 0 then
+      if Dx < 0 then
     begin
       Dx := -Dx;
       Sx := -1;
@@ -3737,15 +3647,13 @@ begin
   end;
 end;
 
-procedure TJclBitmap32.DrawLineTS(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
   if ClipLine(X1, Y1, X2, Y2) then
     DrawLineT(X1, Y1, X2, Y2, Value, L);
 end;
 
-procedure TJclBitmap32.DrawLineF(X1, Y1, X2, Y2: Single;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean);
 var
   N, I: Integer;
   px, py, ex, ey, nx, ny, hyp: Integer;
@@ -3786,8 +3694,7 @@ begin
   end;
 end;
 
-procedure TJclBitmap32.DrawLineFS(X1, Y1, X2, Y2: Single;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean);
 var
   N, I: Integer;
   px, py, ex, ey, nx, ny, hyp: Integer;
@@ -3827,8 +3734,7 @@ begin
         A := Value shr 24;
         hyp := hyp - N shl 16;
         A := A * Longword(hyp) shl 8 and $FF000000;
-        SET_TS256(Sar(px + ex - nx, 9), Sar(py + ey - ny, 9),
-          Value and _RGB + A);
+        SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), Value and _RGB + A);
       finally
         EMMS;
         Changed;
@@ -3923,7 +3829,7 @@ begin
         A := C shr 24;
         hyp := hyp - N shl 16;
         A := A * Longword(hyp) shl 8 and $FF000000;
-        SET_TS256(Sar(px + ex - nx, 9), Sar(py + ey - ny, 9), C and _RGB + A);
+        SET_TS256(Sar(px + ex - nx,9), Sar(py + ey - ny,9), C and _RGB + A);
         EMMS;
       finally
         Changed;
@@ -3931,8 +3837,7 @@ begin
     end;
 end;
 
-procedure TJclBitmap32.DrawLineA(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
   Dx, Dy, Sx, Sy, D: Integer;
   EC, EA: Word;
@@ -4018,8 +3923,7 @@ begin
   end;
 end;
 
-procedure TJclBitmap32.DrawLineAS(X1, Y1, X2, Y2: Integer;
-  Value: TColor32; L: Boolean);
+procedure TJclBitmap32.DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
   if ClipLine(X1, Y1, X2, Y2) then
     DrawLineA(X1, Y1, X2, Y2, Value, L);
@@ -4098,15 +4002,15 @@ begin
   begin
     Changing;
     try
-      for J := Y1 to Y2 do
+    for J := Y1 to Y2 do
+    begin
+      P := GetPixelPtr(X1, J);
+      for I := X1 to X2 do
       begin
-        P := GetPixelPtr(X1, J);
-        for I := X1 to X2 do
-        begin
-          CombineMem(Value, P^, A);
-          Inc(P);
-        end;
+        CombineMem(Value, P^, A);
+        Inc(P);
       end;
+    end;
     finally
       EMMS;
       Changed;
@@ -4371,8 +4275,7 @@ procedure TJclBitmap32.TextOut(X, Y: Integer; const ClipRect: TRect;
 begin
   Changing;
   UpdateFont;
-  ExtTextOut(Handle, X, Y, ETO_CLIPPED, @ClipRect, PChar(Text),
-    Length(Text), nil);
+  ExtTextOut(Handle, X, Y, ETO_CLIPPED, @ClipRect, PChar(Text), Length(Text), nil);
   Changed;
 end;
 
@@ -4395,8 +4298,7 @@ begin
   Result := TextExtent(Text).cX;
 end;
 
-procedure TJclBitmap32.RenderText(X, Y: Integer; const Text: string;
-  AALevel: Integer; Color: TColor32);
+procedure TJclBitmap32.RenderText(X, Y: Integer; const Text: string; AALevel: Integer; Color: TColor32);
 var
   B, B2: TJclBitmap32;
   Sz: TSize;
@@ -4431,8 +4333,7 @@ begin
         B2.TextOut(0, 0, Text);
         B2.StretchFilter := sfLinear;
         B.SetSize(Sz.cx shr AALevel, Sz.cy shr AALevel);
-        B.Draw(Rect(0, 0, B.Width, B.Height),
-          Rect(0, 0, B2.Width, B2.Height), B2);
+        B.Draw(Rect(0, 0, B.Width, B.Height), Rect(0, 0, B2.Width, B2.Height), B2);
       finally
         B2.Free;
       end;
@@ -4521,8 +4422,7 @@ begin
   Result := Bytes[X + Y * Width];
 end;
 
-procedure TJclByteMap.ReadFrom(Source: TJclBitmap32;
-  Conversion: TConversionKind);
+procedure TJclByteMap.ReadFrom(Source: TJclBitmap32; Conversion: TConversionKind);
 var
   W, H, I, N: Integer;
   SrcC: PColor32;
@@ -4544,67 +4444,66 @@ begin
     DstB := @Bytes[0];
     case Conversion of
       ckRed:
-      begin
-        Inc(SrcB, 2);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB);
-          Inc(SrcB, 4);
+          Inc(SrcB, 2);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB);
+            Inc(SrcB, 4);
+          end;
         end;
-      end;
       ckGreen:
-      begin
-        Inc(SrcB, 1);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB);
-          Inc(SrcB, 4);
+          Inc(SrcB, 1);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB);
+            Inc(SrcB, 4);
+          end;
         end;
-      end;
       ckBlue:
-      begin
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB);
-          Inc(SrcB, 4);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB);
+            Inc(SrcB, 4);
+          end;
         end;
-      end;
       ckAlpha:
-      begin
-        Inc(SrcB, 3);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB);
-          Inc(SrcB, 4);
+          Inc(SrcB, 3);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB);
+            Inc(SrcB, 4);
+          end;
         end;
-      end;
       ckUniformRGB:
-      begin
-        for I := 0 to N do
         begin
-          Value := SrcC^;
-          Value := (Value and $00FF0000) shr 16 +
-            (Value and $0000FF00) shr 8 +
-            (Value and $000000FF);
-          Value := Value div 3;
-          DstB^ := Value;
-          Inc(DstB);
-          Inc(SrcC);
+          for I := 0 to N do
+          begin
+            Value := SrcC^;
+            Value := (Value and $00FF0000) shr 16 + (Value and $0000FF00) shr 8 +
+              (Value and $000000FF);
+            Value := Value div 3;
+            DstB^ := Value;
+            Inc(DstB);
+            Inc(SrcC);
+          end;
         end;
-      end;
       ckWeightedRGB:
-      begin
-        for I := 0 to N do
         begin
-          DstB^ := Intensity(SrcC^);
-          Inc(DstB);
-          Inc(SrcC);
+          for I := 0 to N do
+          begin
+            DstB^ := Intensity(SrcC^);
+            Inc(DstB);
+            Inc(SrcC);
+          end;
         end;
-      end;
     end;
   finally
     EndUpdate;
@@ -4646,53 +4545,53 @@ begin
     SrcB := @Bytes[0];
     case Conversion of
       ckRed:
-      begin
-        Inc(DstB, 2);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB, 4);
-          Inc(SrcB);
+          Inc(DstB, 2);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB, 4);
+            Inc(SrcB);
+          end;
         end;
-      end;
       ckGreen:
-      begin
-        Inc(DstB, 1);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB, 4);
-          Inc(SrcB);
+          Inc(DstB, 1);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB, 4);
+            Inc(SrcB);
+          end;
         end;
-      end;
       ckBlue:
-      begin
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB, 4);
-          Inc(SrcB);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB, 4);
+            Inc(SrcB);
+          end;
         end;
-      end;
       ckAlpha:
-      begin
-        Inc(DstB, 3);
-        for I := 0 to N do
         begin
-          DstB^ := SrcB^;
-          Inc(DstB, 4);
-          Inc(SrcB);
+          Inc(DstB, 3);
+          for I := 0 to N do
+          begin
+            DstB^ := SrcB^;
+            Inc(DstB, 4);
+            Inc(SrcB);
+          end;
         end;
-      end;
       ckUniformRGB, ckWeightedRGB:
-      begin
-        for I := 0 to N do
         begin
-          DstC^ := Gray32(SrcB^, $FF);
-          Inc(DstC);
-          Inc(SrcB);
+          for I := 0 to N do
+          begin
+            DstC^ := Gray32(SrcB^, $FF);
+            Inc(DstC);
+            Inc(SrcB);
+          end;
         end;
-      end;
     end;
   finally
     Dest.EndUpdate;
@@ -4739,8 +4638,7 @@ begin
   Result := a1 * b2 - a2 * b1;
 end;
 
-function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended;
-  overload;
+function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended; overload;
 begin
   Result :=
     a1 * (b2 * c3 - b3 * c2) -
@@ -4766,17 +4664,17 @@ begin
   c2 := M.A[2, 1];
   c3 := M.A[2, 2];
 
-  M.A[0, 0] := _DET(b2, b3, c2, c3);
-  M.A[0, 1] := -_DET(a2, a3, c2, c3);
-  M.A[0, 2] := _DET(a2, a3, b2, b3);
+  M.A[0, 0]:=  _DET(b2, b3, c2, c3);
+  M.A[0, 1]:= -_DET(a2, a3, c2, c3);
+  M.A[0, 2]:=  _DET(a2, a3, b2, b3);
 
-  M.A[1, 0] := -_DET(b1, b3, c1, c3);
-  M.A[1, 1] := _DET(a1, a3, c1, c3);
-  M.A[1, 2] := -_DET(a1, a3, b1, b3);
+  M.A[1, 0]:= -_DET(b1, b3, c1, c3);
+  M.A[1, 1]:=  _DET(a1, a3, c1, c3);
+  M.A[1, 2]:= -_DET(a1, a3, b1, b3);
 
-  M.A[2, 0] := _DET(b1, b2, c1, c2);
-  M.A[2, 1] := -_DET(a1, a2, c1, c2);
-  M.A[2, 2] := _DET(a1, a2, b1, b2);
+  M.A[2, 0]:=  _DET(b1, b2, c1, c2);
+  M.A[2, 1]:= -_DET(a1, a2, c1, c2);
+  M.A[2, 2]:=  _DET(a1, a2, b1, b2);
 end;
 
 function Determinant(const M: TMatrix3d): Extended;
@@ -4846,8 +4744,7 @@ begin
   FMatrix := IdentityMatrix;
 end;
 
-function TJclLinearTransformation.GetTransformedBounds(
-  const Src: TRect): TRect;
+function TJclLinearTransformation.GetTransformedBounds(const Src: TRect): TRect;
 var
   V1, V2, V3, V4: TVector3d;
 begin
@@ -4872,9 +4769,9 @@ begin
   V3 := VectorTransform(Matrix, V3);
   V4 := VectorTransform(Matrix, V4);
 
-  Result.Left := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
-  Result.Right := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
-  Result.Top := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
+  Result.Left   := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
+  Result.Right  := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
+  Result.Top    := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
   Result.Bottom := Round(Max(Max(V1[1], V2[1]), Max(V3[1], V4[1])) + 0.5);
 end;
 
@@ -5350,8 +5247,7 @@ begin
   end;
 end;
 
-procedure PolygonTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
+procedure PolygonTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 var
   L, MinY, MaxY: Integer;
   ScanLines: TScanLines;
@@ -5378,8 +5274,7 @@ begin
   end;
 end;
 
-procedure PolygonAS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
-  Color: TColor32);
+procedure PolygonAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 var
   L, I, MinY, MaxY: Integer;
   ScanLines: TScanLines;
@@ -5400,7 +5295,7 @@ begin
   if MinY >= MaxY then
     Exit;
   SetLength(ScanLines, MaxY - MinY + 1);
-  AddPolygon(PP, MinY, Bitmap.Width shl 4 - 1, Bitmap.Height shl 4 - 1,
+  AddPolygon(PP, MinY, Bitmap.Width  shl 4 - 1, Bitmap.Height shl 4 - 1,
     ScanLines, False);
   SortLines(ScanLines);
   Bitmap.Changing;
@@ -5413,8 +5308,7 @@ begin
   end;
 end;
 
-procedure PolygonFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF;
-  Color: TColor32);
+procedure PolygonFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF; Color: TColor32);
 var
   L, I, MinY, MaxY: Integer;
   ScanLines: TScanLines;
@@ -5448,8 +5342,7 @@ begin
   end;
 end;
 
-procedure PolyPolygonTS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArray;
+procedure PolyPolygonTS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
 var
   N, L, min, max, MinY, MaxY: Integer;
@@ -5475,7 +5368,7 @@ begin
   SetLength(ScanLines, MaxY - MinY + 1);
 
   for N := 0 to High(Points) do
-    AddPolygon(Points[N], MinY, Bitmap.Width shl 8 - 1, Bitmap.Height - 1,
+    AddPolygon(Points[N], MinY, Bitmap.Width shl 8 - 1 , Bitmap.Height - 1,
       ScanLines, True);
 
   SortLines(ScanLines);
@@ -5485,8 +5378,7 @@ begin
   Bitmap.Changed;
 end;
 
-procedure PolyPolygonAS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArray;
+procedure PolyPolygonAS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
 var
   N, L, I, min, max, MinY, MaxY: Integer;
@@ -5532,8 +5424,7 @@ begin
   Bitmap.Changed;
 end;
 
-procedure PolyPolygonFS(Bitmap: TJclBitmap32;
-  const Points: TDynDynPointArrayArrayF;
+procedure PolyPolygonFS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArrayF;
   Color: TColor32);
 var
   N, L, I, min, max, MinY, MaxY: Integer;
@@ -5585,8 +5476,7 @@ begin
     raise EJclGraphicsError.CreateRes(@RsSourceBitmapEmpty);
   if Dst = nil then
     raise EJclGraphicsError.CreateRes(@RsDestinationBitmapEmpty);
-  Dst.SetSize(Src.Width, Src.Height);
- // Should this go? See #0001513. It is currently of no use.
+  Dst.SetSize(Src.Width, Src.Height); // Should this go? See #0001513. It is currently of no use.
 end;
 
 procedure AlphaToGrayscale(Dst, Src: TJclBitmap32);

@@ -137,8 +137,8 @@ begin
       Result := 'Guard';
     PAGE_NOCACHE:
       Result := 'NoCache';
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -151,8 +151,8 @@ begin
       Result := 'Free';
     MEM_RESERVE:
       Result := 'Reserve';
-    else
-      Result := Format('%x', [P]);
+  else
+    Result := Format('%x', [P]);
   end;
 end;
 
@@ -165,19 +165,17 @@ begin
       Result := 'Mapped';
     MEM_PRIVATE:
       Result := 'Private';
-    else
-      Result := Format('%x', [P]);
+  else
+    Result := Format('%x', [P]);
   end;
 end;
 
 function ImageIndexFromInfo(MemInfo: TMemoryInfo): Integer;
 begin
   with MemInfo do
-    if MappedFile then
-      Result := 6 else
-    if RepeatedItem then
-      Result := 21 else
-      Result := 19;
+    if MappedFile then Result := 6 else
+      if RepeatedItem then Result := 21 else
+        Result := 19;
 end;
 
 { TMemoryDumpForm }
@@ -191,8 +189,7 @@ end;
 procedure TMemoryDumpForm.FormDestroy(Sender: TObject);
 begin
   FModulesList.Free;
-  if FProcess <> 0 then
-    CloseHandle(FProcess);
+  if FProcess <> 0 then CloseHandle(FProcess);
 end;
 
 procedure TMemoryDumpForm.BuildPagesList;
@@ -203,30 +200,29 @@ var
   I, N, TotalCommit, TotalReserve: Integer;
 
   procedure EnumAllocations;
-  var
-    P: PChar;
-    MI: TMemoryBasicInformation;
-    Res: DWORD;
-    Count: Integer;
+var
+  P: PChar;
+  MI: TMemoryBasicInformation;
+  Res: DWORD;
+  Count: Integer;
+begin
+  FMemoryInfo := nil;
+  Count := 0;
+  P := Pointer(0);
+  Res := VirtualQueryEx(FProcess, P, MI, SizeOf(MI));
+  if Res <> SizeOf(MI) then RaiseLastOSError;
+  while Res = SizeOf(MI) do
   begin
-    FMemoryInfo := nil;
-    Count := 0;
-    P := Pointer(0);
-    Res := VirtualQueryEx(FProcess, P, MI, SizeOf(MI));
-    if Res <> SizeOf(MI) then
-      RaiseLastOSError;
-    while Res = SizeOf(MI) do
+    if MI.AllocationBase <> nil then
     begin
-      if MI.AllocationBase <> nil then
-      begin
-        SetLength(FMemoryInfo, Count + 1);
-        FMemoryInfo[Count].MemInfo := MI;
-        Inc(Count);
-      end;
-      Inc(P, MI.RegionSize);
-      Res := VirtualQueryEx(FProcess, P, MI, SizeOf(MI));
+      SetLength(FMemoryInfo, Count + 1);
+      FMemoryInfo[Count].MemInfo := MI;
+      Inc(Count);
     end;
+    Inc(P, MI.RegionSize);
+    Res := VirtualQueryEx(FProcess, P, MI, SizeOf(MI));
   end;
+end;
 
 begin
   Screen.Cursor := crHourGlass;
@@ -252,26 +248,20 @@ begin
           with FMemoryInfo[I] do
             if LastAllocationBase <> MemInfo.AllocationBase then
             begin
-              TempNode := AddChildObject(AllocationsNode,
-                Format('%p', [MemInfo.AllocationBase]), Pointer(I));
-              with TempNode do
-                ImageIndex := Parent.ImageIndex;
+              TempNode := AddChildObject(AllocationsNode, Format('%p', [MemInfo.AllocationBase]), Pointer(I));
+              with TempNode do ImageIndex := Parent.ImageIndex;
               LastAllocationBase := MemInfo.AllocationBase;
               RepeatedItem := False;
               N := FModulesList.IndexOfObject(LastAllocationBase);
               if N <> -1 then
               begin
-                TempNode :=
-                  AddChildObject(ModulesNode, FModulesList[N], Pointer(I));
-                with TempNode do
-                  ImageIndex := Parent.ImageIndex;
+                TempNode := AddChildObject(ModulesNode, FModulesList[N], Pointer(I));
+                with TempNode do ImageIndex := Parent.ImageIndex;
                 MappedFile := True;
-              end
-              else
+              end else
                 MappedFile := False;
               LastMappedFile := MappedFile;
-            end
-            else
+            end else
             begin
               RepeatedItem := True;
               MappedFile := LastMappedFile;
@@ -282,14 +272,11 @@ begin
 
       TotalCommit := 0;
       TotalReserve := 0;
-      for I := 0 to Length(FMemoryInfo) - 1 do
-        with FMemoryInfo[I].MemInfo do
-          case State of
-            MEM_COMMIT:
-              Inc(TotalCommit, RegionSize);
-            MEM_RESERVE:
-              Inc(TotalReserve, RegionSize);
-          end;
+      for I := 0 to Length(FMemoryInfo) - 1 do with FMemoryInfo[I].MemInfo do
+        case State of
+          MEM_COMMIT: Inc(TotalCommit, RegionSize);
+          MEM_RESERVE: Inc(TotalReserve, RegionSize);
+        end;
       with StatusBar do
       begin
         Panels[0].Text := Format(sCount, [Length(FMemoryInfo)]);
@@ -322,16 +309,14 @@ begin
     Next := Module32First(SnapProcHandle, ModuleEntry);
     while Next do
     begin
-      FModulesList.AddObject(ModuleEntry.szModule,
-        Pointer(ModuleEntry.modBaseAddr));
+      FModulesList.AddObject(ModuleEntry.szModule, Pointer(ModuleEntry.modBaseAddr));
       Next := Module32Next(SnapProcHandle, ModuleEntry);
     end;
     CloseHandle(SnapProcHandle);
   end;
 end;
 
-procedure TMemoryDumpForm.SetParams(ProcessID: DWORD;
-  const FileName: TFileName);
+procedure TMemoryDumpForm.SetParams(ProcessID: DWORD; const FileName: TFileName);
 begin
   FProcessID := ProcessID;
   FFileName := FileName;
@@ -348,23 +333,20 @@ begin
       FDumpBytesPerLine := 64;
       Columns[1].Caption := 'Ansi text';
       Columns[2].Caption := 'Unicode text';
-    end
-    else
+    end else
     begin
       FDumpBytesPerLine := 16;
       Columns[1].Caption := 'Data';
       Columns[2].Caption := 'ASCII';
     end;
-    Items.Count := Integer(PagesListView.Selected.SubItems.Objects[3]) div
-      FDumpBytesPerLine;
+    Items.Count := Integer(PagesListView.Selected.SubItems.Objects[3]) div FDumpBytesPerLine;
     Invalidate;
   end;
 end;
 
 procedure TMemoryDumpForm.Refresh1Execute(Sender: TObject);
 begin
-  if FProcess <> 0 then
-    CloseHandle(FProcess);
+  if FProcess <> 0 then CloseHandle(FProcess);
   FProcess := OpenProcess(PROCESS_ALL_ACCESS, False, FProcessID);
   if FProcess = 0 then
   begin
@@ -387,15 +369,12 @@ begin
   with TListView(Sender) do
     if PagesListView.Selected <> nil then
     begin
-      Address := Pointer(DWORD(
-        FMemoryInfo[PagesListView.Selected.Index].MemInfo.BaseAddress) +
-        DWORD(Item.Index * FDumpBytesPerLine));
+      Address := Pointer(DWORD(FMemoryInfo[PagesListView.Selected.Index].MemInfo.BaseAddress) + DWORD(Item.Index * FDumpBytesPerLine));
       SetLength(Hex, 3 * SizeOf(LineData));
       SetLength(Ascii, 3 * SizeOf(LineData));
       Hex := '';
       Ascii := '';
-      if ReadProcessMemory(FProcess, Address, @LineData,
-        SizeOf(LineData), NR) and (NR = SizeOf(LineData)) then
+      if ReadProcessMemory(FProcess, Address, @LineData, SizeOf(LineData), NR) and (NR = SizeOf(LineData)) then
       begin
         if ViewAsText1.Checked then
         begin
@@ -412,13 +391,11 @@ begin
             SetLength(S, 1);
             WideCharToMultiByte(CP_ACP, 0, W, 1, PChar(S), 1, nil, nil);
             S := PChar(S);
-            if Length(S) = 0 then
-              S := '.';
+            if Length(S) = 0 then S := '.';
             Ascii := Ascii + S;
             Inc(W);
           end;
-        end
-        else
+        end else
         begin
           for I := 0 to FDumpBytesPerLine - 1 do
           begin
@@ -442,12 +419,11 @@ begin
   if Selected then
   begin
     if (DWORD(Item.SubItems.Objects[0]) = PAGE_NOACCESS) or
-      (DWORD(Item.SubItems.Objects[2]) = 0) then
+       (DWORD(Item.SubItems.Objects[2]) = 0) then
     begin
       DumpListView.Items.Count := 0;
       DumpListView.Invalidate;
-    end
-    else
+    end else
       UpdateDumpList;
   end;
 end;
@@ -461,14 +437,11 @@ begin
     Caption := Format('%p', [BaseAddress]);
     SubItems.AddObject(AllocationProtectStr(Protect), Pointer(Protect));
     SubItems.AddObject(Format('%p', [AllocationBase]), AllocationBase);
-    SubItems.AddObject(AllocationProtectStr(AllocationProtect),
-      Pointer(AllocationProtect));
-    SubItems.AddObject(Format('%.0n', [IntToExtended(RegionSize)]),
-      Pointer(RegionSize));
+    SubItems.AddObject(AllocationProtectStr(AllocationProtect), Pointer(AllocationProtect));
+    SubItems.AddObject(Format('%.0n', [IntToExtended(RegionSize)]), Pointer(RegionSize));
     SubItems.AddObject(StateStr(State), Pointer(State));
     I := FModulesList.IndexOfObject(AllocationBase);
-    if I <> -1 then
-      SubItems.Add(FModulesList[I]) else SubItems.Add('');
+    if I <> - 1 then SubItems.Add(FModulesList[I]) else SubItems.Add('');
     SubItems.AddObject(TypeStr(Type_9), Pointer(Type_9));
   end;
   Item.ImageIndex := ImageIndexFromInfo(FMemoryInfo[Item.Index]);
@@ -481,14 +454,12 @@ begin
     Sender.Canvas.Font.Color := clBtnFace;
 end;
 
-procedure TMemoryDumpForm.MemoryTreeViewChange(Sender: TObject;
-  Node: TTreeNode);
+procedure TMemoryDumpForm.MemoryTreeViewChange(Sender: TObject; Node: TTreeNode);
 begin
   if Node.Level = 1 then
     with PagesListView do
     begin
-      while Assigned(Selected) do
-        Selected.Selected := False;
+      while Assigned(Selected) do Selected.Selected := False;
       ItemFocused := PagesListView.Items[Integer(Node.Data)];
       ItemFocused.Selected := True;
       ItemFocused.MakeVisible(False);
@@ -505,7 +476,7 @@ procedure TMemoryDumpForm.ViewAsText1Execute(Sender: TObject);
 begin
   with ViewAsText1 do
     Checked := not Checked;
-  UpdateDumpList;
+  UpdateDumpList;  
 end;
 
 procedure TMemoryDumpForm.SaveData1Update(Sender: TObject);
@@ -528,8 +499,7 @@ begin
       MS := TMemoryStream.Create;
       try
         MS.Size := RegionSize;
-        if ReadProcessMemory(FProcess, BaseAddress, MS.Memory,
-          RegionSize, NR) and
+        if ReadProcessMemory(FProcess, BaseAddress, MS.Memory, RegionSize, NR) and
           (NR = RegionSize) then
           MS.SaveToFile(FileName)
         else

@@ -33,8 +33,7 @@ type
     function Size: Integer;
 
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean;
-      overload;
+    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
@@ -62,8 +61,7 @@ type
   protected
     { IJclList }
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean;
-      overload;
+    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
@@ -99,7 +97,7 @@ end;
 
 function TMyObjectList.Contains(AObject: TMyObject): Boolean;
 begin
-  Result := inherited Contains(AObject);
+Result := inherited Contains(AObject);
 end;
 
 function TMyObjectList.GetObject(Index: Integer): TMyObject;
@@ -133,3 +131,4 @@ begin
 end;
 
 end.
+

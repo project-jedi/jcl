@@ -72,9 +72,7 @@ begin
   TextListView.Items.Count := LineCount;
   TextListView.Invalidate;
   StatusBar.Panels[0].Text := ExtractFileName(FileName);
-  StatusBar.Panels[1].Text :=
-    Format('Lines: %d, Counting time: %.2f ms',
-    [LineCount, LineCountTime * 1000]);
+  StatusBar.Panels[1].Text := Format('Lines: %d, Counting time: %.2f ms', [LineCount, LineCountTime * 1000]);
 end;
 
 procedure TMainForm.TextListViewData(Sender: TObject; Item: TListItem);
@@ -143,13 +141,11 @@ begin
     AssignFileTotalTime := StopCount(C);
     CloseFile(T);
 
-    ReadLnLabel.Caption :=
-      Format('Lines: %d, TJclMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
-      [LineCount, TotalTime * 1000, StringListTotalTime * 1000,
-      AssignFileTotalTime * 1000]);
+    ReadLnLabel.Caption := Format('Lines: %d, TJclMappedTextReader: %.2f ms,  TStringList: %.2f ms,  AssignFile: %.2f ms',
+      [LineCount, TotalTime * 1000, StringListTotalTime * 1000, AssignFileTotalTime * 1000]);
   finally
     Screen.Cursor := crDefault;
-  end;
+  end;      
 end;
 
 

@@ -103,7 +103,7 @@ begin
         begin
           Caption := Profiles[I];
           Data := Pointer(Caption = DefaultProfileName);
-        end;
+        end;  
   finally
     ProfilesListView.Items.EndUpdate;
   end;
