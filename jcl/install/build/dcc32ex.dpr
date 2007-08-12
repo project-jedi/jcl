@@ -19,6 +19,8 @@ var
   Verbose: Boolean;
   RequireJcl: Boolean;
   RequireJvcl: Boolean;
+  RequireJclVersion: string;
+  RequireJvclVersion: string;
 
 { Helper functions because no SysUtils unit is used. }
 {******************************************************************************}
@@ -75,6 +77,8 @@ var
   Error: Integer;
 begin
   Val(S, Result, Error);
+  if Error <> 0 then
+    Result := 0;
 end;
 {******************************************************************************}
 function IntToStr(Value: Integer): string;
@@ -268,7 +272,9 @@ type
     KeyName: string;
     Id: string; // ["d"|"c"]<version>
     InstalledJcl: Boolean;
+    JclVersion: string;
     InstalledJvcl: Boolean;
+    JvclVersion: string;
   end;
 
 function RegReadStr(Reg: HKEY; const Name: string): string;
@@ -307,7 +313,9 @@ begin
   Result.Name := '';
   Result.Id := '';
   Result.InstalledJcl := False;
+  Result.JclVersion := '';
   Result.InstalledJvcl := False;
+  Result.JvclVersion := '';
   Result.SearchPaths := '';
   Result.LibDirs := '';
 
@@ -395,6 +403,7 @@ begin
     begin
       DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'DcpDir')), Result.RootDir));
       RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir')), Result.RootDir));
+      Result.JclVersion := RegReadStr(Reg, 'Version');
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
       if FileExists(Dir + '\JclBase.dcu') then
@@ -421,6 +430,7 @@ begin
     begin
       DcpDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'DcpDir')), Result.RootDir));
       RootDir := ExcludeTrailingPathDelimiter(ExpandDirMacros(ExcludeTrailingPathDelimiter(RegReadStr(Reg, 'RootDir')), Result.RootDir));
+      Result.JvclVersion := RegReadStr(Reg, 'Version');
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
       if FileExists(Dir + '\JVCLVer.dcu') then
@@ -505,7 +515,51 @@ begin
   end;
 end;
 
+function ParseVersionNumber(const VersionStr: string): Cardinal;
+const
+  Shifts: array[0..3] of Integer = (24, 16, 15, 0);
+var
+  S: string;
+  ps: Integer;
+  Count: Integer;
+begin
+  S := VersionStr;
+  Result := 0;
+  if S <> '' then
+  begin
+    Result := 0;
+    try
+      Count := 0;
+      ps := Pos('.', S);
+      while (ps > 0) and (Count < High(Shifts)) do
+      begin
+        Result := Result or (Cardinal(StrToInt(Copy(S, 1, ps - 1))) shl Shifts[Count]);
+        S := Copy(S, ps + 1, MaxInt);
+        ps := Pos('.', S);
+        Inc(Count);
+      end;
+      Result := Result or (Cardinal(StrToInt(Copy(S, 1, MaxInt))) shl Shifts[Count]);
+    except
+      Result := 0;
+    end;
+  end;
+end;
 
+function IsVersionCompatible(const RequiredVersion, Version: string): Boolean;
+var
+  ReqVer, Ver: Cardinal;
+begin
+  Result := False;
+  if RequiredVersion = '' then
+    Result := True
+  else
+  if Version <> '' then
+  begin
+    ReqVer := ParseVersionNumber(RequiredVersion);
+    Ver := ParseVersionNumber(Version);
+    Result := ReqVer < Ver;
+  end;
+end;
 
 procedure CheckTargets(const PreferedTyp: TTargetType; const PreferedVersion: Integer; var NewestTarget: TTarget; ShowErrors: Boolean);
 var
@@ -532,7 +586,8 @@ begin
         if FileExists(Target.RootDir + '\bin\dcc32.exe') and
            (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
         begin
-          if (not RequireJcl or Target.InstalledJcl) and (not RequireJvcl or Target.InstalledJvcl) then
+          if (not RequireJcl or (Target.InstalledJcl and IsVersionCompatible(RequireJclVersion, Target.JclVersion))) and
+             (not RequireJvcl or (Target.InstalledJvcl and IsVersionCompatible(RequireJvclVersion, Target.JvclVersion))) then
           begin
             if (NewestTarget.Typ = ttNone) or (NewestTarget.Version < Target.Version) then
               NewestTarget := Target;
@@ -545,10 +600,18 @@ begin
             if ShowErrors then
             begin
               WriteLn('Missing dependencies for ', Target.Name);
+
               if RequireJcl and not Target.InstalledJcl then
-                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)');
+                WriteLn(' - JCL  is required but not installed. (http://jcl.sourceforge.net)')
+              else if RequireJcl and Target.InstalledJcl and
+                      not IsVersionCompatible(RequireJclVersion, Target.JclVersion) then
+                WriteLn(' - JCL  version ', Target.JclVersion, ' is too old. Version ', RequireJclVersion, ' is required.');
+
               if RequireJvcl and not Target.InstalledJvcl then
-                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)');
+                WriteLn(' - JVCL is required but not installed. (http://jvcl.sourceforge.net)')
+              else if RequireJvcl and Target.InstalledJvcl and
+                      not IsVersionCompatible(RequireJvclVersion, Target.JvclVersion) then
+                WriteLn(' - JVCL version ', Target.JvclVersion, ' is too old. Version ', RequireJvclVersion, ' is required.');
               WriteLn;
             end;
             DependencyCheckFailed := True;
@@ -565,7 +628,7 @@ begin
             else
             begin
               if not FileExists(Target.RootDir + '\bin\dcc32.exe') then
-                WriteLn(' - dcc32.exe missing');
+                WriteLn(' - dcc32.exe missing (Evaluation version and TurboExplorer are not supported) ');
               if not (FileExists(Target.RootDir + '\lib\System.dcu') or FileExists(Target.RootDir + '\lib\obj\System.dcu')) then
                 WriteLn(' - System.dcu missing');
             end;
@@ -585,12 +648,14 @@ begin
     if InvalidFound then
     begin
       if DependencyCheckFailed then
-        ErrMsg := 'Dependencies are missing. Please install them first.'
+        ErrMsg := 'No Delphi/BCB/BDS/RAD-Studio versions was found that has the required' + sLineBreak +
+                  'dependencies installed. Please install the dependencies first.'
       else
         ErrMsg := 'No valid Delphi/BCB/BDS version found. Are your registry settings correct?';
     end
     else
       ErrMsg := 'No Delphi/BCB/BDS version installed.';
+    WriteLn;
     WriteLn(ErrOutput, ErrMsg);
     MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
   end;
@@ -673,6 +738,18 @@ begin
     else
     if SameText(S, '--requires-jvcl') then
       RequireJvcl := True
+    else
+    if StartsText('--requires-jcl=', S) then
+    begin
+      RequireJcl := True;
+      RequireJclVersion := Copy(S, 16, MaxInt);
+    end
+    else
+    if SameText('--requires-jvcl=', S) then
+    begin
+      RequireJvcl := True;
+      RequireJvclVersion := Copy(S, 16, MaxInt);
+    end
     else
       Break;
     Result := CmdLine;
