@@ -4850,7 +4850,9 @@ begin
       raise EJclBorRadException.CreateResFmt(@RsEDualPackageNotSupported, [Name]);
 
     NewOptions := Format('%s -JL -NB"%s" -NO"%s" -N1"%s"',
-      [ExtraOptions, DcpPath, DcpPath, VclIncludeDir]);
+      [ExtraOptions, ExcludeTrailingPathDelimiter(DcpPath),
+       ExcludeTrailingPathDelimiter(DcpPath),
+       ExcludeTrailingPathDelimiter(VclIncludeDir)]);
   end
   else
     NewOptions := ExtraOptions;
