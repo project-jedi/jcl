@@ -165,7 +165,7 @@ function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolea
 function StrSame(const S1, S2: AnsiString): Boolean;
 
 // String Transformation Routines
-function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar  = ' '): AnsiString;
+function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar = ' '): AnsiString;
 function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrDoubleQuote(const S: AnsiString): AnsiString;
@@ -517,10 +517,10 @@ begin
       if CharIsUpper(CurrChar) then
         ReCaseChar := LoCaseChar
       else
-        if CharIsLower(CurrChar) then
-          ReCaseChar := UpCaseChar
-        else
-          ReCaseChar := CurrChar;
+      if CharIsLower(CurrChar) then
+        ReCaseChar := UpCaseChar
+      else
+        ReCaseChar := CurrChar;
       AnsiCaseMap[Ord(CurrChar) + AnsiLoOffset] := LoCaseChar;
       AnsiCaseMap[Ord(CurrChar) + AnsiUpOffset] := UpCaseChar;
       AnsiCaseMap[Ord(CurrChar) + AnsiReOffset] := ReCaseChar;
@@ -771,7 +771,7 @@ begin
       Result := False;
       Exit;
     end;
- end;
+  end;
 end;
 
 function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
@@ -865,7 +865,7 @@ end;
 
 //=== String Transformation Routines =========================================
 
-function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar  = ' '): AnsiString;
+function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar = ' '): AnsiString;
 begin
   if Length(S) < L then
   begin
@@ -1128,10 +1128,10 @@ begin
 
   // Check FromIndex
   if (FromIndex <= 0) or (FromIndex > Length(Source)) or
-     (ToIndex <= 0) or (ToIndex > Length(Dest)) or
-     ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
-     { TODO : Is failure without notice the proper thing to do here? }
-     Exit;
+    (ToIndex <= 0) or (ToIndex > Length(Dest)) or
+    ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
+    { TODO : Is failure without notice the proper thing to do here? }
+    Exit;
 
   // Move
   {$IFDEF CLR}
@@ -1228,14 +1228,14 @@ begin
   UniqueString(Result);
   Source := PAnsiChar(S);
   Dest := PAnsiChar(Result);
-  for Index := 0 to Len-1 do
+  for Index := 0 to Len - 1 do
   begin
     if not (Source^ in Chars) then
     begin
       Dest^ := Source^;
-      Inc(Dest,SizeOf(AnsiChar));
+      Inc(Dest, SizeOf(AnsiChar));
     end;
-    Inc(Source,SizeOf(AnsiChar));
+    Inc(Source, SizeOf(AnsiChar));
   end;
   SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
 end;
@@ -1266,14 +1266,14 @@ begin
   UniqueString(Result);
   Source := PAnsiChar(S);
   Dest := PAnsiChar(Result);
-  for Index := 0 to Len-1 do
+  for Index := 0 to Len - 1 do
   begin
     if Source^ in Chars then
     begin
       Dest^ := Source^;
-      Inc(Dest,SizeOf(AnsiChar));
+      Inc(Dest, SizeOf(AnsiChar));
     end;
-    Inc(Source,SizeOf(AnsiChar));
+    Inc(Source, SizeOf(AnsiChar));
   end;
   SetLength(Result, (Longint(Dest) - Longint(PAnsiChar(Result))) div SizeOf(AnsiChar));
 end;
@@ -1983,13 +1983,12 @@ begin
   if I > 0 then
     Inc(Result);
 
-  while (I > 0) and (Length(S) > I+Length(SubS)) do
+  while (I > 0) and (Length(S) > I + Length(SubS)) do
   begin
-    I := StrSearch(SubS, S, I+1);
-
+    I := StrSearch(SubS, S, I + 1);
     if I > 0 then
       Inc(Result);
-  end
+  end;
 end;
 
 {$IFDEF CLR}
@@ -3365,7 +3364,7 @@ begin
     UniqueString(S);
     Len := Length(S);
     P := PAnsiChar(S);
-    for Index := 0 to Len-1 do
+    for Index := 0 to Len - 1 do
     begin
       if P^ = Search then
       begin
@@ -3899,13 +3898,13 @@ begin
     if Temp[I] = '-' then
       IsNegative := not IsNegative
     else
-      if not (Temp[I] in [' ', '(', '+']) then
-      begin
-        // if it appears prior to any digit, it has to be a decimal separator
-        SwapSeparators := Temp[I] = ThouSep;
-        J := I;
-        Break;
-      end;
+    if not (Temp[I] in [' ', '(', '+']) then
+    begin
+      // if it appears prior to any digit, it has to be a decimal separator
+      SwapSeparators := Temp[I] = ThouSep;
+      J := I;
+      Break;
+    end;
   end;
 
   if not SwapSeparators then
