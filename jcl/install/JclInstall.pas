@@ -532,7 +532,7 @@ resourcestring
   RsHintMakeDemos = 'Make JCL demo applications';
 
 // warning messages
-  RsWarningPackageNodeNotSelected = 'The "Packages" node is not selected.' + sLineBreak +
+  RsWarningPackageNodeNotSelected = 'The "Packages" or "VCL package" nodes are not selected.' + sLineBreak +
     'Various libraries (including the JVCL) require JCL packages to be compiled' + sLineBreak +
     'Do you want to continue without compiling JCL packages?';
   RsWarningCreatePath = 'The path where %s files will be created doesn''t exists.' + sLineBreak +
@@ -1278,8 +1278,15 @@ function TJclInstallation.Install: Boolean;
     PathEnvVar: string;
   {$ENDIF MSWINDOWS}
   begin
-    Result := not OptionChecked[joPackages];
-    if not Result then
+    Result := True;
+
+    {$IFDEF MSWINDOWS}
+    if (not OptionChecked[joPackages] or (Target.SupportsVCL and not OptionChecked[joVCLPackage])) and
+      Assigned(GUI) and (CLRVersion = '') and not Target.IsTurboExplorer then
+      Result := GUI.Dialog(RsWarningPackageNodeNotSelected, dtConfirmation, [drYes, drNo]) = drYes;
+    {$ENDIF MSWINDOWS}
+
+    if Result and OptionChecked[joPackages] then
     begin
       Result := True;
       if not DirectoryExists(GetBplPath) then
@@ -1321,9 +1328,7 @@ function TJclInstallation.Install: Boolean;
         end;
       end;
       {$ENDIF MSWINDOWS}
-    end
-    else if Assigned(GUI) and (CLRVersion = '') and not Target.IsTurboExplorer then
-      Result := GUI.Dialog(RsWarningPackageNodeNotSelected, dtConfirmation, [drYes, drNo]) = drYes;
+    end;
   end;
 
   function SetStaticOptions: Boolean;
