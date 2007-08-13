@@ -1540,7 +1540,7 @@ function TJclInstallation.Install: Boolean;
       SaveDir, Options: string;
     begin
       SaveDir := GetCurrentDir;
-      SetCurrentDir(Distribution.JclPath + 'install\HeaderTest');
+      SetCurrentDir(Format('%sinstall%sHeaderTest', [Distribution.JclPath, DirDelimiter]));
       try
         Target.BCC32.Options.Clear;
         Target.BCC32.Options.Add('-c'); // compile only
@@ -1549,10 +1549,14 @@ function TJclInstallation.Install: Boolean;
         Target.BCC32.Options.Add('-a8'); // data alignment
         Target.BCC32.Options.Add('-b'); // enum to be at least 4 bytes
         Target.BCC32.Options.Add('-k-'); // no standard stack frame
+        {$IFDEF MSWINDOWS}
         Target.BCC32.Options.Add('-tWM'); // code format
+        {$ELSE ~ MSWINDOWS}
+        Target.BCC32.Options.Add('-tC'); // code format
+        {$ENDIF ~MSWINDOWS}
         Target.BCC32.Options.Add('-w-par'); // warning
         Target.BCC32.Options.Add('-w-aus'); // warning
-        Target.BCC32.AddPathOption('I', Format('%sinclude;%s%sinclude;%s', [Distribution.JclPath, Target.RootDir, DirDelimiter, Target.VclIncludeDir]));
+        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
         Target.BCC32.Options.Add('-DTEST_COMMON');
         {$IFDEF MSWINDOWS}
         Target.BCC32.Options.Add('-DTEST_WINDOWS');
@@ -2423,7 +2427,7 @@ begin
 
     if (bpBCBuilder32 in Target.Personalities) and (CLRVersion = '') then
     begin
-      Compiler.Options.Add('-D_RTLDLL;NO_STRICT;USEPACKAGES'); // $(SYSDEFINES)
+      Compiler.Options.Add('-D_RTLDLL' + DirSeparator + 'NO_STRICT' + DirSeparator + 'USEPACKAGES'); // $(SYSDEFINES)
       if Debug then
         UnitOutputDir := FLibDebugDir
       else
@@ -2647,7 +2651,7 @@ begin
     Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
   end;
   {$IFDEF KYLIX}
-  SetEnvironmentVar('OBJDIR', FLibObjDir);
+  SetEnvironmentVar('OBJDIR', FLibReleaseDir);
   SetEnvironmentVar('BPILIBDIR', GetDcpPath);
   SetEnvironmentVar('BPLDIR', GetBplPath);
   {$ELSE ~KYLIX}

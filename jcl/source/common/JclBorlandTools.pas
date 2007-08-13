@@ -1064,7 +1064,7 @@ const
   IDs: array [TKylixVersion] of Integer = (60, 65, 69);
   LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
-  BCC32ExeName               = 'bcc';
+  BCC32ExeName               = 'bc++';
   DCC32ExeName               = 'dcc';
   Bpr2MakExeName             = 'bpr2mak';
   MakeExeName                = 'make';
@@ -2752,7 +2752,14 @@ begin
             StringsToStr(PathList, PathSep)]);
       end
       else
+      begin
+        {$IFDEF KYLIX}
+        // escaping $ chars
+        if (Length(Option) > 2) and (Option[1] = '-') and (Option[2] = '$') then
+          Option := '-\' + Copy(Option, 2, Length(Option) - 1);
+        {$ENDIF KYLIX}
         Arguments := Format('%s %s', [Arguments, Option]);
+      end;
     end;
   finally
     PathList.Free;
