@@ -39,14 +39,7 @@
 
 
 ;---------------------------------------------------
-
-; Hard coded directories
-#define JclRoot "Z:\JEDI\JCL"
-#define DownloadDllDir "C:\Programme\ISTool"
-#define BorlandRoot = "C:\Borland"
-#define CodeGearRoot = "C:\CodeGear"
-#define BorlandSudioProjects "C:\Dokumente und Einstellungen\Andreas\Eigene Dateien\Borland Studio-Projekte"
-#define CommonDocs "C:\Dokumente und Einstellungen\All Users\Dokumente"
+#include "SourceDirectories.iss"
 
 #define Delphi5Root BorlandRoot + "\Delphi5"
 #define   Delphi5Bpl Delphi5Root + "\Projects\Bpl"

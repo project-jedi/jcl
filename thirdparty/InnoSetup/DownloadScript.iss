@@ -1,5 +1,5 @@
 [Files]
-Source: {#DownloadDllDir}\isxdl.dll; DestDir: {tmp}; Flags: dontcopy
+Source: isxdl.dll; DestDir: {tmp}; Flags: dontcopy
 
 [Code]
 procedure istool_AddFile(URL, Filename: PChar);
