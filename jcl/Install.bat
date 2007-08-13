@@ -35,6 +35,7 @@ echo.
 echo.
 echo An error occured while compiling the installer. Installation aborted.
 echo.
+pause
 
 :FINI
 cd ..
