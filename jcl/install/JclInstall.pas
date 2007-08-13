@@ -498,7 +498,7 @@ resourcestring
   RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
   RsHintVclPackage           = 'Build JCL runtime package containing VCL extensions';
   RsHintClxPackage           = 'Build JCL runtime package containing Visual CLX extensions';
-  RsHintDualPackages         = 'The same package introduce component for Delphi Win32 and C++Builder Win32';
+  RsHintDualPackages         = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
 
@@ -1046,10 +1046,10 @@ procedure TJclInstallation.Init;
     begin
       if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 4) then
       begin
-        AddOption(joDualPackages, [goStandAloneParent, goChecked], OptionData[Parent].Id,
+        AddOption(joDualPackages, [goStandAloneParent, goChecked], Parent);
+        AddOption(joCopyPackagesHppFiles, [goChecked], OptionData[joDualPackages].Id,
           Format(OptionData[joCopyPackagesHppFiles].Caption, [Target.VclIncludeDir]),
           OptionData[joCopyPackagesHppFiles].Hint);
-        AddOption(joCopyPackagesHppFiles, [goChecked], joDualPackages);
       end
       else
         AddOption(joCopyPackagesHppFiles, [goChecked], OptionData[Parent].Id,
