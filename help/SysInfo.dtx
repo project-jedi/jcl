@@ -833,14 +833,8 @@ Description:
   Describes the cache of an AMD processor.
 Donator:
   Bryan Coutch
-@@TAMDSpecific.DataTLB
-  Describes the Data TLB. The entries have the following meaning:    * DataTLB[0] Contains the number of TLB entries while  * DataTLB[1] Contains the associativity ($FF denotes fully associative TLB)  
-@@TAMDSpecific.InstructionTLB
-  Describes the instruction TLB. The entries have the following meaning:    * InstructionTLB[0] Contains the number of TLB entries  * InstructionTLB[1] Contains the associativity ($FF denotes a fully associative TLB)  
 @@TAMDSpecific.L1DataCache
   Describes the level 1 data cache. The entries have the following meaning:    * L1DataCache[0] Line size in bytes  * L1DataCache[1] Lines per tag  * L1DataCache[2] Associativity ($FF is fully associative)  * L1DataCache[3] Size in Kb  
-@@TAMDSpecific.L1ICache
-  Describes the level 1 instruction cache. The entries have the following meaning:    * L1ICache[0] Line size in bytes  * L1ICache[1] Lines per tag  * L1ICache[2] Associativity ($FF is fully associative)  * L1ICache[3] Size in Kb  
 --------------------------------------------------------------------------------
 @@TCacheInfo
 <GROUP SystemInformationRoutines.Hardware>

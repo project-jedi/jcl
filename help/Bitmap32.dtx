@@ -683,7 +683,7 @@ Donator:
 @@TJclBitmap32.FillRectTS
 <COMBINE TJclBitmap32.FillRect>
 --------------------------------------------------------------------------------
-@@TJclBitmap32.FrameRect
+@@TJclBitmap32.FrameRectS
 Summary:
   Draws a rectangle using the specified color.
 Description:
@@ -700,12 +700,10 @@ See also:
   TColor32
 Donator:
   Alex Denissov
-@@TJclBitmap32.FrameRectS
-<COMBINE TJclBitmap32.FrameRect>
 @@TJclBitmap32.FrameRectTS
-<COMBINE TJclBitmap32.FrameRect>
+<COMBINE TJclBitmap32.FrameRectS>
 @@TJclBitmap32.FrameRectTSP
-<COMBINE TJclBitmap32.FrameRect>
+<COMBINE TJclBitmap32.FrameRectS>
 --------------------------------------------------------------------------------
 @@TJclBitmap32.DrawHorzLine
 Summary:
@@ -1193,20 +1191,7 @@ See also:
 Donator:
   Alex Denissov
 --------------------------------------------------------------------------------
-@@TJclBitmap32.OnPixelCombine
-Summary:
-  Occurs for every pixel drawn on dmCustom draw mode.
-Description:
-  This event is called when the bitmap is drawn in dmCustom draw mode.
-  Use this event to customize handling of colors. Note, however, that this event
-  is called for every pixel, so the event handler should be kept small and fast.
-See also:
-  DrawMode
-  TColor32
-  TPixelCombineEvent
-Donator:
-  Alex Denissov
---------------------------------------------------------------------------------
+
 @@Graphics_Naming_Conventions
 <TITLE Function naming conventions>
 <GROUP Graphics.Bitmaps>
@@ -1367,19 +1352,7 @@ See also:
 Donator:
   Alex Denissov
 --------------------------------------------------------------------------------
-@@TJclByteMap.Byte
-Summary:
-  Provides access to the data byte at position (X, Y).
-Description:
-  Provides coordinate-based access to stored bytes. This function does not
-  perform any range checking of its arguments. Ensure that the byte map is not
-  empty and that both X and Y are in a valid range.
-See also:
-  ValPtr
-  Bytes
-Donator:
-  Alex Denissov
---------------------------------------------------------------------------------
+
 @@TJclByteMap.Assign
 Summary:
   TODO

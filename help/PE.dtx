@@ -2582,7 +2582,7 @@ Description:
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
-@@TJclRebaseImageInfo
+@@TJclRebaseImageInfo32
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Record used by the PeRebaseImage function to return information about a rebase operation.
@@ -2593,13 +2593,33 @@ See also:
   PeRebaseImage
 Donator:
   Petr Vones
-@@TJclRebaseImageInfo.OldImageSize
+@@TJclRebaseImageInfo32.OldImageSize
   Size of the image before the rebase.
-@@TJclRebaseImageInfo.OldImageBase
+@@TJclRebaseImageInfo32.OldImageBase
   Base address of the image before the rebase.
-@@TJclRebaseImageInfo.NewImageSize
+@@TJclRebaseImageInfo32.NewImageSize
   Size of the image after the rebase.
-@@TJclRebaseImageInfo.NewImageBase
+@@TJclRebaseImageInfo32.NewImageBase
+  Base address of the image after the rebase.
+--------------------------------------------------------------------------------
+@@TJclRebaseImageInfo64
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+Summary:
+  Record used by the PeRebaseImage function to return information about a rebase operation.
+Description:
+  Record used by the PeRebaseImage function to return information about
+  a rebase operation.
+See also:
+  PeRebaseImage
+Donator:
+  Petr Vones
+@@TJclRebaseImageInfo64.OldImageSize
+  Size of the image before the rebase.
+@@TJclRebaseImageInfo64.OldImageBase
+  Base address of the image before the rebase.
+@@TJclRebaseImageInfo64.NewImageSize
+  Size of the image after the rebase.
+@@TJclRebaseImageInfo64.NewImageBase
   Base address of the image after the rebase.
 --------------------------------------------------------------------------------
 @@IsValidPeFile

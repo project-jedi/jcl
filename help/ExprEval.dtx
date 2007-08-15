@@ -868,25 +868,25 @@ Description:
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprCompileParser.CompileExpr
+@@TExprCompileParser.CompileExprLevel0
 Summary: 
- Compiles relational operators and uses CompileSimpleExpr.
+ Compiles relational operators and uses CompileExprLevel1.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprCompileParser.CompileSimpleExpr
+@@TExprCompileParser.CompileExprLevel1
 Summary:
-  Compiles +, -, etc and uses CompileTerm.
+  Compiles +, -, etc and uses CompileExprLevel2.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprCompileParser.CompileTerm
+@@TExprCompileParser.CompileExprLevel2
 Summary:
-  Compiles *, /, etc and uses CompileSignedFactor.
+  Compiles *, /, etc and uses CompileExprLevel3.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprCompileParser.CompileSignedFactor
+@@TExprCompileParser.CompileExprLevel3
 Summary:
   Compiles unary negate etc, and uses CompileFactor.
 Donator:
@@ -959,25 +959,25 @@ Description:
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprEvalParser.EvalExpr
+@@TExprEvalParser.EvalExprLevel0
 Summary:
-  Evaluates relational operators and uses EvalSimpleExpr.
+  Evaluates relational operators and uses EvalExprLevel1.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprEvalParser.EvalSimpleExpr
+@@TExprEvalParser.EvalExprLevel1
 Summary:
-  Evaluates +, -, etc and uses EvalTerm.
+  Evaluates +, -, etc and uses EvalExprLevel2.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprEvalParser.EvalTerm
+@@TExprEvalParser.EvalExprLevel2
 Summary:
-  Evaluates *, /, etc and uses EvalSignedFactor.
+  Evaluates *, /, etc and uses EvalExprLevel3.
 Donator:
   Barry Kelly
 --------------------------------------------------------------------------------
-@@TExprEvalParser.EvalSignedFactor
+@@TExprEvalParser.EvalExprLevel3
 Summary:
   Evaluates unary negate etc, and uses EvalFactor.
 Donator:
