@@ -1561,7 +1561,7 @@ function TJclInstallation.Install: Boolean;
         {$ENDIF ~MSWINDOWS}
         Target.BCC32.Options.Add('-w-par'); // warning
         Target.BCC32.Options.Add('-w-aus'); // warning
-        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
+        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
         Target.BCC32.Options.Add('-DTEST_COMMON');
         {$IFDEF MSWINDOWS}
         Target.BCC32.Options.Add('-DTEST_WINDOWS');

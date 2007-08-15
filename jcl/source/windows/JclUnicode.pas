@@ -950,8 +950,6 @@ type
     Denominator: Integer;
   end;
 
-  TFontCharSet = 0..255;
-
 const
   ReplacementCharacter: UCS4 = $0000FFFD;
   MaximumUCS2: UCS4 = $0000FFFF;
@@ -1089,8 +1087,8 @@ function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
-function CharSetFromLocale(Language: LCID): TFontCharSet;
-function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
+function CharSetFromLocale(Language: LCID): Byte;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
 function CodeBlockName(const CB: TUnicodeBlock): string;
 function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
@@ -6998,7 +6996,7 @@ end;
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
   external 'gdi32.dll' name 'TranslateCharsetInfo';
 
-function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
@@ -7009,7 +7007,7 @@ begin
     FontCharset := CSI.ciCharset;
 end;
 
-function CharSetFromLocale(Language: LCID): TFontCharSet;
+function CharSetFromLocale(Language: LCID): Byte;
 begin
   if not GetCharSetFromLocale(Language, Result) then
     RaiseLastOSError;
