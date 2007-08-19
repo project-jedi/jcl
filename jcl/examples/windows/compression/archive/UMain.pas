@@ -84,7 +84,7 @@ begin
     (FArchive as TJclCompressArchive).AddDirectory(ExtractFileName(Directory), Directory, True, True);
     ListView1.Items.BeginUpdate;
     try
-      while ListView1.Items.Count < FArchive.FileCount do
+      while ListView1.Items.Count < FArchive.ItemCount do
         ListView1.Items.Add;
     finally
       ListView1.Items.EndUpdate;
@@ -140,15 +140,15 @@ begin
   if FileCtrl.SelectDirectory('Target directory', '', Directory, [sdNewUI], Self) then
   begin
     for Index := 0 to ListView1.Items.Count - 1 do
-      FArchive.Selected[Index] := ListView1.Items.Item[Index].Selected;
-        
+      FArchive.Items[Index].Selected := ListView1.Items.Item[Index].Selected;
+
     (FArchive as TJclDecompressArchive).ExtractSelected(Directory, True);
   end;
 end;
 
 procedure TForm1.ActionExtractSelectedUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := (FArchive is TJclDecompressArchive) and (ListView1.SelCount > 0);
+//  (Sender as TAction).Enabled := (FArchive is TJclDecompressArchive) and (ListView1.SelCount > 0);
 end;
 
 procedure TForm1.ActionNewExecute(Sender: TObject);
@@ -278,7 +278,7 @@ begin
       (FArchive as TJclDecompressArchive).ListFiles;
       ListView1.Items.BeginUpdate;
       try
-        while ListView1.Items.Count < FArchive.FileCount do
+        while ListView1.Items.Count < FArchive.ItemCount do
           ListView1.Items.Add;
       finally
         ListView1.Items.EndUpdate;
@@ -327,7 +327,7 @@ end;
 
 procedure TForm1.ListView1Data(Sender: TObject; Item: TListItem);
 var
-  Index: Integer;
+  CompressionItem: TJclCompressionItem;
 begin
   if not Assigned(FArchive) then
   begin
@@ -335,22 +335,23 @@ begin
     Item.SubItems.Clear;
     Exit;
   end;
-    
-  Index := Item.Index;
-  Item.Caption := FArchive.DiskFileNames[Index];
+
+  CompressionItem := FArchive.Items[Item.Index];
+
+  Item.Caption := CompressionItem.FileName;
   Item.SubItems.Clear;
-  Item.SubItems.Add(FArchive.ArchiveFileNames[Index]);
-  Item.SubItems.Add(IntToStr(FArchive.FileSizes[Index]));
-  Item.SubItems.Add(IntToStr(FArchive.FilePackedSizes[Index]));
-  Item.SubItems.Add(FileTimeToString(FArchive.FileCreationTimes[Index]));
-  Item.SubItems.Add(FileTimeToString(FArchive.FileLastAccessTimes[Index]));
-  Item.SubItems.Add(FileTimeToString(FArchive.FileLastWriteTime[Index]));
-  Item.SubItems.Add(FArchive.FileComments[Index]);
-  Item.SubItems.Add(FArchive.FileHostOS[Index]);
-  Item.SubItems.Add(FArchive.FileHostFS[Index]);
-  Item.SubItems.Add(FArchive.FileUsers[Index]);
-  Item.SubItems.Add(FArchive.FileGroups[Index]);
-  Item.SubItems.Add(IntToHex(FArchive.FileCRC[Index], 8)); 
+  Item.SubItems.Add(CompressionItem.PackedName);
+  Item.SubItems.Add(IntToStr(CompressionItem.FileSize));
+  Item.SubItems.Add(IntToStr(CompressionItem.PackedSize));
+  Item.SubItems.Add(FileTimeToString(CompressionItem.CreationTime));
+  Item.SubItems.Add(FileTimeToString(CompressionItem.LastAccessTime));
+  Item.SubItems.Add(FileTimeToString(CompressionItem.LastWriteTime));
+  Item.SubItems.Add(CompressionItem.Comment);
+  Item.SubItems.Add(CompressionItem.HostOS);
+  Item.SubItems.Add(CompressionItem.HostFS);
+  Item.SubItems.Add(CompressionItem.User);
+  Item.SubItems.Add(CompressionItem.Group);
+  Item.SubItems.Add(IntToHex(CompressionItem.CRC, 8)); 
 end;
 
 initialization

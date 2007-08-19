@@ -799,6 +799,7 @@ resourcestring
   RsCompressionBZIP2OutBuffError     = 'bzip2 returned: out buffer is too small';
   RsCompressionBZIP2ConfigError      = 'bzip2 returned: configuration error';
   RsCompressionBZIP2Error            = 'bzip2 returned: unknown error (%d)';
+  RsCompressionUnavailableProperty   = 'Property is not available';
   RsCompressionCompressingError      = 'Operation is not supported while compressing';
   RsCompressionDecompressingError    = 'Operation is not supported while decompressing';
   RsCompressionUnsupportedMethod     = 'Unsupported method';

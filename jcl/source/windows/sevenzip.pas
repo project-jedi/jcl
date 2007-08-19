@@ -205,7 +205,7 @@ type
 
   ICompressGetSubStreamSize = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000400300000}']
-    function GetSubStreamSize(SubStream: UInt64; out Value: UInt64): HRESULT; stdcall;
+    function GetSubStreamSize(SubStream: Int64; out Value: Int64): HRESULT; stdcall;
   end;
 
   ICompressSetInStream = interface(IUnknown)
@@ -285,7 +285,7 @@ const
 type
   IProgress = interface(IUnknown)
     ['{23170F69-40C1-278A-0000-000000050000}']
-    function SetTotal(Total: UInt64): HRESULT; stdcall;
+    function SetTotal(Total: Int64): HRESULT; stdcall;
     function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
   end;
   

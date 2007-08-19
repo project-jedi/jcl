@@ -146,7 +146,6 @@ object Form1: TForm1
     TabOrder = 1
     ViewStyle = vsReport
     OnData = ListView1Data
-    ExplicitHeight = 252
   end
   object ProgressBar1: TProgressBar
     Left = 0
@@ -155,9 +154,6 @@ object Form1: TForm1
     Height = 16
     Align = alBottom
     TabOrder = 2
-    ExplicitLeft = 440
-    ExplicitTop = 272
-    ExplicitWidth = 150
   end
   object ActionList1: TActionList
     Left = 128

@@ -131,9 +131,9 @@ type
   {$IFNDEF COMPILER7_UP}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7_UP}
-  PUInt64 = ^UInt64;
-  PPUInt64 = ^PUInt64;
+  {$IFNDEF CLR}
   PPInt64 = ^PInt64;
+  {$ENDIF CLR}
 
 // Interface compatibility
 {$IFDEF SUPPORTS_INTERFACE}
