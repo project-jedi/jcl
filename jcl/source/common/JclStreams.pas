@@ -1565,7 +1565,7 @@ begin
     if RemainingOffset < 0 then
     begin
       // FPosition > ExpectedPosition, seek backward
-      if FVolumePosition > -RemainingOffset then
+      if FVolumePosition >= -RemainingOffset then
       begin
         // seek in current volume
         FVolumePosition := StreamSeek(FVolume, FVolumePosition + RemainingOffset, soBeginning);
