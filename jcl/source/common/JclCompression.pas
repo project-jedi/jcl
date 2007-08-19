@@ -94,27 +94,37 @@ uses
    |         |-- TJclGZipCompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
    |
    |-- TJclDecompressArchive
+   |    |
+   |    |-- TJclSevenZipDecompressArchive
+   |         |
+   |         |-- TJclZipDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclBZ2DecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclRarDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclArjDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclZDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclLzhDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJcl7zDecompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclNsisDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclIsoDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclCabDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclChmDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclSplitDecompressArchive handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclRpmDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclDebDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclCpioDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclTarDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
+   |         |-- TJclGZipDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
+   |
+   |-- TJclUpdateArchive
         |
-        |-- TJclSevenZipDecompressArchive
+        |-- TJclSevenzipUpdateArchive
              |
-             |-- TJclZipDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclBZ2DecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclRarDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclArjDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclZDecompressArchive     handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclLzhDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJcl7zDecompressArchive    handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclNsisDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclIsoDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclCabDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclChmDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclSplitDecompressArchive handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclRpmDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclDebDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclCpioDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclTarDecompressArchive   handled by sevenzip http://sevenzip.sourceforge.net/
-             |-- TJclGZipDecompressArchive  handled by sevenzip http://sevenzip.sourceforge.net/
-
+             |-- TJclZipUpdateArchive       handled by sevenzip http://sevenzip.sourceforge.net/
+             |-- TJclBZ2UpdateArchive       handled by sevenzip http://sevenzip.sourceforge.net/
+             |-- TJcl7zUpdateArchive        handled by sevenzip http://sevenzip.sourceforge.net/
+             |-- TJclTarUpdateArchive       handled by sevenzip http://sevenzip.sourceforge.net/
+             |-- TJclGZipUpdateArchive      handled by sevenzip http://sevenzip.sourceforge.net/
+  
 **************************************************************************************************}
 
 type
@@ -444,7 +454,7 @@ type
 
   TJclCompressionItemProperty = (ipPackedName, ipPackedSize, ipFileSize,
     ipFileName, ipAttributes, ipCreationTime, ipLastAccessTime, ipLastWriteTime,
-    ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC, ipStream);
+    ipComment, ipHostOS, ipHostFS, ipUser, ipGroup, ipCRC, ipStream, ipMethod);
   TJclCompressionItemProperties = set of TJclCompressionItemProperty;
 
   TJclCompressionItemKind = (ikFile, ikDirectory);
@@ -481,6 +491,7 @@ type
     FUser: WideString;
     FGroup: WideString;
     FCRC: Cardinal;
+    FMethod: WideString;
   protected
     // property checkers
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
@@ -498,6 +509,7 @@ type
     function GetItemKind: TJclCompressionItemKind;
     function GetLastAccessTime: TFileTime;
     function GetLastWriteTime: TFileTime;
+    function GetMethod: WideString;
     function GetPackedName: WideString;
     function GetPackedSize: Int64;
     function GetStream: TStream; virtual; abstract;
@@ -514,6 +526,7 @@ type
     procedure SetHostOS(const Value: WideString);
     procedure SetLastAccessTime(const Value: TFileTime);
     procedure SetLastWriteTime(const Value: TFileTime);
+    procedure SetMethod(const Value: WideString);
     procedure SetPackedName(const Value: WideString);
     procedure SetPackedSize(const Value: Int64);
     procedure SetStream(const Value: TStream);
@@ -535,6 +548,7 @@ type
     property Kind: TJclCompressionItemKind read GetItemKind;
     property LastAccessTime: TFileTime read GetLastAccessTime write SetLastAccessTime;
     property LastWriteTime: TFileTime read GetLastWriteTime write SetLastWriteTime;
+    property Method: WideString read GetMethod write SetMethod;
     property PackedName: WideString read GetPackedName write SetPackedName;
     property PackedSize: Int64 read GetPackedSize write SetPackedSize;
     property User: WideString read GetUser write SetUser;
@@ -736,14 +750,14 @@ type
 
   TJclZipCompressArchive = class(TJclSevenzipCompressArchive)
   private
-    FMethod: TJclZipMethod;
-    procedure SetMethod(Value: TJclZipMethod);
+    FDefaultMethod: TJclZipMethod;
+    procedure SetDefaultMethod(Value: TJclZipMethod);
   protected
     procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
     procedure SetCompressionProperties; override;
   public
-    property Method: TJclZipMethod read FMethod write SetMethod;
+    property DefaultMethod: TJclZipMethod read FDefaultMethod write SetDefaultMethod;
   end;
 
   TJclBZ2CompressArchive = class(TJclSevenzipCompressArchive)
@@ -2266,6 +2280,12 @@ begin
   Result := FLastWriteTime;
 end;
 
+function TJclCompressionItem.GetMethod: WideString;
+begin
+  CheckGetProperty(ipMethod);
+  Result := FMethod;
+end;
+
 function TJclCompressionItem.GetPackedName: WideString;
 begin
   CheckGetProperty(ipPackedName);
@@ -2395,6 +2415,14 @@ begin
   FLastWriteTime := Value;
   Include(FModifiedProperties, ipLastWriteTime);
   Include(FValidProperties, ipLastWriteTime);
+end;
+
+procedure TJclCompressionItem.SetMethod(const Value: WideString);
+begin
+  CheckSetProperty(ipMethod);
+  FMethod := Value;
+  Include(FModifiedProperties, ipMethod);
+  Include(FValidProperties, ipMethod);
 end;
 
 procedure TJclCompressionItem.SetPackedName(const Value: WideString);
@@ -2704,6 +2732,8 @@ end;
 procedure TJclCompressItem.CheckSetProperty(
   AProperty: TJclCompressionItemProperty);
 begin
+  if AProperty in [ipMethod] then
+    raise EJclCompressionError.CreateRes(@RsCompressionWriteNotSupported);
   (Archive as TJclCompressArchive).CheckNotCompressing;
 end;
 
@@ -3258,6 +3288,10 @@ begin
   AItem.User := Get7zWideStringProp(AInArchive, FileIndex, kpidUser);
   AItem.Group := Get7zWideStringProp(AInArchive, FileIndex, kpidGroup);
   AItem.CRC := Get7zCardinalProp(AInArchive, FileIndex, kpidCRC);
+  AItem.Method := Get7zWideStringProp(AInArchive, FileIndex, kpidMethod);
+
+  // reset modified flags
+  AItem.ModifiedProperties := [];
 end;
 
 //=== { TJclSevenzipOutputCallback } =========================================
@@ -3412,7 +3446,7 @@ begin
 
   if Assigned(NewData) then
   begin
-    if (CompressionItem.FileName <> '') or Assigned(CompressionItem.Stream) then
+    if ([ipFileName, ipStream] * CompressionItem.ModifiedProperties) <> [] then
       NewData^ := 1
     else
       NewData^ := 0;
@@ -3420,7 +3454,7 @@ begin
 
   if Assigned(NewProperties) then
   begin
-    if CompressionItem.ModifiedProperties <> [] then
+    if (CompressionItem.ModifiedProperties - [ipFileName, ipStream]) <> [] then
       NewProperties^ := 1
     else
       NewProperties^ := 0;
@@ -3580,13 +3614,14 @@ begin
 end;
 
 procedure TJclZipCompressArchive.SetCompressionProperties;
-const
-  MethodValues: array [TJclZipMethod] of PWideChar =
-    ( 'DEFLATE', 'DEFLATE64', 'COPY', 'BZIP2' );
 var
   PropertiesSetter: ISetProperties;
   PropNames: array [0..1] of PWideChar;
   PropValues: array [0..1] of TPropVariant;
+const
+  CompressionMethodNames: array [TJclZipMethod] of WideString =
+    ( kDeflateMethodName {zmDeflate}, kDeflate64MethodName {zmDeflate64},
+      kCopyMethod {zmCopy}, kBZip2MethodName {zmBZip2} );
 begin
   if Supports(FOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
   begin
@@ -3595,7 +3630,7 @@ begin
     PropValues[0].ulVal := CompressionLevel;
     PropNames[1] := 'M';
     PropValues[1].vt := VT_BSTR;
-    PropValues[1].bstrVal := SysAllocString(MethodValues[Method]);
+    PropValues[1].bstrVal := SysAllocString(PWideChar(CompressionMethodNames[DefaultMethod]));
 
     SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
   end
@@ -3603,11 +3638,11 @@ begin
     raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
 end;
 
-procedure TJclZipCompressArchive.SetMethod(Value: TJclZipMethod);
+procedure TJclZipCompressArchive.SetDefaultMethod(Value: TJclZipMethod);
 begin
   CheckNotCompressing;
 
-  FMethod := Value;
+  FDefaultMethod := Value;
 end;
 
 //=== { TJclBZ2CompressArchive } =============================================

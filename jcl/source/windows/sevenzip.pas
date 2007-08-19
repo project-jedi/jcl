@@ -137,6 +137,16 @@ const
 
   kpidUserDefined = $10000;
 
+// HandlerOut.cpp
+
+  kCopyMethod = WideString('Copy');
+  kLZMAMethodName = WideString('LZMA');
+  kLZMA2MethodName = WideString('LZMA2');
+  kBZip2MethodName = WideString('BZip2');
+  kPpmdMethodName = WideString('PPMd');
+  kDeflateMethodName = WideString('Deflate');
+  kDeflate64MethodName = WideString('Deflate64');
+
 // ICoder.h
 type
   ICompressProgressInfo = interface(IUnknown)
