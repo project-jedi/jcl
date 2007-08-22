@@ -474,7 +474,7 @@ type
     // miscellaneous
     FValidProperties: TJclCompressionItemProperties;
     FModifiedProperties: TJclCompressionItemProperties;
-    FPackedIndex: Integer;
+    FPackedIndex: Cardinal;
     FSelected: Boolean;
     FOperationSuccess: TJclCompressionOperationSuccess;
     // file properties
@@ -496,6 +496,7 @@ type
     // property checkers
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
     procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); virtual; abstract;
+    function ValidateExtraction(Index: Integer): Boolean; virtual;
     // property getters
     function GetAttributes: Cardinal;
     function GetComment: WideString;
@@ -512,7 +513,7 @@ type
     function GetMethod: WideString;
     function GetPackedName: WideString;
     function GetPackedSize: Int64;
-    function GetStream: TStream; virtual; abstract;
+    function GetStream: TStream;
     function GetUser: WideString;
     // property setters
     procedure SetAttributes(const Value: Cardinal);
@@ -563,7 +564,7 @@ type
     property ValidProperties: TJclCompressionItemProperties read FValidProperties;
     property ModifiedProperties: TJclCompressionItemProperties read FModifiedProperties
       write FModifiedProperties;
-    property PackedIndex: Integer read FPackedIndex;
+    property PackedIndex: Cardinal read FPackedIndex;
     property Selected: Boolean read FSelected write FSelected;
   end;
 
@@ -585,6 +586,8 @@ type
     property VolumeMaxSize: Int64 read FVolumeMaxSize;
   end;
 
+  TJclStreamAccess = (saCreate, saReadOnly, saWriteOnly, saReadWrite);
+
   TJclCompressionArchive = class
   private
     FOnProgress: TJclCompressionProgressEvent;
@@ -595,6 +598,7 @@ type
     FVolumeIndexOffset: Integer;
     FVolumeMaxSize: Int64;
     FVolumeNameMask: string;
+    FProgressMax: Int64;
     function GetItemCount: Integer;
     function GetItem(Index: Integer): TJclCompressionItem;
     function GetVolumeCount: Integer;
@@ -606,13 +610,18 @@ type
     procedure CreateCompressionObject; virtual;
     procedure FreeCompressionObject; virtual;
 
-    function InternalOpenVolume(const FileName: TFileName): TStream; virtual; abstract;
+    function InternalOpenVolume(const FileName: TFileName): TStream;
+    function TranslateItemPath(const ItemPath, OldBase, NewBase: WideString): WideString;
 
     procedure DoProgress(const Value, MaxValue: Int64);
     function NeedVolume(Index: Integer): TStream;
     function NeedVolumeMaxSize(Index: Integer): Int64;
     function GetItemClass: TJclCompressionItemClass; virtual; abstract;
   public
+    class function MultipleItemContainer: Boolean; virtual;
+    class function VolumeAccess: TJclStreamAccess; virtual; abstract;
+    class function ItemAccess: TJclStreamAccess; virtual; abstract;
+
     constructor Create(Volume0: TStream; AVolumeMaxSize: Int64 = 0;
       AOwnVolume: Boolean = False); overload;
     constructor Create(const VolumeName: string; AVolumeMaxSize: Int64 = 0;
@@ -657,7 +666,6 @@ type
   protected
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
     procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); override;
-    function GetStream: TStream; override;
   end;
 
   TJclCompressArchive = class(TJclCompressionArchive)
@@ -665,15 +673,15 @@ type
     FBaseRelName: WideString;
     FBaseDirName: string;
     FAddFilesInDir: Boolean;
-    function InternalGetRelItemName(const ItemName: TFileName): WideString;
     procedure InternalAddFile(const Directory: string; const FileInfo: TSearchRec);
     procedure InternalAddDirectory(const Directory: string);
   protected
     FCompressing: Boolean;
     procedure CheckNotCompressing;
-
-    function InternalOpenVolume(const FileName: TFileName): TStream; override;
   public
+    class function VolumeAccess: TJclStreamAccess; override;
+    class function ItemAccess: TJclStreamAccess; override;
+
     function AddDirectory(const PackedName: WideString;
       const DirName: string = ''; RecurseIntoDir: Boolean = False;
       AddFilesInDir: Boolean = False): Integer; overload; virtual;
@@ -688,8 +696,7 @@ type
   protected
     procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
     procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); override;
-    function GetStream: TStream; override;
-    function ValidateExtraction(Index: Integer): Boolean; virtual;
+    function ValidateExtraction(Index: Integer): Boolean; override;
   end;
 
   // return False not to extract this file
@@ -709,15 +716,55 @@ type
     procedure CheckNotDecompressing;
     procedure CheckListing;
 
-    function InternalOpenVolume(const FileName: TFileName): TStream; override;
-    function ValidateExtraction(Index: Integer; out FileName: TFileName; var AStream: TStream;
+    function ValidateExtraction(Index: Integer; var FileName: TFileName; var AStream: TStream;
       var AOwnsStream: Boolean): Boolean; virtual;
   public
+    class function VolumeAccess: TJclStreamAccess; override;
+    class function ItemAccess: TJclStreamAccess; override;
+
     procedure ListFiles; virtual; abstract;
     procedure ExtractSelected(const ADestinationDir: string = '';
       AAutoCreateSubDir: Boolean = True); virtual; abstract;
     procedure ExtractAll(const ADestinationDir: string = '';
       AAutoCreateSubDir: Boolean = True); virtual; abstract;
+
+    property OnExtract: TJclCompressionExtractEvent read FOnExtract write FOnExtract;
+    property DestinationDir: string read FDestinationDir;
+    property AutoCreateSubDir: Boolean read FAutoCreateSubDir;
+  end;
+
+  TJclUpdateItem = class(TJclCompressionItem)
+  protected
+    procedure CheckGetProperty(AProperty: TJclCompressionItemProperty); override;
+    procedure CheckSetProperty(AProperty: TJclCompressionItemProperty); override;
+    function ValidateExtraction(Index: Integer): Boolean; override;
+  end;
+
+  TJclUpdateArchive = class(TJclCompressArchive)
+  private
+    FOnExtract: TJclCompressionExtractEvent;
+    FAutoCreateSubDir: Boolean;
+  protected
+    FDecompressing: Boolean;
+    FListing: Boolean;
+    FDestinationDir: string;
+    FExtractingAllIndex: Integer;
+    procedure CheckNotDecompressing;
+    procedure CheckListing;
+
+    function ValidateExtraction(Index: Integer; var FileName: TFileName; var AStream: TStream;
+      var AOwnsStream: Boolean): Boolean; virtual;
+  public
+    class function VolumeAccess: TJclStreamAccess; override;
+    class function ItemAccess: TJclStreamAccess; override;
+
+    procedure ListFiles; virtual; abstract;
+    procedure ExtractSelected(const ADestinationDir: string = '';
+      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+    procedure ExtractAll(const ADestinationDir: string = '';
+      AAutoCreateSubDir: Boolean = True); virtual; abstract;
+    procedure DeleteItem(Index: Integer); virtual; abstract;
+    procedure RemoveItem(const PackedName: WideString); virtual; abstract;
 
     property OnExtract: TJclCompressionExtractEvent read FOnExtract write FOnExtract;
     property DestinationDir: string read FDestinationDir;
@@ -732,7 +779,6 @@ type
     FCompressionLevel: Cardinal;
     procedure SetCompressionLevel(Value: Cardinal);
   protected
-    FProgressMax: Int64;
     procedure CreateCompressionObject; override;
     procedure FreeCompressionObject; override;
     function GetCLSID: TGUID; virtual; abstract;
@@ -757,6 +803,7 @@ type
     function GetCLSID: TGUID; override;
     procedure SetCompressionProperties; override;
   public
+    class function MultipleItemContainer: Boolean; override;
     property DefaultMethod: TJclZipMethod read FDefaultMethod write SetDefaultMethod;
   end;
 
@@ -770,6 +817,8 @@ type
   protected
     procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclTarCompressArchive = class(TJclSevenzipCompressArchive)
@@ -777,6 +826,8 @@ type
     procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
     procedure SetCompressionProperties; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclGZipCompressArchive = class(TJclSevenzipCompressArchive)
@@ -791,10 +842,7 @@ type
   private
     FInArchive: IInArchive;
     FOpened: Boolean;
-    FListed: Boolean;
-    FInStream: IInStream;
   protected
-    FProgressMax: Int64;
     procedure OpenArchive;
     procedure CreateCompressionObject; override;
     procedure FreeCompressionObject; override;
@@ -813,6 +861,8 @@ type
   TJclZipDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclBZ2DecompressArchive = class(TJclSevenzipDecompressArchive)
@@ -823,46 +873,64 @@ type
   TJclRarDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclArjDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclZDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclLzhDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJcl7zDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclNsisDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclIsoDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclCabDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclChmDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclSplitDecompressArchive = class(TJclSevenzipDecompressArchive)
@@ -873,25 +941,104 @@ type
   TJclRpmDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclDebDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclCpioDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclTarDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
     function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
   end;
 
   TJclGZipDecompressArchive = class(TJclSevenzipDecompressArchive)
   protected
+    function GetCLSID: TGUID; override;
+  end;
+
+//sevenzip classes for updates (read and write)
+type
+  TJclSevenzipUpdateArchive = class(TJclUpdateArchive)
+  private
+    FInArchive: IInArchive;
+    FOutArchive: IOutArchive;
+    FOpened: Boolean;
+    FCompressionLevel: Cardinal;
+    procedure SetCompressionLevel(Value: Cardinal);
+  protected
+    procedure OpenArchive;
+    procedure CreateCompressionObject; override;
+    procedure FreeCompressionObject; override;
+    function GetCLSID: TGUID; virtual; abstract;
+    function GetItemClass: TJclCompressionItemClass; override;
+    procedure SetCompressionProperties; virtual;
+  public
+    procedure ListFiles; override;
+    procedure ExtractSelected(const ADestinationDir: string = '';
+      AAutoCreateSubDir: Boolean = True); override;
+    procedure ExtractAll(const ADestinationDir: string = '';
+      AAutoCreateSubDir: Boolean = True); override;
+    procedure Compress; override;
+    procedure DeleteItem(Index: Integer); override;
+    procedure RemoveItem(const PackedName: WideString); override;
+
+    property CompressionLevel: Cardinal read FCompressionLevel write SetCompressionLevel; // X9
+  end;
+
+  TJclZipUpdateArchive = class(TJclSevenzipUpdateArchive)
+  private
+    FDefaultMethod: TJclZipMethod;
+    procedure SetDefaultMethod(Value: TJclZipMethod);
+  protected
+    procedure CreateCompressionObject; override;
+    function GetCLSID: TGUID; override;
+    procedure SetCompressionProperties; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+    property DefaultMethod: TJclZipMethod read FDefaultMethod write SetDefaultMethod;
+  end;
+
+  TJclBZ2UpdateArchive = class(TJclSevenzipUpdateArchive)
+  protected
+    procedure CreateCompressionObject; override;
+    function GetCLSID: TGUID; override;
+  end;
+
+  TJcl7zUpdateArchive = class(TJclSevenzipUpdateArchive)
+  protected
+    procedure CreateCompressionObject; override;
+    function GetCLSID: TGUID; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+  end;
+
+  TJclTarUpdateArchive = class(TJclSevenzipUpdateArchive)
+  protected
+    procedure CreateCompressionObject; override;
+    function GetCLSID: TGUID; override;
+    procedure SetCompressionProperties; override;
+  public
+    class function MultipleItemContainer: Boolean; override;
+  end;
+
+  TJclGZipUpdateArchive = class(TJclSevenzipUpdateArchive)
+  protected
+    procedure CreateCompressionObject; override;
     function GetCLSID: TGUID; override;
   end;
 {$ENDIF MSWINDOWS}
@@ -2191,12 +2338,39 @@ begin
   end;
 end;
 
-//=== { TJclCompressionItem } ================================================
 {$IFDEF MSWINDOWS}
+
+function OpenFileStream(const FileName: TFileName; StreamAccess: TJclStreamAccess): TStream;
+begin
+  Result := nil;
+  case StreamAccess of
+    saCreate:
+      Result := TFileStream.Create(FileName, fmCreate);
+    saReadOnly:
+      if FileExists(FileName) then
+        Result := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+    saWriteOnly:
+      if FileExists(FileName) then
+        Result := TFileStream.Create(FileName, fmOpenWrite)
+      else
+      if FileName <> '' then
+        Result := TFileStream.Create(FileName, fmCreate);
+    saReadWrite:
+      if FileExists(FileName) then
+        Result := TFileStream.Create(FileName, fmOpenReadWrite)
+      else
+      if FileName <> '' then
+        Result := TFileStream.Create(FileName, fmCreate);
+  end;
+end;
+
+//=== { TJclCompressionItem } ================================================
+
 constructor TJclCompressionItem.Create(AArchive: TJclCompressionArchive);
 begin
   inherited Create;
   FArchive := AArchive;
+  FPackedIndex := $FFFFFFFF;
 end;
 
 destructor TJclCompressionItem.Destroy;
@@ -2296,6 +2470,14 @@ function TJclCompressionItem.GetPackedSize: Int64;
 begin
   CheckGetProperty(ipPackedSize);
   Result := FPackedSize;
+end;
+
+function TJclCompressionItem.GetStream: TStream;
+begin
+  if not Assigned(FStream) and (FileName <> '') then
+    FStream := OpenFileStream(FileName, Archive.ItemAccess);
+
+  Result := FStream;
 end;
 
 function TJclCompressionItem.GetUser: WideString;
@@ -2458,6 +2640,11 @@ begin
   Include(FValidProperties, ipUser);
 end;
 
+function TJclCompressionItem.ValidateExtraction(Index: Integer): Boolean;
+begin
+  Result := False;
+end;
+
 //=== { TJclCompressionVolume } ==============================================
 
 constructor TJclCompressionVolume.Create(AStream: TStream; AOwnsStream: Boolean;
@@ -2605,6 +2792,17 @@ begin
   Result := FVolumes.Count;
 end;
 
+function TJclCompressionArchive.InternalOpenVolume(
+  const FileName: TFileName): TStream;
+begin
+  Result := OpenFileStream(FileName, VolumeAccess);
+end;
+
+class function TJclCompressionArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 function TJclCompressionArchive.NeedVolume(Index: Integer): TStream;
 var
   AVolume: TJclCompressionVolume;
@@ -2713,6 +2911,12 @@ begin
     TJclCompressionItem(FItems.Items[Index]).Selected := True;
 end;
 
+function TJclCompressionArchive.TranslateItemPath(const ItemPath, OldBase,
+  NewBase: WideString): WideString;
+begin
+  Result := PathGetRelativePath(NewBase, PathGetRelativePath(OldBase, ItemPath));
+end;
+
 procedure TJclCompressionArchive.UnselectAll;
 var
   Index: Integer;
@@ -2735,16 +2939,6 @@ begin
   if AProperty in [ipMethod] then
     raise EJclCompressionError.CreateRes(@RsCompressionWriteNotSupported);
   (Archive as TJclCompressArchive).CheckNotCompressing;
-end;
-
-function TJclCompressItem.GetStream: TStream;
-begin
-  if not Assigned(FStream) and (FileName <> '') then
-  begin
-    FStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-    FOwnsStream := True;
-  end;
-  Result := FStream;
 end;
 
 //=== { TJclCompressArchive } ================================================
@@ -2832,7 +3026,7 @@ end;
 
 procedure TJclCompressArchive.InternalAddDirectory(const Directory: string);
 begin
-  AddDirectory(InternalGetRelItemName(Directory), Directory, False, FAddFilesInDir);
+  AddDirectory(TranslateItemPath(Directory, FBaseDirName, FBaseRelName), Directory, False, FAddFilesInDir);
 end;
 
 procedure TJclCompressArchive.InternalAddFile(const Directory: string;
@@ -2845,7 +3039,7 @@ begin
 
   AItem := GetItemClass.Create(Self);
   try
-    AItem.PackedName := InternalGetRelItemName(AFileName);
+    AItem.PackedName := TranslateItemPath(AFileName, FBaseDirName, FBaseRelName);
     AItem.FileName := AFileName;
   except
     AItem.Destroy;
@@ -2855,21 +3049,14 @@ begin
   FItems.Add(AItem);
 end;
 
-function TJclCompressArchive.InternalGetRelItemName(
-  const ItemName: TFileName): WideString;
-var
-  RelPath: string;
+class function TJclCompressArchive.ItemAccess: TJclStreamAccess;
 begin
-  RelPath := PathGetRelativePath(FBaseDirName, ItemName);
-  if (RelPath <> '.') and (RelPath <> '') then
-    Result := FBaseRelName + DirDelimiter + RelPath
-  else
-    Result := FBaseRelName;
+  Result := saReadOnly;
 end;
 
-function TJclCompressArchive.InternalOpenVolume(const FileName: TFileName): TStream;
+class function TJclCompressArchive.VolumeAccess: TJclStreamAccess;
 begin
-  Result := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
+  Result := saWriteOnly;
 end;
 
 //=== { TJclDecompressItem } =================================================
@@ -2884,16 +3071,6 @@ procedure TJclDecompressItem.CheckSetProperty(
   AProperty: TJclCompressionItemProperty);
 begin
   (Archive as TJclDecompressArchive).CheckListing;
-end;
-
-function TJclDecompressItem.GetStream: TStream;
-begin
-  if not Assigned(FStream) and (FileName <> '') then
-  begin
-    FStream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
-    FOwnsStream := True;
-  end;
-  Result := FStream;
 end;
 
 function TJclDecompressItem.ValidateExtraction(Index: Integer): Boolean;
@@ -2916,22 +3093,20 @@ begin
     raise EJclCompressionError.CreateRes(@RsCompressionDecompressingError);
 end;
 
-function TJclDecompressArchive.InternalOpenVolume(const FileName: TFileName): TStream;
+class function TJclDecompressArchive.ItemAccess: TJclStreamAccess;
 begin
-  if FileExists(FileName) then
-    Result := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite)
-  else
-    Result := nil;
+  Result := saCreate;
 end;
 
 function TJclDecompressArchive.ValidateExtraction(Index: Integer;
-  out FileName: TFileName; var AStream: TStream; var AOwnsStream: Boolean): Boolean;
+  var FileName: TFileName; var AStream: TStream; var AOwnsStream: Boolean): Boolean;
 begin
   if FExtractingAllIndex <> -1 then
     // extracting all
     FExtractingAllIndex := Index;
 
-  FileName := PathGetRelativePath(FDestinationDir, Items[Index].PackedName);
+  if FileName = '' then
+    FileName := PathGetRelativePath(FDestinationDir, Items[Index].PackedName);
   Result := True;
 
   if Assigned(FOnExtract) then
@@ -2946,6 +3121,79 @@ begin
   end;
 end;
 
+class function TJclDecompressArchive.VolumeAccess: TJclStreamAccess;
+begin
+  Result := saReadOnly;
+end;
+
+//=== { TJclUpdateItem } =====================================================
+
+procedure TJclUpdateItem.CheckGetProperty(
+  AProperty: TJclCompressionItemProperty);
+begin
+  // TODO
+end;
+
+procedure TJclUpdateItem.CheckSetProperty(
+  AProperty: TJclCompressionItemProperty);
+begin
+  (Archive as TJclCompressArchive).CheckNotCompressing;
+end;
+
+function TJclUpdateItem.ValidateExtraction(Index: Integer): Boolean;
+begin
+  Result := (Archive as TJclUpdateArchive).ValidateExtraction(Index, FFileName,
+    FStream, FOwnsStream);
+end;
+
+//=== { TJclUpdateArchive } ==================================================
+
+procedure TJclUpdateArchive.CheckListing;
+begin
+  if not FListing then
+    raise EJclCompressionError.CreateRes(@RsCompressionUnavailableProperty);
+end;
+
+procedure TJclUpdateArchive.CheckNotDecompressing;
+begin
+  if FDecompressing then
+    raise EJclCompressionError.CreateRes(@RsCompressionDecompressingError);
+end;
+
+class function TJclUpdateArchive.ItemAccess: TJclStreamAccess;
+begin
+  Result := saReadWrite;
+end;
+
+function TJclUpdateArchive.ValidateExtraction(Index: Integer;
+  var FileName: TFileName; var AStream: TStream;
+  var AOwnsStream: Boolean): Boolean;
+begin
+  if FExtractingAllIndex <> -1 then
+    // extracting all
+    FExtractingAllIndex := Index;
+
+  if FileName = '' then
+    FileName := PathGetRelativePath(FDestinationDir, Items[Index].PackedName);
+  Result := True;
+
+  if Assigned(FOnExtract) then
+    Result := FOnExtract(Self, Index, FileName, AStream, AOwnsStream);
+
+  if Result and not Assigned(AStream) and AutoCreateSubDir then
+  begin
+    if (Items[Index].Attributes and faDirectory) <> 0 then
+      ForceDirectories(FileName)
+    else
+      ForceDirectories(ExtractFilePath(FileName));
+  end;
+end;
+
+class function TJclUpdateArchive.VolumeAccess: TJclStreamAccess;
+begin
+  Result := saReadWrite;
+end;
+
 //=== { TJclSevenzipOutStream } ==============================================
 
 type
@@ -2953,13 +3201,13 @@ type
     IOutStream, IUnknown)
   private
     FArchive: TJclCompressionArchive;
-    FFileIndex: Integer;
+    FItemIndex: Integer;
     FStream: TStream;
     FOwnsStream: Boolean;
     procedure NeedStream;
     procedure ReleaseStream;
   public
-    constructor Create(AArchive: TJclCompressionArchive; AFileIndex: Integer); overload;
+    constructor Create(AArchive: TJclCompressionArchive; AItemIndex: Integer); overload;
     constructor Create(AStream: TStream; AOwnsStream: Boolean); overload;
     destructor Destroy; override;
     // ISequentialOutStream
@@ -2969,12 +3217,12 @@ type
     function SetSize(NewSize: Int64): HRESULT; stdcall;
   end;
 
-constructor TJclSevenzipOutStream.Create(AArchive: TJclCompressionArchive; AFileIndex: Integer);
+constructor TJclSevenzipOutStream.Create(AArchive: TJclCompressionArchive; AItemIndex: Integer);
 begin
   inherited Create;
 
   FArchive := AArchive;
-  FFileIndex := AFileIndex;
+  FItemIndex := AItemIndex;
   FStream := nil;
   FOwnsStream := False;
 end;
@@ -2984,7 +3232,7 @@ begin
   inherited Create;
 
   FArchive := nil;
-  FFileIndex := -1;
+  FItemIndex := -1;
   FStream := AStream;
   FOwnsStream := AOwnsStream;
 end;
@@ -2998,8 +3246,8 @@ end;
 
 procedure TJclSevenzipOutStream.NeedStream;
 begin
-  if Assigned(FArchive) then
-    FStream := FArchive.Items[FFileIndex].Stream;
+  if Assigned(FArchive) and not Assigned(FStream) then
+    FStream := FArchive.Items[FItemIndex].Stream;
 
   if not Assigned(FStream) then
     raise EJclCompressionError.CreateRes(@RsCompression7zUnassignedStream);
@@ -3008,7 +3256,7 @@ end;
 procedure TJclSevenzipOutStream.ReleaseStream;
 begin
   if Assigned(FArchive) then
-    FArchive.Items[FFileIndex].ReleaseStream
+    FArchive.Items[FItemIndex].ReleaseStream
   else if FOwnsStream then
     FStream.Free;
 end;
@@ -3057,13 +3305,13 @@ type
     IInStream, IStreamGetSize, IUnknown)
   private
     FArchive: TJclCompressionArchive;
-    FFileIndex: Integer;
+    FItemIndex: Integer;
     FStream: TStream;
     FOwnsStream: Boolean;
     procedure NeedStream;
     procedure ReleaseStream;
   public
-    constructor Create(AArchive: TJclCompressionArchive; AFileIndex: Integer); overload;
+    constructor Create(AArchive: TJclCompressionArchive; AItemIndex: Integer); overload;
     constructor Create(AStream: TStream; AOwnsStream: Boolean); overload;
     destructor Destroy; override;
     // ISequentialInStream
@@ -3074,12 +3322,12 @@ type
     function GetSize(Size: PInt64): HRESULT; stdcall;
   end;
 
-constructor TJclSevenzipInStream.Create(AArchive: TJclCompressionArchive; AFileIndex: Integer);
+constructor TJclSevenzipInStream.Create(AArchive: TJclCompressionArchive; AItemIndex: Integer);
 begin
   inherited Create;
 
   FArchive := AArchive;
-  FFileIndex := AFileIndex;
+  FItemIndex := AItemIndex;
   FStream := nil;
   FOwnsStream := False;
 end;
@@ -3089,7 +3337,7 @@ begin
   inherited Create;
 
   FArchive := nil;
-  FFileIndex := -1;
+  FItemIndex := -1;
   FStream := AStream;
   FOwnsStream := AOwnsStream;
 end;
@@ -3112,7 +3360,7 @@ end;
 procedure TJclSevenzipInStream.NeedStream;
 begin
   if Assigned(FArchive) and not Assigned(FStream) then
-    FStream := FArchive.Items[FFileIndex].Stream;
+    FStream := FArchive.Items[FItemIndex].Stream;
 
   if not Assigned(FStream) then
     raise EJclCompressionError.CreateRes(@RsCompression7zUnassignedStream);
@@ -3134,7 +3382,7 @@ end;
 procedure TJclSevenzipInStream.ReleaseStream;
 begin
   if Assigned(FArchive) then
-    FArchive.Items[FFileIndex].ReleaseStream
+    FArchive.Items[FItemIndex].ReleaseStream
   else if FOwnsStream then
     FStream.Free;
 end;
@@ -3145,7 +3393,7 @@ var
   NewPos: Int64;
 begin
   NeedStream;
-  
+
   // STREAM_SEEK_SET	= 0 = soFromBeginning
 	// STREAM_SEEK_CUR	= 1 = soFromCurrent
 	// STREAM_SEEK_END  = 2 = soFromEnd
@@ -3163,13 +3411,13 @@ begin
     raise EJclCompressionError.CreateResFmt(@RsCompression7zReturnError, [Value, SysErrorMessage(Value)]);
 end;
 
-function Get7zWideStringProp(const AArchive: IInArchive; FileIndex: Integer;
+function Get7zWideStringProp(const AArchive: IInArchive; ItemIndex: Integer;
   PropID: Cardinal): WideString;
 var
   Value: TPropVariant;
 begin
   ZeroMemory(@Value, SizeOf(Value));
-  SevenzipCheck(AArchive.GetProperty(FileIndex, PropID, Value));
+  SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
       Result := '';
@@ -3187,13 +3435,13 @@ begin
   end;
 end;
 
-function Get7zCardinalProp(const AArchive: IInArchive; FileIndex: Integer;
+function Get7zCardinalProp(const AArchive: IInArchive; ItemIndex: Integer;
   PropID: Cardinal): Cardinal;
 var
   Value: TPropVariant;
 begin
   ZeroMemory(@Value, SizeOf(Value));
-  SevenzipCheck(AArchive.GetProperty(FileIndex, PropID, Value));
+  SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
       Result := 0;
@@ -3218,13 +3466,13 @@ begin
   end;
 end;
 
-function Get7zInt64Prop(const AArchive: IInArchive; FileIndex: Integer;
+function Get7zInt64Prop(const AArchive: IInArchive; ItemIndex: Integer;
   PropID: Cardinal): Int64;
 var
   Value: TPropVariant;
 begin
   ZeroMemory(@Value, SizeOf(Value));
-  SevenzipCheck(AArchive.GetProperty(FileIndex, PropID, Value));
+  SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
       Result := 0;
@@ -3249,13 +3497,13 @@ begin
   end;
 end;
 
-function Get7zFileTimeProp(const AArchive: IInArchive; FileIndex: Integer;
+function Get7zFileTimeProp(const AArchive: IInArchive; ItemIndex: Integer;
   PropID: Cardinal): TFileTime;
 var
   Value: TPropVariant;
 begin
   ZeroMemory(@Value, SizeOf(Value));
-  SevenzipCheck(AArchive.GetProperty(FileIndex, PropID, Value));
+  SevenzipCheck(AArchive.GetProperty(ItemIndex, PropID, Value));
   case Value.vt of
     VT_EMPTY, VT_NULL:
       begin
@@ -3269,26 +3517,27 @@ begin
   end;
 end;
 
-procedure Load7zFileAttribute(AInArchive: IInArchive; FileIndex: Integer;
+procedure Load7zFileAttribute(AInArchive: IInArchive; ItemIndex: Integer;
   AItem: TJclCompressionItem);
 begin
-  AItem.PackedName := Get7zWideStringProp(AInArchive, FileIndex, kpidPath);
+  AItem.PackedName := Get7zWideStringProp(AInArchive, ItemIndex, kpidPath);
+  AItem.FPackedIndex := ItemIndex;
   AItem.FileName := '';
   AItem.Stream := nil;
   AItem.OwnsStream := False;
-  AItem.Attributes := Get7zCardinalProp(AInArchive, FileIndex, kpidAttributes);
-  AItem.FileSize := Get7zInt64Prop(AInArchive, FileIndex, kpidSize);
-  AItem.PackedSize := Get7zInt64Prop(AInArchive, FileIndex, kpidPackedSize);
-  AItem.CreationTime := Get7zFileTimeProp(AInArchive, FileIndex, kpidCreationTime);
-  AItem.LastAccessTime := Get7zFileTimeProp(AInArchive, FileIndex, kpidLastAccessTime);
-  AItem.LastWriteTime := Get7zFileTimeProp(AInArchive, FileIndex, kpidLastWriteTime);
-  AItem.Comment := Get7zWideStringProp(AInArchive, FileIndex, kpidComment);
-  AItem.HostOS := Get7zWideStringProp(AInArchive, FileIndex, kpidHostOS);
-  AItem.HostFS := Get7zWideStringProp(AInArchive, FileIndex, kpidFileSystem);
-  AItem.User := Get7zWideStringProp(AInArchive, FileIndex, kpidUser);
-  AItem.Group := Get7zWideStringProp(AInArchive, FileIndex, kpidGroup);
-  AItem.CRC := Get7zCardinalProp(AInArchive, FileIndex, kpidCRC);
-  AItem.Method := Get7zWideStringProp(AInArchive, FileIndex, kpidMethod);
+  AItem.Attributes := Get7zCardinalProp(AInArchive, ItemIndex, kpidAttributes);
+  AItem.FileSize := Get7zInt64Prop(AInArchive, ItemIndex, kpidSize);
+  AItem.PackedSize := Get7zInt64Prop(AInArchive, ItemIndex, kpidPackedSize);
+  AItem.CreationTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidCreationTime);
+  AItem.LastAccessTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastAccessTime);
+  AItem.LastWriteTime := Get7zFileTimeProp(AInArchive, ItemIndex, kpidLastWriteTime);
+  AItem.Comment := Get7zWideStringProp(AInArchive, ItemIndex, kpidComment);
+  AItem.HostOS := Get7zWideStringProp(AInArchive, ItemIndex, kpidHostOS);
+  AItem.HostFS := Get7zWideStringProp(AInArchive, ItemIndex, kpidFileSystem);
+  AItem.User := Get7zWideStringProp(AInArchive, ItemIndex, kpidUser);
+  AItem.Group := Get7zWideStringProp(AInArchive, ItemIndex, kpidGroup);
+  AItem.CRC := Get7zCardinalProp(AInArchive, ItemIndex, kpidCRC);
+  AItem.Method := Get7zWideStringProp(AInArchive, ItemIndex, kpidMethod);
 
   // reset modified flags
   AItem.ModifiedProperties := [];
@@ -3300,10 +3549,10 @@ type
   TJclSevenzipUpdateCallback = class(TInterfacedObject, IUnknown, IProgress,
     IArchiveUpdateCallback, IArchiveUpdateCallback2, ICryptoGetTextPassword2)
   private
-    FCompressionArchive: TJclSevenzipCompressArchive;
+    FArchive: TJclCompressionArchive;
     FLastStream: Cardinal;
   public
-    constructor Create(ACompressionArchive: TJclSevenzipCompressArchive);
+    constructor Create(AArchive: TJclCompressionArchive);
     // IProgress
     function SetCompleted(CompleteValue: PInt64): HRESULT; stdcall;
     function SetTotal(Total: Int64): HRESULT; stdcall;
@@ -3323,10 +3572,10 @@ type
   end;
 
 constructor TJclSevenzipUpdateCallback.Create(
-  ACompressionArchive: TJclSevenzipCompressArchive);
+  AArchive: TJclCompressionArchive);
 begin
   inherited Create;
-  FCompressionArchive := ACompressionArchive;
+  FArchive := AArchive;
 end;
 
 function TJclSevenzipUpdateCallback.CryptoGetTextPassword2(
@@ -3334,13 +3583,13 @@ function TJclSevenzipUpdateCallback.CryptoGetTextPassword2(
 begin
   if Assigned(PasswordIsDefined) then
   begin
-    if FCompressionArchive.Password <> '' then
+    if FArchive.Password <> '' then
       PasswordIsDefined^ := Integer($FFFFFFFF)
     else
       PasswordIsDefined^ := 0;
   end;
   if Assigned(Password) then
-    Password^ := SysAllocString(PWideChar(FCompressionArchive.Password));
+    Password^ := SysAllocString(PWideChar(FArchive.Password));
   Result := S_OK;
 end;
 
@@ -3350,7 +3599,7 @@ var
   AItem: TJclCompressionItem;
 begin
   Result := S_OK;
-  AItem := FCompressionArchive.Items[Index];
+  AItem := FArchive.Items[Index];
   case PropID of
     kpidNoProperty:
       Value.vt := VT_NULL;
@@ -3433,7 +3682,7 @@ function TJclSevenzipUpdateCallback.GetStream(Index: Cardinal;
   out InStream: ISequentialInStream): HRESULT;
 begin
   FLastStream := Index;
-  InStream := TJclSevenzipInStream.Create(FCompressionArchive, Index);
+  InStream := TJclSevenzipInStream.Create(FArchive, Index);
   Result := S_OK;
 end;
 
@@ -3442,7 +3691,7 @@ function TJclSevenzipUpdateCallback.GetUpdateItemInfo(Index: Cardinal; NewData,
 var
   CompressionItem: TJclCompressionItem;
 begin
-  CompressionItem := FCompressionArchive.Items[Index];
+  CompressionItem := FArchive.Items[Index];
 
   if Assigned(NewData) then
   begin
@@ -3462,7 +3711,7 @@ begin
 
   // TODO
   if Assigned(IndexInArchive) then
-    IndexInArchive^ := $FFFFFFFF; //Index;
+    IndexInArchive^ := CompressionItem.PackedIndex;
   Result := S_OK;
 end;
 
@@ -3486,7 +3735,7 @@ function TJclSevenzipUpdateCallback.SetCompleted(
   CompleteValue: PInt64): HRESULT;
 begin
   if Assigned(CompleteValue) then
-    FCompressionArchive.DoProgress(CompleteValue^, FCompressionArchive.FProgressMax);
+    FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax);
   Result := S_OK;
 end;
 
@@ -3495,15 +3744,15 @@ function TJclSevenzipUpdateCallback.SetOperationResult(
 begin
   case OperationResult of
     kOK:
-      FCompressionArchive.Items[FLastStream].OperationSuccess := osOK;
+      FArchive.Items[FLastStream].OperationSuccess := osOK;
     kUnSupportedMethod:
-      FCompressionArchive.Items[FLastStream].OperationSuccess := osUnsupportedMethod;
+      FArchive.Items[FLastStream].OperationSuccess := osUnsupportedMethod;
     kDataError:
-      FCompressionArchive.Items[FLastStream].OperationSuccess := osDataError;
+      FArchive.Items[FLastStream].OperationSuccess := osDataError;
     kCRCError:
-      FCompressionArchive.Items[FLastStream].OperationSuccess := osCRCError;
+      FArchive.Items[FLastStream].OperationSuccess := osCRCError;
   else
-    FCompressionArchive.Items[FLastStream].OperationSuccess := osUnknownError;
+    FArchive.Items[FLastStream].OperationSuccess := osUnknownError;
   end;
 
   Result := S_OK;
@@ -3511,7 +3760,7 @@ end;
 
 function TJclSevenzipUpdateCallback.SetTotal(Total: Int64): HRESULT;
 begin
-  FCompressionArchive.FProgressMax := Total;
+  FArchive.FProgressMax := Total;
   Result := S_OK;
 end;
 
@@ -3587,6 +3836,32 @@ begin
   end;
 end;
 
+procedure SetZipCompressionProperties(AOutArchive: IOutArchive; ZipMethod: TJclZipMethod;
+  Level: Cardinal);
+var
+  PropertiesSetter: ISetProperties;
+  PropNames: array [0..1] of PWideChar;
+  PropValues: array [0..1] of TPropVariant;
+const
+  CompressionMethodNames: array [TJclZipMethod] of WideString =
+    ( kDeflateMethodName {zmDeflate}, kDeflate64MethodName {zmDeflate64},
+      kCopyMethod {zmCopy}, kBZip2MethodName {zmBZip2} );
+begin
+  if Supports(AOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
+  begin
+    PropNames[0] := 'X';
+    PropValues[0].vt := VT_UI4;
+    PropValues[0].ulVal := Level;
+    PropNames[1] := 'M';
+    PropValues[1].vt := VT_BSTR;
+    PropValues[1].bstrVal := SysAllocString(PWideChar(CompressionMethodNames[ZipMethod]));
+
+    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
+end;
+
 //=== { TJcl7zCompressArchive } ==============================================
 
 procedure TJcl7zCompressArchive.CreateCompressionObject;
@@ -3598,6 +3873,11 @@ end;
 function TJcl7zCompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormat7z;
+end;
+
+class function TJcl7zCompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclZipCompressArchive } =============================================
@@ -3613,29 +3893,14 @@ begin
   Result := CLSID_CFormatZip;
 end;
 
-procedure TJclZipCompressArchive.SetCompressionProperties;
-var
-  PropertiesSetter: ISetProperties;
-  PropNames: array [0..1] of PWideChar;
-  PropValues: array [0..1] of TPropVariant;
-const
-  CompressionMethodNames: array [TJclZipMethod] of WideString =
-    ( kDeflateMethodName {zmDeflate}, kDeflate64MethodName {zmDeflate64},
-      kCopyMethod {zmCopy}, kBZip2MethodName {zmBZip2} );
+class function TJclZipCompressArchive.MultipleItemContainer: Boolean;
 begin
-  if Supports(FOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
-  begin
-    PropNames[0] := 'X';
-    PropValues[0].vt := VT_UI4;
-    PropValues[0].ulVal := CompressionLevel;
-    PropNames[1] := 'M';
-    PropValues[1].vt := VT_BSTR;
-    PropValues[1].bstrVal := SysAllocString(PWideChar(CompressionMethodNames[DefaultMethod]));
+  Result := True;
+end;
 
-    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
-  end
-  else
-    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
+procedure TJclZipCompressArchive.SetCompressionProperties;
+begin
+  SetZipCompressionProperties(FOutArchive, DefaultMethod, CompressionLevel);
 end;
 
 procedure TJclZipCompressArchive.SetDefaultMethod(Value: TJclZipMethod);
@@ -3671,6 +3936,11 @@ begin
   Result := CLSID_CFormatTar;
 end;
 
+class function TJclTarCompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJclTarCompressArchive.SetCompressionProperties;
 begin
   // no properties
@@ -3695,9 +3965,9 @@ type
   TJclSevenzipOpenCallback = class(TInterfacedObject, IArchiveOpenCallback,
     ICryptoGetTextPassword, IUnknown)
   private
-    FDecompressionArchive: TJclSevenzipDecompressArchive;
+    FArchive: TJclCompressionArchive;
   public
-    constructor Create(ADecompressionArchive: TJclSevenzipDecompressArchive);
+    constructor Create(AArchive: TJclCompressionArchive);
     // IArchiveOpenCallback
     function SetCompleted(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
     function SetTotal(Files: PInt64; Bytes: PInt64): HRESULT; stdcall;
@@ -3706,31 +3976,31 @@ type
   end;
 
 constructor TJclSevenzipOpenCallback.Create(
-  ADecompressionArchive: TJclSevenzipDecompressArchive);
+  AArchive: TJclCompressionArchive);
 begin
   inherited Create;
-  FDecompressionArchive := ADecompressionArchive;
+  FArchive := AArchive;
 end;
 
 function TJclSevenzipOpenCallback.CryptoGetTextPassword(
   password: PBStr): HRESULT;
 begin
   if Assigned(password) then
-    password^ := SysAllocString(PWideChar(FDecompressionArchive.Password));
+    password^ := SysAllocString(PWideChar(FArchive.Password));
   Result := S_OK;
 end;
 
 function TJclSevenzipOpenCallback.SetCompleted(Files, Bytes: PInt64): HRESULT;
 begin
   if Assigned(Files) then
-    FDecompressionArchive.DoProgress(Files^, FDecompressionArchive.FProgressMax);
+    FArchive.DoProgress(Files^, FArchive.FProgressMax);
   Result := S_OK;
 end;
 
 function TJclSevenzipOpenCallback.SetTotal(Files, Bytes: PInt64): HRESULT;
 begin
   if Assigned(Files) then
-    FDecompressionArchive.FProgressMax := Files^;
+    FArchive.FProgressMax := Files^;
   Result := S_OK;
 end;
 
@@ -3740,10 +4010,10 @@ type
   TJclSevenzipExtractCallback = class(TInterfacedObject, IUnknown, IProgress,
     IArchiveExtractCallback, ICryptoGetTextPassword)
   private
-    FDecompressionArchive: TJclSevenzipDecompressArchive;
+    FArchive: TJclCompressionArchive;
     FLastStream: Cardinal;
   public
-    constructor Create(ADecompressionArchive: TJclSevenzipDecompressArchive);
+    constructor Create(AArchive: TJclCompressionArchive);
     // IArchiveExtractCallback
     function GetStream(Index: Cardinal; out OutStream: ISequentialOutStream;
       askExtractMode: Cardinal): HRESULT; stdcall;
@@ -3757,17 +4027,17 @@ type
   end;
 
 constructor TJclSevenzipExtractCallback.Create(
-  ADecompressionArchive: TJclSevenzipDecompressArchive);
+  AArchive: TJclCompressionArchive);
 begin
   inherited Create;
-  FDecompressionArchive := ADecompressionArchive;
+  FArchive := AArchive;
 end;
 
 function TJclSevenzipExtractCallback.CryptoGetTextPassword(
   password: PBStr): HRESULT;
 begin
   if Assigned(password) then
-    password^ := SysAllocString(PWideChar(FDecompressionArchive.Password));
+    password^ := SysAllocString(PWideChar(FArchive.Password));
   Result := S_OK;
 end;
 
@@ -3775,9 +4045,10 @@ function TJclSevenzipExtractCallback.GetStream(Index: Cardinal;
   out OutStream: ISequentialOutStream; askExtractMode: Cardinal): HRESULT;
 begin
   FLastStream := Index;
-  if (FDecompressionArchive.Items[Index] as TJclDecompressItem).ValidateExtraction(Index) then
+
+  if FArchive.Items[Index].ValidateExtraction(Index) then
   begin
-    OutStream := TJclSevenzipOutStream.Create(FDecompressionArchive, Index);
+    OutStream := TJclSevenzipOutStream.Create(FArchive, Index);
     Result := S_OK;
   end
   else
@@ -3797,7 +4068,7 @@ function TJclSevenzipExtractCallback.SetCompleted(
   CompleteValue: PInt64): HRESULT;
 begin
   if Assigned(CompleteValue) then
-    FDecompressionArchive.DoProgress(CompleteValue^, FDecompressionArchive.FProgressMax);
+    FArchive.DoProgress(CompleteValue^, FArchive.FProgressMax);
   Result := S_OK;
 end;
 
@@ -3806,15 +4077,15 @@ function TJclSevenzipExtractCallback.SetOperationResult(
 begin
   case resultEOperationResult of
     kOK:
-      FDecompressionArchive.Items[FLastStream].OperationSuccess := osOK;
+      FArchive.Items[FLastStream].OperationSuccess := osOK;
     kUnSupportedMethod:
-      FDecompressionArchive.Items[FLastStream].OperationSuccess := osUnsupportedMethod;
+      FArchive.Items[FLastStream].OperationSuccess := osUnsupportedMethod;
     kDataError:
-      FDecompressionArchive.Items[FLastStream].OperationSuccess := osDataError;
+      FArchive.Items[FLastStream].OperationSuccess := osDataError;
     kCRCError:
-      FDecompressionArchive.Items[FLastStream].OperationSuccess := osCRCError;
+      FArchive.Items[FLastStream].OperationSuccess := osCRCError;
   else
-    FDecompressionArchive.Items[FLastStream].OperationSuccess := osUnknownError;
+    FArchive.Items[FLastStream].OperationSuccess := osUnknownError;
   end;
 
   Result := S_OK;
@@ -3822,7 +4093,7 @@ end;
 
 function TJclSevenzipExtractCallback.SetTotal(Total: Int64): HRESULT;
 begin
-  FDecompressionArchive.FProgressMax := Total;
+  FArchive.FProgressMax := Total;
   Result := S_OK;
 end;
 
@@ -3845,6 +4116,8 @@ procedure TJclSevenzipDecompressArchive.ExtractAll(const ADestinationDir: string
 var
   AExtractCallback: IArchiveExtractCallback;
 begin
+  CheckNotDecompressing;
+
   FDestinationDir := ADestinationDir;
   FAutoCreateSubDir := AAutoCreateSubDir;
   
@@ -3875,6 +4148,8 @@ var
   NbIndices: Cardinal;
   Index: Integer;
 begin
+  CheckNotDecompressing;
+
   FDestinationDir := ADestinationDir;
   FAutoCreateSubDir := AAutoCreateSubDir;
 
@@ -3912,7 +4187,6 @@ end;
 procedure TJclSevenzipDecompressArchive.FreeCompressionObject;
 begin
   FInArchive := nil;
-  FInStream := nil;
 end;
 
 function TJclSevenzipDecompressArchive.GetItemClass: TJclCompressionItemClass;
@@ -3943,8 +4217,6 @@ begin
         FItems.Add(AItem);
       end;
     end;
-
-    FListed := True;
   finally
     FListing := False;
   end;
@@ -3955,6 +4227,7 @@ var
   SplitStream: TJclDynamicSplitStream;
   OpenCallback: IArchiveOpenCallback;
   MaxCheckStartPosition: Int64;
+  AInStream: IInStream;
 begin
   if not FOpened then
   begin
@@ -3963,14 +4236,14 @@ begin
       SplitStream := TJclDynamicSplitStream.Create;
       SplitStream.OnVolume := NeedVolume;
       SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
-      FInStream := TJclSevenzipInStream.Create(SplitStream, True);
+      AInStream := TJclSevenzipInStream.Create(SplitStream, True);
     end
     else
-      FInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
+      AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
     OpenCallback := TJclSevenzipOpenCallback.Create(Self);
 
     MaxCheckStartPosition := 1 shl 22;
-    SevenzipCheck(FInArchive.Open(FInStream, @MaxCheckStartPosition, OpenCallback));
+    SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
 
     FOpened := True;
   end;
@@ -3981,6 +4254,11 @@ end;
 function TJclZipDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatZip;
+end;
+
+class function TJclZipDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclBZ2DecompressArchive } ===========================================
@@ -3997,11 +4275,21 @@ begin
   Result := CLSID_CFormatRar;
 end;
 
+class function TJclRarDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclArjDecompressArchive } ===========================================
 
 function TJclArjDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatArj;
+end;
+
+class function TJclArjDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclZDecompressArchive } =============================================
@@ -4011,11 +4299,21 @@ begin
   Result := CLSID_CFormatZ;
 end;
 
+class function TJclZDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclLzhDecompressArchive } ===========================================
 
 function TJclLzhDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatLzh;
+end;
+
+class function TJclLzhDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJcl7zDecompressArchive } ============================================
@@ -4025,11 +4323,21 @@ begin
   Result := CLSID_CFormat7z;
 end;
 
+class function TJcl7zDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclNsisDecompressArchive } ==========================================
 
 function TJclNsisDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatNsis;
+end;
+
+class function TJclNsisDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclIsoDecompressArchive } ===========================================
@@ -4039,6 +4347,11 @@ begin
   Result := CLSID_CFormatIso;
 end;
 
+class function TJclIsoDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclCabDecompressArchive } ===========================================
 
 function TJclCabDecompressArchive.GetCLSID: TGUID;
@@ -4046,11 +4359,21 @@ begin
   Result := CLSID_CFormatCab;
 end;
 
+class function TJclCabDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclChmDecompressArchive } ===========================================
 
 function TJclChmDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatChm;
+end;
+
+class function TJclChmDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclSplitDecompressArchive } =========================================
@@ -4067,11 +4390,21 @@ begin
   Result := CLSID_CFormatRpm;
 end;
 
+class function TJclRpmDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclDebDecompressArchive } ===========================================
 
 function TJclDebDecompressArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatDeb;
+end;
+
+class function TJclDebDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
 end;
 
 //=== { TJclCpioDecompressArchive } ==========================================
@@ -4081,6 +4414,11 @@ begin
   Result := CLSID_CFormatCpio;
 end;
 
+class function TJclCpioDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclTarDecompressArchive } ===========================================
 
 function TJclTarDecompressArchive.GetCLSID: TGUID;
@@ -4088,9 +4426,377 @@ begin
   Result := CLSID_CFormatTar;
 end;
 
+class function TJclTarDecompressArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
 //=== { TJclGZipDecompressArchive } ==========================================
 
 function TJclGZipDecompressArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatGZip;
+end;
+
+//=== { TJclSevenzipUpdateArchive } ==========================================
+
+procedure TJclSevenzipUpdateArchive.Compress;
+var
+  OutStream: IOutStream;
+  UpdateCallback: IArchiveUpdateCallback;
+  SplitStream: TJclDynamicSplitStream;
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+
+  FCompressing := True;
+  try
+    SplitStream := TJclDynamicSplitStream.Create;
+    SplitStream.OnVolume := NeedVolume;
+    SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+    OutStream := TJclSevenzipOutStream.Create(SplitStream, True);
+    UpdateCallback := TJclSevenzipUpdateCallback.Create(Self);
+
+    SetCompressionProperties;
+
+    SevenzipCheck(FOutArchive.UpdateItems(OutStream, ItemCount, UpdateCallback));
+  finally
+    FCompressing := False;
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.CreateCompressionObject;
+var
+  SevenzipCLSID, InterfaceID: TGUID;
+begin
+  SevenzipCLSID := GetCLSID;
+  InterfaceID := Sevenzip.IInArchive;
+  if (Sevenzip.CreateObject(@SevenzipCLSID, @InterfaceID, FInArchive) <> ERROR_SUCCESS)
+    or not Assigned(FInArchive) then
+    raise EJclCompressionError.CreateResFmt(@RsCompression7zInArchiveError, [GUIDToString(SevenzipCLSID)]);
+  FExtractingAllIndex := -1;
+  InterfaceID := Sevenzip.IOutArchive;
+  if not Supports(FInArchive, InterfaceID, FOutArchive) then
+    raise EJclCompressionError.CreateResFmt(@RsCompression7zOutArchiveError, [GUIDToString(SevenzipCLSID)]);
+end;
+
+procedure TJclSevenzipUpdateArchive.DeleteItem(Index: Integer);
+var
+  I, BaseLength: Integer;
+  IsDirectory: Boolean;
+  AItem: TJclCompressionItem;
+  DirectoryName: WideString;
+begin
+  AItem := Items[Index];
+  IsDirectory := (AItem.Attributes and faDirectory) <> 0;
+  DirectoryName := AItem.PackedName + DirDelimiter;
+
+  FItems.Delete(Index);
+
+  if IsDirectory then
+  begin
+    BaseLength := Length(DirectoryName);
+
+    for I := ItemCount - 1 downto 0 do
+      if WideSameText(DirectoryName, Copy(Items[I].PackedName, 1, BaseLength)) then
+        FItems.Delete(I);
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.ExtractAll(const ADestinationDir: string;
+  AAutoCreateSubDir: Boolean);
+var
+  AExtractCallback: IArchiveExtractCallback;
+begin
+  CheckNotDecompressing;
+  CheckNotCompressing;
+  
+  FDestinationDir := ADestinationDir;
+  FAutoCreateSubDir := AAutoCreateSubDir;
+  
+  if FDestinationDir <> '' then
+    FDestinationDir := PathAddSeparator(FDestinationDir);
+
+  FDecompressing := True;
+  FExtractingAllIndex := 0;
+  AExtractCallback := TJclSevenzipExtractCallback.Create(Self);
+  try
+    OpenArchive;
+
+    SevenzipCheck(FInArchive.Extract(nil, $FFFFFFFF, 0, AExtractCallback));
+    CheckOperationSuccess;
+  finally
+    FDestinationDir := '';
+    FDecompressing := False;
+    FExtractingAllIndex := -1;
+    AExtractCallback := nil;
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.ExtractSelected(
+  const ADestinationDir: string; AAutoCreateSubDir: Boolean);
+var
+  AExtractCallback: IArchiveExtractCallback;
+  Indices: array of Cardinal;
+  NbIndices: Cardinal;
+  Index: Integer;
+begin
+  CheckNotDecompressing;
+  CheckNotCompressing;
+
+  FDestinationDir := ADestinationDir;
+  FAutoCreateSubDir := AAutoCreateSubDir;
+
+  if FDestinationDir <> '' then
+    FDestinationDir := PathAddSeparator(FDestinationDir);
+
+  FDecompressing := True;
+  AExtractCallback := TJclSevenzipExtractCallback.Create(Self);
+  try
+    OpenArchive;
+
+    NbIndices := 0;
+    for Index := 0 to ItemCount - 1 do
+      if Items[Index].Selected then
+        Inc(NbIndices);
+
+    SetLength(Indices, NbIndices);
+    NbIndices := 0;
+    for Index := 0 to ItemCount - 1 do
+      if Items[Index].Selected then
+    begin
+      Indices[NbIndices] := Index;
+      Inc(NbIndices);
+    end;
+
+    SevenzipCheck(FInArchive.Extract(@Indices[0], Length(Indices), 0, AExtractCallback));
+    CheckOperationSuccess;
+  finally
+    FDestinationDir := '';
+    FDecompressing := False;
+    AExtractCallback := nil;
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.FreeCompressionObject;
+begin
+  FInArchive := nil;
+  FOutArchive := nil;
+end;
+
+function TJclSevenzipUpdateArchive.GetItemClass: TJclCompressionItemClass;
+begin
+  Result := TJclUpdateItem;
+end;
+
+procedure TJclSevenzipUpdateArchive.ListFiles;
+var
+  NumberOfItems: Cardinal;
+  Index: Integer;
+  AItem: TJclCompressionItem;
+begin
+  CheckNotDecompressing;
+  CheckNotCompressing;
+
+  FListing := True;
+  try
+    ClearItems;
+    OpenArchive;
+
+    SevenzipCheck(FInArchive.GetNumberOfItems(@NumberOfItems));
+    if NumberOfItems > 0 then
+    begin
+      for Index := 0 to NumberOfItems - 1 do
+      begin
+        AItem := GetItemClass.Create(Self);
+        Load7zFileAttribute(FInArchive, Index, AItem);
+        FItems.Add(AItem);
+      end;
+    end;
+  finally
+    FListing := False;
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.OpenArchive;
+var
+  SplitStream: TJclDynamicSplitStream;
+  OpenCallback: IArchiveOpenCallback;
+  MaxCheckStartPosition: Int64;
+  AInStream: IInStream;
+begin
+  if not FOpened then
+  begin
+    if (FVolumeMaxSize <> 0) or (FVolumes.Count <> 0) then
+    begin
+      SplitStream := TJclDynamicSplitStream.Create;
+      SplitStream.OnVolume := NeedVolume;
+      SplitStream.OnVolumeMaxSize := NeedVolumeMaxSize;
+      AInStream := TJclSevenzipInStream.Create(SplitStream, True);
+    end
+    else
+      AInStream := TJclSevenzipInStream.Create(NeedVolume(0), False);
+    OpenCallback := TJclSevenzipOpenCallback.Create(Self);
+
+    MaxCheckStartPosition := 1 shl 22;
+    SevenzipCheck(FInArchive.Open(AInStream, @MaxCheckStartPosition, OpenCallback));
+
+    FOpened := True;
+  end;
+end;
+
+procedure TJclSevenzipUpdateArchive.RemoveItem(const PackedName: WideString);
+var
+  Index, BaseLength: Integer;
+  IsDirectory: Boolean;
+  AItem: TJclCompressionItem;
+  DirectoryName: WideString;
+begin
+  IsDirectory := False;
+  for Index := 0 to ItemCount - 1 do
+  begin
+    AItem := Items[Index];
+    if WideSameText(AItem.PackedName, PackedName) then
+    begin
+      DirectoryName := AItem.PackedName;
+      if (AItem.Attributes and faDirectory) <> 0 then
+      IsDirectory := True;
+      FItems.Delete(Index);
+      Break;
+    end;
+  end;
+
+  if IsDirectory then
+  begin
+    DirectoryName := PackedName + DirDelimiter;
+    BaseLength := Length(DirectoryName);
+
+    for Index := ItemCount - 1 downto 0 do
+      if WideSameText(DirectoryName, Copy(Items[Index].PackedName, 1, BaseLength)) then
+        FItems.Delete(Index);
+  end;
+end;
+
+
+procedure TJclSevenzipUpdateArchive.SetCompressionLevel(Value: Cardinal);
+begin
+  CheckNotCompressing;
+  CheckNotDecompressing;
+
+  FCompressionLevel := Value;
+end;
+
+procedure TJclSevenzipUpdateArchive.SetCompressionProperties;
+var
+  PropertiesSetter: ISetProperties;
+  PropNames: array [0..0] of PWideChar;
+  PropValues: array [0..0] of TPropVariant;
+begin
+  if Supports(FOutArchive, ISetProperties, PropertiesSetter) and Assigned(PropertiesSetter) then
+  begin
+    PropNames[0] := 'X';
+    PropValues[0].vt := VT_UI4;
+    PropValues[0].ulVal := CompressionLevel;
+
+    SevenzipCheck(PropertiesSetter.SetProperties(@PropNames[0], @PropValues[0], Length(PropNames)));
+  end
+  else
+    raise EJclCompressionError.CreateRes(@RsCompression7zNoProperties);
+end;
+
+//=== { TJclZipUpdateArchive } ===============================================
+
+procedure TJclZipUpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionLevel := 9;
+end;
+
+function TJclZipUpdateArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatZip;
+end;
+
+class function TJclZipUpdateArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TJclZipUpdateArchive.SetCompressionProperties;
+begin
+  SetZipCompressionProperties(FOutArchive, DefaultMethod, CompressionLevel);
+end;
+
+procedure TJclZipUpdateArchive.SetDefaultMethod(Value: TJclZipMethod);
+begin
+  CheckNotCompressing;
+
+  FDefaultMethod := Value;
+end;
+
+//=== { TJclBZ2UpdateArchive } ===============================================
+
+procedure TJclBZ2UpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionLevel := 9;
+end;
+
+function TJclBZ2UpdateArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatBZ2;
+end;
+
+//=== { TJcl7zUpdateArchive } ================================================
+
+procedure TJcl7zUpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionLevel := 9;
+end;
+
+function TJcl7zUpdateArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormat7z;
+end;
+
+class function TJcl7zUpdateArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+//=== { TJclTarUpdateArchive } ===============================================
+
+procedure TJclTarUpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionLevel := 0;
+end;
+
+function TJclTarUpdateArchive.GetCLSID: TGUID;
+begin
+  Result := CLSID_CFormatTar;
+end;
+
+class function TJclTarUpdateArchive.MultipleItemContainer: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TJclTarUpdateArchive.SetCompressionProperties;
+begin
+  // no properties
+end;
+
+//=== { TJclGZipUpdateArchive } ==============================================
+
+procedure TJclGZipUpdateArchive.CreateCompressionObject;
+begin
+  inherited CreateCompressionObject;
+  FCompressionLevel := 9;
+end;
+
+function TJclGZipUpdateArchive.GetCLSID: TGUID;
 begin
   Result := CLSID_CFormatGZip;
 end;
@@ -4102,7 +4808,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 
