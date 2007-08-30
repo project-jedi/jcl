@@ -20,12 +20,12 @@ var
   ButtonPanels: array [0..4] of TPanel;
   ButtonImages: array [0..4] of TBitmapImage;
   ButtonLabels: array [0..4] of TLabel;
-
-procedure UpdateButton(AButton: TButton;AButtonIndex: integer);
+  
+procedure UpdateButton(AButton: TButton; AButtonIndex: integer);
 begin
   ButtonLabels[AButtonIndex].Caption:=AButton.Caption;
-  ButtonPanels[AButtonIndex].visible:=AButton.Visible;
-  ButtonLabels[AButtonIndex].Enabled:=Abutton.Enabled;
+  ButtonPanels[AButtonIndex].Visible:=AButton.Visible;
+  ButtonLabels[AButtonIndex].Enabled:=AButton.Enabled;
 end;
 
 procedure ButtonLabelClick(Sender: TObject);
@@ -110,6 +110,8 @@ begin
     Left:=0;
     Width:=panel.ClientWidth;
     Parent:=panel;
+    if AButtonIndex = bidNext then
+      Font.Style := [fsBold];
     Font.Color:=clWhite;
     Caption:=AButton.Caption;
     OnClick:=@ButtonLabelClick;
@@ -481,6 +483,24 @@ with WizardForm do begin
           with ProgressGauge do begin
             Left:=0+10
             Top:=42+10
+            Width:=465
+            Height:=21
+          end
+          with WebDownloadFilenameLabel do begin
+            Left:=0+10
+            Top:=16+10+80
+            Width:=465
+            Height:=16
+          end
+          with WebDownloadStatusLabel do begin
+            Left:=0+10
+            Top:=0+10+80
+            Width:=465
+            Height:=16
+          end
+          with WebDownloadProgressGauge do begin
+            Left:=0+10
+            Top:=42+10+80
             Width:=465
             Height:=21
           end
