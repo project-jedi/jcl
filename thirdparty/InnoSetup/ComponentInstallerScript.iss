@@ -419,9 +419,6 @@ var
 begin
   Components := TStringList.Create;
   try
-    Components.CommaText := WizardSelectedComponents(False);
-    UserUnregisterComponents(Components); // remove a failed installation first
-
     ChangeComponentRegistration(True, Components);
     UserRegisterComponents(Components);
   finally
