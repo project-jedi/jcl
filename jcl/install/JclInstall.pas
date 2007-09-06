@@ -1103,8 +1103,8 @@ procedure TJclInstallation.Init;
       AddOption(joExpertsDsgnPackages, [goRadioButton, goChecked], joExperts)
     else
     begin
-      AddOption(joExpertsDLL, [goRadioButton, goChecked], joExperts);
-      AddOption(joExpertsDsgnPackages, [goRadioButton], joExperts);
+      AddOption(joExpertsDLL, [goRadioButton], joExperts);
+      AddOption(joExpertsDsgnPackages, [goRadioButton, goChecked], joExperts);
     end;
 
     if RunTimeInstallation then
