@@ -794,7 +794,8 @@ begin
 
                 // If there is more than one code in the temporary decomposition
                 // array then add the character with its decomposition.
-                if DecompTempSize > 1 then
+                // (outchy) latest unicode data have aliases to link items having the same decompositions
+                //if DecompTempSize > 1 then
                   AddDecomposition(StartCode);
               end;
 
