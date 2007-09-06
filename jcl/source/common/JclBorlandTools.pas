@@ -4911,10 +4911,11 @@ begin
     3, 4:
       Result := inherited GetBPLOutputPath;
     5:
-      if bpBCBuilder32 in Personalities then
-        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName))
-      else
-        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
+      begin
+        Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName));
+        if Result = '' then
+          Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
+      end;
   else
     Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
   end;
