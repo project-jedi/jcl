@@ -1153,20 +1153,27 @@ procedure TJclInstallation.Init;
     if not Assigned(AConfiguration) then
       Exit;
     if AConfiguration.SectionExists(TargetName) then
+    begin
       for Option := Low(TJclOption) to High(TJclOption) do
-    begin
-      Id := OptionData[Option].Id;
-      GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
-    end;
-
-    if not Target.IsTurboExplorer and FRunTimeInstallation and (CLRVersion = '') then
-    begin
-      ADemoList := GetDemoList;
-      if AConfiguration.SectionExists(FDemoSectionName) then
-        for Index := 0 to ADemoList.Count - 1 do
       begin
-        Id := Integer(ADemoList.Objects[Index]);
-        GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
+        Id := OptionData[Option].Id;
+        GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
+      end;
+    end
+    else
+      GUIPage.OptionChecked[OptionData[joLibrary].Id] := True;
+
+    if not Target.IsTurboExplorer then
+    begin
+      if FRunTimeInstallation and (CLRVersion = '') then
+      begin
+        ADemoList := GetDemoList;
+        if AConfiguration.SectionExists(FDemoSectionName) then
+          for Index := 0 to ADemoList.Count - 1 do
+        begin
+          Id := Integer(ADemoList.Objects[Index]);
+          GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
+        end;
       end;
 
       StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath];
@@ -2269,22 +2276,26 @@ procedure TJclInstallation.Close;
     if not (Assigned(AConfiguration) and Assigned(GUIPage)) then
       Exit;
 
-    // clean section before adding new options
+    // clean section before saving options
     AConfiguration.DeleteSection(TargetName);
+    AConfiguration.DeleteSection(FDemoSectionName);
+
     for Option := Low(TJclOption) to High(TJclOption) do
     begin
       Id := OptionData[Option].Id;
       AConfiguration.OptionAsBool[TargetName, Id] := GUIPage.OptionChecked[Id];
     end;
 
-    AConfiguration.DeleteSection(FDemoSectionName);
-    if (not Target.IsTurboExplorer) and FRuntimeInstallation and (CLRVersion = '') then
+    if not Target.IsTurboExplorer then
     begin
-      ADemoList := GetDemoList;
-      for Index := 0 to ADemoList.Count - 1 do
+      if FRuntimeInstallation and (CLRVersion = '') then
       begin
-        Id := Integer(ADemoList.Objects[Index]);
-        AConfiguration.OptionAsBool[FDemoSectionName, Id] := GUIPage.OptionChecked[Id];
+        ADemoList := GetDemoList;
+        for Index := 0 to ADemoList.Count - 1 do
+        begin
+          Id := Integer(ADemoList.Objects[Index]);
+          AConfiguration.OptionAsBool[FDemoSectionName, Id] := GUIPage.OptionChecked[Id];
+        end;
       end;
 
       AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath] := GUIPage.Directories[FGUIBPLPathIndex];
