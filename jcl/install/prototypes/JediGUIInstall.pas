@@ -514,7 +514,7 @@ end;
 procedure TInstallFrame.SetCaption(const Value: string);
 begin
   (Parent as TTabSheet).Caption := Value;
-  AddInstallOption(JediTargetOption, [goExpandable, goChecked], Value, RsHintTarget, -1);
+  AddInstallOption(JediTargetOption, [goExpandable], Value, RsHintTarget, -1);
 end;
 
 function TInstallFrame.GetHintAtPos(ScreenX, ScreenY: Integer): string;
@@ -599,8 +599,14 @@ var
   ANode: TTreeNode;
 begin
   ANode := GetNode(Id);
-  if Assigned(ANode) then
+  while Assigned(ANode) do
+  begin
     UpdateNode(ANode, Value);
+    // if an option is checked, ensure that all parent options are checked too
+    if IsRadioButton(ANode) or not Value then
+      Break;
+    ANode := ANode.Parent;
+  end;
 end;
 
 function TInstallFrame.GetDirectoryCount: Integer;

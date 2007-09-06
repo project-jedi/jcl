@@ -1159,7 +1159,7 @@ procedure TJclInstallation.Init;
       GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
     end;
 
-    if not Target.IsTurboExplorer then
+    if not Target.IsTurboExplorer and FRunTimeInstallation and (CLRVersion = '') then
     begin
       ADemoList := GetDemoList;
       if AConfiguration.SectionExists(FDemoSectionName) then
@@ -2269,13 +2269,16 @@ procedure TJclInstallation.Close;
     if not (Assigned(AConfiguration) and Assigned(GUIPage)) then
       Exit;
 
+    // clean section before adding new options
+    AConfiguration.DeleteSection(TargetName);
     for Option := Low(TJclOption) to High(TJclOption) do
     begin
       Id := OptionData[Option].Id;
       AConfiguration.OptionAsBool[TargetName, Id] := GUIPage.OptionChecked[Id];
     end;
 
-    if not Target.IsTurboExplorer then
+    AConfiguration.DeleteSection(FDemoSectionName);
+    if (not Target.IsTurboExplorer) and FRuntimeInstallation and (CLRVersion = '') then
     begin
       ADemoList := GetDemoList;
       for Index := 0 to ADemoList.Count - 1 do
