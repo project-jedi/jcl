@@ -353,6 +353,10 @@ type
 function StreamSeek(Stream: TStream; const Offset: Int64;
   const Origin: TSeekOrigin): Int64;
 
+// buffered copy of all available bytes from Source to Dest
+// returns the number of bytes that were copied
+function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer = 4096): Int64;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -392,6 +396,24 @@ begin
   end
   else
     Result := -1;
+end;
+
+function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer): Int64;
+var
+  Buffer: Pointer;
+  ByteCount: Integer;
+begin
+  Result := 0;
+  GetMem(Buffer, BufferSize);
+  try
+    repeat
+      ByteCount := Source.Read(Buffer^, BufferSize);
+      Result := Result + ByteCount;
+      Dest.WriteBuffer(Buffer^, ByteCount);
+    until ByteCount < BufferSize;
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 //=== { TJclStream } =========================================================
