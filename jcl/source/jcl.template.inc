@@ -96,3 +96,8 @@
 // Unicode options
 // insert a replacement character if sequence is corrupted rather than raising an exception
 {.$DEFINE UNICODE_SILENT_FAILURE}
+
+// defines resource compression (uncompressed, compressed with ZLib, compressed with BZip2), mutually exclusive
+{.$DEFINE UNICODE_RAW_DATA}
+{.$DEFINE UNICODE_ZLIB_DATA}
+{.$DEFINE UNICODE_BZIP2_DATA}

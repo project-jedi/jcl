@@ -100,7 +100,7 @@ unit JclUnicode;
 //     a reallocation to work correctly (use the WideString versions instead)
 //   - further improvements related to internal data
 //   - introduced TUnicodeBlock
-//   - CodeBlockFromChar improved                     
+//   - CodeBlockFromChar improved
 // 07-JAN-2001:
 //   optimized access to character properties, combining class etc.
 // 06-JAN-2001:
@@ -1353,6 +1353,14 @@ var
 type
   EJclUnicodeError = class(EJclError);
 
+// functions to load Unicode data from resource
+procedure LoadCharacterCategories;
+procedure LoadCaseMappingData;
+procedure LoadDecompositionData;
+procedure LoadCombiningClassData;
+procedure LoadNumberData;
+procedure LoadCompositionData;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1372,7 +1380,15 @@ implementation
 //       the Unicode database file which can be compiled to the needed res file.
 //       This tool, including its source code, can be downloaded from www.lischke-online.de/Unicode.html.
 
+{$IFDEF UNICODE_RAW_DATA}
 {$R JclUnicode.res}
+{$ENDIF UNICODE_RAW_DATA}
+{$IFDEF UNICODE_BZIP2_DATA}
+{$R JclUnicodeBZip2.res}
+{$ENDIF UNICODE_BZIP2_DATA}
+{$IFDEF UNICODE_ZLIB_DATA}
+{$R JclUnicodeZLib.res}
+{$ENDIF UNICODE_ZLIB_DATA}
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -1383,6 +1399,13 @@ uses
   {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils,
+  {$IFDEF UNICODE_BZIP2_DATA}
+  BZip2,
+  {$ENDIF UNICODE_BZIP2_DATA}
+  {$IFNDEF UNICODE_RAW_DATA}
+  JclStreams,
+  JclCompression,
+  {$ENDIF ~UNICODE_RAW_DATA}
   JclResources, JclSynch, JclSysUtils;
 
 const
@@ -1408,6 +1431,48 @@ var
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
   LoadInProgress: TJclCriticalSection;
+
+function OpenResourceStream(const ResName: string): TStream;
+var
+  ResourceStream: TStream;
+  {$IFNDEF UNICODE_RAW_DATA}
+  DecompressionStream: TStream;
+  {$ENDIF ~UNICODE_RAW_DATA}
+begin
+  ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
+  {$IFDEF UNICODE_RAW_DATA}
+  Result := ResourceStream;
+  {$ENDIF UNICODE_RAW_DATA}
+  {$IFDEF UNICODE_BZIP2_DATA}
+  try
+    LoadBZip2;
+    DecompressionStream := TJclBZIP2DecompressionStream.Create(ResourceStream);
+    try
+      Result := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, Result);
+      StreamSeek(Result, 0, soBeginning);
+    finally
+      DecompressionStream.Free;
+    end;
+  finally
+    ResourceStream.Free;
+  end;
+  {$ENDIF UNICODE_BZIP2_DATA}
+  {$IFDEF UNICODE_ZLIB_DATA}
+  try
+    DecompressionStream := TJclZLibDecompressStream.Create(ResourceStream);
+    try
+      Result := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, Result);
+      StreamSeek(Result, 0, soBeginning);
+    finally
+      DecompressionStream.Free;
+    end;
+  finally
+    ResourceStream.Free;
+  end;
+  {$ENDIF UNICODE_ZLIB_DATA}
+end;
 
 //----------------- support for character categories -----------------------------------------------
 
@@ -1440,7 +1505,7 @@ procedure LoadCharacterCategories;
 // the comments about JclUnicode.res above).
 var
   Size: Integer;
-  Stream: TResourceStream;
+  Stream: TStream;
   Category: TCharacterCategory;
   Buffer: TRangeArray;
   First, Second, Third: Byte;
@@ -1453,7 +1518,7 @@ begin
     LoadInProgress.Enter;
     try
       CategoriesLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'CATEGORIES', 'UNICODEDATA');
+      Stream := OpenResourceStream('CATEGORIES');
       try
         while Stream.Position < Stream.Size do
         begin
@@ -1529,7 +1594,7 @@ var
 
 procedure LoadCaseMappingData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, Code,
   Size: Cardinal;
   First, Second, Third: Byte;
@@ -1542,7 +1607,7 @@ begin
     try
       SetLength(SingletonMapping, 1);
       CaseDataLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+      Stream := OpenResourceStream('CASE');
       try
         // the first entry in the stream is the number of entries in the case mapping table
         Stream.ReadBuffer(Size, 4);
@@ -1681,7 +1746,7 @@ var
 
 procedure LoadDecompositionData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, Code,
   Size: Cardinal;
   First, Second, Third: Byte;
@@ -1693,7 +1758,7 @@ begin
 
     try
       DecompositionsLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'DECOMPOSITION', 'UNICODEDATA');
+      Stream := OpenResourceStream('DECOMPOSITION');
       try
         // determine how many decomposition entries we have
         Stream.ReadBuffer(Size, 4);
@@ -1825,7 +1890,7 @@ var
 
 procedure LoadCombiningClassData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, J, K,
   Size: Cardinal;
   Buffer: TRangeArray;
@@ -1838,7 +1903,7 @@ begin
     if not CCCsLoaded then
     begin
       CCCsLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'COMBINING', 'UNICODEDATA');
+      Stream := OpenResourceStream('COMBINING');
       try
         while Stream.Position < Stream.Size do
         begin
@@ -1915,7 +1980,7 @@ var
 
 procedure LoadNumberData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   Size: Cardinal;
 begin
   // make sure no other code is currently modifying the global data area
@@ -1924,7 +1989,7 @@ begin
   try
     if NumberCodes = nil then
     begin
-      Stream := TResourceStream.Create(HInstance, 'NUMBERS', 'UNICODEDATA');
+      Stream := OpenResourceStream('NUMBERS');
       // Numbers are special (compared to other Unicode data) as they utilize two
       // arrays, one containing all used numbers (in nominator-denominator format) and
       // another one which maps a code point to one of the numbers in the first array.
@@ -1997,7 +2062,7 @@ var
 
 procedure LoadCompositionData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, Size: Integer;
 begin
   // make sure no other code is currently modifying the global data area
@@ -2006,7 +2071,7 @@ begin
   try
     if Compositions = nil then
     begin
-      Stream := TResourceStream.Create(HInstance, 'COMPOSITION', 'UNICODEDATA');
+      Stream := OpenResourceStream('COMPOSITION');
       try
         // a) determine size of compositions array
         Stream.ReadBuffer(Size, 4);

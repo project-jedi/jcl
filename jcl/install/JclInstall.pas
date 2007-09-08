@@ -65,6 +65,9 @@ type
         joDefBZip2LinkDLL,
         joDefBZip2LinkOnRequest,
         joDefUnicodeSilentFailure,
+        joDefUnicodeRawData,
+        joDefUnicodeZLibData,
+        joDefUnicodeBZip2Data,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -377,6 +380,9 @@ resourcestring
   // Unicode options
   RsCaptionDefUnicode              = 'Unicode options';
   RsCaptionDefUnicodeSilentFailure = 'Silent failure';
+  RsCaptionDefUnicodeRawData       = 'Uncompressed Unicode data';
+  RsCaptionDefUnicodeZLibData      = 'Compressed data using zlib';
+  RsCaptionDefUnicodeBZip2Data     = 'Compressed data using bzip2';
 
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
@@ -475,6 +481,9 @@ resourcestring
   // Unicode options
   RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
   RsHintDefUnicodeSilentFailure = 'Insert a replacement character if sequence is corrupted rather than raising an exception';
+  RsHintDefUnicodeRawData       = 'Link resource containing uncompressed Unicode data (bigger executable size)';
+  RsHintDefUnicodeZLibData      = 'Link resource containing Unicode data compressed with ZLib';
+  RsHintDefUnicodeBZip2Data     = 'Link resource containing Unicode data compressed with BZip2';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -592,6 +601,9 @@ var
       (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
       (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
       (Id: -1; Caption: RsCaptionDefUnicodeSilentFailure; Hint: RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
+      (Id: -1; Caption: RsCaptionDefUnicodeRawData; Hint: RsHintDefUnicodeRawData), // joDefUnicodeRawData
+      (Id: -1; Caption: RsCaptionDefUnicodeZLibData; Hint: RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
+      (Id: -1; Caption: RsCaptionDefUnicodeBZip2Data; Hint: RsHintDefUnicodeBZip2Data), // joDefUnicodeBZip2Data
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -964,6 +976,9 @@ procedure TJclInstallation.Init;
       {$IFDEF MSWINDOWS}
       AddOption(joDefUnicode, [goChecked], Parent);
       AddOption(joDefUnicodeSilentFailure, [goChecked], joDefUnicode);
+      AddOption(joDefUnicodeRawData, [goRadioButton, goChecked], joDefUnicode);
+      AddOption(joDefUnicodeZLibData, [goRadioButton], joDefUnicode);
+      AddOption(joDefUnicodeBZip2Data, [goRadioButton], joDefUnicode);
       {$ENDIF MSWINDOWS}
     end;
   end;
@@ -1423,14 +1438,15 @@ function TJclInstallation.Install: Boolean;
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefUnicodeSilentFailure] of string =
+    DefineNames: array [joDefThreadSafe..joDefUnicodeBZip2Data] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE' );
+        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
+        'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA' );
   var
     Option: TJclOption;
     Defines: TStrings;
