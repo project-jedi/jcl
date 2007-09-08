@@ -1157,7 +1157,8 @@ procedure TJclInstallation.Init;
       for Option := Low(TJclOption) to High(TJclOption) do
       begin
         Id := OptionData[Option].Id;
-        GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
+        if AConfiguration.ValueExists(TargetName, Id) then
+          GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
       end;
     end
     else
