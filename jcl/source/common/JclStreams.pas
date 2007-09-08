@@ -19,6 +19,7 @@
 { Contributors:                                                                                    }
 {   Florent Ouchet (outchy)                                                                        }
 {   Heinz Zastrau                                                                                  }
+{   Andreas Schmidt                                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -357,6 +358,11 @@ function StreamSeek(Stream: TStream; const Offset: Int64;
 // returns the number of bytes that were copied
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer = 4096): Int64;
 
+// compares 2 streams for differencies
+function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+// compares 2 files for differencies (calling CompareStreams)
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Integer = 4096): Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -413,6 +419,46 @@ begin
     until ByteCount < BufferSize;
   finally
     FreeMem(Buffer);
+  end;
+end;
+
+function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+var
+  BufferA, BufferB: Pointer;
+  ByteCountA, ByteCountB: Integer;
+begin
+  GetMem(BufferA, BufferSize);
+  try
+    GetMem(BufferB, BufferSize);
+    try
+      repeat
+        ByteCountA := A.Read(BufferA^, BufferSize);
+        ByteCountB := B.Read(BufferB^, BufferSize);
+
+        Result := (ByteCountA = ByteCountB) and CompareMem(BufferA, BufferB, ByteCountA);
+      until (ByteCountA <> BufferSize) or (ByteCountB <> BufferSize) or not Result;
+    finally
+      FreeMem(BufferB);
+    end;
+  finally
+    FreeMem(BufferA);
+  end;
+end;
+
+function CompareFiles(const FileA, FileB: TFileName; BufferSize: Integer = 4096): Boolean;
+var
+  A, B: TStream;
+begin
+  A := TFileStream.Create(FileA, fmOpenRead or fmShareDenyWrite);
+  try
+    B := TFileStream.Create(FileB, fmOpenRead or fmShareDenyWrite);
+    try
+      Result := CompareStreams(A, B, BufferSize);
+    finally
+      B.Free;
+    end;
+  finally
+    A.Free;
   end;
 end;
 
