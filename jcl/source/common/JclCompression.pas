@@ -110,8 +110,11 @@ type
   end;
 
   TJclDecompressStream = class(TJclCompressionStream)
+  private
+    FOwnsStream: Boolean;
   public
-    constructor Create(Source: TStream);
+    constructor Create(Source: TStream; AOwnsStream: Boolean = False);
+    destructor Destroy; override;
   end;
 
   // ZIP Support
@@ -154,7 +157,7 @@ type
     ZLibRecord: TZStreamRec;
     procedure SetWindowBits(Value: Integer);
   public
-    constructor Create(Source: TStream; WindowBits: Integer = DEF_WBITS);
+    constructor Create(Source: TStream; WindowBits: Integer = DEF_WBITS; AOwnsStream: Boolean = False);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
@@ -322,7 +325,7 @@ type
     function ReadCompressedData(Sender: TObject; var Buffer; Count: Longint): Longint;
     procedure ZLibStreamProgress(Sender: TObject);
   public
-    constructor Create(Source: TStream; CheckHeaderCRC: Boolean = True);
+    constructor Create(Source: TStream; CheckHeaderCRC: Boolean = True; AOwnsStream: Boolean = False);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
 
@@ -385,7 +388,7 @@ type
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(const Offset: Int64; Origin: TSeekOrigin): Int64; override;
 
-    constructor Create(Source: TStream); overload;
+    constructor Create(Source: TStream; AOwnsStream: Boolean = False); overload;
     destructor Destroy; override;
   end;
 
@@ -489,10 +492,18 @@ end;
 
 //=== { TJclDecompressStream } ===============================================
 
-constructor TJclDecompressStream.Create(Source: TStream);
+constructor TJclDecompressStream.Create(Source: TStream; AOwnsStream: Boolean);
 begin
   inherited Create(Source);
   FStream := Source;
+  FOwnsStream := AOwnsStream;
+end;
+
+destructor TJclDecompressStream.Destroy;
+begin
+  if FOwnsStream then
+    FStream.Free;
+  inherited Destroy;
 end;
 
 //=== { TJclZLibCompressionStream } ==========================================
@@ -672,9 +683,9 @@ end;
 
 //=== {  TJclZLibDecompressionStream } =======================================
 
-constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer = DEF_WBITS);
+constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer; AOwnsStream: Boolean);
 begin
-  inherited Create(Source);
+  inherited Create(Source, AOwnsStream);
 
   // Initialize ZLib StreamRecord
   with ZLibRecord do
@@ -958,7 +969,7 @@ end;
 
 //=== { TJclGZIPDecompressionStream } ========================================
 
-constructor TJclGZIPDecompressionStream.Create(Source: TStream; CheckHeaderCRC: Boolean);
+constructor TJclGZIPDecompressionStream.Create(Source: TStream; CheckHeaderCRC: Boolean; AOwnsStream: Boolean);
 var
   HeaderCRC: Cardinal;
   ComputeHeaderCRC: Boolean;
@@ -983,7 +994,7 @@ var
   end;
 
 begin
-  inherited Create(Source);
+  inherited Create(Source, AOwnsStream);
 
   FAutoCheckDataCRC32 := True;
   FComputedDataCRC32 := crc32(0, nil, 0);
@@ -1343,9 +1354,9 @@ end;
 
 //=== { TJclZLibDecompressionStream } ========================================
 
-constructor TJclBZIP2DecompressionStream.Create(Source: TStream);
+constructor TJclBZIP2DecompressionStream.Create(Source: TStream; AOwnsStream: Boolean);
 begin
-  inherited Create(Source);
+  inherited Create(Source, AOwnsStream);
 
   LoadBZip2;
 
