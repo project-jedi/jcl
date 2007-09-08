@@ -43,6 +43,7 @@ type
         joDefEDI,
         joDefPCRE,
         joDefBZip2,
+        joDefUnicode,
         joDefThreadSafe,
         joDefDropObsoleteCode,
         joDefUnitVersioning,
@@ -63,6 +64,7 @@ type
         joDefBZip2StaticLink,
         joDefBZip2LinkDLL,
         joDefBZip2LinkOnRequest,
+        joDefUnicodeSilentFailure,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -341,38 +343,41 @@ resourcestring
   RsCaptionLibrary = 'JEDI Code Library';
 
   // Conditional features
-  RsCaptionDef                    = 'Conditional defines';
-  RsCaptionDefThreadSafe          = 'Enable thread safe code';
-  RsCaptionDefDropObsoleteCode    = 'Drop obsolete code';
-  RsCaptionDefUnitVersioning      = 'Include Unit Versioning';
+  RsCaptionDef                 = 'Conditional defines';
+  RsCaptionDefThreadSafe       = 'Enable thread safe code';
+  RsCaptionDefDropObsoleteCode = 'Drop obsolete code';
+  RsCaptionDefUnitVersioning   = 'Include Unit Versioning';
   // math options
-  RsCaptionDefMath                = 'Math options';
-  RsCaptionDefMathPrecSingle      = 'Single float precision';
-  RsCaptionDefMathPrecDouble      = 'Double float precision';
-  RsCaptionDefMathPrecExtended    = 'Extended float precision';
-  RsCaptionDefMathExtremeValues   = 'Support for infinite and NaN';
+  RsCaptionDefMath              = 'Math options';
+  RsCaptionDefMathPrecSingle    = 'Single float precision';
+  RsCaptionDefMathPrecDouble    = 'Double float precision';
+  RsCaptionDefMathPrecExtended  = 'Extended float precision';
+  RsCaptionDefMathExtremeValues = 'Support for infinite and NaN';
   // debug options
-  RsCaptionDefDebug               = 'Debug and exception hooking options';
-  RsCaptionDefHookDllExceptions   = 'Hook exceptions in DLL';
-  RsCaptionDefDebugNoBinary       = 'No debug source from JEDI debug informations';
-  RsCaptionDefDebugNoTD32         = 'No debug source from TD32 debug symbols';
-  RsCaptionDefDebugNoMap          = 'No debug source from Map files';
-  RsCaptionDefDebugNoExports      = 'No debug source from function export table for libraries';
-  RsCaptionDefDebugNoSymbols      = 'No debug source from Microsoft debug symbols';
+  RsCaptionDefDebug             = 'Debug and exception hooking options';
+  RsCaptionDefHookDllExceptions = 'Hook exceptions in DLL';
+  RsCaptionDefDebugNoBinary     = 'No debug source from JEDI debug informations';
+  RsCaptionDefDebugNoTD32       = 'No debug source from TD32 debug symbols';
+  RsCaptionDefDebugNoMap        = 'No debug source from Map files';
+  RsCaptionDefDebugNoExports    = 'No debug source from function export table for libraries';
+  RsCaptionDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
   // EDI options
   RsCaptionDefEDI                 = 'EDI options';
   RsCaptionDefEDIWeakPackageUnits = 'EDI weak package units';
   // PCRE options
-  RsCaptionDefPCRE                = 'PCRE options';
-  RsCaptionDefPCREStaticLink      = 'Static link to PCRE code';
-  RsCaptionDefPCRELinkDLL         = 'Static bind to pcre.dll';
-  RsCaptionDefPCRELinkOnRequest   = 'Late bind to pcre.dll';
+  RsCaptionDefPCRE              = 'PCRE options';
+  RsCaptionDefPCREStaticLink    = 'Static link to PCRE code';
+  RsCaptionDefPCRELinkDLL       = 'Static bind to pcre.dll';
+  RsCaptionDefPCRELinkOnRequest = 'Late bind to pcre.dll';
   // BZip2 options
-  RsCaptionDefBZip2               = 'BZip2 options';
-  RsCaptionDefBZip2StaticLink     = 'Static link to BZip2 code (experimental)';
-  RsCaptionDefBZip2LinkDLL        = 'Static bind to bzip2.dll';
-  RsCaptionDefBZip2LinkOnRequest  = 'Late bind to bzip2.dll';
-  
+  RsCaptionDefBZip2              = 'BZip2 options';
+  RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code (experimental)';
+  RsCaptionDefBZip2LinkDLL       = 'Static bind to bzip2.dll';
+  RsCaptionDefBZip2LinkOnRequest = 'Late bind to bzip2.dll';
+  // Unicode options
+  RsCaptionDefUnicode              = 'Unicode options';
+  RsCaptionDefUnicodeSilentFailure = 'Silent failure';
+
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
   RsCaptionMapCreate  = 'Create MAP files';
@@ -436,37 +441,40 @@ resourcestring
   RsHintLibrary = 'Select to install JCL for this target.';
 
   // conditional defines
-  RsHintDef                    = 'Enable or disable specific features to be compiled';
-  RsHintDefThreadSafe          = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
-  RsHintDefDropObsoleteCode    = 'Do not compile deprecated code';
-  RsHintDefUnitVersioning      = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
+  RsHintDef                 = 'Enable or disable specific features to be compiled';
+  RsHintDefThreadSafe       = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
+  RsHintDefDropObsoleteCode = 'Do not compile deprecated code';
+  RsHintDefUnitVersioning   = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
   // math options
-  RsHintDefMath                = 'Math specific options (JclMath.pas)';
-  RsHintDefMathPrecSingle      = 'type Float = Single';
-  RsHintDefMathPrecDouble      = 'type Float = Double';
-  RsHintDefMathPrecExtended    = 'type Float = Extended';
-  RsHintDefMathExtremeValues   = 'Exp en Power functions accept and return infinite and NaN';
+  RsHintDefMath              = 'Math specific options (JclMath.pas)';
+  RsHintDefMathPrecSingle    = 'type Float = Single';
+  RsHintDefMathPrecDouble    = 'type Float = Double';
+  RsHintDefMathPrecExtended  = 'type Float = Extended';
+  RsHintDefMathExtremeValues = 'Exp en Power functions accept and return infinite and NaN';
   // Debug options
-  RsHintDefDebug               = 'Debug and exception hooking specific options (JclDebug.pas and JclHookExcept.pas)';
-  RsHintDefHookDllExceptions   = 'Hook exceptions raised in DLL compiled with the JCL';
-  RsHintDefDebugNoBinary       = 'Disable support for JDBG files';
-  RsHintDefDebugNoMap          = 'Disable support for MAP files';
-  RsHintDefDebugNoTD32         = 'Disable support for TD32 informations';
-  RsHintDefDebugNoExports      = 'Disable support for export names of libraries';
-  RsHintDefDebugNoSymbols      = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
+  RsHintDefDebug             = 'Debug and exception hooking specific options (JclDebug.pas and JclHookExcept.pas)';
+  RsHintDefHookDllExceptions = 'Hook exceptions raised in DLL compiled with the JCL';
+  RsHintDefDebugNoBinary     = 'Disable support for JDBG files';
+  RsHintDefDebugNoMap        = 'Disable support for MAP files';
+  RsHintDefDebugNoTD32       = 'Disable support for TD32 informations';
+  RsHintDefDebugNoExports    = 'Disable support for export names of libraries';
+  RsHintDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
   // EDI options
   RsHintDefEDI                 = 'EDI specific options (JclEDI*.pas)';
   RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
   // PCRE options
-  RsHintDefPCRE                = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
-  RsHintDefPCREStaticLink      = 'Code from PCRE is linked into JCL binaries';
-  RsHintDefPCRELinkDLL         = 'JCL binaries require pcre.dll to be present';
-  RsHintDefPCRELinkOnRequest   = 'JCL binaries require pcre.dll when calling PCRE functions';
+  RsHintDefPCRE              = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
+  RsHintDefPCREStaticLink    = 'Code from PCRE is linked into JCL binaries';
+  RsHintDefPCRELinkDLL       = 'JCL binaries require pcre.dll to be present';
+  RsHintDefPCRELinkOnRequest = 'JCL binaries require pcre.dll when calling PCRE functions';
   // BZip2 options
-  RsHintDefBZip2               = 'BZip2 specific options (bzip2.pas)';
-  RsHintDefBZip2StaticLink     = 'Code from BZip2 is linked into JCL binaries';
-  RsHintDefBZip2LinkDLL        = 'JCL binaries require bzip2.dll to be present';
-  RsHintDefBZip2LinkOnRequest  = 'JCL binaries require bzip2.dll when calling PCRE functions';
+  RsHintDefBZip2              = 'BZip2 specific options (bzip2.pas)';
+  RsHintDefBZip2StaticLink    = 'Code from BZip2 is linked into JCL binaries';
+  RsHintDefBZip2LinkDLL       = 'JCL binaries require bzip2.dll to be present';
+  RsHintDefBZip2LinkOnRequest = 'JCL binaries require bzip2.dll when calling PCRE functions';
+  // Unicode options
+  RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
+  RsHintDefUnicodeSilentFailure = 'Insert a replacement character if sequence is corrupted rather than raising an exception';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -562,6 +570,7 @@ var
       (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
       (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
+      (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
       (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
@@ -582,6 +591,7 @@ var
       (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
       (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
       (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
+      (Id: -1; Caption: RsCaptionDefUnicodeSilentFailure; Hint: RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -951,6 +961,10 @@ procedure TJclInstallation.Init;
       {$ENDIF MSWINDOWS}
       AddOption(joDefBZip2LinkOnRequest, [goRadioButton, goChecked], joDefBZip2);
       AddOption(joDefBZip2LinkDLL, [goRadioButton], joDefBZip2);
+      {$IFDEF MSWINDOWS}
+      AddOption(joDefUnicode, [goChecked], Parent);
+      AddOption(joDefUnicodeSilentFailure, [goChecked], joDefUnicode);
+      {$ENDIF MSWINDOWS}
     end;
   end;
 
@@ -1148,17 +1162,22 @@ procedure TJclInstallation.Init;
     Id, Index: Integer;
     StoredValue: string;
     ADemoList: TStrings;
+    ResetDefaultValue: Boolean;
   begin
     AConfiguration := InstallCore.Configuration;
     if not Assigned(AConfiguration) then
       Exit;
     if AConfiguration.SectionExists(TargetName) then
     begin
+      ResetDefaultValue := not AConfiguration.OptionAsBool[TargetName, OptionData[joLibrary].Id];
       for Option := Low(TJclOption) to High(TJclOption) do
       begin
         Id := OptionData[Option].Id;
         if AConfiguration.ValueExists(TargetName, Id) then
-          GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id];
+          GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[TargetName, Id]
+        else
+        if ResetDefaultValue then
+          GUIPage.OptionChecked[Id] := False;
       end;
     end
     else
@@ -1404,14 +1423,14 @@ function TJclInstallation.Install: Boolean;
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefBZip2LinkOnRequest] of string =
+    DefineNames: array [joDefThreadSafe..joDefUnicodeSilentFailure] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
         'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST' );
+        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE' );
   var
     Option: TJclOption;
     Defines: TStrings;

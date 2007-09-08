@@ -26,6 +26,7 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {   Peter Schraut (http://www.console-dev.de)                                                      }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1125,10 +1126,10 @@ const
   MaximumUTF16: UCS4 = $0010FFFF;
   MaximumUCS4: UCS4 = $7FFFFFFF;
 
-  SurrogateHighStart: UCS4 = $D800;
-  SurrogateHighEnd: UCS4 = $DBFF;
-  SurrogateLowStart: UCS4 = $DC00;
-  SurrogateLowEnd: UCS4 = $DFFF;
+  SurrogateHighStart = UCS4($D800);
+  SurrogateHighEnd = UCS4($DBFF);
+  SurrogateLowStart = UCS4($DC00);
+  SurrogateLowEnd = UCS4($DFFF);
 
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
@@ -1268,10 +1269,80 @@ function StringToWideStringEx(const S: string; CodePage: Word): WideString;
 function TranslateString(const S: string; CP1, CP2: Word): string;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 
-// WideString conversion routines
+// conversion routines between WideString (handled as UCS-2), UTF-16, UCS-4 and UTF8
+
+// iterative conversions
+
+// UTF8GetNextChar = read next UTF8 sequence at StrPos
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF8GetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+
+// UTF8SkipChars = skip NbSeq UTF8 sequences starting from StrPos
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbSeq contains the number of UTF8 sequences that were skipped
+function UTF8SkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+
+// UTF8SetNextChar = append an UTF8 sequence at StrPos
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, callee did nothing, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF8SetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+
+// UTF16GetNextChar = read next UTF16 sequence at StrPos
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
+
+// UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbChar contains the number of UTF16 sequences that were skipped
+function UTF16SkipChars(const S: WideString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+
+// UTF16SetNextChar = append an UTF16 sequence at StrPos
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF16SetNextChar(var S: WideString; var StrPos: Integer; Ch: UCS4): Boolean;
+
+// one shot conversions
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
-function WideStringToUTF8(S: WideString): AnsiString;
-function UTF8ToWideString(S: AnsiString): WideString;
+function WideStringToUTF8(const S: WideString): AnsiString; // WideString = UCS2
+function UTF8ToWideString(const S: AnsiString): WideString; // WideString = UCS2
+function WideStringToUTF16(const S: WideString): WideString; // WideString = UCS2
+function UTF16ToWideString(const S: WideString): WideString; // WideString = UCS2
+function WideStringToUCS4(const S: WideString): TUCS4Array; // WideString = UCS2
+function UCS4ToWideString(const S: TUCS4Array): WideString; // WideString = UCS2
+function UTF8ToUTF16(const S: AnsiString): WideString;
+function UTF16ToUTF8(const S: WideString): AnsiString;
+function UTF8ToUCS4(const S: AnsiString): TUCS4Array;
+function UCS4ToUTF8(const S: TUCS4Array): AnsiString;
+function UTF16ToUCS4(const S: WideString): TUCS4Array;
+function UCS4ToUTF16(const S: TUCS4Array): WideString;
+
+// indexed conversions
+function UTF8CharCount(const S: AnsiString): Integer;
+function UTF16CharCount(const S: WideString): Integer;
+function UCS2CharCount(const S: WideString): Integer;
+function UCS4CharCount(const S: TUCS4Array): Integer;
+// returns False if string is too small
+// if UNICODE_SILENT_FAILURE is not defined and an invalid UTFX sequence is detected, an exception is raised
+// returns True on success and Value contains UCS4 character that was read
+function GetUCS4CharAt(const UTF8Str: AnsiString; Index: Integer; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
 
 type
   TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
@@ -7308,8 +7379,11 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+// Source in EAX
+// Target in EDX
+// Count in ECX
 asm
-       JECXZ   @@Finish           // go out if there is nothing to do
+       JECXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
        PUSH    ESI
        MOV     ESI, EAX
        XOR     EAX, EAX
@@ -7347,113 +7421,952 @@ const
   FirstByteMark: array [0..6] of Byte =
     ($00, $00, $C0, $E0, $F0, $F8, $FC);
 
-function WideStringToUTF8(S: WideString): AnsiString;
-var
-  Ch: UCS4;
-  L, J, T,
-  BytesToWrite: Cardinal;
-  ByteMask: UCS4;
-  ByteMark: UCS4;
+procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer; var Ch: UCS4); overload;
 begin
-  if S = '' then
-    Result := ''
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Ch := ReplacementCharacter;
+  Inc(StrPos, Increment);
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  StrPos := -1;
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+procedure FlagInvalidUCS2Char(var Ch: UCS4);
+begin
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Ch := ReplacementCharacter;
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  raise EJclUnicodeError.CreateResFmt(@RsEInvalidUCS2Char, [Ch]);
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer); overload;
+begin
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Inc(StrPos, Increment);
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  StrPos := -1;
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF8GetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChNext: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= StrLength) and (StrPos > 0) then
+  begin
+    Result := UCS4(S[StrPos]);
+
+    case Result of
+      $00..$7F:
+        // 1 byte to read
+        Inc(StrPos);
+      $C0..$DF:
+        begin
+          // 2 bytes to read
+          if StrPos >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $1F) shl 6) or (ChNext and $3F);
+          Inc(StrPos, 2);
+        end;
+      $E0..$EF:
+        begin
+          // 3 bytes to read
+          if (StrPos + 1) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $0F) shl 12) or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 3);
+        end;
+      $F0..$F7:
+        begin
+          // 4 bytes to read
+          if (StrPos + 2) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $07) shl 18) or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 4);
+        end;
+      $F8..$FB:
+        begin
+          // 5 bytes to read
+          if (StrPos + 3) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $03) shl 24) or ((ChNext and $3F) shl 18);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 4]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 4, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 5);
+        end;
+      $FC..$FD:
+        begin
+          // 6 bytes to read
+          if (StrPos + 4) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $01) shl 30) or ((ChNext and $3F) shl 24);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 18);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 4]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 4, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 5]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 5, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 6);
+        end;
+    else
+      FlagInvalidSequence(StrPos, 1, Result);
+      Exit;
+    end;
+  end
   else
   begin
-    SetLength(Result, Length(S) * 6); // assume worst case
-    T := 1;
-    ByteMask := $BF;
-    ByteMark := $80;
-
-    for J := 1 to Length(S) do
-    begin
-      Ch := UCS4(S[J]);
-
-      if Ch < $80 then
-        BytesToWrite := 1
-      else
-        if Ch < $800 then
-          BytesToWrite := 2
-        else
-          if Ch < $10000 then
-            BytesToWrite := 3
-          else
-            if Ch < $200000 then
-              BytesToWrite := 4
-            else
-              if Ch < $4000000 then
-                BytesToWrite := 5
-              else
-                if Ch <= MaximumUCS4 then
-                  BytesToWrite := 6
-                else
-                begin
-                  BytesToWrite := 2;
-                  Ch := ReplacementCharacter;
-                end;
-
-      for L := BytesToWrite downto 2 do
-      begin
-        Result[T + L - 1] := Char((Ch or ByteMark) and ByteMask);
-        Ch := Ch shr 6;
-      end;
-      Result[T] := Char(Ch or FirstByteMark[BytesToWrite]);
-      Inc(T, BytesToWrite);
-    end;
-    SetLength(Result, T - 1); // set to actual length
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
   end;
 end;
 
-function UTF8ToWideString(S: AnsiString): WideString;
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of ansi chars that were skipped
+// On return, NbSeq contains the number of UTF8 sequences that were skipped
+function UTF8SkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
 var
-  L, J, T: Cardinal;
+  StrLength: Integer;
   Ch: UCS4;
-  ExtraBytesToWrite: Word;
+  Index: Integer;
+begin
+  Result := True;
+  StrLength := Length(S);
+
+  Index := 0;
+  while (Index < NbSeq) and (StrPos > 0) do
+  begin
+    Ch := UCS4(S[StrPos]);
+
+    case Ch of
+      $00..$7F:
+        // 1 byte to skip
+        Inc(StrPos);
+      $C0..$DF:
+        // 2 bytes to skip
+        if (StrPos >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+          Inc(StrPos, 2);
+      $E0..$EF:
+        // 3 bytes to skip
+        if ((StrPos + 1) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+          Inc(StrPos, 3);
+      $F0..$F7:
+        // 4 bytes to skip
+        if ((StrPos + 2) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+          Inc(StrPos, 4);
+      $F8..$FB:
+        // 5 bytes to skip
+        if ((StrPos + 3) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+        if (UCS4(S[StrPos + 4]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 4)
+        else
+          Inc(StrPos, 5);
+      $FC..$FD:
+        // 6 bytes to skip
+        if ((StrPos + 4) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+        if (UCS4(S[StrPos + 4]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 4)
+        else
+        if (UCS4(S[StrPos + 5]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 5)
+        else
+          Inc(StrPos, 6);
+    else
+      FlagInvalidSequence(StrPos, 1);
+    end;
+
+    if StrPos <> -1 then
+      Inc(Index);
+    if (StrPos > StrLength) and (Index < NbSeq) then
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+  NbSeq := Index;
+end;
+
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF8SetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLength: Integer;
+begin
+  StrLength := Length(S);
+
+  if Ch <= $7F then
+  begin
+    // 7 bits to store
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := AnsiChar(Ch);
+      Inc(StrPos);
+    end;
+  end
+  else
+  if Ch <= $7FF then
+  begin
+    // 11 bits to store
+    Result := StrPos < StrLength;
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($C0 or (Ch shr 6));  // 5 bits
+      S[StrPos + 1] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 2);
+    end;
+  end
+  else
+  if Ch <= $FFFF then
+  begin
+    // 16 bits to store
+    Result := StrPos < (StrLength - 1);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($E0 or (Ch shr 12)); // 4 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 3);
+    end;
+  end
+  else
+  if Ch <= $1FFFFF then
+  begin
+    // 21 bits to store
+    Result := StrPos < (StrLength - 2);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($F0 or (Ch shr 18)); // 3 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 4);
+    end;
+  end
+  else
+  if Ch <= $3FFFFFF then
+  begin
+    // 26 bits to store
+    Result := StrPos < (StrLength - 2);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($F8 or (Ch shr 24)); // 2 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 18) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 4] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 5);
+    end;
+  end
+  else
+  if Ch <= MaximumUCS4 then
+  begin
+    // 31 bits to store
+    Result := StrPos < (StrLength - 3);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($FC or (Ch shr 30)); // 1 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 24) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 18) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 4] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 5] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 6);
+    end;
+  end
+  else
+  begin
+    {$IFDEF UNICOLE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := StrPos < (StrLength - 1);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($E0 or (ReplacementCharacter shr 12)); // 4 bits
+      S[StrPos + 1] := AnsiChar(((ReplacementCharacter shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar((ReplacementCharacter and $3F) or $80); // 6 bits
+      Inc(StrPos, 3);
+    end;
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    StrPos := -1;
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChNext: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= StrLength) and (StrPos > 0) then
+  begin
+    Result := UCS4(S[StrPos]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        begin
+          // 2 bytes to read
+          if StrPos >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
+          Inc(StrPos, 2);
+        end;
+      SurrogateLowStart..SurrogateLowEnd:
+        FlagInvalidSequence(StrPos, 1, Result);
+    else
+      // 1 byte to read
+      Inc(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbSeq contains the number of UTF16 sequences that were skipped
+function UTF16SkipChars(const S: WideString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+var
+  StrLength, Index: Integer;
+  Ch, ChNext: UCS4;
+begin
+  Result := True;
+  StrLength := Length(S);
+
+  Index := 0;
+  while (Index < NbSeq) and (StrPos > 0) do
+  begin
+    Ch := UCS4(S[StrPos]);
+
+    case Ch of
+      SurrogateHighStart..SurrogateHighEnd:
+        // 2 bytes to skip
+        if (StrPos >= StrLength) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        begin
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+            FlagInvalidSequence(StrPos, 1)
+          else
+            Inc(StrPos, 2);
+        end;
+      SurrogateLowStart..SurrogateLowEnd:
+        // error
+        FlagInvalidSequence(StrPos, 1);
+    else
+      // 1 byte to skip
+      Inc(StrPos);
+    end;
+
+    if StrPos <> -1 then
+      Inc(Index);
+
+    if (StrPos > StrLength) and (Index < NbSeq) then
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+  NbSeq := Index;
+end;
+
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF16SetNextChar(var S: WideString; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLength: Integer;
+begin
+  StrLength := Length(S);
+
+  if Ch <= MaximumUCS2 then
+  begin
+    // 16 bits to store in place
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := WideChar(Ch);
+      Inc(StrPos);
+    end;
+  end
+  else
+  if Ch <= MaximumUTF16 then
+  begin
+    // stores a surrogate pair
+    Result := StrPos < StrLength;
+    if Result then
+    begin
+      Ch := Ch - HalfBase;
+      S[StrPos] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
+      S[StrPos + 1] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+      Inc(StrPos, 2);
+    end;
+  end
+  else
+  begin
+    {$IFDEF UNICOLE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := WideChar(ReplacementCharacter);
+      Inc(StrPos, 1);
+    end;
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    StrPos := -1;
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+
+function WideStringToUTF8(const S: WideString): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
 begin
   if S = '' then
     Result := ''
   else
   begin
-    SetLength(Result, Length(S)); // create enough room
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
 
-    L := 1;
-    T := 1;
-    while L <= Cardinal(Length(S)) do
+    for SrcIndex := 1 to SrcLength do
     begin
-      Ch := 0;
-      ExtraBytesToWrite := BytesFromUTF8[Ord(S[L])];
-
-      for J := ExtraBytesToWrite downto 1 do
-      begin
-        Ch := Ch + Ord(S[L]);
-        Inc(L);
-        Ch := Ch shl 6;
-      end;
-      Ch := Ch + Ord(S[L]);
-      Inc(L);
-      Ch := Ch - OffsetsFromUTF8[ExtraBytesToWrite];
-
-      if Ch <= MaximumUCS2 then
-      begin
-        Result[T] := WideChar(Ch);
-        Inc(T);
-      end
-      else
-        if Ch > MaximumUCS4 then
-        begin
-          Result[T] := WideChar(ReplacementCharacter);
-          Inc(T);
-        end
-        else
-        begin
-          Ch := Ch - HalfBase;
-          Result[T] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
-          Inc(T);
-          Result[T] := WideChar((Ch and HalfMask) + SurrogateLowStart);
-          Inc(T);
-        end;
+      UTF8SetNextChar(Result, DestIndex, UCS4(S[SrcIndex]));
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
     end;
-    SetLength(Result, T - 1); // now fix up length
+
+    SetLength(Result, DestIndex - 1); // set to actual length
   end;
+end;
+
+function UTF8ToWideString(const S: AnsiString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[DestIndex] := UCS2(Ch);
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function WideStringToUTF16(const S: WideString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 2); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 1 to SrcLength do
+    begin
+      UTF16SetNextChar(Result, DestIndex, UCS4(S[SrcIndex]));
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF16ToWideString(const S: WideString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[DestIndex] := UCS2(Ch);
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function WideStringToUCS4(const S: WideString): TUCS4Array;
+var
+  Index, SrcLength: Integer;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // same length
+
+    for Index := 0 to SrcLength - 1 do
+      Result[Index] := UCS4(S[Index + 1]);
+  end;
+end;
+
+function UCS4ToWideString(const S: TUCS4Array): WideString;
+var
+  Index, SrcLength: Integer;
+  Ch: UCS4;
+begin
+  SrcLength := Length(S);
+  if SrcLength = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength); // same length
+
+    for Index := 0 to SrcLength - 1 do
+    begin
+      Ch := S[Index];
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[Index + 1] := WideChar(Ch);
+    end;
+  end;
+end;
+
+function UTF8ToUTF16(const S: AnsiString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      UTF16SetNextChar(Result, DestIndex, Ch);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function UTF16ToUTF8(const S: WideString): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 3); // worste case
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      UTF8SetNextChar(Result, DestIndex, Ch);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function UTF8ToUCS4(const S: AnsiString): TUCS4Array;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      Result[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex); // now fix up length
+  end;
+end;
+
+function UCS4ToUTF8(const S: TUCS4Array): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  if Length(S) = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF8SetNextChar(Result, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF16ToUCS4(const S: WideString): TUCS4Array;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      Result[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex); // now fix up length
+  end;
+end;
+
+function UCS4ToUTF16(const S: TUCS4Array): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  if SrcLength = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF16SetNextChar(Result, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF8CharCount(const S: AnsiString): Integer;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Length(S);
+  UTF8SkipChars(S, StrPos, Result);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+end;
+
+function UTF16CharCount(const S: WideString): Integer;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Length(S);
+  UTF16SkipChars(S, StrPos, Result);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+end;
+
+function UCS2CharCount(const S: WideString): Integer;
+begin
+  Result := Length(S);
+end;
+
+function UCS4CharCount(const S: TUCS4Array): Integer;
+begin
+  Result := Length(S);
+end;
+
+function GetUCS4CharAt(const UTF8Str: AnsiString; Index: Integer; out Value: UCS4): Boolean; overload;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Index >= 0;
+  if Result then
+    Result := UTF8SkipChars(UTF8Str, StrPos, Index);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+  Result := Result and (StrPos <= Length(UTF8Str));
+  if Result then
+  begin
+    Value := UTF8GetNextChar(UTF8Str, StrPos);
+    if StrPos = -1 then
+      raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+  end;
+end;
+
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+var
+  StrPos: Integer;
+begin
+  if IsUTF16 then
+  begin
+    StrPos := 1;
+    Result := Index >= 0;
+    if Result then
+      Result := UTF16SkipChars(WideStr, StrPos, Index);
+    if StrPos = -1 then
+      raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    Result := Result and (StrPos <= Length(WideStr));
+    if Result then
+    begin
+      Value := UTF16GetNextChar(WideStr, StrPos);
+      if StrPos = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+  end
+  else
+  begin
+    Result := (Index >= 1) and (Index <= Length(WideStr));
+    Value := UCS4(WideStr[Index]);
+  end;
+end;
+
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
+begin
+  Result := (Index >= 0) and (Index < Length(UCS4Str));
+  if Result then
+    Value := UCS4Str[Index];
 end;
 
 procedure PrepareUnicodeData;

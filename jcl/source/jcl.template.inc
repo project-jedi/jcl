@@ -92,3 +92,7 @@
 {.$DEFINE BZIP2_STATICLINK}
 {.$DEFINE BZIP2_LINKDLL}
 {.$DEFINE BZIP2_LINKONREQUEST}
+
+// Unicode options
+// insert a replacement character if sequence is corrupted rather than raising an exception
+{.$DEFINE UNICODE_SILENT_FAILURE}
