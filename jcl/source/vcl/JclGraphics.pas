@@ -2413,8 +2413,8 @@ begin
       Result := rkSimple;
     COMPLEXREGION:
       Result := rkComplex;
-    else
-      Result := rkError;
+  else
+    Result := rkError;
   end;
 end;
 

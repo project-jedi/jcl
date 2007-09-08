@@ -430,8 +430,8 @@ begin
         raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonUserError);
       ERROR_ACCESS_DENIED:
         raise EJclCreateProcessError.CreateRes(@RsCreateProcAccessDenied);
-      else
-        raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
+    else
+      raise EJclCreateProcessError.CreateRes(@RsCreateProcLogonFailed);
     end;
   end;
 
@@ -485,8 +485,8 @@ begin
           GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
         raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound, [CommandLine]);
-      else
-        raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
+    else
+      raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
     end;
   end;
 

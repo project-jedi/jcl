@@ -40,7 +40,7 @@ const
   RegJclIDEKey = RegJclKey + 'IDE\';
   DelphiEnvironmentVar = 'DELPHI';
   {$IFDEF COMPILER6_UP}
-  EnvironmentVarsKey    = 'Environment Variables';
+  EnvironmentVarsKey = 'Environment Variables';
   {$ENDIF COMPÏLER6_UP}
 
   //=== Various constants shared by different experts ========================

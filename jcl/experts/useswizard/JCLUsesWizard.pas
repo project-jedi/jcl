@@ -875,8 +875,8 @@ begin
                     UsesIntf.Insert(0, ChangeList[I]);
                   UsesImpl.Remove(UsesImpl.IndexOf(ChangeList[I]));
                 end;
-                else
-                  ChangeList.Delete(I);
+              else
+                ChangeList.Delete(I);
               end;
 
             if ChangeList.Count = 0 then

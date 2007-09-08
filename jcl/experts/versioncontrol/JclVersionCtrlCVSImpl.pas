@@ -176,8 +176,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := CallTortoiseCVSAct(JclVersionControlCVSUnEditVerb);
-    else
-      Result := inherited ExecuteAction(FileName, Action);
+  else
+    Result := inherited ExecuteAction(FileName, Action);
   end;
 end;
 
@@ -282,8 +282,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := Expert.CacheResourceIcon(LibraryName, 'IDI_REVERT');
-    else
-      Result := inherited GetIcon(Action);
+  else
+    Result := inherited GetIcon(Action);
   end;
 end;
 

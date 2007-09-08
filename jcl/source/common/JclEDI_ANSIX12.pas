@@ -3072,8 +3072,8 @@ begin
       TEDITransactionSetLoop(Result).ParentLoopId := ParentLoopId;
       TEDITransactionSetLoop(Result).Parent := Self;
     end;
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 

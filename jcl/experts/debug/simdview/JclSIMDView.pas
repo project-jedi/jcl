@@ -563,7 +563,8 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
+procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP}
+  const {$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;

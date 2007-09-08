@@ -192,8 +192,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := CallTortoiseSVNProc(JclVersionCtrlSVNUnlockVerb);
-    else
-      Result := inherited ExecuteAction(FileName, Action);
+  else
+    Result := inherited ExecuteAction(FileName, Action);
   end;
 end;
 
@@ -329,8 +329,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := Expert.CacheResourceIcon(LibraryName, 5153);
-    else
-      Result := inherited GetIcon(Action);
+  else
+    Result := inherited GetIcon(Action);
   end;
 
 end;

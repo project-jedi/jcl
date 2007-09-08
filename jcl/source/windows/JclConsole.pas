@@ -510,10 +510,10 @@ begin
       CTRL_SHUTDOWN_EVENT:
         if Assigned(Console.OnShutdown) then
           Console.OnShutdown(Console);
-      else
+    else
       // (rom) disabled. Makes function result unpredictable.
       //Assert(False, 'Unknown Ctrl Event');
-        Result := False;
+      Result := False;
     end;
   except
     // (rom) dubious. An exception implies that an event has been handled.
@@ -949,8 +949,8 @@ begin
       X := Window.Left + (Window.Width - Length(Text)) div 2;
     thaRight:
       X := Window.Right - Length(Text) + 1;
-    else
-      X := Cursor.Position.X;
+  else
+    X := Cursor.Position.X;
   end;
   case VerticalAlign of
     //tvaCurrent: Y := Cursor.Position.Y;
@@ -960,8 +960,8 @@ begin
       Y := Window.Top + Window.Height div 2;
     tvaBottom:
       Y := Window.Bottom;
-    else
-      Y := Cursor.Position.Y;
+  else
+    Y := Cursor.Position.Y;
   end;
   Result := Write(Text, X, Y, ATextAttribute);
 end;

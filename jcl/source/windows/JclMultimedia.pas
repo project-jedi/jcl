@@ -464,8 +464,8 @@ begin
       Result := FTimeCaps.wPeriodMax;
     1:
       Result := FTimeCaps.wPeriodMin;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -539,8 +539,8 @@ begin
       Result := Format('%.1fdB', [AValue / 10]);
     MIXERCONTROL_CT_UNITS_PERCENT:
       Result := Format('%.1f%%', [AValue / 10]);
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -767,8 +767,8 @@ begin
       Result := RsMmMixerAuxiliary;
     MIXERLINE_COMPONENTTYPE_SRC_ANALOG:
       Result := RsMmMixerAnalog;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 

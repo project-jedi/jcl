@@ -345,9 +345,9 @@ var
         H := GetSystemMetrics(SM_CYICON);
       rkBitmap:
         H := TPeResUnkGraphic(Item).GraphicProperties.Height;
-      else
-        FTempGraphic.Assign(Item);
-        H := FTempGraphic.Height;
+    else
+      FTempGraphic.Assign(Item);
+      H := FTempGraphic.Height;
     end;
     MaxRowHeight := Max(MaxRowHeight, H);
   end;
@@ -531,8 +531,8 @@ procedure TPeResViewChild.UpdateSelected;
         CreateStringsList(TPeResString(FCurrentDir));
         PageControl1.ActivePage := StringsTab;
       end;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
   end;
 
@@ -599,8 +599,8 @@ procedure TPeResViewChild.UpdateSelected;
         TextRichEdit.Lines.Assign(TPeResVersion(FSelectedItem));
         PageControl1.ActivePage := TextTab;
       end;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
   end;
 

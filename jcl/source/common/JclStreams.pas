@@ -407,8 +407,8 @@ begin
       Result64 := Seek(Int64(Offset), soCurrent);
     soFromEnd:
       Result64 := Seek(Int64(Offset), soEnd);
-    else
-      Result64 := -1;
+  else
+    Result64 := -1;
   end;
   if (Result64 < 0) or (Result64 > High(Longint)) then
     Result64 := -1;
@@ -643,9 +643,9 @@ begin
       Rel := FPosition;
     soEnd:
       Rel := FSize;
-    else
+  else
     // force Rel + Offset = -1 (code is never reached)
-      Rel := Offset - 1;
+    Rel := Offset - 1;
   end;
   if Rel + Offset >= 0 then
   begin
@@ -1002,8 +1002,8 @@ begin
       Inc(NewPos, Offset);
     soEnd:
       NewPos := GetCalcedSize + Offset;
-    else
-      NewPos := -1;
+  else
+    NewPos := -1;
   end;
   if NewPos < 0 then
     NewPos := -1
@@ -1366,8 +1366,8 @@ begin
         end;
       end;
     end;
-    else
-      Result := -1;
+  else
+    Result := -1;
   end;
   if Result <> -1 then
     FCurrentPos := Result;

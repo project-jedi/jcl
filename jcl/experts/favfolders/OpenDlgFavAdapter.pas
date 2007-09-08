@@ -501,8 +501,8 @@ begin
         Default;
         FHandle := 0;
       end;
-      else
-        Default;
+    else
+      Default;
     end;
   end;
 end;

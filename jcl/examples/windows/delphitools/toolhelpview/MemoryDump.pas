@@ -137,8 +137,8 @@ begin
       Result := 'Guard';
     PAGE_NOCACHE:
       Result := 'NoCache';
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -151,8 +151,8 @@ begin
       Result := 'Free';
     MEM_RESERVE:
       Result := 'Reserve';
-    else
-      Result := Format('%x', [P]);
+  else
+    Result := Format('%x', [P]);
   end;
 end;
 
@@ -165,8 +165,8 @@ begin
       Result := 'Mapped';
     MEM_PRIVATE:
       Result := 'Private';
-    else
-      Result := Format('%x', [P]);
+  else
+    Result := Format('%x', [P]);
   end;
 end;
 

@@ -639,7 +639,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTR[Value], Bit
+  BTR    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}
@@ -1141,7 +1141,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTS[Value], Bit
+  BTS    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}
@@ -1204,7 +1204,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BT[Value], Bit
+  BT     [Value], Bit
   SETC   AL
 end;
 {$ENDIF PUREPASCAL}
@@ -1306,7 +1306,7 @@ begin
 end;
 {$ELSE PUREPASCAL}
 asm
-  BTC[Value], Bit
+  BTC    [Value], Bit
 end;
 {$ENDIF PUREPASCAL}
 {$ENDIF CLR}

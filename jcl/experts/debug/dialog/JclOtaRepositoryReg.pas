@@ -105,10 +105,10 @@ begin
 
   for Index := 0 to PersonalityServices.PersonalityCount - 1 do
     if SameText(PersonalityServices.Personalities[Index], PersonalityName) then
-  begin
-    Result := True;
-    Break;
-  end;
+    begin
+      Result := True;
+      Break;
+    end;
 end;
 {$ELSE BDS}
 begin
@@ -172,8 +172,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -235,7 +235,7 @@ var
   SourceExtension, SourceTemplate, SourceContent, SourceFileName: string;
   OTAServices: IOTAServices;
 begin
-  Supports(BorlandIDEServices,IOTAServices,OTAServices);
+  Supports(BorlandIDEServices, IOTAServices, OTAServices);
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
@@ -244,32 +244,32 @@ begin
 
   case Params.Language of
     bpDelphi32:
-      begin
-        FormExtension := JclBorDesignerFormExtension[Params.Designer];
-        FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
-        HeaderExtension := '';
-        HeaderTemplate := '';
-        SourceExtension := SourceExtensionPAS;
-        SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
-      end;
+    begin
+      FormExtension := JclBorDesignerFormExtension[Params.Designer];
+      FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
+      HeaderExtension := '';
+      HeaderTemplate := '';
+      SourceExtension := SourceExtensionPAS;
+      SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
+    end;
     bpBCBuilder32:
-      begin
-        FormExtension := JclBorDesignerFormExtension[Params.Designer];
-        FormTemplate := TemplatePath + BCBTemplate + FormExtension;
-        HeaderExtension := SourceExtensionH;
-        HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
-        SourceExtension := SourceExtensionCPP;
-        SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
-      end;
+    begin
+      FormExtension := JclBorDesignerFormExtension[Params.Designer];
+      FormTemplate := TemplatePath + BCBTemplate + FormExtension;
+      HeaderExtension := SourceExtensionH;
+      HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
+      SourceExtension := SourceExtensionCPP;
+      SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
+    end;
   else
-      begin
-        FormExtension := '';
-        FormTemplate := '';
-        HeaderExtension := '';
-        HeaderTemplate := '';
-        SourceExtension := '';
-        SourceTemplate := '';
-      end;
+  begin
+    FormExtension := '';
+    FormTemplate := '';
+    HeaderExtension := '';
+    HeaderTemplate := '';
+    SourceExtension := '';
+    SourceTemplate := '';
+  end;
   end;
 
   FormTemplate := LoadTemplate(FormTemplate);

@@ -189,8 +189,8 @@ begin
       Result := icoDelayImport;
     ikBoundImport:
       Result := icoBoundImport;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -787,8 +787,8 @@ var
         Result := 'ABSOLUTE';
       IMAGE_REL_BASED_HIGHLOW:
         Result := 'HIGHLOW';
-      else
-        Result := IntToStr(RelocType);
+    else
+      Result := IntToStr(RelocType);
     end;
   end;
 
@@ -964,8 +964,8 @@ begin
           Result := Result + #13#10 + ImageCharacteristicValues[I].Name;
       Delete(Result, 1, 2);
     end;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 

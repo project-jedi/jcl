@@ -222,7 +222,7 @@ begin
   else
     m_fOrderAsc := True;
 
-  for I:=0 to lstSvc.Columns.Count-1 do
+  for I := 0 to lstSvc.Columns.Count - 1 do
     lstSvc.Columns[I].Tag := Ord(lstSvc.Columns[I] = Column);
 
   SCManager.Sort(SortOrderMapping[Column.Index], m_fOrderAsc);

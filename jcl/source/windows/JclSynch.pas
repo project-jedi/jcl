@@ -423,8 +423,8 @@ begin
       Result := wrIoCompletion;
     WAIT_FAILED:
       Result := wrError;
-    else
-      Result := wrError;
+  else
+    Result := wrError;
   end;
 end;
 

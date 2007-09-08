@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ComCtrls, JclClr, JclMetadata;
+  StdCtrls, Buttons, ComCtrls, JclCLR, JclMetadata;
 
 type
   TDumpLineKind = (lkWide, lkThin, lkEmpty);
@@ -272,8 +272,8 @@ procedure TfrmTable.DumpTable(const ATable: TJclClrTableAssemblyOS);
         Result := 'Windows';
       VER_PLATFORM_WIN32_NT:
         Result := 'WinNT';
-      else
-        Result := IntToHex(PlatformID, 8);
+    else
+      Result := IntToHex(PlatformID, 8);
     end;
   end;
 var

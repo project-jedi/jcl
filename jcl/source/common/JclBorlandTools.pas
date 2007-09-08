@@ -1761,9 +1761,9 @@ begin
           S := 'd';
       brCppBuilder:
         S := 'bcb';
-      else
+    else
       //brBorlandDevStudio :
-        raise EJclBorRadException.CreateRes(@RsENoOpenHelp);
+      raise EJclBorRadException.CreateRes(@RsENoOpenHelp);
     end;
     Result := Format(FormatName, [RootDir, S, VersionNumber]);
   end;
@@ -4000,8 +4000,8 @@ procedure TJclBorRADToolInstallation.ReadInformation;
         case Num of
           1:
             Result := 'cs1';
-          else
-            Result := Format('d%d', [Num + 6]);  // BDS 2 goes to D8
+        else
+          Result := Format('d%d', [Num + 6]);  // BDS 2 goes to D8
         end;
     end;
   end;
@@ -4587,8 +4587,8 @@ begin
       Result := 4;
     10:
       Result := 0;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -4648,8 +4648,8 @@ begin
       Result := 2;
     7:
       Result := 0;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -4897,8 +4897,8 @@ begin
         Result := SubstitutePath(GetMsBuildEnvOption(MsBuildCBuilderBPLOutputPathNodeName))
       else
         Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
-    else
-      Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
+  else
+    Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DLLOutputPathNodeName));
   end;
 end;
 
@@ -4955,9 +4955,9 @@ begin
       // use registry
       Result := inherited GetDCPOutputPath;
     //5:
-    else
+  else
     // use EnvOptions.proj
-      Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DCPOutputNodeName));
+    Result := SubstitutePath(GetMsBuildEnvOption(MsBuildWin32DCPOutputNodeName));
   end;
 end;
 
@@ -5014,8 +5014,8 @@ begin
       Result := 1;   // personal version is only update pack 1
     10:
       Result := 1;  // update 1 is out
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 

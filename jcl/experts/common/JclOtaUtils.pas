@@ -282,16 +282,21 @@ function PersonalityTextToId(const PersonalityText: string): TJclBorPersonality;
 begin
   if SameText(PersonalityText, sDelphiPersonality) then
     Result := bpDelphi32
-  else if SameText(PersonalityText, sDelphiDotNetPersonality) then
+  else
+  if SameText(PersonalityText, sDelphiDotNetPersonality) then
     Result := bpDelphiNet32
-  else if SameText(PersonalityText, sCBuilderPersonality) then
+  else
+  if SameText(PersonalityText, sCBuilderPersonality) then
     Result := bpBCBuilder32
-  else if SameText(PersonalityText, sCSharpPersonality) then
+  else
+  if SameText(PersonalityText, sCSharpPersonality) then
     Result := bpCSBuilder32
-  else if SameText(PersonalityText, sVBPersonality) then
+  else
+  if SameText(PersonalityText, sVBPersonality) then
     Result := bpVisualBasic32
   {$IFDEF COMPILER10_UP}
-  else if SameText(PersonalityText, sDesignPersonality) then
+  else
+  if SameText(PersonalityText, sDesignPersonality) then
     Result := bpDesign
   {$ENDIF COMPILER10_UP}
   else
@@ -1197,13 +1202,13 @@ var
 begin
   if AboutBoxIndex = -1 then
   begin
-    Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
+    Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices);
     if not Assigned(AboutBoxServices) then
       raise EJclExpertException.CreateTrace(RsENoAboutServices);
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription, 
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription,
       ProductImage, False, RsAboutLicenceStatus);
   end;
 end;
@@ -1247,7 +1252,7 @@ finalization
 
   try
   {$IFDEF BDS}
-  UnregisterAboutBox;
+    UnregisterAboutBox;
   {$ENDIF BDS}
     FreeAndNil(GlobalActionList);
     FreeAndNil(GlobalActionSettings);

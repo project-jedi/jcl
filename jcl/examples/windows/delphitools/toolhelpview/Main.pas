@@ -232,8 +232,8 @@ begin
       Result := 1;
     PROCESS_CLASS_TIMECRITICAL:
       Result := 2;
-    else
-      Result := -1;
+  else
+    Result := -1;
   end;
 end;
 

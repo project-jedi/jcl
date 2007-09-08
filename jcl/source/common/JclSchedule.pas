@@ -193,7 +193,7 @@ uses
 {$IFNDEF RTL140_UP}
 
 const
-  S_OK = $00000000;
+  S_OK    = $00000000;
   E_NOINTERFACE = HRESULT($80004002);
 
 type
@@ -248,8 +248,7 @@ end;
 
 function TContainedObject.QueryInterface(const IID: TGUID; out Obj): HResult;
 begin
-  if GetInterface(IID, Obj) then
-    Result := S_OK else Result := E_NOINTERFACE;
+  if GetInterface(IID, Obj) then Result := S_OK else Result := E_NOINTERFACE;
 end;
 
 {$ENDIF ~RTL140_UP}
@@ -733,16 +732,16 @@ begin
           TempDay := FirstWeekDay(TYear, TMonth);
         sivLast:
           TempDay := LastWeekDay(TYear, TMonth);
-        else
-          TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay := LastWeekDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TempDay := FirstWeekDay(TYear, TMonth);
-          end;
+      else
+        TempDay := IndexedWeekDay(TYear, TMonth, IndexValue);
+        if TempDay = 0 then
+        begin
+          if IndexValue > 0 then
+            TempDay := LastWeekDay(TYear, TMonth)
+          else
+          if IndexValue < 0 then
+            TempDay := FirstWeekDay(TYear, TMonth);
+        end;
       end;
       Result := TDay = TempDay;
     end;
@@ -753,16 +752,16 @@ begin
           TempDay := FirstWeekendDay(TYear, TMonth);
         sivLast:
           TempDay := LastWeekendDay(TYear, TMonth);
-        else
-          TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay := LastWeekendDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TempDay := FirstWeekendDay(TYear, TMonth);
-          end;
+      else
+        TempDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
+        if TempDay = 0 then
+        begin
+          if IndexValue > 0 then
+            TempDay := LastWeekendDay(TYear, TMonth)
+          else
+          if IndexValue < 0 then
+            TempDay := FirstWeekendDay(TYear, TMonth);
+        end;
       end;
       Result := TDay = TempDay;
     end;
@@ -773,22 +772,22 @@ begin
           TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
         sivLast:
           TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-        else
-          TempDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
-            IndexValue);
-          if TempDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-            else
-            if IndexValue < 0 then
-              TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-          end;
+      else
+        TempDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+          IndexValue);
+        if TempDay = 0 then
+        begin
+          if IndexValue > 0 then
+            TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+          else
+          if IndexValue < 0 then
+            TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+        end;
       end;
       Result := TDay = TempDay;
     end;
-    else
-      Result := False;
+  else
+    Result := False;
   end;
 end;
 
@@ -826,18 +825,18 @@ begin
           TDay := FirstWeekDay(TYear, TMonth);
         sivLast:
           TDay := LastWeekDay(TYear, TMonth);
-        else
+      else
+      begin
+        TDay := IndexedWeekDay(TYear, TMonth, IndexValue);
+        if TDay = 0 then
         begin
-          TDay := IndexedWeekDay(TYear, TMonth, IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastWeekDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TDay := FirstWeekDay(TYear, TMonth);
-          end;
+          if IndexValue > 0 then
+            TDay := LastWeekDay(TYear, TMonth)
+          else
+          if IndexValue < 0 then
+            TDay := FirstWeekDay(TYear, TMonth);
         end;
+      end;
       end;
     end;
     sikWeekendDay:
@@ -847,18 +846,18 @@ begin
           TDay := FirstWeekendDay(TYear, TMonth);
         sivLast:
           TDay := LastWeekendDay(TYear, TMonth);
-        else
+      else
+      begin
+        TDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
+        if TDay = 0 then
         begin
-          TDay := IndexedWeekendDay(TYear, TMonth, IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastWeekendDay(TYear, TMonth)
-            else
-            if IndexValue < 0 then
-              TDay := FirstWeekendDay(TYear, TMonth);
-          end;
+          if IndexValue > 0 then
+            TDay := LastWeekendDay(TYear, TMonth)
+          else
+          if IndexValue < 0 then
+            TDay := FirstWeekendDay(TYear, TMonth);
         end;
+      end;
       end;
     end;
     sikMonday..sikSunday:
@@ -868,17 +867,17 @@ begin
           TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
         sivLast:
           TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-        else
-          TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
-            IndexValue);
-          if TDay = 0 then
-          begin
-            if IndexValue > 0 then
-              TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-            else
-            if IndexValue < 0 then
-              TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
-          end;
+      else
+        TDay := IndexedDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay),
+          IndexValue);
+        if TDay = 0 then
+        begin
+          if IndexValue > 0 then
+            TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
+          else
+          if IndexValue < 0 then
+            TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
+        end;
       end;
     end;
   end;

@@ -619,11 +619,11 @@ type
   PLangIdRec = ^TLangIdRec;
   TLangIdRec = packed record
     case Integer of
-    0: (
-      LangId: Word;
-      CodePage: Word);
-    1: (
-      Pair: DWORD);
+      0: (
+        LangId: Word;
+        CodePage: Word);
+      1: (
+        Pair: DWORD);
   end;
 
   EJclFileVersionInfoError = class(EJclError);
@@ -710,7 +710,8 @@ function FormatVersionString(const Major, Minor, Build, Revision: Word): string;
 
 {$IFDEF Win32API}
 
-function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string; overload;
+function FormatVersionString(const FixedInfo: TVSFixedFileInfo; VersionFormat: TFileVersionFormat = vfFull): string;
+  overload;
 
 // Version Info extracting
 procedure VersionExtractFileInfo(const FixedInfo: TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
@@ -1038,7 +1039,7 @@ uses
 {$IFNDEF RTL140_UP}
 const
   MinDateTime: TDateTime = -657434.0;      { 0100-01-01T00:00:00.000 }
-  MaxDateTime: TDateTime = 2958465.99999; { 9999-12-31T23:59:59.999 }
+  MaxDateTime: TDateTime =  2958465.99999; { 9999-12-31T23:59:59.999 }
 {$ENDIF ~RTL140_UP}
 
 {$IFDEF UNIX}
@@ -1613,8 +1614,8 @@ begin
             if (P < FEnd) and (P^ = AnsiLineFeed) then
               Inc(P);
           end;
-          else
-            Inc(P);
+        else
+          Inc(P);
         end;
       end;
       if (P = FEnd) and (P > FContent) and not ((P - 1)^ in [AnsiCarriageReturn, AnsiLineFeed]) then
@@ -1723,8 +1724,8 @@ begin
             if (Result < FEnd) and (Result^ = AnsiLineFeed) then
               Inc(Result);
           end;
-          else
-            Inc(Result);
+        else
+          Inc(Result);
         end;
       end;
     end
@@ -2158,14 +2159,14 @@ begin
     begin
       MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WideName, MAX_PATH);
       if Succeeded(Desktop.ParseDisplayName(0, nil, WideName, Eaten, PIDL, Attr)) then
-      try
-        SetLength(AnsiName, MAX_PATH);
-        if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
-          StrResetLength(AnsiName);
-        Result := AnsiName;
-      finally
-        CoTaskMemFree(PIDL);
-      end;
+        try
+          SetLength(AnsiName, MAX_PATH);
+          if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
+            StrResetLength(AnsiName);
+          Result := AnsiName;
+        finally
+          CoTaskMemFree(PIDL);
+        end;
     end;
   end;
 end;
@@ -2174,8 +2175,8 @@ end;
 { TODO : Move RTDL code over to JclWin32 when JclWin32 gets overhauled. }
 var
   _Kernel32Handle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-  _GetLongPathName: function (lpszShortPath: PChar; lpszLongPath: PChar;
-    cchBuffer: DWORD): DWORD; stdcall;
+  _GetLongPathName: function(lpszShortPath: PChar; lpszLongPath: PChar;
+  cchBuffer: DWORD): DWORD; stdcall;
 
 function Kernel32Handle: HMODULE;
 begin
@@ -2724,8 +2725,8 @@ begin
             ;
           ERROR_NO_MORE_FILES:
             Break;
-          else
-            Result := False;
+        else
+          Result := False;
         end;
       end;
     finally
@@ -2787,10 +2788,10 @@ begin
   FillChar(SH, SizeOf(SH), 0);
   with SH do
   begin
-    Wnd    := 0;
-    wFunc  := FO_COPY;
-    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
-    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+    Wnd := 0;
+    wFunc := FO_COPY;
+    pFrom := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+    pTo := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
     fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
   end;
   Result := SHFileOperation(SH) = 0;
@@ -2803,10 +2804,10 @@ begin
   FillChar(SH, SizeOf(SH), 0);
   with SH do
   begin
-    Wnd    := 0;
-    wFunc  := FO_MOVE;
-    pFrom  := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
-    pTo    := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
+    Wnd := 0;
+    wFunc := FO_MOVE;
+    pFrom := PChar(PathRemoveSeparator(ExistingDirectoryName) + #0);
+    pTo := PChar(PathRemoveSeparator(NewDirectoryName) + #0);
     fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION or FOF_NOCONFIRMMKDIR or FOF_SILENT;
   end;
   Result := SHFileOperation(SH) = 0;
@@ -3511,8 +3512,8 @@ begin
       Result := RsCDRomDrive;
     DRIVE_RAMDISK:
       Result := RsRamDisk;
-    else
-      Result := RsUnknownDrive;
+  else
+    Result := RsUnknownDrive;
   end;
 end;
 
@@ -3935,18 +3936,18 @@ begin
   begin
     Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
     if Handle <> INVALID_HANDLE_VALUE then
-    try
-      if not GetFileInformationByHandle(Handle, FileInfo) then
-        raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
-      Result.dwFileAttributes := FileInfo.dwFileAttributes;
-      Result.ftCreationTime := FileInfo.ftCreationTime;
-      Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
-      Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
-      Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
-      Result.nFileSizeLow := FileInfo.nFileSizeLow;
-    finally
-      CloseHandle(Handle);
-    end
+      try
+        if not GetFileInformationByHandle(Handle, FileInfo) then
+          raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+        Result.dwFileAttributes := FileInfo.dwFileAttributes;
+        Result.ftCreationTime := FileInfo.ftCreationTime;
+        Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
+        Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
+        Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
+        Result.nFileSizeLow := FileInfo.nFileSizeLow;
+      finally
+        CloseHandle(Handle);
+      end
     else
       raise EJclFileUtilsError.CreateResFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end
@@ -4352,7 +4353,7 @@ end;
 
 const
   VerKeyNames: array [1..12] of string[17] =
-   ('Comments',
+    ('Comments',
     'CompanyName',
     'FileDescription',
     'FileVersion',
@@ -4413,47 +4414,47 @@ begin
     VFT_DLL:
       Result := RsVftDll;
     VFT_DRV:
-      begin
-        case OSFileSubType of
-          VFT2_DRV_PRINTER:
-            Result := RsVft2DrvPRINTER;
-          VFT2_DRV_KEYBOARD:
-            Result := RsVft2DrvKEYBOARD;
-          VFT2_DRV_LANGUAGE:
-            Result := RsVft2DrvLANGUAGE;
-          VFT2_DRV_DISPLAY:
-            Result := RsVft2DrvDISPLAY;
-          VFT2_DRV_MOUSE:
-            Result := RsVft2DrvMOUSE;
-          VFT2_DRV_NETWORK:
-            Result := RsVft2DrvNETWORK;
-          VFT2_DRV_SYSTEM:
-            Result := RsVft2DrvSYSTEM;
-          VFT2_DRV_INSTALLABLE:
-            Result := RsVft2DrvINSTALLABLE;
-          VFT2_DRV_SOUND:
-            Result := RsVft2DrvSOUND;
-          VFT2_DRV_COMM:
-            Result := RsVft2DrvCOMM;
-        else
-          Result := '';
-        end;
-        Result := Result + ' ' + RsVftDrv;
+    begin
+      case OSFileSubType of
+        VFT2_DRV_PRINTER:
+          Result := RsVft2DrvPRINTER;
+        VFT2_DRV_KEYBOARD:
+          Result := RsVft2DrvKEYBOARD;
+        VFT2_DRV_LANGUAGE:
+          Result := RsVft2DrvLANGUAGE;
+        VFT2_DRV_DISPLAY:
+          Result := RsVft2DrvDISPLAY;
+        VFT2_DRV_MOUSE:
+          Result := RsVft2DrvMOUSE;
+        VFT2_DRV_NETWORK:
+          Result := RsVft2DrvNETWORK;
+        VFT2_DRV_SYSTEM:
+          Result := RsVft2DrvSYSTEM;
+        VFT2_DRV_INSTALLABLE:
+          Result := RsVft2DrvINSTALLABLE;
+        VFT2_DRV_SOUND:
+          Result := RsVft2DrvSOUND;
+        VFT2_DRV_COMM:
+          Result := RsVft2DrvCOMM;
+      else
+        Result := '';
       end;
+      Result := Result + ' ' + RsVftDrv;
+    end;
     VFT_FONT:
-      begin
-        case OSFileSubType of
-          VFT2_FONT_RASTER:
-            Result := RsVft2FontRASTER;
-          VFT2_FONT_VECTOR:
-            Result := RsVft2FontVECTOR;
-          VFT2_FONT_TRUETYPE:
-            Result := RsVft2FontTRUETYPE;
-        else
-          Result := '';
-        end;
-        Result := Result + ' ' + RsVftFont;
+    begin
+      case OSFileSubType of
+        VFT2_FONT_RASTER:
+          Result := RsVft2FontRASTER;
+        VFT2_FONT_VECTOR:
+          Result := RsVft2FontVECTOR;
+        VFT2_FONT_TRUETYPE:
+          Result := RsVft2FontTRUETYPE;
+      else
+        Result := '';
       end;
+      Result := Result + ' ' + RsVftFont;
+    end;
     VFT_VXD:
       Result := RsVftVxd;
     VFT_STATIC_LIB:
@@ -4702,7 +4703,7 @@ var
             else
             begin
               if (ValueLen > 0) and IsUnicode then
-                Value:=PWideChar(Data)
+                Value := PWideChar(Data)
               else
                 Value := '';
             end;
@@ -5142,8 +5143,8 @@ begin
     case AttributeMatch of
       amExact, amSuperSetOf:
         FindAttr := Attr;
-      else
-        FindAttr := faAnyFile;
+    else
+      FindAttr := faAnyFile;
     end;
 
     // here's the recursive search for nested folders

@@ -1206,8 +1206,8 @@ var
           Inc(CurrPos);
           Break;
         end;
-        else
-          Break;
+      else
+        Break;
       end;
       Inc(CurrPos);
     until False;
@@ -1826,8 +1826,8 @@ begin
         Dec(C, Ord('a') - $25);
       '_':
         C := $3F;
-      else
-        C := $3F;
+    else
+      C := $3F;
     end;
     case I and $03 of
       0:

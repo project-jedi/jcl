@@ -1096,12 +1096,12 @@ begin
   Result := ArcTan2(X, 1);
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 asm
-  FLD     X
-  FLD1
-  FPATAN
-  FWAIT
+        FLD     X
+        FLD1
+        FPATAN
+        FWAIT
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -1404,35 +1404,35 @@ asm
         {$IFDEF PIC}
         CALL    GetGOT
         {$ENDIF PIC}
-  FLD     X    { TODO : Legal values for X? }
-  FLDL2E
-  FMULP   ST(1), ST
-  FSTCW   ControlWW
+        FLD     X    { TODO : Legal values for X? }
+        FLDL2E
+        FMULP   ST(1), ST
+        FSTCW   ControlWW
         {$IFDEF PIC}
         FLDCW   [EAX].RoundDown
         {$ELSE}
-  FLDCW   RoundDown
+        FLDCW   RoundDown
         {$ENDIF PIC}
-  FLD     ST(0)
-  FRNDINT
-  FLDCW   ControlWW
-  FXCH
-  FSUB    ST, ST(1)
-  F2XM1
-  FLD1
-  FADDP   ST(1), ST
-  FSCALE
-  FST     ST(1)
-  FLD1
-  FDIVRP  ST(1), ST
-  FADDP   ST(1), ST
+        FLD     ST(0)
+        FRNDINT
+        FLDCW   ControlWW
+        FXCH
+        FSUB    ST, ST(1)
+        F2XM1
+        FLD1
+        FADDP   ST(1), ST
+        FSCALE
+        FST     ST(1)
+        FLD1
+        FDIVRP  ST(1), ST
+        FADDP   ST(1), ST
         {$IFDEF PIC}
         FLD     [EAX].OneHalf
         {$ELSE}
-  FLD     OneHalf
+        FLD     OneHalf
         {$ENDIF PIC}
-  FMULP   ST(1), ST
-  FWAIT
+        FMULP   ST(1), ST
+        FWAIT
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -1983,18 +1983,18 @@ begin
   end;
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 { Euclid's algorithm }
 asm
-  JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
-  @00:
-  MOV     ECX, EDX // ECX <- EDX prepare for division
-  xor     EDX, EDX // clear EDX for Division
-  div     ECX      // EAX <- EDX:EAX div ECX, EDX <- EDX:EAX mod ECX
-  MOV     EAX, ECX // EAX <- ECX, and repeat if EDX <> 0
-  @01:
-  and     EDX, EDX // test to see if EDX is zero, without changing EDX
-  JNZ     @00      // when EDX is zero EAX has the Result
+        JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
+@00:
+        MOV     ECX, EDX // ECX <- EDX prepare for division
+        XOR     EDX, EDX // clear EDX for Division
+        DIV     ECX      // EAX <- EDX:EAX div ECX, EDX <- EDX:EAX mod ECX
+        MOV     EAX, ECX // EAX <- ECX, and repeat if EDX <> 0
+@01:
+        AND     EDX, EDX // test to see if EDX is zero, without changing EDX
+        JNZ     @00      // when EDX is zero EAX has the Result
 end;
 {$ENDIF ~PUREPASCAL}
 
@@ -2013,23 +2013,23 @@ begin
   until b > I;
 end;
 {$ELSE ~PUREPASCAL}
-  assembler;
+assembler;
 asm
-  PUSH    EBX
+        PUSH    EBX
 
-  MOV     CX, AX  // load argument
-  MOV     AX, -1  // init Result
-  CWD             // init odd numbers to -1
-  xor     BX, BX  // init perfect squares to 0
-  @LOOP:
-  INC     AX      // increment Result
-  INC     DX      // compute
-  INC     DX      // next odd number
-  ADD     BX, DX  // next perfect square
-  CMP     BX, CX  // perfect square > argument ?
-  JBE     @LOOP   // until square greater than argument
+        MOV     CX, AX  // load argument
+        MOV     AX, -1  // init Result
+        CWD             // init odd numbers to -1
+        XOR     BX, BX  // init perfect squares to 0
+@LOOP:
+        INC     AX      // increment Result
+        INC     DX      // compute
+        INC     DX      // next odd number
+        ADD     BX, DX  // next perfect square
+        CMP     BX, CX  // perfect square > argument ?
+        JBE     @LOOP   // until square greater than argument
 
-  POP     EBX
+        POP     EBX
 end;
 {$ENDIF ~PUREPASCAL}
 

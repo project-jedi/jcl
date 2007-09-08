@@ -1070,8 +1070,8 @@ begin
           Result := NodeFactory.Compare(Result, CompileExprLevel1(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1099,8 +1099,8 @@ begin
           Result := NodeFactory.BitwiseXor(Result, CompileExprLevel2(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1134,8 +1134,8 @@ begin
           Result := NodeFactory.BitwiseAnd(Result, CompileExprLevel3(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1157,8 +1157,8 @@ begin
         Result := NodeFactory.BitwiseNot(CompileExprLevel3(True))
       else
         Result := CompileFactor;
-    else
-      Result := CompileFactor;
+  else
+    Result := CompileFactor;
   end;
 end;
 
@@ -1179,8 +1179,8 @@ begin
       Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
       Lexer.NextTok;
     end;
-    else
-      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
+  else
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
 end;
 
@@ -1290,8 +1290,8 @@ begin
         end
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1330,8 +1330,8 @@ begin
           Result := Round(Result) xor Round(EvalExprLevel2(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1371,8 +1371,8 @@ begin
           Result := Round(Result) and Round(EvalExprLevel3(True))
         else
           Break;
-      else
-        Break;
+    else
+      Break;
     end;
 end;
 
@@ -1399,8 +1399,8 @@ begin
         Result := not Round(EvalExprLevel3(True))
       else
         Result := EvalFactor;
-    else
-      Result := EvalFactor;
+  else
+    Result := EvalFactor;
   end;
 end;
 
@@ -1421,8 +1421,8 @@ begin
       Result := Lexer.TokenAsNumber;
       Lexer.NextTok;
     end;
-    else
-      raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
+  else
+    raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
 end;
 
@@ -1609,8 +1609,8 @@ begin
           FCurrTok := etNotEqual;
           Inc(cp);
         end;
-        else
-          FCurrTok := etLessThan;
+      else
+        FCurrTok := etLessThan;
       end;
     end;
     '>':
@@ -1624,10 +1624,10 @@ begin
       else
         FCurrTok := etGreaterThan;
     end;
-    else
+  else
     { map character to token }
-      FCurrTok := CharToTokenMap[cp^];
-      Inc(cp);
+    FCurrTok := CharToTokenMap[cp^];
+    Inc(cp);
   end;
 
   FCurrPos := cp;

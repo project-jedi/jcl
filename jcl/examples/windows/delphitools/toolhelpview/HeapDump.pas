@@ -187,8 +187,8 @@ begin
                 SubItems.Add('Default');
               HF32_SHARED:
                 SubItems.Add('Shared');
-              else
-                SubItems.Add('Normal');
+            else
+              SubItems.Add('Normal');
             end;
           end;
           Next := Heap32ListNext(SnapProcHandle, HeapList);

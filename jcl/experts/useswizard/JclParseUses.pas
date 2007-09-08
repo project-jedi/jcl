@@ -278,8 +278,8 @@ begin
           Inc(P);
           Break;
         end;
-        else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
 
@@ -335,8 +335,8 @@ begin
         Inc(P);
       ';':
         Break;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+    else
+      raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -395,8 +395,8 @@ begin
         Inc(P);
       ';':
         Break;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+    else
+      raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -461,8 +461,8 @@ begin
           Result := IndexOf(UnitName);
           Break;
         end;
-        else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
   end;
@@ -521,8 +521,8 @@ begin
         Inc(P);
       ';':
         Break;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+    else
+      raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -589,8 +589,8 @@ begin
       case P^ of
         ',':
           Inc(P);
-        else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
   end;
@@ -660,8 +660,8 @@ begin
           DelPos := P - PChar(FText) + 1;
           Delete(FText, DelPos, 1);
         end;
-        else
-          raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
       // remove trailing spaces, if any
       PIdentifier := PChar(FText) + DelPos - 1;
@@ -702,8 +702,8 @@ begin
           P^ := ';';
         Inc(P);
       end;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+    else
+      raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;

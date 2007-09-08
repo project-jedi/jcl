@@ -1149,8 +1149,8 @@ begin
             AnalyseNames(pSubsection, Size);
           SUBSECTION_TYPE_GLOBAL_TYPES:
             AnalyseGlobalTypes(pSubsection, Size);
-          else
-            AnalyseUnknownSubSection(pSubsection, Size);
+        else
+          AnalyseUnknownSubSection(pSubsection, Size);
         end;
       end;
     {$IFDEF RANGECHECKS_ON}
@@ -1336,8 +1336,8 @@ begin
         Symbol := TJclUdtSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_VFTPATH32:
         Symbol := TJclVftPathSymbolInfo.Create(pInfo);
-      else
-        Symbol := nil;
+    else
+      Symbol := nil;
     end;
     if Assigned(Symbol) then
       FSymbols.Add(Symbol);

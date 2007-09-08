@@ -830,8 +830,8 @@ begin
         {$ENDIF CLR}
       Result := 1;
     end;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 

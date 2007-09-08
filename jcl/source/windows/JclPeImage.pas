@@ -2064,8 +2064,8 @@ begin
       Result := False;
       // TODO equivalent for 64-bit modules
       //Result := (Address >= FExportList.Image.OptionalHeader64.BaseOfData);
-    else
-      Result := False;
+  else
+    Result := False;
   end;
 end;
 
@@ -3159,8 +3159,8 @@ begin
       Result := RsPeDEBUG_OMAP_TO_SRC;
     IMAGE_DEBUG_TYPE_OMAP_FROM_SRC:
       Result := RsPeDEBUG_OMAP_FROM_SRC;
-    else
-      Result := '???';
+  else
+    Result := '???';
   end;
 end;
 
@@ -3204,8 +3204,8 @@ begin
       Result := RsPeImg_13;
     IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR:
       Result := RsPeImg_14;
-    else
-      Result := Format('reserved [%.2d]', [Directory]);
+  else
+    Result := Format('reserved [%.2d]', [Directory]);
   end;
 end;
 
@@ -3266,9 +3266,9 @@ begin
         Result := PImageNtHeaders32(FLoadedImage.FileHeader)^.OptionalHeader.DataDirectory[Directory];
       taWin64:
         Result := PImageNtHeaders64(FLoadedImage.FileHeader)^.OptionalHeader.DataDirectory[Directory];
-      else
-        Result.VirtualAddress := 0;
-        Result.Size := 0;
+    else
+      Result.VirtualAddress := 0;
+      Result.Size := 0;
     end;
   end
   else
@@ -3372,8 +3372,8 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
         Result := RsPeMACHINE_M32R;       // M32R little-endian
       IMAGE_FILE_MACHINE_CEE:
         Result := RsPeMACHINE_CEE;
-      else
-        Result := Format('[%.8x]', [Value]);
+    else
+      Result := Format('[%.8x]', [Value]);
     end;
   end;
 
@@ -3394,8 +3394,8 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
         Result := RsPeSUBSYSTEM_POSIX_CUI;
       IMAGE_SUBSYSTEM_RESERVED8:
         Result := RsPeSUBSYSTEM_RESERVED8;
-      else
-        Result := Format('[%.8x]', [Value]);
+    else
+      Result := Format('[%.8x]', [Value]);
     end;
   end;
 
@@ -3550,11 +3550,11 @@ begin
             taWin64:
               Result := GetHeaderValues64(Index);
             //taUnknown:
-            else
-              Result := '';
+          else
+            Result := '';
           end;
-        else
-          Result := '';
+      else
+        Result := '';
       end
   else
     Result := '';
@@ -3869,8 +3869,8 @@ begin
       Result := RsPeLoaderFlags;
     JclPeHeader_NumberOfRvaAndSizes:
       Result := RsPeNumberOfRvaAndSizes;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -3914,8 +3914,8 @@ begin
     taWin64:
       Result := IsBrokenFormat64;
     //taUnknown:
-    else
-      Result := False; // don't know how to check it
+  else
+    Result := False; // don't know how to check it
   end;
 end;
 
@@ -3966,8 +3966,8 @@ begin
       Result := RsPeEditList;
     JclLoadConfig_Reserved:
       Result := RsPeReserved;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -4076,8 +4076,8 @@ begin
     taWin64:
       Result := RvaToVaEx64(Rva);
     //taUnknown:
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 
@@ -4107,8 +4107,8 @@ begin
           FStatus := stNotPE;
         ERROR_FILE_NOT_FOUND:
           FStatus := stNotFound;
-        else
-          FStatus := stError;
+      else
+        FStatus := stError;
       end;
     RaiseStatusException;
   end;
@@ -4184,8 +4184,8 @@ begin
     taWin64:
       Result := VerifyCheckSum64;
     //taUnknown: ;
-    else
-      Result := True;
+  else
+    Result := True;
   end;
 end;
 
@@ -4253,8 +4253,8 @@ begin
       Result := RsPePkgPackage;
     pfLibraryModule:
       Result := PsPePkgLibrary;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -4278,8 +4278,8 @@ begin
       Result := RsPePkgBCB4Produced;
     pfDelphi4Produced:
       Result := RsPePkgDelphi4Produced;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -4872,8 +4872,8 @@ begin
                     OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData));
                   ikDelayImport:
                     OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData - ImageBase32));
-                  else
-                    OrdinalName := nil;
+                else
+                  OrdinalName := nil;
                 end;
                 ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
                 if ExportItem <> nil then
@@ -4897,8 +4897,8 @@ begin
                     OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData));
                   ikDelayImport:
                     OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData - ImageBase64));
-                  else
-                    OrdinalName := nil;
+                else
+                  OrdinalName := nil;
                 end;
                 ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
                 if ExportItem <> nil then
@@ -5179,8 +5179,8 @@ begin
       taWin64:
         Result := PeInsertSection64(ImageStream);
       //taUnknown:
-      else
-        Result := False;
+    else
+      Result := False;
     end;
 
     if Result then
@@ -5232,8 +5232,8 @@ begin
       taWin64:
         Result := PeClearCheckSum64(View.Memory);
       //taUnknown:
-      else
-        Result := False;
+    else
+      Result := False;
     end;
   finally
     Mapping.Free;
@@ -5668,8 +5668,8 @@ begin
     taWin64:
       Result := PeMapImgSize64(BaseAddress);
     //taUnknown:
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -5717,8 +5717,8 @@ begin
     taWin64:
       Result := PeMapImgLibraryName64(BaseAddress);
     //taUnknown:
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -5848,8 +5848,8 @@ begin
     taWin64:
       Result := PeMapImgFindSectionFromModule64(BaseAddress, SectionName);
     //taUnknown:
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 
@@ -5951,8 +5951,8 @@ begin
       Header := PeMapImgFindSection64(NtHeaders64, ASectionName);
     end;
     //toUnknown:
-    else
-      raise EJclPeImageError.CreateRes(@RsPeUnknownTarget);
+  else
+    raise EJclPeImageError.CreateRes(@RsPeUnknownTarget);
   end;
   if Header = nil then
     raise EJclPeImageError.CreateResFmt(@RsPeSectionNotFound, [ASectionName]);
@@ -6350,19 +6350,19 @@ var
                 Description.Kind := skFunction;
               Break; // no parameters unmangling yet
             end;
-            else
-              MarkQualifier;
-              NameU^ := '.';
-              Inc(NameU);
-              Inc(NameP);
+          else
+            MarkQualifier;
+            NameU^ := '.';
+            Inc(NameU);
+            Inc(NameP);
           end;
         '$':
         begin
           Description.Kind := skFunction;
           Break; // no parameters unmangling yet
         end;
-        else
-          Break;
+      else
+        Break;
       end;
     until False;
     if QualifierFound then
@@ -6395,8 +6395,8 @@ begin
       ReadRTTI;
     '_', 'A'..'Z', 'a'..'z':
       ReadName;
-    else
-      Result := urError;
+  else
+    Result := urError;
   end;
   NameU^ := #0;
   StrResetLength(Unmangled);

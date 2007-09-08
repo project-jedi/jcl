@@ -1119,8 +1119,8 @@ begin
       Result := Svc1.Group.Order - Svc2.Group.Order;
     sotWin32ExitCode:
       Result := Svc1.Win32ExitCode - Svc2.Win32ExitCode;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
   if not Svc1.SCManager.FOrderAsc then
     Result := -Result;

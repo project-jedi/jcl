@@ -240,9 +240,9 @@ begin
       Result := IntToStr(Integer(Value.ValueDWord));
     xt2QWords:
       Result := IntToStr(Value.ValueQWord);
-    else
-      Result := '';
-      Exit;
+  else
+    Result := '';
+    Exit;
   end;
   Result := StringOfChar(' ', Width[Value.Display] - Length(Result)) + Result;
 end;
@@ -263,9 +263,9 @@ begin
       Result := IntToStr(Cardinal(Value.ValueDWord));
     xt2QWords:
       Result := IntToStr(Value.ValueQWord);
-    else
-      Result := '';
-      Exit;
+  else
+    Result := '';
+    Exit;
   end;
   Result := StringOfChar(' ', Width[Value.Display] - Length(Result)) + Result;
 end;
@@ -286,8 +286,8 @@ begin
       Result := IntToHex(Value.ValueDWord, Width[xt4DWords]);
     xt2QWords:
       Result := IntToHex(Value.ValueQWord, Width[xt2QWords]);
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -301,8 +301,8 @@ begin
       Result := FloatToStr(Value.ValueSingle);
     xt2Doubles:
       Result := FloatToStr(Value.ValueDouble);
-    else
-      Result := '';
+  else
+    Result := '';
   end;
   Result := StringOfChar(' ', 22 - Length(Result)) + Result; // 22 = max string length of a double value
 end;
@@ -323,8 +323,8 @@ begin
       FormatFunction := FormatUnsigned;
     sfHexa:
       FormatFunction := FormatHexa;
-    else
-      Exit;
+  else
+    Exit;
   end;
   case Value.Display of
     xt16Bytes..xt2QWords:
@@ -351,8 +351,8 @@ begin
         ;
       '1':
         Inc(TestValue);
-      else
-        Exit;
+    else
+      Exit;
     end;
   end;
   Result := True;
@@ -374,8 +374,8 @@ begin
         Result := False;
     xt2QWords:
       Value.ValueQWord := TestValue;
-    else
-      Result := False;
+  else
+    Result := False;
   end;
 end;
 
@@ -405,8 +405,8 @@ begin
           Result := False;
       xt2QWords:
         Value.ValueQWord := TestValue;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
 end;
 
@@ -436,8 +436,8 @@ begin
           Result := False;
       xt2QWords:
         Value.ValueQWord := TestValue;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
 end;
 
@@ -462,8 +462,8 @@ begin
         Inc(TestValue, Ord(StringValue[Index]) - Ord('A') + 10);
       'a'..'f':
         Inc(TestValue, Ord(StringValue[Index]) - Ord('a') + 10);
-      else
-        Exit;
+    else
+      Exit;
     end;
   end;
   Result := True;
@@ -485,8 +485,8 @@ begin
         Result := False;
     xt2QWords:
       Value.ValueQWord := TestValue;
-    else
-      Result := False;
+  else
+    Result := False;
   end;
 end;
 
@@ -511,8 +511,8 @@ begin
           Value.ValueDouble := TestValue
         else
           Result := False;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
 end;
 
@@ -533,8 +533,8 @@ begin
       ParseFunction := ParseUnsigned;
     sfHexa:
       ParseFunction := ParseHexa;
-    else
-      Exit;
+  else
+    Exit;
   end;
   case Value.Display of
     xt16Bytes..xt2QWords:
@@ -779,19 +779,19 @@ begin
   begin
     VectorContext.MXCSR := OTAXMMRegs.MXCSR;
     VectorContext.MXCSRMask := $FFFFFFFF;
-    Move(OTAXMMRegs,VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
+    Move(OTAXMMRegs, VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
     OTAThreadContext := AThread.OTAThreadContext;
     VectorContext.FCW := OTAThreadContext.FloatSave.ControlWord;
     VectorContext.FSW := OTAThreadContext.FloatSave.StatusWord;
     VectorContext.FTW := OTAThreadContext.FloatSave.TagWord;
-    Move(OTAThreadContext.FloatSave.RegisterArea[00],VectorContext.FPURegisters[0],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[10],VectorContext.FPURegisters[1],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[20],VectorContext.FPURegisters[2],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[30],VectorContext.FPURegisters[3],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[40],VectorContext.FPURegisters[4],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[50],VectorContext.FPURegisters[5],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[60],VectorContext.FPURegisters[6],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[70],VectorContext.FPURegisters[7],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[00], VectorContext.FPURegisters[0], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[10], VectorContext.FPURegisters[1], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[20], VectorContext.FPURegisters[2], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[30], VectorContext.FPURegisters[3], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[40], VectorContext.FPURegisters[4], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[50], VectorContext.FPURegisters[5], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[60], VectorContext.FPURegisters[6], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[70], VectorContext.FPURegisters[7], SizeOf(Extended));
   end;
 end;
 {$ELSE COMPILER9_UP}
@@ -806,11 +806,11 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle, JvContext^) and
-      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) <> 0);
+    Result := GetThreadContext(AThread.Handle,JvContext^) and
+      ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
     if Result then
       VectorContext := JvContext^.VectorContext
-    else
+    else                                                  
       FillChar(VectorContext, SizeOf(VectorContext), 0);
   finally
     FreeMem(ContextMemory);
@@ -826,7 +826,7 @@ begin
   Result := True;
   try
     OTAXMMRegs.MXCSR := VectorContext.MXCSR;
-    Move(VectorContext.XMMRegisters,OTAXMMRegs,SizeOf(TOTAXMMReg) * 8);
+    Move(VectorContext.XMMRegisters, OTAXMMRegs, SizeOf(TOTAXMMReg) * 8);
     AThread.SetOTAXMMRegisters(OTAXMMRegs);
   except
     Result := False;
@@ -874,10 +874,10 @@ begin
     else
       JvContext := ContextMemory;
     JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    Result := GetThreadContext(AThread.Handle, JvContext^) and
+    Result := GetThreadContext(AThread.Handle,JvContext^) and
       ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS) = CONTEXT_EXTENDED_REGISTERS);
     if Result then
-      Result := SetThreadContext(AThread.Handle, JvContext^);
+      Result := SetThreadContext(AThread.Handle,JvContext^);
   finally
     FreeMem(ContextMemory);
   end;

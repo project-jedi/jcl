@@ -10,7 +10,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls, Spin,
-  JclMath, JclMidi;
+  JclMath, JclMIDI;
 
 type
   TTuningDialog = class(TForm)

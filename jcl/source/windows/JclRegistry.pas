@@ -313,12 +313,12 @@ begin
       Result := RsHKCCLong;
     HKDD:
       Result := RsHKDDLong;
-    else
+  else
     {$IFDEF DELPHICOMPILER}
-      Result := Format('$%.8x', [RootKey]);
+    Result := Format('$%.8x', [RootKey]);
     {$ENDIF DELPHICOMPILER}
     {$IFDEF BCB}
-      Result := Format('0x%.8x', [RootKey]);
+    Result := Format('0x%.8x', [RootKey]);
     {$ENDIF BCB}
   end;
 end;

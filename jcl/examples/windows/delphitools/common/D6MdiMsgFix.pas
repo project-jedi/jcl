@@ -57,16 +57,16 @@ begin
   with Application do
     if Assigned(MainForm) and (MainForm.FormStyle = fsMDIForm) and
       Assigned(Screen.ActiveForm) and (Screen.ActiveForm.FormStyle <> fsMdiChild) then
-      begin
-        Handled := True;
-        with TApplicationAccess(Application) do
-          if not IsKeyMsg(Msg) and not IsDlgMsg(Msg) then
-          begin
+    begin
+      Handled := True;
+      with TApplicationAccess(Application) do
+        if not IsKeyMsg(Msg) and not IsDlgMsg(Msg) then
+        begin
             // prevent to call buggy TApplication.IsMDIMsg method, handle message here
-            TranslateMessage(Msg);
-            DispatchMessage(Msg);
-          end;
-      end;
+          TranslateMessage(Msg);
+          DispatchMessage(Msg);
+        end;
+    end;
 end;
 
 constructor TFixApplicationEvents.Create(AOwner: TComponent);

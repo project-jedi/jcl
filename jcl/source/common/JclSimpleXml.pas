@@ -577,8 +577,8 @@ begin
         tmp := '&lt;';
       '>':
         tmp := '&gt;';
-      else
-        tmp := S[I];
+    else
+      tmp := S[I];
     end;
     for K := 1 to Length(tmp) do
     begin
@@ -806,8 +806,8 @@ begin
           tmp := '&lt;';
         '>':
           tmp := '&gt;';
-        else
-          tmp := Format('&#x%.2x;', [Ord(S[I])]);
+      else
+        tmp := Format('&#x%.2x;', [Ord(S[I])]);
       end;
       for K := 1 to Length(tmp) do
       begin
@@ -1306,8 +1306,8 @@ var
         Result := 14;
       'f', 'F':
         Result := 15;
-      else
-        Result := 16;
+    else
+      Result := 16;
     end;
   end;
 
@@ -1772,20 +1772,20 @@ begin
               lPos := rsReadingTagKind;
               St := Ch;
             end;
-            else
-            begin
+          else
+          begin
                   //This is a text
-              lElem := TJclSimpleXMLElemText.Create(Parent);
-              if lTrimWhiteSpace then
-                Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
-              else
-                Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-              lElem.LoadFromStream(Stream, AParent);
-              lStreamPos := Stream.Position;
-              CreateElems;
-              FElems.AddObject(lElem.Name, lElem);
-              Break;
-            end;
+            lElem := TJclSimpleXMLElemText.Create(Parent);
+            if lTrimWhiteSpace then
+              Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
+            else
+              Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+            lElem.LoadFromStream(Stream, AParent);
+            lStreamPos := Stream.Position;
+            CreateElems;
+            FElems.AddObject(lElem.Name, lElem);
+            Break;
+          end;
           end;
         end;
 
@@ -1810,17 +1810,17 @@ begin
               lElem := TJclSimpleXMLElemClassic.Create(Parent);
               St := St + Ch;
             end;
+          else
+          begin
+            if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+              St := St + Ch;
+            if St = '<![CDATA[' then
+              lElem := TJclSimpleXMLElemCData.Create(Parent)
             else
-            begin
-              if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
-                St := St + Ch;
-              if St = '<![CDATA[' then
-                lElem := TJclSimpleXMLElemCData.Create(Parent)
-              else
-              if St = '<!--' then
-                lElem := TJclSimpleXMLElemComment.Create(Parent);
+            if St = '<!--' then
+              lElem := TJclSimpleXMLElemComment.Create(Parent);
                   //<?
-            end;
+          end;
           end;
 
           if lElem <> nil then
@@ -1873,8 +1873,8 @@ begin
               Po := St;
               St := '';
             end;
-            else
-              St := St + Ch;
+          else
+            St := St + Ch;
           end;
       end;
     end;
@@ -2249,8 +2249,8 @@ begin
               Count := 0;
               Break;
             end;
-            else
-              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
+          else
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
           end;
         end;
 
@@ -2267,8 +2267,8 @@ begin
               lPos := ptStartingContent;
             ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
               lPos := ptSpaceBeforeEqual;
-            else
-              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
+          else
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
           end;
 
         ptStartingContent: //We are going to start a property content
@@ -2281,8 +2281,8 @@ begin
               lValue := '';
               lPos := ptReadingValue;
             end;
-            else
-              FmtError(RsEInvalidXMLElementUnexpectedCharacte_, [Ch]);
+          else
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte_, [Ch]);
           end;
         ptReadingValue: //We are reading a property
           if Ch = lPropStart then
@@ -2301,11 +2301,11 @@ begin
               ; // more white space, stay in this state and ignore
             '=':
               lPos := ptStartingContent;
-            else
-              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
+          else
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
           end;
-        else
-          Assert(False, RsEUnexpectedValueForLPos);
+      else
+        Assert(False, RsEUnexpectedValueForLPos);
       end;
     end;
   until Count = 0;
@@ -2459,65 +2459,65 @@ begin
           end
           else
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [Ch]);
+      else
+      begin
+        if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
+        begin
+          if lPos = 2 then
+            Error(RsEInvalidXMLElementMalformedTagFoundn);
+          Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+          Properties.LoadFromStream(Stream);
+          lStreamPos := Stream.Position;
+          Break; //Re read buffer
+        end
         else
         begin
-          if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
-          begin
-            if lPos = 2 then
-              Error(RsEInvalidXMLElementMalformedTagFoundn);
-            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            Properties.LoadFromStream(Stream);
-            lStreamPos := Stream.Position;
-            Break; //Re read buffer
-          end
-          else
-          begin
-            case Ch of
-              '>':
-              begin
-                lName := St;
+          case Ch of
+            '>':
+            begin
+              lName := St;
                   //Load elements
-                Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-                St := Items.LoadFromStream(Stream, AParent);
-                if lNameSpace <> '' then
-                begin
-                  if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
-                    FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-                end
-                else
-                if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
+              Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+              St := Items.LoadFromStream(Stream, AParent);
+              if lNameSpace <> '' then
+              begin
+                if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
                   FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-                lStreamPos := Stream.Position;
+              end
+              else
+              if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
+                FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+              lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
                   //This might reduce speed, but this is for compatibility issues
-                if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
-                begin
-                  lValue := Items[0].Value;
-                  Items.Clear;
-                end;
+              if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
+              begin
+                lValue := Items[0].Value;
+                Items.Clear;
+              end;
 
-                Count := 0;
-                Break;
-              end;
-              '/':
-              begin
-                lName := St;
-                lPos := -1;
-              end;
-              ':':
-              begin
-                lNameSpace := St;
-                St := '';
-              end;
-              else
-              begin
-                St := St + Ch;
-                Inc(lPos);
-              end;
+              Count := 0;
+              Break;
             end;
+            '/':
+            begin
+              lName := St;
+              lPos := -1;
+            end;
+            ':':
+            begin
+              lNameSpace := St;
+              St := '';
+            end;
+          else
+          begin
+            St := St + Ch;
+            Inc(lPos);
+          end;
           end;
         end;
+      end;
       end;
     end;
   until Count = 0;
@@ -2809,11 +2809,11 @@ begin
           Count := 0;
           Break;
         end;
-        else
-        begin
-          Inc(StLength);
-          St[StLength] := lBuf[I];
-        end;
+      else
+      begin
+        Inc(StLength);
+        St[StLength] := lBuf[I];
+      end;
       end;
     end;
   until Count = 0;
@@ -3211,8 +3211,8 @@ begin
               lPos := 1;
               St := lBuf[I];
             end;
-            else
-              Error(RsEInvalidDocumentUnexpectedTextInFile);
+          else
+            Error(RsEInvalidDocumentUnexpectedTextInFile);
           end;
         end;
         1: //We are trying to determine the kind of the tag
@@ -3410,7 +3410,7 @@ begin
           Dest.vType := VarXML;
           TXMLVarData(Dest).XML := LXML;
           Result := True;
-        end
+        end;
       end;
     end;
 end;

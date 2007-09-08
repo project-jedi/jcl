@@ -684,8 +684,8 @@ begin
       Result := DateTime - (TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay;
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime - (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
-    else
-      raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
+  else
+    raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
 {$ENDIF CLR}
@@ -728,8 +728,8 @@ begin
       Result := DateTime + (TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay;
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime + (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
-    else
-      raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
+  else
+    raise EJclDateTimeError.CreateRes(@RsMakeUTCTime);
   end;
 end;
 {$ENDIF CLR}
@@ -1151,8 +1151,8 @@ begin
           Result := Result + '"' + IntToStr(DayOfYear) + '"';
         end;
       end;
-      else
-        Inc(N);
+    else
+      Inc(N);
     end;
   end;
   Result := SysUtils.FormatDateTime(Result + Form, DateTime);

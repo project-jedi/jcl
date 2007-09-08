@@ -374,39 +374,39 @@ begin
             P := PreparePointer(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
             Wide := True;
           end;
-          else {stString:}
-          begin
-            Wide := Arg^.VType in [vtWideChar, vtPWideChar, vtBoolean, vtVariant, vtWideString];
-            case Arg^.VType of
-              vtVariant:
-              begin
-                TempWS := Arg^.VVariant^;
-                CharCount := Length(TempWS);
-                P := Pointer(TempWS);
-              end;
-                {$IFDEF FORMAT_EXTENSIONS}
-              vtBoolean:
-              begin
-                TempWS := BooleanToStr(Arg^.VBoolean);
-                CharCount := Length(TempWS);
-                P := Pointer(TempWS);
-              end;
-                {$ENDIF FORMAT_EXTENSIONS}
-              else
-                P := PrepareString(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
+        else {stString:}
+        begin
+          Wide := Arg^.VType in [vtWideChar, vtPWideChar, vtBoolean, vtVariant, vtWideString];
+          case Arg^.VType of
+            vtVariant:
+            begin
+              TempWS := Arg^.VVariant^;
+              CharCount := Length(TempWS);
+              P := Pointer(TempWS);
             end;
+                {$IFDEF FORMAT_EXTENSIONS}
+            vtBoolean:
+            begin
+              TempWS := BooleanToStr(Arg^.VBoolean);
+              CharCount := Length(TempWS);
+              P := Pointer(TempWS);
+            end;
+                {$ENDIF FORMAT_EXTENSIONS}
+          else
+            P := PrepareString(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
+          end;
               // We want the length in WideChars, not AnsiChars; they aren't
               // necessarily the same.
-            if not Wide then
-            begin
-              AnsiCount := CharCount;
-              if CharCount > 0 then
-                CharCount := MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
-            end;
+          if not Wide then
+          begin
+            AnsiCount := CharCount;
+            if CharCount > 0 then
+              CharCount := MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
+          end;
               // For strings, Prec can only truncate, never lengthen.
-            if Prec < CharCount then
-              CharCount := Prec;
-          end; // stString case
+          if Prec < CharCount then
+            CharCount := Prec;
+        end; // stString case
         end; // case State
         Inc(ArgIndex);
 
@@ -571,8 +571,8 @@ begin
     vtInt64:
       Value := Arg^.VInt64^;
     {$ENDIF FORMAT_EXTENSIONS}
-    else
-      raise FormatBadArgumentTypeError(Arg.VType, ArgIndex, AllowedStarTypes);
+  else
+    raise FormatBadArgumentTypeError(Arg.VType, ArgIndex, AllowedStarTypes);
   end;
 end;
 
@@ -628,8 +628,8 @@ begin
       end;
     end;
     {$ENDIF FORMAT_EXTENSIONS}
-    else
-      raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedFloatTypes);
+  else
+    raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedFloatTypes);
   end; // case Arg.VType
   case C of
     'e', 'E':
@@ -640,8 +640,8 @@ begin
       FloatFormat := ffGeneral;
     'm', 'M':
       FloatFormat := ffCurrency;
-    else {'n', 'N':}
-      FloatFormat := ffNumber;
+  else {'n', 'N':}
+    FloatFormat := ffNumber;
   end;
   Result := PAnsiChar(Buffer);
   // Prec is interpeted differently depending on the format.
@@ -709,8 +709,8 @@ begin
       Result := @Buffer[High(Buffer^)];
       CharCount := ConvertInt64(Temp64, Base, Result);
     end;
-    else
-      raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedIntegerTypes);
+  else
+    raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedIntegerTypes);
   end;
   // If Prec was specified, then we need to see whether any
   // zero-padding is necessary
@@ -810,8 +810,8 @@ begin
       Result := Arg^.VWideString;
       CharCount := Length(WideString(Result));
     end;
-    else
-      raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedStringTypes);
+  else
+    raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedStringTypes);
   end;
 end;
 

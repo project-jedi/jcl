@@ -516,8 +516,8 @@ begin
       raise EJclCompressionError.CreateRes(@RsCompressionZLibZBufError);
     Z_VERSION_ERROR:
       raise EJclCompressionError.CreateRes(@RsCompressionZLibZVersionError);
-    else
-      raise EJclCompressionError.CreateResFmt(@RsCompressionZLibError, [ErrCode]);
+  else
+    raise EJclCompressionError.CreateResFmt(@RsCompressionZLibError, [ErrCode]);
   end;
 end;
 
@@ -913,8 +913,8 @@ begin
       AHeader.ExtraFlags := JCL_GZIP_EFLAG_MAX;
     Z_BEST_SPEED:
       AHeader.ExtraFlags := JCL_GZIP_EFLAG_FAST;
-    else
-      AHeader.ExtraFlags := 0;
+  else
+    AHeader.ExtraFlags := 0;
   end;
 
   AHeader.OS := FatSystemToByte[FatSystem];
@@ -1064,8 +1064,8 @@ begin
       Result := ByteToFatSystem[FHeader.OS];
     JCL_GZIP_OS_UNKNOWN:
       Result := gfsUnknown;
-    else
-      Result := gfsOther;
+  else
+    Result := gfsOther;
   end;
 end;
 
@@ -1229,8 +1229,8 @@ begin
       raise EJclCompressionError.CreateRes(@RsCompressionBZIP2OutBuffError);
     BZ_CONFIG_ERROR:
       raise EJclCompressionError.CreateRes(@RsCompressionBZIP2ConfigError);
-    else
-      raise EJclCompressionError.CreateResFmt(@RsCompressionBZIP2Error, [ErrCode]);
+  else
+    raise EJclCompressionError.CreateResFmt(@RsCompressionBZIP2Error, [ErrCode]);
   end;
 end;
 

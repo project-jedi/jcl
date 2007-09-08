@@ -711,8 +711,8 @@ begin
       Result := InternalCreateElement;
     ediCompositeElement:
       Result := InternalCreateCompositeElement;
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 
@@ -1579,8 +1579,8 @@ begin
       Result := InternalCreateFunctionalGroup;
     ediMessage:
       Result := InternalCreateMessage;
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 
@@ -2204,8 +2204,8 @@ begin
       TEDIMessageLoop(Result).ParentLoopId := ParentLoopId;
       TEDIMessageLoop(Result).Parent := Self;
     end;
-    else
-      Result := nil;
+  else
+    Result := nil;
   end;
 end;
 

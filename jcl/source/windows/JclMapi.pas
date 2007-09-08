@@ -380,8 +380,8 @@ begin
       Result := RsMapiErrINVALID_RECIPS;
     MAPI_E_NOT_SUPPORTED:
       Result := RsMapiErrNOT_SUPPORTED;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -683,8 +683,8 @@ begin
       UseMapi := True;
     ctDirect:
       UseMapi := False;
-    else
-      UseMapi := True;
+  else
+    UseMapi := True;
   end;
 end;
 
@@ -881,8 +881,8 @@ begin
           Kind := rkBCC;
         $FFFFFFFF:  // Eudora client version 5.2.0.9 bug
           Kind := rkOriginator;
-        else
-          MapiCheck(MAPI_E_INVALID_MESSAGE, True);
+      else
+        MapiCheck(MAPI_E_INVALID_MESSAGE, True);
       end;
       S := lpszAddress;
       N := Pos(AddressTypeDelimiter, S);

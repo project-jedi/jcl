@@ -135,8 +135,8 @@ begin
           MemoChanging := False;
         end;
       end;
-      else
-        inherited;
+    else
+      inherited;
     end;
   end
   else

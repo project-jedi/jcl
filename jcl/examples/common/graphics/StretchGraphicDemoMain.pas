@@ -302,7 +302,7 @@ begin
       PageControl.ActivePage := OriginalPage
     else
     {$ENDIF VCL}
-    PageControl.ActivePage := FLastImagePage;
+      PageControl.ActivePage := FLastImagePage;
     FocusControl(PageControl);
   end;
 end;

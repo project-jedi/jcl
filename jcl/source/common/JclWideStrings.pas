@@ -1346,11 +1346,11 @@ begin
         case P[0] of
           WideChar(0)..WideChar(32):
             Inc(P);
+        else
+          if (P[0] = AQuoteChar) or (P[0] = ADelimiter) then
+            Inc(P)
           else
-            if (P[0] = AQuoteChar) or (P[0] = ADelimiter) then
-              Inc(P)
-            else
-              Break;
+            Break;
         end;
       end;
       if P[0] <> WideChar(0) then
@@ -1615,8 +1615,8 @@ var
       case P^ of
         WideChar(1)..WideChar(32):
           Inc(P);
-        else
-          Break;
+      else
+        Break;
       end;
   end;
 

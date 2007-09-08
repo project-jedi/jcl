@@ -118,8 +118,8 @@ begin
         Result := SaveFile;
       ID_NO:
         Result := True;
-      else
-        Result := False;
+    else
+      Result := False;
     end;
 end;
 

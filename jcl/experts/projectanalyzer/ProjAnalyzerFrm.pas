@@ -362,8 +362,8 @@ begin
       ShowDetails;
     pavSummary:
       ShowSummary;
-    else
-      ShowDfms;
+  else
+    ShowDfms;
   end;
 end;
 
@@ -388,8 +388,8 @@ begin
             ImageIndex := 3;
           'B':
             ImageIndex := 4;
-          else
-            ImageIndex := 2;
+        else
+          ImageIndex := 2;
         end;
       end;
     AlphaSort;

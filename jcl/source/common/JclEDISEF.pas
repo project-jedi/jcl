@@ -854,8 +854,8 @@ begin
       Result := EDISEFUserAttributeHyphenDesc;
     caAmpersand:
       Result := EDISEFUserAttributeAmpersandDesc;
-    else
-      Result := RsUnknownAttribute;
+  else
+    Result := RsUnknownAttribute;
   end;
 end;
 
@@ -874,8 +874,8 @@ begin
       Result := EDISEFUserAttributeHyphenDesc;
     EDISEFUserAttributeAmpersand:
       Result := EDISEFUserAttributeAmpersandDesc;
-    else
-      Result := RsUnknownAttribute;
+  else
+    Result := RsUnknownAttribute;
   end;
 end;
 

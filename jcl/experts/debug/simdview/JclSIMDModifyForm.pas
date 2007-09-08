@@ -455,8 +455,8 @@ begin
               xt2Doubles:
                 EvaluateResult := erError;
             end;
-          else
-            EvaluateResult := erError;
+        else
+          EvaluateResult := erError;
         end
       else
         EvaluateResult := erError;

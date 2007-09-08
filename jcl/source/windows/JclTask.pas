@@ -717,8 +717,8 @@ begin
       Result := tsNotScheduled;
     SCHED_S_TASK_HAS_NOT_RUN:
       Result := tsHasNotRun;
-    else
-      Result := tsUnknown;
+  else
+    Result := tsUnknown;
   end;
 end;
 

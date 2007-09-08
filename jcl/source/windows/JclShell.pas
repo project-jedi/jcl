@@ -584,8 +584,8 @@ begin
       ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
       Result := 1;
     end;
-    else
-      Result := DefWindowProc(Wnd, Msg, wParam, lParam);
+  else
+    Result := DefWindowProc(Wnd, Msg, wParam, lParam);
   end;
 end;
 
@@ -1004,8 +1004,8 @@ begin
         Result := '';
     STRRET_CSTR:
       Result := StrRet.cStr;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -1469,8 +1469,8 @@ begin
         Result := etWin32Con
       else
         Result := etWin32Gui;
-    else
-      Result := etError;
+  else
+    Result := etError;
   end;
 end;
 

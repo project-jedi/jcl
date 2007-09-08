@@ -2002,8 +2002,8 @@ begin
     vcaProperties,
     vcaPropertiesSandbox:
       Result := DisplayPropDialog(Application.Handle, FileName);
-    else
-      Result := inherited ExecuteAction(FileName, Action);
+  else
+    Result := inherited ExecuteAction(FileName, Action);
   end;
 end;
 
@@ -2030,8 +2030,8 @@ begin
     vcaProperties,
     vcaPropertiesSandbox:
       Result := Expert.CacheResourceIcon('Shell32.dll', 4);
-    else
-      Result := inherited GetIcon(Action);
+  else
+    Result := inherited GetIcon(Action);
   end;
 end;
 

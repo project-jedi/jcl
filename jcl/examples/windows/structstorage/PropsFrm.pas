@@ -118,8 +118,8 @@ begin
       Result := SLockBytes;
     STGTY_PROPERTY:
       Result := SProperty;
-    else
-      Result := SUnknown;
+  else
+    Result := SUnknown;
   end;
 end;
 

@@ -122,8 +122,8 @@ begin
         SaveDialogFileName.FilterIndex := 2;
       bpBCBuilder32:
         SaveDialogFileName.FilterIndex := 3;
-      else
-        SaveDialogFileName.FilterIndex := 1;
+    else
+      SaveDialogFileName.FilterIndex := 1;
     end
   else
     SaveDialogFileName.DefaultExt := '';

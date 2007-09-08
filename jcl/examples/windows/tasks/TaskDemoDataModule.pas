@@ -112,9 +112,9 @@ begin
     except
       on E: Exception do
       {$IFDEF COMPILER6_UP}
-      ApplicationShowException(E);
+        ApplicationShowException(E);
       {$ELSE}
-        Application.ShowException(E);
+      Application.ShowException(E);
       {$ENDIF}
     end;
 end;

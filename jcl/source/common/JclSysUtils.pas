@@ -971,12 +971,12 @@ begin
   case GetLastError of
     ERROR_ALREADY_EXISTS:
       Result := ERROR_ALREADY_EXISTS;
-    else
-      if FileMappingHandle = 0 then
+  else
+    if FileMappingHandle = 0 then
       {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
       {$ELSE}
-        RaiseLastWin32Error;
+      RaiseLastWin32Error;
       {$ENDIF COMPILER6_UP}
   end;
 
@@ -1235,10 +1235,10 @@ var
               PInteger(IPtr)^ := PInteger(JPtr)^;
               PInteger(JPtr)^ := T;
             end;
-            else
-              Move(IPtr^, TempBuf[0], ElementSize);
-              Move(JPtr^, IPtr^, ElementSize);
-              Move(TempBuf[0], JPtr^, ElementSize);
+          else
+            Move(IPtr^, TempBuf[0], ElementSize);
+            Move(JPtr^, IPtr^, ElementSize);
+            Move(TempBuf[0], JPtr^, ElementSize);
           end;
           if P = IPtr then
             P := JPtr
@@ -1844,8 +1844,8 @@ begin
           Inc(PChar(Result), QueryInterfaceThunk.AdjustmentByte);
         AddLong:
           Inc(PChar(Result), QueryInterfaceThunk.AdjustmentLong);
-        else
-          Result := nil;
+      else
+        Result := nil;
       end;
     end;
   except
@@ -2402,10 +2402,10 @@ begin
         EndPos := OutPos;
         LfPos := OutPos;
       end;
-      else
-        Result[OutPos] := C;
-        Inc(OutPos);
-        EndPos := OutPos;
+    else
+      Result[OutPos] := C;
+      Inc(OutPos);
+      EndPos := OutPos;
     end;
   end;
   SetLength(Result, OutPos - 1);

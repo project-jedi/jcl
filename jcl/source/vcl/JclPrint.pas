@@ -621,8 +621,8 @@ begin
       Result := RsPSESheet;
     dmpaper_User:
       Result := RsPSUser;
-    else
-      Result := RsPSUnknown;
+  else
+    Result := RsPSUnknown;
   end;
 end;
 

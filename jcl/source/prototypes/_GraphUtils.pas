@@ -406,7 +406,8 @@ end;
 
 function GDICheck(Value: Integer): Integer;
 begin
-  if Value = 0 then GDIError;
+  if Value = 0 then
+    GDIError;
   Result := Value;
 end;
 
@@ -1585,8 +1586,8 @@ begin
         Inc(SourcePtr16);
       end;
     end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1651,8 +1652,8 @@ begin
         Inc(K16);
       end;
     end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1838,8 +1839,8 @@ begin
         Dec(Count);
       end;
     end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1894,8 +1895,8 @@ begin
         Dec(Count);
       end;
     end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1941,8 +1942,8 @@ begin
         Dec(Count);
       end;
     end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -2330,10 +2331,10 @@ var
   ColorTable: PRGBQuadArray;
   Count: Integer;
 begin
-  Count := High(Colors)-Low(Colors)+1;
+  Count := High(Colors) - Low(Colors) + 1;
   GetMem(ColorTable, Count * SizeOf(TRGBQuad));
   try
-    for I := 0 to Count-1 do
+    for I := 0 to Count - 1 do
       with ColorTable^[I] do
       begin
         RGB := ColorToRGB(Colors[I]);

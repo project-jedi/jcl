@@ -320,9 +320,9 @@ var
       stNotFound:
         if Forwarded then
           SetNodeState(Node, modFwdMissing) else SetNodeState(Node, modMissing);
-      else
-        if Forwarded then
-          SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
+    else
+      if Forwarded then
+        SetNodeState(Node, modFwdInvalid) else SetNodeState(Node, modInvalid);
     end;
   end;
 

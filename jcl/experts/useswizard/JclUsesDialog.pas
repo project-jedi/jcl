@@ -88,8 +88,8 @@ begin
     case TWizardAction(FChangeList.Objects[I]) of
       waSkip:
         Node.ImageIndex := 0;
-      else
-        Node.ImageIndex := 1;
+    else
+      Node.ImageIndex := 1;
     end;
     Node.SelectedIndex := Node.ImageIndex;
 

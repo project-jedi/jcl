@@ -105,10 +105,10 @@ function NewResumeThread(hThread: THandle): DWORD; stdcall;
 begin
   Result := Kernel32_ResumeThread(hThread);
   if Result <= 1 then
-  try
-    SharedThreadNames.UpdateResumeStatus;
-  except
-  end;
+    try
+      SharedThreadNames.UpdateResumeStatus;
+    except
+    end;
 end;
 {$ENDIF DELPHI7_UP}
 

@@ -640,8 +640,8 @@ begin
       Result := 'PROCESSKEY';
     $F6..$FE:
       Result := KNF6FE[KeyCode];
-    else
-      Result := '';
+  else
+    Result := '';
   end;
   if Result <> '' then
     Result := 'VK_' + Result;
@@ -1036,8 +1036,8 @@ procedure TPeResBitmap.SaveToStream(Stream: TStream);
     case BitCount of
       1, 4, 8:
         Result := 1 shl BitCount;
-      else
-        Result := 0;
+    else
+      Result := 0;
     end;
   end;
 

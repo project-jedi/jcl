@@ -2734,8 +2734,8 @@ end;
               FileName := RsSystemProcess
             else
               FileName := ProcessFileName(PIDs[I]);
-          else
-            FileName := ProcessFileName(PIDs[I]);
+        else
+          FileName := ProcessFileName(PIDs[I]);
         end;
         if FileName <> '' then
           List.AddObject(FileName, Pointer(PIDs[I]));
@@ -3410,8 +3410,8 @@ begin
       Result := RsOSVersionWinServer2008;
     wvWinVista:
       Result := RsOSVersionWinVista;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -3434,8 +3434,8 @@ begin
       Result := RsProductTypeEnterprise;
     ptWebEdition:
       Result := RsProductTypeWebEdition;
-    else
-      Result := '';
+  else
+    Result := '';
   end;
 end;
 
@@ -3708,8 +3708,8 @@ begin
       Result := paIA64;
     PROCESSOR_ARCHITECTURE_AMD64:
       Result := pax8664;
-    else
-      Result := paUnknown;
+  else
+    Result := paUnknown;
   end;
 end;
 
@@ -4323,8 +4323,8 @@ function CPUID: TCpuInfo;
               CPUInfo.CpuName := 'Write-Back Enhanced Intel DX2 Processor';
             8:
               CPUInfo.CpuName := 'Intel DX4 Processor';
-            else
-              CPUInfo.CpuName := 'Intel 486 Processor';
+          else
+            CPUInfo.CpuName := 'Intel 486 Processor';
           end;
         5:
           CPUInfo.CpuName := 'Pentium';
@@ -4342,8 +4342,8 @@ function CPUID: TCpuInfo;
                   CPUInfo.CpuName := 'Pentium II Xeon';
                 2048:
                   CPUInfo.CpuName := 'Pentium II Xeon';
-                else
-                  CPUInfo.CpuName := 'Pentium II';
+              else
+                CPUInfo.CpuName := 'Pentium II';
               end;
             6:
               case CPUInfo.L2CacheSize of
@@ -4351,8 +4351,8 @@ function CPUID: TCpuInfo;
                   CPUInfo.CpuName := 'Celeron';
                 128:
                   CPUInfo.CpuName := 'Celeron';
-                else
-                  CPUInfo.CpuName := 'Pentium II';
+              else
+                CPUInfo.CpuName := 'Pentium II';
               end;
             7:
               case CPUInfo.L2CacheSize of
@@ -4360,8 +4360,8 @@ function CPUID: TCpuInfo;
                   CPUInfo.CpuName := 'Pentium III Xeon';
                 2048:
                   CPUInfo.CpuName := 'Pentium III Xeon';
-                else
-                  CPUInfo.CpuName := 'Pentium III';
+              else
+                CPUInfo.CpuName := 'Pentium III';
               end;
             8:
               case CPUInfo.IntelSpecific.BrandID of
@@ -4373,15 +4373,15 @@ function CPUID: TCpuInfo;
                   CPUInfo.CpuName := 'Pentium III Xeon';
                 4:
                   CPUInfo.CpuName := 'Pentium III';
-                else
-                  CPUInfo.CpuName := 'Pentium III';
+              else
+                CPUInfo.CpuName := 'Pentium III';
               end;
             10:
               CPUInfo.CpuName := 'Pentium III Xeon';
             11:
               CPUInfo.CpuName := 'Pentium III';
-            else
-              StrPCopy(CPUInfo.CpuName, Format('P6 (Model %d)', [CPUInfo.Model]));
+          else
+            StrPCopy(CPUInfo.CpuName, Format('P6 (Model %d)', [CPUInfo.Model]));
           end;
         15:
           case CPUInfo.IntelSpecific.BrandID of
@@ -4391,11 +4391,11 @@ function CPUID: TCpuInfo;
               CPUInfo.CpuName := 'Pentium 4';
             14:
               CPUInfo.CpuName := 'Xeon';
-            else
-              CPUInfo.CpuName := 'Pentium 4';
+          else
+            CPUInfo.CpuName := 'Pentium 4';
           end;
-        else
-          StrPCopy(CPUInfo.CpuName, Format('P%d', [CPUInfo.Family]));
+      else
+        StrPCopy(CPUInfo.CpuName, Format('P%d', [CPUInfo.Family]));
       end;
     end;
 
@@ -4516,8 +4516,8 @@ function CPUID: TCpuInfo;
               CPUInfo.CpuName := 'AMD-K6®-2 (Model 8)';
             9:
               CPUInfo.CpuName := 'AMD-K6®-III (Model 9)';
-            else
-              StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
+          else
+            StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
           end;
         6:
           case CPUInfo.Model of
@@ -4537,13 +4537,13 @@ function CPUID: TCpuInfo;
               CPUInfo.CpuName := 'AMD Athlon™ XP (Model 8)';
             10:
               CPUInfo.CpuName := 'AMD Athlon™ XP (Model 10)';
-            else
-              StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
+          else
+            StrFmt(CPUInfo.CpuName, PChar(RsUnknownAMDModel), [CPUInfo.Model]);
           end;
         8:
 
-        else
-          CPUInfo.CpuName := 'Unknown AMD Chip';
+      else
+        CPUInfo.CpuName := 'Unknown AMD Chip';
       end;
     end;
 
@@ -4613,8 +4613,8 @@ function CPUID: TCpuInfo;
           end;
         6:
           CPUInfo.CpuName := '6x86MX';
-        else
-          StrPCopy(CPUInfo.CpuName, Format('%dx86', [CPUInfo.Family]));
+      else
+        StrPCopy(CPUInfo.CpuName, Format('%dx86', [CPUInfo.Family]));
       end;
     end;
   end;

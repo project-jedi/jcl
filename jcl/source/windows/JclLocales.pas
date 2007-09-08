@@ -390,8 +390,8 @@ begin
       Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
     13:
       Param := LOCALE_SABBREVMONTHNAME13;
-    else
-      raise ERangeError.CreateRes(@SRangeError);
+  else
+    raise ERangeError.CreateRes(@SRangeError);
   end;
   Result := GetStringInfo(Param);
 end;

@@ -703,10 +703,10 @@ begin
       Result := fcNoCompression;
     COMPRESSION_FORMAT_LZNT1:
       Result := fcLZNT1Compression;
-    else
+  else
     // (rom) very dubious.
-      Assert(False, 'TFileCompressionState requires expansion');
-      Result := TFileCompressionState(State);
+    Assert(False, 'TFileCompressionState requires expansion');
+    Result := TFileCompressionState(State);
   end;
 end;
 
@@ -1776,8 +1776,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1791,8 +1791,8 @@ begin
       Result := False;
     VT_BOOL:
       Result := PropValue.bool;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1810,8 +1810,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1835,8 +1835,8 @@ begin
       Result := PropValue.uiVal;
     VT_UI4, VT_UINT:
       Result := PropValue.ulVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1850,8 +1850,8 @@ begin
       Result := nil;
     VT_CF:
       Result := PropValue.pclipdata
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1865,8 +1865,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_FILETIME:
       Result := PropValue.filetime;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1895,8 +1895,8 @@ begin
       Result := PropValue.uiVal;
     VT_UI4, VT_UINT:
       Result := PropValue.ulVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1944,8 +1944,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_LPSTR or VT_VECTOR:
       Result := PropValue.calpstr;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1960,8 +1960,8 @@ begin
       ZeroMemory(@Result, SizeOf(Result));
     VT_VARIANT or VT_VECTOR:
       Result := PropValue.capropvar;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -1980,8 +1980,8 @@ begin
       Result := PropValue.pwszVal;
     VT_BSTR:
       Result := PropValue.bstrVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 
@@ -2001,8 +2001,8 @@ begin
       Result := PropValue.bVal;
     VT_UI2:
       Result := PropValue.uiVal;
-    else
-      raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
+  else
+    raise EJclFileSummaryError.CreateRes(@RsEIncomatibleDataFormat);
   end;
 end;
 

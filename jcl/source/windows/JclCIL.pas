@@ -733,8 +733,8 @@ begin
       Result := SizeOf(Int64);
     ptArray:
       Result := (VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) + 1 + 1) * SizeOf(Integer);
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
   Result := OpCodeSize[OpCode in [opNop..opPrefixRef]] + Result;
 end;
@@ -796,22 +796,22 @@ begin
           end;
         end;
       {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
-      ptSOff, ptI1:
+        ptSOff, ptI1:
         begin
           Stream.Read(VShortInt, SizeOf(ShortInt));
           VType := varShortInt;
         end;
-      ptU2:
+        ptU2:
         begin
           Stream.Read(VWord, SizeOf(Word));
           VType := varWord;
         end;
-      ptToken, ptU4:
+        ptToken, ptU4:
         begin
           Stream.Read(VLongWord, SizeOf(LongWord));
           VType := varLongWord;
         end;
-      ptI8, ptU8:
+        ptI8, ptU8:
         begin
           Stream.Read(VInt64, SizeOf(Int64));
           VType := varInt64;
@@ -862,16 +862,16 @@ begin
     ptI8, ptU8:
       Stream.Write(TVarData(FParam).VInt64, SizeOf(Int64));
     ptArray:
-      begin
-        ArraySize := VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) + 1;
-        Stream.Write(ArraySize, SizeOf(ArraySize));
+    begin
+      ArraySize := VarArrayHighBound(FParam, 1) - VarArrayLowBound(FParam, 1) + 1;
+      Stream.Write(ArraySize, SizeOf(ArraySize));
         { TODO : VarArrayHighBound to VarArrayLowBound very likely wrong }
-        for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
-        begin
-          Value := VarArrayGet(FParam, [I]);
-          Stream.Write(Value, SizeOf(Value));
-        end;
+      for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
+      begin
+        Value := VarArrayGet(FParam, [I]);
+        Stream.Write(Value, SizeOf(Value));
       end;
+    end;
     {$ENDIF RTL140_UP}
   end;
 end;
@@ -926,17 +926,17 @@ begin
         ptArray:
           ParamStr := 'Array';
           {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
-          ptI2, ptU2:
-            ParamStr := IntToHex(TVarData(FParam).VWord, 4);
-          ptLOff, ptI4, ptU4, ptR4:
-            ParamStr := IntToHex(TVarData(FParam).VLongWord, 8);
-          ptI8, ptU8, ptR8:
-            ParamStr := IntToHex(TVarData(FParam).VInt64, 16);
-          ptToken:
-            ParamStr := TokenToString(TVarData(FParam).VLongWord);
+        ptI2, ptU2:
+          ParamStr := IntToHex(TVarData(FParam).VWord, 4);
+        ptLOff, ptI4, ptU4, ptR4:
+          ParamStr := IntToHex(TVarData(FParam).VLongWord, 8);
+        ptI8, ptU8, ptR8:
+          ParamStr := IntToHex(TVarData(FParam).VInt64, 16);
+        ptToken:
+          ParamStr := TokenToString(TVarData(FParam).VLongWord);
           {$ENDIF RTL140_UP}
-        else
-          ParamStr := '';
+      else
+        ParamStr := '';
       end;
       ParamStr := ParamStr + StrRepeat(' ', 10 - Length(ParamStr));
       Result := CodeStr + ' | ' + ParamStr;
@@ -950,55 +950,56 @@ begin
           Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VInteger - 1);
         {$IFDEF RTL140_UP}  { TODO -cTest : since RTL 14.0 or 15.0? }
         ptToken:
+        begin
+          if Byte(TJclPeMetadata.TokenTable(TVarData(Param).VLongWord)) = $70 then
+            Result := '"' + Owner.Method.Method.Table.Stream.Metadata.UserStringAt(
+              TJclPeMetadata.TokenIndex(TVarData(Param).VLongWord)) + '"'
+          else
           begin
-            if Byte(TJclPeMetadata.TokenTable(TVarData(Param).VLongWord)) = $70 then
-              Result := '"' + Owner.Method.Method.Table.Stream.Metadata.UserStringAt(TJclPeMetadata.TokenIndex(TVarData(Param).VLongWord)) + '"'
-            else
+            Row := Owner.Method.Method.Table.Stream.Metadata.Tokens[TVarData(Param).VLongWord];
+            if Assigned(Row) then
             begin
-              Row := Owner.Method.Method.Table.Stream.Metadata.Tokens[TVarData(Param).VLongWord];
-              if Assigned(Row) then
-              begin
-                if Row is TJclClrTableTypeDefRow then
-                  Result := TJclClrTableTypeDefRow(Row).FullName
-                else
-                if Row is TJclClrTableTypeRefRow then
-                  with TJclClrTableTypeRefRow(Row) do
-                    Result := FullName
-                else
-                if Row is TJclClrTableMethodDefRow then
-                  with TJclClrTableMethodDefRow(Row) do
-                    Result := ParentToken.FullName + '.' + Name
-                else
-                if Row is TJclClrTableMemberRefRow then
-                  with TJclClrTableMemberRefRow(Row) do
-                    Result := FullName
-                else
-                if Row is TJclClrTableFieldDefRow then
-                  with TJclClrTableFieldDefRow(Row) do
-                    Result := ParentToken.FullName + '.' + Name
-                else
-                  Result := Row.DumpIL;
-              end
+              if Row is TJclClrTableTypeDefRow then
+                Result := TJclClrTableTypeDefRow(Row).FullName
               else
-                Result := '';
-            end;
-            Result := Result + ' /* ' + IntToHex(TVarData(FParam).VLongWord, 8) + ' */';
+              if Row is TJclClrTableTypeRefRow then
+                with TJclClrTableTypeRefRow(Row) do
+                  Result := FullName
+              else
+              if Row is TJclClrTableMethodDefRow then
+                with TJclClrTableMethodDefRow(Row) do
+                  Result := ParentToken.FullName + '.' + Name
+              else
+              if Row is TJclClrTableMemberRefRow then
+                with TJclClrTableMemberRefRow(Row) do
+                  Result := FullName
+              else
+              if Row is TJclClrTableFieldDefRow then
+                with TJclClrTableFieldDefRow(Row) do
+                  Result := ParentToken.FullName + '.' + Name
+              else
+                Result := Row.DumpIL;
+            end
+            else
+              Result := '';
           end;
+          Result := Result + ' /* ' + IntToHex(TVarData(FParam).VLongWord, 8) + ' */';
+        end;
         ptSOff:
           Result := FormatLabel(Integer(Offset + Size) + TVarData(Param).VShortInt - 1);
         ptArray:
+        begin
+          for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
           begin
-            for I := VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
-            begin
-              Result := Result + FormatLabel(Offset + Size + VarArrayGet(FParam, [I]));
-              if I <> VarArrayLowBound(FParam, 1) then
-                Result := Result + ', ';
-            end;
-            Result := ' (' + Result + ')';
+            Result := Result + FormatLabel(Offset + Size + VarArrayGet(FParam, [I]));
+            if I <> VarArrayLowBound(FParam, 1) then
+              Result := Result + ', ';
           end;
+          Result := ' (' + Result + ')';
+        end;
         {$ENDIF RTL140_UP}
-        else
-          Result := VarToStr(Param);
+      else
+        Result := VarToStr(Param);
       end;
       Result := GetName + StrRepeat(' ', 10 - Length(GetName)) + ' ' + Result;
       Result := Result + StrRepeat(' ', 20 - Length(Result));

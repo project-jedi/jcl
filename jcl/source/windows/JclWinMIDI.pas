@@ -28,7 +28,7 @@
 
 // Last modified: $Date$
 
-unit JclWinMidi;
+unit JclWinMIDI;
 
 {$I jcl.inc}
 {$I windowsonly.inc}

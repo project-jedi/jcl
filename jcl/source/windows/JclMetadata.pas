@@ -47,7 +47,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase, JclClr, JclFileUtils, JclPeImage, JclSysUtils;
+  JclBase, JclCLR, JclFileUtils, JclPeImage, JclSysUtils;
 
 type
   TJclClrElementType = (etEnd, etVoid, etBoolean, etChar,
@@ -2069,8 +2069,8 @@ begin
         Value := Integer(DWord(Data shr 1) or $ffffffc0);
       2:
         Value := Integer(DWord(Data shr 1) or $ffffe000);
-      else
-        Value := Integer(DWord(Data shr 1) or $f0000000);
+    else
+      Value := Integer(DWord(Data shr 1) or $f0000000);
     end;
   end;
 end;
@@ -2133,8 +2133,8 @@ begin
     etArray:
     begin
     end;
-    else
-      Result := 'Unknown Type';
+  else
+    Result := 'Unknown Type';
   end;
 end;
 
@@ -3737,8 +3737,8 @@ var
           else
             Result := '/*' + IntToHex(Row.Token, 8) + '*/';
         end;
-      else
-        Result := LocalVar.Name;
+    else
+      Result := LocalVar.Name;
     end;
   end;
 
@@ -4329,8 +4329,8 @@ begin
       Result := clSequential;
     tdExplicitLayout:
       Result := clExplicit;
-    else
-      raise EJclMetadataError.CreateResFmt(@RsUnknownClassLayout, [FFlags and tdLayoutMask]);
+  else
+    raise EJclMetadataError.CreateResFmt(@RsUnknownClassLayout, [FFlags and tdLayoutMask]);
   end;
 end;
 
@@ -4351,8 +4351,8 @@ begin
       Result := sfUnicode;
     tdAutoClass:
       Result := sfAutoChar;
-    else
-      raise EJclMetadataError.CreateResFmt(@RsUnknownStringFormatting, [FFlags and tdStringFormatMask]);
+  else
+    raise EJclMetadataError.CreateResFmt(@RsUnknownStringFormatting, [FFlags and tdStringFormatMask]);
   end;
 end;
 
@@ -4628,8 +4628,8 @@ begin
       Result := 'System.Object';
     etSzArray:
       // (rom) possible BUG! Result not assigned
-    else
-      Result := 'Unknown';
+  else
+    Result := 'Unknown';
   end;
 end;
 
@@ -4670,20 +4670,20 @@ begin
         LocalVar.Flags := LocalVar.Flags + [lvfByRef];
       ELEMENT_TYPE_END:
         Break;
+    else
+      for T := Low(TJclClrElementType) to High(TJclClrElementType) do
+        if ClrElementTypeMapping[T] = ElemType then
+        begin
+          LocalVar.ElementType := T;
+          Break;
+        end;
+      if LocalVar.ElementType in [etPtr, etByRef, etValueType, etClass] then
+        LocalVar.Token := ReadToken
       else
-        for T := Low(TJclClrElementType) to High(TJclClrElementType) do
-          if ClrElementTypeMapping[T] = ElemType then
-          begin
-            LocalVar.ElementType := T;
-            Break;
-          end;
-        if LocalVar.ElementType in [etPtr, etByRef, etValueType, etClass] then
-          LocalVar.Token := ReadToken
-        else
-          LocalVar.Token := 0;
+        LocalVar.Token := 0;
 
-        FLocalVars.Add(LocalVar);
-        LocalVar := TJclClrLocalVar.Create;
+      FLocalVars.Add(LocalVar);
+      LocalVar := TJclClrLocalVar.Create;
     end;
   end;
   FreeAndNil(LocalVar);
@@ -4791,17 +4791,17 @@ begin
       end;
       ELEMENT_TYPE_BYREF:
         FByRef := True;
-      else
-        FElementType := TJclClrElementType(By);
-        case FElementType of
-          etPtr, etTypedByRef, etValueType, etClass:
-            FToken := ReadToken;
-          etFnPtr:
-            FMethodSign := TJclClrMethodSign.Create(Blob);
-          etArray:
-            FArraySign := TJclClrArraySign.Create(Blob);
-        end;
-        Finished := True;
+    else
+      FElementType := TJclClrElementType(By);
+      case FElementType of
+        etPtr, etTypedByRef, etValueType, etClass:
+          FToken := ReadToken;
+        etFnPtr:
+          FMethodSign := TJclClrMethodSign.Create(Blob);
+        etArray:
+          FArraySign := TJclClrArraySign.Create(Blob);
+      end;
+      Finished := True;
     end;
   end;
 end;

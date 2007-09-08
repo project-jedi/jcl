@@ -3034,8 +3034,8 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
         Result := Target.VersionNumber in [5, 6];
       brBorlandDevStudio:
         Result := Target.VersionNumber in [1, 2, 3, 4, 5];
-      else
-        Result := False;
+    else
+      Result := False;
     end;
     {$ENDIF ~KYLIX}
   end;
@@ -3418,10 +3418,10 @@ begin
         Parameters := Format('%s "UnregNameSpace;%s"', [Parameters, FRegHelpCommands.Strings[Index]]);
       RHCommitTransaction:
         Parameters := Format('%s Commit', [Parameters]);
-      else
-        if Assigned(GUI) then
-          GUI.Dialog('Fatal error: unknown reghelp command', dtError, [drOK]);
-        Exit;
+    else
+      if Assigned(GUI) then
+        GUI.Dialog('Fatal error: unknown reghelp command', dtError, [drOK]);
+      Exit;
     end;
   end;
 

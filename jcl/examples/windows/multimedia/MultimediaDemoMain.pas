@@ -353,8 +353,8 @@ begin
           C := '+';
         3:
           C := '-';
-        else
-          C := '!';
+      else
+        C := '!';
       end;
       List.Add(Format('%*s%s %s', [Node.Level * 2, '', Node.Text, StringOfChar(C, 119 -
         Node.Level * 2 - Length(Node.Text))]));

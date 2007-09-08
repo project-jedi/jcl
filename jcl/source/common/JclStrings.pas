@@ -1151,9 +1151,9 @@ begin
         '0'..'7':
           // start of octal escape sequence
           HandleOctEscapeSeq;
-        else
+      else
         // no escape sequence
-          Result := Result + '\' + S[I];
+        Result := Result + '\' + S[I];
       end;
     end;
     Inc(I);
@@ -1757,12 +1757,12 @@ begin
         Result := Result + '\\';
       '"':
         Result := Result + '\"';
-      else
+    else
       // Characters < ' ' are escaped with hex sequence
-        if S[I] < #32 then
-          Result := Result + Format('\x%.2x', [Integer(S[I])])
-        else
-          Result := Result + S[I];
+      if S[I] < #32 then
+        Result := Result + Format('\x%.2x', [Integer(S[I])])
+      else
+        Result := Result + S[I];
     end;
   end;
 end;
@@ -1999,8 +1999,8 @@ begin
       Finalize(S);
       Pointer(S) := nil;
     end;
-    else
-      Pointer(Foo) := Pointer(S);
+  else
+    Pointer(Foo) := Pointer(S);
   end;
 end;
 
@@ -2907,24 +2907,24 @@ begin
           Inc(StringPtr);
           Inc(PatternPtr);
         end;
+      else
+      begin
+        if StringPtr^ = #0 then
+          Exit;
+        if StringPtr^ <> PatternPtr^ then
+        begin
+          if (StringRes = nil) or (PatternRes = nil) then
+            Exit;
+          StringPtr := StringRes;
+          PatternPtr := PatternRes;
+          Break;
+        end
         else
         begin
-          if StringPtr^ = #0 then
-            Exit;
-          if StringPtr^ <> PatternPtr^ then
-          begin
-            if (StringRes = nil) or (PatternRes = nil) then
-              Exit;
-            StringPtr := StringRes;
-            PatternPtr := PatternRes;
-            Break;
-          end
-          else
-          begin
-            Inc(StringPtr);
-            Inc(PatternPtr);
-          end;
+          Inc(StringPtr);
+          Inc(PatternPtr);
         end;
+      end;
       end;
     until False;
 
@@ -2947,20 +2947,20 @@ begin
           Inc(StringPtr);
           Inc(PatternPtr);
         end;
-        else
-        begin
-          repeat
-            if StringPtr^ = #0 then
-              Exit;
-            if StringPtr^ = PatternPtr^ then
-              Break;
-            Inc(StringPtr);
-          until False;
+      else
+      begin
+        repeat
+          if StringPtr^ = #0 then
+            Exit;
+          if StringPtr^ = PatternPtr^ then
+            Break;
           Inc(StringPtr);
-          StringRes := StringPtr;
-          Inc(PatternPtr);
-          Break;
-        end;
+        until False;
+        Inc(StringPtr);
+        StringRes := StringPtr;
+        Inc(PatternPtr);
+        Break;
+      end;
       end;
     until False;
   until False;
@@ -4150,10 +4150,10 @@ begin
           while (S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn]) do
             Inc(S);
       end;
-      else
-        if Start = nil then
-          Start := S;
-        Inc(S);
+    else
+      if Start = nil then
+        Start := S;
+      Inc(S);
     end;
   end;
 end;
@@ -4370,12 +4370,12 @@ end;
 const
   BoolToStr: array [Boolean] of string[5] = ('false', 'true');
   {$IFDEF COMPILER5}
-  MaxCurrency: Currency =  922337203685477.5807;
+  MaxCurrency: Currency = 922337203685477.5807;
 
   varShortInt = $0010; { vt_i1     16 }
-  varWord     = $0012; { vt_ui2    18 }
+  varWord = $0012; { vt_ui2    18 }
   varLongWord = $0013; { vt_ui4    19 }
-  varInt64    = $0014; { vt_i8     20 }
+  varInt64 = $0014; { vt_i8     20 }
   {$ENDIF COMPILER5}
 
 type
@@ -4479,8 +4479,8 @@ var
       varUnknown,
       varAny,
       varByRef:}
-      else
-        raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+    else
+      raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
     end;
   end;
 
@@ -4544,8 +4544,8 @@ var
         Result := WideString(V.VWideString);
       vtInt64:
         Result := IntToStr(V.VInt64^);
-      else
-        raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
+    else
+      raise ArgumentNullException.CreateResFmt(@RsDotNetFormatArgumentNotSupported, [Index]);
     end;
   end;
 

@@ -249,8 +249,8 @@ begin
       PErr := @RsErrStudyFailed;
     JCL_PCRE_ERROR_CALLOUTERROR:
       PErr := @RsErrCalloutError;
-    else
-      PErr := @RsErrUnknownError;
+  else
+    PErr := @RsErrUnknownError;
   end;
 
   raise EPCREError.CreateRes(PErr, Value);
@@ -590,8 +590,8 @@ function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of cons
         Result := TVarRec(Args[Index]).VPChar;
       vtAnsiString:
         Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
-      else
-        raise EConvertError.Create(SInvalidFormat);
+    else
+      raise EConvertError.Create(SInvalidFormat);
     end;
   end;
 

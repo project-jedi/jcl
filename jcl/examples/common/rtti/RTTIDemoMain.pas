@@ -206,7 +206,8 @@ begin
   Writer.Indent;
   try
     Writer.Writeln('TypedIntToStr: ' + JclTypedIntToStr(crArrow, TypeInfo(TCursor)));
-    Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('crArrow', TypeInfo(TCursor))) + ' (should be ' + IntToStr(crArrow) + ')');
+    Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('crArrow', TypeInfo(TCursor))) +
+      ' (should be ' + IntToStr(crArrow) + ')');
     Writer.Writeln('');
     Writer.Writeln('TypedIntToStr: ' + JclTypedIntToStr(1, TypeInfo(TCursor)));
     Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('1', TypeInfo(TCursor))) + ' (should be 1)');

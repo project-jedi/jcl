@@ -346,8 +346,8 @@ begin
       Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
     wkrReplicator:
       Result := DOMAIN_ALIAS_RID_REPLICATOR;
-    else // (wkrEveryone)
-      Result := SECURITY_WORLD_RID;
+  else // (wkrEveryone)
+    Result := SECURITY_WORLD_RID;
   end;
 end;
 
@@ -366,8 +366,8 @@ begin
       Result := wkrBackupOPs;
     DOMAIN_ALIAS_RID_REPLICATOR:
       Result := wkrReplicator;
-    else // (SECURITY_WORLD_RID)
-      Result := wkrEveryone;
+  else // (SECURITY_WORLD_RID)
+    Result := wkrEveryone;
   end;
 end;
 

@@ -169,8 +169,8 @@ begin
         Result := True;
       wrTimeout:
         raise Exception.Create(RsEnterMutexTimeout);
-      else
-        Result := False;
+    else
+      Result := False;
     end;
   end
   else
@@ -184,7 +184,7 @@ class function TSharedThreadNames.Exists: Boolean;
 {$IFDEF DELPHI7_UP}
 begin
   Result := True;
-end;  
+end;
 {$ELSE DELPHI7_UP}
 var
   H: THandle;
@@ -249,7 +249,7 @@ begin
         end;
       end;
     {$IFDEF DELPHI7_UP}
-    SetIdeDebuggerThreadName(ThreadID, ThreadName);
+      SetIdeDebuggerThreadName(ThreadID, ThreadName);
     {$ENDIF DELPHI7_UP}
       if NeedNotify then
         FNotifyEvent.SetEvent;

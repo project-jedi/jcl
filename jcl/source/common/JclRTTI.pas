@@ -1356,8 +1356,8 @@ begin
       Result := pskVirtualMethod;
     $FF:
       Result := pskField;
-    else
-      Result := pskStaticMethod;
+  else
+    Result := pskStaticMethod;
   end;
 end;
 
@@ -1370,8 +1370,8 @@ begin
       Result := Smallint(Value and $0000FFFF);
     pskField:
       Result := Value and $00FFFFFF;
-    else
-      Result := 0;
+  else
+    Result := 0;
   end;
 end;
 
@@ -2414,8 +2414,8 @@ begin
     tkDynArray:
       Result := TJclDynArrayTypeInfo.Create(ATypeInfo);
     {$ENDIF RTL140_UP}
-    else
-      Result := TJclTypeInfo.Create(ATypeInfo);
+  else
+    Result := TJclTypeInfo.Create(ATypeInfo);
   end;
 end;
 
@@ -2565,8 +2565,8 @@ begin
       EnumVal := Integer(Value);
     otULong:
       EnumVal := Longword(Value);
-    else
-      EnumVal := 0;
+  else
+    EnumVal := 0;
   end;
   // Check range...
   if (EnumVal < MinEnum) or (EnumVal > MaxEnum) then
@@ -2596,7 +2596,7 @@ begin
     StringSize := StringSize + 1 + Length(Literals[I]);
   Result := AllocMem(SizeOf(TTypeInfo) + SizeOf(TOrdType) +
     (2 * SizeOf(Integer)) + SizeOf(PPTypeInfo) +
-    StringSize {$IFDEF RTL140_UP}+ 1{$ENDIF RTL140_UP});
+    StringSize {$IFDEF RTL140_UP} + 1{$ENDIF RTL140_UP});
   try
     with Result^ do
     begin
@@ -2931,8 +2931,8 @@ begin
         Byte(TypeData^.OrdType) := 16;
       129..256:
         Byte(TypeData^.OrdType) := 32;
-      else
-        Byte(TypeData^.OrdType) := 255;
+    else
+      Byte(TypeData^.OrdType) := 255;
     end;
     TypeData^.CompType := AllocMem(SizeOf(Pointer));
     TypeData^.CompType^ := BaseType;
