@@ -1301,6 +1301,12 @@ function UTF8SetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Bool
 // StrPos will be incremented by the number of chars that were read
 function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
 
+// UTF16GetPreviousChar = read previous UTF16 sequence starting at StrPos-1
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be decremented by the number of chars that were read
+function UTF16GetPreviousChar(const S: WideString; var StrPos: Integer): UCS4;
+
 // UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
@@ -7955,6 +7961,53 @@ begin
   end;
 end;
 
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be decremented by the number of chars that were read
+function UTF16GetPreviousChar(const S: WideString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChPrev: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= (StrLength + 1)) and (StrPos > 1) then
+  begin
+    Result := UCS4(S[StrPos - 1]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        FlagInvalidSequence(StrPos, -1, Result);
+      SurrogateLowStart..SurrogateLowEnd:
+        begin
+          // 2 bytes to read
+          if StrPos <= 2 then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          ChPrev := UCS4(S[StrPos - 2]);
+          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
+          Dec(StrPos, 2);
+        end;
+    else
+      // 1 byte to read
+      Dec(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+
 // returns False if String is too small
 // if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
 // StrPos will be incremented by the number of chars that were skipped
@@ -7968,40 +8021,76 @@ begin
   StrLength := Length(S);
 
   Index := 0;
-  while (Index < NbSeq) and (StrPos > 0) do
-  begin
-    Ch := UCS4(S[StrPos]);
-
-    case Ch of
-      SurrogateHighStart..SurrogateHighEnd:
-        // 2 bytes to skip
-        if (StrPos >= StrLength) then
-          FlagInvalidSequence(StrPos, 1)
-        else
-        begin
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+  if NbSeq >= 0 then
+    while (Index < NbSeq) and (StrPos > 0) do
+    begin
+      Ch := UCS4(S[StrPos]);
+  
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // 2 bytes to skip
+          if StrPos >= StrLength then
             FlagInvalidSequence(StrPos, 1)
           else
-            Inc(StrPos, 2);
-        end;
-      SurrogateLowStart..SurrogateLowEnd:
-        // error
-        FlagInvalidSequence(StrPos, 1);
-    else
-      // 1 byte to skip
-      Inc(StrPos);
-    end;
+          begin
+            ChNext := UCS4(S[StrPos + 1]);
+            if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+              FlagInvalidSequence(StrPos, 1)
+            else
+              Inc(StrPos, 2);
+          end;
+        SurrogateLowStart..SurrogateLowEnd:
+          // error
+          FlagInvalidSequence(StrPos, 1);
+      else
+        // 1 byte to skip
+        Inc(StrPos);
+      end;
 
-    if StrPos <> -1 then
-      Inc(Index);
+      if StrPos <> -1 then
+        Inc(Index);
 
-    if (StrPos > StrLength) and (Index < NbSeq) then
+      if (StrPos > StrLength) and (Index < NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
+    end
+  else
+    while (Index > NbSeq) and (StrPos > 1) do
     begin
-      Result := False;
-      Break;
+      Ch := UCS4(S[StrPos - 1]);
+
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // error
+          FlagInvalidSequence(StrPos, -1);
+        SurrogateLowStart..SurrogateLowEnd:
+          // 2 bytes to skip
+          if StrPos <= 2 then
+            FlagInvalidSequence(StrPos, -1)
+          else
+          begin
+            ChNext := UCS4(S[StrPos - 2]);
+            if (ChNext < SurrogateHighStart) or (ChNext > SurrogateHighEnd) then
+              FlagInvalidSequence(StrPos, -1)
+            else
+              Dec(StrPos, 2);
+          end;
+      else
+        // 1 byte to skip
+        Dec(StrPos);
+      end;
+
+      if StrPos <> -1 then
+        Dec(Index);
+
+      if (StrPos = 1) and (Index > NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
     end;
-  end;
   NbSeq := Index;
 end;
 
