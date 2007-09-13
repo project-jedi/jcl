@@ -341,6 +341,7 @@
   SUPPORTS_STRICT               Compiler supports strict keyword (D9.NET, D10+)
   SUPPORTS_STATIC               Compiler supports static keyword (D9.NET, D10+)
   SUPPORTS_FINAL                Compiler supports final keyword (D9.NET, D10+)
+  SUPPORTS_GENERICS             Compiler supports generic implementations (D11.net)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -912,6 +913,12 @@
   {$DEFINE SUPPORTS_STATIC}
   {$DEFINE SUPPORTS_FINAL}
 {$ENDIF COMPILER10_UP}
+
+{$IFDEF COMPILER11_UP}
+  {$IFDEF CLR}
+    {$DEFINE SUPPORTS_GENERICS}
+  {$ENDIF CLR}
+{$ENDIF COMPILER11_UP}
 
 {$IFDEF RTL140_UP}
   {$IFDEF LINUX}

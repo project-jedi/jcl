@@ -1102,6 +1102,7 @@ const
   DProjProjectExtensionsNodeName = 'ProjectExtensions';
   DProjPersonalityNodeName = 'Borland.Personality';
   DProjDelphiPersonalityValue = 'Delphi.Personality';
+  DProjDelphiDotNetPersonalityValue = 'DelphiDotNet.Personality';
   DProjPropertyGroupNodeName = 'PropertyGroup';
   DProjConditionValueName = 'Condition';
   DProjUsePackageNodeName = 'DCC_UsePackage';
@@ -2532,7 +2533,8 @@ begin
         if Assigned(PersonalityNode) then
           PersonalityName := PersonalityNode.Value;
       end;
-      if AnsiSameText(PersonalityName, DProjDelphiPersonalityValue) then
+      if AnsiSameText(PersonalityName, DProjDelphiPersonalityValue) or
+        AnsiSameText(PersonalityName, DProjDelphiDotNetPersonalityValue) then
       begin
         ProjectConfiguration := '';
         ProjectPlatform := '';

@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,101,0,2647
-PRODUCTVERSION 1,101,0,2647
+FILEVERSION 1,101,1,2725
+PRODUCTVERSION 1,101,1,2725
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Package containing repository wizards\0"
-              VALUE "FileVersion", "1.101.0.2647\0"
+              VALUE "FileVersion", "1.101.1.2725\0"
               VALUE "InternalName", "JclRepositoryExpert\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2007 Project JEDI\0"
               VALUE "OriginalFilename", "JclRepositoryExpert90.bpl\0"
               VALUE "ProductName", "JEDI Code Library\0"
-              VALUE "ProductVersion", "1.101 Build 2647\0"
+              VALUE "ProductVersion", "1.101 Build 2725\0"
          END
     END
     BLOCK "VarFileInfo"

@@ -58,6 +58,11 @@ ALERT_jedi_inc_incompatible
       {$DEFINE JCL_CONFIGURED}
     {$ENDIF BDS4}
     {----------------------------}
+    {$IFDEF BDS5}
+      {$I jcld11.net.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS5}
+    {----------------------------}
   {$ELSE ~CLR}
     {----------------------------}
     { Kylix                      }
