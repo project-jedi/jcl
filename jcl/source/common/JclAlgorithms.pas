@@ -42,6 +42,7 @@ type
   TIntfApplyFunction = function(const AInterface: IInterface): IInterface;
   TStrApplyFunction = function(const AString: string): string;
   TApplyFunction = function(AObject: TObject): TObject;
+
   // Pointer functions for comparator
   TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
   TStrCompare = function(const Obj, Obj2: string): Integer;

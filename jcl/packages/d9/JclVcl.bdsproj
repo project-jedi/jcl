@@ -148,9 +148,9 @@
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">101</VersionInfo>
+      <VersionInfo Name="MinorVer">102</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">2647</VersionInfo>
+      <VersionInfo Name="Build">2726</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -162,13 +162,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JEDI Code Library VCL package</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.101.0.2647</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">1.102.0.2726</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">JclVcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">JclVcl90.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.101 Build 2647</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

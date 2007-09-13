@@ -47,7 +47,7 @@ uses
 [assembly: AssemblyCulture('')]
 
 // MajorVersion.MinorVersion.BuildNumber.Revision
-[assembly: AssemblyVersion('1.101.0.2647')]
+[assembly: AssemblyVersion('1.102.0.2726')]
 
 // Package signature
 [assembly: AssemblyDelaySign(false)]
