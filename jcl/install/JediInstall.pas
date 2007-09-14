@@ -46,6 +46,7 @@ type
 
 type
   TDialogType = (dtWarning, dtError, dtInformation, dtConfirmation);
+  TDialogTypes = set of TDialogType;
   TDialogResponse = (drYes, drNo, drOK, drCancel);
   TDialogResponses = set of TDialogResponse;
 
@@ -163,8 +164,23 @@ type
     procedure SetCaption(const Value: string);
     function GetProgress: Integer;
     procedure SetProgress(Value: Integer);
+    function GetAutoAcceptDialogs: TDialogTypes;
+    procedure SetAutoAcceptDialogs(Value: TDialogTypes);
+    function GetAutoCloseOnFailure: Boolean;
+    procedure SetAutoCloseOnFailure(Value: Boolean);
+    function GetAutoCloseOnSuccess: Boolean;
+    procedure SetAutoCloseOnSuccess(Value: Boolean);
+    function GetAutoInstall: Boolean;
+    procedure SetAutoInstall(Value: Boolean);
+    function GetAutoUninstall: Boolean;
+    procedure SetAutoUninstall(Value: Boolean);
     procedure Execute;
 
+    property AutoAcceptDialogs: TDialogTypes read GetAutoAcceptDialogs write SetAutoAcceptDialogs;
+    property AutoCloseOnFailure: Boolean read GetAutoCloseOnFailure write SetAutoCloseOnFailure;
+    property AutoCloseOnSuccess: Boolean read GetAutoCloseOnSuccess write SetAutoCloseOnSuccess;
+    property AutoInstall: Boolean read GetAutoInstall write SetAutoInstall;
+    property AutoUninstall: Boolean read GetAutoUninstall write SetAutoUninstall;
     property PageCount: Integer read GetPageCount;
     property Pages[Index: Integer]: IJediPage read GetPage;
     property Status: string read GetStatus write SetStatus;
@@ -175,8 +191,8 @@ type
   IJediProduct = interface
     ['{CF5BE67A-4A49-43FB-8F6E-217A51023DA4}']
     procedure Init;
-    procedure Install;
-    procedure Uninstall;
+    function Install: Boolean;
+    function Uninstall: Boolean;
     procedure Close;
   end;
 
@@ -212,8 +228,8 @@ type
 
     function AddProduct(AProduct: IJediProduct): Integer;
     procedure Execute;
-    procedure Install;
-    procedure Uninstall;
+    function Install: Boolean;
+    function Uninstall: Boolean;
     procedure Close;
     function AddInstallOption(const Name: string): Integer;
     function GetInstallOptionName(Id: Integer): string;
@@ -254,7 +270,7 @@ resourcestring
 implementation
 
 uses
-  JclArrayLists;
+  JclArrayLists, JclFileUtils;
 
 var
   InternalInstallCore: TJediInstallCore = nil;
@@ -342,13 +358,30 @@ begin
 end;
 
 function TJediInstallCore.GetInstallGUI: IJediInstallGUI;
-{$IFDEF VisualCLX}
 var
+{$IFDEF VisualCLX}
   CompRef: IInterfaceComponentReference;
 {$ENDIF VisualCLX}
+  AutoAcceptDialogs: TDialogTypes;
 begin
   if Assigned(FInstallGUICreator) and not Assigned(FInstallGUI) then
+  begin
     FInstallGUI := InstallGUICreator;
+    AutoAcceptDialogs := [];
+    if ParamPos('AcceptInformations') >= 1 then
+      Include(AutoAcceptDialogs, dtInformation);
+    if ParamPos('AcceptConfirmations') >= 1 then
+      Include(AutoAcceptDialogs, dtConfirmation);
+    if ParamPos('AcceptWarnings') >= 1 then
+      Include(AutoAcceptDialogs, dtWarning);
+    if ParamPos('AcceptErrors') >= 1 then
+      Include(AutoAcceptDialogs, dtError);
+    FInstallGUI.AutoAcceptDialogs := AutoAcceptDialogs;
+    FInstallGUI.AutoCloseOnFailure := ParamPos('CloseOnFailure') >= 1;
+    FInstallGUI.AutoCloseOnSuccess := ParamPos('CloseOnSuccess') >= 1;
+    FInstallGUI.AutoInstall := ParamPos('Install') >= 1;
+    FInstallGUI.AutoUninstall := ParamPos('Uninstall') >= 1;
+  end;
   Result := FInstallGUI;
 {$IFDEF VisualCLX}
   Result.QueryInterface(IInterfaceComponentReference, CompRef);
@@ -380,12 +413,17 @@ begin
   Result := FProducts.Size;
 end;
 
-procedure TJediInstallCore.Install;
+function TJediInstallCore.Install: Boolean;
 var
   Index: Integer;
 begin
+  Result := True;
   for Index := FProducts.Size - 1 downto 0 do
-    (FProducts.GetObject(Index) as IJediProduct).Install;
+  begin
+    Result := (FProducts.GetObject(Index) as IJediProduct).Install;
+    if not Result then
+      Break;
+  end;
 end;
 
 {$IFDEF VisualCLX}
@@ -503,12 +541,13 @@ begin
     Page.AddText(Line);
 end;
 
-procedure TJediInstallCore.Uninstall;
+function TJediInstallCore.Uninstall: Boolean;
 var
   Index: Integer;
 begin
+  Result := True;
   for Index := FProducts.Size - 1 downto 0 do
-    (FProducts.GetObject(Index) as IJediProduct).Uninstall;
+    Result := (FProducts.GetObject(Index) as IJediProduct).Uninstall and Result;
 end;
 
 initialization

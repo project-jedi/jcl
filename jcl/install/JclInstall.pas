@@ -280,8 +280,8 @@ type
 
     // IJediProduct
     procedure Init;
-    procedure Install;
-    procedure Uninstall;
+    function Install: Boolean;
+    function Uninstall: Boolean;
     procedure Close;
 
     property JclPath: string read FJclPath;
@@ -3321,10 +3321,10 @@ begin
   InitInstallations;
 end;
 
-procedure TJclDistribution.Install;
+function TJclDistribution.Install: Boolean;
 var
   I: Integer;
-  KeepSettings, Success: Boolean;
+  KeepSettings: Boolean;
   AInstallation: TJclInstallation;
 begin
   KeepSettings := True;
@@ -3333,6 +3333,7 @@ begin
     begin
       if Assigned(GUI) then
         GUI.Dialog(RsCloseRADTool, dtError, [drCancel]);
+      Result := False;
       Exit;
     end;
 
@@ -3362,7 +3363,7 @@ begin
       if TargetInstalls[I].Enabled then
         Inc(FNbEnabled);
 
-    Success := True;
+    Result := True;
     for I := 0 to TargetInstallCount - 1 do
     begin
       AInstallation := TargetInstalls[I];
@@ -3372,20 +3373,20 @@ begin
         if (AInstallation.CLRVersion = '') and not KeepSettings then
           AInstallation.RemoveSettings;
         AInstallation.Uninstall(False);
-        Success := AInstallation.Install;
-        if not Success then
+        Result := AInstallation.Install;
+        if not Result then
           Break;
         Inc(FNbInstalled);
       end;
     end;
 
     {$IFDEF MSWINDOWS}
-    Success := Success and RegHelpExecuteCommands(True);
+    Result := Result and RegHelpExecuteCommands(True);
     {$ENDIF MSWINDOWS}
 
     if Assigned(GUI) then
     begin
-      if Success then
+      if Result then
         GUI.Dialog('Installation success', dtInformation, [drOK])
       else
         GUI.Dialog('Installation failed, see logs for details', dtError, [drOK]);
@@ -3588,10 +3589,9 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-procedure TJclDistribution.Uninstall;
+function TJclDistribution.Uninstall: Boolean;
 var
   I: Integer;
-  Success: Boolean;
   AInstallation: TJclInstallation;
 begin
   try
@@ -3599,6 +3599,7 @@ begin
     begin
       if Assigned(GUI) then
         GUI.Dialog(RsCloseRADTool, dtError, [drCancel]);
+      Result := False;
       Exit;
     end;
 
@@ -3609,13 +3610,13 @@ begin
     RegHelpClearCommands;
     {$ENDIF MSWINDOWS}
 
-    Success := True;
+    Result := True;
     for I := 0 to TargetInstallCount - 1 do
     begin
       AInstallation := TargetInstalls[I];
       AInstallation.Silent := False;
       if AInstallation.Enabled and ((not AInstallation.RemoveSettings) or not AInstallation.Uninstall(True)) then
-        Success := False;
+        Result := False;
     end;
 
     {$IFDEF MSWINDOWS}
@@ -3624,7 +3625,7 @@ begin
 
     if Assigned(GUI) then
     begin
-      if Success then
+      if Result then
         GUI.Dialog('Uninstallation success', dtInformation, [drOK])
       else
         GUI.Dialog('Uninstallation failed, see logs for details', dtError, [drOK]);
