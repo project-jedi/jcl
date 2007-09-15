@@ -17,6 +17,7 @@ var
   ExtraUnitDirs: string;
   UseSearchPaths: Boolean;
   Verbose: Boolean;
+  PreserveConfig: Boolean;
   RequireJcl: Boolean;
   RequireJvcl: Boolean;
   UseJclSource: Boolean;
@@ -408,7 +409,7 @@ begin
       Result.JclVersion := RegReadStr(Reg, 'Version');
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
-      if not UseJclSource and not (Result.Version = 5) and // Delphi 5 compiler produces defect JCL dcu files
+      if not UseJclSource and
          FileExists(Dir + '\JclBase.dcu') then
       begin
         if not SameText(Dir, DcpDir) then
@@ -739,6 +740,9 @@ begin
     if SameText(S, '--verbose') then
       Verbose := True
     else
+    if SameText(S, '--preserve-config') then
+       PreserveConfig := True
+    else
     if SameText(S, '--use-search-paths') then
       UseSearchPaths := True
     else
@@ -782,6 +786,7 @@ var
   PreferedVersion: Integer;
   Err: Integer;
   Target: TTarget;
+  Dcc32CmdLine: string;
 begin
   CmdLine := GetCommandLine;
   CmdLine := SkipOption(CmdLine); // skip executable name
@@ -858,12 +863,32 @@ begin
     Dcc32Cfg := '';
   end;
 
+  Dcc32CmdLine := '"' + Target.RootDir + '\bin\dcc32.exe" ' + ExtraOpts + CmdLine;
   if Verbose then
+  begin
     WriteLn('Using search path: ', Target.LibDirs);
+    if PreserveConfig then
+    begin
+      WriteLn('===============================================================================');
+      WriteLn(Dcc32CmdLine);
+      WriteLn('===============================================================================');
+    end;
+  end;
   WriteLn;
 
-  Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' + ExtraOpts + CmdLine, CurDir, False);
-  if Dcc32Cfg <> '' then
+  if PreserveConfig then
+  begin
+    AssignFile(f, CurDir + '\dcc32_command.cmd');
+    {$I-}
+    Rewrite(f);
+    WriteLn(f, Dcc32CmdLine);
+    CloseFile(f);
+    {$I+}
+    IOResult; // ignore all errors
+  end;
+
+  Status := Execute(Dcc32CmdLine, CurDir, False);
+  if (Dcc32Cfg <> '') and not PreserveConfig then
     DeleteFile(PChar(Dcc32Cfg));
 
   if ParamCount = 0 then
@@ -873,6 +898,7 @@ begin
     WriteLn('  --delphi-version=d11   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
+    WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
     WriteLn('  --requires-jcl         Requires an installed JCL');
     WriteLn('  --requires-jvcl        Requires an installed JVCL');
     WriteLn('  --use-jcl-source       Use the source code instead of the DCUs for the JCL');
