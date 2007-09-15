@@ -37,7 +37,12 @@ interface
 {$I jcl.inc}
 
 {$IFDEF COMPILER5}
-{$Y+} // workaround for Delphi 5 compiler internal compiler error L1496
+{ The Delphi 5 compiler crashes with the internal compiler error L1496 if the Y+
+  option is missing for this file. Without this Y+ line the compiler can BUILD the
+  JCL package but cannot MAKE it without failing with an internal error.
+  Furthermore the JVCL Installer cannot be compiled without the compiler internal
+  error L1496. }
+{$Y+}
 {$ENDIF COMPILER5}
 
 uses
