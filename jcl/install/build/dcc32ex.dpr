@@ -19,6 +19,8 @@ var
   Verbose: Boolean;
   RequireJcl: Boolean;
   RequireJvcl: Boolean;
+  UseJclSource: Boolean;
+  UseJvclSource: Boolean;
   RequireJclVersion: string;
   RequireJvclVersion: string;
 
@@ -406,19 +408,20 @@ begin
       Result.JclVersion := RegReadStr(Reg, 'Version');
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
-      if FileExists(Dir + '\JclBase.dcu') then
+      if not UseJclSource and not (Result.Version = 5) and // Delphi 5 compiler produces defect JCL dcu files
+         FileExists(Dir + '\JclBase.dcu') then
       begin
         if not SameText(Dir, DcpDir) then
           JediLibDirs := JediLibDirs + ';' + Dir + ';' + DcpDir
         else
           JediLibDirs := JediLibDirs + ';' + Dir;
-        JediLibDirs := JediLibDirs + ';' +  RootDir + '\source';
+        JediLibDirs := JediLibDirs + ';' + RootDir + '\source';
         Result.InstalledJcl := True;
       end
       else if FileExists(RootDir + '\source\common\JclBase.pas') then
       begin
-        JediLibDirs := JediLibDirs + ';' + RootDir + '\source;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx';
-        JediLibDirs := JediLibDirs + ';' + RootDir + '\source\windows';
+        JediLibDirs := ';' + RootDir + '\source;' + RootDir + '\source\common;' + RootDir + '\source\vcl;' + RootDir + '\source\visclx;' +
+                       RootDir + '\source\windows' + JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJcl := True;
       end;
     end;
@@ -433,13 +436,19 @@ begin
       Result.JvclVersion := RegReadStr(Reg, 'Version');
       RegCloseKey(Reg);
       Dir := RootDir + '\lib\' + Result.Id;
-      if FileExists(Dir + '\JVCLVer.dcu') then
+      if not UseJvclSource and FileExists(Dir + '\JVCLVer.dcu') then
       begin
         if not SameText(Dir, DcpDir) then
           JediLibDirs := JediLibDirs + ';' + Dir + ';' + DcpDir
         else
           JediLibDirs := JediLibDirs + ';' + Dir;
-        JediLibDirs := JediLibDirs + ';' +  RootDir + '\common;' + RootDir + '\Resources';
+        JediLibDirs := JediLibDirs + ';' + RootDir + '\common;' + RootDir + '\Resources';
+        Result.InstalledJvcl := True;
+      end
+      else if FileExists(RootDir + '\run\JVCLVer.pas') then
+      begin
+        JediLibDirs := ';' + RootDir + '\run;' + RootDir + '\common;' + RootDir + '\Resources' +
+                       JediLibDirs; // JediLibDirs has leading ';'
         Result.InstalledJvcl := True;
       end;
     end;
@@ -751,6 +760,12 @@ begin
       RequireJvclVersion := Copy(S, 16, MaxInt);
     end
     else
+    if SameText('--use-jcl-source', S) then
+      UseJclSource := True
+    else
+    if SameText('--use-jvcl-source', S) then
+      UseJvclSource := True
+    else
       Break;
     Result := CmdLine;
   end;
@@ -860,6 +875,8 @@ begin
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --requires-jcl         Requires an installed JCL');
     WriteLn('  --requires-jvcl        Requires an installed JVCL');
+    WriteLn('  --use-jcl-source       Use the source code instead of the DCUs for the JCL');
+    WriteLn('  --use-jvcl-source      Use the source code instead of the DCUs for the JVCL');
     WriteLn;
     WriteLn('Environment variables:');
     WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');
