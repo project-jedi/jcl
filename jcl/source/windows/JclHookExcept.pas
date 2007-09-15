@@ -122,6 +122,7 @@ var
   SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
   Notifiers: TThreadList;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 const
   JclHookExceptDebugHookName = '__JclHookExcept';
 
@@ -146,7 +147,6 @@ var
   HookExceptModuleList: TJclHookExceptModuleList;
   JclHookExceptDebugHook: Pointer;
 
-{$IFDEF HOOK_DLL_EXCEPTIONS}
 exports
   JclHookExceptDebugHook name JclHookExceptDebugHookName;
 {$ENDIF HOOK_DLL_EXCEPTIONS}
@@ -470,6 +470,7 @@ begin
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, @HookedRaiseException, @Kernel32_RaiseException);
 end;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 // Exceptions hooking in libraries
 
 procedure JclHookExceptDebugHookProc(Module: HMODULE; Hook: Boolean); stdcall;
@@ -494,6 +495,7 @@ begin
       HookExceptProc(Module, True);
   end;
 end;
+{$ENDIF HOOK_DLL_EXCEPTIONS}
 
 function JclInitializeLibrariesHookExcept: Boolean;
 begin
@@ -522,6 +524,7 @@ begin
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 procedure FinalizeLibrariesHookExcept;
 begin
   FreeAndNil(HookExceptModuleList);
@@ -614,6 +617,7 @@ begin
     FModules.UnlockList;
   end;
 end;
+{$ENDIF HOOK_DLL_EXCEPTIONS}
 
 initialization
   Notifiers := TThreadList.Create;
