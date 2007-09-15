@@ -36,6 +36,10 @@ interface
 
 {$I jcl.inc}
 
+{$IFDEF COMPILER5}
+{$Y+} // workaround for Delphi 5 compiler internal compiler error L1496
+{$ENDIF COMPILER5}
+
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -76,7 +80,7 @@ function JclInitializeLibrariesHookExcept: Boolean;
 function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 
 // Hooking routines location info helper
-function JclBelongsHookedCode(Addr: Pointer): Boolean;
+function JclBelongsHookedCode(Address: Pointer): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -293,11 +297,11 @@ end;
 
 // Do not change ordering of HookedRaiseException, HookedExceptObjProc and JclBelongsHookedCode routines
 
-function JclBelongsHookedCode(Addr: Pointer): Boolean;
+function JclBelongsHookedCode(Address: Pointer): Boolean;
 begin
   Result := (Cardinal(@HookedRaiseException) < Cardinal(@JclBelongsHookedCode)) and
-    (Cardinal(@HookedRaiseException) <= Cardinal(Addr)) and
-    (Cardinal(@JclBelongsHookedCode) > Cardinal(Addr));
+    (Cardinal(@HookedRaiseException) <= Cardinal(Address)) and
+    (Cardinal(@JclBelongsHookedCode) > Cardinal(Address));
 end;
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority): Boolean;
