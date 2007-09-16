@@ -22,6 +22,8 @@
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
+{   Karl Ivar Hansen                                                                               }
+{   Martin Cakrt                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -153,7 +155,7 @@ type
     property DpiY: Integer read FiDpiY write FiDpiY;
   end;
 
-procedure DirectPrint(const Printer, Data: string);
+procedure DirectPrint(const Printer, Data: string; const DocumentName: string = '');
 procedure SetPrinterPixelsPerInch;
 function GetPrinterResolution: TPoint;
 function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
@@ -201,7 +203,7 @@ const
   cPrintSpool = 'winspool.drv';
 
 // Misc. functions
-procedure DirectPrint(const Printer, Data: string);
+procedure DirectPrint(const Printer, Data, DocumentName: string);
 const
   cRaw = 'RAW';
 type
@@ -227,7 +229,10 @@ begin
   if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
     raise EJclPrinterError.CreateRes(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
-  DocInfo.DocName := PChar(RsSpoolerDocName);
+  if DocumentName = '' then
+    DocInfo.DocName := PChar(RsSpoolerDocName)
+  else
+    DocInfo.DocName := PChar(DocumentName);
   DocInfo.OutputFile := nil;
   DocInfo.Datatype := cRaw;
   try
@@ -240,7 +245,7 @@ begin
         EJclPrinterError.CreateRes(@RsNAStartPage);
       try
         // Send the data to the printer
-        if not WritePrinter(PrinterHandle, @Data, Count, BytesWritten) then
+        if not WritePrinter(PrinterHandle, PChar(Data), Count, BytesWritten) then
           EJclPrinterError.CreateRes(@RsNASendData);
       finally
         // End the page
