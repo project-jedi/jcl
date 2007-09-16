@@ -39,6 +39,7 @@
 {   Robert Lee                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Andreas Schmidt                                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -350,7 +351,7 @@ function AddStringToStrings(const S: string; Strings: TStrings; const Unique: Bo
 function BooleanToStr(B: Boolean): string;
 {$ENDIF KEEP_DEPRECATED}
 function FileToString(const FileName: string): AnsiString;
-procedure StringToFile(const FileName: string; const Contents: AnsiString);
+procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean = False);
 function StrToken(var S: string; Separator: Char): string;
 procedure StrTokens(const S: string; const List: TStrings);
 procedure StrTokenToStrings(S: string; Separator: Char; const List: TStrings);
@@ -499,7 +500,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclLogic, JclResources;
+  JclLogic, JclResources, JclStreams;
 
 //=== Internal ===============================================================
 
@@ -3975,25 +3976,29 @@ begin
   end;
 end;
 
-procedure StringToFile(const FileName: string; const Contents: AnsiString);
+procedure StringToFile(const FileName: string; const Contents: AnsiString; Append: Boolean);
 var
-  fs: TFileStream;
+  FS: TFileStream;
   Len: Integer;
 begin
-  fs := TFileStream.Create(FileName, fmCreate);
+  if Append and FileExists(filename) then
+    FS := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite)
+  else
+    FS := TFileStream.Create(FileName, fmCreate);
   try
+    if Append then
+      StreamSeek(FS, 0, soEnd);  // faster than .Position := .Size
     Len := Length(Contents);
     if Len > 0 then
     {$IFDEF CLR}
-      fs.WriteBuffer(BytesOf(Contents), Len);
+    FS.WriteBuffer(BytesOf(Contents), Len);
     {$ELSE}
-      fs.WriteBuffer(Contents[1], Len);
+    FS.WriteBuffer(Contents[1], Len);
     {$ENDIF CLR}
   finally
-    fs.Free;
+    FS.Free;
   end;
 end;
-
 function StrToken(var S: string; Separator: Char): string;
 var
   I: Integer;

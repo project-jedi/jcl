@@ -38,6 +38,7 @@
 {   Robert Lee                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Andreas Schmidt                                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -339,7 +340,7 @@ function AddStringToStrings(const S: AnsiString; Strings: TStrings; const Unique
 function BooleanToStr(B: Boolean): AnsiString;
 {$ENDIF KEEP_DEPRECATED}
 function FileToString(const FileName: AnsiString): AnsiString;
-procedure StringToFile(const FileName, Contents: AnsiString);
+procedure StringToFile(const FileName, Contents: AnsiString; Append: Boolean = False);
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 {$IFNDEF CLR}
 procedure StrTokens(const S: AnsiString; const List: TStrings);
@@ -377,7 +378,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclLogic, JclResources;
+  JclLogic, JclResources, JclStreams;
 
 //=== Internal ===============================================================
 
@@ -3746,13 +3747,18 @@ begin
   end;
 end;
 
-procedure StringToFile(const FileName: AnsiString; const Contents: AnsiString);
+procedure StringToFile(const FileName: AnsiString; const Contents: AnsiString; Append: Boolean);
 var
   FS: TFileStream;
   Len: Integer;
 begin
-  FS := TFileStream.Create(FileName, fmCreate);
+  if Append and FileExists(filename) then
+    FS := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite)
+  else
+    FS := TFileStream.Create(FileName, fmCreate);
   try
+    if Append then
+      StreamSeek(FS, 0, soEnd);  // faster than .Position := .Size
     Len := Length(Contents);
     if Len > 0 then
     {$IFDEF CLR}
