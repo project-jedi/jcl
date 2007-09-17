@@ -50,8 +50,12 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclFileUtils;
 

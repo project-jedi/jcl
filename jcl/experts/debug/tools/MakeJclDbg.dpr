@@ -19,7 +19,11 @@
 {                                                                                                  }
 { Command line tool for inserting JCL debug data created from MAP files into executable files      }
 {                                                                                                  }
-{ Last modified: March 13, 2002                                                                    }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 

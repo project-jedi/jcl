@@ -48,8 +48,12 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // Windows NT 4 and earlier do not support GetSystemPowerStatus (while introduced
 // in NT4 - it is a stub there - implemented in Windows 2000 and later.

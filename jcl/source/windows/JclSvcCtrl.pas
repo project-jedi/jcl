@@ -28,11 +28,13 @@
 {                                                                                                  }
 { This unit contains routines and classes to control NT service                                    }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 {$R+} { TODO : Why Rangecheck on here? }
 

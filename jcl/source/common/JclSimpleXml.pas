@@ -1,28 +1,38 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JvSimpleXML.PAS, released on 2002-06-03.                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com].    }
+{ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.                    }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Christophe Paris,                                                                              }
+{   Florent Ouchet (move from the JVCL to the JCL)                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains Xml parser and writter classes                                                }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSimpleXML.PAS, released on 2002-06-03
-
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
-All Rights Reserved.
-
-Contributor(s): Christophe Paris,
-                Florent Ouchet (move from the JVCL to the JCL).
-
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
-
-Known Issues: This component does not parse the !DOCTYPE tags but preserves them
------------------------------------------------------------------------------}
-// $Id$
+// Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 
 unit JclSimpleXml;
 

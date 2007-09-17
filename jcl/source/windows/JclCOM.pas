@@ -28,8 +28,12 @@
 { This unit contains Various COM (Component Object Model) utility routines.                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCOM;
 

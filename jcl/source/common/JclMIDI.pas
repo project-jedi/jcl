@@ -22,11 +22,13 @@
 {                                                                                                  }
 { Platform-independent MIDI declarations                                                           }
 {                                                                                                  }
-{ Unit owner: Robert Rossmair                                                                      }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclMIDI;
 

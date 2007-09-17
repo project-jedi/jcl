@@ -27,11 +27,14 @@
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
-{$IFDEF PROTOTYPE}
-// Last modified: $Date$
-{$ELSE ~PROTOTYPE}
-
+{$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JclGraphUtils;
 {$ELSE VisualCLX}

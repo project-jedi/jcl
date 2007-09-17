@@ -22,11 +22,13 @@
 {                                                                                                  }
 { MIDI functions for MS Windows platform                                                           }
 {                                                                                                  }
-{ Unit owner: Robert Rossmair                                                                      }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclWinMidi;
 

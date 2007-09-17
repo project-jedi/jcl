@@ -24,11 +24,13 @@
 {                                                                                                  }
 { This unit contains scheduler classes.                                                            }
 {                                                                                                  }
-{ Unit owner: Marcel Bestebroer                                                                    }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclSchedule;
 

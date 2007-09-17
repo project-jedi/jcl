@@ -25,11 +25,13 @@
 {                                                                                                  }
 { This unit contains classes and routines to support windows Character-Mode Applications           }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclConsole;
 

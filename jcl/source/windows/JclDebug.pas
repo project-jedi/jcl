@@ -31,11 +31,13 @@
 { Various debugging support routines and classes. This includes: Diagnostics routines, Trace       }
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclDebug;
 

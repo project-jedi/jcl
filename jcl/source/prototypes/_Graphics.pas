@@ -32,14 +32,17 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
-{   Dejoy Den (dejoy)                                                                                        }
+{   Dejoy Den (dejoy)                                                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$IFDEF PROTOTYPE}
-// Last modified: $Date$
-{$ELSE ~PROTOTYPE}
-
+{$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JclGraphics;
 {$ELSE VisualCLX}

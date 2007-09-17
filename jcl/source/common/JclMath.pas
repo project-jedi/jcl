@@ -34,11 +34,13 @@
 { numbers, generic floating point routines, hyperbolic and transcendenatal                         }
 { routines, NAN and INF support and more.                                                          }
 {                                                                                                  }
-{ Unit owner: Matthias Thoma                                                                       }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclMath;
 

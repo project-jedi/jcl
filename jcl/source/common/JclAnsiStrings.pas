@@ -45,8 +45,12 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclAnsiStrings; // former JclStrings
 

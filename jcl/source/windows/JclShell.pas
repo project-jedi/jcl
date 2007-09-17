@@ -36,8 +36,12 @@
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclShell;
 

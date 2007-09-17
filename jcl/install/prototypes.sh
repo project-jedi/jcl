@@ -5,7 +5,7 @@
 #
 # Robert Rossmair, 2004-02-16
 #
-# $Id$
+# $Id: prototypes.sh 1837 2006-12-16 23:54:06Z outchy $
 
 JPP=../devtools/jpp
 CLXOPTIONS="-c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -xClxGui/Q"

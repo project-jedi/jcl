@@ -1,35 +1,42 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: WStrUtils.PAS, released on 2004-01-25.
-
-The Initial Developers of the Original Code are Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
-and Mike Lischke (WideQuotedStr & WideExtractQuotedStr from Unicode.pas).
-
-All Rights Reserved.
-
-Contributors:
-  Robert Marquardt (marquardt)
-  Robert Rossmair (rrossmair)
-  ZENsan
-  Florent Ouchet (outchy)
-
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
-
-This is a lightweight Unicode unit. For more features use JclUnicode.
-
-Known Issues:
------------------------------------------------------------------------------}
-
-// Last modified: $Date$
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is WStrUtils.PAS, released on 2004-01-25.                                      }
+{                                                                                                  }
+{ The Initial Developers of the Original Code are:                                                 }
+{   - Andreas Hausladen <Andreas dott Hausladen att gmx dott de>                                   }
+{   - Mike Lischke (WideQuotedStr & WideExtractQuotedStr from Unicode.pas)                         }
+{ Portions created by Andreas Hausladen are Copyright (C) of Andreas Hausladen.                    }
+{ All rights reserved.                                                                             }
+{ Portions created by Mike Lischke are Copyright (C) of Mike Lischke. All rights reserved.         }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   ZENsan                                                                                         }
+{   Florent Ouchet (outchy)                                                                        }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This is a lightweight Unicode unit. For more features use JclUnicode.                            }
+{                                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclWideStrings;
 

@@ -29,8 +29,12 @@
 { relatively easily.                                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // operator priority (as implemented in this unit)
 // all binary operators are associated from left to right

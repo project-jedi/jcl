@@ -1,39 +1,40 @@
-{******************************************************************************}
-{                                                                              }
-{  Borland Delphi Runtime Library                                              }
-{  SNMP functions interface unit                                               }
-{                                                                              }
-{  The contents of this file are subject to the Mozilla Public License         }
-{  Version 1.1 (the "License"); you may not use this file except in            }
-{  compliance with the License. You may obtain a copy of the License at        }
-{  http://www.mozilla.org/MPL/                                                 }
-{                                                                              }
-{  Software distributed under the License is distributed on an "AS IS" basis,  }
-{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
-{  for the specific language governing rights and limitations under the        }
-{  License.                                                                    }
-{                                                                              }
-{  The Original Code is: snmp.h.                                               }
-{  The Initial Developer of the Original Code is Microsoft. Portions created   }
-{  by Microsoft are Copyright (C) 1992-1999 Microsoft Corporation. All Rights  }
-{  Reserved.                                                                   }
-{                                                                              }
-{  The Original Pascal code is: Snmp.pas, released 2001-10-05.                 }
-{  The Initial Developer of the Original Pascal code is Petr Vones             }
-{  (petrdott v att mujmail dott cz). Portions created by Petr Vones are        }
-{  Copyright (C) 2001  Petr Vones. All Rights Reserved.                        }
-{                                                                              }
-{  Obtained through:                                                           }
-{    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
-{                                                                              }
-{  You may retrieve the latest version of this file at the Project JEDI home   }
-{  page, located at http://delphi-jedi.org                                     }
-{                                                                              }
-{  Contributor(s):                                                             }
-{                                                                              }
-{******************************************************************************}
-
-// Last modified: $Date$
+{**************************************************************************************************}
+{                                                                                                  }
+{  Borland Delphi Runtime Library                                                                  }
+{  SNMP functions interface unit                                                                   }
+{                                                                                                  }
+{  The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License") }
+{  you may not use this file except in compliance with the License. You may obtain a copy of the   }
+{  License at http://www.mozilla.org/MPL/                                                          }
+{                                                                                                  }
+{  Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF  }
+{  ANY KIND, either express or implied. See the License for the specific language governing rights }
+{  and limitations under the License.                                                              }
+{                                                                                                  }
+{  The Original Code is: snmp.h.                                                                   }
+{  The Initial Developer of the Original Code is Microsoft. Portions created by Microsoft are      }
+{  Copyright (C) 1992-1999 Microsoft Corporation. All Rights Reserved.                             }
+{                                                                                                  }
+{  The Original Pascal code is: Snmp.pas, released 2001-10-05.                                     }
+{  The Initial Developer of the Original Pascal code is Petr Vones                                 }
+{  (petrdott v att mujmail dott cz). Portions created by Petr Vones are Copyright (C) 2001 Petr    }
+{  Vones. All Rights Reserved.                                                                     }
+{                                                                                                  }
+{  Obtained through:                                                                               }
+{    Joint Endeavour of Delphi Innovators (Project JEDI)                                           }
+{                                                                                                  }
+{  You may retrieve the latest version of this file at the Project JEDI homepage, located at       }
+{  http://delphi-jedi.org                                                                          }
+{                                                                                                  }
+{  Contributor(s):                                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit Snmp;
 

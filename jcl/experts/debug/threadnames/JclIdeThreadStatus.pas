@@ -19,8 +19,11 @@
 {                                                                                                  }
 { Delphi IDE debugger Thread Status window extension.                                              }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                                                      }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 

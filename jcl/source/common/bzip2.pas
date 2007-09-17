@@ -24,19 +24,24 @@
 {                                                                                                  }
 { Header conversion of bzlib.h                                                                     }
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date$                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
-
 unit bzip2;
-
-interface
 
 {$I jcl.inc}
 
+interface
+
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase; // PByte, PCardinal for Delphi 5 and C++Builder 5...
 
 {
@@ -302,6 +307,16 @@ function LoadBZip2: Boolean;
 function IsBZip2Loaded: Boolean;
 procedure UnloadBZip2;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JCL\source\common'
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -463,5 +478,13 @@ begin
   BZip2Lib := INVALID_MODULEHANDLE_VALUE;
   {$ENDIF BZIP2_LINKONREQUEST}
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

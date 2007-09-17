@@ -28,8 +28,12 @@
 { implies, it uses the LAN Manager API.                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // Comments to Win9x compatibility of the functions used in this unit
 

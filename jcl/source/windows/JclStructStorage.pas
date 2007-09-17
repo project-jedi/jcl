@@ -15,17 +15,20 @@
 { The Initial Developer of the Original Code is Peter Thornqvist.                                  }
 { Portions created by Peter Thornqvist are Copyright (C) Peter Thornqvist. All Rights Reserved.    }
 {                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ MS Structured storage class wrapper                                                              }
-{                                                                                                  }
-{ Unit owner: Peter Thornqvist                                                                     }
 { Contributor(s):                                                                                  }
 {   A. Schmidt (shmia (at) bizerba.de)                                                             }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ MS Structured storage class wrapper                                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {
 Description:

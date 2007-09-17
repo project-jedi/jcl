@@ -36,10 +36,15 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
-{   Dejoy Den (dejoy)                                                                                        }
+{   Dejoy Den (dejoy)                                                                              }
 {                                                                                                  }
 {**************************************************************************************************}
-
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclQGraphics;
 

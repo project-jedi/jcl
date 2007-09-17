@@ -22,6 +22,12 @@
 { Storage facility into an ini file for the installer core                                         }
 {                                                                                                  }
 {**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JediInstallConfigIni;
 

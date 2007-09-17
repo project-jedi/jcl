@@ -29,8 +29,12 @@
 { find it hard to document en masse.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 { TODO : Replacing the calls to MultiBytetoWideChar is all what's needed to make this crossplatform }
 { TODO : Fix Internal Error DBG1384 in BCB 6 compilation }

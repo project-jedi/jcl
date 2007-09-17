@@ -31,11 +31,13 @@
 { imports section of an executable. In addition the unit contains support for Borland specific     }
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclPeImage;
 

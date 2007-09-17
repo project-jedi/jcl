@@ -20,8 +20,16 @@
 {     Leo Simas (Leh_U)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-12-30 10:04:59 +0100 (Sa, 30 Dez 2006) $
+{                                                                                                  }
+{ This unit contains several improvements of the standard TStringList.                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclStringLists;
 
@@ -212,9 +220,9 @@ function JclStringList(const AText: string): IJclStringList; overload;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://svn.sourceforge.net:443/svnroot/jcl/trunk/jcl/source/common/JclStringLists.pas $';
-    Revision: '$Revision: 1856 $';
-    Date: '$Date: 2006-12-30 10:04:59 +0100 (Sa, 30 Dez 2006) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JCL\source\common'
     );
 {$ENDIF UNITVERSIONING}

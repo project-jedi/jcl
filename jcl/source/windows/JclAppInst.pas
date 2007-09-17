@@ -28,11 +28,13 @@
 { instances of your application that can exist at any time. In addition there is support for       }
 { simple interprocess communication between these instance including a notification mechanism.     }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclAppInst;
 

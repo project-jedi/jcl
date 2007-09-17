@@ -29,11 +29,13 @@
 { types, declaring/generating new types, data conversion to user displayable values and 'is'/'as'  }
 { operator hooking.                                                                                }
 {                                                                                                  }
-{ Unit owner: Marcel Bestebroer                                                                    }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclRTTI;
 

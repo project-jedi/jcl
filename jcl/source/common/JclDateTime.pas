@@ -35,8 +35,12 @@
 { different formats but also some date testing routines (is leap year? etc)                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // in Help:
 //  We do all conversions (but thoses provided by Delphi anyway) between

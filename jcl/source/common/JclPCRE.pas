@@ -24,8 +24,11 @@
 {                                                                                                  }
 { Class wrapper for PCRE (PERL Compatible Regular Expression)                                      }
 {                                                                                                  }
-{ Unit owner: Peter Th?nqvist                                                                     }
-{ Last modified: $Date$                          }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
