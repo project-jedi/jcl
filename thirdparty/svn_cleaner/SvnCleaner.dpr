@@ -1,3 +1,34 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is SvnCleaner.dpr.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet.                                    }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Subversion repository cleaner.                                                                   }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 program SvnCleaner;
 
 {$APPTYPE CONSOLE}
@@ -110,6 +141,7 @@ procedure TSvnSettings.LoadFromXml(XmlNode: TJclSimpleXMLElem);
           Result.Value := Result.Value + AnsiLineBreak + ValueElem.Value;
       end
       else
+      if ValueElem.Name <> '' then
         raise Exception.CreateFmt('unknown item "%s"', [ValueElem.Name]);
     end;
   end;
@@ -169,10 +201,14 @@ procedure TSvnSettings.LoadFromXml(XmlNode: TJclSimpleXMLElem);
         MySetting.Properties[High(MySetting.Properties)] := LoadProperty(SubElem);
       end
       else
+      if SubElem.Name <> '' then
         raise Exception.CreateFmt('unknown item "%s"', [SubElem.Name]);
     end;
-    SetLength(FSettings, Length(FSettings) + 1);
-    FSettings[High(FSettings)] := MySetting;
+    if Length(MySetting.Properties) > 0 then
+    begin
+      SetLength(FSettings, Length(FSettings) + 1);
+      FSettings[High(FSettings)] := MySetting;
+    end;
   end;
 var
   Elem: TJclSimpleXMLElem;
@@ -194,6 +230,7 @@ begin
     if Elem.Name = 'setting' then
       LoadSetting(Elem, '.')
     else
+    if Elem.Name <> '' then
       raise Exception.CreateFmt('Unknown elem name "%s"', [Elem.Name]);
   end;
 end;
@@ -349,28 +386,32 @@ procedure TSvnCleaner.CleanItem(const ItemName: string);
       for TargetIndex := 0 to RootNode.Items.Count - 1 do
       begin
         TargetNode := RootNode.Items.Item[TargetIndex];
-        if TargetNode.Name <> 'target' then
-          raise Exception.Create('expecting target node');
-        for EntryIndex := 0 to TargetNode.Items.Count - 1 do
+        if TargetNode.Name = 'target' then
         begin
-          EntryNode := TargetNode.Items.Item[EntryIndex];
-          if EntryNode.Name <> 'entry' then
-            raise Exception.Create('expecting entry node');
-          PathProp := EntryNode.Properties.ItemNamed['path'];
-          if not Assigned(PathProp) then
-            raise Exception.Create('no path node');
-          for WcStatusIndex := 0 to EntryNode.Items.Count - 1 do
+          for EntryIndex := 0 to TargetNode.Items.Count - 1 do
           begin
-            WcStatusNode := EntryNode.Items.Item[WcStatusIndex];
-            if not Assigned(WcStatusNode) then
-              raise Exception.Create('expecting wc-status node');
-            ItemProp := WcStatusNode.Properties.ItemNamed['item'];
-            if not Assigned(ItemProp) then
-              raise Exception.Create('expecting item prop');
-            if (ItemProp.Value <> 'unversioned') and (PathProp.Value <> ItemName) then
-              CleanItem(PathProp.Value);
+            EntryNode := TargetNode.Items.Item[EntryIndex];
+            if EntryNode.Name <> 'entry' then
+              raise Exception.Create('expecting entry node');
+            PathProp := EntryNode.Properties.ItemNamed['path'];
+            if not Assigned(PathProp) then
+              raise Exception.Create('no path node');
+            for WcStatusIndex := 0 to EntryNode.Items.Count - 1 do
+            begin
+              WcStatusNode := EntryNode.Items.Item[WcStatusIndex];
+              if not Assigned(WcStatusNode) then
+                raise Exception.Create('expecting wc-status node');
+              ItemProp := WcStatusNode.Properties.ItemNamed['item'];
+              if not Assigned(ItemProp) then
+                raise Exception.Create('expecting item prop');
+              if (ItemProp.Value <> 'unversioned') and (PathProp.Value <> ItemName) then
+                CleanItem(PathProp.Value);
+            end;
           end;
-        end;
+        end
+        else
+        if TargetNode.Name <> '' then
+          raise Exception.Create('expecting target node');
       end;
     finally
       DirectoryXml.Free;
