@@ -242,7 +242,7 @@ begin
       LR_LOADFROMFILE or LR_LOADTRANSPARENT)
   else
   begin
-    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, DONT_RESOLVE_DLL_REFERENCES);
+    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
     if ModuleHandle <> 0 then
     try
       IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
