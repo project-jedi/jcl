@@ -821,8 +821,8 @@ begin
     FTargetName := Format('%s CLR %s', [FTargetName, CLRVersion]);
 
   // exclude C#Builder 1, Delphi 8 and .net targets
-  FRunTimeInstallation := (CLRVersion = '') and ((Target.RadToolKind <> brBorlandDevStudio)
-    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities)));
+  FRunTimeInstallation := (CLRVersion <> '') or (Target.RadToolKind <> brBorlandDevStudio)
+    or ((Target.VersionNumber >= 3) and (bpDelphi32 in Target.Personalities));
 
   case TargetPlatform of
     //bp32bit:
