@@ -19,6 +19,7 @@
 { Contributors:                                                                                    }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -59,12 +60,48 @@ type
     function Clone: TObject;
   end;
 
+  IJclLockable = interface
+    ['{524AD65E-AE1B-4BC6-91C8-8181F0198BA9}']
+    procedure ReadLock;
+    procedure ReadUnlock;
+    procedure WriteLock;
+    procedure WriteUnlock;
+  end;
+
+  IJclPackable = interface
+    ['{03802D2B-E0AB-4300-A777-0B8A2BD993DF}']
+    procedure Pack; // reduce memory usable by eliminating empty storage area
+    function GetCapacity: Integer;
+    procedure SetCapacity(Value: Integer);
+    property Capacity: Integer read GetCapacity write SetCapacity;
+  end;
+
+  IJclGrowable = interface(IJclPackable)
+    ['{C71E8586-5688-444C-9BDD-9969D988123B}']
+    procedure Grow; overload;
+    procedure Grow(Increment: Integer); overload;
+    procedure Grow(Num, Denom: Integer); overload;
+  end;
+
+  IJclObjectOwner = interface
+    ['{5157EA13-924E-4A56-995D-36956441025C}']
+    procedure FreeObject(var AObject: TObject);
+  end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclItemOwner<T> = interface
+    ['{0CC220C1-E705-4B21-9F53-4AD340952165}']
+    procedure FreeItem(var AItem: T);
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfIterator = interface
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
     procedure Add(const AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
+    procedure Insert(const AInterface: IInterface);
     function Next: IInterface;
     function NextIndex: Integer;
     function Previous: IInterface;
@@ -79,6 +116,7 @@ type
     function GetString: string;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
+    procedure Insert(const AString: string);
     function Next: string;
     function NextIndex: Integer;
     function Previous: string;
@@ -93,6 +131,7 @@ type
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
+    procedure Insert(AObject: TObject);
     function Next: TObject;
     function NextIndex: Integer;
     function Previous: TObject;
@@ -100,6 +139,25 @@ type
     procedure Remove;
     procedure SetObject(AObject: TObject);
   end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclIterator<T> = interface
+    ['{6E8547A4-5B5D-4831-8AE3-9C6D04071B11}']
+    procedure Add(const AItem: T);
+    function GetItem: T;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    procedure Insert(const AItem: T);
+    function Next: T;
+    function NextIndex: Integer;
+    function Previous: T;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetItem(const AItem: T);
+
+    property Item: T read GetItem write SetItem;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfCollection = interface
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
@@ -161,6 +219,25 @@ type
     function Size: Integer;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclCollection<T> = interface
+    ['{67EE8AF3-19B0-4DCA-A730-3C9B261B8EC5}']
+    function Add(const AItem: T): Boolean;
+    function AddAll(const ACollection: IJclCollection<T>): Boolean;
+    procedure Clear;
+    function Contains(const AItem: T): Boolean;
+    function ContainsAll(const ACollection: IJclCollection<T>): Boolean;
+    function Equals(const ACollection: IJclCollection<T>): Boolean;
+    function First: IJclIterator<T>;
+    function IsEmpty: Boolean;
+    function Last: IJclIterator<T>;
+    function Remove(const AItem: T): Boolean;
+    function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
+    function RetainAll(const ACollection: IJclCollection<T>): Boolean;
+    function Size: Integer;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfList = interface(IJclIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
     procedure Insert(Index: Integer; const AInterface: IInterface); overload;
@@ -171,6 +248,8 @@ type
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
+    
+    property Items[Key: Integer]: IInterface read GetObject write SetObject; default;
   end;
 
   IJclStrList = interface(IJclStrCollection)
@@ -201,6 +280,22 @@ type
     property Items[Key: Integer]: TObject read GetObject write SetObject; default;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclList<T> = interface(IJclCollection<T>)
+    ['{3B4BE3D7-8FF7-4163-91DF-3F73AE6935E7}']
+    procedure Insert(Index: Integer; const AItem: T); overload;
+    function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean; overload;
+    function GetItem(Index: Integer): T;
+    function IndexOf(const AItem: T): Integer;
+    function LastIndexOf(const AItem: T): Integer;
+    function Remove(Index: Integer): T; overload;
+    procedure SetItem(Index: Integer; const AItem: T);
+    function SubList(First, Count: Integer): IJclList<T>;
+    //Daniele Teti
+    property Items[Key: Integer]: T read GetItem write SetItem; default;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfArray = interface(IJclIntfList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
     {$IFDEF CLR}
@@ -228,6 +323,17 @@ type
     property Items[Index: Integer]: TObject read GetObject write SetObject; default;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclArray<T> = interface(IJclList<T>)
+    ['{38810C13-E35E-428A-B84F-D25FB994BE8E}']
+    {$IFDEF CLR}
+    function GetItem(Index: Integer): T;
+    procedure SetItem(Index: Integer; const AItem: T);
+    {$ENDIF CLR}
+    property Items[Index: Integer]: T read GetItem write SetItem; default;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfSet = interface(IJclIntfCollection)
     ['{E2D28852-9774-49B7-A739-5DBA2B705924}']
     procedure Intersect(const ACollection: IJclIntfCollection);
@@ -248,6 +354,15 @@ type
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
   end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclSet<T> = interface(IJclCollection<T>)
+    ['{0B7CDB90-8588-4260-A54C-D87101C669EA}']
+    procedure Intersect(const ACollection: IJclCollection<T>);
+    procedure Subtract(const ACollection: IJclCollection<T>);
+    procedure Union(const ACollection: IJclCollection<T>);
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
 
   TJclTraverseOrder = (toPreOrder, toOrder, toPostOrder);
 
@@ -271,6 +386,15 @@ type
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclTree<T> = interface(IJclCollection<T>)
+    ['{3F963AB5-5A75-41F9-A21B-7E7FB541A459}']
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfIntfMap = interface
     ['{01D05399-4A05-4F3E-92F4-0C236BE77019}']
@@ -366,32 +490,75 @@ type
     property Items[Key: TObject]: TObject read GetValue write PutValue; default;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IHashable = interface
+    function GetHashCode: Integer;
+  end;
+
+  IJclMap<TKey,TValue> = interface
+    ['{22624C43-4828-4A1E-BDD4-4A7FE59AE135}']
+    procedure Clear;
+    function ContainsKey(const Key: TKey): Boolean;
+    function ContainsValue(const Value: TValue): Boolean;
+    function Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function GetValue(Key: TKey): TValue;
+    function IsEmpty: Boolean;
+    function KeySet: IJclSet<TKey>;
+    procedure PutAll(const AMap: IJclMap<TKey,TValue>);
+    procedure PutValue(Key: TKey; const Value: TValue);
+    function Remove(const Key: TKey): TValue;
+    function Size: Integer;
+    function Values: IJclCollection<TValue>;
+
+    property Items[Key: TKey]: TValue read GetValue write PutValue; default;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfQueue = interface
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
+    procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
     procedure Enqueue(const AInterface: IInterface);
+    function Peek: IInterface;
     function Size: Integer;
   end;
 
   IJclStrQueue = interface
     ['{5BA0ED9A-5AF3-4F79-9D80-34FA7FF15D1F}']
+    procedure Clear;
     function Contains(const AString: string): Boolean;
     function Dequeue: string;
     function Empty: Boolean;
     procedure Enqueue(const AString: string);
+    function Peek: string;
     function Size: Integer;
   end;
 
   IJclQueue = interface
     ['{7D0F9DE4-71EA-46EF-B879-88BCFD5D9610}']
+    procedure Clear;
     function Contains(AObject: TObject): Boolean;
     function Dequeue: TObject;
     function Empty: Boolean;
     procedure Enqueue(AObject: TObject);
+    function Peek: TObject;
     function Size: Integer;
   end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclQueue<T> = interface
+    ['{16AB909F-2194-46CF-BD89-B4207AC0CAB8}']
+    procedure Clear;
+    function Contains(const AItem: T): Boolean;
+    function Dequeue: T;
+    function Empty: Boolean;
+    procedure Enqueue(const AItem: T);
+    function Peek: T;
+    function Size: Integer;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
 
   IJclStrStrSortedMap = interface(IJclStrStrMap)
     ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
@@ -411,6 +578,17 @@ type
     function TailMap(FromKey: TObject): IJclSortedMap;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclSortedMap<K,V> = interface(IJclMap<K,V>)
+    ['{C62B75C4-891B-442E-A5D6-9954E75A5C0C}']
+    function FirstKey: K;
+    function HeadMap(const ToKey: K): IJclSortedMap<K,V>;
+    function LastKey: K;
+    function SubMap(const FromKey, ToKey: K): IJclSortedMap<K,V>;
+    function TailMap(const FromKey: K): IJclSortedMap<K,V>;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfSortedSet = interface(IJclIntfSet)
     ['{159BE5A7-7349-42FF-BE55-9CA1B9DBA991}']
     function HeadSet(const AEndObject: IInterface): IJclIntfSortedSet;
@@ -425,10 +603,21 @@ type
     function TailSet(AStartObject: TObject): IJclSortedSet;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclSortedSet<T> = interface(IJclSet<T>)
+    ['{30F836E3-2FB1-427E-A499-DFAE201633C8}']
+    function HeadSet(const AEndItem: T): IJclSortedSet<T>;
+    function SubSet(const Start, Finish: T): IJclSortedSet<T>;
+    function TailSet(const AStartItem: T): IJclSortedSet<T>;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfStack = interface
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
+    procedure Clear;
     function Contains(const AInterface: IInterface): Boolean;
     function Empty: Boolean;
+    function Peek: IInterface;
     function Pop: IInterface;
     procedure Push(const AInterface: IInterface);
     function Size: Integer;
@@ -436,8 +625,10 @@ type
 
   IJclStrStack = interface
     ['{649BB74C-D7BE-40D9-9F4E-32DDC3F13F3B}']
+    procedure Clear;
     function Contains(const AString: string): Boolean;
     function Empty: Boolean;
+    function Peek: string;
     function Pop: string;
     procedure Push(const AString: string);
     function Size: Integer;
@@ -445,20 +636,87 @@ type
 
   IJclStack = interface
     ['{E07E0BD8-A831-41B9-B9A0-7199BD4873B9}']
+    procedure Clear;
     function Contains(AObject: TObject): Boolean;
     function Empty: Boolean;
+    function Peek: TObject;
     function Pop: TObject;
     procedure Push(AObject: TObject);
     function Size: Integer;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclStack<T> = interface
+    ['{2F08EAC9-270D-496E-BE10-5E975918A5F2}']
+    procedure Clear;
+    function Contains(const AItem: T): Boolean;
+    function Empty: Boolean;
+    function Peek: T;
+    function Pop: T;
+    procedure Push(const AItem: T);
+    function Size: Integer;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   // Exceptions
-  EJclOutOfBoundsError = class(EJclError);
-  EJclNoSuchElementError = class(EJclError);
-  EJclIllegalStateError = class(EJclError);
-  EJclConcurrentModificationError = class(EJclError);
-  EJclIllegalArgumentError = class(EJclError);
-  EJclOperationNotSupportedError = class(EJclError);
+  EJclContainerError = class(EJclError);
+
+  EJclOutOfBoundsError = class(EJclContainerError)
+  public
+    // RsEOutOfBounds
+    constructor Create;
+  end;
+
+  EJclNoSuchElementError = class(EJclContainerError)
+  public
+    // RsEValueNotFound
+    constructor Create(const Value: string);
+  end;
+
+  EJclIllegalArgumentError = class(EJclContainerError)
+  end;
+
+  EJclNoCollectionError = class(EJclIllegalArgumentError)
+  public
+    // RsENoCollection
+    constructor Create;
+  end;
+
+  EJclIllegalQueueCapacityError = class(EJclIllegalArgumentError)
+  public
+    // RsEIllegalQueueCapacity
+    constructor Create;
+  end;
+
+  EJclOperationNotSupportedError = class(EJclContainerError)
+  public
+    // RsEOperationNotSupported
+    constructor Create;
+  end;
+
+  EJclNoEqualityComparerError = class(EJclContainerError)
+  public
+    // RsENoEqualityComparer
+    constructor Create;
+  end;
+
+  EJclNoComparerError = class(EJclContainerError)
+  public
+    // RsENoComparer
+    constructor Create;
+  end;
+
+  EJclNoHashConverterError = class(EJclContainerError)
+  public
+    // RsENoHashConverter
+    constructor Create;
+  end;
+
+  EJclIllegalStateOperationError = class(EJclContainerError)
+  public
+    // RsEIllegalStateOperation
+    constructor Create;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -471,6 +729,109 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+uses
+  SysUtils,
+  JclResources;
+
+//=== { EJclOutOfBoundsError } ===============================================
+
+constructor EJclOutOfBoundsError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEOutOfBounds);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEOutOfBounds);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclNoSuchElementError } =============================================
+
+constructor EJclNoSuchElementError.Create(const Value: string);
+begin
+  {$IFDEF CLR}
+  inherited Create(Format(RsEValueNotFound, [Value]));
+  {$ELSE ~CLR}
+  inherited CreateResFmt(@RsEValueNotFound, [Value]);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclIllegalQueueCapacityError } ======================================
+
+constructor EJclIllegalQueueCapacityError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEIllegalQueueCapacity);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEIllegalQueueCapacity);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclNoCollectionError } ==============================================
+
+constructor EJclNoCollectionError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsENoCollection);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsENoCollection);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclOperationNotSupportedError } =====================================
+
+constructor EJclOperationNotSupportedError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEOperationNotSupported);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEOperationNotSupported);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclIllegalStateOperationError } =====================================
+
+constructor EJclIllegalStateOperationError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEIllegalStateOperation);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEIllegalStateOperation);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclNoComparerError } ================================================
+
+constructor EJclNoComparerError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsENoComparer);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsENoComparer);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclNoEqualityComparerError } ========================================
+
+constructor EJclNoEqualityComparerError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsENoEqualityComparer);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsENoEqualityComparer);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclNoHashConverterError } ===========================================
+
+constructor EJclNoHashConverterError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsENoHashConverter);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsENoHashConverter);
+  {$ENDIF ~CLR}
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

@@ -19,6 +19,7 @@
 { Contributors:                                                                                    }
 {   Daniele Teti (dade2004)                                                                        }
 {   Robert Marquardt (marquardt)                                                                   }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -52,6 +53,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  SyncObjs,
   SysUtils, Classes, JclBase, JclContainerIntf, JclSysUtils;
 
 type
@@ -59,19 +61,37 @@ type
   TJclIntfCriticalSection = JclSysUtils.TJclIntfCriticalSection;
   {$ENDIF KEEP_DEPRECATED}
 
-  TJclAbstractContainer = class(TInterfacedObject)
+  TJclAbstractContainer = class(TInterfacedObject {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
   {$IFDEF THREADSAFE}
   private
-    FCriticalSection: TJclIntfCriticalSection;
+    FLockDelegate: IJclLockable;
+    {$IFDEF CLR}
+    FReaderWriterLock: ReaderWriterLock;
+    FUpgradedWrite: Boolean;
+    FLockCookie: LockCookie;
+    {$ELSE ~CLR}
+    FCriticalSection: TCriticalSection;
+    {$ENDIF ~CLR}
   protected
-    function EnterCriticalSection: IInterface;
+    procedure ReadLock;
+    procedure ReadUnlock;
+    procedure WriteLock;
+    procedure WriteUnlock;
   public
-    constructor Create;
     destructor Destroy; override;
   {$ENDIF THREADSAFE}
+  public
+    constructor Create(ALockDelegate: IInterface);
   end;
 
-  TJclStrCollection = class(TJclAbstractContainer, IJclStrCollection)
+  TJclAbstractIterator = class(TJclAbstractContainer {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
+  private
+    FValid: Boolean;
+  public
+    property Valid: Boolean read FValid write FValid;
+  end;
+
+  TJclStrCollection = class(TJclAbstractContainer, IJclStrCollection {$IFDEF THREADSAFE},IJclLockable{$ENDIF THREADSAFE})
   protected
     { IJclStrCollection }
     function Add(const AString: string): Boolean; virtual; abstract;
@@ -111,23 +131,95 @@ implementation
 
 //=== { TJclAbstractContainer } ==============================================
 
-{$IFDEF THREADSAFE}
-
-constructor TJclAbstractContainer.Create;
+constructor TJclAbstractContainer.Create(ALockDelegate: IInterface);
 begin
   inherited Create;
-  FCriticalSection := TJclIntfCriticalSection.Create;
+  {$IFDEF THREADSAFE}
+  FLockDelegate := ALockDelegate as IJclLockable;
+  if FLockDelegate = nil then
+    {$IFDEF CLR}
+    FReaderWriterLock := ReaderWriterLock.Create;
+    {$ELSE ~CLR}
+    FCriticalSection := TCriticalSection.Create;
+    {$ENDIF ~CLR}
+  {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF THREADSAFE}
 
 destructor TJclAbstractContainer.Destroy;
 begin
+  {$IFDEF CLR}
+  FReaderWriterLock.Free;
+  {$ELSE ~CLR}
   FCriticalSection.Free;
+  {$ENDIF ~CLR}
+  FLockDelegate := nil;
   inherited Destroy;
 end;
 
-function TJclAbstractContainer.EnterCriticalSection: IInterface;
+procedure TJclAbstractContainer.ReadLock;
 begin
-  Result := FCriticalSection as IInterface;
+  if FLockDelegate <> nil then
+    FLockDelegate.ReadLock
+  else
+    {$IFDEF CLR}
+    // if current thread has write access, no need to request a read access
+    if not FReaderWriterLock.IsWriterLockHeld then
+      FReaderWriterLock.AcquireReaderLock(-1);
+    {$ELSE ~CLR}
+    FCriticalSection.Acquire;
+    {$ENDIF ~CLR}
+end;
+
+procedure TJclAbstractContainer.ReadUnlock;
+begin
+  if FLockDelegate <> nil then
+    FLockDelegate.ReadUnlock
+  else
+    {$IFDEF CLR}
+    // if current thread has write access, no need to release read access
+    if not FReaderWriterLock.IsWriterLockHeld then
+      FReaderWriterLock.ReleaseReaderLock;
+    {$ELSE ~CLR}
+    FCriticalSection.Release;
+    {$ENDIF ~CLR}
+end;
+
+procedure TJclAbstractContainer.WriteLock;
+begin
+  if FLockDelegate <> nil then
+    FLockDelegate.WriteLock
+  else
+    {$IFDEF CLR}
+    if FReaderWriterLock.IsReaderLockHeld then
+    begin
+      FLockCookie := FReaderWriterLock.UpgradeToWriterLock(-1);
+      FUpgradedWrite := True;
+    end
+    else
+      FReaderWriterLock.AcquireWriterLock(-1);
+    {$ELSE ~CLR}
+    FCriticalSection.Acquire;
+    {$ENDIF ~CLR}
+end;
+
+procedure TJclAbstractContainer.WriteUnlock;
+begin
+  if FLockDelegate <> nil then
+    FLockDelegate.WriteUnlock
+  else
+    {$IFDEF CLR}
+    if FUpgradedWrite then
+    begin
+      FUpgradedWrite := False;
+      FReaderWriterLock.DowngradeFromWriterLock(FLockCookie);
+    end
+    else
+      FReaderWriterLock.ReleaseWriterLock;
+    {$ELSE ~CLR}
+    FCriticalSection.Release;
+    {$ENDIF ~CLR}
 end;
 
 {$ENDIF THREADSAFE}
@@ -142,7 +234,7 @@ begin
   I := Pos(Separator, AString);
   if I <> 0 then
   begin
-    Dec(I); // to .NET string index base 
+    Dec(I); // to .NET string index base
     StartIndex := 0;
     repeat
       Add(AString.Substring(StartIndex, I - StartIndex + 1));

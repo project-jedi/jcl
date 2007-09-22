@@ -16,6 +16,9 @@
 { Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
 { All rights reserved.                                                                             }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Florent Ouchet (outchy)                                                                        }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { The Delphi Container Library                                                                     }
@@ -123,6 +126,34 @@ procedure Sort(const AList: IJclIntfList; First, Last: Integer; AComparator: TIn
 procedure Sort(const AList: IJclStrList; First, Last: Integer; AComparator: TStrCompare); overload;
 procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompare); overload;
 
+{$IFDEF SUPPORTS_GENERICS}
+type
+  TApplyFunction<T> = function(AItem: T): T;
+  TCompare<T> = function(Obj1, Obj2: T): Integer;
+  TEqualityCompare<T> = function(Obj1, Obj2: T): Boolean;
+  THash<T> = function(AItem: T): Integer;
+  TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
+
+  // cannot implement generic global functions
+  TJclAlgorithms<T> = class
+  private
+    //FSortProc: TSortProc;
+  public
+    class procedure Apply(const First: IJclIterator<T>; Count: Integer; F: TApplyFunction<T>);
+    class function Find(const First: IJclIterator<T>; Count: Integer; AItem: T;
+      AComparator: TCompare<T>): IJclIterator<T>;
+    class function CountObject(const First: IJclIterator<T>; Count: Integer; AItem: T;
+      AComparator: TCompare<T>): Integer;
+    class procedure Copy(const First: IJclIterator<T>; Count: Integer; const Output: IJclIterator<T>);
+    class procedure Generate(const List: IJclList<T>; Count: Integer; AItem: T);
+    class procedure Fill(const First: IJclIterator<T>; Count: Integer; AItem: T);
+    class procedure Reverse(const First, Last: IJclIterator<T>);
+    class procedure QuickSort(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
+    //class procedure Sort(const AList: IJclList<T>; First, Last: Integer; AComparator: TCompare<T>);
+    //class property SortProc: TSortProc<T> read FSortProc write FSortProc;
+  end;
+{$ENDIF SUPPORTS_GENERICS}
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -206,8 +237,8 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetObject(F(First.GetObject));
       First.Next;
+      First.SetObject(F(First.GetObject));
     end
     else
       Break;
@@ -320,9 +351,8 @@ begin
   for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
-      Output.SetObject(First.GetObject);
-      First.Next;
       Output.Next;
+      Output.SetObject(First.Next);
     end
     else
       Break;
@@ -336,9 +366,8 @@ begin
   for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
-      Output.SetString(First.GetString);
-      First.Next;
       Output.Next;
+      Output.SetString(First.Next);
     end
     else
       Break;
@@ -352,9 +381,8 @@ begin
   for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
-      Output.SetObject(First.GetObject);
-      First.Next;
       Output.Next;
+      Output.SetObject(First.Next);
     end
     else
       Break;
@@ -605,6 +633,154 @@ procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompar
 begin
   SortProc(AList, First, Last, AComparator);
 end;
+
+{$IFDEF SUPPORTS_GENERICS}
+class procedure TJclAlgorithms<T>.Apply(const First: IJclIterator<T>; Count: Integer;
+  F: TApplyFunction<T>);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      First.SetItem(F(First.GetItem));
+      First.Next;
+    end
+    else
+      Break;
+end;
+
+class function TJclAlgorithms<T>.Find(const First: IJclIterator<T>; Count: Integer; AItem: T;
+  AComparator: TCompare<T>): IJclIterator<T>;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AComparator(First.GetItem, AItem) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+      First.Next;
+    end
+    else
+      Break;
+end;
+
+class function TJclAlgorithms<T>.CountObject(const First: IJclIterator<T>; Count: Integer;
+  AItem: T; AComparator: TCompare<T>): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AComparator(First.Next, AItem) = 0))
+    else
+      Break;
+end;
+
+class procedure TJclAlgorithms<T>.Copy(const First: IJclIterator<T>; Count: Integer;
+  const Output: IJclIterator<T>);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if Output.HasNext and First.HasNext then
+    begin
+      Output.Next;
+      Output.SetItem(First.Next);
+    end
+    else
+      Break;
+end;
+
+class procedure TJclAlgorithms<T>.Generate(const List: IJclList<T>; Count: Integer; AItem: T);
+var
+  I: Integer;
+begin
+  List.Clear;
+  for I := Count - 1 downto 0 do
+    List.Add(AItem);
+end;
+
+class procedure TJclAlgorithms<T>.Fill(const First: IJclIterator<T>; Count: Integer; AItem: T);
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      First.SetItem(AItem);
+      First.Next;
+    end
+    else
+      Break;
+end;
+
+class procedure TJclAlgorithms<T>.Reverse(const First, Last: IJclIterator<T>);
+var
+  Obj: T;
+begin
+  if not First.HasNext then
+    Exit;
+  if not Last.HasPrevious then
+    Exit;
+  while First.NextIndex <= Last.PreviousIndex do
+  begin
+    Obj := First.GetItem;
+    Last.Previous;
+    First.SetItem(Last.GetItem);
+    Last.SetItem(Obj);
+    First.Next;
+  end;
+end;
+
+class procedure TJclAlgorithms<T>.QuickSort(const AList: IJclList<T>; L, R: Integer;
+  AComparator: TCompare<T>);
+var
+  I, J, P: Integer;
+  Obj: T;
+begin
+  repeat
+    I := L;
+    J := R;
+    P := (L + R) shr 1;
+    repeat
+      while AComparator(AList.GetItem(I), AList.GetItem(P)) < 0 do
+        Inc(I);
+      while AComparator(AList.GetItem(J), AList.GetItem(P)) > 0 do
+        Dec(J);
+      if I <= J then
+      begin
+        Obj := AList.GetItem(I);
+        AList.SetItem(I, AList.GetItem(J));
+        AList.SetItem(J, Obj);
+        if P = I then
+          P := J
+        else
+        if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if L < J then
+      QuickSort(AList, L, J, AComparator);
+    L := I;
+  until I >= R;
+end;
+
+{class procedure TJclAlgorithms<T>.Sort(const AList: IJclList<T>; First, Last: Integer;
+  AComparator: TCompare<T>);
+begin
+
+end;}
+{$ENDIF SUPPORTS_GENERICS}
+
 
 {$IFDEF UNITVERSIONING}
 initialization

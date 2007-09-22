@@ -19,21 +19,21 @@ type
   IMyObjectList = interface
     ['{DB2B366E-2CA6-4AFC-A2C9-3285D252DC3E}']
     function Add(AObject: TMyObject): Boolean; overload;
-    function AddAll(ACollection: IJclCollection): Boolean; overload;
+    function AddAll(const ACollection: IJclCollection): Boolean; overload;
     procedure Clear;
     function Contains(AObject: TMyObject): Boolean;
-    function ContainsAll(ACollection: IJclCollection): Boolean;
-    function Equals(ACollection: IJclCollection): Boolean;
+    function ContainsAll(const ACollection: IJclCollection): Boolean;
+    function Equals(const ACollection: IJclCollection): Boolean;
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
     function Remove(AObject: TMyObject): Boolean; overload;
-    function RemoveAll(ACollection: IJclCollection): Boolean;
-    function RetainAll(ACollection: IJclCollection): Boolean;
+    function RemoveAll(const ACollection: IJclCollection): Boolean;
+    function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
 
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
+    function AddAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
@@ -46,7 +46,7 @@ type
   protected
     { IJclCollection }
     function Add(AObject: TMyObject): Boolean; overload;
-    function AddAll(ACollection: IJclCollection): Boolean; overload;
+    function AddAll(const ACollection: IJclCollection): Boolean; overload;
     procedure IMyObjectList.Clear = Clear;
     function Contains(AObject: TMyObject): Boolean;
     function IMyObjectList.ContainsAll = ContainsAll;
@@ -61,7 +61,7 @@ type
   protected
     { IJclList }
     procedure Add(Index: Integer; AObject: TMyObject); overload;
-    function AddAll(Index: Integer; ACollection: IJclCollection): Boolean; overload;
+    function AddAll(Index: Integer; const ACollection: IJclCollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
@@ -84,13 +84,12 @@ begin
   Result := inherited Add(AObject);
 end;
 
-function TMyObjectList.AddAll(ACollection: IJclCollection): Boolean;
+function TMyObjectList.AddAll(const ACollection: IJclCollection): Boolean;
 begin
   Result := inherited AddAll(ACollection);
 end;
 
-function TMyObjectList.AddAll(Index: Integer;
-  ACollection: IJclCollection): Boolean;
+function TMyObjectList.AddAll(Index: Integer; const ACollection: IJclCollection): Boolean;
 begin
   Result := inherited InsertAll(Index, ACollection);
 end;

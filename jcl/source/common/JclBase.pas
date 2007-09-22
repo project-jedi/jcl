@@ -21,6 +21,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -52,6 +53,11 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$IFDEF CLR}
+  System.Collections.Generic,
+  {$ENDIF CLR}
+  {$ENDIF SUPPORTS_GENERICS}
   SysUtils;
 
 // Version
@@ -270,6 +276,27 @@ type
 
 function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
 function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
+
+{$IFDEF SUPPORTS_GENERICS}
+type
+  TEquatable<T: class> = class(TObject, IEquatable<T>, IEqualityComparer<T>)
+  public
+    { IEquatable<T> }
+    function Equals(Other: T): Boolean; overload;
+    { IEqualityComparer<T> }
+    function Equals(A, B: T): Boolean; overload;
+    function GetHashCode2(Obj: T): Integer;
+    function IEqualityComparer<T>.GetHashCode = GetHashCode2;
+  end;
+   
+  TJclBase<T> = class
+  public
+    type
+      TDynArray = array of T;
+  public
+    class procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+  end;
+{$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -563,6 +590,52 @@ end;
 {$IFDEF OVERFLOWCHECKS_ON}
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
+
+{$IFDEF SUPPORTS_GENERICS}
+//=== { TJclBase<T> } ========================================================
+
+class procedure TJclBase<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+end;
+
+//=== { TEquatable<T> } ======================================================
+
+function TEquatable<T>.Equals(Other: T): Boolean;
+begin
+  if Other = nil then
+    Result := False
+  else
+    Result := GetHashCode = Other.GetHashCode;
+end;
+
+function TEquatable<T>.Equals(A, B: T): Boolean;
+begin
+  if A = nil then
+    Result := B = nil
+  else
+  if B = nil then
+    Result := False
+  else
+    Result := A.GetHashCode = B.GetHashCode;
+end;
+
+function TEquatable<T>.GetHashCode2(Obj: T): Integer;
+begin
+  if Obj = nil then
+    Result := 0
+  else
+    Result := Obj.GetHashCode;
+end;
+
+{$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 initialization

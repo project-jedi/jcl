@@ -811,15 +811,15 @@ resourcestring
 
 //=== JclContainerIntf =======================================================
 resourcestring
-  RsEOutOfBounds = 'Out of bounds';
-  //RsENoSuchElement = 'No such element';
-  //RsEIllegalState = 'Illegal state';
-  //RsEConcurrentModification = 'Concurrent modification';
-  //RsEIllegalArgument = 'Illegal argument';
+  RsEOutOfBounds           = 'Out of bounds';
   RsEOperationNotSupported = 'Operation not supported';
-  RsEValueNotFound = 'Value %s not found';
-  RsENoCollection = 'Collection = nil';
-  RsEIllegalQueueCapacity = 'Illegal queue capacity';
+  RsEValueNotFound         = 'Value %s not found';
+  RsENoCollection          = 'Collection not assigned';
+  RsEIllegalQueueCapacity  = 'Illegal queue capacity';
+  RsEIllegalStateOperation = 'Illegal state operation';
+  RsENoEqualityComparer    = 'Item equality comparer is not assigned';
+  RsENoComparer            = 'Item comparer is not assigned';
+  RsENoHashConverter       = 'Hash converter is not assigned';
 
 //=== JclCounter =============================================================
 resourcestring

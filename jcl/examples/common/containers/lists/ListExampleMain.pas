@@ -194,7 +194,7 @@ end;
 
 procedure TMainForm.btnIntfVectorClick(Sender: TObject);
 var
-  List: TJclIntfVector;
+  List: IJclIntfList;
   MyObject: IIntfMyObject;
   It: IJclIntfIterator;
   I: Integer;
@@ -228,7 +228,6 @@ begin
     List.Clear;
   finally
     It := nil; // Force release Iterator before free list !
-    List.Free; // No Ref Count
   end;
 end;
 
