@@ -202,6 +202,7 @@
       <File FileName="..\..\source\common\JclRTTI.pas" ContainerId="" ModuleName="JclRTTI"/>
       <File FileName="..\..\source\common\JclStacks.pas" ContainerId="" ModuleName="JclStacks"/>
       <File FileName="..\..\source\common\JclStatistics.pas" ContainerId="" ModuleName="JclStatistics"/>
+      <File FileName="..\..\source\common\JclStreams.pas" ContainerId="" ModuleName="JclStreams"/>
       <File FileName="..\..\source\common\JclStrings.pas" ContainerId="" ModuleName="JclStrings"/>
       <File FileName="..\..\source\common\JclSysInfo.pas" ContainerId="" ModuleName="JclSysInfo"/>
       <File FileName="..\..\source\common\JclSysUtils.pas" ContainerId="" ModuleName="JclSysUtils"/>

@@ -27,6 +27,7 @@ uses
   JclRTTI in '..\..\source\common\JclRTTI.pas' ,
   JclStacks in '..\..\source\common\JclStacks.pas' ,
   JclStatistics in '..\..\source\common\JclStatistics.pas' ,
+  JclStreams in '..\..\source\common\JclStreams.pas' ,
   JclStrings in '..\..\source\common\JclStrings.pas' ,
   JclSysInfo in '..\..\source\common\JclSysInfo.pas' ,
   JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,

@@ -110,6 +110,7 @@
       <DCCReference Include="..\..\source\common\JclRTTI.pas"/>
       <DCCReference Include="..\..\source\common\JclStacks.pas"/>
       <DCCReference Include="..\..\source\common\JclStatistics.pas"/>
+      <DCCReference Include="..\..\source\common\JclStreams.pas"/>
       <DCCReference Include="..\..\source\common\JclStrings.pas"/>
       <DCCReference Include="..\..\source\common\JclSysInfo.pas"/>
       <DCCReference Include="..\..\source\common\JclSysUtils.pas"/>
