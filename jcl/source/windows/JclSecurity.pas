@@ -358,9 +358,11 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
-    Win32Check(LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use));
-    SetLength(Name, NameSize);
-    SetLength(Domain, DomainSize);
+    LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use);
+    if NameSize > 0 then
+      SetLength(Name, NameSize - 1);
+    if DomainSize > 0 then
+      SetLength(Domain, DomainSize - 1);
     Win32Check(LookupAccountSidA(nil, Sid, PAnsiChar(Name), NameSize, PAnsiChar(Domain), DomainSize, Use));
   end
   else
@@ -575,7 +577,11 @@ begin
     else
       Authority := Copy(SIDString, CurrentPos, TempPos - CurrentPos);
 
-    ASID^.SubAuthority[ASID^.SubAuthorityCount] := StrToInt(Authority);
+    {$R-}
+    ASID^.SubAuthority[ASID^.SubAuthorityCount] := StrToInt64(Authority);
+    {$IFDEF RANGECHECKS_ON}
+    {$R+}
+    {$ENDIF RANGECHECKS_ON}
     Inc(ASID^.SubAuthorityCount);
 
     CurrentPos := TempPos + 1;
