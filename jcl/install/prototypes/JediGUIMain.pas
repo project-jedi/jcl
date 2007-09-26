@@ -98,6 +98,7 @@ type
       Options: TDialogResponses = [drOK]): TDialogResponse;
     function CreateReadmePage: IJediReadmePage;
     function CreateInstallPage: IJediInstallPage;
+    function CreateProfilesPage: IJediProfilesPage;
     function GetPageCount: Integer;
     function GetPage(Index: Integer): IJediPage;
     function GetStatus: string;
@@ -133,7 +134,7 @@ uses
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   FileCtrl,
-  JclDebug, JclShell,
+  JclDebug, JclShell, JediGUIProfiles,
   {$ENDIF MSWINDOWS}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
   {$IFDEF VisualCLX}
@@ -390,6 +391,24 @@ begin
   AInstallFrame.OnSetIcon := SetFrameIcon;
 
   Result := AInstallFrame;
+  FPages.Add(Result);
+end;
+
+function TMainForm.CreateProfilesPage: IJediProfilesPage;
+var
+  AProfilesFrame: TProfilesFrame;
+  ATabSheet: TTabSheet;
+begin
+  ATabSheet := TTabSheet.Create(Self);
+  ATabSheet.PageControl := ProductsPageControl;
+  ATabSheet.ImageIndex := -1;
+
+  AProfilesFrame := TProfilesFrame.Create(Self);
+  AProfilesFrame.Parent := ATabSheet;
+  AProfilesFrame.Align := alClient;
+  AProfilesFrame.Name := '';
+
+  Result := AProfilesFrame;
   FPages.Add(Result);
 end;
 

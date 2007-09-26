@@ -108,6 +108,13 @@ type
     property Progress: Integer read GetProgress write SetProgress;
   end;
 
+  IJediProfilesPage = interface(IJediPage)
+    ['{23CD1150-A05F-4C64-A3A5-5335874DF942}']
+    function GetProfileEnabled(Index: Integer): Boolean;
+    procedure SetProfileEnabled(Index: Integer; Value: Boolean);
+    property IsProfileEnabled[Index: Integer]: Boolean read GetProfileEnabled write SetProfileEnabled;
+  end;
+
   TOptionRec = record
     Name: string;
     Value: string;
@@ -162,6 +169,7 @@ type
       Options: TDialogResponses = [drOK]): TDialogResponse;
     function CreateReadmePage: IJediReadmePage;
     function CreateInstallPage: IJediInstallPage;
+    function CreateProfilesPage: IJediProfilesPage;
     function GetPageCount: Integer;
     function GetPage(Index: Integer): IJediPage;
     function GetStatus: string;
@@ -202,6 +210,20 @@ type
     procedure Close;
   end;
 
+  IJediProfilesManager = interface
+    ['{5B818F08-3325-492A-BFC3-9489F749CB78}']
+    function CheckPrerequisites: Boolean;
+    function GetMultipleProfileMode: Boolean;
+    function GetProfileKey(Index: Integer): LongWord; // HKEY is Windows specific
+    function GetProfileCount: Integer;
+    function GetProfileName(Index: Integer): string;
+    procedure SetMultipleProfileMode(Value: Boolean);
+    property ProfileKeys[Index: Integer]: LongWord read GetProfileKey;
+    property ProfileNames[Index: Integer]: string read GetProfileName;
+    property ProfileCount: Integer read GetProfileCount;
+    property MultipleProfileMode: Boolean read GetMultipleProfileMode write SetMultipleProfileMode;
+  end;
+
   TJediInstallGUICreator = function: IJediInstallGUI;
   TJediConfigurationCreator = function: IJediConfiguration;
 
@@ -219,6 +241,7 @@ type
     FInstallGUICreator: TJediInstallGUICreator;
     FConfiguration: IJediConfiguration;
     FConfigurationCreator: TJediConfigurationCreator;
+    FProfilesManager: IJediProfilesManager;
     function GetProductCount: Integer;
     function GetProduct(Index: Integer): IJediProduct;
     function GetInstallGUI: IJediInstallGUI;
@@ -254,6 +277,7 @@ type
     property Configuration: IJediConfiguration read GetConfiguration;
     property ConfigurationCreator: TJediConfigurationCreator read FConfigurationCreator
       write FConfigurationCreator;
+    property ProfilesManager: IJediProfilesManager read FProfilesManager;
   end;
 
 var
@@ -276,7 +300,8 @@ resourcestring
 implementation
 
 uses
-  JclArrayLists, JclFileUtils;
+  JclArrayLists, JclFileUtils,
+  JediProfiles;
 
 var
   InternalInstallCore: TJediInstallCore = nil;
@@ -327,6 +352,8 @@ begin
   FProducts := TJclIntfArrayList.Create;
   FClosing := False;
   JediTargetOption := AddInstallOption('joTarget');
+
+  FProfilesManager := TJediProfilesManager.Create;
 end;
 
 destructor TJediInstallCore.Destroy;
@@ -347,13 +374,17 @@ var
   Index: Integer;
   AInstallGUI: IJediInstallGUI;
 begin
-  AInstallGUI := InstallGUI;
+  FProfilesManager.MultipleProfileMode := ParamPos('MultipleProfiles') >= 1;
+  if FProfilesManager.CheckPrerequisites then
+  begin
+    AInstallGUI := InstallGUI;
 
-  for Index := FProducts.Size - 1 downto 0 do
-    (FProducts.GetObject(Index) as IJediProduct).Init;
+    for Index := FProducts.Size - 1 downto 0 do
+      (FProducts.GetObject(Index) as IJediProduct).Init;
 
-  if Assigned(AInstallGUI) then
-    AInstallGUI.Execute;
+    if Assigned(AInstallGUI) then
+      AInstallGUI.Execute;
+  end;
 end;
 
 function TJediInstallCore.GetConfiguration: IJediConfiguration;

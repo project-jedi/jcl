@@ -513,6 +513,7 @@ type
   private
     FConfigData: TCustomIniFile;
     FConfigDataLocation: string;
+    FRootKey: Cardinal;
     FGlobals: TStringList;
     FRootDir: string;
     FBinFolderName: string;
@@ -561,8 +562,6 @@ type
     function GetRepository: TJclBorRADToolRepository;
     function GetUpdateNeeded: Boolean;
   protected
-    constructor Create(const AConfigDataLocation: string); virtual;
-
     function ProcessMapFile(const BinaryFileName: string): Boolean;
 
     // compilation functions
@@ -608,6 +607,8 @@ type
 
     function GetValid: Boolean; virtual;
   public
+    constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); virtual;
+    
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
     class function GetLatestUpdatePackForVersion(Version: Integer): Integer; virtual;
@@ -641,12 +642,18 @@ type
     function UninstallExpert(const ProjectName, OutputDir: string): Boolean; virtual;
 
     // registration/unregistration functions
-    function RegisterPackage(const BinaryFileName, Description: string): Boolean; virtual;
-    function UnregisterPackage(const BinaryFileName: string): Boolean; virtual;
-    function RegisterIDEPackage(const BinaryFileName, Description: string): Boolean; virtual;
-    function UnregisterIDEPackage(const BinaryFileName: string): Boolean; virtual;
-    function RegisterExpert(const BinaryFileName, Description: string): Boolean; virtual;
-    function UnregisterExpert(const BinaryFileName: string): Boolean; virtual;
+    function RegisterPackage(const BinaryFileName, Description: string): Boolean; overload; virtual;
+    function RegisterPackage(const PackageName, BPLPath, Description: string): Boolean; overload; virtual;
+    function UnregisterPackage(const BinaryFileName: string): Boolean; overload; virtual;
+    function UnregisterPackage(const PackageName, BPLPath: string): Boolean; overload; virtual;
+    function RegisterIDEPackage(const BinaryFileName, Description: string): Boolean; overload; virtual;
+    function RegisterIDEPackage(const PackageName, BPLPath, Description: string): Boolean; overload; virtual;
+    function UnregisterIDEPackage(const BinaryFileName: string): Boolean; overload; virtual;
+    function UnregisterIDEPackage(const PackageName, BPLPath: string): Boolean; overload; virtual;
+    function RegisterExpert(const BinaryFileName, Description: string): Boolean; overload; virtual;
+    function RegisterExpert(const ProjectName, OutputDir, Description: string): Boolean; overload; virtual;
+    function UnregisterExpert(const BinaryFileName: string): Boolean; overload; virtual;
+    function UnregisterExpert(const ProjectName, OutputDir: string): Boolean; overload; virtual;
 
     {$IFDEF KEEP_DEPRECATED}
     function IsBDSPersonality: Boolean;
@@ -720,13 +727,14 @@ type
     property SupportsLibSuffix: Boolean read GetSupportsLibSuffix;
     property OutputCallback: TTextHandler read FOutputCallback write SetOutputCallback;
     property IsTurboExplorer: Boolean read GetIsTurboExplorer;
+    property RootKey: Cardinal read FRootKey;
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
   protected
-    constructor Create(const AConfigDataLocation: string); override;
     function GetEnvironmentVariables: TStrings; override;
   public
+    constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); override;
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
     class function ProjectSourceFileExtension: string; override;
@@ -740,9 +748,9 @@ type
 
   TJclDelphiInstallation = class(TJclBorRADToolInstallation)
   protected
-    constructor Create(const AConfigDataLocation: string); override;
     function GetEnvironmentVariables: TStrings; override;
   public
+    constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); override;
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
     class function ProjectSourceFileExtension: string; override;
@@ -788,7 +796,6 @@ type
     function GetMsBuildEnvOption(const OptionName: string): string;
     procedure SetMsBuildEnvOption(const OptionName, Value: string);
   protected
-    constructor Create(const AConfigDataLocation: string); override;
     function GetDCPOutputPath: string; override;
     function GetBPLOutputPath: string; override;
     function GetEnvironmentVariables: TStrings; override;
@@ -808,6 +815,7 @@ type
 
     function GetValid: Boolean; override;
   public
+    constructor Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0); override;
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
     class function ProjectSourceFileExtension: string; override;
@@ -1143,7 +1151,7 @@ const
 begin
   DPRFile := TStringList.Create;
   try
-    DPRFile.LoadFromFile(DPRFileName);
+    DPRFile.LoadFromFile(DPRFileName);                              
 
     if Assigned(LibSuffix) then
       LibSuffix^ := '';
@@ -3151,7 +3159,7 @@ end;
 
 //=== { TJclBorRADToolInstallation } =========================================
 
-constructor TJclBorRADToolInstallation.Create;
+constructor TJclBorRADToolInstallation.Create(const AConfigDataLocation: string; ARootKey: Cardinal);
 begin
   inherited Create;
   FConfigDataLocation := AConfigDataLocation;
@@ -3159,6 +3167,12 @@ begin
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
   {$ELSE ~KYLIX}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
+  if ARootKey = 0 then
+    FRootKey := HKCU
+  else
+    FRootKey := ARootKey;
+  TRegistryIniFile(FConfigData).RegIniFile.RootKey := RootKey;
+  TRegistryIniFile(FConfigData).RegIniFile.OpenKey(AConfigDataLocation, True);
   {$ENDIF ~KYLIX}
   FGlobals := TStringList.Create;
   ReadInformation;
@@ -3274,8 +3288,7 @@ end;
 
 function TJclBorRADToolInstallation.CompileBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
-  SaveDir, PackagePath, MakeFileName, BinaryFileName: string;
-  RunOnly: Boolean;
+  SaveDir, PackagePath, MakeFileName: string;
 begin
   OutputString(Format(RsCompilingPackage, [PackageName]));
 
@@ -3297,11 +3310,9 @@ begin
     if MapCreate then
       Make.Options.Add('-DMAPFLAGS=-s');
 
-    GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
-
     Result := Result and
       Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)])) and
-      ProcessMapFile(PathAddSeparator(BPLPath) + BinaryFileName);
+      ProcessMapFile(BinaryFileName(BPLPath, PackageName));
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -3314,7 +3325,7 @@ end;
 
 function TJclBorRADToolInstallation.CompileBCBProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
-  SaveDir, PackagePath, MakeFileName, BinaryFileName: string;
+  SaveDir, PackagePath, MakeFileName: string;
 begin
   OutputString(Format(RsCompilingProject, [ProjectName]));
 
@@ -3336,11 +3347,9 @@ begin
     if MapCreate then
       Make.Options.Add('-DMAPFLAGS=-s');
 
-    GetBPRFileInfo(ProjectName, BinaryFileName);
-
     Result := Result and
       Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), StrDoubleQuote(MakeFileName)])) and
-      ProcessMapFile(PathAddSeparator(OutputDir) + BinaryFileName);
+      ProcessMapFile(BinaryFileName(OutputDir, ProjectName));
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -3360,8 +3369,7 @@ end;
 function TJclBorRADToolInstallation.CompileDelphiPackage(const PackageName,
   BPLPath, DCPPath, ExtraOptions: string): Boolean;
 var
-  NewOptions, LibSuffix, BinaryFileName: string;
-  RunOnly: Boolean;
+  NewOptions: string;
 begin
   OutputString(Format(RsCompilingPackage, [PackageName]));
 
@@ -3373,12 +3381,8 @@ begin
   else
     NewOptions := ExtraOptions;
 
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
-  BinaryFileName := PathAddSeparator(BPLPath) +
-    PathExtractFileNameNoExt(PackageName) + LibSuffix + BinaryExtensionPackage;
-
   Result := DCC32.MakePackage(PackageName, BPLPath, DCPPath, NewOptions) and
-    ProcessMapFile(BinaryFileName);
+    ProcessMapFile(BinaryFileName(BPLPath, PackageName));
 
   if Result then
     OutputString(RsCompilationOk)
@@ -3389,7 +3393,7 @@ end;
 function TJclBorRADToolInstallation.CompileDelphiProject(const ProjectName,
   OutputDir, DcpSearchPath: string): Boolean;
 var
-  ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
+  ExtraOptions: string;
 begin
   OutputString(Format(RsCompilingProject, [ProjectName]));
 
@@ -3401,12 +3405,8 @@ begin
   else
     ExtraOptions := '';
 
-  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
-  BinaryFileName := PathAddSeparator(OutputDir) +
-    PathExtractFileNameNoExt(ProjectName) + LibSuffix + BinaryExtension;
-
   Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions) and
-    ProcessMapFile(BinaryFileName);
+    ProcessMapFile(BinaryFileName(OutputDir, ProjectName));
 
   if Result then
     OutputString(RsCompilationOk)
@@ -3729,15 +3729,14 @@ end;
 
 function TJclBorRADToolInstallation.InstallBCBExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
-  BinaryFileName, Description: string;
+  Unused, Description: string;
 begin
   OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
 
-  GetBPRFileInfo(ProjectName, BinaryFileName, @Description);
-  BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
+  GetBPRFileInfo(ProjectName, Unused, @Description);
 
   Result := CompileBCBProject(ProjectName, OutputDir, DcpSearchPath) and
-    RegisterExpert(BinaryFileName, Description);
+    RegisterExpert(BinaryFileName(OutputDir, ProjectName), Description);
 
   OutputString(RsExpertInstallationFinished);
 end;
@@ -3745,17 +3744,16 @@ end;
 function TJclBorRADToolInstallation.InstallBCBIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   RunOnly: Boolean;
-  BinaryFileName, Description: string;
+  Unused, Description: string;
 begin
   OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
 
-  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
-  BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  GetBPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
     raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
 
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
-    RegisterIdePackage(BinaryFileName, Description);
+    RegisterIdePackage(BinaryFileName(BPLPath, PackageName), Description);
 
   OutputString(RsIdePackageInstallationFinished);
 end;
@@ -3763,37 +3761,30 @@ end;
 function TJclBorRADToolInstallation.InstallBCBPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   RunOnly: Boolean;
-  BinaryFileName, Description: string;
+  Unused, Description: string;
 begin
   OutputString(Format(RsPackageInstallationStarted, [PackageName]));
 
-  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName, @Description);
-  BinaryFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  GetBPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
     raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
 
   Result := CompileBCBPackage(PackageName, BPLPath, DCPPath) and
-    RegisterPackage(BinaryFileName, Description);
+    RegisterPackage(BinaryFileName(BPLPath, PackageName), Description);
 
   OutputString(RsPackageInstallationFinished);
 end;
 
 function TJclBorRADToolInstallation.InstallDelphiExpert(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
-  LibSuffix, BinaryFileName, BinaryExtension, BaseName: string;
+  BaseName: string;
 begin
   OutputString(Format(RsExpertInstallationStarted, [ProjectName]));
 
   BaseName := PathExtractFileNameNoExt(ProjectName);
 
-  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
-  if BinaryExtension = '' then
-    BinaryExtension := BinaryExtensionLibrary;
-
-  BinaryFileName := PathAddSeparator(OutputDir) + BaseName + LibSuffix + BinaryExtension;
-
   Result := CompileDelphiProject(ProjectName, OutputDir, DcpSearchPath) and
-    RegisterExpert(BinaryFileName, BaseName);
+    RegisterExpert(BinaryFileName(OutputDir, ProjectName), BaseName);
 
   OutputString(RsExpertInstallationFinished);
 end;
@@ -3801,18 +3792,16 @@ end;
 function TJclBorRADToolInstallation.InstallDelphiIdePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   RunOnly: Boolean;
-  LibSuffix, BPLFileName, Description: string;
+  Unused, Description: string;
 begin
   OutputString(Format(RsIdePackageInstallationStarted, [PackageName]));
 
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+  GetDPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
     raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
-  BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) +
-    LibSuffix + BinaryExtensionPackage;
 
   Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath) and
-    RegisterIdePackage(BPLFileName, Description);
+    RegisterIdePackage(BinaryFileName(BPLPath, PackageName), Description);
 
   OutputString(RsIdePackageInstallationFinished);
 end;
@@ -3820,18 +3809,16 @@ end;
 function TJclBorRADToolInstallation.InstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   RunOnly: Boolean;
-  LibSuffix, BPLFileName, Description: string;
+  Unused, Description: string;
 begin
   OutputString(Format(RsPackageInstallationStarted, [PackageName]));
 
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix, @Description);
+  GetDPKFileInfo(PackageName, RunOnly, @Unused, @Description);
   if RunOnly then
     raise EJclBorRadException.CreateResFmt(@RsECannotInstallRunOnly, [PackageName]);
-  BPLFileName := PathAddSeparator(BPLPath) + PathExtractFileNameNoExt(PackageName) +
-    LibSuffix + BinaryExtensionPackage;
 
   Result := CompileDelphiPackage(PackageName, BPLPath, DCPPath) and
-    RegisterPackage(BPLFileName, Description);
+    RegisterPackage(BinaryFileName(BPLPath, PackageName), Description);
 
   OutputString(RsPackageInstallationFinished);
 end;
@@ -4099,6 +4086,11 @@ begin
     end;
 end;
 
+function TJclBorRADToolInstallation.RegisterExpert(const ProjectName, OutputDir, Description: string): Boolean;
+begin
+  Result := RegisterExpert(BinaryFileName(OutputDir, ProjectName), Description);
+end;
+
 function TJclBorRADToolInstallation.RegisterExpert(const BinaryFileName, Description: string): Boolean;
 var
   InternalDescription: string;
@@ -4117,6 +4109,11 @@ begin
     OutputString(RsRegistrationFailed);
 end;
 
+function TJclBorRADToolInstallation.RegisterIDEPackage(const PackageName, BPLPath, Description: string): Boolean;
+begin
+  Result := RegisterIDEPackage(BinaryFileName(BPLPath, PackageName), Description);
+end;
+
 function TJclBorRADToolInstallation.RegisterIDEPackage(const BinaryFileName, Description: string): Boolean;
 var
   InternalDescription: string;
@@ -4133,6 +4130,11 @@ begin
     OutputString(RsRegistrationOk)
   else
     OutputString(RsRegistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.RegisterPackage(const PackageName, BPLPath, Description: string): Boolean;
+begin
+  Result := RegisterPackage(BinaryFileName(BPLPath, PackageName), Description);
 end;
 
 function TJclBorRADToolInstallation.RegisterPackage(const BinaryFileName, Description: string): Boolean;
@@ -4293,22 +4295,20 @@ end;
 
 function TJclBorRADToolInstallation.UninstallBCBExpert(const ProjectName, OutputDir: string): Boolean;
 var
-  BinaryFileName: string;
+  DllFileName: string;
 begin
   OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
 
   if not IsBCBProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBProject, [ProjectName]);
 
-  GetBPRFileInfo(ProjectName, BinaryFileName);
-  BinaryFileName := PathAddSeparator(OutputDir) + BinaryFileName;
-
+  DllFileName := BinaryFileName(OutputDir, ProjectName);
   // important: remove from experts /before/ deleting;
   //            otherwise PathGetLongPathName won't work
-  Result := UnregisterExpert(BinaryFileName);
+  Result := UnregisterExpert(DllFileName);
 
   if Result then
-    OutputFileDelete(BinaryFileName);
+    OutputFileDelete(DllFileName);
 
   OutputString(RsExpertUninstallationFinished);
 end;
@@ -4317,7 +4317,6 @@ function TJclBorRADToolInstallation.UninstallBCBIdePackage(const PackageName, BP
 var
   MAPFileName, TDSFileName,
   BPIFileName, LIBFileName, BPLFileName: string;
-  BinaryFileName: string;
   RunOnly: Boolean;
 begin
   OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
@@ -4325,9 +4324,9 @@ begin
   if not IsBCBPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotABCBPackage, [PackageName]);
 
-  GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
+  GetBPKFileInfo(PackageName, RunOnly);
 
-  BPLFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  BPLFileName := BinaryFileName(BPLPath, PackageName);
 
   // important: remove from IDE packages /before/ deleting;
   //            otherwise PathGetLongPathName won't work
@@ -4358,7 +4357,6 @@ function TJclBorRADToolInstallation.UninstallBCBPackage(const PackageName, BPLPa
 var
   MAPFileName, TDSFileName,
   BPIFileName, LIBFileName, BPLFileName: string;
-  BinaryFileName: string;
   RunOnly: Boolean;
 begin
   OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
@@ -4368,7 +4366,7 @@ begin
 
   GetBPKFileInfo(PackageName, RunOnly, @BinaryFileName);
 
-  BPLFileName := PathAddSeparator(BPLPath) + BinaryFileName;
+  BPLFileName := BinaryFileName(BPLPath, PackageName);
 
   // important: remove from IDE packages /before/ deleting;
   //            otherwise PathGetLongPathName won't work
@@ -4397,26 +4395,20 @@ end;
 
 function TJclBorRADToolInstallation.UninstallDelphiExpert(const ProjectName, OutputDir: string): Boolean;
 var
-  BinaryFileName: string;
-  BaseName, LibSuffix, BinaryExtension: string;
+  DllFileName: string;
 begin
   OutputString(Format(RsExpertUninstallationStarted, [ProjectName]));
 
   if not IsDelphiProject(ProjectName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
-  BaseName := PathExtractFileNameNoExt(ProjectName);
-  GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
-  if BinaryExtension = '' then
-    BinaryExtension := BinaryExtensionLibrary;
-  BinaryFileName := PathAddSeparator(OutputDir) + BaseName + LibSuffix + BinaryExtension;
-
+  DllFileName := BinaryFileName(OutputDir, ProjectName);
   // important: remove from experts /before/ deleting;
   //            otherwise PathGetLongPathName won't work
-  Result := UnregisterExpert(BinaryFileName);
+  Result := UnregisterExpert(DllFileName);
 
   if Result then
-    OutputFileDelete(BinaryFileName);
+    OutputFileDelete(DllFileName);
 
   OutputString(RsExpertUninstallationFinished);
 end;
@@ -4425,7 +4417,7 @@ function TJclBorRADToolInstallation.UninstallDelphiIdePackage(const PackageName,
 var
   MAPFileName,
   BPLFileName, DCPFileName: string;
-  BaseName, LibSuffix: string;
+  BaseName: string;
   RunOnly: Boolean;
 begin
   OutputString(Format(RsIdePackageUninstallationStarted, [PackageName]));
@@ -4433,10 +4425,10 @@ begin
   if not IsDelphiPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
 
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  GetDPKFileInfo(PackageName, RunOnly);
   BaseName := PathExtractFileNameNoExt(PackageName);
 
-  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + BinaryExtensionPackage;
+  BPLFileName := BinaryFileName(BPLPath, PackageName);
 
   // important: remove from IDE packages /before/ deleting;
   //            otherwise PathGetLongPathName won't work
@@ -4460,7 +4452,7 @@ end;
 function TJclBorRADToolInstallation.UninstallDelphiPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 var
   MAPFileName, BPLFileName, DCPFileName: string;
-  BaseName, LibSuffix: string;
+  BaseName: string;
   RunOnly: Boolean;
 begin
   OutputString(Format(RsPackageUninstallationStarted, [PackageName]));
@@ -4468,10 +4460,10 @@ begin
   if not IsDelphiPackage(PackageName) then
     raise EJclBorRADException.CreateResFmt(@RsENotADelphiPackage, [PackageName]);
 
-  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  GetDPKFileInfo(PackageName, RunOnly);
   BaseName := PathExtractFileNameNoExt(PackageName);
 
-  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + BinaryExtensionPackage;
+  BPLFileName := BinaryFileName(BPLPath, PackageName);
 
   // important: remove from IDE packages /before/ deleting;
   //            otherwise PathGetLongPathName won't work
@@ -4534,6 +4526,11 @@ begin
     raise EJclBorRadException.CreateResFmt(@RsEUnknownPackageExtension, [PackageExtension]);
 end;
 
+function TJclBorRADToolInstallation.UnregisterExpert(const ProjectName, OutputDir: string): Boolean;
+begin
+  Result := UnregisterExpert(BinaryFileName(OutputDir, ProjectName));
+end;
+
 function TJclBorRADToolInstallation.UnregisterExpert(const BinaryFileName: string): Boolean;
 begin
   OutputString(Format(RsUnregisteringExpert, [BinaryFileName]));
@@ -4545,6 +4542,11 @@ begin
     OutputString(RsUnregistrationFailed);
 end;
 
+function TJclBorRADToolInstallation.UnregisterIDEPackage(const PackageName, BPLPath: string): Boolean;
+begin
+  Result := UnregisterIDEPackage(BinaryFileName(BPLPath, PackageName));
+end;
+
 function TJclBorRADToolInstallation.UnregisterIDEPackage(const BinaryFileName: string): Boolean;
 begin
   OutputString(Format(RsUnregisteringIDEPackage, [BinaryFileName]));
@@ -4554,6 +4556,11 @@ begin
     OutputString(RsUnregistrationOk)
   else
     OutputString(RsUnregistrationFailed);
+end;
+
+function TJclBorRADToolInstallation.UnregisterPackage(const PackageName, BPLPath: string): Boolean;
+begin
+  Result := UnregisterPackage(BinaryFileName(BPLPath, PackageName));
 end;
 
 function TJclBorRADToolInstallation.UnregisterPackage(const BinaryFileName: string): Boolean;
@@ -4569,9 +4576,9 @@ end;
 
 //=== { TJclBCBInstallation } ================================================
 
-constructor TJclBCBInstallation.Create(const AConfigDataLocation: string);
+constructor TJclBCBInstallation.Create(const AConfigDataLocation: string; ARootKey: Cardinal);
 begin
-  inherited Create(AConfigDataLocation);
+  inherited Create(AConfigDataLocation, ARootKey);
   FPersonalities := [bpBCBuilder32];
   if clDcc32 in CommandLineTools then
     Include(FPersonalities, bpDelphi32);
@@ -4632,9 +4639,9 @@ end;
 
 //=== { TJclDelphiInstallation } =============================================
 
-constructor TJclDelphiInstallation.Create(const AConfigDataLocation: string);
+constructor TJclDelphiInstallation.Create(const AConfigDataLocation: string; ARootKey: Cardinal);
 begin
-  inherited Create(AConfigDataLocation);
+  inherited Create(AConfigDataLocation, ARootKey);
   FPersonalities := [bpDelphi32];
 end;
 
@@ -4700,11 +4707,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-constructor TJclBDSInstallation.Create(const AConfigDataLocation: string);
+constructor TJclBDSInstallation.Create(const AConfigDataLocation: string; ARootKey: Cardinal = 0);
 const
   PersonalitiesSection = 'Personalities';
 begin
-  inherited Create(AConfigDataLocation);
+  inherited Create(AConfigDataLocation, ARootKey);
   FHelp2Manager := TJclHelp2Manager.Create(Self);
 
   { TODO : .net 64 bit }
@@ -4793,8 +4800,8 @@ begin
       OutputString(Format(RsCleaningPackageCache, [FileName]));
       KeyName := PathAddSeparator(ConfigDataLocation) + PackageCacheKeyName + '\' + FileName;
 
-      if RegKeyExists(HKCU, KeyName) then
-        Result := RegDeleteKeyTree(HKCU, KeyName);
+      if RegKeyExists(RootKey, KeyName) then
+        Result := RegDeleteKeyTree(RootKey, KeyName);
 
       if Result then
         OutputString(RsCleaningOk)
@@ -4871,7 +4878,7 @@ end;
 
 function TJclBDSInstallation.CompileDelphiProject(const ProjectName, OutputDir, DcpSearchPath: string): Boolean;
 var
-  ExtraOptions, BinaryExtension, LibSuffix, BinaryFileName: string;
+  ExtraOptions: string;
 begin
   if VersionNumber <= 2 then
   begin
@@ -4885,14 +4892,8 @@ begin
     else
       ExtraOptions := '';
 
-    GetDPRFileInfo(ProjectName, BinaryExtension, @LibSuffix);
-    if BinaryExtension = '' then
-      BinaryExtension := BinaryExtensionLibrary;
-    BinaryFileName := PathAddSeparator(OutputDir) + PathExtractFileNameNoExt(ProjectName) +
-      LibSuffix + BinaryExtension;
-
     Result := DCC32.MakeProject(ProjectName, OutputDir, DcpSearchPath, ExtraOptions) and
-      ProcessMapFile(BinaryFileName);
+      ProcessMapFile(BinaryFileName(OutputDir, ProjectName));
 
     if Result then
       OutputString(RsCompilationOk)
@@ -5123,10 +5124,19 @@ begin
 end;
 
 function TJclBDSInstallation.GetMsBuildEnvOptionsFileName: string;
+var
+  AppdataFolder: string;
 begin
   if IDEVersionNumber >= 5 then
+  begin
+    if (RootKey = 0) or (RootKey = HKCU) then
+      AppdataFolder := GetAppdataFolder
+    else
+      AppdataFolder := RegReadString(RootKey, 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders', 'AppData');
+
     Result := Format('%sBorland\BDS\%d.0\EnvOptions.proj',
-      [PathAddSeparator(GetAppdataFolder), IDEVersionNumber])
+      [PathAddSeparator(AppdataFolder), IDEVersionNumber]);
+  end
   else
     raise EJclBorRADException.CreateRes(@RsMsBuildNotSupported);
 end;
