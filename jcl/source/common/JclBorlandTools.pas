@@ -961,11 +961,11 @@ const
   PathSep = ';';
   {$ENDIF ~RTL140_UP}
 
-  MSHelpSystemKeyName = 'SOFTWARE\Microsoft\Windows\Help';
+  MSHelpSystemKeyName = '\SOFTWARE\Microsoft\Windows\Help';
 
-  BCBKeyName          = 'SOFTWARE\Borland\C++Builder';
-  BDSKeyName          = 'SOFTWARE\Borland\BDS';
-  DelphiKeyName       = 'SOFTWARE\Borland\Delphi';
+  BCBKeyName          = '\SOFTWARE\Borland\C++Builder';
+  BDSKeyName          = '\SOFTWARE\Borland\BDS';
+  DelphiKeyName       = '\SOFTWARE\Borland\Delphi';
 
   BDSVersions: array [1..5] of TBDSVersionInfo = (
     (
