@@ -1369,10 +1369,6 @@ var
   end;
 
   function CheckDirectories: Boolean;
-  {$IFDEF MSWINDOWS}
-  var
-    PathEnvVar: string;
-  {$ENDIF MSWINDOWS}
   begin
     Result := True;
 
@@ -1409,21 +1405,6 @@ var
             GUI.Dialog(Format(RsErrorCantCreatePath, [GetDcpPath]), dtError, [drCancel]);
         end;
       end;
-      {$IFDEF MSWINDOWS}
-      if CLRVersion = '' then
-      begin
-        PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
-        PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
-        ExpandEnvironmentVar(PathEnvVar);
-        if (PathListItemIndex(PathEnvVar, GetBplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(GetBplPath)) = -1)
-          and Assigned(GUI) and (GUI.Dialog(RsWarningAddPathToEnvironment, dtWarning, [drYes, drNo]) = drYes) then
-        begin
-          PathEnvVar := RegReadStringDef(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
-          PathListIncludeItems(PathEnvVar, GetBplPath);
-          RegWriteString(HKCU, RegHKCUEnvironmentVar, PathEnvironmentVar, PathEnvVar);
-        end;
-      end;
-      {$ENDIF MSWINDOWS}
     end;
   end;
 
@@ -1790,11 +1771,29 @@ var
   end;
 
   function RegisterPackages(ATarget: TJclBorRADToolInstallation): Boolean;
+  {$IFDEF MSWINDOWS}
+  var
+    PathEnvVar: string;
+  {$ENDIF MSWINDOWS}
   begin
     {$IFDEF MSWINDOWS}
-    InstallJediRegInformation(Target.ConfigDataLocation, 'JCL',
-      Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]),
-      GetDcpPath, GetBplPath, Distribution.FJclPath, ATarget.RootKey);
+    if CLRVersion = '' then
+    begin
+      InstallJediRegInformation(ATarget.ConfigDataLocation, 'JCL',
+        Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]),
+        GetDcpPath, GetBplPath, Distribution.FJclPath, ATarget.RootKey);
+
+      PathEnvVar := RegReadStringDef(ATarget.RootKey, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+      PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
+      ExpandEnvironmentVar(PathEnvVar);
+      if (PathListItemIndex(PathEnvVar, GetBplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(GetBplPath)) = -1)
+        and Assigned(GUI) and (GUI.Dialog(RsWarningAddPathToEnvironment, dtWarning, [drYes, drNo]) = drYes) then
+      begin
+        PathEnvVar := RegReadStringDef(ATarget.RootKey, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
+        PathListIncludeItems(PathEnvVar, GetBplPath);
+        RegWriteString(ATarget.RootKey, RegHKCUEnvironmentVar, PathEnvironmentVar, PathEnvVar);
+      end;
+    end;
     {$ENDIF MSWINDOWS}
     Result := True;
   end;
@@ -3236,10 +3235,12 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
       brCppBuilder :
         Result := Target.VersionNumber in [5, 6];
       brBorlandDevStudio :
-        Result := Target.VersionNumber in [1, 2, 3, 4, 5];
+        Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
+          or (Target.VersionNumber in [3, 4, 5]);
       else
         Result := False;
     end;
+    Result := Result and (Target.Personalities * [bpDelphi32, bpBCBuilder32, bpDelphiNet32, bpDelphiNet64] <> []);
     {$ENDIF ~KYLIX}
   end;
 var
@@ -3433,16 +3434,20 @@ procedure TJclDistribution.Init;
       ReadMePage := GUI.CreateReadmePage;
       ReadMePage.Caption := Version;
       ReadMePage.ReadmeFileName := FJclReadmeFileName;
-      FProfilesPage := GUI.CreateProfilesPage;
-      FProfilesPage.Caption := 'Profiles';
 
-      Settings := InstallCore.Configuration;
-      if Settings <> nil then
-        for Index := 0 to InstallCore.ProfilesManager.ProfileCount - 1 do
+      if InstallCore.ProfilesManager.MultipleProfileMode then
       begin
-        ProfileName := InstallCore.ProfilesManager.ProfileNames[Index];
-        if Settings.ValueExists(ProfilesSectionName, ProfileName) then
-          FProfilesPage.IsProfileEnabled[Index] := Settings.OptionAsBoolByName[ProfilesSectionName, ProfileName];
+        FProfilesPage := GUI.CreateProfilesPage;
+        FProfilesPage.Caption := 'Profiles';
+
+        Settings := InstallCore.Configuration;
+        if Settings <> nil then
+          for Index := 0 to InstallCore.ProfilesManager.ProfileCount - 1 do
+        begin
+          ProfileName := InstallCore.ProfilesManager.ProfileNames[Index];
+          if Settings.ValueExists(ProfilesSectionName, ProfileName) then
+            FProfilesPage.IsProfileEnabled[Index] := Settings.OptionAsBoolByName[ProfilesSectionName, ProfileName];
+        end;
       end;
     end;
 

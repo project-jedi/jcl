@@ -791,6 +791,7 @@ type
     procedure SetCppSearchPath(const Value: TJclBorRADToolPath);
     procedure SetCppLibraryPath(const Value: TJclBorRADToolPath);
     function GetMaxDelphiCLRVersion: string;
+    function GetDCCIL: TJclDCCIL;
 
     function GetMsBuildEnvOptionsFileName: string;
     function GetMsBuildEnvOption(const OptionName: string): string;
@@ -849,7 +850,7 @@ type
 
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
     property Help2Manager: TJclHelp2Manager read FHelp2Manager;
-    property DCCIL: TJclDCCIL read FDCCIL;
+    property DCCIL: TJclDCCIL read GetDCCIL;
     property MaxDelphiCLRVersion: string read GetMaxDelphiCLRVersion;
     property PdbCreate: Boolean read FPdbCreate write FPdbCreate;
   end;
@@ -4714,7 +4715,6 @@ begin
   inherited Create(AConfigDataLocation, ARootKey);
   FHelp2Manager := TJclHelp2Manager.Create(Self);
 
-  { TODO : .net 64 bit }
   if ConfigData.ReadString(PersonalitiesSection, 'C#Builder', '') <> '' then
     Include(FPersonalities, bpCSBuilder32);
   if ConfigData.ReadString(PersonalitiesSection, 'BCB', '') <> '' then
@@ -4723,21 +4723,20 @@ begin
     Include(FPersonalities, bpDelphi32);
   if (ConfigData.ReadString(PersonalitiesSection, 'Delphi.NET', '') <> '') or
     (ConfigData.ReadString(PersonalitiesSection, 'Delphi8', '') <> '') then
+  begin
     Include(FPersonalities, bpDelphiNet32);
+    if VersionNumber >= 5 then
+      Include(FPersonalities, bpDelphiNet64);
+  end;
 
   if clDcc32 in CommandLineTools then
     Include(FPersonalities, bpDelphi32);
-
-  if FPersonalities = [] then
-    raise EJclBorRadException.CreateRes(@RsENoSupportedPersonality);
-
-  FDCCIL := TJclDCCIL.Create(Self);
 end;
 
 destructor TJclBDSInstallation.Destroy;
 begin
-  FDCCIL.Free;
-  FHelp2Manager.Free;
+  FreeAndNil(FDCCIL);
+  FreeAndNil(FHelp2Manager);
   inherited Destroy;
 end;
 
@@ -4984,6 +4983,17 @@ end;
 function TJclBDSInstallation.GetCppLibraryPath: TJclBorRADToolPath;
 begin
   Result := ConfigData.ReadString(GetCppPathsKeyName, CppLibraryPathValueName, '');
+end;
+
+function TJclBDSInstallation.GetDCCIL: TJclDCCIL;
+begin
+  if not Assigned(FDCCIL) then
+  begin
+    if not (clDccIL in CommandLineTools) then
+      raise EJclBorRadException.CreateResFmt(@RsENotFound, [DccILExeName]);
+    FDCCIL := TJclDCCIL.Create(Self);
+  end;
+  Result := FDCCIL;
 end;
 
 function TJclBDSInstallation.GetDCPOutputPath: string;

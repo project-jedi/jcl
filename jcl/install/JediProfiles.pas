@@ -23,9 +23,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date:: 2007-09-17 23:41:02 +0200 (lun., 17 sept. 2007)                         $ }
-{ Revision:      $Rev:: 2175                                                                     $ }
-{ Author:        $Author:: outchy                                                                $ }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -136,7 +136,7 @@ begin
       InstallGUI := InstallCore.InstallGUI;
       if Assigned(InstallGUI) then
         Fork := InstallGUI.Dialog('Installation requires administrator privilege, do you want to run installer with' +
-                                  ' administrator rights', dtConfirmation, [drYes, drNo]) = drYes
+                                  ' administrator rights?', dtConfirmation, [drYes, drNo]) = drYes
       else
         Fork := True;
       if Fork then
@@ -144,7 +144,7 @@ begin
         Parameters := '';
         for Index := 1 to ParamCount do
           Parameters := Parameters + AnsiQuotedStr(ParamStr(Index), AnsiDoubleQuote);
-        ShellExecAndWait(ParamStr(0), Parameters, 'runas');
+        ShellExecEx(ParamStr(0), Parameters, 'runas');
         Result := False;
       end
       else
@@ -204,7 +204,11 @@ begin
           if RegLoadKey(HKUS, PAnsiChar(FProfiles[Index].SID), PAnsiChar(NtUserFileName)) = ERROR_SUCCESS then
             FProfiles[Index].UnloadKey := True
           else
+            {$IFDEF COMPILER5}
+            RaiseLastWin32Error;
+            {$ELSE ~COMPILER5}
             RaiseLastOSError;
+            {$ENDIF ~COMPILER5}
         end;
         if RegOpenKey(HKUS, PAnsiChar(FProfiles[Index].SID), Key) = ERROR_SUCCESS then
           FProfiles[Index].CloseKey := True
