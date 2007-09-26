@@ -88,6 +88,10 @@ procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
 // Computer Information
 function GetComputerSID(SID: PSID; cbSID: DWORD): Boolean;
 
+// Windows Vista/Server 2008 UAC (User Account Control)
+function IsUACEnabled: Boolean;
+function IsElevated: Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -108,7 +112,7 @@ uses
   {$ELSE}
   AccCtrl,
   {$ENDIF FPC}
-  JclResources, JclStrings, JclSysInfo, JclWin32;
+  JclRegistry, JclResources, JclStrings, JclSysInfo, JclWin32;
 
 //=== Access Control =========================================================
 
@@ -631,6 +635,47 @@ begin
   end
   else
     Result := False; // Win9x
+end;
+
+//=== Windows Vista/Server 2008 UAC (User Account Control) ===================
+
+function IsUACEnabled: Boolean;
+begin
+  Result := (IsWinVista or IsWinServer2008) and
+    RegReadBoolDef(HKLM, '\Software\Microsoft\Windows\CurrentVersion\Policies\System', 'EnableLUA', False);
+end;
+
+// source: Vista elevator from the Code Project
+function IsElevated: Boolean;
+const
+  TokenElevation = TTokenInformationClass(20);
+type
+  TOKEN_ELEVATION = record
+    TokenIsElevated: DWORD;
+  end;
+var
+  TokenHandle: THandle;
+  ResultLength: Cardinal;
+  ATokenElevation: TOKEN_ELEVATION;
+begin
+  if IsWinVista or IsWinServer2008 then
+  begin
+    if OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle) then
+    begin
+      try
+        if GetTokenInformation(TokenHandle, TokenElevation, @ATokenElevation, SizeOf(ATokenElevation), ResultLength) then
+          Result := ATokenElevation.TokenIsElevated <> 0
+        else
+          Result := False;
+      finally
+        CloseHandle(TokenHandle);
+      end;
+    end
+    else
+      Result := False;
+  end
+  else
+    Result := IsAdministrator;
 end;
 
 {$IFDEF UNITVERSIONING}

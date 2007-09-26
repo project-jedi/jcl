@@ -80,7 +80,7 @@ uses
   System.Net, System.ComponentModel,
   {$ELSE ~CLR}
   {$IFDEF MSWINDOWS}
-  Windows, ActiveX, Registry,
+  Windows, ActiveX,
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF ~FPC}
@@ -1277,9 +1277,6 @@ function IsOutlookInstalled: Boolean;
 function IsInternetExplorerInstalled: Boolean;
 function IsMSProjectInstalled: Boolean;
 function IsOpenOfficeInstalled: Boolean;
-
-// Windows Vista/Server 2008 UAC (User Account Control)
-function IsUACEnabled: Boolean;
 
 {$ENDIF MSWINDOWS}
 
@@ -5262,29 +5259,6 @@ end;
 function IsOpenOfficeInstalled: Boolean;
 begin
   Result := ProgIDExists('com.sun.star.ServiceManager');
-end;
-
-//=== Windows Vista/Server 2008 UAC (User Account Control) ===================
-
-function IsUACEnabled: Boolean;
-var
-  UACActive: Boolean;
-  Registry:  TRegistry;
-begin
-  Registry := TRegistry.Create;
-  try
-    Registry.RootKey := HKEY_LOCAL_MACHINE;
-    if Registry.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Policies\System', False) then
-    begin
-      UACActive := Registry.ReadBool('EnableLUA');
-      Registry.CloseKey;
-    end
-    else
-      UACActive := False;
-  finally
-    Registry.Free;
-  end;
-  Result := (IsWinVista or IsWinServer2008) and UACActive;
 end;
 
 //=== Initialization/Finalization ============================================
