@@ -1022,7 +1022,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
       for I := 0 to ServicesReturned - 1 do
       begin
         NtSvc := TJclNtService.Create(Self, PEss^);
-        NtSvc.Refresh;
+        try
+          NtSvc.Refresh;
+        except
+          // trap invalid services
+        end;
         Inc(PEss);
       end;
     finally
@@ -1082,7 +1086,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     I: Integer;
   begin
     for I := 0 to GetServiceCount - 1 do
+    try
       GetService(I).Refresh;
+    except
+      // trap invalid services
+    end;
   end;
 
 begin
