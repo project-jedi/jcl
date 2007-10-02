@@ -146,7 +146,8 @@ type
   protected
     function CompareItems(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -166,7 +167,8 @@ type
   protected
     function CompareItems(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -185,7 +187,8 @@ type
   protected
     function CompareItems(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -817,9 +820,14 @@ begin
   Result := Comparer.Compare(A, B);
 end;
 
-function TJclArraySetE<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
+function TJclArraySetE<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
 begin
-  Result := TJclArraySetE<T>.Create(Comparer, ACapacity, False);
+  Result := TJclArraySetE<T>.Create(Comparer, ACapacity, AOwnsItems);
+end;
+
+function TJclArraySetE<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
+begin
+  Result := TJclArraySetE<T>.Create(Comparer, ACollection, AOwnsItems);
 end;
 
 function TJclArraySetE<T>.ItemsEqual(const A, B: T): Boolean;
@@ -851,9 +859,14 @@ begin
   Result := Compare(A, B);
 end;
 
-function TJclArraySetF<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
+function TJclArraySetF<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
 begin
-  Result := TJclArraySetF<T>.Create(Compare, ACapacity, False);
+  Result := TJclArraySetF<T>.Create(Compare, ACapacity, AOwnsItems);
+end;
+
+function TJclArraySetF<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
+begin
+  Result := TJclArraySetF<T>.Create(Compare, ACollection, AOwnsItems);
 end;
 
 function TJclArraySetF<T>.ItemsEqual(const A, B: T): Boolean;
@@ -870,9 +883,14 @@ begin
   Result := A.CompareTo(B);
 end;
 
-function TJclArraySetI<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
+function TJclArraySetI<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
 begin
-  Result := TJclArraySetI<T>.Create(ACapacity, False);
+  Result := TJclArraySetI<T>.Create(ACapacity, AOwnsItems);
+end;
+
+function TJclArraySetI<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
+begin
+  Result := TJclArraySetI<T>.Create(ACollection, AOwnsItems);
 end;
 
 function TJclArraySetI<T>.ItemsEqual(const A, B: T): Boolean;
