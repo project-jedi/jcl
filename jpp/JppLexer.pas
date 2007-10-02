@@ -20,7 +20,9 @@
 {    Portions created by Barry Kelly are Copyright (C) 2001                    }
 {    Barry Kelly. All Rights Reserved.                                         }
 {                                                                              }
-{    Contributor(s): Robert Rossmair (rrossmair)                               }
+{    Contributors:                                                             }
+{      Robert Rossmair (rrossmair)                                             }
+{      Florent Ouchet                                                          }
 {                                                                              }
 {    Alternatively, the contents of this file may be used under the terms      }
 {    of the Lesser GNU Public License (the  "LGPL License"), in which case     }
@@ -43,7 +45,6 @@
 { **************************************************************************** }
 
 // Last modified: $Date$
-// For history, see end of file
 
 unit JppLexer;
 
@@ -55,7 +56,7 @@ uses
 type
   TJppToken = (ptEof, ptComment, ptText, ptEol,
     ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt, ptElse, ptEndif,
-    ptInclude);
+    ptInclude, ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro);
 
   EJppLexerError = class(Exception);
 
@@ -111,6 +112,9 @@ begin
   AddToken('endif', ptEndif);
   AddToken('define', ptDefine);
   AddToken('undef', ptUndef);
+  AddToken('jppdefinemacro', ptjppDefineMacro);
+  AddToken('jppexpandmacro', ptJppExpandMacro);
+  AddToken('jppundefmacro', ptJppUndefMacro);
 
   SetLength(FBuf, AStream.Size);
   AStream.ReadBuffer(Pointer(FBuf)^, Length(FBuf));
@@ -367,18 +371,6 @@ begin
   FCurrLine := 1;
   NextTok;
 end;
-
-// History:
-
-// $Log$
-// Revision 1.2  2004/06/21 00:10:57  rrossmair
-// - added token ifopt (not handled; just to match $ELSE, $ENDIF)
-// - renamed identifiers TPpp* -> TJpp*
-//
-// Revision 1.1  2004/06/20 02:09:58  rrossmair
-// - initial check-in
-// - modified PppLexer unit, provides an extra token (ptEol) to assist in removing orphaned line breaks.
-//
 
 end.
 

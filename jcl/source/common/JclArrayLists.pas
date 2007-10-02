@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -51,12 +55,13 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
+
   TJclIntfArrayList = class(TJclAbstractContainer, IJclIntfCollection, IJclIntfList, IJclIntfArray,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    FElementData: TDynIInterfaceArray;
-    FSize: Integer;
     FCapacity: Integer;
+    FElementData: JclBase.TDynIInterfaceArray;
+    FSize: Integer;
   protected
     { IJclPackable }
     procedure Pack;
@@ -101,12 +106,12 @@ type
     property Capacity: Integer read FCapacity write SetCapacity;
   end;
 
-  //Daniele Teti 02/03/2005
+
   TJclStrArrayList = class(TJclStrCollection, IJclStrCollection, IJclStrList, IJclStrArray,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     FCapacity: Integer;
-    FElementData: TDynStringArray;
+    FElementData: JclBase.TDynStringArray;
     FSize: Integer;
   protected
     { IJclPackable }
@@ -152,15 +157,15 @@ type
     property Capacity: Integer read FCapacity write SetCapacity;
   end;
 
+
   TJclArrayList = class(TJclAbstractContainer, IJclCollection, IJclList, IJclArray,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     FCapacity: Integer;
-    FElementData: TDynObjectArray;
-    FOwnsObjects: Boolean;
+    FElementData: JclBase.TDynObjectArray;
     FSize: Integer;
+    FOwnsObjects: Boolean;
   protected
-    procedure FreeObject(var AObject: TObject);
     { IJclPackable }
     procedure Pack;
     function GetCapacity: Integer;
@@ -197,6 +202,7 @@ type
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
+    procedure FreeObject(var AObject: TObject);
   public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True); overload;
     constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean = True); overload;
@@ -207,6 +213,7 @@ type
 
   {$IFDEF SUPPORTS_GENERICS}
 
+
   TJclArrayList<T> = class(TJclAbstractContainer, IJclCollection<T>, IJclList<T>, IJclArray<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
@@ -215,10 +222,6 @@ type
     FSize: Integer;
     FOwnsItems: Boolean;
   protected
-    function ItemsEqual(const A, B: T): Boolean; virtual; abstract;
-    function CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>; overload;
-    function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; overload; virtual; abstract;
-    procedure FreeItem(var AItem: T);
     { IJclPackable }
     procedure Pack;
     function GetCapacity: Integer;
@@ -242,12 +245,12 @@ type
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
-    function Remove(AItem: T): Boolean; overload;
+    function Remove(const AItem: T): Boolean; overload;
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
     { IJclList<T> }
-    procedure Insert(Index: Integer; AItem: T); overload;
+    procedure Insert(Index: Integer; const AItem: T); overload;
     function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean; overload;
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
@@ -255,6 +258,10 @@ type
     function Remove(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
+    function ItemsEqual(const A, B: T): Boolean; virtual; abstract;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>; overload; virtual; abstract;
+    function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; overload; virtual; abstract;
+    procedure FreeItem(var AItem: T);
   public
     constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsItems: Boolean = True); overload;
     constructor Create(const ACollection: IJclCollection<T>; AOwnsItems: Boolean = True); overload;
@@ -271,6 +278,7 @@ type
     FEqualityComparer: IEqualityComparer<T>;
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>; override;
     function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -290,6 +298,7 @@ type
     FEqualityCompare: TEqualityCompare<T>;
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>; override;
     function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -307,6 +316,7 @@ type
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
+    function CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>; override;
     function CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -329,7 +339,8 @@ implementation
 uses
   SysUtils;
 
-//=== { TIntfItr } ===========================================================
+
+//=== { TIntfItr } ===============================================================
 
 type
   TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -380,7 +391,7 @@ end;
 function TIntfItr.GetObject: IInterface;
 begin
   Valid := True;
-  Result := FOwnList.GetObject(FCursor)
+  Result := FOwnList.GetObject(FCursor);
 end;
 
 function TIntfItr.HasNext: Boolean;
@@ -456,7 +467,7 @@ begin
   FOwnList.SetObject(FCursor, AInterface);
 end;
 
-//=== { TStrItr } ============================================================
+//=== { TStrItr } ===============================================================
 
 type
   TStrItr = class(TJclAbstractIterator, IJclStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -526,15 +537,15 @@ begin
     Result := FCursor >= 0;
 end;
 
-function TStrItr.IntfClone: IInterface;
-begin
-  Result := TStrItr.Create(FOwnList, FCursor, Valid);
-end;
-
 procedure TStrItr.Insert(const AString: string);
 begin
   Valid := True;
   FOwnList.Insert(FCursor, AString);
+end;
+
+function TStrItr.IntfClone: IInterface;
+begin
+  Result := TStrItr.Create(FOwnList, FCursor, Valid);
 end;
 
 function TStrItr.Next: string;
@@ -653,15 +664,15 @@ begin
     Result := FCursor >= 0;
 end;
 
-function TItr.IntfClone: IInterface;
-begin
-  Result := TItr.Create(FOwnList, FCursor, Valid);
-end;
-
 procedure TItr.Insert(AObject: TObject);
 begin
   Valid := True;
   FOwnList.Insert(FCursor, AObject);
+end;
+
+function TItr.IntfClone: IInterface;
+begin
+  Result := TItr.Create(FOwnList, FCursor, Valid);
 end;
 
 function TItr.Next: TObject;
@@ -782,15 +793,15 @@ begin
     Result := FCursor >= 0;
 end;
 
-function TItr<T>.IntfClone: IInterface;
-begin
-  Result := TItr<T>.Create(FOwnList, FCursor, Valid);
-end;
-
 procedure TItr<T>.Insert(const AItem: T);
 begin
   Valid := True;
   FOwnList.Insert(FCursor, AItem);
+end;
+
+function TItr<T>.IntfClone: IInterface;
+begin
+  Result := TItr<T>.Create(FOwnList, FCursor, Valid);
 end;
 
 function TItr<T>.Next: T;
@@ -838,15 +849,16 @@ begin
   Valid := True;
   FOwnList.SetItem(FCursor, AItem);
 end;
-
 {$ENDIF SUPPORTS_GENERICS}
 
-//=== { TJclIntfArrayList } ==================================================
+
+//=== { TJclIntfArrayList } ======================================================
 
 constructor TJclIntfArrayList.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
   FSize := 0;
+  
   if ACapacity < 0 then
     FCapacity := 0
   else
@@ -958,7 +970,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AInterface then
+      if (FElementData[I] = AInterface) then
       begin
         Result := True;
         Break;
@@ -1007,7 +1019,7 @@ begin
       Exit;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if FElementData[I] <> It.Next then
+      if not (FElementData[I] = It.Next) then
         Exit;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -1084,7 +1096,7 @@ begin
     if Capacity = 0 then
       Capacity := 64
     else
-      Grow(16);
+      Capacity := Capacity + 16;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1102,7 +1114,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AInterface then
+      if (FElementData[I] = AInterface) then
       begin
         Result := I;
         Break;
@@ -1125,7 +1137,7 @@ begin
     if FSize = Capacity then
       Grow;
     if FSize <> Index then
-      MoveArray(FElementData, Index, Index + 1, FSize - Index);
+      JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
     FElementData[Index] := AInterface;
     Inc(FSize);
   {$IFDEF THREADSAFE}
@@ -1152,7 +1164,7 @@ begin
     InsertionSize := ACollection.Size;
     if (FSize + InsertionSize) >= Capacity then
       Grow(InsertionSize);
-    MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
+    JclBase.MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
     Inc(FSize, InsertionSize);
     It := ACollection.First;
     Result := It.HasNext;
@@ -1202,7 +1214,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AInterface then
+      if (FElementData[I] = AInterface) then
       begin
         Result := I;
         Break;
@@ -1238,11 +1250,11 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AInterface then // Removes all AInterface
+      if (FElementData[I] = AInterface) then // Removes all AInterface
       begin
-        FElementData[I] := nil; // Force Release
+        FElementData[I] := nil;
         if FSize <> I then
-          MoveArray(FElementData, I + 1, I, FSize - I);
+          JclBase.MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
       end;
@@ -1264,7 +1276,7 @@ begin
     Result := FElementData[Index];
     FElementData[Index] := nil;
     if FSize <> Index then
-      MoveArray(FElementData, Index + 1, Index, FSize - Index);
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index);
     Dec(FSize);
   {$IFDEF THREADSAFE}
   finally
@@ -1343,6 +1355,7 @@ begin
   {$ENDIF THREADSAFE}
     if (Index < 0) or (Index >= FSize) then
       raise EJclOutOfBoundsError.Create;
+    FElementData[Index] := nil;
     FElementData[Index] := AInterface;
   {$IFDEF THREADSAFE}
   finally
@@ -1378,12 +1391,14 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclStrArrayList } ===================================================
+
+//=== { TJclStrArrayList } ======================================================
 
 constructor TJclStrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
   FSize := 0;
+  
   if ACapacity < 0 then
     FCapacity := 0
   else
@@ -1440,7 +1455,6 @@ begin
     while It.HasNext do
     begin
       // (rom) inlining Add() gives about 5 percent performance increase
-      // without THREADSAFE and about 30 percent with THREADSAFE
       if FSize = Capacity then
         Grow;
       FElementData[FSize] := It.Next;
@@ -1496,7 +1510,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AString then
+      if (FElementData[I] = AString) then
       begin
         Result := True;
         Break;
@@ -1545,7 +1559,7 @@ begin
       Exit;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if FElementData[I] <> It.Next then
+      if not (FElementData[I] = It.Next) then
         Exit;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -1640,7 +1654,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AString then
+      if (FElementData[I] = AString) then
       begin
         Result := I;
         Break;
@@ -1663,7 +1677,7 @@ begin
     if FSize = Capacity then
       Grow;
     if FSize <> Index then
-      MoveArray(FElementData, Index, Index + 1, FSize - Index);
+      JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
     FElementData[Index] := AString;
     Inc(FSize);
   {$IFDEF THREADSAFE}
@@ -1683,16 +1697,14 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
-
     if ACollection = nil then
       Exit;
     InsertionSize := ACollection.Size;
-    if FSize + InsertionSize >= Capacity then
+    if (FSize + InsertionSize) >= Capacity then
       Grow(InsertionSize);
-    MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
+    JclBase.MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
     Inc(FSize, InsertionSize);
     It := ACollection.First;
     Result := It.HasNext;
@@ -1742,7 +1754,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AString then
+      if (FElementData[I] = AString) then
       begin
         Result := I;
         Break;
@@ -1778,11 +1790,11 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AString then // Removes all AString
+      if (FElementData[I] = AString) then // Removes all AString
       begin
-        FElementData[I] := ''; // Force Release
+        FElementData[I] := '';
         if FSize <> I then
-          MoveArray(FElementData, I + 1, I, FSize - I);
+          JclBase.MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
       end;
@@ -1804,7 +1816,7 @@ begin
     Result := FElementData[Index];
     FElementData[Index] := '';
     if FSize <> Index then
-      MoveArray(FElementData, Index + 1, Index, FSize - Index);
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index);
     Dec(FSize);
   {$IFDEF THREADSAFE}
   finally
@@ -1883,7 +1895,8 @@ begin
   {$ENDIF THREADSAFE}
     if (Index < 0) or (Index >= FSize) then
       raise EJclOutOfBoundsError.Create;
-    FElementData[Index] := AString
+    FElementData[Index] := '';
+    FElementData[Index] := AString;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1917,6 +1930,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 //=== { TJclArrayList } ======================================================
 
@@ -2018,7 +2032,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(Self, False); // Only one can have FOwnsObject = True
+    Result := TJclArrayList.Create(Self, False); // Only one container can own objects
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2036,7 +2050,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AObject then
+      if (FElementData[I] = AObject) then
       begin
         Result := True;
         Break;
@@ -2085,7 +2099,7 @@ begin
       Exit;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if FElementData[I] <> It.Next then
+      if not (FElementData[I] = It.Next) then
         Exit;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -2188,7 +2202,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if FElementData[I] = AObject then
+      if (FElementData[I] = AObject) then
       begin
         Result := I;
         Break;
@@ -2211,7 +2225,7 @@ begin
     if FSize = Capacity then
       Grow;
     if FSize <> Index then
-      MoveArray(FElementData, Index, Index + 1, FSize - Index);
+      JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
     FElementData[Index] := AObject;
     Inc(FSize);
   {$IFDEF THREADSAFE}
@@ -2236,9 +2250,9 @@ begin
     if ACollection = nil then
       Exit;
     InsertionSize := ACollection.Size;
-    if FSize + InsertionSize >= Capacity then
+    if (FSize + InsertionSize) >= Capacity then
       Grow(InsertionSize);
-    MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
+    JclBase.MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
     Inc(FSize, InsertionSize);
     It := ACollection.First;
     Result := It.HasNext;
@@ -2260,7 +2274,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(Self, False); // Only one can have FOwnsObject = True
+    Result := TJclArrayList.Create(Self, False); // Only one container can own objects
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2288,7 +2302,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AObject then
+      if (FElementData[I] = AObject) then
       begin
         Result := I;
         Break;
@@ -2324,11 +2338,11 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := FSize - 1 downto 0 do
-      if FElementData[I] = AObject then // Removes all AObject
+      if (FElementData[I] = AObject) then // Removes all AObject
       begin
         FreeObject(FElementData[I]);
         if FSize <> I then
-          MoveArray(FElementData, I + 1, I, FSize - I);
+          JclBase.MoveArray(FElementData, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
       end;
@@ -2353,7 +2367,7 @@ begin
       Result := FElementData[Index];
     FreeObject(FElementData[Index]);
     if FSize <> Index then
-      MoveArray(FElementData, Index + 1, Index, FSize - Index);
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index);
     Dec(FSize);
   {$IFDEF THREADSAFE}
   finally
@@ -2394,7 +2408,7 @@ begin
     Result := False;
     if ACollection = nil then
       Exit;
-    for I := FSize - 1 to 0 do
+    for I := FSize - 1 downto 0 do
       if not ACollection.Contains(FElementData[I]) then
         Remove(I);
   {$IFDEF THREADSAFE}
@@ -2458,7 +2472,7 @@ begin
     Last := First + Count - 1;
     if Last >= FSize then
       Last := FSize - 1;
-    Result := TJclArrayList.Create(Count, False);
+    Result := TJclArrayList.Create(Count, False); // Only one container can own objects
     for I := First to Last do
       Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
@@ -2467,10 +2481,10 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 {$IFDEF SUPPORTS_GENERICS}
 
-//=== { TJclArrayList<T> } ===================================================
+
+//=== { TJclArrayList<T> } ======================================================
 
 constructor TJclArrayList<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
@@ -2489,7 +2503,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EJclIllegalArgumentError.Create;
+    raise EJclNoCollectionError.Create;
   Create(ACollection.Size, AOwnsItems);
   AddAll(ACollection);
 end;
@@ -2570,7 +2584,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyArrayList(Self);
+    Result := CreateEmptyArrayList(Self, False); // Only one container can own items
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2588,7 +2602,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(AItem, FElementData[I]) then
+      if ItemsEqual(FElementData[I], AItem) then
       begin
         Result := True;
         Break;
@@ -2621,12 +2635,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclArrayList<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>;
-begin
-  Result := CreateEmptyArrayList(ACollection.Size);
-  Result.AddAll(ACollection);
-end;
-
 function TJclArrayList<T>.Equals(const ACollection: IJclCollection<T>): Boolean;
 var
   I: Integer;
@@ -2643,7 +2651,7 @@ begin
       Exit;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], It.Next) then
+      if not ItemsEqual(FElementData[I], It.Next) then
         Exit;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -2660,7 +2668,7 @@ end;
 
 procedure TJclArrayList<T>.FreeItem(var AItem: T);
 begin
-  if OwnsItems then
+  if FOwnsItems then
     FreeAndNil(AItem)
   else
     AItem := Default(T);
@@ -2684,26 +2692,6 @@ begin
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclArrayList<T>.Grow;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if Capacity > 64 then
-      Capacity := Capacity + Capacity div 4
-    else
-    if Capacity = 0 then
-      Capacity := 64
-    else
-      Capacity := Capacity + 16;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2736,6 +2724,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+procedure TJclArrayList<T>.Grow;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Capacity > 64 then
+      Capacity := Capacity + Capacity div 4
+    else
+    if Capacity = 0 then
+      Capacity := 64
+    else
+      Capacity := Capacity + 16;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclArrayList<T>.IndexOf(const AItem: T): Integer;
 var
   I: Integer;
@@ -2746,7 +2754,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(AItem, FElementData[I]) then
+      if ItemsEqual(FElementData[I], AItem) then
       begin
         Result := I;
         Break;
@@ -2758,7 +2766,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclArrayList<T>.Insert(Index: Integer; AItem: T);
+procedure TJclArrayList<T>.Insert(Index: Integer; const AItem: T);
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -2794,9 +2802,9 @@ begin
     if ACollection = nil then
       Exit;
     InsertionSize := ACollection.Size;
-    if FSize + InsertionSize >= Capacity then
+    if (FSize + InsertionSize) >= Capacity then
       Grow(InsertionSize);
-    TJclBase<T>.MoveArray(FElementData, Index, Index + InsertionSize, Size - Index);
+    TJclBase<T>.MoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
     Inc(FSize, InsertionSize);
     It := ACollection.First;
     Result := It.HasNext;
@@ -2818,7 +2826,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyArrayList(Self);
+    Result := CreateEmptyArrayList(Self, False); // Only one container can own items
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2846,7 +2854,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if ItemsEqual(AItem, FElementData[I]) then
+      if ItemsEqual(FElementData[I], AItem) then
       begin
         Result := I;
         Break;
@@ -2872,7 +2880,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclArrayList<T>.Remove(AItem: T): Boolean;
+function TJclArrayList<T>.Remove(const AItem: T): Boolean;
 var
   I: Integer;
 begin
@@ -2882,7 +2890,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := FSize - 1 downto 0 do
-      if ItemsEqual(AItem, FElementData[I]) then // Removes all AObject
+      if ItemsEqual(FElementData[I], AItem) then // Removes all AItem
       begin
         FreeItem(FElementData[I]);
         if FSize <> I then
@@ -2952,7 +2960,7 @@ begin
     Result := False;
     if ACollection = nil then
       Exit;
-    for I := FSize - 1 to 0 do
+    for I := FSize - 1 downto 0 do
       if not ACollection.Contains(FElementData[I]) then
         Remove(I);
   {$IFDEF THREADSAFE}
@@ -3016,7 +3024,7 @@ begin
     Last := First + Count - 1;
     if Last >= FSize then
       Last := FSize - 1;
-    Result := CreateEmptyArrayList(Count);
+    Result := CreateEmptyArrayList(Count, False); // Only one container can own items
     for I := First to Last do
       Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
@@ -3042,16 +3050,21 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
+function TJclArrayListE<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
+begin
+  Result := TJclArrayListE<T>.Create(EqualityComparer, ACapacity, False);
+end;
+
+function TJclArrayListE<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>;
+begin
+  Result := TJclArrayListE<T>.Create(EqualityComparer, ACollection, False);
+end;
+
 function TJclArrayListE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
   if EqualityComparer = nil then
     raise EJclNoEqualityComparerError.Create;
   Result := EqualityComparer.Equals(A, B);
-end;
-
-function TJclArrayListE<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
-begin
-  Result := TJclArrayListE<T>.Create(EqualityComparer, ACapacity, False);
 end;
 
 //=== { TJclArrayListF<T> } ==================================================
@@ -3070,16 +3083,21 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
+function TJclArrayListF<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
+begin
+  Result := TJclArrayListF<T>.Create(EqualityCompare, ACapacity, False);
+end;
+
+function TJclArrayListF<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>;
+begin
+  Result := TJclArrayListF<T>.Create(EqualityCompare, ACollection, False);
+end;
+
 function TJclArrayListF<T>.ItemsEqual(const A, B: T): Boolean;
 begin
   if not Assigned(EqualityCompare) then
     raise EJclNoEqualityComparerError.Create;
   Result := EqualityCompare(A, B);
-end;
-
-function TJclArrayListF<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
-begin
-  Result := TJclArrayListF<T>.Create(EqualityCompare, ACapacity, False);
 end;
 
 //=== { TJclArrayListI<T> } ==================================================
@@ -3092,6 +3110,11 @@ end;
 function TJclArrayListI<T>.CreateEmptyArrayList(ACapacity: Integer): TJclArrayList<T>;
 begin
   Result := TJclArrayListI<T>.Create(ACapacity, False);
+end;
+
+function TJclArrayListI<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>): TJclArrayList<T>;
+begin
+  Result := TJclArrayListI<T>.Create(ACollection, False);
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

@@ -1,0 +1,723 @@
+(*$JPPDEFINEMACRO JCLARRAYLISTINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, ITRINTERFACENAME,
+  DYNARRAYTYPE, INTERFACELISTADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS,
+  OWNERSHIPDECLARATION, PARAMETERDECLARATION, TYPENAME, GETTERNAME, SETTERNAME)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME,INTERFACELISTADDITIONAL
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  private
+    FCapacity: Integer;
+    FElementData: DYNARRAYTYPE;
+    FSize: Integer;PRIVATEADDITIONAL
+  protected
+    { IJclPackable }
+    procedure Pack;
+    function GetCapacity: Integer;
+    procedure SetCapacity(Value: Integer);
+    { IJclGrowable }
+    procedure Grow; overload; virtual;
+    procedure Grow(Increment: Integer); overload;
+    procedure Grow(Num, Denom: Integer); overload;
+    { IJclIntfCloneable }
+    function IntfClone: IInterface;
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCloneable }
+    function Clone: TObject;
+    { COLLECTIONINTERFACENAME }
+    function Add(PARAMETERDECLARATION): Boolean; overload;COLLECTIONFLAGS
+    function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean; overload;COLLECTIONFLAGS
+    procedure Clear;COLLECTIONFLAGS
+    function Contains(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function First: ITRINTERFACENAME;COLLECTIONFLAGS
+    function IsEmpty: Boolean;COLLECTIONFLAGS
+    function Last: ITRINTERFACENAME;COLLECTIONFLAGS
+    function Remove(PARAMETERDECLARATION): Boolean; overload;COLLECTIONFLAGS
+    function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Size: Integer;COLLECTIONFLAGS
+    { LISTINTERFACENAME }
+    procedure Insert(Index: Integer; PARAMETERDECLARATION); overload;
+    function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean; overload;
+    function GETTERNAME(Index: Integer): TYPENAME;
+    function IndexOf(PARAMETERDECLARATION): Integer;
+    function LastIndexOf(PARAMETERDECLARATION): Integer;
+    function Remove(Index: Integer): TYPENAME; overload;
+    procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
+    function SubList(First, Count: Integer): LISTINTERFACENAME;PROTECTEDADDITIONAL
+  public
+    constructor Create(ACapacity: Integer = DefaultContainerCapacityOWNERSHIPDECLARATION); overload;
+    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
+    destructor Destroy; override;
+    property Capacity: Integer read FCapacity write SetCapacity;PUBLICADDITIONAL
+  end;*)
+(*$JPPDEFINEMACRO JCLITRIMP(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+  PARAMETERDECLARATION, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
+//=== { SELFCLASSNAME } ===============================================================
+
+type
+  SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: LISTINTERFACENAME;
+  protected
+    { IJclCloneable }
+    function Clone: TObject;
+    { IJclIntfCloneable }
+    function IntfClone: IInterface;
+    function IJclIntfCloneable.Clone = IntfClone;
+    { ITRINTERFACENAME }
+    procedure Add(PARAMETERDECLARATION);
+    function GETTERNAME: TYPENAME;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    procedure Insert(PARAMETERDECLARATION);
+    function Next: TYPENAME;
+    function NextIndex: Integer;
+    function Previous: TYPENAME;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SETTERNAME(PARAMETERDECLARATION);
+  public
+    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(AOwnList);
+  FOwnList := AOwnList;
+  FCursor := ACursor;
+  Valid := AValid;
+end;
+
+procedure SELFCLASSNAME.Add(PARAMETERDECLARATION);
+begin
+  FOwnList.Add(PARAMETERNAME);
+end;
+
+function SELFCLASSNAME.Clone: TObject;
+begin
+  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+end;
+
+function SELFCLASSNAME.GETTERNAME: TYPENAME;
+begin
+  Valid := True;
+  Result := FOwnList.GETTERNAME(FCursor);
+end;
+
+function SELFCLASSNAME.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function SELFCLASSNAME.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+procedure SELFCLASSNAME.Insert(PARAMETERDECLARATION);
+begin
+  Valid := True;
+  FOwnList.Insert(FCursor, PARAMETERNAME);
+end;
+
+function SELFCLASSNAME.IntfClone: IInterface;
+begin
+  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+end;
+
+function SELFCLASSNAME.Next: TYPENAME;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GETTERNAME(FCursor);
+end;
+
+function SELFCLASSNAME.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function SELFCLASSNAME.Previous: TYPENAME;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GETTERNAME(FCursor);
+end;
+
+function SELFCLASSNAME.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure SELFCLASSNAME.Remove;
+begin
+  Valid := False;
+  FOwnList.Remove(FCursor);
+end;
+
+procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
+begin
+  Valid := True;
+  FOwnList.SETTERNAME(FCursor, PARAMETERNAME);
+end;*)
+
+(*$JPPDEFINEMACRO JCLARRAYLISTIMP(SELFCLASSNAME,
+  OWNERSHIPDECLARATION, OWNERSHIPASSIGNMENT, OWNERSHIPPARAMETER, OWNERSHIPFREEIMP, REMOVEASSIGNMENT,
+  COLLECTIONINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME,
+  PARAMETERDECLARATION, PARAMETERNAME, GETTERNAME, SETTERNAME, TYPENAME, DEFAULTVALUE, MOVEARRAYPREFIX)
+//=== { SELFCLASSNAME } ======================================================
+
+constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
+begin
+  inherited Create(nil);
+  FSize := 0;
+  OWNERSHIPASSIGNMENT
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
+  SetLength(FElementData, FCapacity);
+end;
+
+constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
+begin
+  // (rom) disabled because the following Create already calls inherited
+  // inherited Create;
+  if ACollection = nil then
+    raise EJclNoCollectionError.Create;
+  Create(ACollection.SizeOWNERSHIPPARAMETER);
+  AddAll(ACollection);
+end;
+
+destructor SELFCLASSNAME.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = Capacity then
+      Grow;
+    FElementData[FSize] := PARAMETERNAME;
+    Inc(FSize);
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      // (rom) inlining Add() gives about 5 percent performance increase
+      if FSize = Capacity then
+        Grow;
+      FElementData[FSize] := It.Next;
+      Inc(FSize);
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      {$JPPEXPANDMACRO ITEMFREE(FElementData[I])}
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Clone: TObject;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := {$JPPEXPANDMACRO LISTCREATE(Self)}
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if {$JPPEXPANDMACRO ITEMSEQUAL(FElementData[I], PARAMETERNAME)} then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  I: Integer;
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not {$JPPEXPANDMACRO ITEMSEQUAL(FElementData[I], It.Next)} then
+        Exit;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.First: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, 0, False);
+end;
+OWNERSHIPFREEIMP
+function SELFCLASSNAME.GetCapacity: Integer;
+begin
+  Result := FCapacity;
+end;
+
+function SELFCLASSNAME.GETTERNAME(Index: Integer): TYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      Result := DEFAULTVALUE
+    else
+      Result := FElementData[Index];
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Grow(Increment: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Capacity := Capacity + Increment;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Grow(Num, Denom: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Capacity := Capacity * Num div Denom;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Grow;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Capacity > 64 then
+      Capacity := Capacity + Capacity div 4
+    else
+    if Capacity = 0 then
+      Capacity := 64
+    else
+      Capacity := Capacity + 16;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.IndexOf(PARAMETERDECLARATION): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if {$JPPEXPANDMACRO ITEMSEQUAL(FElementData[I], PARAMETERNAME)} then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if FSize = Capacity then
+      Grow;
+    if FSize <> Index then
+      MOVEARRAYPREFIXMoveArray(FElementData, Index, Index + 1, FSize - Index);
+    FElementData[Index] := PARAMETERNAME;
+    Inc(FSize);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+  InsertionSize: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    InsertionSize := ACollection.Size;
+    if (FSize + InsertionSize) >= Capacity then
+      Grow(InsertionSize);
+    MOVEARRAYPREFIXMoveArray(FElementData, Index, Index + InsertionSize, FSize - Index);
+    Inc(FSize, InsertionSize);
+    It := ACollection.First;
+    Result := It.HasNext;
+    while It.HasNext do
+    begin
+      FElementData[Index] := It.Next;
+      Inc(Index);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.IntfClone: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := {$JPPEXPANDMACRO LISTCREATE(Self)}
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function SELFCLASSNAME.Last: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, FSize - 1, False);
+end;
+
+function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if {$JPPEXPANDMACRO ITEMSEQUAL(FElementData[I], PARAMETERNAME)} then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Capacity := FSize;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if {$JPPEXPANDMACRO ITEMSEQUAL(FElementData[I], PARAMETERNAME)} then // Removes all PARAMETERNAME
+      begin
+        {$JPPEXPANDMACRO ITEMFREE(FElementData[I]))}
+        if FSize <> I then
+          MOVEARRAYPREFIXMoveArray(FElementData, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Remove(Index: Integer): TYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    REMOVEASSIGNMENT
+    {$JPPEXPANDMACRO ITEMFREE(FElementData[Index])}
+    if FSize <> Index then
+      MOVEARRAYPREFIXMoveArray(FElementData, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(FElementData[I]) then
+        Remove(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value >= FSize then
+    begin
+      SetLength(FElementData, Value);
+      FCapacity := Value;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.SETTERNAME(Index: Integer; PARAMETERDECLARATION);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    {$JPPEXPANDMACRO ITEMFREE(FElementData[Index])}
+    FElementData[Index] := PARAMETERNAME;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function SELFCLASSNAME.SubList(First, Count: Integer): LISTINTERFACENAME;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := {$JPPEXPANDMACRO LISTCREATE(Count)}
+    for I := First to Last do
+      Result.Add(FElementData[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;*)

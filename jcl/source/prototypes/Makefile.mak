@@ -6,17 +6,18 @@
 
 jpp		= ..\..\devtools\jpp.exe
 
-Options         = -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
-CommonOptions   = $(Options) -f..\common\\
-VclOptions      = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
-VClxOptions	= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
-WinOptions      = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
-Win32Options    = $(Options) -uHAS_UNIT_LIBC -f..\windows\\
-UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
-ZlibOptions	= -uSTATIC_GZIO
+Options          = -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
+CommonOptions    = $(Options) -f..\common\\
+VclOptions       = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
+VClxOptions	 = $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
+WinOptions       = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
+Win32Options     = $(Options) -uHAS_UNIT_LIBC -f..\windows\\
+ContainerOptions = $(Options) -m -ijcl.inc -f..\Common\\
+UnixOptions      = $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
+ZlibOptions	 = -uSTATIC_GZIO
 
 
-release:	VCL VisualCLX Windows Unix
+release:	VCL VisualCLX Windows Unix Containers
 
 VCL:    	..\vcl\JclGraphics.pas \
 		..\vcl\JclGraphUtils.pas
@@ -30,7 +31,10 @@ Windows:        ..\windows\JclWin32.pas \
 
 Unix:		..\unix\zlibh.pas
 
-zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
+zlib:		..\windows\zlibh.pas \
+		..\unix\zlibh.pas
+
+Containers:	..\Common\JclArrayLists.pas
 
 ..\vcl\JclGraphics.pas: \
 		_Graphics.pas
@@ -65,6 +69,10 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 		zlibh.pas
         echo Win-zlib
 	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
+
+..\Common\JclArrayLists.pas: \
+		JclArrayLists.pas
+	$(jpp) $(ContainerOptions) $?
 
 {.}.pas{..\common}.pas:
 	$(jpp) $(CommonOptions) $<

@@ -20,7 +20,10 @@
 {    Portions created by Barry Kelly are Copyright (C) 2001                    }
 {    Barry Kelly. All Rights Reserved.                                         }
 {                                                                              }
-{    Contributors: Robert Rossmair, Peter Thörnqvist                           }
+{    Contributors:                                                             }
+{      Robert Rossmair,                                                        }
+{      Peter Thörnqvist,                                                       }
+{      Florent Ouchet                                                          }
 {                                                                              }
 {    Alternatively, the contents of this file may be used under the terms      }
 {    of the Lesser GNU Public License (the  "LGPL License"), in which case     }
@@ -36,7 +39,6 @@
 { **************************************************************************** }
 
 // Last modified: $Date$
-// For history, see end of file
 
 unit JppParser;
 
@@ -53,7 +55,7 @@ type
   TJppParser = class
   private
     FLexer: TJppLexer;
-    FState: TJppState;
+    FState: TSimplePppState;
     FTriState: TTriState;
     FResult: string;
     FResultLen: Integer;
@@ -76,19 +78,26 @@ type
     procedure ParseDefine;
     procedure ParseUndef;
 
+    procedure ParseDefineMacro;
+    procedure ParseExpandMacro;
+    procedure ParseUndefMacro;
+
     // same as ParseText, but throws result away
     procedure Skip;
 
     property Lexer: TJppLexer read FLexer;
-    property State: TJppState read FState;
+    property State: TSimplePppState read FState;
   public
-    constructor Create(AStream: TStream; APppState: TJppState);
+    constructor Create(AStream: TStream; APppState: TSimplePppState);
     destructor Destroy; override;
     function Parse: string;
   end;
 
 implementation
 
+uses
+  JclBase, JclAnsiStrings;
+  
 {$IFDEF MSWINDOWS}
 const
   LineBreak = #13#10;
@@ -121,16 +130,118 @@ begin
     end;
 end;
 
+function ParseMacro(const MacroText: string; var MacroName: string; var ParamNames: TDynStringArray;
+  ParamDeclaration: Boolean): Integer;
+var
+  I, J: Integer;
+  Comment: Boolean;
+  ParenthesisCount: Integer;
+begin
+  I := 1;
+  while (I <= Length(MacroText)) and not (MacroText[I] in [#1..#32]) do
+    Inc(I);
+  while (I <= Length(MacroText)) and (MacroText[I] in [#1..#32]) do
+    Inc(I);
+  J := I;
+  while (J <= Length(MacroText)) and (MacroText[J] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do
+    Inc(J);
+  MacroName := Copy(MacroText, I, J - I);
+
+  if J <= Length(MacroText) then
+  begin
+    SetLength(ParamNames, 0);
+    if MacroText[J] = '(' then
+    begin
+      Inc(J);
+      if ParamDeclaration then
+      begin
+        repeat
+          while (J <= Length(MacroText)) and (MacroText[J] in [#1..#32]) do
+            Inc(J);
+          I := J;
+          while (I <= Length(MacroText)) and (MacroText[I] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do
+            Inc(I);
+          SetLength(ParamNames, Length(ParamNames) + 1);
+          ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
+          while (I <= Length(MacroText)) and (MacroText[I] in [#1..#32]) do
+            Inc(I);
+          if (I <= Length(MacroText)) then
+            case MacroText[I] of
+              ',':
+                Inc(I);
+              ')': ;
+            else
+              raise EPppParserError.CreateFmt('invalid parameter declaration in macro "%s"', [MacroText]);
+            end;
+          J := I;
+        until (J > Length(MacroText)) or (MacroText[J] = ')');
+      end
+      else
+      begin
+        repeat
+          I := J;
+          Comment := False;
+          ParenthesisCount := 0;
+
+          while I <= Length(MacroText) do
+          begin
+            case MacroText[I] of
+              AnsiSingleQuote:
+                Comment := not Comment;
+              '(':
+                if not Comment then
+                  Inc(ParenthesisCount);
+              ')':
+                begin
+                  if (not Comment) and (ParenthesisCount = 0) then
+                    Break;
+                  if not Comment then
+                    Dec(ParenthesisCount);
+                end;
+              AnsiBackslash:
+                if (not Comment) and (ParenthesisCount = 0) and (I < Length(MacroText)) and (MacroText[i + 1] = AnsiComma) then
+                  Inc(I);
+              AnsiComma:
+                if (not Comment) and (ParenthesisCount = 0) then
+                  Break;
+            end;
+            Inc(I);
+          end;
+          SetLength(ParamNames, Length(ParamNames) + 1);
+          ParamNames[High(ParamNames)] := Copy(MacroText, J, I - J);
+          StrReplace(ParamNames[High(ParamNames)], '\,', ',', [rfReplaceAll]);
+          if (I < Length(MacroText)) and (MacroText[I] = ',') then
+            Inc(I);
+          J := I;
+        until (J > Length(MacroText)) or (MacroText[J] = ')');
+      end;
+      if J <= Length(MacroText) then
+      begin
+        if MacroText[J] = ')' then
+          Inc(J) // skip )
+        else
+          raise EPppParserError.CreateFmt('Unterminated list of arguments for macro "%s"', [MacroText]);
+      end;
+    end
+    else
+    begin
+      while (J <= Length(MacroText)) and (MacroText[J] in [#1..#32]) do
+        Inc(J);
+    end;
+  end;
+  Result := J;
+end;
+
 { TJppParser }
 
-constructor TJppParser.Create(AStream: TStream; APppState: TJppState);
+constructor TJppParser.Create(AStream: TStream; APppState: TSimplePppState);
 begin
   Assert(AStream <> nil);
   Assert(APppState <> nil);
 
   FLexer := TJppLexer.Create(AStream);
   FState := APppState;
-  FTriState := ttDefined;
+  FTriState := ttUnknown;
   FState.Undef('PROTOTYPE');
 end;
 
@@ -141,15 +252,39 @@ begin
 end;
 
 procedure TJppParser.AddResult(const S: string);
+var
+  TempMemoryStream: TMemoryStream;
+  TempParser: TJppParser;
+  AResult: string;
 begin
   if FSkipLevel > 0 then
     Exit;
-  while FResultLen + Length(S) > Length(FResult) do
+  // recurse macro expanding
+  if StrIPos('$JPP', S) > 0 then
+  begin
+    TempMemoryStream := TMemoryStream.Create;
+    try
+      TempMemoryStream.WriteBuffer(S[1], Length(S));
+      TempMemoryStream.Seek(0, soBeginning);
+      TempParser := TJppParser.Create(TempMemoryStream, State);
+      try
+        AResult := TempParser.Parse;
+      finally
+        TempParser.Free;
+      end;
+    finally
+      TempMemoryStream.Free;
+    end;
+  end
+  else
+    AResult := S;
+
+  while FResultLen + Length(AResult) > Length(FResult) do
     SetLength(FResult, Length(FResult) * 2);
-  Move(S[1], FResult[FResultLen + 1], Length(S));
+  Move(AResult[1], FResult[FResultLen + 1], Length(AResult));
   if FAllWhiteSpaceOut then
     FAllWhiteSpaceOut := AllWhiteSpace(@FResult[FLineBreakPos]);
-  Inc(FResultLen, Length(S));
+  Inc(FResultLen, Length(AResult));
 end;
 
 procedure TJppParser.Emit(const AText: string);
@@ -159,7 +294,7 @@ end;
 
 function TJppParser.IsExcludedInclude(const FileName: string): Boolean;
 begin
-  Result := State.ExcludedIncludes.IndexOf(FileName) >= 0;
+  Result := State.IsFileExcluded(FileName);
 end;
 
 procedure TJppParser.NextToken;
@@ -204,7 +339,10 @@ begin
     ptIfndef,
     ptIfopt,
     ptElse,
-    ptEndif:
+    ptEndif,
+    ptJppDefineMacro,
+    ptJppExpandMacro,
+    ptJppUndefMacro:
       FAllWhiteSpaceIn := False;
     ptInclude:
       FAllWhiteSpaceIn := IsExcludedInclude(Lexer.TokenAsString);
@@ -230,7 +368,7 @@ var
   SavedTriState: TTriState;
 begin
   SavedTriState := FTriState;
-  FTriState := State.TriState[Lexer.TokenAsString];
+  FTriState := State.DefineTriState[Lexer.TokenAsString];
   try
     if FTriState = ttUnknown then
     begin
@@ -282,11 +420,41 @@ begin
   case FTriState of
     ttUnknown:
       begin
-        State.TriState[Lexer.TokenAsString] := ttUnknown;
+        State.DefineTriState[Lexer.TokenAsString] := ttUnknown;
         AddResult(Lexer.RawComment);
       end;
     ttDefined: State.Define(Lexer.TokenAsString);
   end;
+  NextToken;
+end;
+
+procedure TJppParser.ParseDefineMacro;
+var
+  I, J: Integer;
+  MacroText, MacroName, MacroValue: string;
+  ParamNames: TDynStringArray;
+begin
+  MacroText := Lexer.TokenAsString;
+  I := ParseMacro(MacroText, MacroName, ParamNames, True);
+  if I <= Length(MacroText) then
+  begin
+    J := Length(MacroText);
+    if MacroText[J] = ')' then
+      Dec(J);
+    MacroValue := Copy(MacroText, I, J - I);
+    State.DefineMacro(MacroName, ParamNames, MacroValue);
+  end;
+  NextToken;
+end;
+
+procedure TJppParser.ParseExpandMacro;
+var
+  MacroText, MacroName: string;
+  ParamNames: TDynStringArray;
+begin
+  MacroText := Lexer.TokenAsString;
+  ParseMacro(MacroText, MacroName, ParamNames, False);
+  AddResult(State.ExpandMacro(MacroName, ParamNames));
   NextToken;
 end;
 
@@ -295,11 +463,22 @@ begin
   case FTriState of
     ttUnknown:
       begin
-        State.TriState[Lexer.TokenAsString] := ttUnknown;
+        State.DefineTriState[Lexer.TokenAsString] := ttUnknown;
         AddResult(Lexer.RawComment);
       end;
     ttDefined: State.Undef(Lexer.TokenAsString);
   end;
+  NextToken;
+end;
+
+procedure TJppParser.ParseUndefMacro;
+var
+  MacroText, MacroName: string;
+  ParamNames: TDynStringArray;
+begin
+  MacroText := Lexer.TokenAsString;
+  ParseMacro(MacroText, MacroName, ParamNames, True);
+  State.UndefMacro(MacroName, ParamNames);
   NextToken;
 end;
 
@@ -391,6 +570,20 @@ begin
           AddResult(ParseInclude)
         else
           AddRawComment;
+
+      ptJppDefineMacro, ptJppExpandMacro, ptJppUndefMacro:
+        if poProcessMacros in State.Options then
+          case Lexer.CurrTok of
+            ptJppDefineMacro:
+              ParseDefineMacro;
+            ptJppExpandMacro:
+              ParseExpandMacro;
+            ptJppUndefMacro:
+              ParseUndefMacro;
+          end
+        else
+          AddRawComment;
+
     else
       Break;
     end;
@@ -406,33 +599,4 @@ begin
   end;
 end;
 
-// History:
-
-// $Log$
-// Revision 1.10  2004/12/22 14:31:01  rrossmair
-// - fixed TJppParser.ParseInclude: missing Result initialization caused garbage output
-//
-// Revision 1.9  2004/12/03 04:17:19  rrossmair
-// - "i" option changed to allow for excluding specified files from processing
-//
-// Revision 1.8  2004/10/30 13:30:46  rrossmair
-// - fixed TJppParser.ParseUndef bug
-//
-// Revision 1.7  2004/06/21 00:14:14  rrossmair
-// - fixed ParseInclude
-// - eventually match $ELSE, $ENDIF to $IFOPT (otherwise not handled)
-// - renamed identifiers from JppLexer
-// - AllWhiteSpace handles tabulators now
-//
-// Revision 1.6  2004/06/20 03:24:48  rrossmair
-// - orphaned line breaks problem fixed.
-//
-// Revision 1.5  2004/06/05 19:42:08  rrossmair
-// - fixed problems with nested compiler conditions
-//
-// Revision 1.4  2004/04/18 06:19:06  rrossmair
-// introduced pre-undefined symbol "PROTOTYPE"
-//
-
 end.
-
