@@ -7,12 +7,12 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..11)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JclVersionStr "1.101.0.2647"
+#define JclVersionStr "1.102.0.2726"
 #define MyAppName "Jedi Code Library"
 #define MyAppVerName "Jedi Code Library " + JclVersionStr
 #define MyAppPublisher "JCL Team"
 #define MyAppURL "http://jcl.sourceforge.net/"
-#define downloadurl "http://jvcl.sourceforge.net/websetup/jcl"
+#define downloadurl "http://jcl.sourceforge.net/websetup/jcl"
 
 #define Include_Binaries
 #define Include_Examples
