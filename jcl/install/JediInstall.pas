@@ -349,7 +349,7 @@ begin
   inherited Create(nil);
   
   FOptions := TStringList.Create;
-  FProducts := TJclIntfArrayList.Create;
+  FProducts := TJclIntfArrayList.Create(1);
   FClosing := False;
   JediTargetOption := AddInstallOption('joTarget');
 

@@ -159,7 +159,7 @@ end;
 constructor TMainForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPages := TJclIntfArrayList.Create;
+  FPages := TJclIntfArrayList.Create(5);
 end;
 
 destructor TMainForm.Destroy;

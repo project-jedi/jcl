@@ -5,19 +5,20 @@
 #
 
 jpp		= ..\..\devtools\jpp.exe
+touch		= $(MAKEDIR)\touch.exe
 
-Options          = -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
-CommonOptions    = $(Options) -f..\common\\
-VclOptions       = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
-VClxOptions	 = $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
-WinOptions       = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
-Win32Options     = $(Options) -uHAS_UNIT_LIBC -f..\windows\\
-ContainerOptions = $(Options) -m -ijcl.inc -f..\Common\\
-UnixOptions      = $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
-ZlibOptions	 = -uSTATIC_GZIO
+Options			= -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
+# CommonOptions		= $(Options) -f..\common\\
+VclOptions		= $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
+VClxOptions		= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
+WinOptions		= $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
+Win32Options		= $(Options) -uHAS_UNIT_LIBC -f..\windows\\
+ContainerOptions	= $(Options) -m -ijcl.inc -f..\Common\\
+UnixOptions		= $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
+ZlibOptions		= -uSTATIC_GZIO
 
 
-release:	VCL VisualCLX Windows Unix Containers
+release:	VCL VisualCLX Windows Unix ContainersProt Containers
 
 VCL:    	..\vcl\JclGraphics.pas \
 		..\vcl\JclGraphUtils.pas
@@ -34,7 +35,25 @@ Unix:		..\unix\zlibh.pas
 zlib:		..\windows\zlibh.pas \
 		..\unix\zlibh.pas
 
-Containers:	..\Common\JclArrayLists.pas
+ContainersProt:	JclArrayLists.pas \
+		JclArraySets.pas \
+		JclBinaryTrees.pas \
+		JclHashMaps.pas \
+		JclHashSets.pas \
+		JclLinkedLists.pas \
+		JclQueues.pas \
+		JclStacks.pas \
+		JclVectors.pas
+
+Containers:	..\Common\JclArrayLists.pas \
+		..\Common\JclArraySets.pas \
+		..\Common\JclBinaryTrees.pas \
+		..\Common\JclHashMaps.pas \
+		..\Common\JclHashSets.pas \
+		..\Common\JclLinkedLists.pas \
+		..\Common\JclQueues.pas \
+		..\Common\JclStacks.pas \
+		..\Common\JclVectors.pas
 
 ..\vcl\JclGraphics.pas: \
 		_Graphics.pas
@@ -70,12 +89,11 @@ Containers:	..\Common\JclArrayLists.pas
         echo Win-zlib
 	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
 
-..\Common\JclArrayLists.pas: \
-		JclArrayLists.pas
-	$(jpp) $(ContainerOptions) $?
+{containers}.imp{.}.pas:
+        $(touch) $@
 
 {.}.pas{..\common}.pas:
-	$(jpp) $(CommonOptions) $<
+	$(jpp) $(ContainerOptions) $<
 
 {.}.pas{..\windows}.pas:
 	$(jpp) $(WinOptions) $<

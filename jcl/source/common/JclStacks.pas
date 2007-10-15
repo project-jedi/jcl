@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -50,25 +54,16 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
-  TJclIntfStack = class(TJclAbstractContainer, IJclIntfStack,
+
+  TJclIntfStack = class(TJclIntfContainer, IJclIntfStack,IJclContainer, IJclIntfEqualityComparer,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    FElements: TDynIInterfaceArray;
-    FCount: Integer;
-    FCapacity: Integer;
+    FElements: JclBase.TDynIInterfaceArray;
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclGrowable }
-    procedure Grow; overload; virtual;
-    procedure Grow(Increment: Integer); overload;
-    procedure Grow(Num, Denom: Integer); overload;
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfStack }
     procedure Clear;
@@ -76,32 +71,24 @@ type
     function Empty: Boolean;
     function Peek: IInterface;
     function Pop: IInterface;
-    procedure Push(const AInterface: IInterface);
+    function Push(const AInterface: IInterface): Boolean;
     function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
 
-  TJclStrStack = class(TJclAbstractContainer, IJclStrStack,
+
+  TJclStrStack = class(TJclStrContainer, IJclStrStack,IJclContainer, IJclStrContainer, IJclStrEqualityComparer,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    FElements: TDynStringArray;
-    FCount: Integer;
-    FCapacity: Integer;
+    FElements: JclBase.TDynStringArray;
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclGrowable }
-    procedure Grow; overload; virtual;
-    procedure Grow(Increment: Integer); overload;
-    procedure Grow(Num, Denom: Integer); overload;
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrStack }
     procedure Clear;
@@ -109,34 +96,24 @@ type
     function Empty: Boolean;
     function Peek: string;
     function Pop: string;
-    procedure Push(const AString: string);
+    function Push(const AString: string): Boolean;
     function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
 
-  TJclStack = class(TJclAbstractContainer, IJclStack,
+
+  TJclStack = class(TJclContainer, IJclStack,IJclContainer, IJclEqualityComparer, IJclObjectOwner,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    FElements: TDynObjectArray;
-    FCount: Integer;
-    FCapacity: Integer;
-    FOwnsObjects: Boolean;
+    FElements: JclBase.TDynObjectArray;
   protected
-    procedure FreeObject(var AObject: TObject);
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclGrowable }
-    procedure Grow; overload; virtual;
-    procedure Grow(Increment: Integer); overload;
-    procedure Grow(Num, Denom: Integer); overload;
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStack }
     procedure Clear;
@@ -144,38 +121,26 @@ type
     function Empty: Boolean;
     function Peek: TObject;
     function Pop: TObject;
-    procedure Push(AObject: TObject);
+    function Push(AObject: TObject): Boolean;
     function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
+    constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
     destructor Destroy; override;
-    property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-  TJclStack<T> = class(TJclAbstractContainer, IJclStack<T>,
+
+
+  TJclStack<T> = class(TJclContainer<T>, IJclStack<T>,IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     FElements: TJclBase<T>.TDynArray;
-    FCount: Integer;
-    FCapacity: Integer;
-    FOwnsItems: Boolean;
   protected
-    function CreateEmptyStack(ACapacity: Integer): TJclStack<T>; virtual; abstract;
-    function ItemsEqual(const A, B: T): Boolean; virtual; abstract;
-    procedure FreeItem(var AItem: T);
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclGrowable }
-    procedure Grow; overload; virtual;
-    procedure Grow(Increment: Integer); overload;
-    procedure Grow(Num, Denom: Integer); overload;
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStack<T> }
     procedure Clear;
@@ -183,12 +148,11 @@ type
     function Empty: Boolean;
     function Peek: T;
     function Pop: T;
-    procedure Push(const AItem: T);
+    function Push(const AItem: T): Boolean;
     function Size: Integer;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsItems: Boolean = True);
+    constructor Create(ACapacity: Integer; AOwnsItems: Boolean);
     destructor Destroy; override;
-    property OwnsItems: Boolean read FOwnsItems;
   end;
 
   // E = external helper to compare items for equality
@@ -197,7 +161,8 @@ type
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    function CreateEmptyStack(ACapacity: Integer): TJclStack<T>; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -214,7 +179,8 @@ type
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    function CreateEmptyStack(ACapacity: Integer): TJclStack<T>; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -229,7 +195,7 @@ type
   TJclStackI<T: IEquatable<T>> = class(TJclStack<T>, IJclStack<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   protected
-    function CreateEmptyStack(ACapacity: Integer): TJclStack<T>; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -251,12 +217,12 @@ implementation
 uses
   SysUtils;
 
-//=== { TJclIntfStack } ======================================================
+
+//=== { TJclIntfStack } =======================================================
 
 constructor TJclIntfStack.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
-  FCount := 0;
   SetCapacity(ACapacity);
 end;
 
@@ -264,6 +230,23 @@ destructor TJclIntfStack.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclIntfStack.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclIntfStack;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntfStack then
+  begin
+    ADest := TJclIntfStack(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(FSize + 1);
+    for I := 0 to FSize - 1 do
+      ADest.FElements[I] := FElements[I];
+    ADest.FSize := FSize;
+  end;
 end;
 
 procedure TJclIntfStack.Clear;
@@ -274,33 +257,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCount - 1 do
-      FElements[I] := nil;
-    FCount := 0;
+    for I := 0 to FSize - 1 do
+      FreeObject(FElements[I]);
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfStack.Clone: TObject;
-var
-  NewStack: TJclIntfStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclIntfStack.Create(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -314,8 +276,8 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    for I := 0 to FCount - 1 do
-      if FElements[I] = AInterface then
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElements[I], AInterface) then
       begin
         Result := True;
         Break;
@@ -327,94 +289,15 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclIntfStack.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclIntfStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 function TJclIntfStack.Empty: Boolean;
 begin
-  Result := FCount = 0;
-end;
-
-function TJclIntfStack.GetCapacity: Integer;
-begin
-  Result := FCapacity;
-end;
-
-procedure TJclIntfStack.Grow(Num, Denom: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity * Num div Denom);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntfStack.Grow(Increment: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity + Increment);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntfStack.Grow;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if FCapacity > 64 then
-      SetCapacity(FCapacity + FCapacity div 4)
-    else
-      SetCapacity(fCapacity + 16);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfStack.IntfClone: IInterface;
-var
-  NewStack: TJclIntfStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclIntfStack.Create(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntfStack.Pack;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCount);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  Result := FSize = 0;
 end;
 
 function TJclIntfStack.Peek: IInterface;
@@ -423,10 +306,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
-      Result := FElements[FCount - 1]
+    Result := nil;
+    if FSize > 0 then
+      Result := FElements[FSize - 1]
     else
-      Result := nil;
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -440,14 +325,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
+    Result := nil;
+    if FSize > 0 then
     begin
-      Dec(FCount);
-      Result := FElements[FCount];
-      FElements[FCount] := nil;
+      Dec(FSize);
+      Result := FElements[FSize];
+      FElements[FSize] := nil;
     end
     else
-      Result := nil;
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -455,16 +343,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfStack.Push(const AInterface: IInterface);
+function TJclIntfStack.Push(const AInterface: IInterface): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount = FCapacity then
-      Grow;
-    FElements[FCount] := AInterface;
-    Inc(FCount);
+    if FSize = FCapacity then
+      AutoGrow;
+    Result := FSize < FCapacity;
+    if Result then
+    begin
+      FElements[FSize] := AInterface;
+      Inc(FSize);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -478,10 +370,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FCount then
+    if Value < FSize then
       raise EJclOutOfBoundsError.Create;
-    FCapacity := Value;
     SetLength(FElements, Value);
+    inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -491,15 +383,15 @@ end;
 
 function TJclIntfStack.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
+
 
 //=== { TJclStrStack } =======================================================
 
 constructor TJclStrStack.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
-  FCount := 0;
   SetCapacity(ACapacity);
 end;
 
@@ -507,6 +399,23 @@ destructor TJclStrStack.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStrStack.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclStrStack;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStrStack then
+  begin
+    ADest := TJclStrStack(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(FSize + 1);
+    for I := 0 to FSize - 1 do
+      ADest.FElements[I] := FElements[I];
+    ADest.FSize := FSize;
+  end;
 end;
 
 procedure TJclStrStack.Clear;
@@ -517,33 +426,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCount - 1 do
-      FElements[I] := '';
-    FCount := 0;
+    for I := 0 to FSize - 1 do
+      FreeString(FElements[I]);
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrStack.Clone: TObject;
-var
-  NewStack: TJclStrStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclStrStack.Create(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -557,8 +445,8 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    for I := 0 to FCount - 1 do
-      if FElements[I] = AString then
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElements[I], AString) then
       begin
         Result := True;
         Break;
@@ -570,94 +458,15 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclStrStack.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
 function TJclStrStack.Empty: Boolean;
 begin
-  Result := FCount = 0;
-end;
-
-function TJclStrStack.GetCapacity: Integer;
-begin
-  Result := FCapacity;
-end;
-
-procedure TJclStrStack.Grow(Num, Denom: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity * Num div Denom);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStrStack.Grow(Increment: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity + Increment);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStrStack.Grow;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if FCapacity > 64 then
-      SetCapacity(FCapacity + FCapacity div 4)
-    else
-      SetCapacity(fCapacity + 16);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrStack.IntfClone: IInterface;
-var
-  NewStack: TJclStrStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclStrStack.Create(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStrStack.Pack;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCount);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  Result := FSize = 0;
 end;
 
 function TJclStrStack.Peek: string;
@@ -666,10 +475,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
-      Result := FElements[FCount - 1]
+    Result := '';
+    if FSize > 0 then
+      Result := FElements[FSize - 1]
     else
-      Result := '';
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -683,14 +494,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
+    Result := '';
+    if FSize > 0 then
     begin
-      Dec(FCount);
-      Result := FElements[FCount];
-      FElements[FCount] := '';
+      Dec(FSize);
+      Result := FElements[FSize];
+      FElements[FSize] := '';
     end
     else
-      Result := '';
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -698,16 +512,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrStack.Push(const AString: string);
+function TJclStrStack.Push(const AString: string): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount = FCapacity then
-      Grow;
-    FElements[FCount] := AString;
-    Inc(FCount);
+    if FSize = FCapacity then
+      AutoGrow;
+    Result := FSize < FCapacity;
+    if Result then
+    begin
+      FElements[FSize] := AString;
+      Inc(FSize);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -721,10 +539,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FCount then
+    if Value < FSize then
       raise EJclOutOfBoundsError.Create;
-    FCapacity := Value;
     SetLength(FElements, Value);
+    inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -734,15 +552,15 @@ end;
 
 function TJclStrStack.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
-//=== { TJclStack } ==========================================================
+
+
+//=== { TJclStack } =======================================================
 
 constructor TJclStack.Create(ACapacity: Integer; AOwnsObjects: Boolean);
 begin
-  inherited Create(nil);
-  FCount := 0;
-  FOwnsObjects := AOwnsObjects;
+  inherited Create(nil, AOwnsObjects);
   SetCapacity(ACapacity);
 end;
 
@@ -750,6 +568,23 @@ destructor TJclStack.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStack.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclStack;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStack then
+  begin
+    ADest := TJclStack(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(FSize + 1);
+    for I := 0 to FSize - 1 do
+      ADest.FElements[I] := FElements[I];
+    ADest.FSize := FSize;
+  end;
 end;
 
 procedure TJclStack.Clear;
@@ -760,33 +595,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCount - 1 do
+    for I := 0 to FSize - 1 do
       FreeObject(FElements[I]);
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStack.Clone: TObject;
-var
-  NewStack: TJclStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclStack.Create(FCount, False);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -800,8 +614,8 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    for I := 0 to FCount - 1 do
-      if FElements[I] = AObject then
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElements[I], AObject) then
       begin
         Result := True;
         Break;
@@ -813,102 +627,15 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclStack.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStack.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
 function TJclStack.Empty: Boolean;
 begin
-  Result := FCount = 0;
-end;
-
-procedure TJclStack.FreeObject(var AObject: TObject);
-begin
-  if FOwnsObjects then
-    FreeAndNil(AObject)
-  else
-    AObject := nil;
-end;
-
-function TJclStack.GetCapacity: Integer;
-begin
-  Result := FCapacity;
-end;
-
-procedure TJclStack.Grow(Num, Denom: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity * Num div Denom);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack.Grow(Increment: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity + Increment);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack.Grow;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if FCapacity > 64 then
-      SetCapacity(FCapacity + FCapacity div 4)
-    else
-      SetCapacity(fCapacity + 16);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStack.IntfClone: IInterface;
-var
-  NewStack: TJclStack;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := TJclStack.Create(FCount, False);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack.Pack;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCount);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  Result := FSize = 0;
 end;
 
 function TJclStack.Peek: TObject;
@@ -917,10 +644,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
-      Result := FElements[FCount - 1]
+    Result := nil;
+    if FSize > 0 then
+      Result := FElements[FSize - 1]
     else
-      Result := nil;
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -934,14 +663,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
+    Result := nil;
+    if FSize > 0 then
     begin
-      Dec(FCount);
-      Result := FElements[FCount];
-      FElements[FCount] := nil;
+      Dec(FSize);
+      Result := FElements[FSize];
+      FElements[FSize] := nil;
     end
     else
-      Result := nil;
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -949,16 +681,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStack.Push(AObject: TObject);
+function TJclStack.Push(AObject: TObject): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount = FCapacity then
-      Grow;
-    FElements[FCount] := AObject;
-    Inc(FCount);
+    if FSize = FCapacity then
+      AutoGrow;
+    Result := FSize < FCapacity;
+    if Result then
+    begin
+      FElements[FSize] := AObject;
+      Inc(FSize);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -972,10 +708,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FCount then
+    if Value < FSize then
       raise EJclOutOfBoundsError.Create;
-    FCapacity := Value;
     SetLength(FElements, Value);
+    inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -985,18 +721,17 @@ end;
 
 function TJclStack.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
+
 
 //=== { TJclStack<T> } =======================================================
 
 constructor TJclStack<T>.Create(ACapacity: Integer; AOwnsItems: Boolean);
 begin
-  inherited Create(nil);
-  FCount := 0;
-  FOwnsItems := AOwnsItems;
+  inherited Create(nil, AOwnsItems);
   SetCapacity(ACapacity);
 end;
 
@@ -1004,6 +739,23 @@ destructor TJclStack<T>.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStack<T>.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclStack<T>;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStack<T> then
+  begin
+    ADest := TJclStack<T>(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(FSize + 1);
+    for I := 0 to FSize - 1 do
+      ADest.FElements[I] := FElements[I];
+    ADest.FSize := FSize;
+  end;
 end;
 
 procedure TJclStack<T>.Clear;
@@ -1014,33 +766,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCount - 1 do
+    for I := 0 to FSize - 1 do
       FreeItem(FElements[I]);
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStack<T>.Clone: TObject;
-var
-  NewStack: TJclStack<T>;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := CreateEmptyStack(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1054,7 +785,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    for I := 0 to FCount - 1 do
+    for I := 0 to FSize - 1 do
       if ItemsEqual(FElements[I], AItem) then
       begin
         Result := True;
@@ -1067,102 +798,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+
 function TJclStack<T>.Empty: Boolean;
 begin
-  Result := FCount = 0;
-end;
-
-procedure TJclStack<T>.FreeItem(var AItem: T);
-begin
-  if FOwnsItems then
-    FreeAndNil(AItem)
-  else
-    AItem := Default(T);
-end;
-
-function TJclStack<T>.GetCapacity: Integer;
-begin
-  Result := FCapacity;
-end;
-
-procedure TJclStack<T>.Grow(Num, Denom: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity * Num div Denom);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack<T>.Grow(Increment: Integer);
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCapacity + Increment);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack<T>.Grow;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if FCapacity > 64 then
-      SetCapacity(FCapacity + FCapacity div 4)
-    else
-      SetCapacity(fCapacity + 16);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStack<T>.IntfClone: IInterface;
-var
-  NewStack: TJclStack<T>;
-  I: Integer;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewStack := CreateEmptyStack(FCount);
-    for I := 0 to FCount - 1 do
-      NewStack.FElements[I] := FElements[I];
-    NewStack.FCount := FCount;
-    Result := NewStack;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStack<T>.Pack;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    SetCapacity(FCount);
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
+  Result := FSize = 0;
 end;
 
 function TJclStack<T>.Peek: T;
@@ -1171,10 +810,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
-      Result := FElements[FCount - 1]
+    Result := Default(T);
+    if FSize > 0 then
+      Result := FElements[FSize - 1]
     else
-      Result := Default(T);
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1188,14 +829,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount > 0 then
+    Result := Default(T);
+    if FSize > 0 then
     begin
-      Dec(FCount);
-      Result := FElements[FCount];
-      FElements[FCount] := Default(T);
+      Dec(FSize);
+      Result := FElements[FSize];
+      FElements[FSize] := Default(T);
     end
     else
-      Result := Default(T);
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1203,16 +847,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStack<T>.Push(const AItem: T);
+function TJclStack<T>.Push(const AItem: T): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FCount = FCapacity then
-      Grow;
-    FElements[FCount] := AItem;
-    Inc(FCount);
+    if FSize = FCapacity then
+      AutoGrow;
+    Result := FSize < FCapacity;
+    if Result then
+    begin
+      FElements[FSize] := AItem;
+      Inc(FSize);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1226,10 +874,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FCount then
+    if Value < FSize then
       raise EJclOutOfBoundsError.Create;
-    FCapacity := Value;
     SetLength(FElements, Value);
+    inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1239,7 +887,7 @@ end;
 
 function TJclStack<T>.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 //=== { TJclStackE<T> } ======================================================
@@ -1251,9 +899,17 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
-function TJclStackE<T>.CreateEmptyStack(ACapacity: Integer): TJclStack<T>;
+procedure TJclStackE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
 begin
-  Result := TJclStackE<T>.Create(FEqualityComparer, ACapacity, False);
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclStackE<T> then
+    TJclStackE<T>(Dest).FEqualityComparer := FEqualityComparer;
+end;
+
+function TJclStackE<T>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStackE<T>.Create(FEqualityComparer, FSize, False);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStackE<T>.ItemsEqual(const A, B: T): Boolean;
@@ -1271,9 +927,17 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
-function TJclStackF<T>.CreateEmptyStack(ACapacity: Integer): TJclStack<T>;
+procedure TJclStackF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
 begin
-  Result := TJclStackF<T>.Create(FEqualityCompare, ACapacity, False);
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclStackF<T> then
+    TJclStackF<T>(Dest).FEqualityCompare := FEqualityCompare;
+end;
+
+function TJclStackF<T>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStackF<T>.Create(FEqualityCompare, FSize + 1, False);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStackF<T>.ItemsEqual(const A, B: T): Boolean;
@@ -1285,9 +949,10 @@ end;
 
 //=== { TJclStackI<T> } ======================================================
 
-function TJclStackI<T>.CreateEmptyStack(ACapacity: Integer): TJclStack<T>;
+function TJclStackI<T>.CreateEmptyContainer: TJclAbstractContainer;
 begin
-  Result := TJclStackI<T>.Create(ACapacity, False);
+  Result := TJclStackI<T>.Create(FSize + 1, False);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStackI<T>.ItemsEqual(const A, B: T): Boolean;

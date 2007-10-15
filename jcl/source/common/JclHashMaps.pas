@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -38,6 +42,7 @@ unit JclHashMaps;
 interface
 
 uses
+  Classes,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -50,6 +55,11 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 
 type
+  // Hash Function
+  // Result must be in 0..Range-1
+  TJclHashFunction = function(Key, Range: Integer): Integer;
+
+
   TJclIntfIntfEntry = record
     Key: IInterface;
     Value: IInterface;
@@ -59,32 +69,26 @@ type
 
   TJclIntfIntfBucket = class
   public
-    Count: Integer;
+    Size: Integer;
     Entries: TJclIntfIntfEntryArray;
   end;
 
   TJclIntfIntfBucketArray = array of TJclIntfIntfBucket;
 
-  // Hash Function
-  // Result must be in 0..Range-1
-  TJclHashFunction = function(Key, Range: Cardinal): Cardinal;
-
-  TJclIntfIntfHashMap = class(TJclAbstractContainer, IJclIntfIntfMap,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclIntfIntfHashMap = class(TJclAbstractContainer, IJclIntfIntfMap, IJclContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
     FBuckets: TJclIntfIntfBucketArray;
     FHashFunction: TJclHashFunction;
-    procedure MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclIntfIntfBucket); virtual;
+    procedure PackEntries(Bucket: TJclIntfIntfBucket); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
     { IJclIntfIntfMap }
     procedure Clear;
     function ContainsKey(const Key: IInterface): Boolean;
@@ -92,21 +96,27 @@ type
     function Equals(const AMap: IJclIntfIntfMap): Boolean;
     function GetValue(const Key: IInterface): IInterface;
     function IsEmpty: Boolean;
+    function KeyOfValue(const Value: IInterface): IInterface;
     function KeySet: IJclIntfSet;
     procedure PutAll(const AMap: IJclIntfIntfMap);
-    procedure PutValue(const Key, Value: IInterface);
+    procedure PutValue(const Key: IInterface; const Value: IInterface);
     function Remove(const Key: IInterface): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write
-      FHashFunction;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
+
 
   TJclStrIntfEntry = record
     Key: string;
@@ -117,36 +127,34 @@ type
 
   TJclStrIntfBucket = class
   public
-    Count: Integer;
+    Size: Integer;
     Entries: TJclStrIntfEntryArray;
   end;
 
   TJclStrIntfBucketArray = array of TJclStrIntfBucket;
 
-  TJclStrIntfHashMap = class(TJclAbstractContainer, IJclStrIntfMap,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclStrIntfHashMap = class(TJclStrContainer, IJclStrIntfMap, IJclContainer, IJclStrContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
     FBuckets: TJclStrIntfBucketArray;
     FHashFunction: TJclHashFunction;
-    function HashString(const Key: string): Cardinal;
-    procedure MoveArray(var List: TJclStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclStrIntfBucket); virtual;
+    procedure PackEntries(Bucket: TJclStrIntfBucket); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
-    { IJclIntfMap }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclStrIntfMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
     function ContainsValue(const Value: IInterface): Boolean;
     function Equals(const AMap: IJclStrIntfMap): Boolean;
     function GetValue(const Key: string): IInterface;
     function IsEmpty: Boolean;
+    function KeyOfValue(const Value: IInterface): string;
     function KeySet: IJclStrSet;
     procedure PutAll(const AMap: IJclStrIntfMap);
     procedure PutValue(const Key: string; const Value: IInterface);
@@ -154,14 +162,76 @@ type
     function Size: Integer;
     function Values: IJclIntfCollection;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: string): string; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: string): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write
-      FHashFunction;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
+
+
+  TJclIntfStrEntry = record
+    Key: IInterface;
+    Value: string;
+  end;
+
+  TJclIntfStrEntryArray = array of TJclIntfStrEntry;
+
+  TJclIntfStrBucket = class
+  public
+    Size: Integer;
+    Entries: TJclIntfStrEntryArray;
+  end;
+
+  TJclIntfStrBucketArray = array of TJclIntfStrBucket;
+
+  TJclIntfStrHashMap = class(TJclStrContainer, IJclIntfStrMap, IJclContainer, IJclStrContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
+  private
+    FBuckets: TJclIntfStrBucketArray;
+    FHashFunction: TJclHashFunction;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclIntfStrEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure GrowEntries(Bucket: TJclIntfStrBucket); virtual;
+    procedure PackEntries(Bucket: TJclIntfStrBucket); virtual;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfStrMap }
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(const Value: string): Boolean;
+    function Equals(const AMap: IJclIntfStrMap): Boolean;
+    function GetValue(const Key: IInterface): string;
+    function IsEmpty: Boolean;
+    function KeyOfValue(const Value: string): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfStrMap);
+    procedure PutValue(const Key: IInterface; const Value: string);
+    function Remove(const Key: IInterface): string;
+    function Size: Integer;
+    function Values: IJclStrCollection;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeValue(var Value: string): string; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(const A, B: string): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+  end;
+
 
   TJclStrStrEntry = record
     Key: string;
@@ -172,29 +242,26 @@ type
 
   TJclStrStrBucket = class
   public
-    Count: Integer;
+    Size: Integer;
     Entries: TJclStrStrEntryArray;
   end;
 
   TJclStrStrBucketArray = array of TJclStrStrBucket;
 
-  TJclStrStrHashMap = class(TJclAbstractContainer, IJclStrStrMap,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclStrStrHashMap = class(TJclStrContainer, IJclStrStrMap, IJclContainer, IJclStrContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
     FBuckets: TJclStrStrBucketArray;
     FHashFunction: TJclHashFunction;
-    function HashString(const Key: string): Cardinal;
-    procedure MoveArray(var List: TJclStrStrEntryArray; FromIndex, ToIndex, Count: Integer);
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclStrStrEntryArray; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclStrStrBucket); virtual;
+    procedure PackEntries(Bucket: TJclStrStrBucket); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
     { IJclStrStrMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
@@ -202,23 +269,88 @@ type
     function Equals(const AMap: IJclStrStrMap): Boolean;
     function GetValue(const Key: string): string;
     function IsEmpty: Boolean;
+    function KeyOfValue(const Value: string): string;
     function KeySet: IJclStrSet;
     procedure PutAll(const AMap: IJclStrStrMap);
-    procedure PutValue(const Key, Value: string);
+    procedure PutValue(const Key: string; const Value: string);
     function Remove(const Key: string): string;
     function Size: Integer;
     function Values: IJclStrCollection;
-    // Daniele Teti
-    function KeyOfValue(const Value: string): string;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: string): string; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeValue(var Value: string): string; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: string): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(const A, B: string): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write
-      FHashFunction;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
   end;
+
+
+  TJclIntfEntry = record
+    Key: IInterface;
+    Value: TObject;
+  end;
+
+  TJclIntfEntryArray = array of TJclIntfEntry;
+
+  TJclIntfBucket = class
+  public
+    Size: Integer;
+    Entries: TJclIntfEntryArray;
+  end;
+
+  TJclIntfBucketArray = array of TJclIntfBucket;
+
+  TJclIntfHashMap = class(TJclAbstractContainer, IJclIntfMap, IJclContainer, IJclValueOwner,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
+  private
+    FBuckets: TJclIntfBucketArray;
+    FHashFunction: TJclHashFunction;
+    FOwnsValues: Boolean;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+    procedure GrowEntries(Bucket: TJclIntfBucket); virtual;
+    procedure PackEntries(Bucket: TJclIntfBucket); virtual;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfMap }
+    procedure Clear;
+    function ContainsKey(const Key: IInterface): Boolean;
+    function ContainsValue(Value: TObject): Boolean;
+    function Equals(const AMap: IJclIntfMap): Boolean;
+    function GetValue(const Key: IInterface): TObject;
+    function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): IInterface;
+    function KeySet: IJclIntfSet;
+    procedure PutAll(const AMap: IJclIntfMap);
+    procedure PutValue(const Key: IInterface; Value: TObject);
+    function Remove(const Key: IInterface): TObject;
+    function Size: Integer;
+    function Values: IJclCollection;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+  public
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
+    property OwnsValues: Boolean read FOwnsValues;
+  end;
+
 
   TJclStrEntry = record
     Key: string;
@@ -229,31 +361,27 @@ type
 
   TJclStrBucket = class
   public
-    Count: Integer;
+    Size: Integer;
     Entries: TJclStrEntryArray;
   end;
 
   TJclStrBucketArray = array of TJclStrBucket;
 
-  TJclStrHashMap = class(TJclAbstractContainer, IJclStrMap,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclStrHashMap = class(TJclStrContainer, IJclStrMap, IJclContainer, IJclStrContainer, IJclValueOwner,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
     FBuckets: TJclStrBucketArray;
     FHashFunction: TJclHashFunction;
     FOwnsValues: Boolean;
-    function HashString(const Key: string): Cardinal;
-    procedure MoveArray(var List: TJclStrEntryArray; FromIndex, ToIndex, Count: Integer);
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclStrEntryArray; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclStrBucket); virtual;
-    procedure FreeValue(var AValue: TObject);
+    procedure PackEntries(Bucket: TJclStrBucket); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
     { IJclStrMap }
     procedure Clear;
     function ContainsKey(const Key: string): Boolean;
@@ -261,6 +389,7 @@ type
     function Equals(const AMap: IJclStrMap): Boolean;
     function GetValue(const Key: string): TObject;
     function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): string;
     function KeySet: IJclStrSet;
     procedure PutAll(const AMap: IJclStrMap);
     procedure PutValue(const Key: string; Value: TObject);
@@ -268,15 +397,21 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function FreeKey(var Key: string): string; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(const A, B: string): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsValues: Boolean = True);
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write
-      FHashFunction;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsValues: Boolean read FOwnsValues;
   end;
+
 
   TJclEntry = record
     Key: TObject;
@@ -287,32 +422,28 @@ type
 
   TJclBucket = class
   public
-    Count: Integer;
+    Size: Integer;
     Entries: TJclEntryArray;
   end;
 
   TJclBucketArray = array of TJclBucket;
 
-  TJclHashMap = class(TJclAbstractContainer, IJclMap,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashMap = class(TJclAbstractContainer, IJclMap, IJclContainer, IJclKeyOwner, IJclValueOwner,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
     FBuckets: TJclBucketArray;
     FHashFunction: TJclHashFunction;
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;
-    procedure MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer);
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclBucket); virtual;
-    procedure FreeValue(var AValue: TObject);
-    procedure FreeKey(var AKey: TObject);
+    procedure PackEntries(Bucket: TJclBucket); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
     { IJclMap }
     procedure Clear;
     function ContainsKey(Key: TObject): Boolean;
@@ -320,18 +451,27 @@ type
     function Equals(const AMap: IJclMap): Boolean;
     function GetValue(Key: TObject): TObject;
     function IsEmpty: Boolean;
+    function KeyOfValue(Value: TObject): TObject;
     function KeySet: IJclSet;
     procedure PutAll(const AMap: IJclMap);
-    procedure PutValue(Key, Value: TObject);
+    procedure PutValue(Key: TObject; Value: TObject);
     function Remove(Key: TObject): TObject;
     function Size: Integer;
     function Values: IJclCollection;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    { IJclKeyOwner }
+    function FreeKey(var Key: TObject): TObject;
+    function GetOwnsKeys: Boolean;
+    { IJclValueOwner }
+    function FreeValue(var Value: TObject): TObject;
+    function GetOwnsValues: Boolean;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function Hash(AObject: TObject): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function KeysEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsValues: Boolean = True;
-      AOwnsKeys: Boolean = False);
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsKeys: Boolean read FOwnsKeys;
@@ -339,96 +479,96 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-  TJclEntry<TKey, TValue> = record
+
+  TJclEntry<TKey,TValue> = record
     Key: TKey;
     Value: TValue;
   end;
 
-  TJclEntryArray<TKey, TValue> = array of TJclEntry<TKey, TValue>;
+  TJclEntryArray<TKey,TValue> = array of TJclEntry<TKey,TValue>;
 
-  TJclBucket<TKey, TValue> = class
+  TJclBucket<TKey,TValue> = class
   public
-    Count: Integer;
-    Entries: TJclEntryArray<TKey, TValue>;
+    Size: Integer;
+    Entries: TJclEntryArray<TKey,TValue>;
   end;
 
-  TJclBucketArray<TKey, TValue> = array of TJclBucket<TKey, TValue>;
+  TJclBucketArray<TKey,TValue> = array of TJclBucket<TKey,TValue>;
 
-  TJclHashMap<TKey, TValue> = class(TJclAbstractContainer, IJclMap<TKey,TValue>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashMap<TKey,TValue> = class(TJclAbstractContainer, IJclMap<TKey,TValue>, IJclContainer, IJclPairOwner<TKey, TValue>,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
   private
-    FCapacity: Integer;
-    FCount: Integer;
-    FBuckets: TJclBucketArray<TKey, TValue>;
-    FOwnsValues: Boolean;
-    FOwnsKeys: Boolean;
+    FBuckets: TJclBucketArray<TKey,TValue>;
     FHashFunction: TJclHashFunction;
-    procedure MoveArray(var List: TJclEntryArray<TKey, TValue>; FromIndex, ToIndex, Count: Integer);
+    FOwnsKeys: Boolean;
+    FOwnsValues: Boolean;
   protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: TJclEntryArray<TKey,TValue>; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: TJclBucket<TKey,TValue>); virtual;
-    procedure FreeValue(var AValue: TValue);
-    procedure FreeKey(var AKey: TKey);
-    function KeysEqual(const A, B: TKey): Boolean; virtual; abstract;
-    function ValuesEqual(const A, B: TValue): Boolean; virtual; abstract;
-    function KeyToOrd(const AKey: TKey): Cardinal; virtual; abstract;
-    function CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>; virtual; abstract;
-    function CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>; virtual; abstract;
-    function CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>; virtual; abstract;
+    procedure PackEntries(Bucket: TJclBucket<TKey,TValue>); virtual;
     { IJclPackable }
-    procedure Pack;
-    function GetCapacity: Integer;
-    procedure SetCapacity(Value: Integer);
-    { IJclCloneable }
-    function Clone: TObject;
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
     { IJclMap<TKey,TValue> }
     procedure Clear;
     function ContainsKey(const Key: TKey): Boolean;
     function ContainsValue(const Value: TValue): Boolean;
-    function Equals(const AMap: IJclMap<TKey, TValue>): Boolean;
-    function GetValue(Key: TKey): TValue;
+    function Equals(const AMap: IJclMap<TKey,TValue>): Boolean;
+    function GetValue(const Key: TKey): TValue;
     function IsEmpty: Boolean;
+    function KeyOfValue(const Value: TValue): TKey;
     function KeySet: IJclSet<TKey>;
-    procedure PutAll(const AMap: IJclMap<TKey, TValue>);
-    procedure PutValue(Key: TKey; const Value: TValue);
+    procedure PutAll(const AMap: IJclMap<TKey,TValue>);
+    procedure PutValue(const Key: TKey; const Value: TValue);
     function Remove(const Key: TKey): TValue;
     function Size: Integer;
     function Values: IJclCollection<TValue>;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPairOwner }
+    function FreeKey(var Key: TKey): TKey;
+    function FreeValue(var Value: TValue): TValue;
+    function GetOwnsKeys: Boolean;
+    function GetOwnsValues: Boolean;
+    function Hash(const AKey: TKey): Integer; virtual; abstract;
+    function KeysEqual(const A, B: TKey): Boolean; virtual; abstract;
+    function ValuesEqual(const A, B: TValue): Boolean; virtual; abstract;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; virtual; abstract;
+    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; virtual; abstract;
   public
-    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsValues: Boolean = True;
-      AOwnsKeys: Boolean = False);
+    constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
-    property OwnsValues: Boolean read FOwnsValues;
     property OwnsKeys: Boolean read FOwnsKeys;
+    property OwnsValues: Boolean read FOwnsValues;
   end;
 
   // E = external helper to compare and hash items
   // KeyComparer is used only when getting KeySet
   // GetHashCode and Equals methods of KeyEqualityComparer are used
   // GetHashCode of ValueEqualityComparer is not used
-  TJclHashMapE<TKey, TValue> = class(TJclHashMap<TKey, TValue>, IJclMap<TKey,TValue>,
+  TJclHashMapE<TKey, TValue> = class(TJclHashMap<TKey, TValue>, IJclMap<TKey,TValue>, IJclContainer, IJclPairOwner<TKey, TValue>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
   private
     FKeyEqualityComparer: IEqualityComparer<TKey>;
     FKeyComparer: IComparer<TKey>;
     FValueEqualityComparer: IEqualityComparer<TValue>;
   protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
     function ValuesEqual(const A, B: TValue): Boolean; override;
-    function KeyToOrd(const AKey: TKey): Cardinal; override;
-    function CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>; override;
-    function CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>; override;
-    function CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AKeyEqualityComparer: IEqualityComparer<TKey>;
       const AValueEqualityComparer: IEqualityComparer<TValue>;
-      const AKeyComparer: IComparer<TKey>; ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsValues: Boolean = True; AOwnsKeys: Boolean = False);
+      const AKeyComparer: IComparer<TKey>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
     property KeyEqualityComparer: IEqualityComparer<TKey> read FKeyEqualityComparer write FKeyEqualityComparer;
     property KeyComparer: IComparer<TKey> read FKeyComparer write FKeyComparer;
@@ -437,7 +577,7 @@ type
 
   // F = Functions to compare and hash items
   // KeyComparer is used only when getting KeySet
-  TJclHashMapF<TKey, TValue> = class(TJclHashMap<TKey, TValue>, IJclMap<TKey,TValue>,
+  TJclHashMapF<TKey, TValue> = class(TJclHashMap<TKey, TValue>, IJclMap<TKey,TValue>, IJclContainer, IJclPairOwner<TKey, TValue>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
   private
     FKeyEqualityCompare: TEqualityCompare<TKey>;
@@ -445,18 +585,19 @@ type
     FKeyCompare: TCompare<TKey>;
     FValueEqualityCompare: TEqualityCompare<TValue>;
   protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
     function ValuesEqual(const A, B: TValue): Boolean; override;
-    function KeyToOrd(const AKey: TKey): Cardinal; override;
-    function CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>; override;
-    function CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>; override;
-    function CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AKeyEqualityCompare: TEqualityCompare<TKey>; AKeyHash: THash<TKey>;
       AValueEqualityCompare: TEqualityCompare<TValue>; AKeyCompare: TCompare<TKey>;
-      ACapacity: Integer = DefaultContainerCapacity; AOwnsValues: Boolean = True; AOwnsKeys: Boolean = False);
+      ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
     property KeyEqualityCompare: TEqualityCompare<TKey> read FKeyEqualityCompare write FKeyEqualityCompare;
     property KeyCompare: TCompare<TKey> read FKeyCompare write FKeyCompare;
@@ -466,21 +607,21 @@ type
 
   // I = items can compare themselves to an other, items can create hash value from themselves
   TJclHashMapI<TKey: IComparable<TKey>, IEquatable<TKey>, IHashable; TValue: IEquatable<TValue>> = class(TJclHashMap<TKey, TValue>,
-    IJclMap<TKey,TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable,
-    IJclPackable)
+    IJclMap<TKey,TValue>,  IJclContainer, IJclPairOwner<TKey, TValue>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable)
   protected
+    function Hash(const AKey: TKey): Integer; override;
     function KeysEqual(const A, B: TKey): Boolean; override;
     function ValuesEqual(const A, B: TValue): Boolean; override;
-    function KeyToOrd(const AKey: TKey): Cardinal; override;
-    function CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>; override;
-    function CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>; override;
-    function CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>; override;
+    function CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
-function HashMul(Key, Range: Cardinal): Cardinal;
+function HashMul(Key, Range: Integer): Integer;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -498,14 +639,15 @@ uses
   SysUtils,
   JclArrayLists, JclArraySets, JclResources;
 
-function HashMul(Key, Range: Cardinal): Cardinal;
+function HashMul(Key, Range: Integer): Integer;
 const
   A = 0.6180339887; // (sqrt(5) - 1) / 2
 begin
   Result := Trunc(Range * (Frac(Key * A)));
 end;
 
-//=== { TJclIntfIntfHashMap } ================================================
+
+//=== { TJclIntfIntfHashMap } ==========================================
 
 constructor TJclIntfIntfHashMap.Create(ACapacity: Integer);
 begin
@@ -518,6 +660,59 @@ destructor TJclIntfIntfHashMap.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclIntfIntfHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclIntfIntfBucket;
+  ADest: TJclIntfIntfHashMap;
+  AMap: IJclIntfIntfMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntfIntfHashMap then
+  begin
+    ADest := TJclIntfIntfHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclIntfIntfBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclIntfIntfMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclIntfIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclIntfIntfHashMap then
+    TJclIntfIntfHashMap(Dest).HashFunction := HashFunction;
 end;
 
 procedure TJclIntfIntfHashMap.Clear;
@@ -534,54 +729,18 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
-          Bucket.Entries[J].Key := nil;
-          Bucket.Entries[J].Value := nil;
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
         end;
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfIntfHashMap.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfIntfBucket;
-  NewMap: TJclIntfIntfHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclIntfIntfHashMap.Create(FCapacity);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclIntfIntfBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -596,10 +755,10 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := True;
           Break;
@@ -625,11 +784,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -637,6 +796,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfIntfHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclIntfIntfHashMap.Create(FSize);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclIntfIntfHashMap.Equals(const AMap: IJclIntfIntfMap): Boolean;
@@ -651,22 +816,20 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-      begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
-            if AMap.GetValue(Bucket.Entries[J].Key) <> Bucket.Entries[J].Value then
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
               Exit;
           end
           else
             Exit;
-      end;
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -676,29 +839,41 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.GetCapacity: Integer;
+function TJclIntfIntfHashMap.FreeKey(var Key: IInterface): IInterface;
 begin
-  Result := FCapacity;
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
 end;
 
 function TJclIntfIntfHashMap.GetValue(const Key: IInterface): IInterface;
 var
   I: Integer;
   Bucket: TJclIntfIntfBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -711,41 +886,54 @@ var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
 end;
 
-function TJclIntfIntfHashMap.IntfClone: IInterface;
+function TJclIntfIntfHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfIntfHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntfIntfHashMap.KeyOfValue(const Value: IInterface): IInterface;
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclIntfIntfBucket;
-  NewMap: TJclIntfIntfHashMap;
+  Bucket: TJclIntfIntfBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := TJclIntfIntfHashMap.Create(FCapacity);
-    for I := 0 to FCapacity - 1 do
+    Found := False;
+    Result := nil;
+    for J := 0 to FCapacity - 1 do
     begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclIntfIntfBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
     end;
-    Result := NewMap;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -753,9 +941,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfIntfHashMap.IsEmpty: Boolean;
+function TJclIntfIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
 begin
-  Result := FCount = 0;
+  Result := Integer(A) = Integer(B);
 end;
 
 function TJclIntfIntfHashMap.KeySet: IJclIntfSet;
@@ -767,12 +955,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FCount);
+    Result := TJclIntfArraySet.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
   {$IFDEF THREADSAFE}
@@ -782,43 +970,75 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfHashMap.MoveArray(var List: TJclIntfIntfEntryArray;
-  FromIndex, ToIndex, Count: Integer);
+procedure TJclIntfIntfHashMap.MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
 begin
   if FromIndex < ToIndex then
   begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := nil;
-      List[FromIndex + I].Value := nil;
-    end;
-  end
-  else
-  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := nil;
-      List[FromIndex + Count - 1 + I].Value := nil;
-    end;
-  end;
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
-{$ENDIF CLR}
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
+  end;
 end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure TJclIntfIntfHashMap.Pack;
 var
@@ -834,8 +1054,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -845,6 +1065,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfIntfHashMap.PackEntries(Bucket: TJclIntfIntfBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclIntfIntfHashMap.PutAll(const AMap: IJclIntfIntfMap);
@@ -871,7 +1112,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfHashMap.PutValue(const Key, Value: IInterface);
+procedure TJclIntfIntfHashMap.PutValue(const Key: IInterface; const Value: IInterface);
 var
   Index: Integer;
   Bucket: TJclIntfIntfBucket;
@@ -881,30 +1122,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(Integer(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
-        begin
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclIntfIntfBucket.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
-    end;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclIntfIntfBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
 
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -922,20 +1170,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          Result := Bucket.Entries[I].Value;
-          Bucket.Entries[I].Key := nil;
-          Bucket.Entries[I].Value := nil;
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -949,13 +1199,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -965,7 +1215,7 @@ end;
 
 function TJclIntfIntfHashMap.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclIntfIntfHashMap.Values: IJclIntfCollection;
@@ -977,12 +1227,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FCount);
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -992,7 +1242,14 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclStrIntfHashMap } =================================================
+function TJclIntfIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+
+
+//=== { TJclStrIntfHashMap } ==========================================
 
 constructor TJclStrIntfHashMap.Create(ACapacity: Integer);
 begin
@@ -1005,6 +1262,59 @@ destructor TJclStrIntfHashMap.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStrIntfHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclStrIntfBucket;
+  ADest: TJclStrIntfHashMap;
+  AMap: IJclStrIntfMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStrIntfHashMap then
+  begin
+    ADest := TJclStrIntfHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclStrIntfBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclStrIntfMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclStrIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclStrIntfHashMap then
+    TJclStrIntfHashMap(Dest).HashFunction := HashFunction;
 end;
 
 procedure TJclStrIntfHashMap.Clear;
@@ -1021,54 +1331,18 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
-          Bucket.Entries[J].Key := '';
-          Bucket.Entries[J].Value := nil;
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
         end;
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrIntfHashMap.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclStrIntfBucket;
-  NewMap: TJclStrIntfHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclStrIntfHashMap.Create(FCapacity);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrIntfBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1083,14 +1357,14 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-      if Bucket.Entries[I].Key = Key then
-      begin
-        Result := True;
-        Break;
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1112,11 +1386,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -1124,6 +1398,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclStrIntfHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStrIntfHashMap.Create(FSize);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStrIntfHashMap.Equals(const AMap: IJclStrIntfMap): Boolean;
@@ -1138,16 +1418,16 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
-            if AMap.GetValue(Bucket.Entries[J].Key) <> Bucket.Entries[J].Value then
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
               Exit;
           end
           else
@@ -1161,31 +1441,43 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrIntfHashMap.GetCapacity: Integer;
+function TJclStrIntfHashMap.FreeKey(var Key: string): string;
 begin
-  Result := GetCapacity;
+  Result := Key;
+  Key := '';
 end;
+
+function TJclStrIntfHashMap.FreeValue(var Value: IInterface): IInterface;
+begin
+  Result := Value;
+  Value := nil;
+end;
+
+
 
 function TJclStrIntfHashMap.GetValue(const Key: string): IInterface;
 var
   I: Integer;
-  Index: Integer;
   Bucket: TJclStrIntfBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := nil;
-    Index := FHashFunction(HashString(Key), FCapacity);
-    Bucket := FBuckets[Index];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1198,51 +1490,50 @@ var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
 end;
 
-function TJclStrIntfHashMap.HashString(const Key: string): Cardinal;
-var
-  I: Integer;
+
+function TJclStrIntfHashMap.IsEmpty: Boolean;
 begin
-  Result := 0;
-  for I := 1 to Length(Key) do
-    Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
+  Result := FSize = 0;
 end;
 
-function TJclStrIntfHashMap.IntfClone: IInterface;
+function TJclStrIntfHashMap.KeyOfValue(const Value: IInterface): string;
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclStrIntfBucket;
-  NewMap: TJclStrIntfHashMap;
+  Bucket: TJclStrIntfBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := TJclStrIntfHashMap.Create(FCapacity);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
+    Found := False;
+    Result := '';
+    for J := 0 to FCapacity - 1 do
     begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrIntfBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
     end;
-    Result := NewMap;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1250,9 +1541,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrIntfHashMap.IsEmpty: Boolean;
+function TJclStrIntfHashMap.KeysEqual(const A, B: string): Boolean;
 begin
-  Result := FCount = 0;
+  Result := ItemsEqual(A, B);
 end;
 
 function TJclStrIntfHashMap.KeySet: IJclStrSet;
@@ -1264,12 +1555,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclStrArraySet.Create(FCount);
+    Result := TJclStrArraySet.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
   {$IFDEF THREADSAFE}
@@ -1279,44 +1570,75 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrIntfHashMap.MoveArray(var List: TJclStrIntfEntryArray;
-  FromIndex, ToIndex, Count: Integer);
+procedure TJclStrIntfHashMap.MoveArray(var List: TJclStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
 begin
-    if FromIndex < ToIndex then
-  begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := '';
-      List[FromIndex + I].Value := nil;
-    end;
-  end
-  else
+  if FromIndex < ToIndex then
   begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := '';
-      List[FromIndex + Count - 1 + I].Value := nil;
-    end;
-  end;
-
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end;
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
-{$ENDIF CLR}
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end;
+  end;
 end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure TJclStrIntfHashMap.Pack;
 var
@@ -1332,8 +1654,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -1343,6 +1665,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclStrIntfHashMap.PackEntries(Bucket: TJclStrIntfBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclStrIntfHashMap.PutAll(const AMap: IJclStrIntfMap);
@@ -1379,29 +1722,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(HashString(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
-        begin
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclStrIntfBucket.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclStrIntfBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
     end;
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1419,20 +1770,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          Result := Bucket.Entries[I].Value;
-          Bucket.Entries[I].Key := '';
-          Bucket.Entries[I].Value := nil;
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1446,13 +1799,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1462,7 +1815,7 @@ end;
 
 function TJclStrIntfHashMap.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclStrIntfHashMap.Values: IJclIntfCollection;
@@ -1474,12 +1827,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FCount);
+    Result := TJclIntfArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -1489,7 +1842,616 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclStrStrHashMap } ==================================================
+function TJclStrIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+
+
+//=== { TJclIntfStrHashMap } ==========================================
+
+constructor TJclIntfStrHashMap.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclIntfStrHashMap.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclIntfStrHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclIntfStrBucket;
+  ADest: TJclIntfStrHashMap;
+  AMap: IJclIntfStrMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntfStrHashMap then
+  begin
+    ADest := TJclIntfStrHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclIntfStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclIntfStrMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclIntfStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclIntfStrHashMap then
+    TJclIntfStrHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclIntfStrHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.ContainsKey(const Key: IInterface): Boolean;
+var
+  I: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.ContainsValue(const Value: string): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclIntfStrHashMap.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfStrHashMap.Equals(const AMap: IJclIntfStrMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfStrHashMap.FreeValue(var Value: string): string;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+function TJclIntfStrHashMap.GetValue(const Key: IInterface): string;
+var
+  I: Integer;
+  Bucket: TJclIntfStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfStrHashMap.GrowEntries(Bucket: TJclIntfStrBucket);
+var
+  BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
+  SetLength(Bucket.Entries, BucketCapacity);
+end;
+
+function TJclIntfStrHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfStrHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntfStrHashMap.KeyOfValue(const Value: string): IInterface;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+function TJclIntfStrHashMap.KeySet: IJclIntfSet;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfStrHashMap.MoveArray(var List: TJclIntfStrEntryArray; FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := '';
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := '';
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclIntfStrHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfStrHashMap.PackEntries(Bucket: TJclIntfStrBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
+end;
+
+procedure TJclIntfStrHashMap.PutAll(const AMap: IJclIntfStrMap);
+var
+  It: IJclIntfIterator;
+  Key: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfStrHashMap.PutValue(const Key: IInterface; const Value: string);
+var
+  Index: Integer;
+  Bucket: TJclIntfStrBucket;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclIntfStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.Remove(const Key: IInterface): string;
+var
+  Bucket: TJclIntfStrBucket;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+      PackEntries(Bucket);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfStrHashMap.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntfStrHashMap.Values: IJclStrCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfStrBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclStrArrayList.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfStrHashMap.ValuesEqual(const A, B: string): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+
+
+//=== { TJclStrStrHashMap } ==========================================
 
 constructor TJclStrStrHashMap.Create(ACapacity: Integer);
 begin
@@ -1502,6 +2464,59 @@ destructor TJclStrStrHashMap.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStrStrHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclStrStrBucket;
+  ADest: TJclStrStrHashMap;
+  AMap: IJclStrStrMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStrStrHashMap then
+  begin
+    ADest := TJclStrStrHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclStrStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclStrStrMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclStrStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclStrStrHashMap then
+    TJclStrStrHashMap(Dest).HashFunction := HashFunction;
 end;
 
 procedure TJclStrStrHashMap.Clear;
@@ -1518,54 +2533,18 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
-          Bucket.Entries[J].Key := '';
-          Bucket.Entries[J].Value := '';
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
         end;
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrStrHashMap.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclStrStrBucket;
-  NewMap: TJclStrStrHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclStrStrHashMap.Create(FCapacity);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrStrBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -1580,10 +2559,10 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := True;
           Break;
@@ -1609,11 +2588,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -1621,6 +2600,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclStrStrHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStrStrHashMap.Create(FSize);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStrStrHashMap.Equals(const AMap: IJclStrStrMap): Boolean;
@@ -1635,20 +2620,20 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
-            if AMap.GetValue(Bucket.Entries[J].Key) <> Bucket.Entries[J].Value then
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
               Exit;
-        end
-        else
-          Exit;
+          end
+          else
+            Exit;
     end;
     Result := True;
   {$IFDEF THREADSAFE}
@@ -1658,29 +2643,43 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrStrHashMap.GetCapacity: Integer;
+function TJclStrStrHashMap.FreeKey(var Key: string): string;
 begin
-  Result := FCapacity;
+  Result := Key;
+  Key := '';
 end;
+
+function TJclStrStrHashMap.FreeValue(var Value: string): string;
+begin
+  Result := Value;
+  Value := '';
+end;
+
+
 
 function TJclStrStrHashMap.GetValue(const Key: string): string;
 var
   I: Integer;
   Bucket: TJclStrStrBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := '';
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1693,89 +2692,60 @@ var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
 end;
 
-function TJclStrStrHashMap.HashString(const Key: string): Cardinal;
-var
-  I: Integer;
-begin
-  Result := 0;
-  for I := 1 to Length(Key) do
-    Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
-end;
-
-function TJclStrStrHashMap.IntfClone: IInterface;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclStrStrBucket;
-  NewMap: TJclStrStrHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclStrStrHashMap.Create(FCapacity);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrStrBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
 
 function TJclStrStrHashMap.IsEmpty: Boolean;
 begin
-  Result := FCount = 0;
+  Result := FSize = 0;
 end;
 
 function TJclStrStrHashMap.KeyOfValue(const Value: string): string;
 var
   I, J: Integer;
   Bucket: TJclStrStrBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
+    Result := '';
     for J := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := Bucket.Entries[I].Key;
-            Exit;
+            Found := True;
+            Break;
           end;
     end;
-    raise EJclNoSuchElementError.Create(Value);
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclStrStrHashMap.KeysEqual(const A, B: string): Boolean;
+begin
+  Result := ItemsEqual(A, B);
 end;
 
 function TJclStrStrHashMap.KeySet: IJclStrSet;
@@ -1787,12 +2757,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclStrArraySet.Create(FCount);
+    Result := TJclStrArraySet.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
   {$IFDEF THREADSAFE}
@@ -1802,43 +2772,75 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrStrHashMap.MoveArray(var List: TJclStrStrEntryArray;
-  FromIndex, ToIndex, Count: Integer);
+procedure TJclStrStrHashMap.MoveArray(var List: TJclStrStrEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
 begin
   if FromIndex < ToIndex then
   begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := '';
-      List[FromIndex + I].Value := '';
-    end;
-  end
-  else
-  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := '';
-      List[FromIndex + Count - 1 + I].Value := '';
-    end;
-  end;
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := '';
+      end;
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
-{$ENDIF CLR}
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := '';
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := '';
+      end;
+  end;
 end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure TJclStrStrHashMap.Pack;
 var
@@ -1854,8 +2856,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -1865,6 +2867,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclStrStrHashMap.PackEntries(Bucket: TJclStrStrBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclStrStrHashMap.PutAll(const AMap: IJclStrStrMap);
@@ -1891,7 +2914,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrStrHashMap.PutValue(const Key, Value: string);
+procedure TJclStrStrHashMap.PutValue(const Key: string; const Value: string);
 var
   Index: Integer;
   Bucket: TJclStrStrBucket;
@@ -1901,29 +2924,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(HashString(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
-        begin
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclStrStrBucket.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclStrStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
     end;
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1941,20 +2972,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := '';
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          Result := Bucket.Entries[I].Value;
-          Bucket.Entries[I].Key := '';
-          Bucket.Entries[I].Value := '';
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1968,13 +3001,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1984,7 +3017,7 @@ end;
 
 function TJclStrStrHashMap.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclStrStrHashMap.Values: IJclStrCollection;
@@ -1996,12 +3029,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclStrArrayList.Create(FCount);
+    Result := TJclStrArrayList.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -2011,7 +3044,631 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclStrHashMap } =====================================================
+function TJclStrStrHashMap.ValuesEqual(const A, B: string): Boolean;
+begin
+  Result := ItemsEqual(A, B);
+end;
+
+
+
+//=== { TJclIntfHashMap } ==========================================
+
+constructor TJclIntfHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
+begin
+  inherited Create(nil);
+  FOwnsValues := AOwnsValues;
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor TJclIntfHashMap.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclIntfHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclIntfBucket;
+  ADest: TJclIntfHashMap;
+  AMap: IJclIntfMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntfHashMap then
+  begin
+    ADest := TJclIntfHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclIntfBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclIntfMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclIntfHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclIntfHashMap then
+    TJclIntfHashMap(Dest).HashFunction := HashFunction;
+end;
+
+procedure TJclIntfHashMap.Clear;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.ContainsKey(const Key: IInterface): Boolean;
+var
+  I: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.ContainsValue(Value: TObject): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclIntfHashMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntfHashMap.Equals(const AMap: IJclIntfMap): Boolean;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.FreeKey(var Key: IInterface): IInterface;
+begin
+  Result := Key;
+  Key := nil;
+end;
+
+function TJclIntfHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+
+function TJclIntfHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclIntfHashMap.GetValue(const Key: IInterface): TObject;
+var
+  I: Integer;
+  Bucket: TJclIntfBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfHashMap.GrowEntries(Bucket: TJclIntfBucket);
+var
+  BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
+  SetLength(Bucket.Entries, BucketCapacity);
+end;
+
+function TJclIntfHashMap.Hash(const AInterface: IInterface): Integer;
+begin
+  Result := Integer(AInterface);
+end;
+
+function TJclIntfHashMap.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntfHashMap.KeyOfValue(Value: TObject): IInterface;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+function TJclIntfHashMap.KeySet: IJclIntfSet;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclIntfArraySet.Create(FSize);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfHashMap.MoveArray(var List: TJclIntfEntryArray; FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure TJclIntfHashMap.Pack;
+var
+  I: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfHashMap.PackEntries(Bucket: TJclIntfBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
+end;
+
+procedure TJclIntfHashMap.PutAll(const AMap: IJclIntfMap);
+var
+  It: IJclIntfIterator;
+  Key: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfHashMap.PutValue(const Key: IInterface; Value: TObject);
+var
+  Index: Integer;
+  Bucket: TJclIntfBucket;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclIntfBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.Remove(const Key: IInterface): TObject;
+var
+  Bucket: TJclIntfBucket;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+      PackEntries(Bucket);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntfHashMap.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntfHashMap.Values: IJclCollection;
+var
+  I, J: Integer;
+  Bucket: TJclIntfBucket;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := TJclArrayList.Create(FSize, False);
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfHashMap.ValuesEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+
+
+//=== { TJclStrHashMap } ==========================================
 
 constructor TJclStrHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean);
 begin
@@ -2025,6 +3682,59 @@ destructor TJclStrHashMap.Destroy;
 begin
   Clear;
   inherited Destroy;
+end;
+
+procedure TJclStrHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclStrBucket;
+  ADest: TJclStrHashMap;
+  AMap: IJclStrMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclStrHashMap then
+  begin
+    ADest := TJclStrHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclStrBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclStrMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclStrHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclStrHashMap then
+    TJclStrHashMap(Dest).HashFunction := HashFunction;
 end;
 
 procedure TJclStrHashMap.Clear;
@@ -2041,54 +3751,18 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
-          Bucket.Entries[J].Key := '';
+          FreeKey(Bucket.Entries[J].Key);
           FreeValue(Bucket.Entries[J].Value);
         end;
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrHashMap.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclStrBucket;
-  NewMap: TJclStrHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclStrHashMap.Create(FCapacity, False);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2103,10 +3777,10 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := True;
           Break;
@@ -2132,11 +3806,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -2144,6 +3818,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclStrHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStrHashMap.Create(FSize, False);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclStrHashMap.Equals(const AMap: IJclStrMap): Boolean;
@@ -2158,21 +3838,22 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
-            if AMap.GetValue(Bucket.Entries[J].Key) <> Bucket.Entries[J].Value then
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
               Exit;
           end
           else
             Exit;
     end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2180,44 +3861,60 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashMap.GetCapacity: Integer;
+function TJclStrHashMap.FreeKey(var Key: string): string;
 begin
-  Result := FCapacity;
+  Result := Key;
+  Key := '';
+end;
+
+function TJclStrHashMap.FreeValue(var Value: TObject): TObject;
+begin
+  if FOwnsValues then
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
+  else
+  begin
+    Result := Value;
+    Value := nil;
+  end;
+end;
+
+
+function TJclStrHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
 end;
 
 function TJclStrHashMap.GetValue(const Key: string): TObject;
 var
   I: Integer;
   Bucket: TJclStrBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := nil;
-    I := FHashFunction(HashString(Key), FCapacity);
-    Bucket := FBuckets[I];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclStrHashMap.FreeValue(var AValue: TObject);
-begin
-  // TODO: trap destructor exceptions
-  if FOwnsValues then
-    FreeAndNil(AValue)
-  else
-    AValue := nil;
 end;
 
 procedure TJclStrHashMap.GrowEntries(Bucket: TJclStrBucket);
@@ -2225,51 +3922,50 @@ var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
 end;
 
-function TJclStrHashMap.HashString(const Key: string): Cardinal;
-var
-  I: Integer;
+
+function TJclStrHashMap.IsEmpty: Boolean;
 begin
-  Result := 0;
-  for I := 1 to Length(Key) do
-    Result := Result + Cardinal(Ord(Key[I]) * (I - 1) * 256);
+  Result := FSize = 0;
 end;
 
-function TJclStrHashMap.IntfClone: IInterface;
+function TJclStrHashMap.KeyOfValue(Value: TObject): string;
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclStrBucket;
-  NewMap: TJclStrHashMap;
+  Bucket: TJclStrBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := TJclStrHashMap.Create(FCapacity, False);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
+    Found := False;
+    Result := '';
+    for J := 0 to FCapacity - 1 do
     begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclStrBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
     end;
-    Result := NewMap;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2277,9 +3973,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashMap.IsEmpty: Boolean;
+function TJclStrHashMap.KeysEqual(const A, B: string): Boolean;
 begin
-  Result := FCount = 0;
+  Result := ItemsEqual(A, B);
 end;
 
 function TJclStrHashMap.KeySet: IJclStrSet;
@@ -2291,12 +3987,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclStrArraySet.Create(FCount);
+    Result := TJclStrArraySet.Create(FSize);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
   {$IFDEF THREADSAFE}
@@ -2306,43 +4002,75 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrHashMap.MoveArray(var List: TJclStrEntryArray;
-  FromIndex, ToIndex, Count: Integer);
+procedure TJclStrHashMap.MoveArray(var List: TJclStrEntryArray; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
 begin
   if FromIndex < ToIndex then
   begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := '';
-      List[FromIndex + I].Value := nil;
-    end;
-  end
-  else
-  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := '';
-      List[FromIndex + Count - 1 + I].Value := nil;
-    end;
-  end;
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end;
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
-{$ENDIF CLR}
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := '';
+        List[FromIndex + I].Value := nil;
+      end;
+  end;
 end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure TJclStrHashMap.Pack;
 var
@@ -2358,8 +4086,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -2369,6 +4097,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclStrHashMap.PackEntries(Bucket: TJclStrBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclStrHashMap.PutAll(const AMap: IJclStrMap);
@@ -2405,31 +4154,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(HashString(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
-        begin
-          FreeValue(Bucket.Entries[I].Value);
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclStrBucket.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
-    end;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclStrBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
 
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2447,23 +4202,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(HashString(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          if OwnsValues then
-            Result := nil
-          else
-            Result := Bucket.Entries[I].Value;
-          FreeValue(Bucket.Entries[I].Value);
-          Bucket.Entries[I].Key := '';
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2477,13 +4231,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2493,7 +4247,7 @@ end;
 
 function TJclStrHashMap.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclStrHashMap.Values: IJclCollection;
@@ -2505,12 +4259,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FCount, False);
+    Result := TJclArrayList.Create(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -2520,7 +4274,14 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclHashMap } ========================================================
+function TJclStrHashMap.ValuesEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+
+
+//=== { TJclHashMap } ==========================================
 
 constructor TJclHashMap.Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
@@ -2537,6 +4298,59 @@ begin
   inherited Destroy;
 end;
 
+procedure TJclHashMap.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclBucket;
+  ADest: TJclHashMap;
+  AMap: IJclMap;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclHashMap then
+  begin
+    ADest := TJclHashMap(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclBucket.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclMap, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclHashMap.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclHashMap then
+    TJclHashMap(Dest).HashFunction := HashFunction;
+end;
+
 procedure TJclHashMap.Clear;
 var
   I, J: Integer;
@@ -2551,7 +4365,7 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
           FreeKey(Bucket.Entries[J].Key);
           FreeValue(Bucket.Entries[J].Value);
@@ -2559,46 +4373,10 @@ begin
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclHashMap.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket;
-  NewMap: TJclHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclHashMap.Create(FCapacity, False, False);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -2613,14 +4391,14 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-      if Bucket.Entries[I].Key = Key then
-      begin
-        Result := True;
-        Exit;
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2642,11 +4420,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
-          if Bucket.Entries[I].Value = Value then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -2654,6 +4432,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclHashMap.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclHashMap.Create(FSize, False, False);
+  AssignPropertiesTo(Result);
 end;
 
 function TJclHashMap.Equals(const AMap: IJclMap): Boolean;
@@ -2668,21 +4452,22 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
-            if AMap.GetValue(Bucket.Entries[J].Key) <> Bucket.Entries[J].Value then
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
               Exit;
           end
           else
             Exit;
     end;
+    Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2690,45 +4475,67 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap.FreeKey(var AKey: TObject);
+function TJclHashMap.FreeKey(var Key: TObject): TObject;
 begin
   if FOwnsKeys then
-    FreeAndNil(AKey)
+  begin
+    Result := nil;
+    FreeAndNil(Key);
+  end
   else
-    AKey := nil;
+  begin
+    Result := Key;
+    Key := nil;
+  end;
 end;
 
-procedure TJclHashMap.FreeValue(var AValue: TObject);
+function TJclHashMap.FreeValue(var Value: TObject): TObject;
 begin
   if FOwnsValues then
-    FreeAndNil(AValue)
+  begin
+    Result := nil;
+    FreeAndNil(Value);
+  end
   else
-    AValue := nil;
+  begin
+    Result := Value;
+    Value := nil;
+  end;
 end;
 
-function TJclHashMap.GetCapacity: Integer;
+function TJclHashMap.GetOwnsKeys: Boolean;
 begin
-  Result := FCapacity;
+  Result := FOwnsKeys;
+end;
+
+function TJclHashMap.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
 end;
 
 function TJclHashMap.GetValue(Key: TObject): TObject;
 var
   I: Integer;
   Bucket: TJclBucket;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2741,16 +4548,64 @@ var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
+end;
+
+function TJclHashMap.Hash(AObject: TObject): Integer;
+begin
+  Result := Integer(AObject);
 end;
 
 function TJclHashMap.IsEmpty: Boolean;
 begin
-  Result := FCount = 0;
+  Result := FSize = 0;
+end;
+
+function TJclHashMap.KeyOfValue(Value: TObject): TObject;
+var
+  I, J: Integer;
+  Bucket: TJclBucket;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := nil;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclHashMap.KeysEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
 end;
 
 function TJclHashMap.KeySet: IJclSet;
@@ -2762,50 +4617,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArraySet.Create(FCapacity, False);
+    Result := TJclArraySet.Create(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclHashMap.IntfClone: IInterface;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket;
-  NewMap: TJclHashMap;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := TJclHashMap.Create(FCapacity, False, False);
-    NewMap.HashFunction := HashFunction;
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclBucket.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2820,29 +4639,68 @@ var
 begin
   if FromIndex < ToIndex then
   begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := nil;
-      List[FromIndex + I].Value := nil;
-    end;
-  end
-  else
-  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := nil;
-      List[FromIndex + Count - 1 + I].Value := nil;
-    end;
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := nil;
+        List[FromIndex + I].Value := nil;
+      end;
   end;
+end;
 {$ELSE}
 begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-{$ENDIF CLR}
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
 end;
+{$ENDIF CLR}
 
 procedure TJclHashMap.Pack;
 var
@@ -2858,8 +4716,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -2869,6 +4727,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclHashMap.PackEntries(Bucket: TJclBucket);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclHashMap.PutAll(const AMap: IJclMap);
@@ -2895,7 +4774,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap.PutValue(Key, Value: TObject);
+procedure TJclHashMap.PutValue(Key: TObject; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclBucket;
@@ -2905,30 +4784,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(Integer(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
-        begin
-          FreeValue(Bucket.Entries[I].Value);
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclBucket.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclBucket.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
     end;
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2946,23 +4832,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := nil;
-    Bucket := FBuckets[FHashFunction(Integer(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
-        if Bucket.Entries[I].Key = Key then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          if OwnsValues then
-            Result := nil
-          else
-            Result := Bucket.Entries[I].Value;
+          Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
-          FreeValue(Bucket.Entries[I].Value);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2976,13 +4861,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2992,7 +4877,7 @@ end;
 
 function TJclHashMap.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclHashMap.Values: IJclCollection;
@@ -3004,12 +4889,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FCapacity, False);
+    Result := TJclArrayList.Create(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -3019,7 +4904,14 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TJclHashMap.ValuesEqual(A, B: TObject): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+
+
 {$IFDEF SUPPORTS_GENERICS}
+
 
 //=== { TJclHashMap<TKey, TValue> } ==========================================
 
@@ -3038,10 +4930,63 @@ begin
   inherited Destroy;
 end;
 
+procedure TJclHashMap<TKey, TValue>.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: TJclBucket<TKey, TValue>;
+  ADest: TJclHashMap<TKey, TValue>;
+  AMap: IJclMap<TKey, TValue>;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclHashMap<TKey, TValue> then
+  begin
+    ADest := TJclHashMap<TKey, TValue>(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := TJclBucket<TKey, TValue>.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, IJclMap<TKey, TValue>, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure TJclHashMap<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclHashMap<TKey, TValue> then
+    TJclHashMap<TKey, TValue>(Dest).HashFunction := HashFunction;
+end;
+
 procedure TJclHashMap<TKey, TValue>.Clear;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey,TValue>;
+  Bucket: TJclBucket<TKey, TValue>;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -3052,7 +4997,7 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
         begin
           FreeKey(Bucket.Entries[J].Key);
           FreeValue(Bucket.Entries[J].Value);
@@ -3060,45 +5005,10 @@ begin
         FreeAndNil(FBuckets[I]);
       end;
     end;
-    FCount := 0;
+    FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclHashMap<TKey, TValue>.Clone: TObject;
-var
-  I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket<TKey, TValue>;
-  NewMap: TJclHashMap<TKey, TValue>;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyHashMap(FCapacity);
-    for I := 0 to FCapacity - 1 do
-    begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclBucket<TKey, TValue>.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
-    end;
-    Result := NewMap;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -3113,13 +5023,13 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := False;
-    Bucket := FBuckets[FHashFunction(KeyToOrd(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
+      for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := True;
-          Exit;
+          Break;
         end;
   {$IFDEF THREADSAFE}
   finally
@@ -3142,11 +5052,11 @@ begin
     begin
       Bucket := FBuckets[J];
       if Bucket <> nil then
-        for I := 0 to Bucket.Count - 1 do
+        for I := 0 to Bucket.Size - 1 do
           if ValuesEqual(Bucket.Entries[I].Value, Value) then
           begin
             Result := True;
-            Exit;
+            Break;
           end;
     end;
   {$IFDEF THREADSAFE}
@@ -3159,7 +5069,7 @@ end;
 function TJclHashMap<TKey, TValue>.Equals(const AMap: IJclMap<TKey, TValue>): Boolean;
 var
   I, J: Integer;
-  Bucket: TJclBucket<TKey,TValue>;
+  Bucket: TJclBucket<TKey, TValue>;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -3168,13 +5078,13 @@ begin
     Result := False;
     if AMap = nil then
       Exit;
-    if FCount <> AMap.Size then
+    if FSize <> AMap.Size then
       Exit;
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           if AMap.ContainsKey(Bucket.Entries[J].Key) then
           begin
             if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
@@ -3191,46 +5101,67 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.FreeKey(var AKey: TKey);
+function TJclHashMap<TKey, TValue>.FreeKey(var Key: TKey): TKey;
 begin
   if FOwnsKeys then
-    FreeAndNil(AKey)
+  begin
+    Result := Default(TKey);
+    FreeAndNil(Key);
+  end
   else
-    AKey := Default(TKey);
+  begin
+    Result := Key;
+    Key := Default(TKey);
+  end;
 end;
 
-procedure TJclHashMap<TKey, TValue>.FreeValue(var AValue: TValue);
+function TJclHashMap<TKey, TValue>.FreeValue(var Value: TValue): TValue;
 begin
-  // TODO: trap destructor exceptions
   if FOwnsValues then
-    FreeAndNil(AValue)
+  begin
+    Result := Default(TValue);
+    FreeAndNil(Value);
+  end
   else
-    AValue := Default(TValue);
+  begin
+    Result := Value;
+    Value := Default(TValue);
+  end;
 end;
 
-function TJclHashMap<TKey, TValue>.GetCapacity: Integer;
+function TJclHashMap<TKey, TValue>.GetOwnsKeys: Boolean;
 begin
-  Result := FCapacity;
+  Result := FOwnsKeys;
 end;
 
-function TJclHashMap<TKey, TValue>.GetValue(Key: TKey): TValue;
+function TJclHashMap<TKey, TValue>.GetOwnsValues: Boolean;
+begin
+  Result := FOwnsValues;
+end;
+
+function TJclHashMap<TKey, TValue>.GetValue(const Key: TKey): TValue;
 var
   I: Integer;
   Bucket: TJclBucket<TKey, TValue>;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
+    Found := False;
     Result := Default(TValue);
-    Bucket := FBuckets[FHashFunction(KeyToOrd(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
+      for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
           Result := Bucket.Entries[I].Value;
+          Found := True;
           Break;
         end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3238,56 +5169,59 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.GrowEntries(Bucket: TJclBucket<TKey,TValue>);
+procedure TJclHashMap<TKey, TValue>.GrowEntries(Bucket: TJclBucket<TKey, TValue>);
 var
   BucketCapacity: Integer;
 begin
   BucketCapacity := Length(Bucket.Entries);
-  if BucketCapacity > 64 then
-    BucketCapacity := BucketCapacity + BucketCapacity div 4
-  else
-    BucketCapacity := BucketCapacity * 4;
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
   SetLength(Bucket.Entries, BucketCapacity);
 end;
 
-function TJclHashMap<TKey, TValue>.IntfClone: IInterface;
+function TJclHashMap<TKey, TValue>.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclHashMap<TKey, TValue>.KeyOfValue(const Value: TValue): TKey;
 var
   I, J: Integer;
-  SelfBucket, NewBucket: TJclBucket<TKey, TValue>;
-  NewMap: TJclHashMap<TKey, TValue>;
+  Bucket: TJclBucket<TKey, TValue>;
+  Found: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyHashMap(FCapacity);
-    for I := 0 to FCapacity - 1 do
+    Found := False;
+    Result := Default(TKey);
+    for J := 0 to FCapacity - 1 do
     begin
-      SelfBucket := FBuckets[I];
-      if SelfBucket <> nil then
-      begin
-        NewBucket := TJclBucket<TKey, TValue>.Create;
-        SetLength(NewBucket.Entries, SelfBucket.Count);
-        for J := 0 to SelfBucket.Count - 1 do
-        begin
-          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-        end;
-        NewBucket.Count := SelfBucket.Count;
-        NewMap.FBuckets[I] := NewBucket;
-      end;
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
     end;
-    Result := NewMap;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-function TJclHashMap<TKey, TValue>.IsEmpty: Boolean;
-begin
-  Result := FCount = 0;
 end;
 
 function TJclHashMap<TKey, TValue>.KeySet: IJclSet<TKey>;
@@ -3299,12 +5233,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyArraySet(FCount);
+    Result := CreateEmptyArraySet(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Key);
     end;
   {$IFDEF THREADSAFE}
@@ -3314,37 +5248,75 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.MoveArray(var List: TJclEntryArray<TKey, TValue>;
-  FromIndex, ToIndex, Count: Integer);
+procedure TJclHashMap<TKey, TValue>.MoveArray(var List: TJclEntryArray<TKey, TValue>; FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
 begin
   if FromIndex < ToIndex then
   begin
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to ToIndex - FromIndex - 1 do
-    begin
-      List[FromIndex + I].Key := Default(TKey);
-      List[FromIndex + I].Value := Default(TValue);
-    end;
-  end
-  else
-  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-    for I := 0 to FromIndex - ToIndex - 1 do
-    begin
-      List[FromIndex + Count - 1 + I].Key := Default(TKey);
-      List[FromIndex + Count - 1 + I].Value := Default(TValue);
-    end;
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := Default(TKey);
+        List[FromIndex + I].Value := Default(TValue);
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := Default(TKey);
+        List[FromIndex + I].Value := Default(TValue);
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := Default(TKey);
+        List[FromIndex + I].Value := Default(TValue);
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := Default(TKey);
+        List[FromIndex + I].Value := Default(TValue);
+      end;
   end;
+end;
 {$ELSE}
 begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-{$ENDIF CLR}
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
 end;
+{$ENDIF CLR}
 
 procedure TJclHashMap<TKey, TValue>.Pack;
 var
@@ -3360,8 +5332,8 @@ begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
       begin
-        if Bucket.Count > 0 then
-          SetLength(Bucket.Entries, Bucket.Count)
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
         else
           FreeAndNil(FBuckets[I]);
       end;
@@ -3371,6 +5343,27 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TJclHashMap<TKey, TValue>.PackEntries(Bucket: TJclBucket<TKey, TValue>);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
 end;
 
 procedure TJclHashMap<TKey, TValue>.PutAll(const AMap: IJclMap<TKey, TValue>);
@@ -3397,7 +5390,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.PutValue(Key: TKey; const Value: TValue);
+procedure TJclHashMap<TKey, TValue>.PutValue(const Key: TKey; const Value: TValue);
 var
   Index: Integer;
   Bucket: TJclBucket<TKey, TValue>;
@@ -3407,30 +5400,37 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := FHashFunction(KeyToOrd(Key), FCapacity);
-    Bucket := FBuckets[Index];
-    if Bucket <> nil then
+    if FAllowDefaultElements or (not KeysEqual(Key, Default(TKey)) and not ValuesEqual(Value, Default(TValue))) then
     begin
-      for I := 0 to Bucket.Count - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          FreeValue(Bucket.Entries[I].Value);
-          Bucket.Entries[I].Value := Value;
-          Exit;
-        end;
-    end
-    else
-    begin
-      Bucket := TJclBucket<TKey, TValue>.Create;
-      SetLength(Bucket.Entries, 1);
-      FBuckets[Index] := Bucket;
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := TJclBucket<TKey, TValue>.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
     end;
-    if Bucket.Count = Length(Bucket.Entries) then
-      GrowEntries(Bucket);
-    Bucket.Entries[Bucket.Count].Key := Key;
-    Bucket.Entries[Bucket.Count].Value := Value;
-    Inc(Bucket.Count);
-    Inc(FCount);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3448,23 +5448,22 @@ begin
   try
   {$ENDIF THREADSAFE}
     Result := Default(TValue);
-    Bucket := FBuckets[FHashFunction(KeyToOrd(Key), FCapacity)];
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
     if Bucket <> nil then
-      for I := 0 to Bucket.Count - 1 do
+    begin
+      for I := 0 to Bucket.Size - 1 do
         if KeysEqual(Bucket.Entries[I].Key, Key) then
         begin
-          if OwnsValues then
-            Result := Default(TValue)
-          else
-            Result := Bucket.Entries[I].Value;
+          Result := FreeValue(Bucket.Entries[I].Value);
           FreeKey(Bucket.Entries[I].Key);
-          FreeValue(Bucket.Entries[I].Value);
           if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Count - I - 1);
-          Dec(Bucket.Count);
-          Dec(FCount);
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
           Break;
         end;
+      PackEntries(Bucket);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3478,13 +5477,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FCount then
+    if FSize = 0 then
     begin
       SetLength(FBuckets, Value);
-      FCapacity := Value;
+      inherited SetCapacity(Value);
     end
     else
-      raise EJclOutOfBoundsError.Create;
+      raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3494,7 +5493,7 @@ end;
 
 function TJclHashMap<TKey, TValue>.Size: Integer;
 begin
-  Result := FCount;
+  Result := FSize;
 end;
 
 function TJclHashMap<TKey, TValue>.Values: IJclCollection<TValue>;
@@ -3506,12 +5505,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyArrayList(FCount);
+    Result := CreateEmptyArrayList(FSize, False);
     for I := 0 to FCapacity - 1 do
     begin
       Bucket := FBuckets[I];
       if Bucket <> nil then
-        for J := 0 to Bucket.Count - 1 do
+        for J := 0 to Bucket.Size - 1 do
           Result.Add(Bucket.Entries[J].Value);
     end;
   {$IFDEF THREADSAFE}
@@ -3520,6 +5519,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 //=== { TJclHashMapE<TKey, TValue> } =========================================
 
@@ -3533,20 +5533,42 @@ begin
   FKeyComparer := AKeyComparer;
 end;
 
-function TJclHashMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>;
+procedure TJclHashMapE<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclHashMapE<TKey, TValue>;
 begin
-  Result := TJclArrayListE<TValue>.Create(ValueEqualityComparer, ACapacity, False);
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclHashMapE<TKey, TValue> then
+  begin
+    ADest := TJclHashMapE<TKey, TValue>(Dest);
+    ADest.FKeyEqualityComparer := FKeyEqualityComparer;
+    ADest.FValueEqualityComparer := FValueEqualityComparer;
+    ADest.FKeyComparer := FKeyComparer;
+  end;
 end;
 
-function TJclHashMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>;
+function TJclHashMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArraySetE<TKey>.Create(KeyComparer, ACapacity, False);
+  Result := TJclArrayListE<TValue>.Create(ValueEqualityComparer, ACapacity, AOwnsObjects);
 end;
 
-function TJclHashMapE<TKey, TValue>.CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>;
+function TJclHashMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetE<TKey>.Create(KeyComparer, ACapacity, AOwnsObjects);
+end;
+
+function TJclHashMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainer;
 begin
   Result := TJclHashMapE<TKey, TValue>.Create(KeyEqualityComparer, ValueEqualityComparer,
-    KeyComparer, ACapacity, False, False);
+    KeyComparer, FSize, False, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclHashMapE<TKey, TValue>.Hash(const AKey: TKey): Integer;
+begin
+  if KeyEqualityComparer = nil then
+    raise EJclNoHashConverterError.Create;
+  Result := KeyEqualityComparer.GetHashCode(AKey);
 end;
 
 function TJclHashMapE<TKey, TValue>.KeysEqual(const A, B: TKey): Boolean;
@@ -3563,13 +5585,6 @@ begin
   Result := ValueEqualityComparer.Equals(A, B);
 end;
 
-function TJclHashMapE<TKey, TValue>.KeyToOrd(const AKey: TKey): Cardinal;
-begin
-  if KeyEqualityComparer = nil then
-    raise EJclNoHashConverterError.Create;
-  Result := KeyEqualityComparer.GetHashCode(AKey);
-end;
-
 //=== { TJclHashMapF<TKey, TValue> } =========================================
 
 constructor TJclHashMapF<TKey, TValue>.Create(AKeyEqualityCompare: TEqualityCompare<TKey>;
@@ -3583,20 +5598,43 @@ begin
   FKeyCompare := AKeyCompare;
 end;
 
-function TJclHashMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>;
+procedure TJclHashMapF<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+var
+  ADest: TJclHashMapF<TKey, TValue>;
 begin
-  Result := TJclArrayListF<TValue>.Create(ValueEqualityCompare, ACapacity, False);
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclHashMapF<TKey, TValue> then
+  begin
+    ADest := TJclHashMapF<TKey, TValue>(Dest);
+    ADest.FKeyEqualityCompare := FKeyEqualityCompare;
+    ADest.FKeyHash := FKeyHash;
+    ADest.FValueEqualityCompare := FValueEqualityCompare;
+    ADest.FKeyCompare := FKeyCompare;
+  end;
 end;
 
-function TJclHashMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>;
+function TJclHashMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArraySetF<TKey>.Create(KeyCompare, ACapacity, False);
+  Result := TJclArrayListF<TValue>.Create(ValueEqualityCompare, ACapacity, AOwnsObjects);
 end;
 
-function TJclHashMapF<TKey, TValue>.CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>;
+function TJclHashMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, ACapacity,
+  Result := TJclArraySetF<TKey>.Create(KeyCompare, ACapacity, AOwnsObjects);
+end;
+
+function TJclHashMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclHashMapF<TKey, TValue>.Create(KeyEqualityCompare, KeyHash, ValueEqualityCompare, KeyCompare, FSize,
     False, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclHashMapF<TKey, TValue>.Hash(const AKey: TKey): Integer;
+begin
+  if not Assigned(KeyHash) then
+    raise EJclNoHashConverterError.Create;
+  Result := KeyHash(AKey);
 end;
 
 function TJclHashMapF<TKey, TValue>.KeysEqual(const A, B: TKey): Boolean;
@@ -3613,28 +5651,27 @@ begin
   Result := ValueEqualityCompare(A, B);
 end;
 
-function TJclHashMapF<TKey, TValue>.KeyToOrd(const AKey: TKey): Cardinal;
-begin
-  if not Assigned(KeyHash) then
-    raise EJclNoHashConverterError.Create;
-  Result := KeyHash(AKey);
-end;
-
 //=== { TJclHashMapI<TKey, TValue> } =========================================
 
-function TJclHashMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer): IJclCollection<TValue>;
+function TJclHashMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer; AOwnsObjects: Boolean): IJclCollection<TValue>;
 begin
-  Result := TJclArrayListI<TValue>.Create(ACapacity, False);
+  Result := TJclArrayListI<TValue>.Create(ACapacity, AOwnsObjects);
 end;
 
-function TJclHashMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer): IJclSet<TKey>;
+function TJclHashMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
 begin
-  Result := TJclArraySetI<TKey>.Create(ACapacity, False);
+  Result := TJclArraySetI<TKey>.Create(ACapacity, AOwnsObjects);
 end;
 
-function TJclHashMapI<TKey, TValue>.CreateEmptyHashMap(ACapacity: Integer): TJclHashMap<TKey, TValue>;
+function TJclHashMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainer;
 begin
-  Result := TJclHashMapI<TKey, TValue>.Create(ACapacity, False, False);
+  Result := TJclHashMapI<TKey, TValue>.Create(FSize, False, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclHashMapI<TKey, TValue>.Hash(const AKey: TKey): Integer;
+begin
+  Result := AKey.GetHashCode;
 end;
 
 function TJclHashMapI<TKey, TValue>.KeysEqual(const A, B: TKey): Boolean;
@@ -3647,10 +5684,6 @@ begin
   Result := A.Equals(B);
 end;
 
-function TJclHashMapI<TKey, TValue>.KeyToOrd(const AKey: TKey): Cardinal;
-begin
-  Result := AKey.GetHashCode;
-end;
 {$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}

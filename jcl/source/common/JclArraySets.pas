@@ -1,4 +1,8 @@
 {**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
+{**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
@@ -38,6 +42,7 @@ unit JclArraySets;
 interface
 
 uses
+  Classes,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -48,18 +53,14 @@ uses
   JclAlgorithms,
   {$ENDIF SUPPORTS_GENERICS}
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
-
 type
-  TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfSet, IJclIntfList,
-    IJclIntfArray, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable,
-    IJclGrowable)
+
+  TJclIntfArraySet = class(TJclIntfArrayList, IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     function BinarySearch(const AInterface: IInterface): Integer;
   protected
-    { IJclCloneable }
-    function Clone: TObject;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfCollection }
     function Add(const AInterface: IInterface): Boolean;
@@ -71,17 +72,16 @@ type
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
     procedure Union(const ACollection: IJclIntfCollection);
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+  public
   end;
 
-  TJclStrArraySet = class(TJclStrArrayList, IJclStrCollection, IJclStrSet, IJclStrList, IJclStrArray,
+  TJclStrArraySet = class(TJclStrArrayList, IJclStrCollection, IJclStrList, IJclStrArray, IJclStrSet, IJclContainer, IJclStrContainer, IJclStrFlatContainer, IJclStrEqualityComparer, IJclStrComparer,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     function BinarySearch(const AString: string): Integer;
   protected
-    { IJclCloneable }
-    function Clone: TObject;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclStrCollection }
     function Add(const AString: string): Boolean; override;
@@ -93,17 +93,16 @@ type
     procedure Intersect(const ACollection: IJclStrCollection);
     procedure Subtract(const ACollection: IJclStrCollection);
     procedure Union(const ACollection: IJclStrCollection);
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+  public
   end;
 
-  TJclArraySet = class(TJclArrayList, IJclCollection, IJclSet, IJclList, IJclArray,
+  TJclArraySet = class(TJclArrayList, IJclCollection, IJclList, IJclArray, IJclSet, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     function BinarySearch(AObject: TObject): Integer;
   protected
-    { IJclCloneable }
-    function Clone: TObject;
     { IJclIntfCloneable }
-    function IntfClone: IInterface;
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection }
     function Add(AObject: TObject): Boolean;
@@ -115,16 +114,18 @@ type
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
     procedure Union(const ACollection: IJclCollection);
+    function CreateEmptyContainer: TJclAbstractContainer; override;
+  public
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
 
-  TJclArraySet<T> = class(TJclArrayList<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>,
+  TJclArraySet<T> = class(TJclArrayList<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    function BinarySearch(AItem: T): Integer;
+    function BinarySearch(const AItem: T): Integer;
   protected
-    function CompareItems(const A, B: T): Integer; virtual; abstract;
+    { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { IJclCollection<T> }
     function Add(const AItem: T): Boolean;
@@ -136,59 +137,55 @@ type
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
     procedure Union(const ACollection: IJclCollection<T>);
+  public
   end;
 
   // E = External helper to compare items
-  TJclArraySetE<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>,
+  TJclArraySetE<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     FComparer: IComparer<T>;
   protected
-    function CompareItems(const A, B: T): Integer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
-    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AComparer: IComparer<T>; ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsItems: Boolean = True); overload;
-    constructor Create(const AComparer: IComparer<T>; const ACollection: IJclCollection<T>;
-      AOwnsItems: Boolean = True); overload;
+    constructor Create(const AComparer: IComparer<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
+    constructor Create(const AComparer: IComparer<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
 
     property Comparer: IComparer<T> read FComparer write FComparer;
   end;
 
   // F = Function to compare items
-  TJclArraySetF<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>,
+  TJclArraySetF<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
     FCompare: TCompare<T>;
   protected
-    function CompareItems(const A, B: T): Integer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
-    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const ACompare: TCompare<T>; ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsItems: Boolean = True); overload;
-    constructor Create(const ACompare: TCompare<T>; const ACollection: IJclCollection<T>;
-      AOwnsItems: Boolean = True); overload;
+    constructor Create(const ACompare: TCompare<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
+    constructor Create(const ACompare: TCompare<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
 
     property Compare: TCompare<T> read FCompare write FCompare;
   end;
 
   // I = Items can compare themselves to others
-  TJclArraySetI<T: IComparable<T>> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>,
+  TJclArraySetI<T: IComparable<T>> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable,
     IJclGrowable)
   protected
-    function CompareItems(const A, B: T): Integer; override;
+    function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
-    function CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>; overload; override;
+    function CreateEmptyContainer: TJclAbstractContainer; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -210,29 +207,8 @@ implementation
 uses
   SysUtils;
 
-function ObjectCompare(Obj1, Obj2: TObject): Integer;
-begin
-  if Cardinal(Obj1) < Cardinal(Obj2) then
-    Result := -1
-  else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
-    Result := 1
-  else
-    Result := 0;
-end;
 
-function InterfaceCompare(const Obj1, Obj2: IInterface): Integer;
-begin
-  if Cardinal(Obj1) < Cardinal(Obj2) then
-    Result := -1
-  else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
-    Result := 1
-  else
-    Result := 0;
-end;
-
-//=== { TJclIntfArraySet } ===================================================
+//=== { TJclIntfArraySet } ====================================================
 
 function TJclIntfArraySet.Add(const AInterface: IInterface): Boolean;
 var
@@ -242,13 +218,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AInterface);
-    if Idx >= 0 then
-      Result := InterfaceCompare(GetObject(Idx), AInterface) <> 0
-    else
-      Result := True;
+    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
     if Result then
-      inherited Insert(Idx + 1, AInterface);
+    begin
+      Idx := BinarySearch(AInterface);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetObject(Idx), AInterface) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AInterface);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -269,7 +249,7 @@ begin
       Exit;
     It := ACollection.First;
     while It.HasNext do
-      Result := Add(It.Next) or Result;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -288,10 +268,10 @@ begin
   {$ENDIF THREADSAFE}
     LoPos := 0;
     HiPos := Size - 1;
-    CompPos := (HiPos - LoPos) div 2;
+    CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := InterfaceCompare(GetObject(CompPos), AInterface);
+      Comp := ItemsCompare(GetObject(CompPos), AInterface);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -302,23 +282,9 @@ begin
         HiPos := CompPos;
         LoPos := CompPos + 1;
       end;
-      CompPos := (HiPos - LoPos) div 2 + LoPos;
+      CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclIntfArraySet.Clone: TObject;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(Self);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -336,7 +302,7 @@ begin
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AInterface);
     if Idx >= 0 then
-      Result := InterfaceCompare(GetObject(Idx), AInterface) = 0
+      Result := ItemsEqual(GetObject(Idx), AInterface)
     else
       Result := False;
   {$IFDEF THREADSAFE}
@@ -344,6 +310,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclIntfArraySet.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclIntfArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 procedure TJclIntfArraySet.Insert(Index: Integer; const AInterface: IInterface);
@@ -356,20 +328,6 @@ begin
   RetainAll(ACollection);
 end;
 
-function TJclIntfArraySet.IntfClone: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(Self);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 procedure TJclIntfArraySet.Subtract(const ACollection: IJclIntfCollection);
 begin
   RemoveAll(ACollection);
@@ -379,6 +337,7 @@ procedure TJclIntfArraySet.Union(const ACollection: IJclIntfCollection);
 begin
   AddAll(ACollection);
 end;
+
 
 //=== { TJclStrArraySet } ====================================================
 
@@ -390,13 +349,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AString);
-    if Idx >= 0 then
-      Result := CompareStr(GetString(Idx), AString) <> 0
-    else
-      Result := True;
+    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
     if Result then
-      inherited Insert(Idx + 1, AString);
+    begin
+      Idx := BinarySearch(AString);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AString);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -417,7 +380,7 @@ begin
       Exit;
     It := ACollection.First;
     while It.HasNext do
-      Result := Add(It.Next) or Result;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -436,10 +399,10 @@ begin
   {$ENDIF THREADSAFE}
     LoPos := 0;
     HiPos := Size - 1;
-    CompPos := (HiPos - LoPos) div 2;
+    CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := CompareStr(GetString(CompPos), AString);
+      Comp := ItemsCompare(GetString(CompPos), AString);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -450,23 +413,9 @@ begin
         HiPos := CompPos;
         LoPos := CompPos + 1;
       end;
-      CompPos := (HiPos - LoPos) div 2 + LoPos;
+      CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclStrArraySet.Clone: TObject;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclStrArraySet.Create(Self);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -484,7 +433,7 @@ begin
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AString);
     if Idx >= 0 then
-      Result := CompareStr(GetString(Idx), AString) = 0
+      Result := ItemsEqual(GetString(Idx), AString)
     else
       Result := False;
   {$IFDEF THREADSAFE}
@@ -492,6 +441,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclStrArraySet.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclStrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
 end;
 
 procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
@@ -504,20 +459,6 @@ begin
   RetainAll(ACollection);
 end;
 
-function TJclStrArraySet.IntfClone: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclStrArraySet.Create(Self);
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 procedure TJclStrArraySet.Subtract(const ACollection: IJclStrCollection);
 begin
   RemoveAll(ACollection);
@@ -528,7 +469,8 @@ begin
   AddAll(ACollection);
 end;
 
-//=== { TJclArraySet } =======================================================
+
+//=== { TJclArraySet } ====================================================
 
 function TJclArraySet.Add(AObject: TObject): Boolean;
 var
@@ -538,13 +480,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AObject);
-    if Idx >= 0 then
-      Result := ObjectCompare(GetObject(Idx), AObject) <> 0
-    else
-      Result := True;
+    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
     if Result then
-      inherited Insert(Idx + 1, AObject);
+    begin
+      Idx := BinarySearch(AObject);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetObject(Idx), AObject) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AObject);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -565,7 +511,7 @@ begin
       Exit;
     It := ACollection.First;
     while It.HasNext do
-      Result := Add(It.Next) or Result;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -584,10 +530,10 @@ begin
   {$ENDIF THREADSAFE}
     LoPos := 0;
     HiPos := Size - 1;
-    CompPos := (HiPos - LoPos) div 2;
+    CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := ObjectCompare(GetObject(CompPos), AObject);
+      Comp := ItemsCompare(GetObject(CompPos), AObject);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -598,23 +544,9 @@ begin
         HiPos := CompPos;
         LoPos := CompPos + 1;
       end;
-      CompPos := (HiPos - LoPos) div 2 + LoPos;
+      CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function TJclArraySet.Clone: TObject;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclArraySet.Create(Self, False); // Only one can have FOwnsObject = True
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -632,7 +564,7 @@ begin
   {$ENDIF THREADSAFE}
     Idx := BinarySearch(AObject);
     if Idx >= 0 then
-      Result := ObjectCompare(GetObject(Idx), AObject) = 0
+      Result := ItemsEqual(GetObject(Idx), AObject)
     else
       Result := False;
   {$IFDEF THREADSAFE}
@@ -640,6 +572,12 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclArraySet.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclArraySet.Create(Size, False);
+  AssignPropertiesTo(Result);
 end;
 
 procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
@@ -650,20 +588,6 @@ end;
 procedure TJclArraySet.Intersect(const ACollection: IJclCollection);
 begin
   RetainAll(ACollection);
-end;
-
-function TJclArraySet.IntfClone: IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  ReadLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := TJclArraySet.Create(Self, False); // Only one can have FOwnsObject = True
-  {$IFDEF THREADSAFE}
-  finally
-    ReadUnlock;
-  end;
-  {$ENDIF THREADSAFE}
 end;
 
 procedure TJclArraySet.Subtract(const ACollection: IJclCollection);
@@ -688,13 +612,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AItem);
-    if Idx >= 0 then
-      Result := not ItemsEqual(GetItem(Idx), AItem)
-    else
-      Result := True;
+    Result := FAllowDefaultElements or not ItemsEqual(AItem, Default(T));
     if Result then
-      inherited Insert(Idx + 1, AItem);
+    begin
+      Idx := BinarySearch(AItem);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetItem(Idx), AItem) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AItem);
+    end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -715,7 +643,7 @@ begin
       Exit;
     It := ACollection.First;
     while It.HasNext do
-      Result := Add(It.Next) or Result;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -723,7 +651,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclArraySet<T>.BinarySearch(AItem: T): Integer;
+function TJclArraySet<T>.BinarySearch(const AItem: T): Integer;
 var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
@@ -734,10 +662,10 @@ begin
   {$ENDIF THREADSAFE}
     LoPos := 0;
     HiPos := Size - 1;
-    CompPos := (HiPos - LoPos) div 2;
+    CompPos := (HiPos + LoPos) div 2;
     while HiPos >= LoPos do
     begin
-      Comp := CompareItems(GetItem(CompPos), AItem);
+      Comp := ItemsCompare(GetItem(CompPos), AItem);
       if Comp < 0 then
         LoPos := CompPos + 1
       else
@@ -748,7 +676,7 @@ begin
         HiPos := CompPos;
         LoPos := CompPos + 1;
       end;
-      CompPos := (HiPos - LoPos) div 2 + LoPos;
+      CompPos := (HiPos + LoPos) div 2;
     end;
     Result := HiPos;
   {$IFDEF THREADSAFE}
@@ -777,6 +705,7 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
 
 procedure TJclArraySet<T>.Insert(Index: Integer; const AItem: T);
 begin
@@ -813,21 +742,24 @@ begin
   FComparer := AComparer;
 end;
 
-function TJclArraySetE<T>.CompareItems(const A, B: T): Integer;
+procedure TJclArraySetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclArraySetE<T> then
+    TJclArraySetE<T>(Dest).FComparer := Comparer;
+end;
+
+function TJclArraySetE<T>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclArraySetE<T>.Create(Comparer, Size, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclArraySetE<T>.ItemsCompare(const A, B: T): Integer;
 begin
   if Comparer = nil then
     raise EJclNoComparerError.Create;
   Result := Comparer.Compare(A, B);
-end;
-
-function TJclArraySetE<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetE<T>.Create(Comparer, ACapacity, AOwnsItems);
-end;
-
-function TJclArraySetE<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetE<T>.Create(Comparer, ACollection, AOwnsItems);
 end;
 
 function TJclArraySetE<T>.ItemsEqual(const A, B: T): Boolean;
@@ -852,21 +784,24 @@ begin
   FCompare := ACompare;
 end;
 
-function TJclArraySetF<T>.CompareItems(const A, B: T): Integer;
+procedure TJclArraySetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclArraySetF<T> then
+    TJclArraySetF<T>(Dest).FCompare := Compare;
+end;
+
+function TJclArraySetF<T>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclArraySetF<T>.Create(Compare, Size, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclArraySetF<T>.ItemsCompare(const A, B: T): Integer;
 begin
   if not Assigned(Compare) then
     raise EJclNoComparerError.Create;
   Result := Compare(A, B);
-end;
-
-function TJclArraySetF<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetF<T>.Create(Compare, ACapacity, AOwnsItems);
-end;
-
-function TJclArraySetF<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetF<T>.Create(Compare, ACollection, AOwnsItems);
 end;
 
 function TJclArraySetF<T>.ItemsEqual(const A, B: T): Boolean;
@@ -878,19 +813,15 @@ end;
 
 //=== { TJclArraySetI<T> } ===================================================
 
-function TJclArraySetI<T>.CompareItems(const A, B: T): Integer;
+function TJclArraySetI<T>.CreateEmptyContainer: TJclAbstractContainer;
+begin
+  Result := TJclArraySetI<T>.Create(Size, False);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclArraySetI<T>.ItemsCompare(const A, B: T): Integer;
 begin
   Result := A.CompareTo(B);
-end;
-
-function TJclArraySetI<T>.CreateEmptyArrayList(ACapacity: Integer; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetI<T>.Create(ACapacity, AOwnsItems);
-end;
-
-function TJclArraySetI<T>.CreateEmptyArrayList(const ACollection: IJclCollection<T>; AOwnsItems: Boolean): TJclArrayList<T>;
-begin
-  Result := TJclArraySetI<T>.Create(ACollection, AOwnsItems);
 end;
 
 function TJclArraySetI<T>.ItemsEqual(const A, B: T): Boolean;

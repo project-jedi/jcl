@@ -1,0 +1,633 @@
+(*$JPPDEFINEMACRO JCLHASHMAPINT(KEYTYPENAME, VALUETYPENAME, ENTRYTYPENAME, ENTRYARRAYTYPENAME, BUCKETTYPENAME, BUCKETARRAYTYPENAME,
+  SELFCLASSNAME, ANCESTORNAME, MAPINTERFACENAME, KEYSETINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
+  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION,
+  KEYPARAMETERDECLARATION, VALUEPARAMETERDECLARATION)
+  ENTRYTYPENAME = record
+    Key: KEYTYPENAME;
+    Value: VALUETYPENAME;
+  end;
+
+  ENTRYARRAYTYPENAME = array of ENTRYTYPENAME;
+
+  BUCKETTYPENAME = class
+  public
+    Size: Integer;
+    Entries: ENTRYARRAYTYPENAME;
+  end;
+
+  BUCKETARRAYTYPENAME = array of BUCKETTYPENAME;
+
+  SELFCLASSNAME = class(ANCESTORNAME, MAPINTERFACENAME,INTERFACEADDITIONAL
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
+  private
+    FBuckets: BUCKETARRAYTYPENAME;
+    FHashFunction: TJclHashFunction;PRIVATEADDITIONAL
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
+    procedure GrowEntries(Bucket: BUCKETTYPENAME); virtual;
+    procedure PackEntries(Bucket: BUCKETTYPENAME); virtual;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { MAPINTERFACENAME }
+    procedure Clear;
+    function ContainsKey(KEYPARAMETERDECLARATION): Boolean;
+    function ContainsValue(VALUEPARAMETERDECLARATION): Boolean;
+    function Equals(const AMap: MAPINTERFACENAME): Boolean;
+    function GetValue(KEYPARAMETERDECLARATION): VALUETYPENAME;
+    function IsEmpty: Boolean;
+    function KeyOfValue(VALUEPARAMETERDECLARATION): KEYTYPENAME;
+    function KeySet: KEYSETINTERFACENAME;
+    procedure PutAll(const AMap: MAPINTERFACENAME);
+    procedure PutValue(KEYPARAMETERDECLARATION; VALUEPARAMETERDECLARATION);
+    function Remove(KEYPARAMETERDECLARATION): VALUETYPENAME;
+    function Size: Integer;
+    function Values: VALUECOLLECTIONINTERFACENAME;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
+  public
+    constructor Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
+    destructor Destroy; override;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;PUBLICADDITIONAL
+  end;*)
+(*$JPPDEFINEMACRO JCLHASHMAPIMP(SELFCLASSNAME, ENTRYARRAYTYPENAME, BUCKETTYPENAME,
+  MAPINTERFACENAME, KEYSETINTERFACENAME, KEYITRINTERFACENAME, VALUECOLLECTIONINTERFACENAME,
+  KEYOWNERSHIPDECLARATION, VALUEOWNERSHIPDECLARATION, OWNERSHIPASSIGNMENTS,
+  KEYPARAMETERDECLARATION, KEYTYPENAME, KEYDEFAULT, VALUEPARAMETERDECLARATION, VALUETYPENAME, VALUEDEFAULT)
+//=== { SELFCLASSNAME } ==========================================
+
+constructor SELFCLASSNAME.Create(ACapacity: IntegerVALUEOWNERSHIPDECLARATIONKEYOWNERSHIPDECLARATION);
+begin
+  inherited Create(nil);OWNERSHIPASSIGNMENTS
+  SetCapacity(ACapacity);
+  FHashFunction := HashMul;
+end;
+
+destructor SELFCLASSNAME.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+var
+  I, J: Integer;
+  SelfBucket, NewBucket: BUCKETTYPENAME;
+  ADest: SELFCLASSNAME;
+  AMap: MAPINTERFACENAME;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is SELFCLASSNAME then
+  begin
+    ADest := SELFCLASSNAME(Dest);
+    {$IFDEF THREADSAFE}
+    ReadLock;
+    try
+    {$ENDIF THREADSAFE}
+      ADest.Clear;
+      for I := 0 to FCapacity - 1 do
+      begin
+        SelfBucket := FBuckets[I];
+        if SelfBucket <> nil then
+        begin
+          NewBucket := BUCKETTYPENAME.Create;
+          SetLength(NewBucket.Entries, SelfBucket.Size);
+          for J := 0 to SelfBucket.Size - 1 do
+          begin
+            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
+          end;
+          NewBucket.Size := SelfBucket.Size;
+          ADest.FBuckets[I] := NewBucket;
+        end;
+      end;
+    {$IFDEF THREADSAFE}
+    finally
+      ReadUnlock;
+    end;
+    {$ENDIF THREADSAFE}
+  end
+  else
+  if Supports(Dest, MAPINTERFACENAME, AMap) then
+  begin
+    AMap.Clear;
+    AMap.PutAll(Self);
+  end;
+end;
+
+procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainer);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is SELFCLASSNAME then
+    SELFCLASSNAME(Dest).HashFunction := HashFunction;
+end;
+
+procedure SELFCLASSNAME.Clear;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        for J := 0 to Bucket.Size - 1 do
+        begin
+          FreeKey(Bucket.Entries[J].Key);
+          FreeValue(Bucket.Entries[J].Value);
+        end;
+        FreeAndNil(FBuckets[I]);
+      end;
+    end;
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.ContainsKey(KEYPARAMETERDECLARATION): Boolean;
+var
+  I: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := True;
+          Break;
+        end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.ContainsValue(VALUEPARAMETERDECLARATION): Boolean;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := True;
+            Break;
+          end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+function SELFCLASSNAME.Equals(const AMap: MAPINTERFACENAME): Boolean;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if AMap = nil then
+      Exit;
+    if FSize <> AMap.Size then
+      Exit;
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          if AMap.ContainsKey(Bucket.Entries[J].Key) then
+          begin
+            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
+              Exit;
+          end
+          else
+            Exit;
+    end;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO FREEKEY}
+{$JPPEXPANDMACRO FREEVALUE}
+{$JPPEXPANDMACRO GETOWNSKEYS}
+{$JPPEXPANDMACRO GETOWNSVALUES}
+function SELFCLASSNAME.GetValue(KEYPARAMETERDECLARATION): VALUETYPENAME;
+var
+  I: Integer;
+  Bucket: BUCKETTYPENAME;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := VALUEDEFAULT;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := Bucket.Entries[I].Value;
+          Found := True;
+          Break;
+        end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.GrowEntries(Bucket: BUCKETTYPENAME);
+var
+  BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoGrowStrategy of
+    agsDisabled: ;
+    agsAgressive:
+      Inc(BucketCapacity, 1);
+    agsProportional:
+      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
+    agsIncremental:
+      Inc(BucketCapacity, FAutoGrowParameter);
+  end;
+  SetLength(Bucket.Entries, BucketCapacity);
+end;
+
+{$JPPEXPANDMACRO HASH}
+function SELFCLASSNAME.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function SELFCLASSNAME.KeyOfValue(VALUEPARAMETERDECLARATION): KEYTYPENAME;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+  Found: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Found := False;
+    Result := KEYDEFAULT;
+    for J := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[J];
+      if Bucket <> nil then
+        for I := 0 to Bucket.Size - 1 do
+          if ValuesEqual(Bucket.Entries[I].Value, Value) then
+          begin
+            Result := Bucket.Entries[I].Key;
+            Found := True;
+            Break;
+          end;
+    end;
+    if (not Found) and (not FReturnDefaultElements) then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO KEYSEQUAL}
+function SELFCLASSNAME.KeySet: KEYSETINTERFACENAME;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYSET(FSize)};
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Key);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+      begin
+        List[FromIndex + I].Key := KEYDEFAULT;
+        List[FromIndex + I].Value := VALUEDEFAULT;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := KEYDEFAULT;
+        List[FromIndex + I].Value := VALUEDEFAULT;
+      end;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+      begin
+        List[FromIndex + I].Key := KEYDEFAULT;
+        List[FromIndex + I].Value := VALUEDEFAULT;
+      end
+    else
+      // independant
+      for I := 0 to Count - 1 do
+      begin
+        List[FromIndex + I].Key := KEYDEFAULT;
+        List[FromIndex + I].Value := VALUEDEFAULT;
+      end;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure SELFCLASSNAME.Pack;
+var
+  I: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+      begin
+        if Bucket.Size > 0 then
+          SetLength(Bucket.Entries, Bucket.Size)
+        else
+          FreeAndNil(FBuckets[I]);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.PackEntries(Bucket: BUCKETTYPENAME);
+var
+  Decrement, BucketCapacity: Integer;
+begin
+  BucketCapacity := Length(Bucket.Entries);
+  case FAutoPackStrategy of
+    apsDisabled:
+      Decrement := 0;
+    apsAgressive:
+      Decrement := 1;
+    apsProportional:
+      Decrement := BucketCapacity div FAutoPackParameter;
+    apsIncremental:
+      Decrement := FAutoPackParameter;
+  else
+    Decrement := 0;
+  end;
+  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
+    SetLength(Bucket.Entries, Bucket.Size);
+end;
+
+procedure SELFCLASSNAME.PutAll(const AMap: MAPINTERFACENAME);
+var
+  It: KEYITRINTERFACENAME;
+  Key: KEYTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if AMap = nil then
+      Exit;
+    It := AMap.KeySet.First;
+    while It.HasNext do
+    begin
+      Key := It.Next;
+      PutValue(Key, AMap.GetValue(Key));
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.PutValue(KEYPARAMETERDECLARATION; VALUEPARAMETERDECLARATION);
+var
+  Index: Integer;
+  Bucket: BUCKETTYPENAME;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FAllowDefaultElements or (not KeysEqual(Key, KEYDEFAULT) and not ValuesEqual(Value, VALUEDEFAULT)) then
+    begin
+      Index := FHashFunction(Hash(Key), FCapacity);
+      Bucket := FBuckets[Index];
+      if Bucket <> nil then
+      begin
+        for I := 0 to Bucket.Size - 1 do
+          if KeysEqual(Bucket.Entries[I].Key, Key) then
+          begin
+            FreeValue(Bucket.Entries[I].Value);
+            Bucket.Entries[I].Value := Value;
+            Exit;
+          end;
+      end
+      else
+      begin
+        Bucket := BUCKETTYPENAME.Create;
+        SetLength(Bucket.Entries, 1);
+        FBuckets[Index] := Bucket;
+      end;
+
+      if Bucket.Size = Length(Bucket.Entries) then
+        GrowEntries(Bucket);
+      if Bucket.Size < Length(Bucket.Entries) then
+      begin
+        Bucket.Entries[Bucket.Size].Key := Key;
+        Bucket.Entries[Bucket.Size].Value := Value;
+        Inc(Bucket.Size);
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Remove(KEYPARAMETERDECLARATION): VALUETYPENAME;
+var
+  Bucket: BUCKETTYPENAME;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := VALUEDEFAULT;
+    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+    if Bucket <> nil then
+    begin
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          Result := FreeValue(Bucket.Entries[I].Value);
+          FreeKey(Bucket.Entries[I].Key);
+          if I < Length(Bucket.Entries) - 1 then
+            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+          Dec(Bucket.Size);
+          Dec(FSize);
+          Break;
+        end;
+      PackEntries(Bucket);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FSize = 0 then
+    begin
+      SetLength(FBuckets, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOperationNotSupportedError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function SELFCLASSNAME.Values: VALUECOLLECTIONINTERFACENAME;
+var
+  I, J: Integer;
+  Bucket: BUCKETTYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := {$JPPEXPANDMACRO CREATEEMPTYARRAYLIST(FSize)};
+    for I := 0 to FCapacity - 1 do
+    begin
+      Bucket := FBuckets[I];
+      if Bucket <> nil then
+        for J := 0 to Bucket.Size - 1 do
+          Result.Add(Bucket.Entries[J].Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO VALUESEQUAL}*)

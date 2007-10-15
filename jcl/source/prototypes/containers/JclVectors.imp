@@ -1,10 +1,10 @@
-(*$JPPDEFINEMACRO JCLARRAYLISTINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, ITRINTERFACENAME,
-  DYNARRAYTYPE, INTERFACELISTADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS,
-  OWNERSHIPDECLARATION, PARAMETERDECLARATION, TYPENAME, GETTERNAME, SETTERNAME)
+(*$JPPDEFINEMACRO JCLVECTORINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, ITRINTERFACENAME,
+  INTERFACELISTADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
+  PARAMETERDECLARATION, DATATYPENAME, DEFAULTVALUE, DYNARRAYTYPE, GETTERNAME, SETTERNAME)
   SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME,INTERFACELISTADDITIONAL
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
   private
-    FElementData: DYNARRAYTYPE;PRIVATEADDITIONAL
+    FItems: DYNARRAYTYPE;PRIVATEADDITIONAL
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainer); override;
     { IJclPackable }
@@ -28,20 +28,20 @@
     { LISTINTERFACENAME }
     function Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
     function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
-    function GETTERNAME(Index: Integer): TYPENAME;
+    function GETTERNAME(Index: Integer): DATATYPENAME;
     function IndexOf(PARAMETERDECLARATION): Integer;
     function LastIndexOf(PARAMETERDECLARATION): Integer;
-    function Remove(Index: Integer): TYPENAME; overload;
+    function Remove(Index: Integer): DATATYPENAME; overload;
     procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
     function SubList(First, Count: Integer): LISTINTERFACENAME;PROTECTEDADDITIONAL
   public
-    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION); overload;
-    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION); overload;
+    constructor Create(ACapacity: IntegerOWNERSHIPDECLARATION);
     destructor Destroy; override;PUBLICADDITIONAL
+    property Items: DYNARRAYTYPE read FItems;
   end;*)
-(*$JPPDEFINEMACRO JCLARRAYLISTITR(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
-  PARAMETERDECLARATION, PARAMETERNAME, TYPENAME, GETTERNAME, SETTERNAME)
-//=== { SELFCLASSNAME } ===============================================================
+(*$JPPDEFINEMACRO JCLVECTORITR(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME,
+  PARAMETERDECLARATION, PARAMETERNAME, DATATYPENAME, GETTERNAME, SETTERNAME)
+//=== { SELFCLASSNAME } ===========================================================
 
 type
   SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
@@ -50,30 +50,30 @@ type
     FCursor: Integer;
     FOwnList: LISTINTERFACENAME;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     { ITRINTERFACENAME }
     function Add(PARAMETERDECLARATION): Boolean;
-    function GETTERNAME: TYPENAME;
+    function GETTERNAME: DATATYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
     function Insert(PARAMETERDECLARATION): Boolean;
-    function Next: TYPENAME;
+    function Next: DATATYPENAME;
     function NextIndex: Integer;
-    function Previous: TYPENAME;
+    function Previous: DATATYPENAME;
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SETTERNAME(PARAMETERDECLARATION);
   public
-    constructor Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+    constructor Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
   end;
 
-constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
+constructor SELFCLASSNAME.Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
 begin
-  inherited Create(AOwnList, AValid);
-  FOwnList := AOwnList;
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
   FCursor := ACursor;
 end;
 
@@ -100,7 +100,7 @@ begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
 end;
 
-function SELFCLASSNAME.GETTERNAME: TYPENAME;
+function SELFCLASSNAME.GETTERNAME: DATATYPENAME;
 begin
   CheckValid;
   Result := FOwnList.GETTERNAME(FCursor);
@@ -128,7 +128,7 @@ begin
   Result := FOwnList.Insert(FCursor, PARAMETERNAME);
 end;
 
-function SELFCLASSNAME.Next: TYPENAME;
+function SELFCLASSNAME.Next: DATATYPENAME;
 begin
   if Valid then
     Inc(FCursor)
@@ -145,7 +145,7 @@ begin
     Result := FCursor;
 end;
 
-function SELFCLASSNAME.Previous: TYPENAME;
+function SELFCLASSNAME.Previous: DATATYPENAME;
 begin
   if Valid then
     Dec(FCursor)
@@ -174,30 +174,15 @@ begin
   CheckValid;
   FOwnList.SETTERNAME(FCursor, PARAMETERNAME);
 end;*)
-(*$JPPDEFINEMACRO JCLARRAYLISTIMP(SELFCLASSNAME,
-  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, COLLECTIONINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME, LISTINTERFACENAME,
-  PARAMETERDECLARATION, PARAMETERNAME, GETTERNAME, SETTERNAME, RELEASERNAME, TYPENAME, DEFAULTVALUE, MOVEARRAY)
+(*$JPPDEFINEMACRO JCLVECTORIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER, PARAMETERDECLARATION, PARAMETERNAME, DATATYPENAME, DEFAULTVALUE,
+  GETTERNAME, SETTERNAME, RELEASERNAME, MOVEARRAY)
 //=== { SELFCLASSNAME } ======================================================
 
 constructor SELFCLASSNAME.Create(ACapacity: IntegerOWNERSHIPDECLARATION);
 begin
   inherited Create(nilOWNERSHIPPARAMETER);
-  FSize := 0;
-  if ACapacity < 0 then
-    FCapacity := 0
-  else
-    FCapacity := ACapacity;
-  SetLength(FElementData, FCapacity);
-end;
-
-constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
-begin
-  // (rom) disabled because the following Create already calls inherited
-  // inherited Create;
-  if ACollection = nil then
-    raise EJclNoCollectionError.Create;
-  Create(ACollection.SizeOWNERSHIPPARAMETER);
-  AddAll(ACollection);
+  SetCapacity(ACapacity);
 end;
 
 destructor SELFCLASSNAME.Destroy;
@@ -208,7 +193,7 @@ end;
 
 function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
 var
-  Index: Integer;
+  I: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -218,13 +203,12 @@ begin
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(PARAMETERNAME, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(PARAMETERNAME, FItems[I]) then
           begin
             Result := CheckDuplicate;
             Break;
           end;
-
       if Result then
       begin
         if FSize = FCapacity then
@@ -232,7 +216,7 @@ begin
         Result := FSize < FCapacity;
         if Result then
         begin
-          FElementData[FSize] := PARAMETERNAME;
+          FItems[FSize] := PARAMETERNAME;
           Inc(FSize);
         end;
       end;
@@ -247,9 +231,6 @@ end;
 function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
-  Item: TYPENAME;
-  AddItem: Boolean;
-  Index: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -261,33 +242,7 @@ begin
     Result := True;
     It := ACollection.First;
     while It.HasNext do
-    begin
-      Item := It.Next;
-      // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
-      if AddItem then
-      begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-        if AddItem then
-        begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
-        end;
-      end;
-      Result := Result and AddItem;
-    end;
+      Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -298,7 +253,6 @@ end;
 procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
 var
   ADest: SELFCLASSNAME;
-  ACollection: COLLECTIONINTERFACENAME;
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then
@@ -306,12 +260,6 @@ begin
     ADest := SELFCLASSNAME(Dest);
     ADest.Clear;
     ADest.AddAll(Self);
-  end
-  else
-  if Supports(Dest, COLLECTIONINTERFACENAME, ACollection) then
-  begin
-    ACollection.Clear;
-    ACollection.AddAll(Self);
   end;
 end;
 
@@ -324,9 +272,8 @@ begin
   try
   {$ENDIF THREADSAFE}
     for I := 0 to FSize - 1 do
-      RELEASERNAME(FElementData[I]);
+      RELEASERNAME(FItems[I]);
     FSize := 0;
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -344,7 +291,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], PARAMETERNAME) then
+      if ItemsEqual(Items[I], PARAMETERNAME) then
       begin
         Result := True;
         Break;
@@ -364,10 +311,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+    Result := True;
     if ACollection = nil then
       Exit;
-    Result := True;
     It := ACollection.First;
     while Result and It.HasNext do
       Result := Contains(It.Next);
@@ -393,11 +339,14 @@ begin
       Exit;
     if FSize <> ACollection.Size then
       Exit;
+    Result := True;
     It := ACollection.First;
     for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -410,7 +359,7 @@ begin
   Result := ITRCLASSNAME.Create(Self, 0, False);
 end;
 
-function SELFCLASSNAME.GETTERNAME(Index: Integer): TYPENAME;
+function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -418,10 +367,10 @@ begin
   {$ENDIF THREADSAFE}
     Result := DEFAULTVALUE;
     if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
+      Result := Items[Index]
     else
     if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+      raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -439,7 +388,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], PARAMETERNAME) then
+      if ItemsEqual(Items[I], PARAMETERNAME) then
       begin
         Result := I;
         Break;
@@ -452,26 +401,25 @@ begin
 end;
 
 function SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
+var
+  I: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
     Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
-
     if (Index < 0) or (Index > FSize) then
       raise EJclOutOfBoundsError.Create;
-
     if Result then
     begin
       if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(PARAMETERNAME, FElementData[Index]) then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(PARAMETERNAME, FItems[I]) then
           begin
             Result := CheckDuplicate;
             Break;
           end;
-
       if Result then
       begin
         if FSize = FCapacity then
@@ -479,9 +427,8 @@ begin
         Result := FSize < FCapacity;
         if Result then
         begin
-          if Index < FSize then
-            MOVEARRAY(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := PARAMETERNAME;
+          MOVEARRAY(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := PARAMETERNAME;
           Inc(FSize);
         end;
       end;
@@ -506,7 +453,6 @@ begin
       raise EJclOutOfBoundsError.Create;
     if ACollection = nil then
       Exit;
-
     Result := True;
     It := ACollection.Last;
     while It.HasPrevious do
@@ -538,7 +484,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := -1;
     for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], PARAMETERNAME) then
+      if ItemsEqual(Items[I], PARAMETERNAME) then
       begin
         Result := I;
         Break;
@@ -546,6 +492,25 @@ begin
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Remove(Index: Integer): DATATYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := RELEASERNAME(FItems[Index]);
+    MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
 end;
@@ -560,37 +525,15 @@ begin
   {$ENDIF THREADSAFE}
     Result := False;
     for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], PARAMETERNAME) then
+      if ItemsEqual(FItems[I], PARAMETERNAME) then
       begin
-        RELEASERNAME(FElementData[I]);
-        if I < (FSize - 1) then
-          MOVEARRAY(FElementData, I + 1, I, FSize - I - 1);
+        RELEASERNAME(FItems[I]); // Force Release
+        MOVEARRAY(FItems, I + 1, I, FSize - I);
         Dec(FSize);
         Result := True;
         if FRemoveSingleElement then
           Break;
       end;
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
-function SELFCLASSNAME.Remove(Index: Integer): TYPENAME;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := RELEASERNAME(FElementData[Index]);
-    if Index < (FSize - 1) then
-      MOVEARRAY(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -633,7 +576,7 @@ begin
       Exit;
     Result := True;
     for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
+      if not ACollection.Contains(Items[I]) then
         Remove(I);
   {$IFDEF THREADSAFE}
   finally
@@ -648,13 +591,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
+    if Value < FSize then
       raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -671,22 +611,22 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if (Index < 0) or (Index >= FSize) then
       raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
     if ReplaceItem then
     begin
       if FDuplicates <> dupAccept then
         for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], PARAMETERNAME) then
+          if ItemsEqual(PARAMETERNAME, FItems[I]) then
           begin
             ReplaceItem := CheckDuplicate;
             Break;
           end;
       if ReplaceItem then
       begin
-        RELEASERNAME(FElementData[Index]);
-        FElementData[Index] := PARAMETERNAME;
+        RELEASERNAME(FItems[Index]);
+        FItems[Index] := PARAMETERNAME;
       end;
     end;
     if not ReplaceItem then
@@ -717,7 +657,7 @@ begin
       Last := FSize - 1;
     Result := CreateEmptyContainer as LISTINTERFACENAME;
     for I := First to Last do
-      Result.Add(FElementData[I]);
+      Result.Add(Items[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;

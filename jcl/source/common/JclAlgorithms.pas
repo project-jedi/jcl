@@ -208,10 +208,7 @@ var
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
-    begin
-      First.SetObject(F(First.GetObject));
-      First.Next;
-    end
+      First.SetObject(F(First.Next))
     else
       Break;
 end;
@@ -222,10 +219,7 @@ var
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
-    begin
-      First.SetString(F(First.GetString));
-      First.Next;
-    end
+      First.SetString(F(First.Next))
     else
       Break;
 end;
@@ -236,10 +230,7 @@ var
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
-    begin
-      First.Next;
-      First.SetObject(F(First.GetObject));
-    end
+      First.SetObject(F(First.Next))
     else
       Break;
 end;
@@ -253,12 +244,11 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetObject, AInterface) = 0 then
+      if AComparator(First.Next, AInterface) = 0 then
       begin
         Result := First;
         Break;
       end;
-      First.Next;
     end
     else
       Break;
@@ -273,12 +263,11 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetString, AString) = 0 then
+      if AComparator(First.Next, AString) = 0 then
       begin
         Result := First;
         Break;
       end;
-      First.Next;
     end
     else
       Break;
@@ -293,12 +282,11 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetObject, AObject) = 0 then
+      if AComparator(First.Next, AObject) = 0 then
       begin
         Result := First;
         Break;
       end;
-      First.Next;
     end
     else
       Break;
@@ -425,8 +413,8 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetObject(AInterface);
       First.Next;
+      First.SetObject(AInterface);
     end
     else
       Break;
@@ -440,8 +428,8 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetString(AString);
       First.Next;
+      First.SetString(AString);
     end
     else
       Break;
@@ -454,8 +442,8 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetObject(AObject);
       First.Next;
+      First.SetObject(AObject);
     end
     else
       Break;
@@ -471,11 +459,10 @@ begin
     Exit;
   while First.NextIndex < Last.PreviousIndex do
   begin
-    Obj := First.GetObject;
+    Obj := First.Next;
     Last.Previous;
     First.SetObject(Last.GetObject);
     Last.SetObject(Obj);
-    First.Next;
   end;
 end;
 
@@ -489,11 +476,10 @@ begin
     Exit;
   while First.NextIndex <= Last.PreviousIndex do
   begin
-    Obj := First.GetString;
+    Obj := First.Next;
     Last.Previous;
     First.SetString(Last.GetString);
     Last.SetString(Obj);
-    First.Next;
   end;
 end;
 
@@ -507,11 +493,10 @@ begin
     Exit;
   while First.NextIndex <= Last.PreviousIndex do
   begin
-    Obj := First.GetObject;
+    Obj := First.Next;
     Last.Previous;
     First.SetObject(Last.GetObject);
     Last.SetObject(Obj);
-    First.Next;
   end;
 end;
 
@@ -642,10 +627,7 @@ var
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
-    begin
-      First.SetItem(F(First.GetItem));
-      First.Next;
-    end
+      First.SetItem(F(First.Next))
     else
       Break;
 end;
@@ -659,12 +641,11 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetItem, AItem) = 0 then
+      if AComparator(First.Next, AItem) = 0 then
       begin
         Result := First;
         Break;
       end;
-      First.Next;
     end
     else
       Break;
@@ -714,8 +695,8 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetItem(AItem);
       First.Next;
+      First.SetItem(AItem);
     end
     else
       Break;
@@ -731,11 +712,10 @@ begin
     Exit;
   while First.NextIndex <= Last.PreviousIndex do
   begin
-    Obj := First.GetItem;
+    Obj := First.Next;
     Last.Previous;
     First.SetItem(Last.GetItem);
     Last.SetItem(Obj);
-    First.Next;
   end;
 end;
 

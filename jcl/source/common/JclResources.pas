@@ -814,6 +814,7 @@ resourcestring
   RsEOutOfBounds           = 'Out of bounds';
   RsEOperationNotSupported = 'Operation not supported';
   RsEValueNotFound         = 'Value %s not found';
+  RsEDuplicateElement      = 'Duplicate element';
   RsENoCollection          = 'Collection not assigned';
   RsEIllegalQueueCapacity  = 'Illegal queue capacity';
   RsEIllegalStateOperation = 'Illegal state operation';

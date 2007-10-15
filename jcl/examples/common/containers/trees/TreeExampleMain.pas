@@ -96,7 +96,10 @@ begin
 
   It := Tree.First;
   while It.HasNext do
+  begin
+    It.Next;
     It.Remove;
+  end;
 end;
 
 procedure TMainForm.btnArrayTreeClick(Sender: TObject);
@@ -106,7 +109,7 @@ var
   It: IJclIterator;
 begin
   memoResult.Lines.Clear;
-  Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare);
+  Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare, True);
   for I := 0 to 17 do
     Tree.Add(TObject(I));
 

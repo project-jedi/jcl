@@ -238,7 +238,7 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := JclHashMaps.TJclHashMap.Create(256, False);
+    Map := JclHashMaps.TJclHashMap.Create(256, False, False);
     for I := 0 to 100000 do
       Map.PutValue(TObject(Random(100000)), TObject(I));
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);

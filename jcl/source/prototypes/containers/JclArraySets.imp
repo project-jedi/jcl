@@ -1,0 +1,147 @@
+(*$JPPDEFINEMACRO JCLARRAYSETINT(SELFCLASSNAME, ANCESTORCLASSNAME,
+  COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, SETINTERFACENAME, INTERFACEADDITIONAL,
+  PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, PARAMETERDECLARATION)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ARRAYINTERFACENAME, SETINTERFACENAME,INTERFACEADDITIONAL
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  private
+    function BinarySearch(PARAMETERDECLARATION): Integer;PRIVATEADDITIONAL
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { COLLECTIONINTERFACENAME }
+    function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Contains(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    { LISTINTERFACENAME }
+    procedure Insert(Index: Integer; PARAMETERDECLARATION); overload;
+    { SETINTERFACENAME }
+    procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
+    procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);
+    procedure Union(const ACollection: COLLECTIONINTERFACENAME);PROTECTEDADDITIONAL
+  publicPUBLICADDITIONAL
+  end;*)
+(*$JPPDEFINEMACRO JCLARRAYSETIMP(SELFCLASSNAME, COLLECTIONINTERFACENAME, ITRINTERFACENAME, PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, GETTERNAME)
+//=== { SELFCLASSNAME } ====================================================
+
+function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
+    if Result then
+    begin
+      Idx := BinarySearch(PARAMETERNAME);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GETTERNAME(Idx), PARAMETERNAME) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, PARAMETERNAME);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.BinarySearch(PARAMETERDECLARATION): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GETTERNAME(CompPos), PARAMETERNAME);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(PARAMETERNAME);
+    if Idx >= 0 then
+      Result := ItemsEqual(GETTERNAME(Idx), PARAMETERNAME)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+procedure SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure SELFCLASSNAME.Intersect(const ACollection: COLLECTIONINTERFACENAME);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure SELFCLASSNAME.Subtract(const ACollection: COLLECTIONINTERFACENAME);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure SELFCLASSNAME.Union(const ACollection: COLLECTIONINTERFACENAME);
+begin
+  AddAll(ACollection);
+end;*)

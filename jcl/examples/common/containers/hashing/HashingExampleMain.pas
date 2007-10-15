@@ -111,7 +111,7 @@ var
   KeyObject: TInterfacedObject;
   It: IJclIntfIterator;
 begin
-  Map := TJclIntfIntfHashMap.Create;
+  Map := TJclIntfIntfHashMap.Create(DefaultContainerCapacity);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -131,7 +131,7 @@ var
   Map: IJclStrIntfMap;
   MyObject: IIntfMyObject;
 begin
-  Map := TJclStrIntfHashMap.Create;
+  Map := TJclStrIntfHashMap.Create(DefaultContainerCapacity);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -152,7 +152,7 @@ var
   KeyObject: TObject;
   It: IJclIterator;
 begin
-  Map := TJclHashMap.Create;
+  Map := TJclHashMap.Create(DefaultContainerCapacity, False, False);
   MyObject := TMyObject.Create;
   KeyObject := TObject.Create;
   try
@@ -166,8 +166,8 @@ begin
       memResult.Items.Add(TMyObject(It.Next).Str);
     memResult.Items.Add('--------------------------------------------------------');
   finally
-    // MyObject.Free;  // Free in the map (Default: OwnsObject = True)
-    // KeyObject.Free;
+    MyObject.Free;
+    KeyObject.Free;
   end;
 end;
 
@@ -177,7 +177,7 @@ var
   MyObject: IIntfMyObject;
   It: IJclIntfIterator;
 begin
-  MySet := TJclIntfHashSet.Create;
+  MySet := TJclIntfHashSet.Create(DefaultContainerCapacity);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -196,7 +196,7 @@ var
   MyObject: TMyObject;
   It: IJclIterator;
 begin
-  MySet := TJclHashSet.Create;
+  MySet := TJclHashSet.Create(DefaultContainerCapacity, False);
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -215,7 +215,7 @@ var
   MyObject: IIntfMyObject;
   It: IJclIntfIterator;
 begin
-  MySet := TJclIntfArraySet.Create;
+  MySet := TJclIntfArraySet.Create(DefaultContainerCapacity);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -234,17 +234,21 @@ var
   MyObject: TMyObject;
   It: IJclIterator;
 begin
-  MySet := TJclArraySet.Create;
+  MySet := TJclArraySet.Create(DefaultContainerCapacity, False);
   MyObject := TMyObject.Create;
-  MyObject.Int := 42;
-  MyObject.Str := 'MyString';
-  MySet.Add(MyObject);
-  MySet.Add(MyObject);
-  It := MySet.First;
-  while It.HasNext do
-    memResult.Items.Add(TMyObject(It.Next).Str);
-  memResult.Items.Add(IntToStr(MySet.Size));
-  memResult.Items.Add('--------------------------------------------------------');
+  try
+    MyObject.Int := 42;
+    MyObject.Str := 'MyString';
+    MySet.Add(MyObject);
+    MySet.Add(MyObject);
+    It := MySet.First;
+    while It.HasNext do
+      memResult.Items.Add(TMyObject(It.Next).Str);
+    memResult.Items.Add(IntToStr(MySet.Size));
+    memResult.Items.Add('--------------------------------------------------------');
+  finally
+    MyObject.Free;
+  end;
 end;
 
 procedure TMainForm.btnStrStrHashMapClick(Sender: TObject);
@@ -252,7 +256,7 @@ var
   Map: IJclStrStrMap;
   It: IJclStrIterator;
 begin
-  Map := TJclStrStrHashMap.Create;
+  Map := TJclStrStrHashMap.Create(DefaultContainerCapacity);
   Map.PutValue('MyKey1', 'MyString1');
   Map.PutValue('MyKey2', 'MyString2');
   Map.PutValue('MyKey3', 'MyString3');
@@ -274,26 +278,30 @@ procedure TMainForm.btnStrHashMapClick(Sender: TObject);
 var
   Map: IJclStrMap;
   MyObject: TMyObject;
-  //It: IJclStrIterator;
+  It: IJclStrIterator;
   Links: TLinks;
 begin
-  Map := TJclStrHashMap.Create;
+  Map := TJclStrHashMap.Create(DefaultContainerCapacity, False);
   MyObject := TMyObject.Create;
-  MyObject.Int := 42;
-  MyObject.Str := 'MyString';
+  try
+    MyObject.Int := 42;
+    MyObject.Str := 'MyString';
 
-{  Map.PutValue('MyKey1', MyObject);
-  MyObject := TMyObject(Map.GetValue('MyKey1'));
-  memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
-  It := Map.KeySet.First;
-  while It.HasNext do
-    memResult.Items.Add(It.Next);
-  memResult.Items.Add('--------------------------------------------------------');
-  }
-  Links := TLinks.Create;
-  Links.PutValue('MyKey1', MyObject);
-  Links.Remove('MyKey1');
-  Links.PutValue('MyKey1', MyObject);
+    Map.PutValue('MyKey1', MyObject);
+    MyObject := TMyObject(Map.GetValue('MyKey1'));
+    memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+    It := Map.KeySet.First;
+    while It.HasNext do
+      memResult.Items.Add(It.Next);
+    memResult.Items.Add('--------------------------------------------------------');
+
+    Links := TLinks.Create(DefaultContainerCapacity, False);
+    Links.PutValue('MyKey1', MyObject);
+    Links.Remove('MyKey1');
+    Links.PutValue('MyKey1', MyObject);
+  finally
+    MyObject.Free;
+  end;
 end;
 
 procedure TMainForm.btnStrHashSetClick(Sender: TObject);
@@ -301,7 +309,7 @@ var
   MySet: IJclStrSet;
   It: IJclStrIterator;
 begin
-  MySet := TJclStrHashSet.Create;
+  MySet := TJclStrHashSet.Create(DefaultContainerCapacity);
   MySet.Add('MyString');
   MySet.Add('MyString');
   It := MySet.First;
@@ -317,7 +325,7 @@ var
   It: IJclStrIterator;
   I: Integer;
 begin
-  MySet := TJclStrArraySet.Create;
+  MySet := TJclStrArraySet.Create(DefaultContainerCapacity);
   for I := 1 to 8 do
     MySet.Add(IntToStr(I));
   for I := 8 downto 1 do

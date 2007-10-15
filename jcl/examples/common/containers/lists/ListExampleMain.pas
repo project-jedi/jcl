@@ -130,7 +130,7 @@ var
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TJclIntfArrayList.Create;
+  List := TJclIntfArrayList.Create(DefaultContainerCapacity);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -169,7 +169,7 @@ var
   It: IJclIntfIterator;
 begin
   memResult.Lines.Clear;
-  List := TJclIntfLinkedList.Create;
+  List := TJclIntfLinkedList.Create(nil);
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -200,7 +200,7 @@ var
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TJclIntfVector.Create;
+  List := TJclIntfVector.Create(DefaultContainerCapacity);
   try
     MyObject := TIntfMyObject.Create;
     MyObject.Int := 42;
@@ -238,7 +238,7 @@ var
   It: IJclIterator;
 begin
   memResult.Lines.Clear;
-  List := TJclArrayList.Create;
+  List := TJclArrayList.Create(DefaultContainerCapacity, True);
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -259,7 +259,10 @@ begin
   end;
   It := List.First;
   while It.HasNext do
+  begin
+    It.Next;
     It.Remove;
+  end;
 end;
 
 procedure TMainForm.btnLinkedListClick(Sender: TObject);
@@ -269,7 +272,7 @@ var
   It: IJclIterator;
 begin
   memResult.Lines.Clear;
-  List := TJclLinkedList.Create;
+  List := TJclLinkedList.Create(nil, True);
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -298,7 +301,7 @@ var
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TJclVector.Create;
+  List := TJclVector.Create(DefaultContainerCapacity, True);
   try
     MyObject := TMyObject.Create;
     MyObject.Int := 42;
@@ -337,7 +340,7 @@ var
   MyObject: TMyObject;
 begin
   memResult.Lines.Clear;
-  List := TMyObjectList.Create;
+  List := TMyObjectList.Create(DefaultContainerCapacity, True);
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -355,7 +358,7 @@ var
   S: string;
 begin
   memResult.Lines.Clear;
-  List := TJclStrArrayList.Create;
+  List := TJclStrArrayList.Create(DefaultContainerCapacity);
   List.Add('MyString');
 
   S := List.GetString(0);
@@ -419,7 +422,7 @@ var
   It: IJclStrIterator;
 begin
   memResult.Lines.Clear;
-  List := TJclStrLinkedList.Create;
+  List := TJclStrLinkedList.Create(nil);
   List.Add('MyString');
   memResult.Lines.Add(List.GetString(0));
 
@@ -443,7 +446,7 @@ var
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TJclStrVector.Create;
+  List := TJclStrVector.Create(DefaultContainerCapacity);
   try
     List.Add('MyString');
     S := List.GetString(0);
