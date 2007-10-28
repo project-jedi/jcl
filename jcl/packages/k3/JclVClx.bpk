@@ -46,7 +46,7 @@
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-l../../lib/k3 -I../../lib/k3 -GB&quot;CJclVClx&quot; -N&quot;&quot; -D&quot;&quot;
-      -b:0x48300000 -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
+      -b:0x48450000 -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
