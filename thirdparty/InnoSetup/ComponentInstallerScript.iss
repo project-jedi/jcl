@@ -108,9 +108,9 @@ function compinst_initUninstall(): Integer;
 function compinst_isDelphiInstalled(Version: Integer): Integer;
   external 'compinst_isDelphiInstalled@files:CompInstall.dll stdcall';
 function compinst_isBCBInstalled(Version: Integer): Integer;
-  external 'compinst_isDelphiInstalled@files:CompInstall.dll stdcall';
+  external 'compinst_isBCBInstalled@files:CompInstall.dll stdcall';
 function compinst_isBDSInstalled(IDEVersion: Integer): Integer;
-  external 'compinst_isDelphiInstalled@files:CompInstall.dll stdcall';
+  external 'compinst_isBDSInstalled@files:CompInstall.dll stdcall';
 
   // design package
 function compinst_installDelphiDesignPackage(Version: Integer; BplFilename, Description: PChar): Integer;
