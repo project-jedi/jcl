@@ -232,37 +232,45 @@ procedure InstallExpert(Kind: TIdeKind; Version: Integer; const Filename, Descri
 begin
   if not FileExists(Filename) then
     Exit;
-  if EndsText('.bpl', Filename) then
-    InstallDesignPackage(Kind, Version, Filename)
-  else
-  begin
-    Log('Register IDE expert: ' + Filename);
-    case Kind of
-      ikDelphi:
-        if compinst_installDelphiExpert(Version, PChar(Filename), Description) = 0 then
-          MsgBox('Failed to install IDE expert ' + ExtractFileName(Filename), mbError, MB_OK);
-      ikBCB:
-        if compinst_installBCBExpert(Version, PChar(Filename), Description) = 0 then
-          MsgBox('Failed to install IDE expert ' + ExtractFileName(Filename), mbError, MB_OK);
-    end;
+  Log('Register IDE expert: ' + Filename);
+  case Kind of
+    ikDelphi:
+      if compinst_installDelphiExpert(Version, PChar(Filename), Description) = 0 then
+        MsgBox('Failed to install IDE expert ' + ExtractFileName(Filename), mbError, MB_OK);
+    ikBCB:
+      if compinst_installBCBExpert(Version, PChar(Filename), Description) = 0 then
+        MsgBox('Failed to install IDE expert ' + ExtractFileName(Filename), mbError, MB_OK);
   end;
 end;
 
 function UninstallExpert(Kind: TIdeKind; Version: Integer; const Filename: string): Boolean;
 begin
-  if EndsText('.bpl', Filename) then
-    UninstallDesignPackage(Kind, Version, Filename)
-  else
-  begin
-    Log('Unregister IDE expert: ' + Filename);
-    Result := False;
-    case Kind of
-      ikDelphi:
-        Result := compinst_uninstallDelphiExpert(Version, PChar(Filename)) <> 0;
-      ikBCB:
-        Result := compinst_uninstallBCBExpert(Version, PChar(Filename)) <> 0;
-    end;
+  Log('Unregister IDE expert: ' + Filename);
+  Result := False;
+  case Kind of
+    ikDelphi:
+      Result := compinst_uninstallDelphiExpert(Version, PChar(Filename)) <> 0;
+    ikBCB:
+      Result := compinst_uninstallBCBExpert(Version, PChar(Filename)) <> 0;
   end;
+end;
+
+procedure InstallExpertEx(Kind: TIdeKind; Version: Integer; const Filename, Description: string);
+begin
+  if not FileExists(Filename) then
+    Exit;
+  if EndsText('.bpl', Filename) then
+    InstallDesignPackage(Kind, Version, Filename)
+  else
+    InstallExpert(Kind, Version, Filename, Description);
+end;
+
+function UninstallExpertEx(Kind: TIdeKind; Version: Integer; const Filename: string): Boolean;
+begin
+  if EndsText('.bpl', Filename) then
+    Result := UninstallDesignPackage(Kind, Version, Filename)
+  else
+    Result := UninstallExpert(Kind, Version, Filename);
 end;
 
 function UninstallExpertsPrefixed(Kind: TIdeKind; Version: Integer; const FilenamePrefix: string): Boolean;
@@ -284,6 +292,9 @@ var
   Value: Integer;
 begin
   GetSearchPaths(Kind, Version, SearchPaths, DebugPaths, BrowsePaths);
+  if (SearchPaths = '') and (DebugPaths = '') and (BrowsePaths = '') then
+    Exit;
+
   if Installing then
   begin
     Log('Adding search paths: ' + SearchPaths);
@@ -313,7 +324,7 @@ end;
 
 procedure ChangeComponentRegistration(Installing: Boolean; Components: TStrings);
 var
-  IdeList, PackageList, ExpertList: TStrings;
+  IdeList, PackageList, ExpertList, IdeExpertList: TStrings;
   IdeIndex, Index: Integer;
   DesignPackageName, ExpertName, Name: string;
   IdeKind: TIdeKind;
@@ -324,10 +335,12 @@ begin
   IdeList := nil;
   PackageList := nil;
   ExpertList := nil;
+  IdeExpertList := nil;
   try
     IdeList := TStringList.Create;
     PackageList := TStringList.Create;
     ExpertList := TStringList.Create;
+    IdeExpertList := TStringList.Create;
 
     ComponentsFilename := ExpandConstant('{app}\unins00c.dat');
 
@@ -340,11 +353,13 @@ begin
     GetSelectedList(IdeList, 'IDE', Components);
     GetSelectedList(PackageList, 'Packages', Components);
     GetSelectedList(ExpertList, 'Experts', Components);
+    GetSelectedList(IdeExpertList, 'IdeExperts', Components);
 
     // install per IDE
     for IdeIndex := 0 to IdeList.Count - 1 do
     begin
       ExtractIdeInfo(IdeList[IdeIndex], IdeKind, Version);
+
       // install per Package
       for Index := 0 to PackageList.Count - 1 do
       begin
@@ -372,6 +387,23 @@ begin
           if Trim(ExpertName) <> '' then
           begin
             if Installing then
+              InstallExpertEx(IdeKind, Version, ExpertName, Name)
+            else
+              UninstallExpertEx(IdeKind, Version, ExpertName);
+          end;
+        end;
+      end;
+
+      // install per IdeExpert
+      for Index := 0 to IdeExpertList.Count - 1 do
+      begin
+        Name := ExtractFileName(IdeExpertList[Index]);
+        if Trim(Name) <> '' then
+        begin
+          ExpertName := MapExpert(IdeKind, Version, Name);
+          if Trim(ExpertName) <> '' then
+          begin
+            if Installing then
               InstallExpert(IdeKind, Version, ExpertName, Name)
             else
               UninstallExpert(IdeKind, Version, ExpertName);
@@ -381,6 +413,7 @@ begin
 
       ChangeIdeSearchPaths(IdeKind, Version, Installing);
     end;
+
     if Installing then
       Components.SaveToFile(ComponentsFilename)
     else
@@ -388,6 +421,8 @@ begin
   finally
     IdeList.Free;
     PackageList.Free;
+    ExpertList.Free;
+    IdeExpertList.Free;
   end;
 end;
 
@@ -439,4 +474,3 @@ begin
     UnloadDLL(ExpandConstant('{app}\CompInstall.dll')); // make the file deletable
   end;
 end;
-
