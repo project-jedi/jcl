@@ -821,6 +821,7 @@ resourcestring
   RsENoEqualityComparer    = 'Item equality comparer is not assigned';
   RsENoComparer            = 'Item comparer is not assigned';
   RsENoHashConverter       = 'Hash converter is not assigned';
+  RsEAssignError           = 'Assignation error';
 
 //=== JclCounter =============================================================
 resourcestring

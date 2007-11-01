@@ -110,7 +110,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, MAPINTERFACENAME, AMap) then
+  if Supports(IInterface(Dest), MAPINTERFACENAME, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);

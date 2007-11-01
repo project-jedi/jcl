@@ -1449,7 +1449,7 @@ var
   ACollection: IJclIntfCollection;
 begin
   inherited AssignDataTo(Dest);
-  if Supports(Dest, IJclIntfCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclIntfCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -2224,7 +2224,7 @@ var
   ACollection: IJclStrCollection;
 begin
   inherited AssignDataTo(Dest);
-  if Supports(Dest, IJclStrCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclStrCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -2999,7 +2999,7 @@ var
   ACollection: IJclCollection;
 begin
   inherited AssignDataTo(Dest);
-  if Supports(Dest, IJclCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -3776,7 +3776,7 @@ var
   ACollection: IJclCollection<T>;
 begin
   inherited AssignDataTo(Dest);
-  if Supports(Dest, IJclCollection<T>, ACollection) then
+  if Supports(IInterface(Dest), IJclCollection<T>, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);

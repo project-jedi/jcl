@@ -52,11 +52,17 @@ const
 type
   IJclAbstractIterator = interface
     ['{1064D0B4-D9FC-475D-88BE-520490013B46}']
+    procedure Assign(const Source: IJclAbstractIterator);
+    procedure AssignTo(const Dest: IJclAbstractIterator);
+    function GetIteratorReference: TObject;
   end;
 
   IJclContainer = interface
     ['{C517175A-028E-486A-BF27-5EF7FC3101D9}']
+    procedure Assign(const Source: IJclContainer);
+    procedure AssignTo(const Dest: IJclContainer);
     function GetAllowDefaultElements: Boolean;
+    function GetContainerReference: TObject;
     function GetDuplicates: TDuplicates;
     function GetRemoveSingleElement: Boolean;
     function GetReturnDefaultElements: Boolean;
@@ -929,6 +935,12 @@ type
     constructor Create;
   end;
 
+  EJclAssignError = class(EJclContainerError)
+  public
+    // RsEAssignError
+    constructor Create;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1052,6 +1064,17 @@ begin
   inherited Create(RsENoHashConverter);
   {$ELSE ~CLR}
   inherited CreateRes(@RsENoHashConverter);
+  {$ENDIF ~CLR}
+end;
+
+//=== { EJclAssignError } ====================================================
+
+constructor EJclAssignError.Create;
+begin
+  {$IFDEF CLR}
+  inherited Create(RsEAssignError);
+  {$ELSE ~CLR}
+  inherited CreateRes(@RsEAssignError);
   {$ENDIF ~CLR}
 end;
 

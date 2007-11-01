@@ -61,7 +61,7 @@ type
   TJclIntfCriticalSection = JclSysUtils.TJclIntfCriticalSection;
   {$ENDIF KEEP_DEPRECATED}
 
-  TJclAbstractLockable = class(TInterfacedPersistent {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
+  TJclAbstractLockable = class(TInterfacedObject {$IFDEF THREADSAFE}, IJclLockable {$ENDIF THREADSAFE})
   {$IFDEF THREADSAFE}
   private
     FLockDelegate: IJclLockable;
@@ -103,9 +103,11 @@ type
     function CreateEmptyContainer: TJclAbstractContainer; virtual; abstract;
     procedure AssignDataTo(Dest: TJclAbstractContainer); virtual;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainer); virtual;
-    procedure AssignTo(Dest: TPersistent); override;
     { IJclContainer }
+    procedure Assign(const Source: IJclContainer);
+    procedure AssignTo(const Dest: IJclContainer);
     function GetAllowDefaultElements: Boolean; virtual;
+    function GetContainerReference: TObject;
     function GetDuplicates: TDuplicates; virtual;
     function GetRemoveSingleElement: Boolean; virtual;
     function GetReturnDefaultElements: Boolean; virtual;
@@ -138,7 +140,7 @@ type
     constructor Create(const ALockDelegate: IInterface);
   end;
 
-  TJclAbstractIterator = class(TJclAbstractLockable,
+  TJclAbstractIterator = class(TJclAbstractLockable, IJclAbstractIterator,
     {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable)
   private
     FValid: Boolean;
@@ -146,7 +148,10 @@ type
     procedure CheckValid;
     function CreateEmptyIterator: TJclAbstractIterator; virtual; abstract;
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); virtual;
-    procedure AssignTo(Dest: TPersistent); override;
+    { IJclAbstractIterator }
+    procedure Assign(const Source: IJclAbstractIterator);
+    procedure AssignTo(const Dest: IJclAbstractIterator);
+    function GetIteratorReference: TObject;
     { IJclCloneable }
     function Clone: TObject;
     { IJclIntfCloneable }
@@ -371,6 +376,11 @@ begin
   FAutoPackParameter := 4;
 end;
 
+procedure TJclAbstractContainer.Assign(const Source: IJclContainer);
+begin
+  Source.AssignTo(Self);
+end;
+
 procedure TJclAbstractContainer.AssignDataTo(Dest: TJclAbstractContainer);
 begin
   // override to customize
@@ -389,15 +399,18 @@ begin
   Dest.SetAutoPackStrategy(GetAutoPackStrategy);
 end;
 
-procedure TJclAbstractContainer.AssignTo(Dest: TPersistent);
+procedure TJclAbstractContainer.AssignTo(const Dest: IJclContainer);
+var
+  DestObject: TObject;
 begin
-  if Dest is TJclAbstractContainer then
+  DestObject := Dest.GetContainerReference;
+  if DestObject is TJclAbstractContainer then
   begin
-    AssignPropertiesTo(TJclAbstractContainer(Dest));
-    AssignDataTo(TJclAbstractContainer(Dest));
+    AssignPropertiesTo(TJclAbstractContainer(DestObject));
+    AssignDataTo(TJclAbstractContainer(DestObject));
   end
   else
-    inherited AssignTo(Dest);
+    raise EJclAssignError.Create;
 end;
 
 procedure TJclAbstractContainer.AutoGrow;
@@ -492,6 +505,11 @@ end;
 function TJclAbstractContainer.GetCapacity: Integer;
 begin
   Result := FCapacity;
+end;
+
+function TJclAbstractContainer.GetContainerReference: TObject;
+begin
+  Result := Self;
 end;
 
 function TJclAbstractContainer.GetDuplicates: TDuplicates;
@@ -592,17 +610,25 @@ begin
   FValid := AValid;
 end;
 
+procedure TJclAbstractIterator.Assign(const Source: IJclAbstractIterator);
+begin
+  Source.AssignTo(Self);
+end;
+
 procedure TJclAbstractIterator.AssignPropertiesTo(Dest: TJclAbstractIterator);
 begin
   Dest.FValid := FValid;
 end;
 
-procedure TJclAbstractIterator.AssignTo(Dest: TPersistent);
+procedure TJclAbstractIterator.AssignTo(const Dest: IJclAbstractIterator);
+var
+  DestObject: TObject;
 begin
-  if Dest is TJclAbstractIterator then
-    AssignPropertiesTo(TJclAbstractIterator(Dest))
+  DestObject := Dest.GetIteratorReference;
+  if DestObject is TJclAbstractIterator then
+    AssignPropertiesTo(TJclAbstractIterator(DestObject))
   else
-    inherited AssignTo(Dest);
+    raise EJclAssignError.Create;
 end;
 
 procedure TJclAbstractIterator.CheckValid;
@@ -623,6 +649,11 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TJclAbstractIterator.GetIteratorReference: TObject;
+begin
+  Result := Self;
 end;
 
 function TJclAbstractIterator.IntfClone: IInterface;

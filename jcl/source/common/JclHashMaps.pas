@@ -701,7 +701,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclIntfIntfMap, AMap) then
+  if Supports(IInterface(Dest), IJclIntfIntfMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -1303,7 +1303,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclStrIntfMap, AMap) then
+  if Supports(IInterface(Dest), IJclStrIntfMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -1903,7 +1903,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclIntfStrMap, AMap) then
+  if Supports(IInterface(Dest), IJclIntfStrMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -2505,7 +2505,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclStrStrMap, AMap) then
+  if Supports(IInterface(Dest), IJclStrStrMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -3106,7 +3106,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclIntfMap, AMap) then
+  if Supports(IInterface(Dest), IJclIntfMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -3723,7 +3723,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclStrMap, AMap) then
+  if Supports(IInterface(Dest), IJclStrMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -4337,7 +4337,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclMap, AMap) then
+  if Supports(IInterface(Dest), IJclMap, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);
@@ -4969,7 +4969,7 @@ begin
     {$ENDIF THREADSAFE}
   end
   else
-  if Supports(Dest, IJclMap<TKey, TValue>, AMap) then
+  if Supports(IInterface(Dest), IJclMap<TKey, TValue>, AMap) then
   begin
     AMap.Clear;
     AMap.PutAll(Self);

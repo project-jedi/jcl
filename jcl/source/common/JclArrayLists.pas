@@ -954,7 +954,7 @@ begin
     ADest.AddAll(Self);
   end
   else
-  if Supports(Dest, IJclIntfCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclIntfCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -1508,7 +1508,7 @@ begin
     ADest.AddAll(Self);
   end
   else
-  if Supports(Dest, IJclStrCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclStrCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -2062,7 +2062,7 @@ begin
     ADest.AddAll(Self);
   end
   else
-  if Supports(Dest, IJclCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
@@ -2617,7 +2617,7 @@ begin
     ADest.AddAll(Self);
   end
   else
-  if Supports(Dest, IJclCollection<T>, ACollection) then
+  if Supports(IInterface(Dest), IJclCollection<T>, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);

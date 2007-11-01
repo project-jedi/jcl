@@ -308,7 +308,7 @@ begin
     ADest.AddAll(Self);
   end
   else
-  if Supports(Dest, COLLECTIONINTERFACENAME, ACollection) then
+  if Supports(IInterface(Dest), COLLECTIONINTERFACENAME, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
