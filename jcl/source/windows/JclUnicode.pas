@@ -6754,7 +6754,8 @@ begin
     if NbProcessed = 0 then
       Break;
 
-    Move(Buffer[NbProcessed], Buffer[0], (BufferSize - NbProcessed) * SizeOf(UCS4));
+    if BufferSize > NbProcessed then
+      Move(Buffer[NbProcessed], Buffer[0], (BufferSize - NbProcessed) * SizeOf(UCS4));
     Dec(BufferSize, NbProcessed);
 
     Inc(OutPos);
