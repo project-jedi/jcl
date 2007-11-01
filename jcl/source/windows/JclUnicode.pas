@@ -2167,6 +2167,7 @@ begin
 
         Inc(M);
       end;
+      Break;
     end;
   end;
   Result := 1;
