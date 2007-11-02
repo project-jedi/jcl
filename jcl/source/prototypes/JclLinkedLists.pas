@@ -51,26 +51,39 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclLinkedLists.imp}
 type
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(IInterface,TJclIntfLinkedListItem,TJclIntfLinkedList,TJclIntfContainer,IJclIntfCollection,IJclIntfList,IJclIntfIterator, IJclContainer\, IJclIntfEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,,const AInterface: IInterface,GetObject,SetObject)*)
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(string,TJclStrLinkedListItem,TJclStrLinkedList,TJclStrAbstractCollection,IJclStrCollection,IJclStrList,IJclStrIterator, IJclContainer\, IJclStrContainer\, IJclStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,, override;,,const AString: string,GetString,SetString)*)
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TObject,TJclLinkedListItem,TJclLinkedList,TJclContainer,IJclCollection,IJclList,IJclIterator, IJclContainer\, IJclObjectOwner\, IJclEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,; AOwnsObjects: Boolean,AObject: TObject,GetObject,SetObject)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTINT(IInterface,TJclIntfLinkedListItem,TJclIntfLinkedList,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfList,IJclIntfIterator, IJclIntfEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AInterface: IInterface,GetObject,SetObject)*)
+
+(*$JPPEXPANDMACRO JCLLINKEDLISTINT(AnsiString,TJclAnsiStrLinkedListItem,TJclAnsiStrLinkedList,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: AnsiString,GetString,SetString)*)
+
+(*$JPPEXPANDMACRO JCLLINKEDLISTINT(WideString,TJclWideStrLinkedListItem,TJclWideStrLinkedList,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrList,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: WideString,GetString,SetString)*)
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrLinkedList = TJclAnsiStrLinkedList;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrLinkedList = TJclWideStrLinkedList;
+  {$ENDIF CONTAINER_WIDESTR}
+
+(*$JPPEXPANDMACRO JCLLINKEDLISTINT(TObject,TJclLinkedListItem,TJclLinkedList,TJclAbstractContainer,IJclCollection,IJclList,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,; AOwnsObjects: Boolean,AObject: TObject,GetObject,SetObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLLINKEDLISTINT(T,TJclLinkedListItem<T>,TJclLinkedList<T>,TJclContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclContainer\, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const AItem: T,GetItem,SetItem)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTINT(T,TJclLinkedListItem<T>,TJclLinkedList<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const AItem: T,GetItem,SetItem)*)
 
   // E = External helper to compare items
   // GetHashCode is never called
-  TJclLinkedListE<T> = class(TJclLinkedList<T>, IJclCollection<T>, IJclList<T>, IJclContainer, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclItemOwner<T>)
+  TJclLinkedListE<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclItemOwner<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -80,14 +93,15 @@ type
   end;
 
   // F = Function to compare items for equality
-  TJclLinkedListF<T> = class(TJclLinkedList<T>, IJclCollection<T>, IJclList<T>, IJclContainer, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclItemOwner<T>)
+  TJclLinkedListF<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclItemOwner<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -97,11 +111,12 @@ type
   end;
 
   // I = Items can compare themselves to an other
-  TJclLinkedListI<T: IEquatable<T>> = class(TJclLinkedList<T>, IJclCollection<T>, IJclList<T>, IJclContainer, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclItemOwner<T>)
+  TJclLinkedListI<T: IEquatable<T>> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
+    IJclItemOwner<T>)
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -127,7 +142,11 @@ uses
 {$JPPUNDEFMACRO ITEMFREE(Item)}
 
 {$JPPDEFINEMACRO ITEMFREE(Item)Item := ''}
-(*$JPPEXPANDMACRO JCLLINKEDLISTITR(TStrItr,IJclStrIterator,IJclStrList,IJclStrEqualityComparer,TJclStrLinkedListItem,string,const AString: string,AString,'',GetString,SetString)*)
+(*$JPPEXPANDMACRO JCLLINKEDLISTITR(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,IJclAnsiStrEqualityComparer,TJclAnsiStrLinkedListItem,AnsiString,const AString: AnsiString,AString,'',GetString,SetString)*)
+{$JPPUNDEFMACRO ITEMFREE(Item)}
+
+{$JPPDEFINEMACRO ITEMFREE(Item)Item := ''}
+(*$JPPEXPANDMACRO JCLLINKEDLISTITR(TWideStrItr,IJclWideStrIterator,IJclWideStrList,IJclWideStrEqualityComparer,TJclWideStrLinkedListItem,WideString,const AString: WideString,AString,'',GetString,SetString)*)
 {$JPPUNDEFMACRO ITEMFREE(Item)}
 
 {$JPPDEFINEMACRO ITEMFREE(AObject)(FownList as IJclObjectOwner).FreeObject(AObject)}
@@ -143,7 +162,7 @@ uses
 {$ENDIF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclIntfLinkedList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfLinkedList.Create(nil);
   AssignPropertiesTo(Result);
@@ -153,17 +172,27 @@ end;
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclStrLinkedList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrLinkedList.Create(nil);
+  Result := TJclAnsiStrLinkedList.Create(nil);
   AssignPropertiesTo(Result);
 end;
 }
-{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclStrLinkedList,string,TJclStrLinkedListItem,IJclStrCollection,IJclStrList,IJclStrIterator,TStrItr,,,const AString: string,AString,'',GetString,SetString,FreeString)}
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclAnsiStrLinkedList,AnsiString,TJclAnsiStrLinkedListItem,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrIterator,TAnsiStrItr,,,const AString: AnsiString,AString,'',GetString,SetString,FreeString)}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclLinkedList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclWideStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPEXPANDMACRO JCLLINKEDLISTIMP(TJclWideStrLinkedList,WideString,TJclWideStrLinkedListItem,IJclWideStrCollection,IJclWideStrList,IJclWideStrIterator,TWideStrItr,,,const AString: WideString,AString,'',GetString,SetString,FreeString)}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedList.Create(nil, False);
   AssignPropertiesTo(Result);
@@ -187,14 +216,14 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
-procedure TJclLinkedListE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclLinkedListE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclLinkedListE<T> then
     TJclLinkedListE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclLinkedListE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclLinkedListE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedListE<T>.Create(EqualityComparer, nil, False);
   AssignPropertiesTo(Result);
@@ -216,14 +245,14 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
-procedure TJclLinkedListF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclLinkedListF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclLinkedListF<T> then
     TJclLinkedListF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclLinkedListF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclLinkedListF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedListF<T>.Create(EqualityCompare, nil, False);
   AssignPropertiesTo(Result);
@@ -238,7 +267,7 @@ end;
 
 //=== { TJclLinkedListI<T> } =================================================
 
-function TJclLinkedListI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclLinkedListI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedListI<T>.Create(nil, False);
   AssignPropertiesTo(Result);

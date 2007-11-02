@@ -54,58 +54,69 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclVectors.imp}
 type
-(*$JPPEXPANDMACRO JCLVECTORINT(TJclIntfVector,TJclIntfContainer,IJclIntfCollection,IJclIntfList,IJclIntfArray,IJclIntfIterator,IJclContainer\, IJclIntfEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,,const AInterface: IInterface,IInterface,nil,JclBase.TDynIInterfaceArray,GetObject,SetObject)*)
+(*$JPPEXPANDMACRO JCLVECTORINT(TJclIntfVector,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfList,IJclIntfArray,IJclIntfIterator, IJclIntfEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,const AInterface: IInterface,IInterface,nil,JclBase.TDynIInterfaceArray,GetObject,SetObject)*)
 
-(*$JPPEXPANDMACRO JCLVECTORINT(TJclStrVector,TJclStrAbstractCollection,IJclStrCollection,IJclStrList,IJclStrArray,IJclStrIterator,IJclContainer\, IJclStrContainer\, IJclStrFlatContainer\, IJclStrEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,, override;,,const AString: string,string,'',JclBase.TDynStringArray,GetString,SetString)*)
+(*$JPPEXPANDMACRO JCLVECTORINT(TJclAnsiStrVector,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrArray,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: AnsiString,AnsiString,'',JclBase.TDynAnsiStringArray,GetString,SetString)*)
 
-(*$JPPEXPANDMACRO JCLVECTORINT(TJclVector,TJclContainer,IJclCollection,IJclList,IJclArray,IJclIterator,IJclContainer\, IJclObjectOwner\, IJclEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,; AOwnsObjects: Boolean,AObject: TObject,TObject,nil,JclBase.TDynObjectArray,GetObject,SetObject)*)
+(*$JPPEXPANDMACRO JCLVECTORINT(TJclWideStrVector,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrList,IJclWideStrArray,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,const AString: WideString,WideString,'',JclBase.TDynWideStringArray,GetString,SetString)*)
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrVector = TJclAnsiStrVector;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrVector = TJclWideStrVector;
+  {$ENDIF CONTAINER_WIDESTR}
+
+(*$JPPEXPANDMACRO JCLVECTORINT(TJclVector,TJclAbstractContainer,IJclCollection,IJclList,IJclArray,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,; AOwnsObjects: Boolean,AObject: TObject,TObject,nil,JclBase.TDynObjectArray,GetObject,SetObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
 
-(*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>,IJclContainer\, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const AItem: T,T,Default(T),TJclBase<T>.TDynArray,GetItem,SetItem)*)
+(*$JPPEXPANDMACRO JCLVECTORINT(TJclVector<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,,,,; AOwnsItems: Boolean,const AItem: T,T,Default(T),TJclBase<T>.TDynArray,GetItem,SetItem)*)
 
   // E = External helper to compare items for equality (GetHashCode is not used)
-  TJclVectorE<T> = class(TJclVector<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclVectorE<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AEqualityComparer: IEqualityComparer<T>; ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsItems: Boolean = True);
+    constructor Create(const AEqualityComparer: IEqualityComparer<T>; ACapacity: Integer; AOwnsItems: Boolean);
     property EqualityComparer: IEqualityComparer<T> read FEqualityComparer write FEqualityComparer;
   end;
 
   // F = Function to compare items for equality
-  TJclVectorF<T> = class(TJclVector<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclVectorF<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer = DefaultContainerCapacity;
-      AOwnsItems: Boolean = True);
+    constructor Create(const AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
     property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = Items can compare themselves to an other for equality
-  TJclVectorI<T: IEquatable<T>> = class(TJclVector<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclVectorI<T: IEquatable<T>> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
   protected
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -129,7 +140,9 @@ uses
 
 (*$JPPEXPANDMACRO JCLVECTORITR(TIntfItr,IJclIntfIterator,IJclIntfList,const AInterface: IInterface,AInterface,IInterface,GetObject,SetObject)*)
 
-(*$JPPEXPANDMACRO JCLVECTORITR(TStrItr,IJclStrIterator,IJclStrList,const AString: string,AString,string,GetString,SetString)*)
+(*$JPPEXPANDMACRO JCLVECTORITR(TAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrList,const AString: AnsiString,AString,AnsiString,GetString,SetString)*)
+
+(*$JPPEXPANDMACRO JCLVECTORITR(TWideStrItr,IJclWideStrIterator,IJclWideStrList,const AString: WideString,AString,WideString,GetString,SetString)*)
 
 (*$JPPEXPANDMACRO JCLVECTORITR(TItr,IJclIterator,IJclList,AObject: TObject,AObject,TObject,GetObject,SetObject)*)
 
@@ -140,7 +153,7 @@ uses
 {$ENDIF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclIntfVector.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfVector.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfVector.Create(FSize);
   AssignPropertiesTo(Result);
@@ -150,17 +163,27 @@ end;
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclStrVector.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrVector.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrVector.Create(FSize);
+  Result := TJclAnsiStrVector.Create(FSize);
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLVECTORIMP(TJclStrVector,IJclStrCollection,IJclStrList,IJclStrIterator,TStrItr,,,const AString: string,AString,string,'',GetString,SetString,FreeString,JclBase.MoveArray)*)
+(*$JPPEXPANDMACRO JCLVECTORIMP(TJclAnsiStrVector,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrIterator,TAnsiStrItr,,,const AString: AnsiString,AString,AnsiString,'',GetString,SetString,FreeString,JclBase.MoveArray)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclVector.CreateEmptyContainer: TJclAbstractContainer;
+function TJclWideStrVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLVECTORIMP(TJclWideStrVector,IJclWideStrCollection,IJclWideStrList,IJclWideStrIterator,TWideStrItr,,,const AString: WideString,AString,WideString,'',GetString,SetString,FreeString,JclBase.MoveArray)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclVector.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclVector.Create(FSize, False);
   AssignPropertiesTo(Result);
@@ -184,14 +207,14 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
-procedure TJclVectorE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclVectorE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclVectorE<T> then
     TJclVectorE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclVectorE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclVectorE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclVectorE<T>.Create(EqualityComparer, FSize, False);
   AssignPropertiesTo(Result);
@@ -213,14 +236,14 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
-procedure TJclVectorF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclVectorF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclVectorF<T> then
     TJclVectorF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclVectorF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclVectorF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclVectorF<T>.Create(EqualityCompare, FSize, False);
   AssignPropertiesTo(Result);
@@ -235,7 +258,7 @@ end;
 
 //=== { TJclVectorI<T> } =====================================================
 
-function TJclVectorI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclVectorI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclVectorI<T>.Create(FSize, False);
   AssignPropertiesTo(Result);

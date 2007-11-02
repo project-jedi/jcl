@@ -39,7 +39,7 @@
 // $Id$
 
 // Math precision selection, mutually exclusive
-{.$DEFINE MATH_EXTENDED_PRECISION}
+{.$DEFINE MATH_EXTENDED_PRECISION} // default
 {.$DEFINE MATH_DOUBLE_PRECISION}
 {.$DEFINE MATH_SINGLE_PRECISION}
 
@@ -52,7 +52,7 @@
 {.$DEFINE HOOK_DLL_EXCEPTIONS}
 
 
-//Threadsafe directive (added for DCL support)
+//Threadsafe directive
 {.$DEFINE THREADSAFE}
 
 
@@ -84,20 +84,26 @@
 
 {.$DEFINE PCRE_STATICLINK}
 {.$DEFINE PCRE_LINKDLL}
-{.$DEFINE PCRE_LINKONREQUEST}
+{.$DEFINE PCRE_LINKONREQUEST} // default
 
 // BZIP2 options, mutually exclusive
 // IMPORTANT: The static link is still experimental
 
 {.$DEFINE BZIP2_STATICLINK}
 {.$DEFINE BZIP2_LINKDLL}
-{.$DEFINE BZIP2_LINKONREQUEST}
+{.$DEFINE BZIP2_LINKONREQUEST} // default
 
 // Unicode options
 // insert a replacement character if sequence is corrupted rather than raising an exception
 {.$DEFINE UNICODE_SILENT_FAILURE}
 
 // defines resource compression (uncompressed, compressed with ZLib, compressed with BZip2), mutually exclusive
-{.$DEFINE UNICODE_RAW_DATA}
+{.$DEFINE UNICODE_RAW_DATA} // default
 {.$DEFINE UNICODE_ZLIB_DATA}
 {.$DEFINE UNICODE_BZIP2_DATA}
+
+// container options
+// define mapping of TJclStr* containers to TJclAnsiStr* or TJclWideStr* (mutually exclusive)
+{.$DEFINE CONTAINER_ANSISTR} // default
+{.$DEFINE CONTAINER_WIDESTR}
+{.$DEFINE CONTAINER_NOSTR}

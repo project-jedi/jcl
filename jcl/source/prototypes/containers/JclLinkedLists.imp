@@ -7,13 +7,14 @@
     Previous: ITEMCLASSNAME;
   end;
 
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME,INTERFACEADDITIONAL
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer,INTERFACEADDITIONAL
+    COLLECTIONINTERFACENAME, LISTINTERFACENAME)
   private
     FStart: ITEMCLASSNAME;
     FEnd: ITEMCLASSNAME;PRIVATEADDITIONAL
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { COLLECTIONINTERFACENAME }
     function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
     function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
@@ -429,7 +430,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ACollection: COLLECTIONINTERFACENAME;
 begin

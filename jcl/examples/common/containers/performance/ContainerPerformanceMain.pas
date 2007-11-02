@@ -28,10 +28,11 @@ type
     mnBucketList: TMenuItem;
     mnJclHashMap: TMenuItem;
     mnHashedStringList: TMenuItem;
-    mnJclStrStrHashMap: TMenuItem;
+    mnJclAnsiStrAnsiStrHashMap: TMenuItem;
     N2: TMenuItem;
     mnAllTest: TMenuItem;
     HashPerformanceGrid: TStringGrid;
+    mnJclWideStrWideStrHashMap: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure mnAllTestClick(Sender: TObject);
     procedure mnListClick(Sender: TObject);
@@ -41,7 +42,8 @@ type
     procedure mnBucketListClick(Sender: TObject);
     procedure mnJclHashMapClick(Sender: TObject);
     procedure mnHashedStringListClick(Sender: TObject);
-    procedure mnJclStrStrHashMapClick(Sender: TObject);
+    procedure mnJclAnsiStrAnsiStrHashMapClick(Sender: TObject);
+    procedure mnJclWideStrWideStrHashMapClick(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
   public
   end;
@@ -73,7 +75,8 @@ begin
   HashPerformanceGrid.Cells[1, 0] := 'TBucketList';
   HashPerformanceGrid.Cells[2, 0] := 'TJclHashMap';
   HashPerformanceGrid.Cells[3, 0] := 'THashedStringList';
-  HashPerformanceGrid.Cells[4, 0] := 'TJclStrStrHashMap';
+  HashPerformanceGrid.Cells[4, 0] := 'TJclAnsiStrAnsiStrHashMap';
+  HashPerformanceGrid.Cells[5, 0] := 'TJclWideStrWideStrHashMap';
   HashPerformanceGrid.Cells[0, 1] := 'Add';
   HashPerformanceGrid.Cells[0, 2] := 'Random';
   HashPerformanceGrid.Cells[0, 3] := 'Clear';
@@ -96,7 +99,9 @@ begin
   Application.ProcessMessages;
   TestHashedStringList(HashPerformanceGrid.Cols[3]);
   Application.ProcessMessages;
-  TestJclStrStrHashMap(HashPerformanceGrid.Cols[4]);
+  TestJclAnsiStrAnsiStrHashMap(HashPerformanceGrid.Cols[4]);
+  Application.ProcessMessages;
+  TestJclWideStrWideStrHashMap(HashPerformanceGrid.Cols[5]);
 end;
 
 procedure TMainForm.mnListClick(Sender: TObject);
@@ -134,9 +139,14 @@ begin
   TestHashedStringList(HashPerformanceGrid.Cols[3]);
 end;
 
-procedure TMainForm.mnJclStrStrHashMapClick(Sender: TObject);
+procedure TMainForm.mnJclAnsiStrAnsiStrHashMapClick(Sender: TObject);
 begin
-  TestJclStrStrHashMap(HashPerformanceGrid.Cols[4]);
+  TestJclAnsiStrAnsiStrHashMap(HashPerformanceGrid.Cols[4]);
+end;
+
+procedure TMainForm.mnJclWideStrWideStrHashMapClick(Sender: TObject);
+begin
+  TestJclWideStrWideStrHashMap(HashPerformanceGrid.Cols[5]);
 end;
 
 procedure TMainForm.Exit1Click(Sender: TObject);

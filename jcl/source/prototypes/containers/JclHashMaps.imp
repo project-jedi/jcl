@@ -17,14 +17,15 @@
 
   BUCKETARRAYTYPENAME = array of BUCKETTYPENAME;
 
-  SELFCLASSNAME = class(ANCESTORNAME, MAPINTERFACENAME,INTERFACEADDITIONAL
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable)
+  SELFCLASSNAME = class(ANCESTORNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, INTERFACEADDITIONAL
+    MAPINTERFACENAME)
   private
     FBuckets: BUCKETARRAYTYPENAME;
     FHashFunction: TJclHashFunction;PRIVATEADDITIONAL
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
     procedure GrowEntries(Bucket: BUCKETTYPENAME); virtual;
     procedure PackEntries(Bucket: BUCKETTYPENAME); virtual;
@@ -71,7 +72,7 @@ begin
   inherited Destroy;
 end;
 
-procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   I, J: Integer;
   SelfBucket, NewBucket: BUCKETTYPENAME;
@@ -117,7 +118,7 @@ begin
   end;
 end;
 
-procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is SELFCLASSNAME then

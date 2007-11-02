@@ -84,8 +84,8 @@ type
     constructor Create(const ALockDelegate: IInterface);
   end;
 
-  TJclAbstractContainer = class(TJclAbstractLockable, IJclContainer,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable)
+  TJclAbstractContainerBase = class(TJclAbstractLockable, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer)
   protected
     FAllowDefaultElements: Boolean;
     FDuplicates: TDuplicates;
@@ -100,9 +100,9 @@ type
     procedure AutoGrow; virtual;
     procedure AutoPack; virtual;
     function CheckDuplicate: Boolean;
-    function CreateEmptyContainer: TJclAbstractContainer; virtual; abstract;
-    procedure AssignDataTo(Dest: TJclAbstractContainer); virtual;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); virtual;
+    function CreateEmptyContainer: TJclAbstractContainerBase; virtual; abstract;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); virtual;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); virtual;
     { IJclContainer }
     procedure Assign(const Source: IJclContainer);
     procedure AssignTo(const Dest: IJclContainer);
@@ -140,8 +140,8 @@ type
     constructor Create(const ALockDelegate: IInterface);
   end;
 
-  TJclAbstractIterator = class(TJclAbstractLockable, IJclAbstractIterator,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable)
+  TJclAbstractIterator = class(TJclAbstractLockable, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclAbstractIterator)
   private
     FValid: Boolean;
   protected
@@ -162,41 +162,77 @@ type
     property Valid: Boolean read FValid write FValid;
   end;
 
-  TJclIntfContainer = class(TJclAbstractContainer, IJclContainer,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclIntfEqualityComparer, IJclIntfComparer)
+  TJclIntfAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer)
   protected
     function FreeObject(var AInterface: IInterface): IInterface;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
     { IJclIntfEqualityComparer }
     function ItemsEqual(const A, B: IInterface): Boolean;
     { IJclIntfComparer }
     function ItemsCompare(const A, B: IInterface): Integer;
   end;
 
-  TJclStrContainer = class(TJclAbstractContainer, IJclContainer, IJclStrContainer,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclStrEqualityComparer, IJclStrComparer, IJclStrHashConverter)
+  TJclStrAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclStrContainer)
   protected
     FCaseSensitive: Boolean;
-    FEncoding: TJclAnsiStrEncoding;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function FreeString(var AString: string): string;
-    { IJclAnsiStrContainer }
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclStrContainer }
     function GetCaseSensitive: Boolean; virtual;
-    function GetEncoding: TJclAnsiStrEncoding; virtual;
     procedure SetCaseSensitive(Value: Boolean); virtual;
-    procedure SetEncoding(Value: TJclAnsiStrEncoding); virtual;
-    { IJclStrEqualityComparer }
-    function ItemsEqual(const A, B: string): Boolean;
-    { IJclStrComparer }
-    function ItemsCompare(const A, B: string): Integer;
-    { IJclStrHashConverter }
-    function Hash(const AString: string): Integer;
   end;
 
-  TJclContainer = class(TJclAbstractContainer, IJclContainer, IJclObjectOwner,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclEqualityComparer, IJclComparer)
+  TJclAnsiStrAbstractContainer = class(TJclStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclAnsiStrEqualityComparer, IJclAnsiStrComparer, IJclAnsiStrHashConverter)
+  protected
+    FEncoding: TJclAnsiStrEncoding;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeString(var AString: AnsiString): AnsiString;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclAnsiStrContainer }
+    function GetEncoding: TJclAnsiStrEncoding; virtual;
+    procedure SetEncoding(Value: TJclAnsiStrEncoding); virtual;
+    { IJclAnsiStrEqualityComparer }
+    function ItemsEqual(const A, B: AnsiString): Boolean;
+    { IJclAnsiStrComparer }
+    function ItemsCompare(const A, B: AnsiString): Integer;
+    { IJclAnsiStrHashConverter }
+    function Hash(const AString: AnsiString): Integer;
+  end;
+
+  TJclWideStrAbstractContainer = class(TJclStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclWideStrEqualityComparer, IJclWideStrComparer, IJclWideStrHashConverter)
+  protected
+    FEncoding: TJclWideStrEncoding;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeString(var AString: WideString): WideString;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclWideStrContainer }
+    function GetEncoding: TJclWideStrEncoding; virtual;
+    procedure SetEncoding(Value: TJclWideStrEncoding); virtual;
+    { IJclWideStrEqualityComparer }
+    function ItemsEqual(const A, B: WideString): Boolean;
+    { IJclWideStrComparer }
+    function ItemsCompare(const A, B: WideString): Integer;
+    { IJclWideStrHashConverter }
+    function Hash(const AString: WideString): Integer;
+  end;
+
+  TJclAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer)
   private
     FOwnsObjects: Boolean;
   protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer }
     function ItemsEqual(A, B: TObject): Boolean;
     { IJclComparer }
@@ -210,11 +246,13 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
-  TJclContainer<T> = class(TJclAbstractContainer, IJclContainer, IJclItemOwner<T>,
-    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclEqualityComparer<T>, IJclComparer<T>)
+  TJclAbstractContainer<T> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>)
   private
     FOwnsItems: Boolean;
   protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
     { IJclEqualityComparer<T> }
     function ItemsEqual(const A, B: T): Boolean; virtual;
     { IJclComparer<T> }
@@ -228,31 +266,60 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
-  TJclStrAbstractCollection = class(TJclStrContainer, IJclContainer, IJclStrContainer, IJclStrFlatContainer,
-    IJclStrCollection, {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclStrEqualityComparer, IJclStrComparer)
+  TJclAnsiStrAbstractCollection = class(TJclAnsiStrAbstractContainer,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
+    IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrCollection,
+    IJclAnsiStrEqualityComparer, IJclAnsiStrComparer)
   protected
-    { IJclStrCollection }
-    function Add(const AString: string): Boolean; virtual; abstract;
-    function AddAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclAnsiStrCollection }
+    function Add(const AString: AnsiString): Boolean; virtual; abstract;
+    function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     procedure Clear; virtual; abstract;
-    function Contains(const AString: string): Boolean; virtual; abstract;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
-    function Equals(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
-    function First: IJclStrIterator; virtual; abstract;
+    function Contains(const AString: AnsiString): Boolean; virtual; abstract;
+    function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
+    function Equals(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
+    function First: IJclAnsiStrIterator; virtual; abstract;
     function IsEmpty: Boolean; virtual; abstract;
-    function Last: IJclStrIterator; virtual; abstract;
-    function Remove(const AString: string): Boolean; overload; virtual; abstract;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function Last: IJclAnsiStrIterator; virtual; abstract;
+    function Remove(const AString: AnsiString): Boolean; overload; virtual; abstract;
+    function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
+    function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
+    { IJclAnsiStrFlatContainer }
     procedure LoadFromStrings(Strings: TStrings);
     procedure SaveToStrings(Strings: TStrings);
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStrings;
-    function GetAsDelimited(const Separator: string = AnsiLineBreak): string;
-    procedure AppendDelimited(const AString: string; const Separator: string = AnsiLineBreak);
-    procedure LoadDelimited(const AString: string; const Separator: string = AnsiLineBreak);
+    function GetAsDelimited(const Separator: AnsiString = AnsiLineBreak): AnsiString;
+    procedure AppendDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
+    procedure LoadDelimited(const AString: AnsiString; const Separator: AnsiString = AnsiLineBreak);
+  end;
+
+  TJclWideStrAbstractCollection = class(TJclWideStrAbstractContainer,
+    {$IFDEF THREADSAFE}IJclLockable,{$ENDIF THREADSAFE} IJclCloneable, IJclIntfCloneable, IJclContainer,
+    IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrCollection,
+    IJclWideStrEqualityComparer, IJclWideStrComparer)
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclWideStrCollection }
+    function Add(const AString: WideString): Boolean; virtual; abstract;
+    function AddAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    procedure Clear; virtual; abstract;
+    function Contains(const AString: WideString): Boolean; virtual; abstract;
+    function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function Equals(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function First: IJclWideStrIterator; virtual; abstract;
+    function IsEmpty: Boolean; virtual; abstract;
+    function Last: IJclWideStrIterator; virtual; abstract;
+    function Remove(const AString: WideString): Boolean; overload; virtual; abstract;
+    function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function RetainAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
+    function Size: Integer; virtual; abstract;
+    { IJclWideStrFlatContainer }
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -266,6 +333,11 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+{$IFNDEF RTL140_UP}
+uses
+  JclWideStrings;
+{$ENDIF ~RTL140_UP}
 
 //=== { TJclAbstractLockable } ===============================================
 
@@ -360,9 +432,9 @@ begin
 end;
 {$ENDIF THREADSAFE}
 
-//=== { TJclAbstractContainer } ==============================================
+//=== { TJclAbstractContainerBase } ==========================================
 
-constructor TJclAbstractContainer.Create(const ALockDelegate: IInterface);
+constructor TJclAbstractContainerBase.Create(const ALockDelegate: IInterface);
 begin
   inherited Create(ALockDelegate);
 
@@ -376,17 +448,17 @@ begin
   FAutoPackParameter := 4;
 end;
 
-procedure TJclAbstractContainer.Assign(const Source: IJclContainer);
+procedure TJclAbstractContainerBase.Assign(const Source: IJclContainer);
 begin
   Source.AssignTo(Self);
 end;
 
-procedure TJclAbstractContainer.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclAbstractContainerBase.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   // override to customize
 end;
 
-procedure TJclAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclAbstractContainerBase.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   // override to customize
   Dest.SetAllowDefaultElements(GetAllowDefaultElements);
@@ -399,21 +471,21 @@ begin
   Dest.SetAutoPackStrategy(GetAutoPackStrategy);
 end;
 
-procedure TJclAbstractContainer.AssignTo(const Dest: IJclContainer);
+procedure TJclAbstractContainerBase.AssignTo(const Dest: IJclContainer);
 var
   DestObject: TObject;
 begin
   DestObject := Dest.GetContainerReference;
-  if DestObject is TJclAbstractContainer then
+  if DestObject is TJclAbstractContainerBase then
   begin
-    AssignPropertiesTo(TJclAbstractContainer(DestObject));
-    AssignDataTo(TJclAbstractContainer(DestObject));
+    AssignPropertiesTo(TJclAbstractContainerBase(DestObject));
+    AssignDataTo(TJclAbstractContainerBase(DestObject));
   end
   else
     raise EJclAssignError.Create;
 end;
 
-procedure TJclAbstractContainer.AutoGrow;
+procedure TJclAbstractContainerBase.AutoGrow;
 begin
   case FAutoGrowStrategy of
     agsDisabled: ;
@@ -426,7 +498,7 @@ begin
   end;
 end;
 
-procedure TJclAbstractContainer.AutoPack;
+procedure TJclAbstractContainerBase.AutoPack;
 var
   Decrement: Integer;
 begin
@@ -446,7 +518,7 @@ begin
     SetCapacity(FSize);
 end;
 
-function TJclAbstractContainer.CheckDuplicate: Boolean;
+function TJclAbstractContainerBase.CheckDuplicate: Boolean;
 begin
   case FDuplicates of
     dupIgnore:
@@ -459,9 +531,9 @@ begin
   end;
 end;
 
-function TJclAbstractContainer.Clone: TObject;
+function TJclAbstractContainerBase.Clone: TObject;
 var
-  NewContainer: TJclAbstractContainer;
+  NewContainer: TJclAbstractContainerBase;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -477,65 +549,65 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAbstractContainer.GetAllowDefaultElements: Boolean;
+function TJclAbstractContainerBase.GetAllowDefaultElements: Boolean;
 begin
   Result := FAllowDefaultElements;
 end;
 
-function TJclAbstractContainer.GetAutoGrowParameter: Integer;
+function TJclAbstractContainerBase.GetAutoGrowParameter: Integer;
 begin
   Result := FAutoGrowParameter;
 end;
 
-function TJclAbstractContainer.GetAutoGrowStrategy: TJclAutoGrowStrategy;
+function TJclAbstractContainerBase.GetAutoGrowStrategy: TJclAutoGrowStrategy;
 begin
   Result := FAutoGrowStrategy;
 end;
 
-function TJclAbstractContainer.GetAutoPackParameter: Integer;
+function TJclAbstractContainerBase.GetAutoPackParameter: Integer;
 begin
   Result := FAutoPackParameter;
 end;
 
-function TJclAbstractContainer.GetAutoPackStrategy: TJclAutoPackStrategy;
+function TJclAbstractContainerBase.GetAutoPackStrategy: TJclAutoPackStrategy;
 begin
   Result := FAutoPackStrategy;
 end;
 
-function TJclAbstractContainer.GetCapacity: Integer;
+function TJclAbstractContainerBase.GetCapacity: Integer;
 begin
   Result := FCapacity;
 end;
 
-function TJclAbstractContainer.GetContainerReference: TObject;
+function TJclAbstractContainerBase.GetContainerReference: TObject;
 begin
   Result := Self;
 end;
 
-function TJclAbstractContainer.GetDuplicates: TDuplicates;
+function TJclAbstractContainerBase.GetDuplicates: TDuplicates;
 begin
   Result := FDuplicates;
 end;
 
-function TJclAbstractContainer.GetRemoveSingleElement: Boolean;
+function TJclAbstractContainerBase.GetRemoveSingleElement: Boolean;
 begin
   Result := FRemoveSingleElement;
 end;
 
-function TJclAbstractContainer.GetReturnDefaultElements: Boolean;
+function TJclAbstractContainerBase.GetReturnDefaultElements: Boolean;
 begin
   Result := FReturnDefaultElements;
 end;
 
-procedure TJclAbstractContainer.Grow;
+procedure TJclAbstractContainerBase.Grow;
 begin
   // override to customize
   AutoGrow;
 end;
 
-function TJclAbstractContainer.IntfClone: IInterface;
+function TJclAbstractContainerBase.IntfClone: IInterface;
 var
-  NewContainer: TJclAbstractContainer;
+  NewContainer: TJclAbstractContainerBase;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -551,53 +623,53 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAbstractContainer.Pack;
+procedure TJclAbstractContainerBase.Pack;
 begin
   // override to customize
   SetCapacity(FSize);
 end;
 
-procedure TJclAbstractContainer.SetAllowDefaultElements(Value: Boolean);
+procedure TJclAbstractContainerBase.SetAllowDefaultElements(Value: Boolean);
 begin
   FAllowDefaultElements := Value;
 end;
 
-procedure TJclAbstractContainer.SetAutoGrowParameter(Value: Integer);
+procedure TJclAbstractContainerBase.SetAutoGrowParameter(Value: Integer);
 begin
   FAutoGrowParameter := Value;
 end;
 
-procedure TJclAbstractContainer.SetAutoGrowStrategy(Value: TJclAutoGrowStrategy);
+procedure TJclAbstractContainerBase.SetAutoGrowStrategy(Value: TJclAutoGrowStrategy);
 begin
   FAutoGrowStrategy := Value;
 end;
 
-procedure TJclAbstractContainer.SetAutoPackParameter(Value: Integer);
+procedure TJclAbstractContainerBase.SetAutoPackParameter(Value: Integer);
 begin
   FAutoPackParameter := Value;
 end;
 
-procedure TJclAbstractContainer.SetAutoPackStrategy(Value: TJclAutoPackStrategy);
+procedure TJclAbstractContainerBase.SetAutoPackStrategy(Value: TJclAutoPackStrategy);
 begin
   FAutoPackStrategy := Value;
 end;
 
-procedure TJclAbstractContainer.SetCapacity(Value: Integer);
+procedure TJclAbstractContainerBase.SetCapacity(Value: Integer);
 begin
   FCapacity := Value;
 end;
 
-procedure TJclAbstractContainer.SetDuplicates(Value: TDuplicates);
+procedure TJclAbstractContainerBase.SetDuplicates(Value: TDuplicates);
 begin
   FDuplicates := Value;
 end;
 
-procedure TJclAbstractContainer.SetRemoveSingleElement(Value: Boolean);
+procedure TJclAbstractContainerBase.SetRemoveSingleElement(Value: Boolean);
 begin
   FRemoveSingleElement := Value;
 end;
 
-procedure TJclAbstractContainer.SetReturnDefaultElements(Value: Boolean);
+procedure TJclAbstractContainerBase.SetReturnDefaultElements(Value: Boolean);
 begin
   FReturnDefaultElements := Value;
 end;
@@ -670,15 +742,15 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-//=== { TJclIntfContainer } ==================================================
+//=== { TJclIntfAbstractContainer } ==========================================
 
-function TJclIntfContainer.FreeObject(var AInterface: IInterface): IInterface;
+function TJclIntfAbstractContainer.FreeObject(var AInterface: IInterface): IInterface;
 begin
   Result := AInterface;
   AInterface := nil;
 end;
 
-function TJclIntfContainer.ItemsCompare(const A, B: IInterface): Integer;
+function TJclIntfAbstractContainer.ItemsCompare(const A, B: IInterface): Integer;
 begin
   if Integer(A) > Integer(B) then
     Result := 1
@@ -689,14 +761,51 @@ begin
     Result := 0;
 end;
 
-function TJclIntfContainer.ItemsEqual(const A, B: IInterface): Boolean;
+function TJclIntfAbstractContainer.ItemsEqual(const A, B: IInterface): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
-//=== { TJclStrContainer } ===================================================
+//=== { TJclStrAbstractContainer } ===========================================
 
-function TJclStrContainer.Hash(const AString: string): Integer;
+procedure TJclStrAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclStrAbstractContainer then
+    TJclStrAbstractContainer(Dest).SetCaseSensitive(GetCaseSensitive);
+end;
+
+function TJclStrAbstractContainer.GetCaseSensitive: Boolean;
+begin
+  Result := FCaseSensitive;
+end;
+
+procedure TJclStrAbstractContainer.SetCaseSensitive(Value: Boolean);
+begin
+  FCaseSensitive := Value;
+end;
+
+//=== { TJclAnsiStrAbstractContainer } =======================================
+
+procedure TJclAnsiStrAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclAnsiStrAbstractContainer then
+    TJclAnsiStrAbstractContainer(Dest).SetEncoding(GetEncoding);
+end;
+
+function TJclAnsiStrAbstractContainer.FreeString(var AString: AnsiString): AnsiString;
+begin
+  Result := AString;
+  AString := '';
+end;
+
+function TJclAnsiStrAbstractContainer.GetEncoding: TJclAnsiStrEncoding;
+begin
+  Result := FEncoding;
+end;
+
+function TJclAnsiStrAbstractContainer.Hash(const AString: AnsiString): Integer;
 var
   I: Integer;
 begin
@@ -710,11 +819,12 @@ begin
         for I := 1 to Length(AString) do
           Inc(Result, Ord(UpCase(AString[I])) * (I - 1) * 256);
     //seUTF8:
-    //  Result := 0;
+  else
+    raise EJclOperationNotSupportedError.Create;
   end;
 end;
 
-function TJclStrContainer.ItemsCompare(const A, B: string): Integer;
+function TJclAnsiStrAbstractContainer.ItemsCompare(const A, B: AnsiString): Integer;
 begin
   case FEncoding of
     seISO:
@@ -723,13 +833,12 @@ begin
       else
         Result := CompareText(A, B);
     //seUTF8:
-    //  Result := 0;
   else
-    Result := 0;
+    raise EJclOperationNotSupportedError.Create;
   end;
 end;
 
-function TJclStrContainer.ItemsEqual(const A, B: string): Boolean;
+function TJclAnsiStrAbstractContainer.ItemsEqual(const A, B: AnsiString): Boolean;
 begin
   case FEncoding of
     seISO:
@@ -738,60 +847,97 @@ begin
       else
         Result := CompareText(A, B) = 0;
     //seUTF8:
-    //  Result := 0;
   else
-    Result := False;
+    raise EJclOperationNotSupportedError.Create;
   end;
 end;
 
-procedure TJclStrContainer.AssignPropertiesTo(Dest: TJclAbstractContainer);
-var
-  ADest: TJclStrContainer;
+procedure TJclAnsiStrAbstractContainer.SetEncoding(Value: TJclAnsiStrEncoding);
+begin
+  FEncoding := Value;
+end;
+
+//=== { TJclWideStrContainer } ===============================================
+
+procedure TJclWideStrAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
-  if Dest is TJclStrContainer then
-  begin
-    ADest := TJclStrContainer(Dest);
-    ADest.SetCaseSensitive(GetCaseSensitive);
-    ADest.SetEncoding(GetEncoding);
-  end;
+  if Dest is TJclWideStrAbstractContainer then
+    TJclWideStrAbstractContainer(Dest).SetEncoding(GetEncoding);
 end;
 
-function TJclStrContainer.FreeString(var AString: string): string;
+function TJclWideStrAbstractContainer.FreeString(var AString: WideString): WideString;
 begin
   Result := AString;
   AString := '';
 end;
 
-function TJclStrContainer.GetCaseSensitive: Boolean;
-begin
-  Result := FCaseSensitive;
-end;
-
-function TJclStrContainer.GetEncoding: TJclAnsiStrEncoding;
+function TJclWideStrAbstractContainer.GetEncoding: TJclWideStrEncoding;
 begin
   Result := FEncoding;
 end;
 
-procedure TJclStrContainer.SetCaseSensitive(Value: Boolean);
+function TJclWideStrAbstractContainer.Hash(const AString: WideString): Integer;
+var
+  I: Integer;
 begin
-  FCaseSensitive := Value;
+  Result := 0;
+  case FEncoding of
+    weUCS2:
+      //if FCaseSensitive then
+        for I := 1 to Length(AString) do
+          Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
+      //else
+      //  for I := 1 to Length(AString) do
+      //    Inc(Result, Ord(AString[I]) * (I - 1) * 65536); // TODO: case folding
+    //weUTF16:
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
 end;
 
-procedure TJclStrContainer.SetEncoding(Value: TJclAnsiStrEncoding);
+function TJclWideStrAbstractContainer.ItemsCompare(const A, B: WideString): Integer;
+begin
+  case FEncoding of
+    weUCS2:
+      if FCaseSensitive then
+        Result := WideCompareStr(A, B)
+      else
+        Result := WideCompareText(A, B);
+    //weUTF16:
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
+end;
+
+function TJclWideStrAbstractContainer.ItemsEqual(const A, B: WideString): Boolean;
+begin
+  case FEncoding of
+    weUCS2:
+      if FCaseSensitive then
+        Result := WideCompareStr(A, B) = 0
+      else
+        Result := WideCompareText(A, B) = 0;
+    //weUTF16:
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
+end;
+
+procedure TJclWideStrAbstractContainer.SetEncoding(Value: TJclWideStrEncoding);
 begin
   FEncoding := Value;
 end;
 
-//=== { TJclContainer } ======================================================
+//=== { TJclAbstractContainer } ==============================================
 
-constructor TJclContainer.Create(const ALockDelegate: IInterface; AOwnsObjects: Boolean);
+constructor TJclAbstractContainer.Create(const ALockDelegate: IInterface; AOwnsObjects: Boolean);
 begin
   inherited Create(ALockDelegate);
   FOwnsObjects := AOwnsObjects;
 end;
 
-function TJclContainer.FreeObject(var AObject: TObject): TObject;
+function TJclAbstractContainer.FreeObject(var AObject: TObject): TObject;
 begin
   if FOwnsObjects then
   begin
@@ -805,12 +951,12 @@ begin
   end;
 end;
 
-function TJclContainer.GetOwnsObjects: Boolean;
+function TJclAbstractContainer.GetOwnsObjects: Boolean;
 begin
   Result := FOwnsObjects;
 end;
 
-function TJclContainer.ItemsCompare(A, B: TObject): Integer;
+function TJclAbstractContainer.ItemsCompare(A, B: TObject): Integer;
 begin
   if Integer(A) > Integer(B) then
     Result := 1
@@ -821,21 +967,21 @@ begin
     Result := 0;
 end;
 
-function TJclContainer.ItemsEqual(A, B: TObject): Boolean;
+function TJclAbstractContainer.ItemsEqual(A, B: TObject): Boolean;
 begin
   Result := Integer(A) = Integer(B);
 end;
 
 {$IFDEF SUPPORTS_GENERICS}
-//=== { TJclContainer<T> } ===================================================
+//=== { TJclAbstractContainer<T> } ===========================================
 
-constructor TJclContainer<T>.Create(const ALockDelegate: IInterface; AOwnsItems: Boolean);
+constructor TJclAbstractContainer<T>.Create(const ALockDelegate: IInterface; AOwnsItems: Boolean);
 begin
   inherited Create(ALockDelegate);
   FOwnsItems := AOwnsItems;
 end;
 
-function TJclContainer<T>.FreeItem(var AItem: T): T;
+function TJclAbstractContainer<T>.FreeItem(var AItem: T): T;
 begin
   if FOwnsItems then
   begin
@@ -849,39 +995,43 @@ begin
   end;
 end;
 
-function TJclContainer<T>.GetOwnsItems: Boolean;
+function TJclAbstractContainer<T>.GetOwnsItems: Boolean;
 begin
   Result := FOwnsItems;
 end;
 
-function TJclContainer<T>.ItemsCompare(const A, B: T): Integer;
+function TJclAbstractContainer<T>.ItemsCompare(const A, B: T): Integer;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
-function TJclContainer<T>.ItemsEqual(const A, B: T): Boolean;
+function TJclAbstractContainer<T>.ItemsEqual(const A, B: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
 
 {$ENDIF SUPPORTS_GENERICS}
 
-//=== { TJclStrCollection } ==================================================
+//=== { TJclAnsiStrCollection } ==============================================
 
-procedure TJclStrAbstractCollection.AppendDelimited(const AString, Separator: string);
+// TODO: common implementation, need a function to search for a string starting from
+// a predefined index
+procedure TJclAnsiStrAbstractCollection.AppendDelimited(const AString, Separator: AnsiString);
 {$IFDEF CLR}
 var
   I, StartIndex: Integer;
+  BString: string;
 begin
   I := Pos(Separator, AString);
   if I <> 0 then
   begin
+    BString := AString;
     Dec(I); // to .NET string index base
     StartIndex := 0;
     repeat
-      Add(AString.Substring(StartIndex, I - StartIndex + 1));
+      Add(BString.Substring(StartIndex, I - StartIndex + 1));
       StartIndex := I + 1;
-      I := AString.IndexOf(Separator, StartIndex);
+      I := BString.IndexOf(Separator, StartIndex);
     until I < 0;
   end
   else
@@ -889,7 +1039,7 @@ begin
 end;
 {$ELSE}
 var
-  Item: string;
+  Item: AnsiString;
   SepLen: Integer;
   PString, PSep, PPos: PChar;
 begin
@@ -916,7 +1066,7 @@ begin
 end;
 {$ENDIF CLR}
 
-procedure TJclStrAbstractCollection.AppendFromStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.AppendFromStrings(Strings: TStrings);
 var
   I: Integer;
 begin
@@ -924,9 +1074,9 @@ begin
     Add(Strings[I]);
 end;
 
-procedure TJclStrAbstractCollection.AppendToStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.AppendToStrings(Strings: TStrings);
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   It := First;
   Strings.BeginUpdate;
@@ -938,9 +1088,9 @@ begin
   end;
 end;
 
-function TJclStrAbstractCollection.GetAsDelimited(const Separator: string): string;
+function TJclAnsiStrAbstractCollection.GetAsDelimited(const Separator: AnsiString): AnsiString;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   It := First;
   Result := '';
@@ -950,7 +1100,7 @@ begin
     Result := Result + Separator + It.Next;
 end;
 
-function TJclStrAbstractCollection.GetAsStrings: TStrings;
+function TJclAnsiStrAbstractCollection.GetAsStrings: TStrings;
 begin
   Result := TStringList.Create;
   try
@@ -961,19 +1111,19 @@ begin
   end;
 end;
 
-procedure TJclStrAbstractCollection.LoadDelimited(const AString, Separator: string);
+procedure TJclAnsiStrAbstractCollection.LoadDelimited(const AString, Separator: AnsiString);
 begin
   Clear;
   AppendDelimited(AString, Separator);
 end;
 
-procedure TJclStrAbstractCollection.LoadFromStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.LoadFromStrings(Strings: TStrings);
 begin
   Clear;
   AppendFromStrings(Strings);
 end;
 
-procedure TJclStrAbstractCollection.SaveToStrings(Strings: TStrings);
+procedure TJclAnsiStrAbstractCollection.SaveToStrings(Strings: TStrings);
 begin
   Strings.Clear;
   AppendToStrings(Strings);

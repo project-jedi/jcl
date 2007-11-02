@@ -51,26 +51,39 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf, JclArrayLists;
 {$I containers\JclArraySets.imp}
 type
-(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclIntfArraySet,TJclIntfArrayList,IJclIntfCollection,IJclIntfList,IJclIntfArray,IJclIntfSet, IJclContainer\, IJclIntfEqualityComparer\, IJclIntfComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,const AInterface: IInterface)*)
-(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclStrArraySet,TJclStrArrayList,IJclStrCollection,IJclStrList,IJclStrArray,IJclStrSet, IJclContainer\, IJclStrContainer\, IJclStrFlatContainer\, IJclStrEqualityComparer\, IJclStrComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,, override;,const AString: string)*)
-(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet,TJclArrayList,IJclCollection,IJclList,IJclArray,IJclSet, IJclContainer\, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,AObject: TObject)*)
+(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclIntfArraySet,TJclIntfArrayList,IJclIntfCollection,IJclIntfList,IJclIntfArray,IJclIntfSet, IJclIntfEqualityComparer\, IJclIntfComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AInterface: IInterface)*)
+
+(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclAnsiStrArraySet,TJclAnsiStrArrayList,IJclAnsiStrCollection,IJclAnsiStrList,IJclAnsiStrArray,IJclAnsiStrSet, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\, IJclAnsiStrComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,const AString: AnsiString)*)
+
+(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclWideStrArraySet,TJclWideStrArrayList,IJclWideStrCollection,IJclWideStrList,IJclWideStrArray,IJclWideStrSet, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\, IJclWideStrComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,const AString: WideString)*)
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrArraySet = TJclAnsiStrArraySet;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrArraySet = TJclWideStrArraySet;
+  {$ENDIF CONTAINER_WIDESTR}
+
+(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet,TJclArrayList,IJclCollection,IJclList,IJclArray,IJclSet, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AObject: TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet<T>,TJclArrayList<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclSet<T>, IJclContainer\, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,,,,,const AItem: T)*)
+(*$JPPEXPANDMACRO JCLARRAYSETINT(TJclArraySet<T>,TJclArrayList<T>,IJclCollection<T>,IJclList<T>,IJclArray<T>,IJclSet<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,,,,,const AItem: T)*)
 
   // E = External helper to compare items
-  TJclArraySetE<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArraySetE<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   private
     FComparer: IComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -81,15 +94,16 @@ type
   end;
 
   // F = Function to compare items
-  TJclArraySetF<T> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArraySetF<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   private
     FCompare: TCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -100,13 +114,13 @@ type
   end;
 
   // I = Items can compare themselves to others
-  TJclArraySetI<T: IComparable<T>> = class(TJclArraySet<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    IJclSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable,
-    IJclGrowable)
+  TJclArraySetI<T: IComparable<T>> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
   protected
     function ItemsCompare(const A, B: T): Integer; override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -129,7 +143,7 @@ uses
   SysUtils;
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclIntfArraySet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfArraySet.Create(Size);
   AssignPropertiesTo(Result);
@@ -139,17 +153,27 @@ end;
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclStrArraySet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrArraySet.Create(Size);
+  Result := TJclAnsiStrArraySet.Create(Size);
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclStrArraySet,IJclStrCollection,IJclStrIterator,const AString: string,AString,'',GetString)*)
+(*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclAnsiStrArraySet,IJclAnsiStrCollection,IJclAnsiStrIterator,const AString: AnsiString,AString,'',GetString)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclArraySet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclWideStrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLARRAYSETIMP(TJclWideStrArraySet,IJclWideStrCollection,IJclWideStrIterator,const AString: WideString,AString,'',GetString)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArraySet.Create(Size, False);
   AssignPropertiesTo(Result);
@@ -178,14 +202,14 @@ begin
   FComparer := AComparer;
 end;
 
-procedure TJclArraySetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclArraySetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclArraySetE<T> then
     TJclArraySetE<T>(Dest).FComparer := Comparer;
 end;
 
-function TJclArraySetE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArraySetE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArraySetE<T>.Create(Comparer, Size, False);
   AssignPropertiesTo(Result);
@@ -220,14 +244,14 @@ begin
   FCompare := ACompare;
 end;
 
-procedure TJclArraySetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclArraySetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclArraySetF<T> then
     TJclArraySetF<T>(Dest).FCompare := Compare;
 end;
 
-function TJclArraySetF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArraySetF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArraySetF<T>.Create(Compare, Size, False);
   AssignPropertiesTo(Result);
@@ -249,7 +273,7 @@ end;
 
 //=== { TJclArraySetI<T> } ===================================================
 
-function TJclArraySetI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArraySetI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArraySetI<T>.Create(Size, False);
   AssignPropertiesTo(Result);

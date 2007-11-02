@@ -1,12 +1,13 @@
 (*$JPPDEFINEMACRO JCLHASHSETINT(SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, SETINTERFACENAME, MAPINTERFACENAME, ITRINTERFACENAME,
   INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, CONSTRUCTORADDITIONAL,
   PARAMETERDECLARATION, PARAMETERNAME, TYPENAME)
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, SETINTERFACENAME,INTERFACEADDITIONAL
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
+    COLLECTIONINTERFACENAME, SETINTERFACENAME)
   private
     FMap: MAPINTERFACENAME;PRIVATEADDITIONAL
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -103,7 +104,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
   if Dest is SELFCLASSNAME then

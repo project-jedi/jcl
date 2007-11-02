@@ -1,13 +1,14 @@
 (*$JPPDEFINEMACRO JCLQUEUEINT(SELFCLASSNAME, QUEUEINTERFACENAME, ANCESTORCLASSNAME, DATATYPENAME, DYNARRAYTYPENAME,
-  INTERFACELISTADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, OWNERSHIPDECLARATION, PARAMETERDECLARATION)
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, QUEUEINTERFACENAME,INTERFACELISTADDITIONAL
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, OWNERSHIPDECLARATION, PARAMETERDECLARATION)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,INTERFACEADDITIONAL
+    QUEUEINTERFACENAME)
   private
     FElements: DYNARRAYTYPENAME;
     FHead: Integer;
     FTail: Integer;PRIVATEADDITIONAL
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -44,7 +45,7 @@ begin
   inherited Destroy;
 end;
 
-procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: SELFCLASSNAME;
   I: Integer;

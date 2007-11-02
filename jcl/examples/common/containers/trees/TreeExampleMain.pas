@@ -11,10 +11,12 @@ type
     btnIntfArrayTree: TButton;
     memoResult: TMemo;
     btnArrayTree: TButton;
-    btnStrBinaryTree: TButton;
+    btnAnsiStrBinaryTree: TButton;
+    btnWideStrBinaryTree: TButton;
     procedure btnIntfArrayTreeClick(Sender: TObject);
     procedure btnArrayTreeClick(Sender: TObject);
-    procedure btnStrBinaryTreeClick(Sender: TObject);
+    procedure btnAnsiStrBinaryTreeClick(Sender: TObject);
+    procedure btnWideStrBinaryTreeClick(Sender: TObject);
   public
   end;
 
@@ -122,14 +124,34 @@ begin
     memoResult.Lines.Add(IntToStr(Integer(It.Next)));
 end;
 
-procedure TMainForm.btnStrBinaryTreeClick(Sender: TObject);
+procedure TMainForm.btnAnsiStrBinaryTreeClick(Sender: TObject);
 var
-  Tree: IJclStrTree;
+  Tree: IJclAnsiStrTree;
   I: Integer;
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   memoResult.Lines.Clear;
-  Tree := TJclStrBinaryTree.Create(JclAlgorithms.StrSimpleCompare);
+  Tree := TJclAnsiStrBinaryTree.Create(JclAlgorithms.AnsiStrSimpleCompare);
+  for I := 0 to 17 do
+    Tree.Add(Format('%.2d', [I]));
+
+  if Tree.Contains('15') then
+    memoResult.Lines.Add('contains 15');
+
+  Tree.TraverseOrder := toOrder;
+  It := Tree.First;
+  while It.HasNext do
+    memoResult.Lines.Add(It.Next);
+end;
+
+procedure TMainForm.btnWideStrBinaryTreeClick(Sender: TObject);
+var
+  Tree: IJclWideStrTree;
+  I: Integer;
+  It: IJclWideStrIterator;
+begin
+  memoResult.Lines.Clear;
+  Tree := TJclWideStrBinaryTree.Create(JclAlgorithms.WideStrSimpleCompare);
   for I := 0 to 17 do
     Tree.Add(Format('%.2d', [I]));
 

@@ -55,14 +55,15 @@ uses
 
 type
 
-  TJclIntfQueue = class(TJclIntfContainer, IJclIntfQueue, IJclContainer, IJclIntfEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclIntfQueue = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
+    IJclIntfQueue)
   private
     FElements: JclBase.TDynIInterfaceArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -76,49 +77,87 @@ type
     function Enqueue(const AInterface: IInterface): Boolean;
     function Peek: IInterface;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
 
 
-  TJclStrQueue = class(TJclStrContainer, IJclStrQueue, IJclContainer, IJclStrContainer, IJclStrEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclAnsiStrQueue = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
+    IJclAnsiStrQueue)
   private
-    FElements: JclBase.TDynStringArray;
+    FElements: JclBase.TDynAnsiStringArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
-    { IJclStrQueue }
+    { IJclAnsiStrQueue }
     procedure Clear;
-    function Contains(const AString: string): Boolean;
-    function Dequeue: string;
+    function Contains(const AString: AnsiString): Boolean;
+    function Dequeue: AnsiString;
     function Empty: Boolean;
-    function Enqueue(const AString: string): Boolean;
-    function Peek: string;
+    function Enqueue(const AString: AnsiString): Boolean;
+    function Peek: AnsiString;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
   end;
 
 
-  TJclQueue = class(TJclContainer, IJclQueue, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclWideStrQueue = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
+    IJclWideStrQueue)
+  private
+    FElements: JclBase.TDynWideStringArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclWideStrQueue }
+    procedure Clear;
+    function Contains(const AString: WideString): Boolean;
+    function Dequeue: WideString;
+    function Empty: Boolean;
+    function Enqueue(const AString: WideString): Boolean;
+    function Peek: WideString;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrQueue = TJclAnsiStrQueue;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrQueue = TJclWideStrQueue;
+  {$ENDIF CONTAINER_WIDESTR}
+
+
+  TJclQueue = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
+    IJclQueue)
   private
     FElements: JclBase.TDynObjectArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -132,7 +171,7 @@ type
     function Enqueue(AObject: TObject): Boolean;
     function Peek: TObject;
     function Size: Integer;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean);
     destructor Destroy; override;
@@ -141,14 +180,15 @@ type
   {$IFDEF SUPPORTS_GENERICS}
 
 
-  TJclQueue<T> = class(TJclContainer<T>, IJclQueue<T>, IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclQueue<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer<T>, IJclItemOwner<T>,
+    IJclQueue<T>)
   private
     FElements: TJclBase<T>.TDynArray;
     FHead: Integer;
     FTail: Integer;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -168,46 +208,44 @@ type
   end;
 
   // E = external helper to compare items for equality (GetHashCode is not used)
-  TJclQueueE<T> = class(TJclQueue<T>, IJclQueue<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclQueueE<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE},
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclQueue<T>, IJclItemOwner<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(const AEqualityComparer: IEqualityComparer<T>;
-      ACapacity: Integer = DefaultContainerCapacity; AOwnsItems: Boolean = True);
+    constructor Create(const AEqualityComparer: IEqualityComparer<T>; ACapacity: Integer; AOwnsItems: Boolean);
 
     property EqualityComparer: IEqualityComparer<T> read FEqualityComparer write FEqualityComparer;
   end;
 
   // F = function to compare items for equality
-  TJclQueueF<T> = class(TJclQueue<T>, IJclQueue<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclQueueF<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE},
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclQueue<T>, IJclItemOwner<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
-    constructor Create(AEqualityCompare: TEqualityCompare<T>;
-      ACapacity: Integer = DefaultContainerCapacity; AOwnsItems: Boolean = True);
+    constructor Create(AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
 
     property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = items can compare themselves to an other
-  TJclQueueI<T: IEquatable<T>> = class(TJclQueue<T>, IJclQueue<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclQueueI<T: IEquatable<T>> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE},
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclQueue<T>, IJclItemOwner<T>)
   protected
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -246,7 +284,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfQueue.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclIntfQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntfQueue;
   I: Integer;
@@ -321,7 +359,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfQueue.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfQueue.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfQueue.Create(Size + 1);
   AssignPropertiesTo(Result);
@@ -485,9 +523,9 @@ begin
 end;
 
 
-//=== { TJclStrQueue } =======================================================
+//=== { TJclAnsiStrQueue } =======================================================
 
-constructor TJclStrQueue.Create(ACapacity: Integer);
+constructor TJclAnsiStrQueue.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
   FHead := 0;
@@ -495,21 +533,21 @@ begin
   SetCapacity(ACapacity);
 end;
 
-destructor TJclStrQueue.Destroy;
+destructor TJclAnsiStrQueue.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TJclStrQueue.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclAnsiStrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
-  ADest: TJclStrQueue;
+  ADest: TJclAnsiStrQueue;
   I: Integer;
 begin
   inherited AssignDataTo(Dest);
-  if Dest is TJclStrQueue then
+  if Dest is TJclAnsiStrQueue then
   begin
-    ADest := TJclStrQueue(Dest);
+    ADest := TJclAnsiStrQueue(Dest);
     ADest.Clear;
     ADest.SetCapacity(Size + 1);
     I := FHead;
@@ -523,7 +561,7 @@ begin
   end;
 end;
 
-procedure TJclStrQueue.Clear;
+procedure TJclAnsiStrQueue.Clear;
 var
   I: Integer;
 begin
@@ -548,7 +586,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.Contains(const AString: string): Boolean;
+function TJclAnsiStrQueue.Contains(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
@@ -576,13 +614,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrQueue.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrQueue.Create(Size + 1);
+  Result := TJclAnsiStrQueue.Create(Size + 1);
   AssignPropertiesTo(Result);
 end;
 
-function TJclStrQueue.Dequeue: string;
+function TJclAnsiStrQueue.Dequeue: AnsiString;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -608,7 +646,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.Empty: Boolean;
+function TJclAnsiStrQueue.Empty: Boolean;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -622,7 +660,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.Enqueue(const AString: string): Boolean;
+function TJclAnsiStrQueue.Enqueue(const AString: AnsiString): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -645,7 +683,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrQueue.Pack;
+procedure TJclAnsiStrQueue.Pack;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -659,7 +697,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.Peek: string;
+function TJclAnsiStrQueue.Peek: AnsiString;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -678,7 +716,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrQueue.SetCapacity(Value: Integer);
+procedure TJclAnsiStrQueue.SetCapacity(Value: Integer);
 var
   NewHead: Integer;
 begin
@@ -722,7 +760,262 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrQueue.Size: Integer;
+function TJclAnsiStrQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclWideStrQueue } =======================================================
+
+constructor TJclWideStrQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclWideStrQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclWideStrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclWideStrQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclWideStrQueue then
+  begin
+    ADest := TJclWideStrQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclWideStrQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeString(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.Contains(const AString: WideString): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AString) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrQueue.Dequeue: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := '';
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.Enqueue(const AString: WideString): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AString;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.Peek: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrQueue.Size: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -756,7 +1049,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclQueue.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclQueue;
   I: Integer;
@@ -831,7 +1124,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclQueue.CreateEmptyContainer: TJclAbstractContainer;
+function TJclQueue.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclQueue.Create(Size + 1, False);
   AssignPropertiesTo(Result);
@@ -1013,7 +1306,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclQueue<T>.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclQueue<T>.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclQueue<T>;
   I: Integer;
@@ -1254,14 +1547,14 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
-procedure TJclQueueE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclQueueE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclQueueE<T> then
     TJclQueueE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclQueueE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclQueueE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclQueueE<T>.Create(EqualityComparer, Size + 1, False);
   AssignPropertiesTo(Result);
@@ -1283,14 +1576,14 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
-procedure TJclQueueF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclQueueF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclQueueF<T> then
     TJclQueueF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclQueueF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclQueueF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclQueueF<T>.Create(EqualityCompare, Size + 1, False);
   AssignPropertiesTo(Result);
@@ -1305,7 +1598,7 @@ end;
 
 //=== { TJclQueueI<T> } ======================================================
 
-function TJclQueueI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclQueueI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclQueueI<T>.Create(Size + 1, False);
   AssignPropertiesTo(Result);

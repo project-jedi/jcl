@@ -59,41 +59,60 @@ type
   TRefUnique = TObject;
   {$ENDIF ~SUPPORTS_GENERICS}
 
-(*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntfHashSet,TJclIntfContainer,IJclIntfCollection,IJclIntfSet,IJclIntfMap,IJclIntfIterator, IJclContainer\, IJclIntfEqualityComparer\,,,
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntfHashSet,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfSet,IJclIntfMap,IJclIntfIterator, IJclIntfEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
     constructor Create(ACapacity: Integer); overload;,const AInterface: IInterface,AInterface,IInterface)*)
 
-(*$JPPEXPANDMACRO JCLHASHSETINT(TJclStrHashSet,TJclStrAbstractCollection,IJclStrCollection,IJclStrSet,IJclStrMap,IJclStrIterator, IJclContainer\, IJclStrContainer\, IJclStrEqualityComparer\,,,
-    { IJclAnsiStrContainer }
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclAnsiStrHashSet,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrSet,IJclAnsiStrMap,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrEqualityComparer\,,,
+    { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
-    function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetCaseSensitive(Value: Boolean); override;
+    { IJclAnsiStrContainer }
+    function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;,, override;,
-    constructor Create(ACapacity: Integer); overload;,const AString: string,AString,string)*)
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,
+    constructor Create(ACapacity: Integer); overload;,const AString: AnsiString,AString,AnsiString)*)
 
-(*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclContainer\, IJclObjectOwner\, IJclEqualityComparer\,,,
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclWideStrHashSet,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrSet,IJclWideStrMap,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrEqualityComparer\,,,
+    { IJclStrContainer }
+    function GetCaseSensitive: Boolean; override;
+    procedure SetCaseSensitive(Value: Boolean); override;
+    { IJclWideStrContainer }
+    function GetEncoding: TJclWideStrEncoding; override;
+    procedure SetEncoding(Value: TJclWideStrEncoding); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,
+    constructor Create(ACapacity: Integer); overload;,const AString: WideString,AString,WideString)*)
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrHashSet = TJclAnsiStrHashSet;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrHashSet = TJclWideStrHashSet;
+  {$ENDIF CONTAINER_WIDESTR}
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
     { IJclObjectOwner }
     function FreeObject(var AObject: TObject): TObject; override;
     function GetOwnsObjects: Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;,AObject: TObject,AObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
 
-(*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclContainer<T>,IJclCollection<T>,IJclSet<T>,IJclMap<T\, TRefUnique>,IJclIterator<T>, IJclContainer\, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclSet<T>,IJclMap<T\, TRefUnique>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\,,,
     { IJclItemOwner<T> }
     function FreeItem(var AItem: T): T; override;
     function GetOwnsItems: Boolean; override;,,,,const AItem: T,AItem,T)*)
 
   // E = External helper to compare items for equality
-  TJclHashSetE<T> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetE<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCollection<T>, IJclSet<T>,
+    IJclItemOwner<T>, IJclEqualityComparer<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -106,13 +125,14 @@ type
   end;
 
   // F = Function to compare items for equality
-  TJclHashSetF<T> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetF<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCollection<T>, IJclSet<T>,
+    IJclItemOwner<T>, IJclEqualityComparer<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -125,10 +145,11 @@ type
   end;
 
   // I = Items can compare themselves to an other
-  TJclHashSetI<T: IEquatable<T>, IComparable<T>, IHashable> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetI<T: IEquatable<T>, IComparable<T>, IHashable> = class(TJclHashSet<T>,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable,
+    IJclContainer, IJclCollection<T>, IJclSet<T>, IJclItemOwner<T>, IJclEqualityComparer<T>)
   protected
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -169,7 +190,7 @@ begin
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclIntfHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfHashSet.Create(FMap.Size);
   AssignPropertiesTo(Result);
@@ -188,43 +209,88 @@ end;
 {$JPPUNDEFMACRO GETOWNSITEMS}
 
 {$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
-constructor TJclStrHashSet.Create(ACapacity: Integer);
+constructor TJclAnsiStrHashSet.Create(ACapacity: Integer);
 begin
-  Create(TJclStrHashMap.Create(ACapacity, False));
+  Create(TJclAnsiStrHashMap.Create(ACapacity, False));
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclStrHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrHashSet.Create(FMap.Size);
+  Result := TJclAnsiStrHashSet.Create(FMap.Size);
   AssignPropertiesTo(Result);
 end;
 }
 {$JPPDEFINEMACRO GETTERADDITIONAL
-function TJclStrHashSet.GetCaseSensitive: Boolean;
+function TJclAnsiStrHashSet.GetCaseSensitive: Boolean;
 begin
   Result := FMap.GetCaseSensitive;
 end;
 
-function TJclStrHashSet.GetEncoding: TJclAnsiStrEncoding;
+function TJclAnsiStrHashSet.GetEncoding: TJclAnsiStrEncoding;
 begin
   Result := FMap.GetEncoding;
 end;
 }
 {$JPPDEFINEMACRO SETTERADDITIONAL
-procedure TJclStrHashSet.SetCaseSensitive(Value: Boolean);
+procedure TJclAnsiStrHashSet.SetCaseSensitive(Value: Boolean);
 begin
   FMap.SetCaseSensitive(Value);
 end;
 
-procedure TJclStrHashSet.SetEncoding(Value: TJclAnsiStrEncoding);
+procedure TJclAnsiStrHashSet.SetEncoding(Value: TJclAnsiStrEncoding);
 begin
   FMap.SetEncoding(Value);
 end;
 }
 {$JPPDEFINEMACRO FREEITEM}
 {$JPPDEFINEMACRO GETOWNSITEMS}
-(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclStrHashSet,IJclStrMap,IJclStrCollection,IJclStrIterator,,const AString: string,AString)*)
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclAnsiStrHashSet,IJclAnsiStrMap,IJclAnsiStrCollection,IJclAnsiStrIterator,,const AString: AnsiString,AString)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclWideStrHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclWideStrHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclWideStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL
+function TJclWideStrHashSet.GetCaseSensitive: Boolean;
+begin
+  Result := FMap.GetCaseSensitive;
+end;
+
+function TJclWideStrHashSet.GetEncoding: TJclWideStrEncoding;
+begin
+  Result := FMap.GetEncoding;
+end;
+}
+{$JPPDEFINEMACRO SETTERADDITIONAL
+procedure TJclWideStrHashSet.SetCaseSensitive(Value: Boolean);
+begin
+  FMap.SetCaseSensitive(Value);
+end;
+
+procedure TJclWideStrHashSet.SetEncoding(Value: TJclWideStrEncoding);
+begin
+  FMap.SetEncoding(Value);
+end;
+}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclWideStrHashSet,IJclWideStrMap,IJclWideStrCollection,IJclWideStrIterator,,const AString: WideString,AString)*)
 {$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 {$JPPUNDEFMACRO GETTERADDITIONAL}
@@ -239,7 +305,7 @@ begin
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashSet.Create(FMap.Size, False);
   AssignPropertiesTo(Result);
@@ -308,14 +374,14 @@ begin
   Create(AEqualityComparer, TJclHashMapE<T, TRefUnique>.Create(AEqualityComparer, RefUnique, AComparer, ACapacity, AOwnsItems, False));
 end;
 
-procedure TJclHashSetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclHashSetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclHashSetE<T> then
     TJclHashSetE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclHashSetE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin
@@ -351,14 +417,14 @@ begin
   Create(AEqualityCompare, TJclHashMapF<T, TRefUnique>.Create(AEqualityCompare, AHash, EqualityCompareEqObjects, ACompare, ACapacity, AOwnsItems, False));
 end;
 
-procedure TJclHashSetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclHashSetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclHashSetF<T> then
     TJclHashSetF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclHashSetF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin
@@ -387,7 +453,7 @@ begin
   Create(TJclHashMapI<T, TRefUnique>.Create(ACapacity, AOwnsItems, False));
 end;
 
-function TJclHashSetI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin

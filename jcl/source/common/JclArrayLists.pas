@@ -55,12 +55,13 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
 
-  TJclIntfArrayList = class(TJclIntfContainer, IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclContainer, IJclIntfEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclIntfArrayList = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
+     IJclIntfCollection, IJclIntfList, IJclIntfArray)
   private
     FElementData: JclBase.TDynIInterfaceArray;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
@@ -88,7 +89,7 @@ type
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
     constructor Create(const ACollection: IJclIntfCollection); overload;
@@ -96,53 +97,104 @@ type
   end;
 
 
-  TJclStrArrayList = class(TJclStrAbstractCollection, IJclStrCollection, IJclStrList, IJclStrArray, IJclContainer, IJclStrContainer, IJclStrFlatContainer, IJclStrEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclAnsiStrArrayList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
+     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
   private
-    FElementData: JclBase.TDynStringArray;
+    FElementData: JclBase.TDynAnsiStringArray;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
-    { IJclStrCollection }
-    function Add(const AString: string): Boolean; override;
-    function AddAll(const ACollection: IJclStrCollection): Boolean; override;
+    { IJclAnsiStrCollection }
+    function Add(const AString: AnsiString): Boolean; override;
+    function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
-    function Contains(const AString: string): Boolean; override;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
-    function Equals(const ACollection: IJclStrCollection): Boolean; override;
-    function First: IJclStrIterator; override;
+    function Contains(const AString: AnsiString): Boolean; override;
+    function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
-    function Last: IJclStrIterator; override;
-    function Remove(const AString: string): Boolean; overload; override;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
+    function Last: IJclAnsiStrIterator; override;
+    function Remove(const AString: AnsiString): Boolean; overload; override;
+    function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
-    { IJclStrList }
-    function Insert(Index: Integer; const AString: string): Boolean;
-    function InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean;
-    function GetString(Index: Integer): string;
-    function IndexOf(const AString: string): Integer;
-    function LastIndexOf(const AString: string): Integer;
-    function Remove(Index: Integer): string; overload;
-    procedure SetString(Index: Integer; const AString: string);
-    function SubList(First, Count: Integer): IJclStrList;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    { IJclAnsiStrList }
+    function Insert(Index: Integer; const AString: AnsiString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
+    function GetString(Index: Integer): AnsiString;
+    function IndexOf(const AString: AnsiString): Integer;
+    function LastIndexOf(const AString: AnsiString): Integer;
+    function Remove(Index: Integer): AnsiString; overload;
+    procedure SetString(Index: Integer; const AString: AnsiString);
+    function SubList(First, Count: Integer): IJclAnsiStrList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer); overload;
-    constructor Create(const ACollection: IJclStrCollection); overload;
+    constructor Create(const ACollection: IJclAnsiStrCollection); overload;
     destructor Destroy; override;
   end;
 
 
-  TJclArrayList = class(TJclContainer, IJclCollection, IJclList, IJclArray, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclWideStrArrayList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
+     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
+  private
+    FElementData: JclBase.TDynWideStringArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclWideStrCollection }
+    function Add(const AString: WideString): Boolean; override;
+    function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    procedure Clear; override;
+    function Contains(const AString: WideString): Boolean; override;
+    function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function First: IJclWideStrIterator; override;
+    function IsEmpty: Boolean; override;
+    function Last: IJclWideStrIterator; override;
+    function Remove(const AString: WideString): Boolean; overload; override;
+    function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Size: Integer; override;
+    { IJclWideStrList }
+    function Insert(Index: Integer; const AString: WideString): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
+    function GetString(Index: Integer): WideString;
+    function IndexOf(const AString: WideString): Integer;
+    function LastIndexOf(const AString: WideString): Integer;
+    function Remove(Index: Integer): WideString; overload;
+    procedure SetString(Index: Integer; const AString: WideString);
+    function SubList(First, Count: Integer): IJclWideStrList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer); overload;
+    constructor Create(const ACollection: IJclWideStrCollection); overload;
+    destructor Destroy; override;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrArrayList = TJclAnsiStrArrayList;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrArrayList = TJclWideStrArrayList;
+  {$ENDIF CONTAINER_WIDESTR}
+
+
+  TJclArrayList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
+     IJclCollection, IJclList, IJclArray)
   private
     FElementData: JclBase.TDynObjectArray;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
@@ -170,7 +222,7 @@ type
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
     constructor Create(const ACollection: IJclCollection; AOwnsObjects: Boolean); overload;
@@ -179,12 +231,13 @@ type
 
   {$IFDEF SUPPORTS_GENERICS}
 
-  TJclArrayList<T> = class(TJclContainer<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArrayList<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+     IJclCollection<T>, IJclList<T>, IJclArray<T>)
   private
     FElementData: TJclBase<T>.TDynArray;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     procedure SetCapacity(Value: Integer); override;
     { IJclIntfCloneable }
@@ -220,14 +273,15 @@ type
 
   // E = External helper to compare items for equality
   // GetHashCode is not used
-  TJclArrayListE<T> = class(TJclArrayList<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArrayListE<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -238,14 +292,15 @@ type
   end;
 
   // F = Function to compare items for equality
-  TJclArrayListF<T> = class(TJclArrayList<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArrayListF<T> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -256,11 +311,12 @@ type
   end;
 
   // I = Items can compare themselves to others
-  TJclArrayListI<T: IEquatable<T>> = class(TJclArrayList<T>, IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable)
+  TJclArrayListI<T: IEquatable<T>> = class(TJclArrayList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclCollection<T>, IJclList<T>, IJclArray<T>)
   protected
     function ItemsEqual(const A, B: T): Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   end;
@@ -417,72 +473,72 @@ begin
   FOwnList.SetObject(FCursor, AInterface);
 end;
 
-//=== { TStrItr } ===============================================================
+//=== { TAnsiStrItr } ===============================================================
 
 type
-  TStrItr = class(TJclAbstractIterator, IJclStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   private
     FCursor: Integer;
-    FOwnList: IJclStrList;
+    FOwnList: IJclAnsiStrList;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
-    { IJclStrIterator }
-    function Add(const AString: string): Boolean;
-    function GetString: string;
+    { IJclAnsiStrIterator }
+    function Add(const AString: AnsiString): Boolean;
+    function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
-    function Insert(const AString: string): Boolean;
-    function Next: string;
+    function Insert(const AString: AnsiString): Boolean;
+    function Next: AnsiString;
     function NextIndex: Integer;
-    function Previous: string;
+    function Previous: AnsiString;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetString(const AString: string);
+    procedure SetString(const AString: AnsiString);
   public
-    constructor Create(const AOwnList: IJclStrList; ACursor: Integer; AValid: Boolean);
+    constructor Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean);
   end;
 
-constructor TStrItr.Create(const AOwnList: IJclStrList; ACursor: Integer; AValid: Boolean);
+constructor TAnsiStrItr.Create(const AOwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean);
 begin
   inherited Create(AOwnList, AValid);
   FOwnList := AOwnList;
   FCursor := ACursor;
 end;
 
-function TStrItr.Add(const AString: string): Boolean;
+function TAnsiStrItr.Add(const AString: AnsiString): Boolean;
 begin
   Result := FOwnList.Add(AString);
 end;
 
-procedure TStrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+procedure TAnsiStrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
-  ADest: TStrItr;
+  ADest: TAnsiStrItr;
 begin
   inherited AssignPropertiesTo(Dest);
-  if Dest is TStrItr then
+  if Dest is TAnsiStrItr then
   begin
-    ADest := TStrItr(Dest);
+    ADest := TAnsiStrItr(Dest);
     ADest.FOwnList := FOwnList;
     ADest.FCursor := FCursor;
   end;
 end;
 
-function TStrItr.CreateEmptyIterator: TJclAbstractIterator;
+function TAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
-  Result := TStrItr.Create(FOwnList, FCursor, Valid);
+  Result := TAnsiStrItr.Create(FOwnList, FCursor, Valid);
 end;
 
-function TStrItr.GetString: string;
+function TAnsiStrItr.GetString: AnsiString;
 begin
   CheckValid;
   Result := FOwnList.GetString(FCursor);
 end;
 
-function TStrItr.HasNext: Boolean;
+function TAnsiStrItr.HasNext: Boolean;
 begin
   if Valid then
     Result := FCursor < (FOwnList.Size - 1)
@@ -490,7 +546,7 @@ begin
     Result := FCursor < FOwnList.Size;
 end;
 
-function TStrItr.HasPrevious: Boolean;
+function TAnsiStrItr.HasPrevious: Boolean;
 begin
   if Valid then
     Result := FCursor > 0
@@ -498,13 +554,13 @@ begin
     Result := FCursor >= 0;
 end;
 
-function TStrItr.Insert(const AString: string): Boolean;
+function TAnsiStrItr.Insert(const AString: AnsiString): Boolean;
 begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
 end;
 
-function TStrItr.Next: string;
+function TAnsiStrItr.Next: AnsiString;
 begin
   if Valid then
     Inc(FCursor)
@@ -513,7 +569,7 @@ begin
   Result := FOwnList.GetString(FCursor);
 end;
 
-function TStrItr.NextIndex: Integer;
+function TAnsiStrItr.NextIndex: Integer;
 begin
   if Valid then
     Result := FCursor + 1
@@ -521,7 +577,7 @@ begin
     Result := FCursor;
 end;
 
-function TStrItr.Previous: string;
+function TAnsiStrItr.Previous: AnsiString;
 begin
   if Valid then
     Dec(FCursor)
@@ -530,7 +586,7 @@ begin
   Result := FOwnList.GetString(FCursor);
 end;
 
-function TStrItr.PreviousIndex: Integer;
+function TAnsiStrItr.PreviousIndex: Integer;
 begin
   if Valid then
     Result := FCursor - 1
@@ -538,14 +594,148 @@ begin
     Result := FCursor;
 end;
 
-procedure TStrItr.Remove;
+procedure TAnsiStrItr.Remove;
 begin
   CheckValid;
   Valid := False;
   FOwnList.Remove(FCursor);
 end;
 
-procedure TStrItr.SetString(const AString: string);
+procedure TAnsiStrItr.SetString(const AString: AnsiString);
+begin
+  CheckValid;
+  FOwnList.SetString(FCursor, AString);
+end;
+
+//=== { TWideStrItr } ===============================================================
+
+type
+  TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclWideStrList;
+  protected
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclWideStrIterator }
+    function Add(const AString: WideString): Boolean;
+    function GetString: WideString;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AString: WideString): Boolean;
+    function Next: WideString;
+    function NextIndex: Integer;
+    function Previous: WideString;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetString(const AString: WideString);
+  public
+    constructor Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TWideStrItr.Create(const AOwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FOwnList := AOwnList;
+  FCursor := ACursor;
+end;
+
+function TWideStrItr.Add(const AString: WideString): Boolean;
+begin
+  Result := FOwnList.Add(AString);
+end;
+
+procedure TWideStrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TWideStrItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TWideStrItr then
+  begin
+    ADest := TWideStrItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TWideStrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TWideStrItr.GetString: WideString;
+begin
+  CheckValid;
+  Result := FOwnList.GetString(FCursor);
+end;
+
+function TWideStrItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TWideStrItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TWideStrItr.Insert(const AString: WideString): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AString);
+end;
+
+function TWideStrItr.Next: WideString;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetString(FCursor);
+end;
+
+function TWideStrItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TWideStrItr.Previous: WideString;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetString(FCursor);
+end;
+
+function TWideStrItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TWideStrItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Remove(FCursor);
+end;
+
+procedure TWideStrItr.SetString(const AString: WideString);
 begin
   CheckValid;
   FOwnList.SetString(FCursor, AString);
@@ -941,7 +1131,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfArrayList.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclIntfArrayList.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntfArrayList;
   ACollection: IJclIntfCollection;
@@ -1024,7 +1214,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfArrayList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfArrayList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfArrayList.Create(FSize);
   AssignPropertiesTo(Result);
@@ -1377,9 +1567,9 @@ begin
 end;
 
 
-//=== { TJclStrArrayList } ======================================================
+//=== { TJclAnsiStrArrayList } ======================================================
 
-constructor TJclStrArrayList.Create(ACapacity: Integer);
+constructor TJclAnsiStrArrayList.Create(ACapacity: Integer);
 begin
   inherited Create(nil);
   FSize := 0;
@@ -1390,7 +1580,7 @@ begin
   SetLength(FElementData, FCapacity);
 end;
 
-constructor TJclStrArrayList.Create(const ACollection: IJclStrCollection);
+constructor TJclAnsiStrArrayList.Create(const ACollection: IJclAnsiStrCollection);
 begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
@@ -1400,13 +1590,13 @@ begin
   AddAll(ACollection);
 end;
 
-destructor TJclStrArrayList.Destroy;
+destructor TJclAnsiStrArrayList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function TJclStrArrayList.Add(const AString: string): Boolean;
+function TJclAnsiStrArrayList.Add(const AString: AnsiString): Boolean;
 var
   Index: Integer;
 begin
@@ -1444,10 +1634,10 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.AddAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.AddAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
-  Item: string;
+  It: IJclAnsiStrIterator;
+  Item: AnsiString;
   AddItem: Boolean;
   Index: Integer;
 begin
@@ -1495,27 +1685,27 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrArrayList.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclAnsiStrArrayList.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
-  ADest: TJclStrArrayList;
-  ACollection: IJclStrCollection;
+  ADest: TJclAnsiStrArrayList;
+  ACollection: IJclAnsiStrCollection;
 begin
   inherited AssignDataTo(Dest);
-  if Dest is TJclStrArrayList then
+  if Dest is TJclAnsiStrArrayList then
   begin
-    ADest := TJclStrArrayList(Dest);
+    ADest := TJclAnsiStrArrayList(Dest);
     ADest.Clear;
     ADest.AddAll(Self);
   end
   else
-  if Supports(IInterface(Dest), IJclStrCollection, ACollection) then
+  if Supports(IInterface(Dest), IJclAnsiStrCollection, ACollection) then
   begin
     ACollection.Clear;
     ACollection.AddAll(Self);
   end;
 end;
 
-procedure TJclStrArrayList.Clear;
+procedure TJclAnsiStrArrayList.Clear;
 var
   I: Integer;
 begin
@@ -1534,7 +1724,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.Contains(const AString: string): Boolean;
+function TJclAnsiStrArrayList.Contains(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
@@ -1556,9 +1746,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.ContainsAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -1578,16 +1768,16 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrArrayList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrArrayList.Create(FSize);
+  Result := TJclAnsiStrArrayList.Create(FSize);
   AssignPropertiesTo(Result);
 end;
 
-function TJclStrArrayList.Equals(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.Equals(const ACollection: IJclAnsiStrCollection): Boolean;
 var
   I: Integer;
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -1610,12 +1800,12 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.First: IJclStrIterator;
+function TJclAnsiStrArrayList.First: IJclAnsiStrIterator;
 begin
-  Result := TStrItr.Create(Self, 0, False);
+  Result := TAnsiStrItr.Create(Self, 0, False);
 end;
 
-function TJclStrArrayList.GetString(Index: Integer): string;
+function TJclAnsiStrArrayList.GetString(Index: Integer): AnsiString;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -1634,7 +1824,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.IndexOf(const AString: string): Integer;
+function TJclAnsiStrArrayList.IndexOf(const AString: AnsiString): Integer;
 var
   I: Integer;
 begin
@@ -1656,7 +1846,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.Insert(Index: Integer; const AString: string): Boolean;
+function TJclAnsiStrArrayList.Insert(Index: Integer; const AString: AnsiString): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -1698,9 +1888,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.InsertAll(Index: Integer; const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -1723,17 +1913,17 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.IsEmpty: Boolean;
+function TJclAnsiStrArrayList.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
 end;
 
-function TJclStrArrayList.Last: IJclStrIterator;
+function TJclAnsiStrArrayList.Last: IJclAnsiStrIterator;
 begin
-  Result := TStrItr.Create(Self, FSize - 1, False);
+  Result := TAnsiStrItr.Create(Self, FSize - 1, False);
 end;
 
-function TJclStrArrayList.LastIndexOf(const AString: string): Integer;
+function TJclAnsiStrArrayList.LastIndexOf(const AString: AnsiString): Integer;
 var
   I: Integer;
 begin
@@ -1755,7 +1945,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.Remove(const AString: string): Boolean;
+function TJclAnsiStrArrayList.Remove(const AString: AnsiString): Boolean;
 var
   I: Integer;
 begin
@@ -1783,7 +1973,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.Remove(Index: Integer): string;
+function TJclAnsiStrArrayList.Remove(Index: Integer): AnsiString;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -1803,9 +1993,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.RemoveAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -1825,7 +2015,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.RetainAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrArrayList.RetainAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1847,7 +2037,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrArrayList.SetCapacity(Value: Integer);
+procedure TJclAnsiStrArrayList.SetCapacity(Value: Integer);
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -1867,7 +2057,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrArrayList.SetString(Index: Integer; const AString: string);
+procedure TJclAnsiStrArrayList.SetString(Index: Integer; const AString: AnsiString);
 var
   ReplaceItem: Boolean;
   I: Integer;
@@ -1903,12 +2093,12 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrArrayList.Size: Integer;
+function TJclAnsiStrArrayList.Size: Integer;
 begin
   Result := FSize;
 end;
 
-function TJclStrArrayList.SubList(First, Count: Integer): IJclStrList;
+function TJclAnsiStrArrayList.SubList(First, Count: Integer): IJclAnsiStrList;
 var
   I: Integer;
   Last: Integer;
@@ -1920,7 +2110,561 @@ begin
     Last := First + Count - 1;
     if Last >= FSize then
       Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclStrList;
+    Result := CreateEmptyContainer as IJclAnsiStrList;
+    for I := First to Last do
+      Result.Add(FElementData[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclWideStrArrayList } ======================================================
+
+constructor TJclWideStrArrayList.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FSize := 0;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
+  SetLength(FElementData, FCapacity);
+end;
+
+constructor TJclWideStrArrayList.Create(const ACollection: IJclWideStrCollection);
+begin
+  // (rom) disabled because the following Create already calls inherited
+  // inherited Create;
+  if ACollection = nil then
+    raise EJclNoCollectionError.Create;
+  Create(ACollection.Size);
+  AddAll(ACollection);
+end;
+
+destructor TJclWideStrArrayList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclWideStrArrayList.Add(const AString: WideString): Boolean;
+var
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(AString, FElementData[Index]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FElementData[FSize] := AString;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.AddAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+  Item: WideString;
+  AddItem: Boolean;
+  Index: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      // (rom) inlining Add() gives about 5 percent performance increase
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+          for Index := 0 to FSize - 1 do
+            if ItemsEqual(Item, FElementData[Index]) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+        if AddItem then
+        begin
+          if FSize = FCapacity then
+            AutoGrow;
+          AddItem := FSize < FCapacity;
+          if AddItem then
+          begin
+            FElementData[FSize] := Item;
+            Inc(FSize);
+          end;
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrArrayList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclWideStrArrayList;
+  ACollection: IJclWideStrCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclWideStrArrayList then
+  begin
+    ADest := TJclWideStrArrayList(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end
+  else
+  if Supports(IInterface(Dest), IJclWideStrCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclWideStrArrayList.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeString(FElementData[I]);
+    FSize := 0;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.Contains(const AString: WideString): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElementData[I], AString) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.ContainsAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrArrayList.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrArrayList.Equals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(FElementData[I], It.Next) then
+        Exit;
+    Result := True;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.First: IJclWideStrIterator;
+begin
+  Result := TWideStrItr.Create(Self, 0, False);
+end;
+
+function TJclWideStrArrayList.GetString(Index: Integer): WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) or (Index < FSize) then
+      Result := FElementData[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.IndexOf(const AString: WideString): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(FElementData[I], AString) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.Insert(Index: Integer; const AString: WideString): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(AString, FElementData[Index]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          if Index < FSize then
+            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+          FElementData[Index] := AString;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclWideStrArrayList.Last: IJclWideStrIterator;
+begin
+  Result := TWideStrItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclWideStrArrayList.LastIndexOf(const AString: WideString): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FElementData[I], AString) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.Remove(const AString: WideString): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FElementData[I], AString) then
+      begin
+        FreeString(FElementData[I]);
+        if I < (FSize - 1) then
+          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.Remove(Index: Integer): WideString;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeString(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.RemoveAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.RetainAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(FElementData[I]) then
+        Remove(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrArrayList.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value >= FSize then
+    begin
+      SetLength(FElementData, Value);
+      inherited SetCapacity(Value);
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrArrayList.SetString(Index: Integer; const AString: WideString);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(FElementData[I], AString) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeString(FElementData[Index]);
+        FElementData[Index] := AString;
+      end;
+    end;
+    if not ReplaceItem then
+      Remove(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrArrayList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclWideStrArrayList.SubList(First, Count: Integer): IJclWideStrList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclWideStrList;
     for I := First to Last do
       Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
@@ -2049,7 +2793,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclArrayList.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclArrayList.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclArrayList;
   ACollection: IJclCollection;
@@ -2132,7 +2876,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclArrayList.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArrayList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArrayList.Create(FSize, False);
   AssignPropertiesTo(Result);
@@ -2604,7 +3348,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclArrayList<T>.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclArrayList<T>.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclArrayList<T>;
   ACollection: IJclCollection<T>;
@@ -3050,14 +3794,14 @@ begin
   FEqualityComparer := AEqualityComparer;
 end;
 
-procedure TJclArrayListE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclArrayListE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclArrayListE<T> then
     TJclArrayListE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclArrayListE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArrayListE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArrayListE<T>.Create(EqualityComparer, FSize, False);
   AssignPropertiesTo(Result);
@@ -3086,14 +3830,14 @@ begin
   FEqualityCompare := AEqualityCompare;
 end;
 
-procedure TJclArrayListF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclArrayListF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclArrayListF<T> then
     TJclArrayListF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclArrayListF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArrayListF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArrayListF<T>.Create(EqualityCompare, FSize, False);
   AssignPropertiesTo(Result);
@@ -3113,7 +3857,7 @@ begin
   Result := A.Equals(B);
 end;
 
-function TJclArrayListI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclArrayListI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArrayListI<T>.Create(FSize, False);
   AssignPropertiesTo(Result);

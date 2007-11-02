@@ -50,42 +50,61 @@ uses
   JclBase, JclAbstractContainers, JclAlgorithms, JclContainerIntf;
 {$I containers\JclBinaryTrees.imp}
 type
-(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclIntfBinaryNode,TJclIntfBinaryTree,TJclIntfContainer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator, IJclContainer\, IJclIntfEqualityComparer\, IJclIntfComparer\,,
+(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclIntfBinaryNode,TJclIntfBinaryTree,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator, IJclIntfEqualityComparer\, IJclIntfComparer\,,
     FCompare: TIntfCompare;,
     { IJclIntfComparer }
     function ItemsCompare(const A, B: IInterface): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
     { IJclIntfEqualityComparer }
     function ItemsEqual(const A, B: IInterface): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
-    function CreateEmptyContainer: TJclAbstractContainer; override;,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TIntfCompare read FCompare write FCompare;,ACompare: TIntfCompare,,const AInterface: IInterface,IInterface)*)
-(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclStrBinaryNode,TJclStrBinaryTree,TJclStrAbstractCollection,IJclStrCollection,IJclStrTree,IJclStrIterator, IJclContainer\, IJclStrContainer\, IJclStrFlatContainer\, IJclStrEqualityComparer\, IJclStrComparer\,,
-    FCompare: TStrCompare;,
-    { IJclStrComparer }
-    function ItemsCompare(const A, B: string): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
-    { IJclStrEqualityComparer }
-    function ItemsEqual(const A, B: string): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
-    function CreateEmptyContainer: TJclAbstractContainer; override;,
-    property Compare: TStrCompare read FCompare write FCompare;,ACompare: TStrCompare, override;,const AString: string,string)*)
-(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclBinaryNode,TJclBinaryTree,TJclContainer,IJclCollection,IJclTree,IJclIterator, IJclContainer\, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,
+
+(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclAnsiStrBinaryNode,TJclAnsiStrBinaryTree,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrTree,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\, IJclAnsiStrComparer\,,
+    FCompare: TAnsiStrCompare;,
+    { IJclAnsiStrComparer }
+    function ItemsCompare(const A, B: AnsiString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    { IJclAnsiStrEqualityComparer }
+    function ItemsEqual(const A, B: AnsiString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,
+    property Compare: TAnsiStrCompare read FCompare write FCompare;,ACompare: TAnsiStrCompare, override;,const AString: AnsiString,AnsiString)*)
+
+(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclWideStrBinaryNode,TJclWideStrBinaryTree,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrTree,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\, IJclWideStrComparer\,,
+    FCompare: TWideStrCompare;,
+    { IJclWideStrComparer }
+    function ItemsCompare(const A, B: WideString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    { IJclWideStrEqualityComparer }
+    function ItemsEqual(const A, B: WideString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,
+    property Compare: TWideStrCompare read FCompare write FCompare;,ACompare: TWideStrCompare, override;,const AString: WideString,WideString)*)
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrBinaryTree = TJclAnsiStrBinaryTree;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrBinaryTree = TJclWideStrBinaryTree;
+  {$ENDIF CONTAINER_WIDESTR}
+
+(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclBinaryNode,TJclBinaryTree,TJclAbstractContainer,IJclCollection,IJclTree,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,
     FCompare: TCompare;,
     { IJclComparer }
     function ItemsCompare(A, B: TObject): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
     { IJclEqualityComparer }
     function ItemsEqual(A, B: TObject): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
-    function CreateEmptyContainer: TJclAbstractContainer; override;,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TCompare read FCompare write FCompare;,ACompare: TCompare; AOwnsObjects: Boolean,,AObject: TObject,TObject)*)
 
   {$IFDEF SUPPORTS_GENERICS}
-(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclBinaryNode<T>,TJclBinaryTree<T>,TJclContainer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>, IJclContainer\, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,,,,AOwnsItems: Boolean,,const AItem: T,T)*)
+(*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclBinaryNode<T>,TJclBinaryTree<T>,TJclAbstractContainer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>, IJclItemOwner<T>\, IJclEqualityComparer<T>\, IJclComparer<T>\,,,,,AOwnsItems: Boolean,,const AItem: T,T)*)
 
   // E = External helper to compare items
-  TJclBinaryTreeE<T> = class(TJclBinaryTree<T>, IJclCollection<T>, IJclTree<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
+  TJclBinaryTreeE<T> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclTree<T>)
   private
     FComparer: IComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclComparer<T> }
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
@@ -98,13 +117,14 @@ type
   end;
 
   // F = Function to compare items
-  TJclBinaryTreeF<T> = class(TJclBinaryTree<T>, IJclCollection<T>, IJclTree<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
+  TJclBinaryTreeF<T> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclTree<T>)
   private
     FCompare: TCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclComparer<T> }
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
@@ -117,10 +137,11 @@ type
   end;
 
   // I = Items can compare themselves to an other
-  TJclBinaryTreeI<T: IComparable<T>> = class(TJclBinaryTree<T>, IJclCollection<T>, IJclTree<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable)
+  TJclBinaryTreeI<T: IComparable<T>> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
+    IJclCollection<T>, IJclTree<T>)
   protected
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclComparer<T> }
     function ItemsCompare(const A, B: T): Integer; override;
     { IJclEqualityComparer<T> }
@@ -147,7 +168,8 @@ uses
   SysUtils;
 
 {$JPPEXPANDMACRO JCLBINARYTREEITR(TIntfItr,TPreOrderIntfItr,TInOrderIntfItr,TPostOrderIntfItr,IJclIntfIterator,IJclIntfCollection,IJclIntfEqualityComparer,TJclIntfBinaryNode,const AInterface: IInterface,IInterface,AInterface,nil,GetObject,SetObject,FreeObject)}
-{$JPPEXPANDMACRO JCLBINARYTREEITR(TStrItr,TPreOrderStrItr,TInOrderStrItr,TPostOrderStrItr,IJclStrIterator,IJclStrCollection,IJclStrEqualityComparer,TJclStrBinaryNode,const AString: string,string,AString,'',GetString,SetString,FreeString)}
+{$JPPEXPANDMACRO JCLBINARYTREEITR(TAnsiStrItr,TPreOrderAnsiStrItr,TInOrderAnsiStrItr,TPostOrderAnsiStrItr,IJclAnsiStrIterator,IJclAnsiStrCollection,IJclAnsiStrEqualityComparer,TJclAnsiStrBinaryNode,const AString: AnsiString,AnsiString,AString,'',GetString,SetString,FreeString)}
+{$JPPEXPANDMACRO JCLBINARYTREEITR(TWideStrItr,TPreOrderWideStrItr,TInOrderWideStrItr,TPostOrderWideStrItr,IJclWideStrIterator,IJclWideStrCollection,IJclWideStrEqualityComparer,TJclWideStrBinaryNode,const AString: WideString,WideString,AString,'',GetString,SetString,FreeString)}
 {$JPPEXPANDMACRO JCLBINARYTREEITR(TItr,TPreOrderItr,TInOrderItr,TPostOrderItr,IJclIterator,IJclCollection,IJclEqualityComparer,TJclBinaryNode,AObject: TObject,TObject,AObject,nil,GetObject,SetObject,FreeObject)}
 {$IFDEF SUPPORTS_GENERICS}
 {$JPPEXPANDMACRO JCLBINARYTREEITR(TItr<T>,TPreOrderItr<T>,TInOrderItr<T>,TPostOrderItr<T>,IJclIterator<T>,IJclCollection<T>,IJclEqualityComparer<T>,TJclBinaryNode<T>,const AItem: T,T,AItem,Default(T),GetItem,SetItem,FreeItem)}
@@ -172,7 +194,7 @@ begin
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclIntfBinaryTree.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfBinaryTree.Create(FCompare);
   AssignPropertiesTo(Result);
@@ -185,7 +207,7 @@ end;
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
 
 {$JPPDEFINEMACRO ITEMSCOMPARE
-function TJclStrBinaryTree.ItemsCompare(const A, B: string): Integer;
+function TJclAnsiStrBinaryTree.ItemsCompare(const A, B: AnsiString): Integer;
 begin
   if Assigned(FCompare) then
     Result := FCompare(A, B)
@@ -194,7 +216,7 @@ begin
 end;
 }
 {$JPPDEFINEMACRO ITEMSEQUAL
-function TJclStrBinaryTree.ItemsEqual(const A, B: string): Boolean;
+function TJclAnsiStrBinaryTree.ItemsEqual(const A, B: AnsiString): Boolean;
 begin
   if Assigned(FCompare) then
     Result := FCompare(A, B) = 0
@@ -203,14 +225,45 @@ begin
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclStrBinaryTree.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrBinaryTree.Create(FCompare);
+  Result := TJclAnsiStrBinaryTree.Create(FCompare);
   AssignPropertiesTo(Result);
 end;
 }
-(*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclStrBinaryTree,TJclStrBinaryNode,TPreOrderStrItr,TInOrderStrItr,TPostOrderStrItr,IJclStrCollection,IJclStrIterator,ACompare: TStrCompare,
-  FCompare := ACompare;,,const AString: string,AString,'',FreeString)*)
+(*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclAnsiStrBinaryTree,TJclAnsiStrBinaryNode,TPreOrderAnsiStrItr,TInOrderAnsiStrItr,TPostOrderAnsiStrItr,IJclAnsiStrCollection,IJclAnsiStrIterator,ACompare: TAnsiStrCompare,
+  FCompare := ACompare;,,const AString: AnsiString,AString,'',FreeString)*)
+{$JPPUNDEFMACRO ITEMSCOMPARE}
+{$JPPUNDEFMACRO ITEMSEQUAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO ITEMSCOMPARE
+function TJclWideStrBinaryTree.ItemsCompare(const A, B: WideString): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+}
+{$JPPDEFINEMACRO ITEMSEQUAL
+function TJclWideStrBinaryTree.ItemsEqual(const A, B: WideString): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclWideStrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLBINARYTREEIMP(TJclWideStrBinaryTree,TJclWideStrBinaryNode,TPreOrderWideStrItr,TInOrderWideStrItr,TPostOrderWideStrItr,IJclWideStrCollection,IJclWideStrIterator,ACompare: TWideStrCompare,
+  FCompare := ACompare;,,const AString: WideString,AString,'',FreeString)*)
 {$JPPUNDEFMACRO ITEMSCOMPARE}
 {$JPPUNDEFMACRO ITEMSEQUAL}
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
@@ -234,7 +287,7 @@ begin
 end;
 }
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
-function TJclBinaryTree.CreateEmptyContainer: TJclAbstractContainer;
+function TJclBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclBinaryTree.Create(FCompare, False);
   AssignPropertiesTo(Result);
@@ -264,14 +317,14 @@ begin
   FComparer := AComparer;
 end;
 
-procedure TJclBinaryTreeE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclBinaryTreeE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclBinaryTreeE<T> then
     TJclBinaryTreeE<T>(Dest).FComparer := FComparer;
 end;
 
-function TJclBinaryTreeE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclBinaryTreeE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclBinaryTreeE<T>.Create(Comparer, False);
   AssignPropertiesTo(Result);
@@ -299,14 +352,14 @@ begin
   FCompare := ACompare;
 end;
 
-procedure TJclBinaryTreeF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclBinaryTreeF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclBinaryTreeF<T> then
     TJclBinaryTreeF<T>(Dest).FCompare := FCompare;
 end;
 
-function TJclBinaryTreeF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclBinaryTreeF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclBinaryTreeF<T>.Create(Compare, False);
   AssignPropertiesTo(Result);
@@ -328,7 +381,7 @@ end;
 
 //=== { TJclBinaryTreeI<T> } =================================================
 
-function TJclBinaryTreeI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclBinaryTreeI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclBinaryTreeI<T>.Create(False);
   AssignPropertiesTo(Result);

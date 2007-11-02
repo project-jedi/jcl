@@ -50,6 +50,7 @@ type
         joDefPCRE,
         joDefBZip2,
         joDefUnicode,
+        joDefContainer,
         joDefThreadSafe,
         joDefDropObsoleteCode,
         joDefUnitVersioning,
@@ -74,6 +75,9 @@ type
         joDefUnicodeRawData,
         joDefUnicodeZLibData,
         joDefUnicodeBZip2Data,
+        joDefContainerAnsiStr,
+        joDefContainerWideStr,
+        joDefContainerNoStr,
       joEnvironment,
         joEnvLibPath,
         joEnvBrowsingPath,
@@ -366,6 +370,11 @@ resourcestring
   RsCaptionDefUnicodeRawData       = 'Uncompressed Unicode data';
   RsCaptionDefUnicodeZLibData      = 'Compressed data using zlib';
   RsCaptionDefUnicodeBZip2Data     = 'Compressed data using bzip2';
+  // Container options
+  RsCaptionDefContainer        = 'Container options';
+  RsCaptionDefContainerAnsiStr = 'Alias AnsiString containers to String containers';
+  RsCaptionDefContainerWideStr = 'Alias WideString containers to String containers';
+  RsCaptionDefContainerNoStr   = 'Do not alias anything';
 
   // post compilation
   RsCaptionPdbCreate  = 'Create PDB debug information';
@@ -467,6 +476,11 @@ resourcestring
   RsHintDefUnicodeRawData       = 'Link resource containing uncompressed Unicode data (bigger executable size)';
   RsHintDefUnicodeZLibData      = 'Link resource containing Unicode data compressed with ZLib';
   RsHintDefUnicodeBZip2Data     = 'Link resource containing Unicode data compressed with BZip2';
+  // Container options
+  RsHintDefContainer          = 'Container specific options';
+  RsHintDefContainerAnsiStr   = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
+  RsHintDefContainerWideStr   = 'Define TJclStr* containers as alias of TJclWideStr* containers';
+  RsHintDefContainerNoStr     = 'Do not define TJclStr* containers';
 
   // post compilation
   RsHintPdbCreate  = 'Create detailed debug information for libraries';
@@ -563,6 +577,7 @@ var
       (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
       (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
       (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
+      (Id: -1; Caption: RsCaptionDefContainer; Hint: RsHintDefContainer), // joDefContainer
       (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
       (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
       (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
@@ -587,6 +602,9 @@ var
       (Id: -1; Caption: RsCaptionDefUnicodeRawData; Hint: RsHintDefUnicodeRawData), // joDefUnicodeRawData
       (Id: -1; Caption: RsCaptionDefUnicodeZLibData; Hint: RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
       (Id: -1; Caption: RsCaptionDefUnicodeBZip2Data; Hint: RsHintDefUnicodeBZip2Data), // joDefUnicodeBZip2Data
+      (Id: -1; Caption: RsCaptionDefContainerAnsiStr; Hint: RsHintDefContainerAnsiStr), // joDefContainerAnsiStr
+      (Id: -1; Caption: RsCaptionDefContainerWideStr; Hint: RsHintDefContainerWideStr), // joDefContainerWideStr
+      (Id: -1; Caption: RsCaptionDefContainerNoStr; Hint: RsHintDefContainerNoStr), // joDefContainerNoStr
       (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
       (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
       (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
@@ -973,11 +991,26 @@ procedure TJclInstallation.Init;
     AddOption(joDefDropObsoleteCode, [goChecked], Parent);
     if CLRVersion = '' then
       AddOption(joDefUnitVersioning, [goChecked], Parent);
+
     AddOption(joDefMath, [goChecked], Parent);
     AddOption(joDefMathPrecSingle, [goRadioButton], joDefMath);
     AddOption(joDefMathPrecDouble, [goRadioButton], joDefMath);
     AddOption(joDefMathPrecExtended, [goRadioButton, goChecked], joDefMath);
     AddOption(joDefMathExtremeValues, [goChecked], joDefMath);
+
+    AddOption(joDefContainer, [goChecked], Parent);
+    if CLRVersion = '' then
+    begin
+      AddOption(joDefContainerAnsiStr, [goRadioButton, goChecked], joDefContainer);
+      AddOption(joDefContainerWideStr, [goRadioButton], joDefContainer);
+    end
+    else
+    begin
+      AddOption(joDefContainerAnsiStr, [goRadioButton], joDefContainer);
+      AddOption(joDefContainerWideStr, [goRadioButton, goChecked], joDefContainer);
+    end;
+    AddOption(joDefContainerNoStr, [goRadioButton], joDefContainer);
+
     if CLRVersion = '' then   // these units are not CLR compliant
     begin
       {$IFDEF MSWINDOWS}
@@ -1473,7 +1506,7 @@ var
     end;
 
   const
-    DefineNames: array [joDefThreadSafe..joDefUnicodeBZip2Data] of string =
+    DefineNames: array [joDefThreadSafe..joDefContainerNoStr] of string =
       ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
         'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
         'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
@@ -1481,7 +1514,8 @@ var
         'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
         'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
         'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
-        'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA' );
+        'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
+        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR' );
   var
     Option: TJclOption;
     Defines: TStrings;

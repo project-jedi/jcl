@@ -9,15 +9,16 @@
     Parent: NODETYPENAME;
   end;
 
-  SELFCLASSNAME = class(ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, TREEINTERFACENAME,INTERFACEADDITIONAL
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
+    COLLECTIONINTERFACENAME, TREEINTERFACENAME)
   private
     FMaxDepth: Integer;
     FRoot: NODETYPENAME;
     FTraverseOrder: TJclTraverseOrder;PRIVATEADDITIONAL
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure AutoPack; override;
     { IJclPackable }
     procedure Pack; override;
@@ -551,7 +552,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
   function CloneNode(Node, Parent: NODETYPENAME): NODETYPENAME;
   begin
     Result := NODETYPENAME.Create;
@@ -583,7 +584,7 @@ begin
   end;
 end;
 
-procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesto(Dest);
   if Dest is SELFCLASSNAME then

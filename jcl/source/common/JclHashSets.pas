@@ -63,12 +63,13 @@ type
   {$ENDIF ~SUPPORTS_GENERICS}
 
 
-  TJclIntfHashSet = class(TJclIntfContainer, IJclIntfCollection, IJclIntfSet, IJclContainer, IJclIntfEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclIntfHashSet = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclIntfEqualityComparer,
+    IJclIntfCollection, IJclIntfSet)
   private
     FMap: IJclIntfMap;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -106,7 +107,7 @@ type
     procedure Union(const ACollection: IJclIntfCollection);
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(const AMap: IJclIntfMap); overload;
     constructor Create(ACapacity: Integer); overload;
@@ -114,12 +115,13 @@ type
   end;
 
 
-  TJclStrHashSet = class(TJclStrAbstractCollection, IJclStrCollection, IJclStrSet, IJclContainer, IJclStrContainer, IJclStrEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclAnsiStrHashSet = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
+    IJclAnsiStrCollection, IJclAnsiStrSet)
   private
-    FMap: IJclStrMap;
+    FMap: IJclAnsiStrMap;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -137,45 +139,112 @@ type
     procedure SetDuplicates(Value: TDuplicates); override;
     procedure SetRemoveSingleElement(Value: Boolean); override;
     procedure SetReturnDefaultElements(Value: Boolean); override;
-    { IJclStrCollection }
-    function Add(const AString: string): Boolean; override;
-    function AddAll(const ACollection: IJclStrCollection): Boolean; override;
+    { IJclAnsiStrCollection }
+    function Add(const AString: AnsiString): Boolean; override;
+    function AddAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     procedure Clear; override;
-    function Contains(const AString: string): Boolean; override;
-    function ContainsAll(const ACollection: IJclStrCollection): Boolean; override;
-    function Equals(const ACollection: IJclStrCollection): Boolean; override;
-    function First: IJclStrIterator; override;
+    function Contains(const AString: AnsiString): Boolean; override;
+    function ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
-    function Last: IJclStrIterator; override;
-    function Remove(const AString: string): Boolean; override;
-    function RemoveAll(const ACollection: IJclStrCollection): Boolean; override;
-    function RetainAll(const ACollection: IJclStrCollection): Boolean; override;
+    function Last: IJclAnsiStrIterator; override;
+    function Remove(const AString: AnsiString): Boolean; override;
+    function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
-    { IJclStrSet }
-    procedure Intersect(const ACollection: IJclStrCollection);
-    procedure Subtract(const ACollection: IJclStrCollection);
-    procedure Union(const ACollection: IJclStrCollection);
+    { IJclAnsiStrSet }
+    procedure Intersect(const ACollection: IJclAnsiStrCollection);
+    procedure Subtract(const ACollection: IJclAnsiStrCollection);
+    procedure Union(const ACollection: IJclAnsiStrCollection);
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
-    { IJclAnsiStrContainer }
+    { IJclStrContainer }
     function GetCaseSensitive: Boolean; override;
-    function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetCaseSensitive(Value: Boolean); override;
+    { IJclAnsiStrContainer }
+    function GetEncoding: TJclAnsiStrEncoding; override;
     procedure SetEncoding(Value: TJclAnsiStrEncoding); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
-    constructor Create(const AMap: IJclStrMap); overload;
+    constructor Create(const AMap: IJclAnsiStrMap); overload;
     constructor Create(ACapacity: Integer); overload;
     destructor Destroy; override;
   end;
 
 
-  TJclHashSet = class(TJclContainer, IJclCollection, IJclSet, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclWideStrHashSet = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
+    IJclWideStrCollection, IJclWideStrSet)
+  private
+    FMap: IJclWideStrMap;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    function GetAutoPackParameter: Integer; override;
+    function GetAutoPackStrategy: TJclAutoPackStrategy; override;
+    function GetCapacity: Integer; override;
+    procedure Pack; override;
+    procedure SetAutoPackParameter(Value: Integer); override;
+    procedure SetAutoPackStrategy(Value: TJclAutoPackStrategy); override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclContainer }
+    function GetAllowDefaultElements: Boolean; override;
+    function GetDuplicates: TDuplicates; override;
+    function GetRemoveSingleElement: Boolean; override;
+    function GetReturnDefaultElements: Boolean; override;
+    procedure SetAllowDefaultElements(Value: Boolean); override;
+    procedure SetDuplicates(Value: TDuplicates); override;
+    procedure SetRemoveSingleElement(Value: Boolean); override;
+    procedure SetReturnDefaultElements(Value: Boolean); override;
+    { IJclWideStrCollection }
+    function Add(const AString: WideString): Boolean; override;
+    function AddAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    procedure Clear; override;
+    function Contains(const AString: WideString): Boolean; override;
+    function ContainsAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Equals(const ACollection: IJclWideStrCollection): Boolean; override;
+    function First: IJclWideStrIterator; override;
+    function IsEmpty: Boolean; override;
+    function Last: IJclWideStrIterator; override;
+    function Remove(const AString: WideString): Boolean; override;
+    function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
+    function Size: Integer; override;
+    { IJclWideStrSet }
+    procedure Intersect(const ACollection: IJclWideStrCollection);
+    procedure Subtract(const ACollection: IJclWideStrCollection);
+    procedure Union(const ACollection: IJclWideStrCollection);
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclStrContainer }
+    function GetCaseSensitive: Boolean; override;
+    procedure SetCaseSensitive(Value: Boolean); override;
+    { IJclWideStrContainer }
+    function GetEncoding: TJclWideStrEncoding; override;
+    procedure SetEncoding(Value: TJclWideStrEncoding); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const AMap: IJclWideStrMap); overload;
+    constructor Create(ACapacity: Integer); overload;
+    destructor Destroy; override;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  TJclStrHashSet = TJclAnsiStrHashSet;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TJclStrHashSet = TJclWideStrHashSet;
+  {$ENDIF CONTAINER_WIDESTR}
+
+
+  TJclHashSet = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
+    IJclCollection, IJclSet)
   private
     FMap: IJclMap;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -216,7 +285,7 @@ type
     { IJclObjectOwner }
     function FreeObject(var AObject: TObject): TObject; override;
     function GetOwnsObjects: Boolean; override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(const AMap: IJclMap); overload;
     constructor Create(ACapacity: Integer; AOwnsObjects: Boolean); overload;
@@ -226,12 +295,13 @@ type
   {$IFDEF SUPPORTS_GENERICS}
 
 
-  TJclHashSet<T> = class(TJclContainer<T>, IJclCollection<T>, IJclSet<T>, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSet<T> = class(TJclAbstractContainer<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>,
+    IJclCollection<T>, IJclSet<T>)
   private
     FMap: IJclMap<T, TRefUnique>;
   protected
-    procedure AssignDataTo(Dest: TJclAbstractContainer); override;
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     { IJclPackable }
     function GetAutoPackParameter: Integer; override;
     function GetAutoPackStrategy: TJclAutoPackStrategy; override;
@@ -278,13 +348,14 @@ type
   end;
 
   // E = External helper to compare items for equality
-  TJclHashSetE<T> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetE<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCollection<T>, IJclSet<T>,
+    IJclItemOwner<T>, IJclEqualityComparer<T>)
   private
     FEqualityComparer: IEqualityComparer<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -297,13 +368,14 @@ type
   end;
 
   // F = Function to compare items for equality
-  TJclHashSetF<T> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetF<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCollection<T>, IJclSet<T>,
+    IJclItemOwner<T>, IJclEqualityComparer<T>)
   private
     FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainer); override;
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -316,10 +388,11 @@ type
   end;
 
   // I = Items can compare themselves to an other
-  TJclHashSetI<T: IEquatable<T>, IComparable<T>, IHashable> = class(TJclHashSet<T>, IJclCollection<T>, IJclSet<T>,
-    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable)
+  TJclHashSetI<T: IEquatable<T>, IComparable<T>, IHashable> = class(TJclHashSet<T>,
+    {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable,
+    IJclContainer, IJclCollection<T>, IJclSet<T>, IJclItemOwner<T>, IJclEqualityComparer<T>)
   protected
-    function CreateEmptyContainer: TJclAbstractContainer; override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
@@ -412,7 +485,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfHashSet.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclIntfHashSet.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfHashSet then
@@ -451,7 +524,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclIntfHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfHashSet.Create(FMap.Size);
   AssignPropertiesTo(Result);
@@ -650,27 +723,27 @@ end;
 
 
 
-//=== { TJclStrHashSet } =====================================================
+//=== { TJclAnsiStrHashSet } =====================================================
 
-constructor TJclStrHashSet.Create(const AMap: IJclStrMap);
+constructor TJclAnsiStrHashSet.Create(const AMap: IJclAnsiStrMap);
 begin
   inherited Create(AMap);
   FMap := AMap;
 end;
 
-constructor TJclStrHashSet.Create(ACapacity: Integer);
+constructor TJclAnsiStrHashSet.Create(ACapacity: Integer);
 begin
-  Create(TJclStrHashMap.Create(ACapacity, False));
+  Create(TJclAnsiStrHashMap.Create(ACapacity, False));
 end;
 
-destructor TJclStrHashSet.Destroy;
+destructor TJclAnsiStrHashSet.Destroy;
 begin
   Clear;
   FMap := nil;
   inherited Destroy;
 end;
 
-function TJclStrHashSet.Add(const AString: string): Boolean;
+function TJclAnsiStrHashSet.Add(const AString: AnsiString): Boolean;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -686,9 +759,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashSet.AddAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrHashSet.AddAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -708,26 +781,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrHashSet.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclAnsiStrHashSet.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
-  if Dest is TJclStrHashSet then
-    TJclStrHashSet(Dest).FMap := (FMap as IJclIntfCloneable).Clone as IJclStrMap;
+  if Dest is TJclAnsiStrHashSet then
+    TJclAnsiStrHashSet(Dest).FMap := (FMap as IJclIntfCloneable).Clone as IJclAnsiStrMap;
 end;
 
-procedure TJclStrHashSet.Clear;
+procedure TJclAnsiStrHashSet.Clear;
 begin
   FMap.Clear;
 end;
 
-function TJclStrHashSet.Contains(const AString: string): Boolean;
+function TJclAnsiStrHashSet.Contains(const AString: AnsiString): Boolean;
 begin
   Result := FMap.ContainsKey(AString);
 end;
 
-function TJclStrHashSet.ContainsAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrHashSet.ContainsAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -747,15 +820,15 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclAnsiStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclStrHashSet.Create(FMap.Size);
+  Result := TJclAnsiStrHashSet.Create(FMap.Size);
   AssignPropertiesTo(Result);
 end;
 
-function TJclStrHashSet.Equals(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrHashSet.Equals(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It, ItMap: IJclStrIterator;
+  It, ItMap: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -782,84 +855,84 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashSet.First: IJclStrIterator;
+function TJclAnsiStrHashSet.First: IJclAnsiStrIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-function TJclStrHashSet.GetAutoPackParameter: Integer;
+function TJclAnsiStrHashSet.GetAutoPackParameter: Integer;
 begin
   Result := (FMap as IJclPackable).GetAutoPackParameter;
 end;
 
-function TJclStrHashSet.GetAutoPackStrategy: TJclAutoPackStrategy;
+function TJclAnsiStrHashSet.GetAutoPackStrategy: TJclAutoPackStrategy;
 begin
   Result := (FMap as IJclPackable).GetAutoPackStrategy;
 end;
 
-function TJclStrHashSet.GetCapacity: Integer;
+function TJclAnsiStrHashSet.GetCapacity: Integer;
 begin
   Result := (FMap as IJclPackable).GetCapacity;
 end;
 
-function TJclStrHashSet.GetAllowDefaultElements: Boolean;
+function TJclAnsiStrHashSet.GetAllowDefaultElements: Boolean;
 begin
   Result := FMap.AllowDefaultElements;
 end;
 
-function TJclStrHashSet.GetDuplicates: TDuplicates;
+function TJclAnsiStrHashSet.GetDuplicates: TDuplicates;
 begin
   Result := FMap.Duplicates;
 end;
 
-function TJclStrHashSet.GetRemoveSingleElement: Boolean;
+function TJclAnsiStrHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
 end;
 
-function TJclStrHashSet.GetReturnDefaultElements: Boolean;
+function TJclAnsiStrHashSet.GetReturnDefaultElements: Boolean;
 begin
   Result := FMap.ReturnDefaultElements;
 end;
 
-function TJclStrHashSet.GetCaseSensitive: Boolean;
+function TJclAnsiStrHashSet.GetCaseSensitive: Boolean;
 begin
   Result := FMap.GetCaseSensitive;
 end;
 
-function TJclStrHashSet.GetEncoding: TJclAnsiStrEncoding;
+function TJclAnsiStrHashSet.GetEncoding: TJclAnsiStrEncoding;
 begin
   Result := FMap.GetEncoding;
 end;
 
-procedure TJclStrHashSet.Intersect(const ACollection: IJclStrCollection);
+procedure TJclAnsiStrHashSet.Intersect(const ACollection: IJclAnsiStrCollection);
 begin
   RetainAll(ACollection);
 end;
 
-function TJclStrHashSet.IsEmpty: Boolean;
+function TJclAnsiStrHashSet.IsEmpty: Boolean;
 begin
   Result := FMap.IsEmpty;
 end;
 
-function TJclStrHashSet.Last: IJclStrIterator;
+function TJclAnsiStrHashSet.Last: IJclAnsiStrIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
 
-procedure TJclStrHashSet.Pack;
+procedure TJclAnsiStrHashSet.Pack;
 begin
   (FMap as IJclPackable).Pack;
 end;
 
-function TJclStrHashSet.Remove(const AString: string): Boolean;
+function TJclAnsiStrHashSet.Remove(const AString: AnsiString): Boolean;
 begin
   Result := FMap.Remove(AString) = RefUnique;
 end;
 
-function TJclStrHashSet.RemoveAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrHashSet.RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
   ARefUnique: TRefUnique;
 begin
   {$IFDEF THREADSAFE}
@@ -881,9 +954,9 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclStrHashSet.RetainAll(const ACollection: IJclStrCollection): Boolean;
+function TJclAnsiStrHashSet.RetainAll(const ACollection: IJclAnsiStrCollection): Boolean;
 var
-  ItMap: IJclStrIterator;
+  ItMap: IJclAnsiStrIterator;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -904,62 +977,380 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclStrHashSet.SetAutoPackParameter(Value: Integer);
+procedure TJclAnsiStrHashSet.SetAutoPackParameter(Value: Integer);
 begin
   (FMap as IJclPackable).SetAutoPackParameter(Value);
 end;
 
-procedure TJclStrHashSet.SetAutoPackStrategy(Value: TJclAutoPackStrategy);
+procedure TJclAnsiStrHashSet.SetAutoPackStrategy(Value: TJclAutoPackStrategy);
 begin
   (FMap as IJclPackable).SetAutoPackStrategy(Value);
 end;
 
-procedure TJclStrHashSet.SetCapacity(Value: Integer);
+procedure TJclAnsiStrHashSet.SetCapacity(Value: Integer);
 begin
   (FMap as IJclPackable).SetCapacity(Value);
 end;
 
-procedure TJclStrHashSet.SetAllowDefaultElements(Value: Boolean);
+procedure TJclAnsiStrHashSet.SetAllowDefaultElements(Value: Boolean);
 begin
   FMap.AllowDefaultElements := Value;
 end;
 
-procedure TJclStrHashSet.SetDuplicates(Value: TDuplicates);
+procedure TJclAnsiStrHashSet.SetDuplicates(Value: TDuplicates);
 begin
   FMap.Duplicates := Value;
 end;
 
-procedure TJclStrHashSet.SetRemoveSingleElement(Value: Boolean);
+procedure TJclAnsiStrHashSet.SetRemoveSingleElement(Value: Boolean);
 begin
   FMap.RemoveSingleElement := Value;
 end;
 
-procedure TJclStrHashSet.SetReturnDefaultElements(Value: Boolean);
+procedure TJclAnsiStrHashSet.SetReturnDefaultElements(Value: Boolean);
 begin
   FMap.ReturnDefaultElements := Value;
 end;
 
-procedure TJclStrHashSet.SetCaseSensitive(Value: Boolean);
+procedure TJclAnsiStrHashSet.SetCaseSensitive(Value: Boolean);
 begin
   FMap.SetCaseSensitive(Value);
 end;
 
-procedure TJclStrHashSet.SetEncoding(Value: TJclAnsiStrEncoding);
+procedure TJclAnsiStrHashSet.SetEncoding(Value: TJclAnsiStrEncoding);
 begin
   FMap.SetEncoding(Value);
 end;
 
-function TJclStrHashSet.Size: Integer;
+function TJclAnsiStrHashSet.Size: Integer;
 begin
   Result := FMap.Size;
 end;
 
-procedure TJclStrHashSet.Subtract(const ACollection: IJclStrCollection);
+procedure TJclAnsiStrHashSet.Subtract(const ACollection: IJclAnsiStrCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TJclStrHashSet.Union(const ACollection: IJclStrCollection);
+procedure TJclAnsiStrHashSet.Union(const ACollection: IJclAnsiStrCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+
+//=== { TJclWideStrHashSet } =====================================================
+
+constructor TJclWideStrHashSet.Create(const AMap: IJclWideStrMap);
+begin
+  inherited Create(AMap);
+  FMap := AMap;
+end;
+
+constructor TJclWideStrHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclWideStrHashMap.Create(ACapacity, False));
+end;
+
+destructor TJclWideStrHashSet.Destroy;
+begin
+  Clear;
+  FMap := nil;
+  inherited Destroy;
+end;
+
+function TJclWideStrHashSet.Add(const AString: WideString): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := not FMap.ContainsKey(AString);
+    if Result then
+      FMap.PutValue(AString, RefUnique);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashSet.AddAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrHashSet.AssignDataTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclWideStrHashSet then
+    TJclWideStrHashSet(Dest).FMap := (FMap as IJclIntfCloneable).Clone as IJclWideStrMap;
+end;
+
+procedure TJclWideStrHashSet.Clear;
+begin
+  FMap.Clear;
+end;
+
+function TJclWideStrHashSet.Contains(const AString: WideString): Boolean;
+begin
+  Result := FMap.ContainsKey(AString);
+end;
+
+function TJclWideStrHashSet.ContainsAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := FMap.ContainsKey(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclWideStrHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrHashSet.Equals(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It, ItMap: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FMap.Size <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ItemsEqual(ItMap.Next, It.Next) then
+      begin
+        Result := False;
+        Exit;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashSet.First: IJclWideStrIterator;
+begin
+  Result := FMap.KeySet.First;
+end;
+
+
+function TJclWideStrHashSet.GetAutoPackParameter: Integer;
+begin
+  Result := (FMap as IJclPackable).GetAutoPackParameter;
+end;
+
+function TJclWideStrHashSet.GetAutoPackStrategy: TJclAutoPackStrategy;
+begin
+  Result := (FMap as IJclPackable).GetAutoPackStrategy;
+end;
+
+function TJclWideStrHashSet.GetCapacity: Integer;
+begin
+  Result := (FMap as IJclPackable).GetCapacity;
+end;
+
+function TJclWideStrHashSet.GetAllowDefaultElements: Boolean;
+begin
+  Result := FMap.AllowDefaultElements;
+end;
+
+function TJclWideStrHashSet.GetDuplicates: TDuplicates;
+begin
+  Result := FMap.Duplicates;
+end;
+
+
+function TJclWideStrHashSet.GetRemoveSingleElement: Boolean;
+begin
+  Result := FMap.RemoveSingleElement;
+end;
+
+function TJclWideStrHashSet.GetReturnDefaultElements: Boolean;
+begin
+  Result := FMap.ReturnDefaultElements;
+end;
+
+function TJclWideStrHashSet.GetCaseSensitive: Boolean;
+begin
+  Result := FMap.GetCaseSensitive;
+end;
+
+function TJclWideStrHashSet.GetEncoding: TJclWideStrEncoding;
+begin
+  Result := FMap.GetEncoding;
+end;
+
+procedure TJclWideStrHashSet.Intersect(const ACollection: IJclWideStrCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+function TJclWideStrHashSet.IsEmpty: Boolean;
+begin
+  Result := FMap.IsEmpty;
+end;
+
+function TJclWideStrHashSet.Last: IJclWideStrIterator;
+begin
+  Result := FMap.KeySet.Last;
+end;
+
+procedure TJclWideStrHashSet.Pack;
+begin
+  (FMap as IJclPackable).Pack;
+end;
+
+function TJclWideStrHashSet.Remove(const AString: WideString): Boolean;
+begin
+  Result := FMap.Remove(AString) = RefUnique;
+end;
+
+function TJclWideStrHashSet.RemoveAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  It: IJclWideStrIterator;
+  ARefUnique: TRefUnique;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    ARefUnique := RefUnique;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclWideStrHashSet.RetainAll(const ACollection: IJclWideStrCollection): Boolean;
+var
+  ItMap: IJclWideStrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    ItMap := FMap.KeySet.First;
+    while ItMap.HasNext do
+      if not ACollection.Contains(ItMap.Next) then
+        ItMap.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclWideStrHashSet.SetAutoPackParameter(Value: Integer);
+begin
+  (FMap as IJclPackable).SetAutoPackParameter(Value);
+end;
+
+procedure TJclWideStrHashSet.SetAutoPackStrategy(Value: TJclAutoPackStrategy);
+begin
+  (FMap as IJclPackable).SetAutoPackStrategy(Value);
+end;
+
+procedure TJclWideStrHashSet.SetCapacity(Value: Integer);
+begin
+  (FMap as IJclPackable).SetCapacity(Value);
+end;
+
+procedure TJclWideStrHashSet.SetAllowDefaultElements(Value: Boolean);
+begin
+  FMap.AllowDefaultElements := Value;
+end;
+
+procedure TJclWideStrHashSet.SetDuplicates(Value: TDuplicates);
+begin
+  FMap.Duplicates := Value;
+end;
+
+procedure TJclWideStrHashSet.SetRemoveSingleElement(Value: Boolean);
+begin
+  FMap.RemoveSingleElement := Value;
+end;
+
+procedure TJclWideStrHashSet.SetReturnDefaultElements(Value: Boolean);
+begin
+  FMap.ReturnDefaultElements := Value;
+end;
+
+procedure TJclWideStrHashSet.SetCaseSensitive(Value: Boolean);
+begin
+  FMap.SetCaseSensitive(Value);
+end;
+
+procedure TJclWideStrHashSet.SetEncoding(Value: TJclWideStrEncoding);
+begin
+  FMap.SetEncoding(Value);
+end;
+
+function TJclWideStrHashSet.Size: Integer;
+begin
+  Result := FMap.Size;
+end;
+
+procedure TJclWideStrHashSet.Subtract(const ACollection: IJclWideStrCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclWideStrHashSet.Union(const ACollection: IJclWideStrCollection);
 begin
   AddAll(ACollection);
 end;
@@ -1024,7 +1415,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashSet.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclHashSet.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclHashSet then
@@ -1063,7 +1454,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclHashSet.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclHashSet.Create(FMap.Size, False);
   AssignPropertiesTo(Result);
@@ -1327,7 +1718,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashSet<T>.AssignDataTo(Dest: TJclAbstractContainer);
+procedure TJclHashSet<T>.AssignDataTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclHashSet<T> then
@@ -1582,14 +1973,14 @@ begin
   Create(AEqualityComparer, TJclHashMapE<T, TRefUnique>.Create(AEqualityComparer, RefUnique, AComparer, ACapacity, AOwnsItems, False));
 end;
 
-procedure TJclHashSetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclHashSetE<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclHashSetE<T> then
     TJclHashSetE<T>(Dest).FEqualityComparer := FEqualityComparer;
 end;
 
-function TJclHashSetE<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetE<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin
@@ -1625,14 +2016,14 @@ begin
   Create(AEqualityCompare, TJclHashMapF<T, TRefUnique>.Create(AEqualityCompare, AHash, EqualityCompareEqObjects, ACompare, ACapacity, AOwnsItems, False));
 end;
 
-procedure TJclHashSetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainer);
+procedure TJclHashSetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
 begin
   inherited AssignPropertiesTo(Dest);
   if Dest is TJclHashSetF<T> then
     TJclHashSetF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
-function TJclHashSetF<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin
@@ -1661,7 +2052,7 @@ begin
   Create(TJclHashMapI<T, TRefUnique>.Create(ACapacity, AOwnsItems, False));
 end;
 
-function TJclHashSetI<T>.CreateEmptyContainer: TJclAbstractContainer;
+function TJclHashSetI<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 var
   AMap: IJclMap<T, TRefUnique>;
 begin

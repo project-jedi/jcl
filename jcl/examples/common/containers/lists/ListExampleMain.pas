@@ -21,9 +21,12 @@ type
     btnVector: TButton;
     memResult: TMemo;
     btnMyObjectList: TButton;
-    btnStrArrayList: TButton;
-    btnStrLinkedList: TButton;
-    btnStrVector: TButton;
+    btnAnsiStrArrayList: TButton;
+    btnAnsiStrLinkedList: TButton;
+    btnAnsiStrVector: TButton;
+    btnWideStrArrayList: TButton;
+    btnWideStrLinkedList: TButton;
+    btnWideStrVector: TButton;
     procedure btnIntfArrayListClick(Sender: TObject);
     procedure btnIntfLinkedListClick(Sender: TObject);
     procedure btnIntfVectorClick(Sender: TObject);
@@ -31,9 +34,12 @@ type
     procedure btnLinkedListClick(Sender: TObject);
     procedure btnVectorClick(Sender: TObject);
     procedure btnMyObjectListClick(Sender: TObject);
-    procedure btnStrArrayListClick(Sender: TObject);
-    procedure btnStrLinkedListClick(Sender: TObject);
-    procedure btnStrVectorClick(Sender: TObject);
+    procedure btnAnsiStrArrayListClick(Sender: TObject);
+    procedure btnWideStrArrayListClick(Sender: TObject);
+    procedure btnAnsiStrLinkedListClick(Sender: TObject);
+    procedure btnWideStrLinkedListClick(Sender: TObject);
+    procedure btnAnsiStrVectorClick(Sender: TObject);
+    procedure btnWideStrVectorClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -349,16 +355,16 @@ begin
   memResult.Lines.Add(List.GetObject(0).Str);
 end;
 
-procedure TMainForm.btnStrArrayListClick(Sender: TObject);
+procedure TMainForm.btnAnsiStrArrayListClick(Sender: TObject);
 var
-  List, Sub: IJclStrList;
-  MyArray: IJclStrArray;
-  It: IJclStrIterator;
+  List, Sub: IJclAnsiStrList;
+  MyArray: IJclAnsiStrArray;
+  It: IJclAnsiStrIterator;
   I: Integer;
   S: string;
 begin
   memResult.Lines.Clear;
-  List := TJclStrArrayList.Create(DefaultContainerCapacity);
+  List := TJclAnsiStrArrayList.Create(DefaultContainerCapacity);
   List.Add('MyString');
 
   S := List.GetString(0);
@@ -375,7 +381,41 @@ begin
     memResult.Lines.Add(S);
   end;
   // use [] default of Items[]
-  MyArray := List as IJclStrArray;
+  MyArray := List as IJclAnsiStrArray;
+  for I := 0 to MyArray.Size - 1 do
+  begin
+    S := MyArray[I];
+    memResult.Lines.Add(S);
+  end;
+end;
+
+procedure TMainForm.btnWideStrArrayListClick(Sender: TObject);
+var
+  List, Sub: IJclWideStrList;
+  MyArray: IJclWideStrArray;
+  It: IJclWideStrIterator;
+  I: Integer;
+  S: string;
+begin
+  memResult.Lines.Clear;
+  List := TJclWideStrArrayList.Create(DefaultContainerCapacity);
+  List.Add('MyString');
+
+  S := List.GetString(0);
+  //memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+
+  List.Add('AnotherString');
+
+  Sub := List.SubList(0, 10);
+  // Iteration
+  It := Sub.First;
+  while It.HasNext do
+  begin
+    S := It.Next;
+    memResult.Lines.Add(S);
+  end;
+  // use [] default of Items[]
+  MyArray := List as IJclWideStrArray;
   for I := 0 to MyArray.Size - 1 do
   begin
     S := MyArray[I];
@@ -415,14 +455,14 @@ begin
   FName := Value;
 end;
 
-procedure TMainForm.btnStrLinkedListClick(Sender: TObject);
+procedure TMainForm.btnAnsiStrLinkedListClick(Sender: TObject);
 var
-  List, Sub: IJclStrList;
+  List, Sub: IJclAnsiStrList;
   S: string;
-  It: IJclStrIterator;
+  It: IJclAnsiStrIterator;
 begin
   memResult.Lines.Clear;
-  List := TJclStrLinkedList.Create(nil);
+  List := TJclAnsiStrLinkedList.Create(nil);
   List.Add('MyString');
   memResult.Lines.Add(List.GetString(0));
 
@@ -438,15 +478,73 @@ begin
   end;
 end;
 
-procedure TMainForm.btnStrVectorClick(Sender: TObject);
+procedure TMainForm.btnWideStrLinkedListClick(Sender: TObject);
 var
-  List: IJclStrList;
+  List, Sub: IJclWideStrList;
   S: string;
-  It: IJclStrIterator;
+  It: IJclWideStrIterator;
+begin
+  memResult.Lines.Clear;
+  List := TJclWideStrLinkedList.Create(nil);
+  List.Add('MyString');
+  memResult.Lines.Add(List.GetString(0));
+
+  List.Add('AnotherString');
+
+  Sub := List.SubList(1, 10);
+
+  It := Sub.First;
+  while It.HasNext do
+  begin
+    S := It.Next;
+    memResult.Lines.Add(S);
+  end;
+end;
+
+procedure TMainForm.btnAnsiStrVectorClick(Sender: TObject);
+var
+  List: IJclAnsiStrList;
+  S: string;
+  It: IJclAnsiStrIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TJclStrVector.Create(DefaultContainerCapacity);
+  List := TJclAnsiStrVector.Create(DefaultContainerCapacity);
+  try
+    List.Add('MyString');
+    S := List.GetString(0);
+    memResult.Lines.Add(S);
+
+    List.Add('AnotherString');
+
+    It := List.First;
+    while It.HasNext do
+    begin
+      S := It.Next;
+      memResult.Lines.Add(S);
+    end;
+    // Fastest way
+    for I := 0 to List.Size - 1 do
+    begin
+      S := List.Items[I];
+      memResult.Lines.Add(S);
+    end;
+    List.Clear;
+  finally
+    It := nil; // Force release Iterator before free list !
+    List := nil;
+  end;
+end;
+
+procedure TMainForm.btnWideStrVectorClick(Sender: TObject);
+var
+  List: IJclWideStrList;
+  S: string;
+  It: IJclWideStrIterator;
+  I: Integer;
+begin
+  memResult.Lines.Clear;
+  List := TJclWideStrVector.Create(DefaultContainerCapacity);
   try
     List.Add('MyString');
     S := List.GetString(0);

@@ -1,9 +1,9 @@
 object MainForm: TMainForm
   Left = 328
   Top = 237
-  ClientWidth = 462
-  ClientHeight = 259
   Caption = 'Binary Tree'
+  ClientHeight = 259
+  ClientWidth = 462
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,9 +15,9 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object btnIntfArrayTree: TButton
-    Left = 72
+    Left = 64
     Top = 24
-    Width = 81
+    Width = 97
     Height = 25
     Caption = 'IntfBinaryTree'
     TabOrder = 1
@@ -27,27 +27,36 @@ object MainForm: TMainForm
     Left = 230
     Top = 0
     Width = 232
-    Height = 268
+    Height = 259
     Align = alRight
     ScrollBars = ssVertical
     TabOrder = 2
   end
   object btnArrayTree: TButton
-    Left = 72
-    Top = 152
-    Width = 81
+    Left = 64
+    Top = 192
+    Width = 97
     Height = 25
     Caption = 'BinaryTree'
     TabOrder = 0
     OnClick = btnArrayTreeClick
   end
-  object btnStrBinaryTree: TButton
-    Left = 72
-    Top = 88
-    Width = 81
+  object btnAnsiStrBinaryTree: TButton
+    Left = 64
+    Top = 80
+    Width = 97
     Height = 25
-    Caption = 'StrBinaryTree'
+    Caption = 'AnsiStrBinaryTree'
     TabOrder = 3
-    OnClick = btnStrBinaryTreeClick
+    OnClick = btnAnsiStrBinaryTreeClick
+  end
+  object btnWideStrBinaryTree: TButton
+    Left = 64
+    Top = 136
+    Width = 97
+    Height = 25
+    Caption = 'WideStrBinaryTree'
+    TabOrder = 4
+    OnClick = btnWideStrBinaryTreeClick
   end
 end
