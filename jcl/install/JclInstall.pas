@@ -3108,8 +3108,9 @@ function TJclInstallation.GetDemoList: TStringList;
   procedure ProcessExcludeFile(const ExcFileName: string);
   var
     DemoExclusionList: TStrings;
-    ExclusionFileName, FileName, Edition: string;
-    IndexExc, IndexDemo, EditionPos: Integer;
+    ExclusionFileName, FileName, RequiredList, RequiredItem: string;
+    IndexExc, IndexDemo, SepPos, IndexReq: Integer;
+    ExcludeDemo: Boolean;
   begin
     DemoExclusionList := TStringList.Create;
     try
@@ -3120,17 +3121,29 @@ function TJclInstallation.GetDemoList: TStringList;
         for IndexExc := 0 to DemoExclusionList.Count - 1 do
         begin
           FileName := DemoExclusionList.Strings[IndexExc];
-          EditionPos := Pos('=', FileName);
-          if EditionPos > 0 then
+          SepPos := Pos('=', FileName);
+          if SepPos > 0 then
           begin
-            Edition := Copy(FileName, EditionPos + 1, Length(FileName) - EditionPos);
-            SetLength(FileName, EditionPos - 1);
+            ExcludeDemo := False;
+            RequiredList := Copy(FileName, SepPos + 1, Length(FileName) - SepPos);
+            SetLength(FileName, SepPos - 1);
+            for IndexReq := 0 to PathListItemCount(RequiredList) - 1 do
+            begin
+              RequiredItem := PathListGetItem(RequiredList, IndexReq);
+              if AnsiSameText(ExtractFileExt(RequiredItem), '.dcu') then
+              begin
+                ExcludeDemo := not FileExists(PathAddSeparator(Target.LibFolderName) + RequiredItem);
+                if ExcludeDemo then
+                  Break;
+              end;
+            end;
           end
           else
-            Edition := '';
-          if (Edition = '') or (StrIPos(BorRADToolEditionIDs[Target.Edition], Edition) = 0) then
+            ExcludeDemo := True;
+
+          if ExcludeDemo then
           begin
-            if ExtractFileExt(FileName) = '.exc' then
+            if AnsiSameText(ExtractFileExt(FileName), '.exc') then
               ProcessExcludeFile(FileName)
             else
             begin
