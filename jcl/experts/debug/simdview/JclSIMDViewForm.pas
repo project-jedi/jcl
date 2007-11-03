@@ -170,7 +170,7 @@ begin
 
   FNbMMRegister := 0;
 
-  if CpuInfo.SSE = 0 then
+  if CpuInfo.SSE = [] then
     FNbXMMRegister := 0
   else
   if CpuInfo.Is64Bits then

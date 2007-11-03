@@ -3,7 +3,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   Top = 438
   BorderStyle = bsDialog
   Caption = 'Local CPU Informations'
-  ClientHeight = 208
+  ClientHeight = 264
   ClientWidth = 322
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -78,7 +78,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   end
   object CheckBoxExMMX: TCheckBox
     Left = 8
-    Top = 96
+    Top = 95
     Width = 137
     Height = 17
     Alignment = taLeftJustify
@@ -88,7 +88,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   end
   object CheckBox3DNow: TCheckBox
     Left = 8
-    Top = 120
+    Top = 118
     Width = 137
     Height = 17
     Alignment = taLeftJustify
@@ -98,7 +98,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
   end
   object CheckBoxEx3DNow: TCheckBox
     Left = 8
-    Top = 144
+    Top = 141
     Width = 137
     Height = 17
     Alignment = taLeftJustify
@@ -107,9 +107,9 @@ object JclFormCpuInfo: TJclFormCpuInfo
     TabOrder = 6
   end
   object CheckBox64Bits: TCheckBox
-    Left = 160
-    Top = 144
-    Width = 153
+    Left = 8
+    Top = 164
+    Width = 137
     Height = 17
     Alignment = taLeftJustify
     Caption = '64 bits'
@@ -117,7 +117,7 @@ object JclFormCpuInfo: TJclFormCpuInfo
     TabOrder = 7
   end
   object CheckBoxSSE1: TCheckBox
-    Left = 160
+    Left = 161
     Top = 72
     Width = 153
     Height = 17
@@ -127,8 +127,8 @@ object JclFormCpuInfo: TJclFormCpuInfo
     TabOrder = 8
   end
   object CheckBoxSSE2: TCheckBox
-    Left = 160
-    Top = 96
+    Left = 161
+    Top = 95
     Width = 153
     Height = 17
     Alignment = taLeftJustify
@@ -137,8 +137,8 @@ object JclFormCpuInfo: TJclFormCpuInfo
     TabOrder = 9
   end
   object CheckBoxSSE3: TCheckBox
-    Left = 160
-    Top = 120
+    Left = 161
+    Top = 118
     Width = 153
     Height = 17
     Alignment = taLeftJustify
@@ -148,11 +148,51 @@ object JclFormCpuInfo: TJclFormCpuInfo
   end
   object ButtonClose: TButton
     Left = 128
-    Top = 176
+    Top = 233
     Width = 83
     Height = 25
     Caption = 'Close'
     ModalResult = 2
     TabOrder = 11
+  end
+  object CheckBoxSSSE3: TCheckBox
+    Left = 161
+    Top = 141
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Suppl. SSE Version 3'
+    Enabled = False
+    TabOrder = 12
+  end
+  object CheckBoxSSE4A: TCheckBox
+    Left = 161
+    Top = 164
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'SSE Version 4 A'
+    Enabled = False
+    TabOrder = 13
+  end
+  object CheckBoxSSE5: TCheckBox
+    Left = 161
+    Top = 210
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'SSE Version 5'
+    Enabled = False
+    TabOrder = 14
+  end
+  object CheckBoxSSE4B: TCheckBox
+    Left = 161
+    Top = 187
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'SSE Version 4 B'
+    Enabled = False
+    TabOrder = 15
   end
 end

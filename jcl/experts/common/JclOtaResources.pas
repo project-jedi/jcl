@@ -258,9 +258,6 @@ resourcestring
   RsExMMX = 'Ex MMX';
   Rs3DNow = '3DNow!';
   RsEx3DNow = 'Ex 3DNow!';
-  RsSSE1 = 'SSE1';
-  RsSSE2 = 'SSE2';
-  RsSSE3 = 'SSE3';
   RsLong = '64-bit Core';
 
   RsTrademarks =

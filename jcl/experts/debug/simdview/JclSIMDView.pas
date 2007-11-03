@@ -125,6 +125,7 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 uses
+  TypInfo,
   JclOtaConsts, JclOtaResources, 
   JclSIMDUtils;
 
@@ -212,7 +213,7 @@ end;
 procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   try
-    if CpuInfo.SSE = 0 then
+    if CpuInfo.SSE = [] then
       raise EJclExpertException.CreateTrace(RsNoSSE);
 
     if not Assigned(FForm) then
@@ -245,7 +246,7 @@ begin
   try
     AAction := Sender as TAction;
 
-    if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
+    if (CpuInfo.SSE <> []) or CPUInfo.MMX or CPUInfo._3DNow then
     begin
       AThread := nil;
       AProcess := nil;
@@ -373,6 +374,8 @@ function TJclSIMDWizard.GetSIMDString: string;
       Result := LeftValue + ',' + RightValue;
   end;
 
+var
+  SSESupport: TSSESupport;
 begin
   Result := '';
   with CpuInfo do
@@ -385,12 +388,9 @@ begin
       Result := Concat(Result, Rs3DNow);
     if Ex3DNow then
       Result := Concat(Result, RsEx3DNow);
-    if SSE >= 1 then
-      Result := Concat(Result, RsSSE1);
-    if SSE >= 2 then
-      Result := Concat(Result, RsSSE2);
-    if SSE >= 3 then
-      Result := Concat(Result, RsSSE3);
+    for SSESupport := Low(TSSESupport) to High(TSSESupport) do
+      if SSESupport in SSE then
+        Result := Concat(Result, GetEnumName(TypeInfo(TSSESupport), Integer(SSESupport)));
     if Is64Bits then
       Result := Result + ',' + RsLong;
   end;

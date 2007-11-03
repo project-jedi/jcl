@@ -377,6 +377,7 @@ type
     L2KByteDataTLB: array [TTLBInformation] of Byte;           // L2 TLB for 4-KByte pages
     L2KByteInstructionTLB: array [TTLBInformation] of Byte;    // L2 TLB for 4-KByte pages
     L2Cache: Cardinal;
+    L3Cache: Cardinal;
     AdvancedPowerManagement: Cardinal;
     PhysicalAddressSize: Byte;
     VirtualAddressSize: Byte;
@@ -441,13 +442,16 @@ const
   CPU_TYPE_VIA       = 5;
 
 type
+  TSSESupport = (sse, sse2, sse3, ssse3, sse4A, sse4B, sse5);
+  TSSESupports = set of TSSESupport;
+
   TCpuInfo = record
     HasInstruction: Boolean;
     MMX: Boolean;
     ExMMX: Boolean;
     _3DNow: Boolean;
     Ex3DNow: Boolean;
-    SSE: Byte;        // SSE version 0 = no SSE, 1 = SSE, 2 = SSE2, 3 = SSE3
+    SSE: TSSESupports;
     IsFDIVOK: Boolean;
     Is64Bits: Boolean;
     DEPCapable: Boolean;
@@ -622,15 +626,15 @@ const
   EINTEL_BIT_12  = BIT_12; // Reserved, do not count on value
   EINTEL_CMPXCHG16B = BIT_13; // CMPXCHG16B instruction
   EINTEL_XTPR    = BIT_14; // Send Task Priority messages
-  EINTEL_BIT_15  = BIT_15; // Reserved, do not count on value
+  EINTEL_PDCM    = BIT_15; // Perf/Debug Capability MSR
   EINTEL_BIT_16  = BIT_16; // Reserved, do not count on value
   EINTEL_BIT_17  = BIT_17; // Reserved, do not count on value
   EINTEL_BIT_18  = BIT_18; // Reserved, do not count on value
-  EINTEL_BIT_19  = BIT_19; // Reserved, do not count on value
-  EINTEL_BIT_20  = BIT_20; // Reserved, do not count on value
+  EINTEL_SSE4_1  = BIT_19; // Streaming SIMD Extensions 4.1
+  EINTEL_SSE4_2  = BIT_20; // Streaming SIMD Extensions 4.2
   EINTEL_BIT_21  = BIT_21; // Reserved, do not count on value
   EINTEL_BIT_22  = BIT_22; // Reserved, do not count on value
-  EINTEL_BIT_23  = BIT_23; // Reserved, do not count on value
+  EINTEL_POPCNT  = BIT_23; // A value of 1 indicates the processor supports the POPCNT instruction.
   EINTEL_BIT_24  = BIT_24; // Reserved, do not count on value
   EINTEL_BIT_25  = BIT_25; // Reserved, do not count on value
   EINTEL_BIT_26  = BIT_26; // Reserved, do not count on value
@@ -743,38 +747,38 @@ const
   AMD_BIT_31  = BIT_31; // Reserved, do not count on value
 
   { AMD Standard Feature Flags continued }
-  AMD2_SSE3   = BIT_0;  // SSE3 extensions
-  AMD2_BIT_1  = BIT_1;  // Reserved, do not count on value
-  AMD2_BIT_2  = BIT_2;  // Reserved, do not count on value
-  AMD2_BIT_3  = BIT_3;  // Reserved, do not count on value
-  AMD2_BIT_4  = BIT_4;  // Reserved, do not count on value
-  AMD2_BIT_5  = BIT_5;  // Reserved, do not count on value
-  AMD2_BIT_6  = BIT_6;  // Reserved, do not count on value
-  AMD2_BIT_7  = BIT_7;  // Reserved, do not count on value
-  AMD2_BIT_8  = BIT_8;  // Reserved, do not count on value
-  AMD2_BIT_9  = BIT_9;  // Reserved, do not count on value
-  AMD2_BIT_10 = BIT_10; // Reserved, do not count on value
-  AMD2_BIT_11 = BIT_11; // Reserved, do not count on value
-  AMD2_BIT_12 = BIT_12; // Reserved, do not count on value
+  AMD2_SSE3       = BIT_0;  // SSE3 extensions
+  AMD2_BIT_1      = BIT_1;  // Reserved, do not count on value
+  AMD2_BIT_2      = BIT_2;  // Reserved, do not count on value
+  AMD2_MONITOR    = BIT_3;  // MONITOR/MWAIT instructions. See "MONITOR" and "MWAIT" in APM3.
+  AMD2_BIT_4      = BIT_4;  // Reserved, do not count on value
+  AMD2_BIT_5      = BIT_5;  // Reserved, do not count on value
+  AMD2_BIT_6      = BIT_6;  // Reserved, do not count on value
+  AMD2_BIT_7      = BIT_7;  // Reserved, do not count on value
+  AMD2_BIT_8      = BIT_8;  // Reserved, do not count on value
+  AMD2_BIT_9      = BIT_9;  // Reserved, do not count on value
+  AMD2_BIT_10     = BIT_10; // Reserved, do not count on value
+  AMD2_BIT_11     = BIT_11; // Reserved, do not count on value
+  AMD2_BIT_12     = BIT_12; // Reserved, do not count on value
   AMD2_CMPXCHG16B = BIT_13; // CMPXCHG16B available
-  AMD2_BIT_14 = BIT_14; // Reserved, do not count on value
-  AMD2_BIT_15 = BIT_15; // Reserved, do not count on value
-  AMD2_BIT_16 = BIT_16; // Reserved, do not count on value
-  AMD2_BIT_17 = BIT_17; // Reserved, do not count on value
-  AMD2_BIT_18 = BIT_18; // Reserved, do not count on value
-  AMD2_BIT_19 = BIT_19; // Reserved, do not count on value
-  AMD2_BIT_20 = BIT_20; // Reserved, do not count on value
-  AMD2_BIT_21 = BIT_21; // Reserved, do not count on value
-  AMD2_BIT_22 = BIT_22; // Reserved, do not count on value
-  AMD2_BIT_23 = BIT_23; // Reserved, do not count on value
-  AMD2_BIT_24 = BIT_24; // Reserved, do not count on value
-  AMD2_BIT_25 = BIT_25; // Reserved, do not count on value
-  AMD2_BIT_26 = BIT_26; // Reserved, do not count on value
-  AMD2_BIT_27 = BIT_27; // Reserved, do not count on value
-  AMD2_BIT_28 = BIT_28; // Reserved, do not count on value
-  AMD2_BIT_29 = BIT_29; // Reserved, do not count on value
-  AMD2_BIT_30 = BIT_30; // Reserved, do not count on value
-  AMD2_RAZ    = BIT_31; // RAZ
+  AMD2_BIT_14     = BIT_14; // Reserved, do not count on value
+  AMD2_BIT_15     = BIT_15; // Reserved, do not count on value
+  AMD2_BIT_16     = BIT_16; // Reserved, do not count on value
+  AMD2_BIT_17     = BIT_17; // Reserved, do not count on value
+  AMD2_BIT_18     = BIT_18; // Reserved, do not count on value
+  AMD2_BIT_19     = BIT_19; // Reserved, do not count on value
+  AMD2_BIT_20     = BIT_20; // Reserved, do not count on value
+  AMD2_BIT_21     = BIT_21; // Reserved, do not count on value
+  AMD2_BIT_22     = BIT_22; // Reserved, do not count on value
+  AMD2_POPCNT     = BIT_23; // POPCNT instruction. See "POPCNT" in APM3.
+  AMD2_BIT_24     = BIT_24; // Reserved, do not count on value
+  AMD2_BIT_25     = BIT_25; // Reserved, do not count on value
+  AMD2_BIT_26     = BIT_26; // Reserved, do not count on value
+  AMD2_BIT_27     = BIT_27; // Reserved, do not count on value
+  AMD2_BIT_28     = BIT_28; // Reserved, do not count on value
+  AMD2_BIT_29     = BIT_29; // Reserved, do not count on value
+  AMD2_BIT_30     = BIT_30; // Reserved, do not count on value
+  AMD2_RAZ        = BIT_31; // RAZ
 
   { AMD Enhanced Feature Flags }
   EAMD_FPU     = BIT_0;  // Floating-Point unit on chip
@@ -803,46 +807,46 @@ const
   EAMD_MMX     = BIT_23; // MMX technology
   EAMD_FX      = BIT_24; // FXSAVE and FXSTORE instructions
   EAMD_FFX     = BIT_25; // Fast FXSAVE and FXSTORE instructions
-  EAMD_BIT_26  = BIT_26; // Reserved, do not count on value
-  EAMD_BIT_27  = BIT_27; // Reserved, do not count on value
+  EAMD_1GBPAGE = BIT_26; // 1-GB large page support.
+  EAMD_RDTSCP  = BIT_27; // RDTSCP instruction.
   EAMD_BIT_28  = BIT_28; // Reserved, do not count on value
   EAMD_LONG    = BIT_29; // Long Mode (64-bit Core)
   EAMD_EX3DNOW = BIT_30; // AMD Extensions to 3DNow! intructions
   EAMD_3DNOW   = BIT_31; // AMD 3DNOW! Technology
 
   { AMD Extended Feature Flags continued }
-  EAMD2_LAHF   = BIT_0;  // LAHF/SAHF available in 64-bit mode
-  EAMD2_CMPLEGACY = BIT_1;  // core multi-processing legacy mode
-  EAMD2_SVM    = BIT_2;  // Secure Virtual Machine
-  EAMD2_BIT_3  = BIT_3;  // Reserved, do not count on value
-  EAMD2_ALTMOVCR8 = BIT_4;  // LOCK MOV CR0 means MOV CR8
-  EAMD2_BIT_5  = BIT_5;  // Reserved, do not count on value
-  EAMD2_BIT_6  = BIT_6;  // Reserved, do not count on value
-  EAMD2_BIT_7  = BIT_7;  // Reserved, do not count on value
-  EAMD2_BIT_8  = BIT_8;  // Reserved, do not count on value
-  EAMD2_BIT_9  = BIT_9;  // Reserved, do not count on value
-  EAMD2_BIT_10 = BIT_10; // Reserved, do not count on value
-  EAMD2_BIT_11 = BIT_11; // Reserved, do not count on value
-  EAMD2_BIT_12 = BIT_12; // Reserved, do not count on value
-  EAMD2_BIT_13 = BIT_13; // Reserved, do not count on value
-  EAMD2_BIT_14 = BIT_14; // Reserved, do not count on value
-  EAMD2_BIT_15 = BIT_15; // Reserved, do not count on value
-  EAMD2_BIT_16 = BIT_16; // Reserved, do not count on value
-  EAMD2_BIT_17 = BIT_17; // Reserved, do not count on value
-  EAMD2_BIT_18 = BIT_18; // Reserved, do not count on value
-  EAMD2_BIT_19 = BIT_19; // Reserved, do not count on value
-  EAMD2_BIT_20 = BIT_20; // Reserved, do not count on value
-  EAMD2_BIT_21 = BIT_21; // Reserved, do not count on value
-  EAMD2_BIT_22 = BIT_22; // Reserved, do not count on value
-  EAMD2_BIT_23 = BIT_23; // Reserved, do not count on value
-  EAMD2_BIT_24 = BIT_24; // Reserved, do not count on value
-  EAMD2_BIT_25 = BIT_25; // Reserved, do not count on value
-  EAMD2_BIT_26 = BIT_26; // Reserved, do not count on value
-  EAMD2_BIT_27 = BIT_27; // Reserved, do not count on value
-  EAMD2_BIT_28 = BIT_28; // Reserved, do not count on value
-  EAMD2_BIT_29 = BIT_29; // Reserved, do not count on value
-  EAMD2_BIT_30 = BIT_30; // Reserved, do not count on value
-  EAMD2_BIT_31 = BIT_31; // Reserved, do not count on value
+  EAMD2_LAHF          = BIT_0;  // LAHF/SAHF available in 64-bit mode
+  EAMD2_CMPLEGACY     = BIT_1;  // core multi-processing legacy mode
+  EAMD2_SVM           = BIT_2;  // Secure Virtual Machine
+  EAMD2_EXTAPICSPACE  = BIT_3;  // This bit indicates the presence of extended APIC register space starting at offset 400h from the “APIC Base Address Register,” as specified in the BKDG.
+  EAMD2_ALTMOVCR8     = BIT_4;  // LOCK MOV CR0 means MOV CR8
+  EAMD2_ABM           = BIT_5;  // ABM: Advanced bit manipulation. LZCNT instruction support.
+  EAMD2_SSE4A         = BIT_6;  // EXTRQ, INSERTQ, MOVNTSS, and MOVNTSD instruction support.
+  EAMD2_MISALIGNSSE   = BIT_7;  // Misaligned SSE mode.
+  EAMD2_3DNOWPREFETCH = BIT_8;  // PREFETCH and PREFETCHW instruction support.
+  EAMD2_OSVW          = BIT_9;  // OS visible workaround.
+  EAMD2_BIT_10        = BIT_10; // Reserved, do not count on value
+  EAMD2_SSE5          = BIT_11; // Streaming SIMD Extensions 5
+  EAMD2_SKINIT        = BIT_12; // SKINIT, STGI, and DEV support.
+  EAMD2_WDT           = BIT_13; // Watchdog timer support.
+  EAMD2_BIT_14        = BIT_14; // Reserved, do not count on value
+  EAMD2_BIT_15        = BIT_15; // Reserved, do not count on value
+  EAMD2_BIT_16        = BIT_16; // Reserved, do not count on value
+  EAMD2_BIT_17        = BIT_17; // Reserved, do not count on value
+  EAMD2_BIT_18        = BIT_18; // Reserved, do not count on value
+  EAMD2_BIT_19        = BIT_19; // Reserved, do not count on value
+  EAMD2_BIT_20        = BIT_20; // Reserved, do not count on value
+  EAMD2_BIT_21        = BIT_21; // Reserved, do not count on value
+  EAMD2_BIT_22        = BIT_22; // Reserved, do not count on value
+  EAMD2_BIT_23        = BIT_23; // Reserved, do not count on value
+  EAMD2_BIT_24        = BIT_24; // Reserved, do not count on value
+  EAMD2_BIT_25        = BIT_25; // Reserved, do not count on value
+  EAMD2_BIT_26        = BIT_26; // Reserved, do not count on value
+  EAMD2_BIT_27        = BIT_27; // Reserved, do not count on value
+  EAMD2_BIT_28        = BIT_28; // Reserved, do not count on value
+  EAMD2_BIT_29        = BIT_29; // Reserved, do not count on value
+  EAMD2_BIT_30        = BIT_30; // Reserved, do not count on value
+  EAMD2_BIT_31        = BIT_31; // Reserved, do not count on value
 
   { AMD Power Management Features Flags }
   PAMD_TEMPSENSOR       = BIT_0;  // Temperature Sensor
@@ -851,8 +855,8 @@ const
   PAMD_THERMALTRIP      = BIT_3;  // Thermal Trip
   PAMD_THERMALMONITOR   = BIT_4;  // Thermal Monitoring
   PAMD_SOFTTHERMCONTROL = BIT_5;  // Software Thermal Control
-  PAMD_BIT_6            = BIT_6;  // Reserved, do not count on value
-  PAMD_BIT_7            = BIT_7;  // Reserved, do not count on value
+  PAMD_100MHZSTEP       = BIT_6;  // 100 Mhz multiplier control.
+  PAMD_HWPSTATE         = BIT_7;  // Hardware P-State control.
   PAMD_TSC_INVARIANT    = BIT_8;  // TSC rate is invariant
   PAMD_BIT_9            = BIT_9;  // Reserved, do not count on value
   PAMD_BIT_10           = BIT_10; // Reserved, do not count on value
@@ -1151,66 +1155,71 @@ const
   MXCSR_FZ  = BIT_15;                 // Flush to Zero
 
 const
-  IntelCacheDescription: array [0..58] of TCacheInfo = (
+  IntelCacheDescription: array [0..63] of TCacheInfo = (
     (D: $00; Family: cfOther;                                                                           I: RsIntelCacheDescr00),
-    (D: $01; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr01),
-    (D: $02; Family: cfInstructionTLB;     Size: 4096; WaysOfAssoc: 4;                Entries: 2;       I: RsIntelCacheDescr02),
-    (D: $03; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;                Entries: 64;      I: RsIntelCacheDescr03),
-    (D: $04; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;                Entries: 8;       I: RsIntelCacheDescr04),
-    (D: $05; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr05),
-    (D: $06; Family: cfL1InstructionCache; Size: 8;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr06),
-    (D: $08; Family: cfL1InstructionCache; Size: 16;   WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr08),
-    (D: $0A; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 2;  LineSize: 32;                   I: RsIntelCacheDescr0A),
-    (D: $0B; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;                Entries: 4;       I: RsIntelCacheDescr0B),
-    (D: $0C; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr0C),
-    (D: $22; Family: cfL3Cache;            Size: 512;  WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr22),
-    (D: $23; Family: cfL3Cache;            Size: 1024; WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr23),
-    (D: $25; Family: cfL3Cache;            Size: 2048; WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr25),
-    (D: $29; Family: cfL3Cache;            Size: 4096; WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr29),
-    (D: $2C; Family: cfL1DataCache;        Size: 32;   WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr2C),
-    (D: $30; Family: cfL1InstructionCache; Size: 32;   WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr30),
-    (D: $40; Family: cfOther;                                                                           I: RsIntelCacheDescr40),
-    (D: $41; Family: cfL2Cache;            Size: 128;  WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr41),
-    (D: $42; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr42),
-    (D: $43; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr43),
-    (D: $44; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr44),
-    (D: $45; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr45),
-    (D: $46; Family: cfL3Cache;            Size: 4096; WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr46),
-    (D: $47; Family: cfL3Cache;            Size: 8192; WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr47),
-    (D: $49; Family: cfL2Cache;            Size: 4096; WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr49),
-    (D: $50; Family: cfInstructionTLB;     Size: 4;                                   Entries: 64;      I: RsIntelCacheDescr50),
-    (D: $51; Family: cfInstructionTLB;     Size: 4;                                   Entries: 128;     I: RsIntelCacheDescr51),
-    (D: $52; Family: cfInstructionTLB;     Size: 4;                                   Entries: 256;     I: RsIntelCacheDescr52),
-    (D: $56; Family: cfDataTLB;            Size: 4096; WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr56),
-    (D: $57; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr57),
-    (D: $5B; Family: cfDataTLB;            Size: 4096;                                Entries: 64;      I: RsIntelCacheDescr5B),
-    (D: $5C; Family: cfDataTLB;            Size: 4096;                                Entries: 128;     I: RsIntelCacheDescr5C),
-    (D: $5D; Family: cfDataTLB;            Size: 4096;                                Entries: 256;     I: RsIntelCacheDescr5D),
-    (D: $60; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr60),
-    (D: $66; Family: cfL1DataCache;        Size: 8;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr66),
-    (D: $67; Family: cfL1DataCache;        Size: 16;   WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr67),
-    (D: $68; Family: cfL1DataCache;        Size: 32;   WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr68),
-    (D: $70; Family: cfTrace;              Size: 12;   WaysOfAssoc: 8;                                  I: RsIntelCacheDescr70),
-    (D: $71; Family: cfTrace;              Size: 16;   WaysOfAssoc: 8;                                  I: RsIntelCacheDescr71),
-    (D: $72; Family: cfTrace;              Size: 32;   WaysOfAssoc: 8;                                  I: RsIntelCacheDescr72),
-    (D: $78; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr78),
-    (D: $79; Family: cfL2Cache;            Size: 128;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr79),
-    (D: $7A; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7A),
-    (D: $7B; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7B),
-    (D: $7C; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7C),
-    (D: $7D; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr7D),
-    (D: $7F; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 2;  LineSize: 64;                   I: RsIntelCacheDescr7F),
-    (D: $82; Family: cfL2Cache;            Size: 256;  WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr82),
-    (D: $83; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr83),
-    (D: $84; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr84),
-    (D: $85; Family: cfL2Cache;            Size: 2048; WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr85),
-    (D: $86; Family: cfL2Cache;            Size: 512;  WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr86),
-    (D: $87; Family: cfL2Cache;            Size: 1024; WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr87),
-    (D: $B0; Family: cfInstructionTLB;     Size: 4;    WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB0),
-    (D: $B3; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB3),
-    (D: $B4; Family: cfDataTLB;            Size: 4;    WaysOfAssoc: 4;                 Entries: 256;    I: RsIntelCacheDescrB4),
-    (D: $F0; Family: cfOther;                                                                           I: RsIntelCacheDescrF0),
-    (D: $F1; Family: cfOther;                                                                           I: RsIntelCacheDescrF1)
+    (D: $01; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr01),
+    (D: $02; Family: cfInstructionTLB;     Size: 4096;  WaysOfAssoc: 4;                Entries: 2;       I: RsIntelCacheDescr02),
+    (D: $03; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                Entries: 64;      I: RsIntelCacheDescr03),
+    (D: $04; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 8;       I: RsIntelCacheDescr04),
+    (D: $05; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 32;      I: RsIntelCacheDescr05),
+    (D: $06; Family: cfL1InstructionCache; Size: 8;     WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr06),
+    (D: $08; Family: cfL1InstructionCache; Size: 16;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr08),
+    (D: $0A; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 2;  LineSize: 32;                   I: RsIntelCacheDescr0A),
+    (D: $0B; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                Entries: 4;       I: RsIntelCacheDescr0B),
+    (D: $0C; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr0C),
+    (D: $22; Family: cfL3Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr22),
+    (D: $23; Family: cfL3Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr23),
+    (D: $25; Family: cfL3Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr25),
+    (D: $29; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr29),
+    (D: $2C; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr2C),
+    (D: $30; Family: cfL1InstructionCache; Size: 32;    WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr30),
+    (D: $40; Family: cfOther;                                                                            I: RsIntelCacheDescr40),
+    (D: $41; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr41),
+    (D: $42; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr42),
+    (D: $43; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr43),
+    (D: $44; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr44),
+    (D: $45; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 4;  LineSize: 32;                   I: RsIntelCacheDescr45),
+    (D: $46; Family: cfL3Cache;            Size: 4096;  WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr46),
+    (D: $47; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr47),
+    (D: $48; Family: cfL2Cache;            Size: 3072;  WaysOfAssoc: 12; LineSize: 64;                   I: RsIntelCacheDescr48),
+    (D: $49; Family: cfL2Cache;            Size: 4096;  WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr49),
+    (D: $4A; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 12; LineSize: 64;                   I: RsIntelCacheDescr4A),
+    (D: $4B; Family: cfL3Cache;            Size: 8192;  WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr4B),
+    (D: $4D; Family: cfL3Cache;            Size: 16384; WaysOfAssoc: 16; LineSize: 64;                   I: RsIntelCacheDescr4D),
+    (D: $4E; Family: cfL3Cache;            Size: 6144;  WaysOfAssoc: 24; LineSize: 64;                   I: RsIntelCacheDescr4E),
+    (D: $50; Family: cfInstructionTLB;     Size: 4;                                    Entries: 64;      I: RsIntelCacheDescr50),
+    (D: $51; Family: cfInstructionTLB;     Size: 4;                                    Entries: 128;     I: RsIntelCacheDescr51),
+    (D: $52; Family: cfInstructionTLB;     Size: 4;                                    Entries: 256;     I: RsIntelCacheDescr52),
+    (D: $56; Family: cfDataTLB;            Size: 4096;  WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr56),
+    (D: $57; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                Entries: 16;      I: RsIntelCacheDescr57),
+    (D: $5B; Family: cfDataTLB;            Size: 4096;                                 Entries: 64;      I: RsIntelCacheDescr5B),
+    (D: $5C; Family: cfDataTLB;            Size: 4096;                                 Entries: 128;     I: RsIntelCacheDescr5C),
+    (D: $5D; Family: cfDataTLB;            Size: 4096;                                 Entries: 256;     I: RsIntelCacheDescr5D),
+    (D: $60; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr60),
+    (D: $66; Family: cfL1DataCache;        Size: 8;     WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr66),
+    (D: $67; Family: cfL1DataCache;        Size: 16;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr67),
+    (D: $68; Family: cfL1DataCache;        Size: 32;    WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr68),
+    (D: $70; Family: cfTrace;              Size: 12;    WaysOfAssoc: 8;                                  I: RsIntelCacheDescr70),
+    (D: $71; Family: cfTrace;              Size: 16;    WaysOfAssoc: 8;                                  I: RsIntelCacheDescr71),
+    (D: $72; Family: cfTrace;              Size: 32;    WaysOfAssoc: 8;                                  I: RsIntelCacheDescr72),
+    (D: $78; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr78),
+    (D: $79; Family: cfL2Cache;            Size: 128;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr79),
+    (D: $7A; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7A),
+    (D: $7B; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7B),
+    (D: $7C; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64; LinePerSector: 2; I: RsIntelCacheDescr7C),
+    (D: $7D; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr7D),
+    (D: $7F; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 2;  LineSize: 64;                   I: RsIntelCacheDescr7F),
+    (D: $82; Family: cfL2Cache;            Size: 256;   WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr82),
+    (D: $83; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr83),
+    (D: $84; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr84),
+    (D: $85; Family: cfL2Cache;            Size: 2048;  WaysOfAssoc: 8;  LineSize: 32;                   I: RsIntelCacheDescr85),
+    (D: $86; Family: cfL2Cache;            Size: 512;   WaysOfAssoc: 4;  LineSize: 64;                   I: RsIntelCacheDescr86),
+    (D: $87; Family: cfL2Cache;            Size: 1024;  WaysOfAssoc: 8;  LineSize: 64;                   I: RsIntelCacheDescr87),
+    (D: $B0; Family: cfInstructionTLB;     Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB0),
+    (D: $B3; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 128;    I: RsIntelCacheDescrB3),
+    (D: $B4; Family: cfDataTLB;            Size: 4;     WaysOfAssoc: 4;                 Entries: 256;    I: RsIntelCacheDescrB4),
+    (D: $F0; Family: cfOther;                                                                            I: RsIntelCacheDescrF0),
+    (D: $F1; Family: cfOther;                                                                            I: RsIntelCacheDescrF1)
   );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
@@ -4336,16 +4345,19 @@ function CPUID: TCpuInfo;
     end;
 
     CPUInfo.MMX := (CPUInfo.Features and MMX_FLAG) <> 0;
+    CPUInfo.SSE := [];
     if (CPUInfo.Features and SSE_FLAG) <> 0 then
-      if (CPUInfo.Features and SSE2_FLAG) <> 0 then
-        if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSE3) <> 0 then
-          CPUInfo.SSE := 3
-        else
-          CPUInfo.SSE := 2
-      else
-        CPUInfo.SSE := 1
-    else
-      CPUInfo.SSE := 0;
+      Include(CPUInfo.SSE, sse);
+    if (CPUInfo.Features and SSE2_FLAG) <> 0 then
+      Include(CPUInfo.SSE, sse2);
+    if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSE3) <> 0 then
+      Include(CPUInfo.SSE, sse3);
+    if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSSE3) <> 0 then
+      Include(CPUInfo.SSE, ssse3);
+    if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSE4_1) <> 0 then
+      Include(CPUInfo.SSE, sse4A);
+    if (CPUInfo.IntelSpecific.ExFeatures and EINTEL_SSE4_2) <> 0 then
+      Include(CPUInfo.SSE, sse4B);
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
     CPUInfo.DepCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.IntelSpecific.Ex64Features and EINTEL64_EDB) <> 0);
   end;
@@ -4404,7 +4416,7 @@ function CPUID: TCpuInfo;
       end;
       if ExHiVal >= $80000006 then
         CallCPUID($80000006, 0, CPUInfo.AMDSpecific.L2MByteInstructionTLB, CPUInfo.AMDSpecific.L2KByteInstructionTLB,
-          CPUInfo.AMDSpecific.L2Cache, Unused);
+          CPUInfo.AMDSpecific.L2Cache, CPUInfo.AMDSpecific.L3Cache);
       if CPUInfo.HasCacheInfo then
       begin
         CPUInfo.L1DataCacheSize := CPUInfo.AMDSpecific.L1DataCache[ciSize];
@@ -4416,6 +4428,9 @@ function CPUID: TCpuInfo;
         CPUInfo.L2CacheLineSize := CPUInfo.AMDSpecific.L2Cache and $FF;
         CPUInfo.L2CacheAssociativity := (CPUInfo.AMDSpecific.L2Cache shr 12) and $F;
         CPUInfo.L2CacheSize := CPUInfo.AMDSpecific.L2Cache shr 16;
+        CPUInfo.L3CacheLineSize := CPUInfo.AMDSpecific.L3Cache and $FF;
+        CPUInfo.L3CacheAssociativity := (CPUInfo.AMDSpecific.L3Cache shr 12) and $F;
+        CPUInfo.L3CacheSize := CPUInfo.AMDSpecific.L3Cache shr 19 {MB}; //(CPUInfo.AMDSpecific.L3Cache shr 18) * 512 {kB};
       end;
       if ExHiVal >= $80000007 then
         CallCPUID($80000007, 0, Unused, Unused, Unused, CPUInfo.AMDSpecific.AdvancedPowerManagement);
@@ -4486,16 +4501,20 @@ function CPUID: TCpuInfo;
     CPUInfo.ExMMX := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_EXMMX) <> 0);
     CPUInfo._3DNow := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_3DNOW) <> 0);
     CPUInfo.Ex3DNow := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_EX3DNOW) <> 0);
+    CPUInfo.SSE := [];
     if (CPUInfo.Features and AMD_SSE) <> 0 then
-      if (CPUInfo.Features and AMD_SSE2) <> 0 then
-        if CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.Features2 and AMD2_SSE3) <> 0) then
-          CPUInfo.SSE := 3
-        else
-          CPUInfo.SSE := 2
-      else
-        CPUInfo.SSE := 1
-    else
-      CPUInfo.SSE := 0;
+      Include(CPUInfo.SSE, sse);
+    if (CPUInfo.Features and AMD_SSE2) <> 0 then
+      Include(CPUInfo.SSE, sse2);
+    if (CPUInfo.AMDSpecific.Features2 and AMD2_SSE3) <> 0 then
+        Include(CPUInfo.SSE, sse3);
+    if CPUInfo.HasExtendedInfo then
+    begin
+      if (CPUInfo.AMDSpecific.ExFeatures2 and EAMD2_SSE4A) <> 0 then
+        Include(CPUInfo.SSE, sse4A);
+      if (CPUInfo.AMDSpecific.ExFeatures2 and EAMD2_SSE5) <> 0 then
+        Include(CPUInfo.SSE, sse5);
+    end;
     CPUInfo.Is64Bits := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_LONG) <> 0);
     CPUInfo.DEPCapable := CPUInfo.HasExtendedInfo and ((CPUInfo.AMDSpecific.ExFeatures and EAMD_NX) <> 0);
   end;
@@ -4612,9 +4631,9 @@ function CPUID: TCpuInfo;
     if not CPUInfo.HasExtendedInfo then
       CPUInfo.CpuName := 'C3';
     CPUInfo.MMX := (CPUInfo.Features and VIA_MMX) <> 0;
-    if (CPUInfo.Features and VIA_SSE) <> 0
-      then CPUInfo.SSE := 1
-      else CPUInfo.SSE := 0;
+    CPUInfo.SSE := [];
+    if (CPUInfo.Features and VIA_SSE) <> 0 then
+      Include(CPUInfo.SSE, sse);
     CPUInfo._3DNow := (CPUInfo.Features and VIA_3DNOW) <> 0;
   end;
 
