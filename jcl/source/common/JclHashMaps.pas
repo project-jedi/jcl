@@ -76,7 +76,7 @@ type
   TJclIntfIntfBucketArray = array of TJclIntfIntfBucket;
 
   TJclIntfIntfHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, 
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntfMap)
   private
     FBuckets: TJclIntfIntfBucketArray;
@@ -135,7 +135,7 @@ type
   TJclAnsiStrIntfBucketArray = array of TJclAnsiStrIntfBucket;
 
   TJclAnsiStrIntfHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrIntfMap)
   private
     FBuckets: TJclAnsiStrIntfBucketArray;
@@ -193,7 +193,7 @@ type
   TJclIntfAnsiStrBucketArray = array of TJclIntfAnsiStrBucket;
 
   TJclIntfAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclIntfAnsiStrMap)
   private
     FBuckets: TJclIntfAnsiStrBucketArray;
@@ -252,7 +252,7 @@ type
   TJclAnsiStrAnsiStrBucketArray = array of TJclAnsiStrAnsiStrBucket;
 
   TJclAnsiStrAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap)
   private
     FBuckets: TJclAnsiStrAnsiStrBucketArray;
@@ -310,7 +310,7 @@ type
   TJclWideStrIntfBucketArray = array of TJclWideStrIntfBucket;
 
   TJclWideStrIntfHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrIntfMap)
   private
     FBuckets: TJclWideStrIntfBucketArray;
@@ -368,7 +368,7 @@ type
   TJclIntfWideStrBucketArray = array of TJclIntfWideStrBucket;
 
   TJclIntfWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclIntfWideStrMap)
   private
     FBuckets: TJclIntfWideStrBucketArray;
@@ -427,7 +427,7 @@ type
   TJclWideStrWideStrBucketArray = array of TJclWideStrWideStrBucket;
 
   TJclWideStrWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
     IJclWideStrWideStrMap)
   private
     FBuckets: TJclWideStrWideStrBucketArray;
@@ -496,7 +496,7 @@ type
   TJclIntfBucketArray = array of TJclIntfBucket;
 
   TJclIntfHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclValueOwner,
     IJclIntfMap)
   private
     FBuckets: TJclIntfBucketArray;
@@ -559,7 +559,7 @@ type
   TJclAnsiStrBucketArray = array of TJclAnsiStrBucket;
 
   TJclAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap)
   private
     FBuckets: TJclAnsiStrBucketArray;
@@ -621,7 +621,7 @@ type
   TJclWideStrBucketArray = array of TJclWideStrBucket;
 
   TJclWideStrHashMap = class(TJclwideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap)
   private
     FBuckets: TJclWideStrBucketArray;
@@ -690,7 +690,7 @@ type
   TJclBucketArray = array of TJclBucket;
 
   TJclHashMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclKeyOwner, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclKeyOwner, IJclValueOwner,
     IJclMap)
   private
     FBuckets: TJclBucketArray;
@@ -758,7 +758,7 @@ type
   TJclBucketArray<TKey,TValue> = array of TJclBucket<TKey,TValue>;
 
   TJclHashMap<TKey,TValue> = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,  IJclPairOwner<TKey, TValue>,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclPairOwner<TKey, TValue>,
     IJclMap<TKey,TValue>)
   private
     FBuckets: TJclBucketArray<TKey,TValue>;

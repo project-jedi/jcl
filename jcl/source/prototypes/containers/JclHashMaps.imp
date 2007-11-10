@@ -18,7 +18,7 @@
   BUCKETARRAYTYPENAME = array of BUCKETTYPENAME;
 
   SELFCLASSNAME = class(ANCESTORNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, INTERFACEADDITIONAL
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,INTERFACEADDITIONAL
     MAPINTERFACENAME)
   private
     FBuckets: BUCKETARRAYTYPENAME;
