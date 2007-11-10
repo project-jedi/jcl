@@ -108,6 +108,7 @@
       <DCCReference Include="..\..\source\common\JclQueues.pas"/>
       <DCCReference Include="..\..\source\common\JclResources.pas"/>
       <DCCReference Include="..\..\source\common\JclRTTI.pas"/>
+      <DCCReference Include="..\..\source\common\JclSortedMaps.pas"/>
       <DCCReference Include="..\..\source\common\JclStacks.pas"/>
       <DCCReference Include="..\..\source\common\JclStatistics.pas"/>
       <DCCReference Include="..\..\source\common\JclStreams.pas"/>

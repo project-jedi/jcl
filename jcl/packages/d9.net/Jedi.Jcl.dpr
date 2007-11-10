@@ -25,6 +25,7 @@ uses
   JclQueues in '..\..\source\common\JclQueues.pas' ,
   JclResources in '..\..\source\common\JclResources.pas' ,
   JclRTTI in '..\..\source\common\JclRTTI.pas' ,
+  JclSortedMaps in '..\..\source\common\JclSortedMaps.pas' ,
   JclStacks in '..\..\source\common\JclStacks.pas' ,
   JclStatistics in '..\..\source\common\JclStatistics.pas' ,
   JclStreams in '..\..\source\common\JclStreams.pas' ,

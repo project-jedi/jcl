@@ -200,6 +200,7 @@
       <File FileName="..\..\source\common\JclQueues.pas" ContainerId="" ModuleName="JclQueues"/>
       <File FileName="..\..\source\common\JclResources.pas" ContainerId="" ModuleName="JclResources"/>
       <File FileName="..\..\source\common\JclRTTI.pas" ContainerId="" ModuleName="JclRTTI"/>
+      <File FileName="..\..\source\common\JclSortedMaps.pas" ContainerId="" ModuleName="JclSortedMaps"/>
       <File FileName="..\..\source\common\JclStacks.pas" ContainerId="" ModuleName="JclStacks"/>
       <File FileName="..\..\source\common\JclStatistics.pas" ContainerId="" ModuleName="JclStatistics"/>
       <File FileName="..\..\source\common\JclStreams.pas" ContainerId="" ModuleName="JclStreams"/>

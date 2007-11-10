@@ -749,11 +749,11 @@ type
     property Items[const Key: IInterface]: IInterface read GetValue write PutValue;
   end;
 
-  IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
+  (*IJclMultiIntfIntfMap = interface(IJclIntfIntfMap)
     ['{497775A5-D3F1-49FC-A641-15CC9E77F3D0}']
     function GetValues(const Key: IInterface): IJclIntfIterator;
     function Count(const Key: IInterface): Integer;
-  end;
+  end;*)
 
   IJclAnsiStrIntfMap = interface(IJclAnsiStrContainer)
     ['{A4788A96-281A-4924-AA24-03776DDAAD8A}']
@@ -1060,6 +1060,65 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+  IJclIntfIntfSortedMap = interface(IJclIntfIntfMap)
+    ['{265A6EB2-4BB3-459F-8813-360FD32A4971}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfIntfSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfIntfSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
+  end;
+
+  IJclAnsiStrIntfSortedMap = interface(IJclAnsiStrIntfMap)
+    ['{706D1C91-5416-4FDC-B6B1-F4C1E8CFCD38}']
+    function FirstKey: AnsiString;
+    function HeadMap(const ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
+    function LastKey: AnsiString;
+    function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
+    function TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
+  end;
+
+  IJclWideStrIntfSortedMap = interface(IJclWideStrIntfMap)
+    ['{299FDCFD-2DB7-4D64-BF18-EE3668316430}']
+    function FirstKey: WideString;
+    function HeadMap(const ToKey: WideString): IJclWideStrIntfSortedMap;
+    function LastKey: WideString;
+    function SubMap(const FromKey, ToKey: WideString): IJclWideStrIntfSortedMap;
+    function TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrIntfSortedMap = IJclAnsiStrIntfSortedMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrIntfSortedMap = IJclWideStrIntfSortedMap;
+  {$ENDIF CONTAINER_WIDESTR}
+
+  IJclIntfAnsiStrSortedMap = interface(IJclIntfAnsiStrMap)
+    ['{96E6AC5E-8C40-4795-9C8A-CFD098B58680}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfAnsiStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfAnsiStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
+  end;
+
+  IJclIntfWideStrSortedMap = interface(IJclIntfWideStrMap)
+    ['{FBE3AD2E-2781-4DC0-9E80-027027380E21}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfWideStrSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfWideStrSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclIntfStrSortedMap = IJclIntfAnsiStrSortedMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclIntfStrSortedMap = IJclIntfWideStrSortedMap;
+  {$ENDIF CONTAINER_WIDESTR}
+
   IJclAnsiStrAnsiStrSortedMap = interface(IJclAnsiStrAnsiStrMap)
     ['{4F457799-5D03-413D-A46C-067DC4200CC3}']
     function FirstKey: AnsiString;
@@ -1083,6 +1142,40 @@ type
   {$ENDIF CONTAINER_ANSISTR}
   {$IFDEF CONTAINER_WIDESTR}
   IJclStrStrSortedMap = IJclWideStrWideStrSortedMap;
+  {$ENDIF CONTAINER_WIDESTR}
+
+  IJclIntfSortedMap = interface(IJclIntfMap)
+    ['{3CED1477-B958-4109-9BDA-7C84B9E063B2}']
+    function FirstKey: IInterface;
+    function HeadMap(const ToKey: IInterface): IJclIntfSortedMap;
+    function LastKey: IInterface;
+    function SubMap(const FromKey, ToKey: IInterface): IJclIntfSortedMap;
+    function TailMap(const FromKey: IInterface): IJclIntfSortedMap;
+  end;
+
+  IJclAnsiStrSortedMap = interface(IJclAnsiStrMap)
+    ['{573F98E3-EBCD-4F28-8F35-96A7366CBF47}']
+    function FirstKey: AnsiString;
+    function HeadMap(const ToKey: AnsiString): IJclAnsiStrSortedMap;
+    function LastKey: AnsiString;
+    function SubMap(const FromKey, ToKey: AnsiString): IJclAnsiStrSortedMap;
+    function TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
+  end;
+
+  IJclWideStrSortedMap = interface(IJclWideStrMap)
+    ['{B3021EFC-DE25-4B4B-A896-ACE823CD5C01}']
+    function FirstKey: WideString;
+    function HeadMap(const ToKey: WideString): IJclWideStrSortedMap;
+    function LastKey: WideString;
+    function SubMap(const FromKey, ToKey: WideString): IJclWideStrSortedMap;
+    function TailMap(const FromKey: WideString): IJclWideStrSortedMap;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrSortedMap = IJclAnsiStrSortedMap;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrSortedMap = IJclWideStrSortedMap;
   {$ENDIF CONTAINER_WIDESTR}
 
   IJclSortedMap = interface(IJclMap)
@@ -1111,6 +1204,27 @@ type
     function SubSet(const Start, Finish: IInterface): IJclIntfSortedSet;
     function TailSet(const AStartObject: IInterface): IJclIntfSortedSet;
   end;
+
+  IJclAnsiStrSortedSet = interface(IJclAnsiStrSet)
+    ['{03198146-F967-4310-868B-7AD3D52D5CBE}']
+    function HeadSet(const AEndObject: AnsiString): IJclAnsiStrSortedSet;
+    function SubSet(const Start, Finish: AnsiString): IJclAnsiStrSortedSet;
+    function TailSet(const AStartObject: AnsiString): IJclAnsiStrSortedSet;
+  end;
+
+  IJclWideStrSortedSet = interface(IJclWideStrSet)
+    ['{ED9567E2-C1D3-4C00-A1D4-90D5C7E27C2D}']
+    function HeadSet(const AEndObject: WideString): IJclWideStrSortedSet;
+    function SubSet(const Start, Finish: WideString): IJclWideStrSortedSet;
+    function TailSet(const AStartObject: WideString): IJclWideStrSortedSet;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrSortedSet = IJclAnsiStrSortedSet;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrSortedSet = IJclWideStrSortedSet;
+  {$ENDIF CONTAINER_WIDESTR}
 
   IJclSortedSet = interface(IJclSet)
     ['{A3D23E76-ADE9-446C-9B97-F49FCE895D9F}']

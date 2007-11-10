@@ -44,6 +44,7 @@
       ..\..\lib\k3\JclRTTI.obj
       ..\..\lib\k3\JclSimpleXml.obj
       ..\..\lib\k3\JclSchedule.obj
+      ..\..\lib\k3\JclSortedMaps.obj
       ..\..\lib\k3\JclStacks.obj
       ..\..\lib\k3\JclStatistics.obj
       ..\..\lib\k3\JclStreams.obj
@@ -144,6 +145,7 @@
       <FILE FILENAME="../../source/common/JclRTTI.pas" FORMNAME="" UNITNAME="JclRTTI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSimpleXml.pas" FORMNAME="" UNITNAME="JclSimpleXml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclSortedMaps.pas" FORMNAME="" UNITNAME="JclSortedMaps" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStacks.pas" FORMNAME="" UNITNAME="JclStacks" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStreams.pas" FORMNAME="" UNITNAME="JclStreams" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
