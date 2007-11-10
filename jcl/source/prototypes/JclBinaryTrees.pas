@@ -53,27 +53,27 @@ type
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclIntfBinaryNode,TJclIntfBinaryTree,TJclIntfAbstractContainer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator, IJclIntfEqualityComparer\, IJclIntfComparer\,,
     FCompare: TIntfCompare;,
     { IJclIntfComparer }
-    function ItemsCompare(const A, B: IInterface): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: IInterface): Integer;
     { IJclIntfEqualityComparer }
-    function ItemsEqual(const A, B: IInterface): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: IInterface): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TIntfCompare read FCompare write FCompare;,ACompare: TIntfCompare,,const AInterface: IInterface,IInterface)*)
 
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclAnsiStrBinaryNode,TJclAnsiStrBinaryTree,TJclAnsiStrAbstractCollection,IJclAnsiStrCollection,IJclAnsiStrTree,IJclAnsiStrIterator, IJclStrContainer\, IJclAnsiStrContainer\, IJclAnsiStrFlatContainer\, IJclAnsiStrEqualityComparer\, IJclAnsiStrComparer\,,
     FCompare: TAnsiStrCompare;,
     { IJclAnsiStrComparer }
-    function ItemsCompare(const A, B: AnsiString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: AnsiString): Integer;
     { IJclAnsiStrEqualityComparer }
-    function ItemsEqual(const A, B: AnsiString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: AnsiString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TAnsiStrCompare read FCompare write FCompare;,ACompare: TAnsiStrCompare, override;,const AString: AnsiString,AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclWideStrBinaryNode,TJclWideStrBinaryTree,TJclWideStrAbstractCollection,IJclWideStrCollection,IJclWideStrTree,IJclWideStrIterator, IJclStrContainer\, IJclWideStrContainer\, IJclWideStrFlatContainer\, IJclWideStrEqualityComparer\, IJclWideStrComparer\,,
     FCompare: TWideStrCompare;,
     { IJclWideStrComparer }
-    function ItemsCompare(const A, B: WideString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: WideString): Integer;
     { IJclWideStrEqualityComparer }
-    function ItemsEqual(const A, B: WideString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: WideString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TWideStrCompare read FCompare write FCompare;,ACompare: TWideStrCompare, override;,const AString: WideString,WideString)*)
 
@@ -87,9 +87,9 @@ type
 (*$JPPEXPANDMACRO JCLBINARYTREEINT(TJclBinaryNode,TJclBinaryTree,TJclAbstractContainer,IJclCollection,IJclTree,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\, IJclComparer\,,
     FCompare: TCompare;,
     { IJclComparer }
-    function ItemsCompare(A, B: TObject): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(A, B: TObject): Integer;
     { IJclEqualityComparer }
-    function ItemsEqual(A, B: TObject): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(A, B: TObject): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,
     property Compare: TCompare read FCompare write FCompare;,ACompare: TCompare; AOwnsObjects: Boolean,,AObject: TObject,TObject)*)
 

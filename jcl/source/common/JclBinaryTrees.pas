@@ -97,9 +97,9 @@ type
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     { IJclIntfComparer }
-    function ItemsCompare(const A, B: IInterface): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: IInterface): Integer;
     { IJclIntfEqualityComparer }
-    function ItemsEqual(const A, B: IInterface): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: IInterface): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TIntfCompare);
@@ -151,9 +151,9 @@ type
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     { IJclAnsiStrComparer }
-    function ItemsCompare(const A, B: AnsiString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: AnsiString): Integer;
     { IJclAnsiStrEqualityComparer }
-    function ItemsEqual(const A, B: AnsiString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: AnsiString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TAnsiStrCompare);
@@ -205,9 +205,9 @@ type
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     { IJclWideStrComparer }
-    function ItemsCompare(const A, B: WideString): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(const A, B: WideString): Integer;
     { IJclWideStrEqualityComparer }
-    function ItemsEqual(const A, B: WideString): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(const A, B: WideString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TWideStrCompare);
@@ -266,9 +266,9 @@ type
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     { IJclComparer }
-    function ItemsCompare(A, B: TObject): Integer;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsCompare(A, B: TObject): Integer;
     { IJclEqualityComparer }
-    function ItemsEqual(A, B: TObject): Boolean;{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF SUPPORTS_INLINE}
+    function ItemsEqual(A, B: TObject): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TCompare; AOwnsObjects: Boolean);

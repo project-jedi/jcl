@@ -107,11 +107,11 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: IInterface): IInterface;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -166,10 +166,10 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -224,11 +224,11 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: AnsiString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -283,10 +283,10 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(const A, B: AnsiString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -341,10 +341,10 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(const A, B: IInterface): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -399,11 +399,11 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: WideString): WideString;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(const A, B: WideString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -458,10 +458,10 @@ type
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: WideString): WideString;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(const A, B: WideString): Boolean;
   public
     constructor Create(ACapacity: Integer);
     destructor Destroy; override;
@@ -531,10 +531,10 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: IInterface): IInterface;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A, B: IInterface): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -594,9 +594,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function KeysEqual(const A, B: AnsiString): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -656,9 +656,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function FreeKey(var Key: WideString): WideString;
+    function KeysEqual(const A, B: WideString): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean);
     destructor Destroy; override;
@@ -729,9 +729,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function Hash(AObject: TObject): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
+    function Hash(AObject: TObject): Integer;
+    function KeysEqual(A, B: TObject): Boolean;
+    function ValuesEqual(A, B: TObject): Boolean;
   public
     constructor Create(ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
     destructor Destroy; override;

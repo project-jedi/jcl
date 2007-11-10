@@ -58,55 +58,55 @@ type
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,IInterface,TJclIntfIntfEntry,TJclIntfIntfEntryArray,TJclIntfIntfBucket,TJclIntfIntfBucketArray,TJclIntfIntfHashMap,TJclAbstractContainerBase,IJclIntfIntfMap,IJclIntfSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: IInterface,const Value: IInterface)*)
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: IInterface): IInterface;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A\, B: IInterface): Boolean;
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: IInterface,const Value: IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,IInterface,TJclAnsiStrIntfEntry,TJclAnsiStrIntfEntryArray,TJclAnsiStrIntfBucket,TJclAnsiStrIntfBucketArray,TJclAnsiStrIntfHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrIntfMap,IJclAnsiStrSet,IJclIntfCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: AnsiString,const Value: IInterface)*)
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A\, B: AnsiString): Boolean;
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: AnsiString,const Value: IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,AnsiString,TJclIntfAnsiStrEntry,TJclIntfAnsiStrEntryArray,TJclIntfAnsiStrBucket,TJclIntfAnsiStrBucketArray,TJclIntfAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclIntfAnsiStrMap,IJclIntfSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: IInterface,const Value: AnsiString)*)
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A\, B: IInterface): Boolean;
+    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const Key: IInterface,const Value: AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,AnsiString,TJclAnsiStrAnsiStrEntry,TJclAnsiStrAnsiStrEntryArray,TJclAnsiStrAnsiStrBucket,TJclAnsiStrAnsiStrBucketArray,TJclAnsiStrAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrAnsiStrMap,IJclAnsiStrSet,IJclAnsiStrCollection, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: AnsiString,const Value: AnsiString)*)
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function FreeValue(var Value: AnsiString): AnsiString;
+    function KeysEqual(const A\, B: AnsiString): Boolean;
+    function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const Key: AnsiString,const Value: AnsiString)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,IInterface,TJclWideStrIntfEntry,TJclWideStrIntfEntryArray,TJclWideStrIntfBucket,TJclWideStrIntfBucketArray,TJclWideStrIntfHashMap,TJclWideStrAbstractContainer,IJclWideStrIntfMap,IJclWideStrSet,IJclIntfCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: WideString,const Value: IInterface)*)
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: IInterface): IInterface;
+    function KeysEqual(const A\, B: WideString): Boolean;
+    function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: WideString,const Value: IInterface)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,WideString,TJclIntfWideStrEntry,TJclIntfWideStrEntryArray,TJclIntfWideStrBucket,TJclIntfWideStrBucketArray,TJclIntfWideStrHashMap,TJclWideStrAbstractContainer,IJclIntfWideStrMap,IJclIntfSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: IInterface,const Value: WideString)*)
+    function FreeKey(var Key: IInterface): IInterface;
+    function FreeValue(var Value: WideString): WideString;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A\, B: IInterface): Boolean;
+    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const Key: IInterface,const Value: WideString)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,WideString,TJclWideStrWideStrEntry,TJclWideStrWideStrEntryArray,TJclWideStrWideStrBucket,TJclWideStrWideStrBucketArray,TJclWideStrWideStrHashMap,TJclWideStrAbstractContainer,IJclWideStrWideStrMap,IJclWideStrSet,IJclWideStrCollection, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function FreeValue(var Value: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(const A\, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},,,,const Key: WideString,const Value: WideString)*)
+    function FreeKey(var Key: WideString): WideString;
+    function FreeValue(var Value: WideString): WideString;
+    function KeysEqual(const A\, B: WideString): Boolean;
+    function ValuesEqual(const A\, B: WideString): Boolean;,,,,const Key: WideString,const Value: WideString)*)
 
   {$IFDEF CONTAINER_ANSISTR}
   TJclStrIntfHashMap = TJclAnsiStrIntfHashMap;
@@ -125,10 +125,10 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: IInterface): IInterface; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function Hash(const AInterface: IInterface): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: IInterface): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A\, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},
+    function FreeKey(var Key: IInterface): IInterface;
+    function Hash(const AInterface: IInterface): Integer;
+    function KeysEqual(const A\, B: IInterface): Boolean;
+    function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: IInterface,Value: TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(AnsiString,TObject,TJclAnsiStrEntry,TJclAnsiStrEntryArray,TJclAnsiStrBucket,TJclAnsiStrBucketArray,TJclAnsiStrHashMap,TJclAnsiStrAbstractContainer,IJclAnsiStrMap,IJclAnsiStrSet,IJclCollection, IJclStrContainer\, IJclAnsiStrContainer\, IJclValueOwner\,,
@@ -137,9 +137,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: AnsiString): AnsiString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: AnsiString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A\, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},
+    function FreeKey(var Key: AnsiString): AnsiString;
+    function KeysEqual(const A\, B: AnsiString): Boolean;
+    function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: AnsiString,Value: TObject)*)
 
 (*$JPPEXPANDMACRO JCLHASHMAPINT(WideString,TObject,TJclWideStrEntry,TJclWideStrEntryArray,TJclWideStrBucket,TJclWideStrBucketArray,TJclWideStrHashMap,TJclwideStrAbstractContainer,IJclWideStrMap,IJclWideStrSet,IJclCollection, IJclStrContainer\, IJclWideStrContainer\, IJclValueOwner\,,
@@ -148,9 +148,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function FreeKey(var Key: WideString): WideString; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(const A\, B: WideString): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A\, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},
+    function FreeKey(var Key: WideString): WideString;
+    function KeysEqual(const A\, B: WideString): Boolean;
+    function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: WideString,Value: TObject)*)
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -170,9 +170,9 @@ type
     function FreeValue(var Value: TObject): TObject;
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function Hash(AObject: TObject): Integer; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function KeysEqual(A\, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS}
-    function ValuesEqual(A\, B: TObject): Boolean; {$IFDEF SUPPORTS_GENERICS}inline;{$ENDIF SUPPORTS_GENERICS},
+    function Hash(AObject: TObject): Integer;
+    function KeysEqual(A\, B: TObject): Boolean;
+    function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,Key: TObject,Value: TObject)*)
 
