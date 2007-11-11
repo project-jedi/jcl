@@ -268,8 +268,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -561,8 +565,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -574,7 +582,7 @@ end;
 
 function SELFCLASSNAME.TailMap(TAILMAPPARAMETERDECLARATION): SORTEDMAPINTERFACENAME;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: SELFCLASSNAME;
 begin
   {$IFDEF THREADSAFE}
@@ -588,8 +596,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}

@@ -653,7 +653,7 @@ type
     property OwnsValues: Boolean read FOwnsValues;
   end;
 
-  {$IFDEF SUPPORTS_GENERICS_DISABLED}
+  {$IFDEF SUPPORTS_GENERICS}
 
   TJclEntry<TKey,TValue> = record
     Key: TKey;
@@ -719,6 +719,7 @@ type
   private
     FKeyComparer: IComparer<TKey>;
     FValueComparer: IComparer<TValue>;
+    FValueEqualityComparer: IEqualityComparer<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function KeysCompare(const A, B: TKey): Integer; override;
@@ -730,10 +731,12 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AKeyComparer: IComparer<TKey>; const AValueComparer: IComparer<TValue>;
-      ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+      const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer; AOwnsValues: Boolean;
+      AOwnsKeys: Boolean);
 
     property KeyComparer: IComparer<TKey> read FKeyComparer write FKeyComparer;
     property ValueComparer: IComparer<TValue> read FValueComparer write FValueComparer;
+    property ValueEqualityComparer: IEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
   end;
 
   // F = Functions to compare items
@@ -742,6 +745,7 @@ type
   private
     FKeyCompare: TCompare<TKey>;
     FValueCompare: TCompare<TValue>;
+    FValueEqualityCompare: TEqualityCompare<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function KeysCompare(const A, B: TKey): Integer; override;
@@ -753,14 +757,15 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AKeyCompare: TCompare<TKey>; AValueCompare: TCompare<TValue>;
-      ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+      AValueEqualityCompare: TEqualityCompare<TValue>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
     property KeyCompare: TCompare<TKey> read FKeyCompare write FKeyCompare;
     property ValueCompare: TCompare<TValue> read FValueCompare write FValueCompare;
+    property ValueEqualityCompare: TEqualityCompare<TValue> read FValueEqualityCompare write FValueEqualityCompare;
   end;
 
   // I = items can compare themselves to an other
-  TJclSortedMapI<TKey: IComparable<TKey>; TValue: IComparable<TValue>> = class(TJclSortedMap<TKey, TValue>,
+  TJclSortedMapI<TKey: IComparable<TKey>; TValue: IComparable<TValue>, IEquatable<TValue>> = class(TJclSortedMap<TKey, TValue>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
@@ -1022,8 +1027,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -1319,8 +1328,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -1332,7 +1345,7 @@ end;
 
 function TJclIntfIntfSortedMap.TailMap(const FromKey: IInterface): IJclIntfIntfSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclIntfIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -1346,8 +1359,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -1612,8 +1630,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -1909,8 +1931,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -1922,7 +1948,7 @@ end;
 
 function TJclAnsiStrIntfSortedMap.TailMap(const FromKey: AnsiString): IJclAnsiStrIntfSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclAnsiStrIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -1936,8 +1962,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -2202,8 +2233,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -2499,8 +2534,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -2512,7 +2551,7 @@ end;
 
 function TJclIntfAnsiStrSortedMap.TailMap(const FromKey: IInterface): IJclIntfAnsiStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclIntfAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -2526,8 +2565,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -2794,8 +2838,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3091,8 +3139,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3104,7 +3156,7 @@ end;
 
 function TJclAnsiStrAnsiStrSortedMap.TailMap(const FromKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclAnsiStrAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -3118,8 +3170,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3386,8 +3443,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3683,8 +3744,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3696,7 +3761,7 @@ end;
 
 function TJclWideStrIntfSortedMap.TailMap(const FromKey: WideString): IJclWideStrIntfSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclWideStrIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -3710,8 +3775,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -3976,8 +4046,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -4273,8 +4347,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -4286,7 +4364,7 @@ end;
 
 function TJclIntfWideStrSortedMap.TailMap(const FromKey: IInterface): IJclIntfWideStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclIntfWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -4300,8 +4378,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -4568,8 +4651,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -4865,8 +4952,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -4878,7 +4969,7 @@ end;
 
 function TJclWideStrWideStrSortedMap.TailMap(const FromKey: WideString): IJclWideStrWideStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclWideStrWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -4892,8 +4983,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -5173,8 +5269,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -5470,8 +5570,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -5483,7 +5587,7 @@ end;
 
 function TJclIntfSortedMap.TailMap(const FromKey: IInterface): IJclIntfSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -5497,8 +5601,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -5778,8 +5887,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -6075,8 +6188,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -6088,7 +6205,7 @@ end;
 
 function TJclAnsiStrSortedMap.TailMap(const FromKey: AnsiString): IJclAnsiStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -6102,8 +6219,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -6383,8 +6505,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -6680,8 +6806,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -6693,7 +6823,7 @@ end;
 
 function TJclWideStrSortedMap.TailMap(const FromKey: WideString): IJclWideStrSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -6707,8 +6837,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7001,8 +7136,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7298,8 +7437,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7311,7 +7454,7 @@ end;
 
 function TJclSortedMap.TailMap(FromKey: TObject): IJclSortedMap;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclSortedMap;
 begin
   {$IFDEF THREADSAFE}
@@ -7325,8 +7468,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7360,7 +7508,7 @@ begin
 end;
 
 
-{$IFDEF SUPPORTS_GENERICS_DISABLED}
+{$IFDEF SUPPORTS_GENERICS}
 
 
 //=== { TJclSortedMap<TKey,TValue> } ==============================================
@@ -7616,8 +7764,12 @@ begin
     if ToIndex >= 0 then
     begin
       NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FEntries := Copy(FEntries, 0, ToIndex + 1);
       NewMap.FSize := ToIndex + 1;
+      while ToIndex >= 0 do
+      begin
+        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7678,7 +7830,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArraySet<TKey>.Create(FSize, False);
+    Result := CreateEmptyArraySet(FSize, False);
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
@@ -7909,8 +8061,12 @@ begin
     if (FromIndex >= 0) and (FromIndex <= ToIndex) then
     begin
       NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FEntries := Copy(FEntries, FromIndex, ToIndex - FromIndex + 1);
       NewMap.FSize := ToIndex - FromIndex + 1;
+      while ToIndex >= FromIndex do
+      begin
+        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+        Dec(ToIndex);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7922,7 +8078,7 @@ end;
 
 function TJclSortedMap<TKey,TValue>.TailMap(const FromKey: TKey): IJclSortedMap<TKey,TValue>;
 var
-  FromIndex: Integer;
+  FromIndex, Index: Integer;
   NewMap: TJclSortedMap<TKey,TValue>;
 begin
   {$IFDEF THREADSAFE}
@@ -7936,8 +8092,13 @@ begin
     if (FromIndex >= 0) and (FromIndex < FSize) then
     begin
       NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FEntries := Copy(FEntries, FromIndex, FSize - FromIndex);
       NewMap.FSize := FSize - FromIndex;
+      Index := FromIndex;
+      while Index < FSize do
+      begin
+        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+        Inc(Index);
+      end;
     end;
     Result := NewMap;
   {$IFDEF THREADSAFE}
@@ -7955,7 +8116,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList<TValue>.Create(FSize, False);
+    Result := CreateEmptyArrayList(FSize, False);
     for Index := 0 to FSize - 1 do
       Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
@@ -7967,11 +8128,151 @@ end;
 
 
 
-{function TJclSortedMap<TKey,TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+//=== { TJclSortedMapE<TKey, TValue> } =======================================
+
+constructor TJclSortedMapE<TKey, TValue>.Create(const AKeyComparer: IComparer<TKey>;
+  const AValueComparer: IComparer<TValue>; const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer;
+  AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  Result := TJclSortedMap<TKey,TValue>.Create(FSize, False, False);
+  inherited Create(ACapacity, AOwnsValues, AOwnsKeys);
+  FKeyComparer := AKeyComparer;
+  FValueComparer := AValueComparer;
+  FValueEqualityComparer := AValueEqualityComparer;
+end;
+
+procedure TJclSortedMapE<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSortedMapE<TKey, TValue>;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSortedMapE<TKey, TValue> then
+  begin
+    ADest := TJclSortedMapE<TKey, TValue>(Dest);
+    ADest.FKeyComparer := FKeyComparer;
+    ADest.FValueComparer := FValueComparer;
+  end;
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  if FValueEqualityComparer = nil then
+    raise EJclNoEqualityComparerError.Create;
+  Result := TJclArrayListE<TValue>.Create(FValueEqualityComparer, ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapE<TKey, TValue>.Create(FKeyComparer, FValueComparer, FValueEqualityComparer, FCapacity,
+    FOwnsValues, FOwnsKeys);
   AssignPropertiesTo(Result);
-end;}
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetE<TKey>.Create(FKeyComparer, FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapE<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  if KeyComparer = nil then
+    raise EJclNoComparerError.Create;
+  Result := KeyComparer.Compare(A, B);
+end;
+
+function TJclSortedMapE<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  if ValueComparer = nil then
+    raise EJclNoComparerError.Create;
+  Result := ValueComparer.Compare(A, B);
+end;
+
+//=== { TJclSortedMapF<TKey, TValue> } =======================================
+
+constructor TJclSortedMapF<TKey, TValue>.Create(AKeyCompare: TCompare<TKey>; AValueCompare: TCompare<TValue>;
+  AValueEqualityCompare: TEqualityCompare<TValue>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+begin
+  inherited Create(ACapacity, AOwnsValues, AOwnsKeys);
+  FKeyCompare := AKeyCompare;
+  FValueCompare := AValueCompare;
+  FValueEqualityCompare := AValueEqualityCompare;
+end;
+
+procedure TJclSortedMapF<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSortedMapF<TKey, TValue>;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSortedMapF<TKey, TValue> then
+  begin
+    ADest := TJclSortedMapF<TKey, TValue>(Dest);
+    ADest.FKeyCompare := FKeyCompare;
+    ADest.FValueCompare := FValueCompare;
+  end;
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  if not Assigned(FValueEqualityCompare) then
+    raise EJclNoEqualityComparerError.Create;
+  Result := TJclArrayListF<TValue>.Create(FValueEqualityCompare, ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapF<TKey, TValue>.Create(FKeyCompare, FValueCompare, FValueEqualityCompare, FCapacity,
+    FOwnsValues, FOwnsKeys);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetF<TKey>.Create(FKeyCompare, FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapF<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  if not Assigned(KeyCompare) then
+    raise EJclNoComparerError.Create;
+  Result := KeyCompare(A, B);
+end;
+
+function TJclSortedMapF<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  if not Assigned(ValueCompare) then
+    raise EJclNoComparerError.Create;
+  Result := ValueCompare(A, B);
+end;
+
+//=== { TJclSortedMapI<TKey, TValue> } =======================================
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  Result := TJclArrayListI<TValue>.Create(ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapI<TKey, TValue>.Create(FCapacity, FOwnsValues, FOwnsKeys);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetI<TKey>.Create(FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapI<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  Result := A.CompareTo(B);
+end;
+
+function TJclSortedMapI<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  Result := A.CompareTo(B);
+end;
 
 {$ENDIF SUPPORTS_GENERICS}
 

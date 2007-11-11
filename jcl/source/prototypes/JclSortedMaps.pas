@@ -166,7 +166,7 @@ type
     property OwnsKeys: Boolean read FOwnsKeys;
     property OwnsValues: Boolean read FOwnsValues;,; AOwnsKeys: Boolean,; AOwnsValues: Boolean,Key: TObject,Value: TObject,ToKey: TObject,FromKey\, ToKey: TObject,FromKey: TObject)*)
 
-  {$IFDEF SUPPORTS_GENERICS_DISABLED}
+  {$IFDEF SUPPORTS_GENERICS}
 (*$JPPEXPANDMACRO JCLSORTEDMAPINT(TKey,TValue,TJclEntry<TKey\,TValue>,TJclEntryArray<TKey\,TValue>,TJclSortedMap<TKey\,TValue>,TJclAbstractContainerBase,IJclMap<TKey\,TValue>,IJclSortedMap<TKey\,TValue>,IJclSet<TKey>,IJclCollection<TValue>, IJclPairOwner<TKey\,TValue>\,,
     FOwnsKeys: Boolean;
     FOwnsValues: Boolean;,
@@ -188,6 +188,7 @@ type
   private
     FKeyComparer: IComparer<TKey>;
     FValueComparer: IComparer<TValue>;
+    FValueEqualityComparer: IEqualityComparer<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function KeysCompare(const A, B: TKey): Integer; override;
@@ -199,10 +200,12 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AKeyComparer: IComparer<TKey>; const AValueComparer: IComparer<TValue>;
-      ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+      const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer; AOwnsValues: Boolean;
+      AOwnsKeys: Boolean);
 
     property KeyComparer: IComparer<TKey> read FKeyComparer write FKeyComparer;
     property ValueComparer: IComparer<TValue> read FValueComparer write FValueComparer;
+    property ValueEqualityComparer: IEqualityComparer<TValue> read FValueEqualityComparer write FValueEqualityComparer;
   end;
 
   // F = Functions to compare items
@@ -211,6 +214,7 @@ type
   private
     FKeyCompare: TCompare<TKey>;
     FValueCompare: TCompare<TValue>;
+    FValueEqualityCompare: TEqualityCompare<TValue>;
   protected
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function KeysCompare(const A, B: TKey): Integer; override;
@@ -222,14 +226,15 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AKeyCompare: TCompare<TKey>; AValueCompare: TCompare<TValue>;
-      ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+      AValueEqualityCompare: TEqualityCompare<TValue>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
 
     property KeyCompare: TCompare<TKey> read FKeyCompare write FKeyCompare;
     property ValueCompare: TCompare<TValue> read FValueCompare write FValueCompare;
+    property ValueEqualityCompare: TEqualityCompare<TValue> read FValueEqualityCompare write FValueEqualityCompare;
   end;
 
   // I = items can compare themselves to an other
-  TJclSortedMapI<TKey: IComparable<TKey>; TValue: IComparable<TValue>> = class(TJclSortedMap<TKey, TValue>,
+  TJclSortedMapI<TKey: IComparable<TKey>; TValue: IComparable<TValue>, IEquatable<TValue>> = class(TJclSortedMap<TKey, TValue>,
     {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE} IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer,
     IJclMap<TKey,TValue>, IJclSortedMap<TKey,TValue>, IJclPairOwner<TKey, TValue>)
   protected
@@ -858,11 +863,11 @@ end;
 {$JPPUNDEFMACRO KEYSCOMPARE}
 {$JPPUNDEFMACRO VALUESCOMPARE}
 
-{$IFDEF SUPPORTS_GENERICS_DISABLED}
+{$IFDEF SUPPORTS_GENERICS}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)TJclArraySet<TKey>.Create(Param, False)}
-{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)TJclArrayList<TValue>.Create(Param, False)}
+{$JPPDEFINEMACRO CREATEEMPTYARRAYSET(Param)CreateEmptyArraySet(Param, False)}
+{$JPPDEFINEMACRO CREATEEMPTYARRAYLIST(Param)CreateEmptyArrayList(Param, False)}
 {$JPPDEFINEMACRO FREEKEY
 function TJclSortedMap<TKey,TValue>.FreeKey(var Key: TKey): TKey;
 begin
@@ -920,11 +925,151 @@ end;
 {$JPPUNDEFMACRO KEYSCOMPARE}
 {$JPPUNDEFMACRO VALUESCOMPARE}
 
-{function TJclSortedMap<TKey,TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+//=== { TJclSortedMapE<TKey, TValue> } =======================================
+
+constructor TJclSortedMapE<TKey, TValue>.Create(const AKeyComparer: IComparer<TKey>;
+  const AValueComparer: IComparer<TValue>; const AValueEqualityComparer: IEqualityComparer<TValue>; ACapacity: Integer;
+  AOwnsValues: Boolean; AOwnsKeys: Boolean);
 begin
-  Result := TJclSortedMap<TKey,TValue>.Create(FSize, False, False);
+  inherited Create(ACapacity, AOwnsValues, AOwnsKeys);
+  FKeyComparer := AKeyComparer;
+  FValueComparer := AValueComparer;
+  FValueEqualityComparer := AValueEqualityComparer;
+end;
+
+procedure TJclSortedMapE<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSortedMapE<TKey, TValue>;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSortedMapE<TKey, TValue> then
+  begin
+    ADest := TJclSortedMapE<TKey, TValue>(Dest);
+    ADest.FKeyComparer := FKeyComparer;
+    ADest.FValueComparer := FValueComparer;
+  end;
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  if FValueEqualityComparer = nil then
+    raise EJclNoEqualityComparerError.Create;
+  Result := TJclArrayListE<TValue>.Create(FValueEqualityComparer, ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapE<TKey, TValue>.Create(FKeyComparer, FValueComparer, FValueEqualityComparer, FCapacity,
+    FOwnsValues, FOwnsKeys);
   AssignPropertiesTo(Result);
-end;}
+end;
+
+function TJclSortedMapE<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetE<TKey>.Create(FKeyComparer, FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapE<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  if KeyComparer = nil then
+    raise EJclNoComparerError.Create;
+  Result := KeyComparer.Compare(A, B);
+end;
+
+function TJclSortedMapE<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  if ValueComparer = nil then
+    raise EJclNoComparerError.Create;
+  Result := ValueComparer.Compare(A, B);
+end;
+
+//=== { TJclSortedMapF<TKey, TValue> } =======================================
+
+constructor TJclSortedMapF<TKey, TValue>.Create(AKeyCompare: TCompare<TKey>; AValueCompare: TCompare<TValue>;
+  AValueEqualityCompare: TEqualityCompare<TValue>; ACapacity: Integer; AOwnsValues: Boolean; AOwnsKeys: Boolean);
+begin
+  inherited Create(ACapacity, AOwnsValues, AOwnsKeys);
+  FKeyCompare := AKeyCompare;
+  FValueCompare := AValueCompare;
+  FValueEqualityCompare := AValueEqualityCompare;
+end;
+
+procedure TJclSortedMapF<TKey, TValue>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSortedMapF<TKey, TValue>;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSortedMapF<TKey, TValue> then
+  begin
+    ADest := TJclSortedMapF<TKey, TValue>(Dest);
+    ADest.FKeyCompare := FKeyCompare;
+    ADest.FValueCompare := FValueCompare;
+  end;
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  if not Assigned(FValueEqualityCompare) then
+    raise EJclNoEqualityComparerError.Create;
+  Result := TJclArrayListF<TValue>.Create(FValueEqualityCompare, ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapF<TKey, TValue>.Create(FKeyCompare, FValueCompare, FValueEqualityCompare, FCapacity,
+    FOwnsValues, FOwnsKeys);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSortedMapF<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetF<TKey>.Create(FKeyCompare, FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapF<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  if not Assigned(KeyCompare) then
+    raise EJclNoComparerError.Create;
+  Result := KeyCompare(A, B);
+end;
+
+function TJclSortedMapF<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  if not Assigned(ValueCompare) then
+    raise EJclNoComparerError.Create;
+  Result := ValueCompare(A, B);
+end;
+
+//=== { TJclSortedMapI<TKey, TValue> } =======================================
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyArrayList(ACapacity: Integer;
+  AOwnsObjects: Boolean): IJclCollection<TValue>;
+begin
+  Result := TJclArrayListI<TValue>.Create(ACapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSortedMapI<TKey, TValue>.Create(FCapacity, FOwnsValues, FOwnsKeys);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSortedMapI<TKey, TValue>.CreateEmptyArraySet(ACapacity: Integer; AOwnsObjects: Boolean): IJclSet<TKey>;
+begin
+  Result := TJclArraySetI<TKey>.Create(FCapacity, AOwnsObjects);
+end;
+
+function TJclSortedMapI<TKey, TValue>.KeysCompare(const A, B: TKey): Integer;
+begin
+  Result := A.CompareTo(B);
+end;
+
+function TJclSortedMapI<TKey, TValue>.ValuesCompare(const A, B: TValue): Integer;
+begin
+  Result := A.CompareTo(B);
+end;
 
 {$ENDIF SUPPORTS_GENERICS}
 
