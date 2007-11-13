@@ -26,6 +26,9 @@
     function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Size: Integer;COLLECTIONFLAGS
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
+    {$ENDIF SUPPORTS_FOR_IN}
     { LISTINTERFACENAME }
     function Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
     function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
@@ -67,6 +70,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SETTERNAME(PARAMETERDECLARATION);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: DATATYPENAME read GETTERNAME;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: LISTINTERFACENAME; ACursor: Integer; AValid: Boolean);
   end;
@@ -128,6 +135,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, PARAMETERNAME);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function SELFCLASSNAME.Next: DATATYPENAME;
 begin
@@ -378,6 +396,13 @@ function SELFCLASSNAME.First: ITRINTERFACENAME;
 begin
   Result := ITRCLASSNAME.Create(Self, 0, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
 begin

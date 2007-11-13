@@ -83,6 +83,9 @@ type
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfList }
     function Insert(Index: Integer; const AInterface: IInterface): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
@@ -125,6 +128,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrList }
     function Insert(Index: Integer; const AString: AnsiString): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
@@ -167,6 +173,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrList }
     function Insert(Index: Integer; const AString: WideString): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
@@ -216,6 +225,9 @@ type
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclList }
     function Insert(Index: Integer; AObject: TObject): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
@@ -260,6 +272,9 @@ type
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator<T>;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclList<T> }
     function Insert(Index: Integer; const AItem: T): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
@@ -362,6 +377,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(const AInterface: IInterface);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: IInterface read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclIntfList; ACursor: Integer; AValid: Boolean);
   end;
@@ -423,6 +442,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AInterface);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntfItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TIntfItr.Next: IInterface;
 begin
@@ -497,6 +527,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: AnsiString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: AnsiString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclAnsiStrList; ACursor: Integer; AValid: Boolean);
   end;
@@ -558,6 +592,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TAnsiStrItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TAnsiStrItr.Next: AnsiString;
 begin
@@ -632,6 +677,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: WideString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: WideString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclWideStrList; ACursor: Integer; AValid: Boolean);
   end;
@@ -693,6 +742,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AString);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TWideStrItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TWideStrItr.Next: WideString;
 begin
@@ -767,6 +827,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(AObject: TObject);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TObject read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclList; ACursor: Integer; AValid: Boolean);
   end;
@@ -828,6 +892,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AObject);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TItr.Next: TObject;
 begin
@@ -904,6 +979,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetItem(const AItem: T);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: T read GetItem;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclList<T>; ACursor: Integer; AValid: Boolean);
   end;
@@ -965,6 +1044,17 @@ begin
   CheckValid;
   Result := FOwnList.Insert(FCursor, AItem);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr<T>.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TItr<T>.Next: T;
 begin
@@ -1221,6 +1311,13 @@ function TJclIntfVector.First: IJclIntfIterator;
 begin
   Result := TIntfItr.Create(Self, 0, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfVector.GetEnumerator: IJclIntfIterator;
+begin
+  Result := TIntfItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclIntfVector.GetObject(Index: Integer): IInterface;
 begin
@@ -1716,6 +1813,13 @@ begin
   Result := TAnsiStrItr.Create(Self, 0, False);
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrVector.GetEnumerator: IJclAnsiStrIterator;
+begin
+  Result := TAnsiStrItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrVector.GetString(Index: Integer): AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -2209,6 +2313,13 @@ function TJclWideStrVector.First: IJclWideStrIterator;
 begin
   Result := TWideStrItr.Create(Self, 0, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrVector.GetEnumerator: IJclWideStrIterator;
+begin
+  Result := TWideStrItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclWideStrVector.GetString(Index: Integer): WideString;
 begin
@@ -2704,6 +2815,13 @@ begin
   Result := TItr.Create(Self, 0, False);
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclVector.GetEnumerator: IJclIterator;
+begin
+  Result := TItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclVector.GetObject(Index: Integer): TObject;
 begin
   {$IFDEF THREADSAFE}
@@ -3194,6 +3312,13 @@ function TJclVector<T>.First: IJclIterator<T>;
 begin
   Result := TItr<T>.Create(Self, 0, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclVector<T>.GetEnumerator: IJclIterator<T>;
+begin
+  Result := TItr<T>.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclVector<T>.GetItem(Index: Integer): T;
 begin

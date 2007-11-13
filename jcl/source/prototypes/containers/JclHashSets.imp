@@ -39,6 +39,9 @@
     function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Size: Integer;COLLECTIONFLAGS
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
+    {$ENDIF SUPPORTS_FOR_IN}
     { SETINTERFACENAME }
     procedure Intersect(const ACollection: COLLECTIONINTERFACENAME);
     procedure Subtract(const ACollection: COLLECTIONINTERFACENAME);
@@ -203,6 +206,13 @@ function SELFCLASSNAME.GetDuplicates: TDuplicates;
 begin
   Result := FMap.Duplicates;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 {$JPPEXPANDMACRO GETOWNSITEMS}
 function SELFCLASSNAME.GetRemoveSingleElement: Boolean;

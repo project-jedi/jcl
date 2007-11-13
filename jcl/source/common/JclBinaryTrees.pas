@@ -93,6 +93,9 @@ type
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
@@ -147,6 +150,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
@@ -201,6 +207,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
@@ -262,6 +271,9 @@ type
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
@@ -316,6 +328,9 @@ type
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator<T>;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclTree<T> }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
@@ -419,6 +434,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(const AInterface: IInterface);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: IInterface read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclIntfCollection; Start: TJclIntfBinaryNode; AValid: Boolean);
   end;
@@ -508,6 +527,26 @@ function TIntfItr.Insert(const AInterface: IInterface): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntfItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TIntfItr.Next: IInterface;
 begin
@@ -822,6 +861,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: AnsiString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: AnsiString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclAnsiStrCollection; Start: TJclAnsiStrBinaryNode; AValid: Boolean);
   end;
@@ -911,6 +954,26 @@ function TAnsiStrItr.Insert(const AString: AnsiString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TAnsiStrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TAnsiStrItr.Next: AnsiString;
 begin
@@ -1225,6 +1288,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: WideString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: WideString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclWideStrCollection; Start: TJclWideStrBinaryNode; AValid: Boolean);
   end;
@@ -1314,6 +1381,26 @@ function TWideStrItr.Insert(const AString: WideString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TWideStrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TWideStrItr.Next: WideString;
 begin
@@ -1628,6 +1715,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(AObject: TObject);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TObject read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclCollection; Start: TJclBinaryNode; AValid: Boolean);
   end;
@@ -1717,6 +1808,26 @@ function TItr.Insert(AObject: TObject): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TItr.Next: TObject;
 begin
@@ -2032,6 +2143,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetItem(const AItem: T);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: T read GetItem;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: IJclCollection<T>; Start: TJclBinaryNode<T>; AValid: Boolean);
   end;
@@ -2121,6 +2236,26 @@ function TItr<T>.Insert(const AItem: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr<T>.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TItr<T>.Next: T;
 begin
@@ -2755,6 +2890,13 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfBinaryTree.GetEnumerator: IJclIntfIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclIntfBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -3432,6 +3574,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrBinaryTree.GetEnumerator: IJclAnsiStrIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -4107,6 +4256,13 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrBinaryTree.GetEnumerator: IJclWideStrIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclWideStrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -4784,6 +4940,13 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclBinaryTree.GetEnumerator: IJclIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -5455,6 +5618,13 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclBinaryTree<T>.GetEnumerator: IJclIterator<T>;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclBinaryTree<T>.GetTraverseOrder: TJclTraverseOrder;
 begin

@@ -101,6 +101,9 @@ type
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfSet }
     procedure Intersect(const ACollection: IJclIntfCollection);
     procedure Subtract(const ACollection: IJclIntfCollection);
@@ -153,6 +156,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrSet }
     procedure Intersect(const ACollection: IJclAnsiStrCollection);
     procedure Subtract(const ACollection: IJclAnsiStrCollection);
@@ -211,6 +217,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrSet }
     procedure Intersect(const ACollection: IJclWideStrCollection);
     procedure Subtract(const ACollection: IJclWideStrCollection);
@@ -276,6 +285,9 @@ type
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclSet }
     procedure Intersect(const ACollection: IJclCollection);
     procedure Subtract(const ACollection: IJclCollection);
@@ -333,6 +345,9 @@ type
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator<T>;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclSet<T> }
     procedure Intersect(const ACollection: IJclCollection<T>);
     procedure Subtract(const ACollection: IJclCollection<T>);
@@ -588,6 +603,13 @@ function TJclIntfHashSet.GetDuplicates: TDuplicates;
 begin
   Result := FMap.Duplicates;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfHashSet.GetEnumerator: IJclIntfIterator;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclIntfHashSet.GetRemoveSingleElement: Boolean;
 begin
@@ -885,6 +907,13 @@ begin
   Result := FMap.Duplicates;
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrHashSet.GetEnumerator: IJclAnsiStrIterator;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrHashSet.GetRemoveSingleElement: Boolean;
 begin
   Result := FMap.RemoveSingleElement;
@@ -1176,7 +1205,6 @@ begin
   Result := FMap.KeySet.First;
 end;
 
-
 function TJclWideStrHashSet.GetAutoPackParameter: Integer;
 begin
   Result := (FMap as IJclPackable).GetAutoPackParameter;
@@ -1202,6 +1230,12 @@ begin
   Result := FMap.Duplicates;
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrHashSet.GetEnumerator: IJclWideStrIterator;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclWideStrHashSet.GetRemoveSingleElement: Boolean;
 begin
@@ -1524,6 +1558,13 @@ begin
   Result := FMap.Duplicates;
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclHashSet.GetEnumerator: IJclIterator;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclHashSet.GetOwnsObjects: Boolean;
 begin
   Result := (FMap as IJclKeyOwner).GetOwnsKeys;
@@ -1820,6 +1861,13 @@ function TJclHashSet<T>.GetDuplicates: TDuplicates;
 begin
   Result := FMap.Duplicates;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclHashSet<T>.GetEnumerator: IJclIterator<T>;
+begin
+  Result := FMap.KeySet.First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclHashSet<T>.GetOwnsItems: Boolean;
 begin

@@ -341,6 +341,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(const AInterface: IInterface);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: IInterface read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   IJclAnsiStrIterator = interface(IJclAbstractIterator)
@@ -356,6 +360,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: AnsiString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: AnsiString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   IJclWideStrIterator = interface(IJclAbstractIterator)
@@ -371,6 +379,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: WideString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: WideString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -393,6 +405,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(AObject: TObject);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TObject read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -409,8 +425,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetItem(const AItem: T);
-
-    property Item: T read GetItem write SetItem;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: T read GetItem;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
@@ -429,6 +447,9 @@ type
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   IJclAnsiStrCollection = interface(IJclAnsiStrFlatContainer)
@@ -446,6 +467,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   IJclWideStrCollection = interface(IJclWideStrFlatContainer)
@@ -463,6 +487,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -487,6 +514,9 @@ type
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -505,6 +535,9 @@ type
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator<T>;
+    {$ENDIF SUPPORTS_FOR_IN}
   end;
   {$ENDIF SUPPORTS_GENERICS}
 

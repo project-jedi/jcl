@@ -84,6 +84,9 @@ type
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntfIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfList }
     function Insert(Index: Integer; const AInterface: IInterface): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclIntfCollection): Boolean;
@@ -131,6 +134,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsiStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrList }
     function Insert(Index: Integer; const AString: AnsiString): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclAnsiStrCollection): Boolean;
@@ -178,6 +184,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator; override;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrList }
     function Insert(Index: Integer; const AString: WideString): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclWideStrCollection): Boolean;
@@ -232,6 +241,9 @@ type
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclList }
     function Insert(Index: Integer; AObject: TObject): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclCollection): Boolean;
@@ -280,6 +292,9 @@ type
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIterator<T>;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclList<T> }
     function Insert(Index: Integer; const AItem: T): Boolean;
     function InsertAll(Index: Integer; const ACollection: IJclCollection<T>): Boolean;
@@ -385,6 +400,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(const AInterface: IInterface);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: IInterface read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -515,6 +534,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntfItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TIntfItr.Next: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -638,6 +677,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: AnsiString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: AnsiString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -768,6 +811,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TAnsiStrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TAnsiStrItr.Next: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -891,6 +954,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetString(const AString: WideString);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: WideString read GetString;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1021,6 +1088,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TWideStrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TWideStrItr.Next: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -1144,6 +1231,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetObject(AObject: TObject);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: TObject read GetObject;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1274,6 +1365,26 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TItr.Next: TObject;
 begin
   {$IFDEF THREADSAFE}
@@ -1399,6 +1510,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SetItem(const AItem: T);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: T read GetItem;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
@@ -1528,6 +1643,26 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TItr<T>.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TItr<T>.Next: T;
 begin
@@ -1929,6 +2064,13 @@ function TJclIntfLinkedList.First: IJclIntfIterator;
 begin
   Result := TIntfItr.Create(Self, FStart, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntfLinkedList.GetEnumerator: IJclIntfIterator;
+begin
+  Result := TIntfItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclIntfLinkedList.GetObject(Index: Integer): IInterface;
 var
@@ -2705,6 +2847,13 @@ begin
   Result := TAnsiStrItr.Create(Self, FStart, False);
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclAnsiStrLinkedList.GetEnumerator: IJclAnsiStrIterator;
+begin
+  Result := TAnsiStrItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclAnsiStrLinkedList.GetString(Index: Integer): AnsiString;
 var
   Current: TJclAnsiStrLinkedListItem;
@@ -3479,6 +3628,13 @@ function TJclWideStrLinkedList.First: IJclWideStrIterator;
 begin
   Result := TWideStrItr.Create(Self, FStart, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclWideStrLinkedList.GetEnumerator: IJclWideStrIterator;
+begin
+  Result := TWideStrItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclWideStrLinkedList.GetString(Index: Integer): WideString;
 var
@@ -4255,6 +4411,13 @@ begin
   Result := TItr.Create(Self, FStart, False);
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclLinkedList.GetEnumerator: IJclIterator;
+begin
+  Result := TItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
 function TJclLinkedList.GetObject(Index: Integer): TObject;
 var
   Current: TJclLinkedListItem;
@@ -5026,6 +5189,13 @@ function TJclLinkedList<T>.First: IJclIterator<T>;
 begin
   Result := TItr<T>.Create(Self, FStart, False);
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclLinkedList<T>.GetEnumerator: IJclIterator<T>;
+begin
+  Result := TItr<T>.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function TJclLinkedList<T>.GetItem(Index: Integer): T;
 var

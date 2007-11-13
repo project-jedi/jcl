@@ -39,6 +39,9 @@
     function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Size: Integer;COLLECTIONFLAGS
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
+    {$ENDIF SUPPORTS_FOR_IN}
     { TREEINTERFACENAME }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);PROTECTEDADDITIONAL
@@ -72,6 +75,10 @@ type
     function PreviousIndex: Integer;
     procedure Remove;
     procedure SETTERNAME(PARAMETERDECLARATION);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: PARAMETERTYPE read GETTERNAME;
+    {$ENDIF SUPPORTS_FOR_IN}
   public
     constructor Create(const OwnList: COLLECTIONINTERFACENAME; Start: NODETYPENAME; AValid: Boolean);
   end;
@@ -161,6 +168,26 @@ function BASEITRCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function BASEITRCLASSNAME.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function BASEITRCLASSNAME.Next: PARAMETERTYPE;
 begin
@@ -789,6 +816,13 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
 
 function SELFCLASSNAME.GetTraverseOrder: TJclTraverseOrder;
 begin

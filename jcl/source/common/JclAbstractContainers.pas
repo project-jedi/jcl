@@ -287,6 +287,9 @@ type
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclAnsistrIterator; virtual; abstract;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrFlatContainer }
     procedure LoadFromStrings(Strings: TStrings);
     procedure SaveToStrings(Strings: TStrings);
@@ -319,6 +322,9 @@ type
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; virtual; abstract;
     function Size: Integer; virtual; abstract;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclWideStrIterator; virtual; abstract;
+    {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrFlatContainer }
   end;
 
