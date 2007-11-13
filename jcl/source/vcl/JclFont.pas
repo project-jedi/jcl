@@ -33,7 +33,7 @@ unit JclFont;
 interface
 
 type
-     TFontType  = (ftAuto, ftCaption, ftContent);
+  TFontType  = (ftAuto, ftCaption, ftContent);
 
 procedure SetObjectFontToSystemFont(const AObject: TObject; const FontType: TFontType = ftAuto);
 
