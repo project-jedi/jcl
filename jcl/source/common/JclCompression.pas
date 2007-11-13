@@ -1061,6 +1061,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF COMPILER5}
   ComObj, // GUIDToString
+  JclUnicode, // WideSameText // TODO: should we use WideSameText from JclUnicode also for D6 and higher?
   {$ENDIF COMPILER5}
   JclDateTime, JclFileUtils, JclResources;
 
@@ -3016,6 +3017,7 @@ begin
     AItem.PackedName := PackedName;
     AItem.Stream := AStream;
     AItem.OwnsStream := AOwnsStream;
+    AItem.FileSize := AStream.Size - AStream.Position;
   except
     AItem.Destroy;
     raise;
