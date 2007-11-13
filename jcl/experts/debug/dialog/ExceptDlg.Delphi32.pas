@@ -355,27 +355,36 @@ begin
     DetailsMemo.Lines.Add(Format(RsOSVersion, [GetWindowsVersionString, NtProductTypeString,
       Win32MajorVersion, Win32MinorVersion, Win32BuildNumber, Win32CSDVersion]));
     GetCpuInfo(CpuInfo);
-    with CpuInfo do
-    begin
-      ProcessorDetails := Format(RsProcessor, [Manufacturer, CpuName,
-        RoundFrequency(FrequencyInfo.NormFreq)]);
-      if not IsFDIVOK then
-        ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
-      if ExMMX then
-        ProcessorDetails := ProcessorDetails + ' MMXex'
-      else if MMX then
-        ProcessorDetails := ProcessorDetails + ' MMX';
-      if SSE > 0 then
-        ProcessorDetails := Format('%s SSE%d', [ProcessorDetails, SSE]);
-      if Ex3DNow then
-        ProcessorDetails := ProcessorDetails + ' 3DNow!ex'
-      else if _3DNow then
-        ProcessorDetails := ProcessorDetails + ' 3DNow!';
-      if Is64Bits then
-        ProcessorDetails := ProcessorDetails + ' 64 bits';
-      if DEPCapable then
-        ProcessorDetails := ProcessorDetails + ' DEP';
-    end;
+    ProcessorDetails := Format(RsProcessor, [CpuInfo.Manufacturer, CpuInfo.CpuName,
+      RoundFrequency(CpuInfo.FrequencyInfo.NormFreq)]);
+    if not CpuInfo.IsFDIVOK then
+      ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
+    if CpuInfo.ExMMX then
+      ProcessorDetails := ProcessorDetails + ' MMXex';
+    if CpuInfo.MMX then
+      ProcessorDetails := ProcessorDetails + ' MMX';
+    if sse in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE';
+    if sse2 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE2';
+    if sse3 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE3';
+    if ssse3 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSSE3';
+    if sse4A in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE4A';
+    if sse4B in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE4B';
+    if sse5 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE';
+    if CpuInfo.Ex3DNow then
+      ProcessorDetails := ProcessorDetails + ' 3DNow!ex';
+    if CpuInfo._3DNow then
+      ProcessorDetails := ProcessorDetails + ' 3DNow!';
+    if CpuInfo.Is64Bits then
+      ProcessorDetails := ProcessorDetails + ' 64 bits';
+    if CpuInfo.DEPCapable then
+      ProcessorDetails := ProcessorDetails + ' DEP';
     DetailsMemo.Lines.Add(ProcessorDetails);
     DetailsMemo.Lines.Add(Format(RsMemory, [GetTotalPhysicalMemory div 1024 div 1024,
       GetFreePhysicalMemory div 1024 div 1024]));
