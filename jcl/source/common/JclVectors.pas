@@ -89,7 +89,7 @@ type
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Remove(Index: Integer): IInterface; overload;
+    function Delete(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -131,7 +131,7 @@ type
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Remove(Index: Integer): AnsiString; overload;
+    function Delete(Index: Integer): AnsiString; overload;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -173,7 +173,7 @@ type
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
     function LastIndexOf(const AString: WideString): Integer;
-    function Remove(Index: Integer): WideString; overload;
+    function Delete(Index: Integer): WideString; overload;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -222,7 +222,7 @@ type
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
-    function Remove(Index: Integer): TObject; overload;
+    function Delete(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
@@ -266,7 +266,7 @@ type
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
     function LastIndexOf(const AItem: T): Integer;
-    function Remove(Index: Integer): T; overload;
+    function Delete(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
   public
@@ -462,7 +462,7 @@ procedure TIntfItr.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure TIntfItr.SetObject(const AInterface: IInterface);
@@ -597,7 +597,7 @@ procedure TAnsiStrItr.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure TAnsiStrItr.SetString(const AString: AnsiString);
@@ -732,7 +732,7 @@ procedure TWideStrItr.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure TWideStrItr.SetString(const AString: WideString);
@@ -867,7 +867,7 @@ procedure TItr.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure TItr.SetObject(AObject: TObject);
@@ -1004,7 +1004,7 @@ procedure TItr<T>.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure TItr<T>.SetItem(const AItem: T);
@@ -1167,6 +1167,25 @@ function TJclIntfVector.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclIntfVector.Create(FSize);
   AssignPropertiesTo(Result);
+end;
+
+function TJclIntfVector.Delete(Index: Integer): IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeObject(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclIntfVector.Equals(const ACollection: IJclIntfCollection): Boolean;
@@ -1340,25 +1359,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfVector.Remove(Index: Integer): IInterface;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := FreeObject(FItems[Index]);
-    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfVector.Remove(const AInterface: IInterface): Boolean;
 var
   I: Integer;
@@ -1421,7 +1421,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1474,7 +1474,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1663,6 +1663,25 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+function TJclAnsiStrVector.Delete(Index: Integer): AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeString(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrVector.Equals(const ACollection: IJclAnsiStrCollection): Boolean;
 var
   I: Integer;
@@ -1834,25 +1853,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrVector.Remove(Index: Integer): AnsiString;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := FreeString(FItems[Index]);
-    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclAnsiStrVector.Remove(const AString: AnsiString): Boolean;
 var
   I: Integer;
@@ -1915,7 +1915,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1968,7 +1968,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2157,6 +2157,25 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+function TJclWideStrVector.Delete(Index: Integer): WideString;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeString(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclWideStrVector.Equals(const ACollection: IJclWideStrCollection): Boolean;
 var
   I: Integer;
@@ -2328,25 +2347,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrVector.Remove(Index: Integer): WideString;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := FreeString(FItems[Index]);
-    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclWideStrVector.Remove(const AString: WideString): Boolean;
 var
   I: Integer;
@@ -2409,7 +2409,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2462,7 +2462,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2651,6 +2651,25 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+function TJclVector.Delete(Index: Integer): TObject;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeObject(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclVector.Equals(const ACollection: IJclCollection): Boolean;
 var
   I: Integer;
@@ -2822,25 +2841,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclVector.Remove(Index: Integer): TObject;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := FreeObject(FItems[Index]);
-    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclVector.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
@@ -2903,7 +2903,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2956,7 +2956,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3142,6 +3142,25 @@ begin
 end;
 
 
+function TJclVector<T>.Delete(Index: Integer): T;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeItem(FItems[Index]);
+    TJclBase<T>.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclVector<T>.Equals(const ACollection: IJclCollection<T>): Boolean;
 var
   I: Integer;
@@ -3313,25 +3332,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclVector<T>.Remove(Index: Integer): T;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := FreeItem(FItems[Index]);
-    TJclBase<T>.MoveArray(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclVector<T>.Remove(const AItem: T): Boolean;
 var
   I: Integer;
@@ -3394,7 +3394,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3447,7 +3447,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

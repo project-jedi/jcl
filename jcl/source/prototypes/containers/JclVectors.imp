@@ -32,7 +32,7 @@
     function GETTERNAME(Index: Integer): DATATYPENAME;
     function IndexOf(PARAMETERDECLARATION): Integer;
     function LastIndexOf(PARAMETERDECLARATION): Integer;
-    function Remove(Index: Integer): DATATYPENAME; overload;
+    function Delete(Index: Integer): DATATYPENAME; overload;
     procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
     function SubList(First, Count: Integer): LISTINTERFACENAME;PROTECTEDADDITIONAL
   public
@@ -167,7 +167,7 @@ procedure SELFCLASSNAME.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
@@ -326,6 +326,25 @@ begin
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := RELEASERNAME(FItems[Index]);
+    MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   I: Integer;
@@ -497,25 +516,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function SELFCLASSNAME.Remove(Index: Integer): DATATYPENAME;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := RELEASERNAME(FItems[Index]);
-    MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
 var
   I: Integer;
@@ -578,7 +578,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(Items[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -631,7 +631,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

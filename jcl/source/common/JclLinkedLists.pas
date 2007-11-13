@@ -80,7 +80,7 @@ type
     function First: IJclIntfIterator;
     function IsEmpty: Boolean;
     function Last: IJclIntfIterator;
-    function Remove(const AInterface: IInterface): Boolean; overload;
+    function Remove(const AInterface: IInterface): Boolean;
     function RemoveAll(const ACollection: IJclIntfCollection): Boolean;
     function RetainAll(const ACollection: IJclIntfCollection): Boolean;
     function Size: Integer;
@@ -90,7 +90,7 @@ type
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Remove(Index: Integer): IInterface; overload;
+    function Delete(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
     { IJclIntfCloneable }
@@ -127,7 +127,7 @@ type
     function First: IJclAnsiStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclAnsiStrIterator; override;
-    function Remove(const AString: AnsiString): Boolean; overload; override;
+    function Remove(const AString: AnsiString): Boolean; override;
     function RemoveAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclAnsiStrCollection): Boolean; override;
     function Size: Integer; override;
@@ -137,7 +137,7 @@ type
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Remove(Index: Integer): AnsiString; overload;
+    function Delete(Index: Integer): AnsiString; overload;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
     { IJclIntfCloneable }
@@ -174,7 +174,7 @@ type
     function First: IJclWideStrIterator; override;
     function IsEmpty: Boolean; override;
     function Last: IJclWideStrIterator; override;
-    function Remove(const AString: WideString): Boolean; overload; override;
+    function Remove(const AString: WideString): Boolean; override;
     function RemoveAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function RetainAll(const ACollection: IJclWideStrCollection): Boolean; override;
     function Size: Integer; override;
@@ -184,7 +184,7 @@ type
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
     function LastIndexOf(const AString: WideString): Integer;
-    function Remove(Index: Integer): WideString; overload;
+    function Delete(Index: Integer): WideString; overload;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
     { IJclIntfCloneable }
@@ -228,7 +228,7 @@ type
     function First: IJclIterator;
     function IsEmpty: Boolean;
     function Last: IJclIterator;
-    function Remove(AObject: TObject): Boolean; overload;
+    function Remove(AObject: TObject): Boolean;
     function RemoveAll(const ACollection: IJclCollection): Boolean;
     function RetainAll(const ACollection: IJclCollection): Boolean;
     function Size: Integer;
@@ -238,7 +238,7 @@ type
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
-    function Remove(Index: Integer): TObject; overload;
+    function Delete(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
     { IJclIntfCloneable }
@@ -276,7 +276,7 @@ type
     function First: IJclIterator<T>;
     function IsEmpty: Boolean;
     function Last: IJclIterator<T>;
-    function Remove(const AItem: T): Boolean; overload;
+    function Remove(const AItem: T): Boolean;
     function RemoveAll(const ACollection: IJclCollection<T>): Boolean;
     function RetainAll(const ACollection: IJclCollection<T>): Boolean;
     function Size: Integer;
@@ -286,7 +286,7 @@ type
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
     function LastIndexOf(const AItem: T): Integer;
-    function Remove(Index: Integer): T; overload;
+    function Delete(Index: Integer): T; overload;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
     { IJclIntfCloneable }
@@ -1854,6 +1854,48 @@ begin
   AssignPropertiesTo(Result);
 end;
 
+function TJclIntfLinkedList.Delete(Index: Integer): IInterface;
+var
+  Current: TJclIntfLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeObject(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclIntfLinkedList.Equals(const ACollection: IJclIntfCollection): Boolean;
 var
   It, ItSelf: IJclIntfIterator;
@@ -2197,48 +2239,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclIntfLinkedList.Remove(Index: Integer): IInterface;
-var
-  Current: TJclIntfLinkedListItem;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeObject(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclIntfLinkedList.Remove(const AInterface: IInterface): Boolean;
 var
   Current: TJclIntfLinkedListItem;
@@ -2363,7 +2363,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2627,6 +2627,48 @@ function TJclAnsiStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclAnsiStrLinkedList.Create(nil);
   AssignPropertiesTo(Result);
+end;
+
+function TJclAnsiStrLinkedList.Delete(Index: Integer): AnsiString;
+var
+  Current: TJclAnsiStrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeString(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclAnsiStrLinkedList.Equals(const ACollection: IJclAnsiStrCollection): Boolean;
@@ -2972,48 +3014,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclAnsiStrLinkedList.Remove(Index: Integer): AnsiString;
-var
-  Current: TJclAnsiStrLinkedListItem;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeString(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclAnsiStrLinkedList.Remove(const AString: AnsiString): Boolean;
 var
   Current: TJclAnsiStrLinkedListItem;
@@ -3138,7 +3138,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3402,6 +3402,48 @@ function TJclWideStrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclWideStrLinkedList.Create(nil);
   AssignPropertiesTo(Result);
+end;
+
+function TJclWideStrLinkedList.Delete(Index: Integer): WideString;
+var
+  Current: TJclWideStrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeString(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclWideStrLinkedList.Equals(const ACollection: IJclWideStrCollection): Boolean;
@@ -3747,48 +3789,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclWideStrLinkedList.Remove(Index: Integer): WideString;
-var
-  Current: TJclWideStrLinkedListItem;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeString(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclWideStrLinkedList.Remove(const AString: WideString): Boolean;
 var
   Current: TJclWideStrLinkedListItem;
@@ -3913,7 +3913,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4177,6 +4177,48 @@ function TJclLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedList.Create(nil, False);
   AssignPropertiesTo(Result);
+end;
+
+function TJclLinkedList.Delete(Index: Integer): TObject;
+var
+  Current: TJclLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeObject(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TJclLinkedList.Equals(const ACollection: IJclCollection): Boolean;
@@ -4522,48 +4564,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclLinkedList.Remove(Index: Integer): TObject;
-var
-  Current: TJclLinkedListItem;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeObject(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclLinkedList.Remove(AObject: TObject): Boolean;
 var
   Current: TJclLinkedListItem;
@@ -4688,7 +4688,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4950,6 +4950,48 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+
+function TJclLinkedList<T>.Delete(Index: Integer): T;
+var
+  Current: TJclLinkedListItem<T>;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeItem(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclLinkedList<T>.Equals(const ACollection: IJclCollection<T>): Boolean;
 var
@@ -5294,48 +5336,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function TJclLinkedList<T>.Remove(Index: Integer): T;
-var
-  Current: TJclLinkedListItem<T>;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := Default(T);
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeItem(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function TJclLinkedList<T>.Remove(const AItem: T): Boolean;
 var
   Current: TJclLinkedListItem<T>;
@@ -5460,7 +5460,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

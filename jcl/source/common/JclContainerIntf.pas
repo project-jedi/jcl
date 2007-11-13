@@ -515,7 +515,7 @@ type
     function GetObject(Index: Integer): IInterface;
     function IndexOf(const AInterface: IInterface): Integer;
     function LastIndexOf(const AInterface: IInterface): Integer;
-    function Remove(Index: Integer): IInterface; overload;
+    function Delete(Index: Integer): IInterface;
     procedure SetObject(Index: Integer; const AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
     
@@ -529,7 +529,7 @@ type
     function GetString(Index: Integer): AnsiString;
     function IndexOf(const AString: AnsiString): Integer;
     function LastIndexOf(const AString: AnsiString): Integer;
-    function Remove(Index: Integer): AnsiString; overload;
+    function Delete(Index: Integer): AnsiString;
     procedure SetString(Index: Integer; const AString: AnsiString);
     function SubList(First, Count: Integer): IJclAnsiStrList;
     //Daniele Teti
@@ -543,7 +543,7 @@ type
     function GetString(Index: Integer): WideString;
     function IndexOf(const AString: WideString): Integer;
     function LastIndexOf(const AString: WideString): Integer;
-    function Remove(Index: Integer): WideString; overload;
+    function Delete(Index: Integer): WideString;
     procedure SetString(Index: Integer; const AString: WideString);
     function SubList(First, Count: Integer): IJclWideStrList;
     //Daniele Teti
@@ -564,7 +564,7 @@ type
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
-    function Remove(Index: Integer): TObject; overload;
+    function Delete(Index: Integer): TObject;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IJclList;
     //Daniele Teti
@@ -579,7 +579,7 @@ type
     function GetItem(Index: Integer): T;
     function IndexOf(const AItem: T): Integer;
     function LastIndexOf(const AItem: T): Integer;
-    function Remove(Index: Integer): T; overload;
+    function Delete(Index: Integer): T;
     procedure SetItem(Index: Integer; const AItem: T);
     function SubList(First, Count: Integer): IJclList<T>;
     //Daniele Teti

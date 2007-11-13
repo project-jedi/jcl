@@ -25,7 +25,7 @@
     function First: ITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: ITRINTERFACENAME;COLLECTIONFLAGS
-    function Remove(PARAMETERDECLARATION): Boolean; overload;COLLECTIONFLAGS
+    function Remove(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
     function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Size: Integer;COLLECTIONFLAGS
@@ -35,7 +35,7 @@
     function GETTERNAME(Index: Integer): DATATYPENAME;
     function IndexOf(PARAMETERDECLARATION): Integer;
     function LastIndexOf(PARAMETERDECLARATION): Integer;
-    function Remove(Index: Integer): DATATYPENAME; overload;
+    function Delete(Index: Integer): DATATYPENAME; overload;
     procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
     function SubList(First, Count: Integer): LISTINTERFACENAME;
     { IJclIntfCloneable }
@@ -519,6 +519,48 @@ begin
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := DEFAULTVALUE;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := RELEASERNAME(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It, ItSelf: ITRINTERFACENAME;
@@ -862,48 +904,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function SELFCLASSNAME.Remove(Index: Integer): DATATYPENAME;
-var
-  Current: ITEMCLASSNAME;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    Result := DEFAULTVALUE;
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Current := FStart;
-      while Current <> nil do
-      begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := RELEASERNAME(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
-      end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
 var
   Current: ITEMCLASSNAME;
@@ -1028,7 +1028,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

@@ -37,7 +37,7 @@ type
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
-    function Remove(Index: Integer): TMyObject; overload;
+    function Delete(Index: Integer): TMyObject; overload;
     procedure SetObject(Index: Integer; AObject: TMyObject);
     function SubList(First, Count: Integer): IJclList;
   end;
@@ -65,7 +65,7 @@ type
     function GetObject(Index: Integer): TMyObject;
     function IndexOf(AObject: TMyObject): Integer;
     function LastIndexOf(AObject: TMyObject): Integer;
-    function Remove(Index: Integer): TMyObject; overload;
+    function Delete(Index: Integer): TMyObject; overload;
     procedure SetObject(Index: Integer; AObject: TMyObject);
     function IMyObjectList.SubList = SubList;
   end;
@@ -119,9 +119,9 @@ begin
   Result := inherited Remove(AObject);
 end;
 
-function TMyObjectList.Remove(Index: Integer): TMyObject;
+function TMyObjectList.Delete(Index: Integer): TMyObject;
 begin
-  Result := TMyObject(inherited Remove(Index));
+  Result := TMyObject(inherited Delete(Index));
 end;
 
 procedure TMyObjectList.SetObject(Index: Integer; AObject: TMyObject);

@@ -22,7 +22,7 @@
     function First: ITRINTERFACENAME;COLLECTIONFLAGS
     function IsEmpty: Boolean;COLLECTIONFLAGS
     function Last: ITRINTERFACENAME;COLLECTIONFLAGS
-    function Remove(PARAMETERDECLARATION): Boolean; overload;COLLECTIONFLAGS
+    function Remove(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
     function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
     function Size: Integer;COLLECTIONFLAGS
@@ -32,7 +32,7 @@
     function GETTERNAME(Index: Integer): TYPENAME;
     function IndexOf(PARAMETERDECLARATION): Integer;
     function LastIndexOf(PARAMETERDECLARATION): Integer;
-    function Remove(Index: Integer): TYPENAME; overload;
+    function Delete(Index: Integer): TYPENAME; overload;
     procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
     function SubList(First, Count: Integer): LISTINTERFACENAME;PROTECTEDADDITIONAL
   public
@@ -167,7 +167,7 @@ procedure SELFCLASSNAME.Remove;
 begin
   CheckValid;
   Valid := False;
-  FOwnList.Remove(FCursor);
+  FOwnList.Delete(FCursor);
 end;
 
 procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
@@ -380,6 +380,26 @@ begin
 end;
 
 {$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+function SELFCLASSNAME.Delete(Index: Integer): TYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := RELEASERNAME(FElementData[Index]);
+    if Index < (FSize - 1) then
+      MOVEARRAY(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   I: Integer;
@@ -579,26 +599,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-function SELFCLASSNAME.Remove(Index: Integer): TYPENAME;
-begin
-  {$IFDEF THREADSAFE}
-  WriteLock;
-  try
-  {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    Result := RELEASERNAME(FElementData[Index]);
-    if Index < (FSize - 1) then
-      MOVEARRAY(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
-  {$IFDEF THREADSAFE}
-  finally
-    WriteUnlock;
-  end;
-  {$ENDIF THREADSAFE}
-end;
-
 function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
 var
   It: ITRINTERFACENAME;
@@ -635,7 +635,7 @@ begin
     Result := True;
     for I := FSize - 1 downto 0 do
       if not ACollection.Contains(FElementData[I]) then
-        Remove(I);
+        Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -691,7 +691,7 @@ begin
       end;
     end;
     if not ReplaceItem then
-      Remove(Index);
+      Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
