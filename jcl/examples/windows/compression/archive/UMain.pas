@@ -1,5 +1,7 @@
 unit UMain;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -97,7 +99,7 @@ procedure TForm1.ActionAddDirectoryExecute(Sender: TObject);
 var
   Directory: string;
 begin
-  if FileCtrl.SelectDirectory('Select directory', '', Directory, [sdNewUI], Self) then
+  if FileCtrl.SelectDirectory('Select directory', '', Directory {$IFDEF COMPILER9_UP} , [sdNewUI], Self {$ENDIF}) then
   begin
     (FArchive as TJclCompressArchive).AddDirectory(ExtractFileName(Directory), Directory, True, True);
     ListView1.Items.BeginUpdate;
@@ -158,7 +160,7 @@ procedure TForm1.ActionExtractAllExecute(Sender: TObject);
 var
   Directory: string;
 begin
-  if FileCtrl.SelectDirectory('Target directory', '', Directory, [sdNewUI], Self) then
+  if FileCtrl.SelectDirectory('Target directory', '', Directory {$IFDEF COMPILER9_UP} , [sdNewUI], Self {$ENDIF}) then
   begin
     if FArchive is TJclDecompressArchive then
       TJclDecompressArchive(FArchive).ExtractAll(Directory, True)
@@ -178,7 +180,7 @@ var
   Directory: string;
   Index: Integer;
 begin
-  if FileCtrl.SelectDirectory('Target directory', '', Directory, [sdNewUI], Self) then
+  if FileCtrl.SelectDirectory('Target directory', '', Directory {$IFDEF COMPILER9_UP} , [sdNewUI], Self {$ENDIF}) then
   begin
     for Index := 0 to ListView1.Items.Count - 1 do
       FArchive.Items[Index].Selected := ListView1.Items.Item[Index].Selected;
