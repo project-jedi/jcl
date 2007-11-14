@@ -131,6 +131,179 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
+  TJclSingleArraySet = class(TJclSingleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
+    IJclSingleCollection, IJclSingleList, IJclSingleArray, IJclSingleSet)
+  private
+    function BinarySearch(const AValue: Single): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleCollection }
+    function Add(const AValue: Single): Boolean;
+    function AddAll(const ACollection: IJclSingleCollection): Boolean;
+    function Contains(const AValue: Single): Boolean;
+    { IJclSingleList }
+    procedure Insert(Index: Integer; const AValue: Single); overload;
+    { IJclSingleSet }
+    procedure Intersect(const ACollection: IJclSingleCollection);
+    procedure Subtract(const ACollection: IJclSingleCollection);
+    procedure Union(const ACollection: IJclSingleCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+
+  TJclDoubleArraySet = class(TJclDoubleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
+    IJclDoubleCollection, IJclDoubleList, IJclDoubleArray, IJclDoubleSet)
+  private
+    function BinarySearch(const AValue: Double): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleCollection }
+    function Add(const AValue: Double): Boolean;
+    function AddAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Contains(const AValue: Double): Boolean;
+    { IJclDoubleList }
+    procedure Insert(Index: Integer; const AValue: Double); overload;
+    { IJclDoubleSet }
+    procedure Intersect(const ACollection: IJclDoubleCollection);
+    procedure Subtract(const ACollection: IJclDoubleCollection);
+    procedure Union(const ACollection: IJclDoubleCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+
+  TJclExtendedArraySet = class(TJclExtendedArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
+    IJclExtendedCollection, IJclExtendedList, IJclExtendedArray, IJclExtendedSet)
+  private
+    function BinarySearch(const AValue: Extended): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedCollection }
+    function Add(const AValue: Extended): Boolean;
+    function AddAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Contains(const AValue: Extended): Boolean;
+    { IJclExtendedList }
+    procedure Insert(Index: Integer; const AValue: Extended); overload;
+    { IJclExtendedSet }
+    procedure Intersect(const ACollection: IJclExtendedCollection);
+    procedure Subtract(const ACollection: IJclExtendedCollection);
+    procedure Union(const ACollection: IJclExtendedCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatArraySet = TJclExtendedArraySet;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatArraySet = TJclDoubleArraySet;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatArraySet = TJclSingleArraySet;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+
+  TJclIntegerArraySet = class(TJclIntegerArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
+    IJclIntegerCollection, IJclIntegerList, IJclIntegerArray, IJclIntegerSet)
+  private
+    function BinarySearch(AValue: Integer): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerCollection }
+    function Add(AValue: Integer): Boolean;
+    function AddAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Contains(AValue: Integer): Boolean;
+    { IJclIntegerList }
+    procedure Insert(Index: Integer; AValue: Integer); overload;
+    { IJclIntegerSet }
+    procedure Intersect(const ACollection: IJclIntegerCollection);
+    procedure Subtract(const ACollection: IJclIntegerCollection);
+    procedure Union(const ACollection: IJclIntegerCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+
+  TJclCardinalArraySet = class(TJclCardinalArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
+    IJclCardinalCollection, IJclCardinalList, IJclCardinalArray, IJclCardinalSet)
+  private
+    function BinarySearch(AValue: Cardinal): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCardinalCollection }
+    function Add(AValue: Cardinal): Boolean;
+    function AddAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Contains(AValue: Cardinal): Boolean;
+    { IJclCardinalList }
+    procedure Insert(Index: Integer; AValue: Cardinal); overload;
+    { IJclCardinalSet }
+    procedure Intersect(const ACollection: IJclCardinalCollection);
+    procedure Subtract(const ACollection: IJclCardinalCollection);
+    procedure Union(const ACollection: IJclCardinalCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+
+  TJclInt64ArraySet = class(TJclInt64ArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
+    IJclInt64Collection, IJclInt64List, IJclInt64Array, IJclInt64Set)
+  private
+    function BinarySearch(const AValue: Int64): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64Collection }
+    function Add(const AValue: Int64): Boolean;
+    function AddAll(const ACollection: IJclInt64Collection): Boolean;
+    function Contains(const AValue: Int64): Boolean;
+    { IJclInt64List }
+    procedure Insert(Index: Integer; const AValue: Int64); overload;
+    { IJclInt64Set }
+    procedure Intersect(const ACollection: IJclInt64Collection);
+    procedure Subtract(const ACollection: IJclInt64Collection);
+    procedure Union(const ACollection: IJclInt64Collection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+
+  {$IFNDEF CLR}
+
+  TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
+    IJclPtrCollection, IJclPtrList, IJclPtrArray, IJclPtrSet)
+  private
+    function BinarySearch(APtr: Pointer): Integer;
+  protected
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrCollection }
+    function Add(APtr: Pointer): Boolean;
+    function AddAll(const ACollection: IJclPtrCollection): Boolean;
+    function Contains(APtr: Pointer): Boolean;
+    { IJclPtrList }
+    procedure Insert(Index: Integer; APtr: Pointer); overload;
+    { IJclPtrSet }
+    procedure Intersect(const ACollection: IJclPtrCollection);
+    procedure Subtract(const ACollection: IJclPtrCollection);
+    procedure Union(const ACollection: IJclPtrCollection);
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+  end;
+  {$ENDIF ~CLR}
+
+
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
     IJclCollection, IJclList, IJclArray, IJclSet)
@@ -637,6 +810,925 @@ procedure TJclWideStrArraySet.Union(const ACollection: IJclWideStrCollection);
 begin
   AddAll(ACollection);
 end;
+
+
+//=== { TJclSingleArraySet } ====================================================
+
+function TJclSingleArraySet.Add(const AValue: Single): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleArraySet.AddAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleArraySet.BinarySearch(const AValue: Single): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleArraySet.Contains(const AValue: Single): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclSingleArraySet.Insert(Index: Integer; const AValue: Single);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleArraySet.Intersect(const ACollection: IJclSingleCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclSingleArraySet.Subtract(const ACollection: IJclSingleCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclSingleArraySet.Union(const ACollection: IJclSingleCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+//=== { TJclDoubleArraySet } ====================================================
+
+function TJclDoubleArraySet.Add(const AValue: Double): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleArraySet.AddAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleArraySet.BinarySearch(const AValue: Double): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleArraySet.Contains(const AValue: Double): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclDoubleArraySet.Insert(Index: Integer; const AValue: Double);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleArraySet.Intersect(const ACollection: IJclDoubleCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclDoubleArraySet.Subtract(const ACollection: IJclDoubleCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclDoubleArraySet.Union(const ACollection: IJclDoubleCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+//=== { TJclExtendedArraySet } ====================================================
+
+function TJclExtendedArraySet.Add(const AValue: Extended): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedArraySet.AddAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedArraySet.BinarySearch(const AValue: Extended): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedArraySet.Contains(const AValue: Extended): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclExtendedArraySet.Insert(Index: Integer; const AValue: Extended);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedArraySet.Intersect(const ACollection: IJclExtendedCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclExtendedArraySet.Subtract(const ACollection: IJclExtendedCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclExtendedArraySet.Union(const ACollection: IJclExtendedCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+//=== { TJclIntegerArraySet } ====================================================
+
+function TJclIntegerArraySet.Add(AValue: Integer): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerArraySet.AddAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerArraySet.BinarySearch(AValue: Integer): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerArraySet.Contains(AValue: Integer): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclIntegerArraySet.Insert(Index: Integer; AValue: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerArraySet.Intersect(const ACollection: IJclIntegerCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclIntegerArraySet.Subtract(const ACollection: IJclIntegerCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclIntegerArraySet.Union(const ACollection: IJclIntegerCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+//=== { TJclCardinalArraySet } ====================================================
+
+function TJclCardinalArraySet.Add(AValue: Cardinal): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalArraySet.AddAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalArraySet.BinarySearch(AValue: Cardinal): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalArraySet.Contains(AValue: Cardinal): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclCardinalArraySet.Insert(Index: Integer; AValue: Cardinal);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalArraySet.Intersect(const ACollection: IJclCardinalCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclCardinalArraySet.Subtract(const ACollection: IJclCardinalCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclCardinalArraySet.Union(const ACollection: IJclCardinalCollection);
+begin
+  AddAll(ACollection);
+end;
+
+
+//=== { TJclInt64ArraySet } ====================================================
+
+function TJclInt64ArraySet.Add(const AValue: Int64): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      Idx := BinarySearch(AValue);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, AValue);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64ArraySet.AddAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64ArraySet.BinarySearch(const AValue: Int64): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetValue(CompPos), AValue);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64ArraySet.Contains(const AValue: Int64): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetValue(Idx), AValue)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64ArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64ArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclInt64ArraySet.Insert(Index: Integer; const AValue: Int64);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64ArraySet.Intersect(const ACollection: IJclInt64Collection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclInt64ArraySet.Subtract(const ACollection: IJclInt64Collection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclInt64ArraySet.Union(const ACollection: IJclInt64Collection);
+begin
+  AddAll(ACollection);
+end;
+
+{$IFNDEF CLR}
+
+//=== { TJclPtrArraySet } ====================================================
+
+function TJclPtrArraySet.Add(APtr: Pointer): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if Result then
+    begin
+      Idx := BinarySearch(APtr);
+      if Idx >= 0 then
+        Result := not ItemsEqual(GetPtr(Idx), APtr) or CheckDuplicate
+      else
+        Result := True;
+      if Result then
+        Result := inherited Insert(Idx + 1, APtr);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrArraySet.AddAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrArraySet.BinarySearch(APtr: Pointer): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    LoPos := 0;
+    HiPos := Size - 1;
+    CompPos := (HiPos + LoPos) div 2;
+    while HiPos >= LoPos do
+    begin
+      Comp := ItemsCompare(GetPtr(CompPos), APtr);
+      if Comp < 0 then
+        LoPos := CompPos + 1
+      else
+      if Comp > 0 then
+        HiPos := CompPos - 1
+      else
+      begin
+        HiPos := CompPos;
+        LoPos := CompPos + 1;
+      end;
+      CompPos := (HiPos + LoPos) div 2;
+    end;
+    Result := HiPos;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrArraySet.Contains(APtr: Pointer): Boolean;
+var
+  Idx: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Idx := BinarySearch(APtr);
+    if Idx >= 0 then
+      Result := ItemsEqual(GetPtr(Idx), APtr)
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrArraySet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrArraySet.Create(Size);
+  AssignPropertiesTo(Result);
+end;
+
+procedure TJclPtrArraySet.Insert(Index: Integer; APtr: Pointer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrArraySet.Intersect(const ACollection: IJclPtrCollection);
+begin
+  RetainAll(ACollection);
+end;
+
+procedure TJclPtrArraySet.Subtract(const ACollection: IJclPtrCollection);
+begin
+  RemoveAll(ACollection);
+end;
+
+procedure TJclPtrArraySet.Union(const ACollection: IJclPtrCollection);
+begin
+  AddAll(ACollection);
+end;
+{$ENDIF ~CLR}
 
 
 //=== { TJclArraySet } ====================================================

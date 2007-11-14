@@ -200,6 +200,333 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
+  TJclSingleVector = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclSingleCollection, IJclSingleList, IJclSingleArray)
+  private
+    FItems: JclBase.TDynSingleArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleCollection }
+    function Add(const AValue: Single): Boolean;
+    function AddAll(const ACollection: IJclSingleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Single): Boolean;
+    function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+    function Equals(const ACollection: IJclSingleCollection): Boolean;
+    function First: IJclSingleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclSingleIterator;
+    function Remove(const AValue: Single): Boolean; overload;
+    function RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+    function RetainAll(const ACollection: IJclSingleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclSingleList }
+    function Insert(Index: Integer; const AValue: Single): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+    function GetValue(Index: Integer): Single;
+    function IndexOf(const AValue: Single): Integer;
+    function LastIndexOf(const AValue: Single): Integer;
+    function Delete(Index: Integer): Single; overload;
+    procedure SetValue(Index: Integer; const AValue: Single);
+    function SubList(First, Count: Integer): IJclSingleList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynSingleArray read FItems;
+  end;
+
+
+  TJclDoubleVector = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
+  private
+    FItems: JclBase.TDynDoubleArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleCollection }
+    function Add(const AValue: Double): Boolean;
+    function AddAll(const ACollection: IJclDoubleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Double): Boolean;
+    function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Equals(const ACollection: IJclDoubleCollection): Boolean;
+    function First: IJclDoubleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclDoubleIterator;
+    function Remove(const AValue: Double): Boolean; overload;
+    function RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+    function RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclDoubleList }
+    function Insert(Index: Integer; const AValue: Double): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+    function GetValue(Index: Integer): Double;
+    function IndexOf(const AValue: Double): Integer;
+    function LastIndexOf(const AValue: Double): Integer;
+    function Delete(Index: Integer): Double; overload;
+    procedure SetValue(Index: Integer; const AValue: Double);
+    function SubList(First, Count: Integer): IJclDoubleList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynDoubleArray read FItems;
+  end;
+
+
+  TJclExtendedVector = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
+  private
+    FItems: JclBase.TDynExtendedArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedCollection }
+    function Add(const AValue: Extended): Boolean;
+    function AddAll(const ACollection: IJclExtendedCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Extended): Boolean;
+    function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Equals(const ACollection: IJclExtendedCollection): Boolean;
+    function First: IJclExtendedIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclExtendedIterator;
+    function Remove(const AValue: Extended): Boolean; overload;
+    function RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+    function RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclExtendedList }
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+    function GetValue(Index: Integer): Extended;
+    function IndexOf(const AValue: Extended): Integer;
+    function LastIndexOf(const AValue: Extended): Integer;
+    function Delete(Index: Integer): Extended; overload;
+    procedure SetValue(Index: Integer; const AValue: Extended);
+    function SubList(First, Count: Integer): IJclExtendedList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynExtendedArray read FItems;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatVector = TJclExtendedVector;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatVector = TJclDoubleVector;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatVector = TJclSingleVector;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+
+  TJclIntegerVector = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
+    IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
+  private
+    FItems: JclBase.TDynIntegerArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerCollection }
+    function Add(AValue: Integer): Boolean;
+    function AddAll(const ACollection: IJclIntegerCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Integer): Boolean;
+    function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Equals(const ACollection: IJclIntegerCollection): Boolean;
+    function First: IJclIntegerIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclIntegerIterator;
+    function Remove(AValue: Integer): Boolean; overload;
+    function RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntegerList }
+    function Insert(Index: Integer; AValue: Integer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+    function GetValue(Index: Integer): Integer;
+    function IndexOf(AValue: Integer): Integer;
+    function LastIndexOf(AValue: Integer): Integer;
+    function Delete(Index: Integer): Integer; overload;
+    procedure SetValue(Index: Integer; AValue: Integer);
+    function SubList(First, Count: Integer): IJclIntegerList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynIntegerArray read FItems;
+  end;
+
+
+  TJclCardinalVector = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
+    IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
+  private
+    FItems: JclBase.TDynCardinalArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCardinalCollection }
+    function Add(AValue: Cardinal): Boolean;
+    function AddAll(const ACollection: IJclCardinalCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Cardinal): Boolean;
+    function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Equals(const ACollection: IJclCardinalCollection): Boolean;
+    function First: IJclCardinalIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclCardinalIterator;
+    function Remove(AValue: Cardinal): Boolean; overload;
+    function RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+    function RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCardinalList }
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+    function GetValue(Index: Integer): Cardinal;
+    function IndexOf(AValue: Cardinal): Integer;
+    function LastIndexOf(AValue: Cardinal): Integer;
+    function Delete(Index: Integer): Cardinal; overload;
+    procedure SetValue(Index: Integer; AValue: Cardinal);
+    function SubList(First, Count: Integer): IJclCardinalList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynCardinalArray read FItems;
+  end;
+
+
+  TJclInt64Vector = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
+    IJclInt64Collection, IJclInt64List, IJclInt64Array)
+  private
+    FItems: JclBase.TDynInt64Array;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64Collection }
+    function Add(const AValue: Int64): Boolean;
+    function AddAll(const ACollection: IJclInt64Collection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Int64): Boolean;
+    function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+    function Equals(const ACollection: IJclInt64Collection): Boolean;
+    function First: IJclInt64Iterator;
+    function IsEmpty: Boolean;
+    function Last: IJclInt64Iterator;
+    function Remove(const AValue: Int64): Boolean; overload;
+    function RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+    function RetainAll(const ACollection: IJclInt64Collection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64Iterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclInt64List }
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+    function GetValue(Index: Integer): Int64;
+    function IndexOf(const AValue: Int64): Integer;
+    function LastIndexOf(const AValue: Int64): Integer;
+    function Delete(Index: Integer): Int64; overload;
+    procedure SetValue(Index: Integer; const AValue: Int64);
+    function SubList(First, Count: Integer): IJclInt64List;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynInt64Array read FItems;
+  end;
+
+  {$IFNDEF CLR}
+
+  TJclPtrVector = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
+    IJclPtrCollection, IJclPtrList, IJclPtrArray)
+  private
+    FItems: JclBase.TDynPointerArray;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrCollection }
+    function Add(APtr: Pointer): Boolean;
+    function AddAll(const ACollection: IJclPtrCollection): Boolean;
+    procedure Clear;
+    function Contains(APtr: Pointer): Boolean;
+    function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+    function Equals(const ACollection: IJclPtrCollection): Boolean;
+    function First: IJclPtrIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclPtrIterator;
+    function Remove(APtr: Pointer): Boolean; overload;
+    function RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+    function RetainAll(const ACollection: IJclPtrCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclPtrList }
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+    function GetPtr(Index: Integer): Pointer;
+    function IndexOf(APtr: Pointer): Integer;
+    function LastIndexOf(APtr: Pointer): Integer;
+    function Delete(Index: Integer): Pointer; overload;
+    procedure SetPtr(Index: Integer; APtr: Pointer);
+    function SubList(First, Count: Integer): IJclPtrList;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+    property Items: JclBase.TDynPointerArray read FItems;
+  end;
+  {$ENDIF ~CLR}
+
+
   TJclVector = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
     IJclCollection, IJclList, IJclArray)
@@ -800,6 +1127,1058 @@ begin
   CheckValid;
   FOwnList.SetString(FCursor, AString);
 end;
+
+
+//=== { TSingleItr } ===========================================================
+
+type
+  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclSingleList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleIterator }
+    function Add(const AValue: Single): Boolean;
+    function GetValue: Single;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Single): Boolean;
+    function Next: Single;
+    function NextIndex: Integer;
+    function Previous: Single;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Single);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Single read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclSingleList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TSingleItr.Create(const OwnList: IJclSingleList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TSingleItr.Add(const AValue: Single): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TSingleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TSingleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TSingleItr then
+  begin
+    ADest := TSingleItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TSingleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TSingleItr.GetValue: Single;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TSingleItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TSingleItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TSingleItr.Insert(const AValue: Single): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TSingleItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TSingleItr.Next: Single;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TSingleItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TSingleItr.Previous: Single;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TSingleItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TSingleItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TSingleItr.SetValue(const AValue: Single);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+
+//=== { TDoubleItr } ===========================================================
+
+type
+  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclDoubleList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleIterator }
+    function Add(const AValue: Double): Boolean;
+    function GetValue: Double;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Double): Boolean;
+    function Next: Double;
+    function NextIndex: Integer;
+    function Previous: Double;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Double);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Double read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TDoubleItr.Create(const OwnList: IJclDoubleList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TDoubleItr.Add(const AValue: Double): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TDoubleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TDoubleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TDoubleItr then
+  begin
+    ADest := TDoubleItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TDoubleItr.GetValue: Double;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TDoubleItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TDoubleItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TDoubleItr.Insert(const AValue: Double): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TDoubleItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TDoubleItr.Next: Double;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TDoubleItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TDoubleItr.Previous: Double;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TDoubleItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TDoubleItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TDoubleItr.SetValue(const AValue: Double);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+
+//=== { TExtendedItr } ===========================================================
+
+type
+  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclExtendedList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedIterator }
+    function Add(const AValue: Extended): Boolean;
+    function GetValue: Extended;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Extended): Boolean;
+    function Next: Extended;
+    function NextIndex: Integer;
+    function Previous: Extended;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Extended);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Extended read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TExtendedItr.Create(const OwnList: IJclExtendedList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TExtendedItr.Add(const AValue: Extended): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TExtendedItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TExtendedItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TExtendedItr then
+  begin
+    ADest := TExtendedItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TExtendedItr.GetValue: Extended;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TExtendedItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TExtendedItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TExtendedItr.Insert(const AValue: Extended): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TExtendedItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TExtendedItr.Next: Extended;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TExtendedItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TExtendedItr.Previous: Extended;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TExtendedItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TExtendedItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TExtendedItr.SetValue(const AValue: Extended);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+
+//=== { TIntegerItr } ===========================================================
+
+type
+  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclIntegerList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerIterator }
+    function Add(AValue: Integer): Boolean;
+    function GetValue: Integer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Integer): Boolean;
+    function Next: Integer;
+    function NextIndex: Integer;
+    function Previous: Integer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Integer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Integer read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TIntegerItr.Create(const OwnList: IJclIntegerList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TIntegerItr.Add(AValue: Integer): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TIntegerItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TIntegerItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TIntegerItr then
+  begin
+    ADest := TIntegerItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TIntegerItr.GetValue: Integer;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TIntegerItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TIntegerItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TIntegerItr.Insert(AValue: Integer): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntegerItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TIntegerItr.Next: Integer;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TIntegerItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TIntegerItr.Previous: Integer;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TIntegerItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TIntegerItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TIntegerItr.SetValue(AValue: Integer);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+
+//=== { TCardinalItr } ===========================================================
+
+type
+  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclCardinalList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCardinalIterator }
+    function Add(AValue: Cardinal): Boolean;
+    function GetValue: Cardinal;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Cardinal): Boolean;
+    function Next: Cardinal;
+    function NextIndex: Integer;
+    function Previous: Cardinal;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Cardinal);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Cardinal read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TCardinalItr.Create(const OwnList: IJclCardinalList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TCardinalItr.Add(AValue: Cardinal): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TCardinalItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TCardinalItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TCardinalItr then
+  begin
+    ADest := TCardinalItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TCardinalItr.GetValue: Cardinal;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TCardinalItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TCardinalItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TCardinalItr.Insert(AValue: Cardinal): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TCardinalItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TCardinalItr.Next: Cardinal;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TCardinalItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TCardinalItr.Previous: Cardinal;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TCardinalItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TCardinalItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TCardinalItr.SetValue(AValue: Cardinal);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+
+//=== { TInt64Itr } ===========================================================
+
+type
+  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclInt64List;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64Iterator }
+    function Add(const AValue: Int64): Boolean;
+    function GetValue: Int64;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Int64): Boolean;
+    function Next: Int64;
+    function NextIndex: Integer;
+    function Previous: Int64;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Int64);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Int64 read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TInt64Itr.Create(const OwnList: IJclInt64List; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TInt64Itr.Add(const AValue: Int64): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TInt64Itr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TInt64Itr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TInt64Itr then
+  begin
+    ADest := TInt64Itr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInt64Itr.GetValue: Int64;
+begin
+  CheckValid;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TInt64Itr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TInt64Itr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TInt64Itr.Insert(const AValue: Int64): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, AValue);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TInt64Itr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TInt64Itr.Next: Int64;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TInt64Itr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TInt64Itr.Previous: Int64;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetValue(FCursor);
+end;
+
+function TInt64Itr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TInt64Itr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TInt64Itr.SetValue(const AValue: Int64);
+begin
+  CheckValid;
+  FOwnList.SetValue(FCursor, AValue);
+end;
+
+{$IFNDEF CLR}
+
+//=== { TPtrItr } ===========================================================
+
+type
+  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: Integer;
+    FOwnList: IJclPtrList;
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrIterator }
+    function Add(APtr: Pointer): Boolean;
+    function GetPtr: Pointer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(APtr: Pointer): Boolean;
+    function Next: Pointer;
+    function NextIndex: Integer;
+    function Previous: Pointer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetPtr(APtr: Pointer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Pointer read GetPtr;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean);
+  end;
+
+constructor TPtrItr.Create(const OwnList: IJclPtrList; ACursor: Integer; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FOwnList := OwnList;
+  FCursor := ACursor;
+end;
+
+function TPtrItr.Add(APtr: Pointer): Boolean;
+begin
+  Result := FOwnList.Add(APtr);
+end;
+
+procedure TPtrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TPtrItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TPtrItr then
+  begin
+    ADest := TPtrItr(Dest);
+    ADest.FOwnList := FOwnList;
+    ADest.FCursor := FCursor;
+  end;
+end;
+
+function TPtrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPtrItr.GetPtr: Pointer;
+begin
+  CheckValid;
+  Result := FOwnList.GetPtr(FCursor);
+end;
+
+function TPtrItr.HasNext: Boolean;
+begin
+  if Valid then
+    Result := FCursor < (FOwnList.Size - 1)
+  else
+    Result := FCursor < FOwnList.Size;
+end;
+
+function TPtrItr.HasPrevious: Boolean;
+begin
+  if Valid then
+    Result := FCursor > 0
+  else
+    Result := FCursor >= 0;
+end;
+
+function TPtrItr.Insert(APtr: Pointer): Boolean;
+begin
+  CheckValid;
+  Result := FOwnList.Insert(FCursor, APtr);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TPtrItr.MoveNext: Boolean;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FCursor < FOwnList.Size;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TPtrItr.Next: Pointer;
+begin
+  if Valid then
+    Inc(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetPtr(FCursor);
+end;
+
+function TPtrItr.NextIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor + 1
+  else
+    Result := FCursor;
+end;
+
+function TPtrItr.Previous: Pointer;
+begin
+  if Valid then
+    Dec(FCursor)
+  else
+    Valid := True;
+  Result := FOwnList.GetPtr(FCursor);
+end;
+
+function TPtrItr.PreviousIndex: Integer;
+begin
+  if Valid then
+    Result := FCursor - 1
+  else
+    Result := FCursor;
+end;
+
+procedure TPtrItr.Remove;
+begin
+  CheckValid;
+  Valid := False;
+  FOwnList.Delete(FCursor);
+end;
+
+procedure TPtrItr.SetPtr(APtr: Pointer);
+begin
+  CheckValid;
+  FOwnList.SetPtr(FCursor, APtr);
+end;
+{$ENDIF ~CLR}
 
 
 //=== { TItr } ===========================================================
@@ -2607,6 +3986,3516 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+
+//=== { TJclSingleVector } ======================================================
+
+constructor TJclSingleVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclSingleVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclSingleVector.Add(const AValue: Single): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.AddAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSingleVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclSingleVector then
+  begin
+    ADest := TJclSingleVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclSingleVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeSingle(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.Contains(const AValue: Single): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleVector.Delete(Index: Integer): Single;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeSingle(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.Equals(const ACollection: IJclSingleCollection): Boolean;
+var
+  I: Integer;
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.First: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleVector.GetEnumerator: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleVector.GetValue(Index: Integer): Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.IndexOf(const AValue: Single): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.Insert(Index: Integer; const AValue: Single): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclSingleVector.Last: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclSingleVector.LastIndexOf(const AValue: Single): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.Remove(const AValue: Single): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeSingle(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.RetainAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleVector.SetValue(Index: Integer; const AValue: Single);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeSingle(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclSingleVector.SubList(First, Count: Integer): IJclSingleList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclSingleList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclDoubleVector } ======================================================
+
+constructor TJclDoubleVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclDoubleVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclDoubleVector.Add(const AValue: Double): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.AddAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclDoubleVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclDoubleVector then
+  begin
+    ADest := TJclDoubleVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclDoubleVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeDouble(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.Contains(const AValue: Double): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleVector.Delete(Index: Integer): Double;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeDouble(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.Equals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  I: Integer;
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.First: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleVector.GetEnumerator: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleVector.GetValue(Index: Integer): Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.IndexOf(const AValue: Double): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.Insert(Index: Integer; const AValue: Double): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclDoubleVector.Last: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclDoubleVector.LastIndexOf(const AValue: Double): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.Remove(const AValue: Double): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeDouble(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleVector.SetValue(Index: Integer; const AValue: Double);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeDouble(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclDoubleVector.SubList(First, Count: Integer): IJclDoubleList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclDoubleList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclExtendedVector } ======================================================
+
+constructor TJclExtendedVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclExtendedVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclExtendedVector.Add(const AValue: Extended): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.AddAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclExtendedVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclExtendedVector then
+  begin
+    ADest := TJclExtendedVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclExtendedVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeExtended(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.Contains(const AValue: Extended): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedVector.Delete(Index: Integer): Extended;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeExtended(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.Equals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  I: Integer;
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.First: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedVector.GetEnumerator: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedVector.GetValue(Index: Integer): Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.IndexOf(const AValue: Extended): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.Insert(Index: Integer; const AValue: Extended): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclExtendedVector.Last: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclExtendedVector.LastIndexOf(const AValue: Extended): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.Remove(const AValue: Extended): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeExtended(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedVector.SetValue(Index: Integer; const AValue: Extended);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeExtended(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclExtendedVector.SubList(First, Count: Integer): IJclExtendedList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclExtendedList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclIntegerVector } ======================================================
+
+constructor TJclIntegerVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclIntegerVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclIntegerVector.Add(AValue: Integer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.AddAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclIntegerVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntegerVector then
+  begin
+    ADest := TJclIntegerVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclIntegerVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeInteger(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.Contains(AValue: Integer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerVector.Delete(Index: Integer): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeInteger(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.Equals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  I: Integer;
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.First: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerVector.GetEnumerator: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerVector.GetValue(Index: Integer): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.IndexOf(AValue: Integer): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.Insert(Index: Integer; AValue: Integer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntegerVector.Last: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclIntegerVector.LastIndexOf(AValue: Integer): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.Remove(AValue: Integer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeInteger(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerVector.SetValue(Index: Integer; AValue: Integer);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeInteger(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntegerVector.SubList(First, Count: Integer): IJclIntegerList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclIntegerList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclCardinalVector } ======================================================
+
+constructor TJclCardinalVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclCardinalVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclCardinalVector.Add(AValue: Cardinal): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.AddAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclCardinalVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclCardinalVector then
+  begin
+    ADest := TJclCardinalVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclCardinalVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeCardinal(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.Contains(AValue: Cardinal): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalVector.Delete(Index: Integer): Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeCardinal(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.Equals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  I: Integer;
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.First: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalVector.GetEnumerator: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalVector.GetValue(Index: Integer): Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.IndexOf(AValue: Cardinal): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.Insert(Index: Integer; AValue: Cardinal): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclCardinalVector.Last: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclCardinalVector.LastIndexOf(AValue: Cardinal): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.Remove(AValue: Cardinal): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeCardinal(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalVector.SetValue(Index: Integer; AValue: Cardinal);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeCardinal(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclCardinalVector.SubList(First, Count: Integer): IJclCardinalList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclCardinalList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclInt64Vector } ======================================================
+
+constructor TJclInt64Vector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclInt64Vector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclInt64Vector.Add(const AValue: Int64): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.AddAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Vector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclInt64Vector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclInt64Vector then
+  begin
+    ADest := TJclInt64Vector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclInt64Vector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreeInt64(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.Contains(const AValue: Int64): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Vector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64Vector.Delete(Index: Integer): Int64;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreeInt64(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.Equals(const ACollection: IJclInt64Collection): Boolean;
+var
+  I: Integer;
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.First: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64Vector.GetEnumerator: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64Vector.GetValue(Index: Integer): Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.IndexOf(const AValue: Int64): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.Insert(Index: Integer; const AValue: Int64): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := AValue;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclInt64Vector.Last: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, FSize - 1, False);
+end;
+
+function TJclInt64Vector.LastIndexOf(const AValue: Int64): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], AValue) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.Remove(const AValue: Int64): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], AValue) then
+      begin
+        FreeInt64(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.RetainAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Vector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Vector.SetValue(Index: Integer; const AValue: Int64);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(AValue, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreeInt64(FItems[Index]);
+        FItems[Index] := AValue;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Vector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclInt64Vector.SubList(First, Count: Integer): IJclInt64List;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclInt64List;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+{$IFNDEF CLR}
+
+//=== { TJclPtrVector } ======================================================
+
+constructor TJclPtrVector.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclPtrVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclPtrVector.Add(APtr: Pointer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(APtr, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          FItems[FSize] := APtr;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.AddAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrVector.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclPtrVector;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclPtrVector then
+  begin
+    ADest := TJclPtrVector(Dest);
+    ADest.Clear;
+    ADest.AddAll(Self);
+  end;
+end;
+
+procedure TJclPtrVector.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    for I := 0 to FSize - 1 do
+      FreePointer(FItems[I]);
+    FSize := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.Contains(APtr: Pointer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], APtr) then
+      begin
+        Result := True;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrVector.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrVector.Delete(Index: Integer): Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    Result := FreePointer(FItems[Index]);
+    JclBase.MoveArray(FItems, Index + 1, Index, FSize - Index);
+    Dec(FSize);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.Equals(const ACollection: IJclPtrCollection): Boolean;
+var
+  I: Integer;
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    for I := 0 to FSize - 1 do
+      if not ItemsEqual(Items[I], It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.First: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, 0, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrVector.GetEnumerator: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, 0, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrVector.GetPtr(Index: Integer): Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) or (Index < FSize) then
+      Result := Items[Index]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.IndexOf(APtr: Pointer): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := 0 to FSize - 1 do
+      if ItemsEqual(Items[I], APtr) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.Insert(Index: Integer; APtr: Pointer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(APtr, FItems[I]) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+      if Result then
+      begin
+        if FSize = FCapacity then
+          AutoGrow;
+        Result := FSize < FCapacity;
+        if Result then
+        begin
+          JclBase.MoveArray(FItems, Index, Index + 1, FSize - Index);
+          FItems[Index] := APtr;
+          Inc(FSize);
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.Last;
+    while It.HasPrevious do
+      Result := Insert(Index, It.Previous) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclPtrVector.Last: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, FSize - 1, False);
+end;
+
+function TJclPtrVector.LastIndexOf(APtr: Pointer): Integer;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(Items[I], APtr) then
+      begin
+        Result := I;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.Remove(APtr: Pointer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    for I := FSize - 1 downto 0 do
+      if ItemsEqual(FItems[I], APtr) then
+      begin
+        FreePointer(FItems[I]); // Force Release
+        JclBase.MoveArray(FItems, I + 1, I, FSize - I);
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.RetainAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    for I := FSize - 1 downto 0 do
+      if not ACollection.Contains(Items[I]) then
+        Delete(I);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrVector.SetCapacity(Value: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < FSize then
+      raise EJclOutOfBoundsError.Create;
+    SetLength(FItems, Value);
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrVector.SetPtr(Index: Integer; APtr: Pointer);
+var
+  ReplaceItem: Boolean;
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if (Index < 0) or (Index >= FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for I := 0 to FSize - 1 do
+          if ItemsEqual(APtr, FItems[I]) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+      if ReplaceItem then
+      begin
+        FreePointer(FItems[Index]);
+        FItems[Index] := APtr;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrVector.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclPtrVector.SubList(First, Count: Integer): IJclPtrList;
+var
+  I: Integer;
+  Last: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Last := First + Count - 1;
+    if Last >= FSize then
+      Last := FSize - 1;
+    Result := CreateEmptyContainer as IJclPtrList;
+    for I := First to Last do
+      Result.Add(Items[I]);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF ~CLR}
 
 
 //=== { TJclVector } ======================================================

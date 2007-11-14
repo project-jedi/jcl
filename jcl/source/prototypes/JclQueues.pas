@@ -66,6 +66,39 @@ type
   TJclStrQueue = TJclWideStrQueue;
   {$ENDIF CONTAINER_WIDESTR}
 
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclSingleQueue,IJclSingleQueue,TJclSingleAbstractContainer,Single,JclBase.TDynSingleArray, IJclSingleContainer\, IJclSingleEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Single)*)
+
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclDoubleQueue,IJclDoubleQueue,TJclDoubleAbstractContainer,Double,JclBase.TDynDoubleArray, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Double)*)
+
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclExtendedQueue,IJclExtendedQueue,TJclExtendedAbstractContainer,Extended,JclBase.TDynExtendedArray, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Extended)*)
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatQueue = TJclExtendedQueue;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatQueue = TJclDoubleQueue;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatQueue = TJclSingleQueue;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclIntegerQueue,IJclIntegerQueue,TJclIntegerAbstractContainer,Integer,JclBase.TDynIntegerArray, IJclIntegerEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Integer)*)
+
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclCardinalQueue,IJclCardinalQueue,TJclCardinalAbstractContainer,Cardinal,JclBase.TDynCardinalArray, IJclCardinalEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Cardinal)*)
+
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclInt64Queue,IJclInt64Queue,TJclInt64AbstractContainer,Int64,JclBase.TDynInt64Array, IJclInt64EqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Int64)*)
+
+  {$IFNDEF CLR}
+(*$JPPEXPANDMACRO JCLQUEUEINT(TJclPtrQueue,IJclPtrQueue,TJclPtrAbstractContainer,Pointer,JclBase.TDynPointerArray, IJclPtrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr: Pointer)*)
+  {$ENDIF ~CLR}
+
 (*$JPPEXPANDMACRO JCLQUEUEINT(TJclQueue,IJclQueue,TJclAbstractContainer,TObject,JclBase.TDynObjectArray, IJclEqualityComparer\, IJclObjectOwner\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,; AOwnsObjects: Boolean,AObject: TObject)*)
 
@@ -162,6 +195,78 @@ end;
 }
 (*$JPPEXPANDMACRO JCLQUEUEIMP(TJclWideStrQueue,,,const AString: WideString,AString,WideString,'',JclBase.MoveArray,FreeString)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclSingleQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclSingleQueue,,,const AValue: Single,AValue,Single,0.0,JclBase.MoveArray,FreeSingle)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclDoubleQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclDoubleQueue,,,const AValue: Double,AValue,Double,0.0,JclBase.MoveArray,FreeDouble)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclExtendedQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclExtendedQueue,,,const AValue: Extended,AValue,Extended,0.0,JclBase.MoveArray,FreeExtended)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclIntegerQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclIntegerQueue,,,AValue: Integer,AValue,Integer,0,JclBase.MoveArray,FreeInteger)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclCardinalQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclCardinalQueue,,,AValue: Cardinal,AValue,Cardinal,0,JclBase.MoveArray,FreeCardinal)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclInt64Queue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Queue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclInt64Queue,,,const AValue: Int64,AValue,Int64,0,JclBase.MoveArray,FreeInt64)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$IFNDEF CLR}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclPtrQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLQUEUEIMP(TJclPtrQueue,,,APtr: Pointer,APtr,Pointer,nil,JclBase.MoveArray,FreePointer)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$ENDIF ~CLR}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
 function TJclQueue.CreateEmptyContainer: TJclAbstractContainerBase;

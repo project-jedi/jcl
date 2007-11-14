@@ -90,6 +90,55 @@ type
   TJclStrHashSet = TJclWideStrHashSet;
   {$ENDIF CONTAINER_WIDESTR}
 
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclSingleHashSet,TJclSingleAbstractContainer,IJclSingleCollection,IJclSingleSet,IJclSingleMap,IJclSingleIterator, IJclSingleContainer\, IJclSingleEqualityComparer\,,,
+    { IJclSingleContainer }
+    function GetPrecision: Single; override;
+    procedure SetPrecision(const Value: Single); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,const AValue: Single,AValue,Single)*)
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclDoubleHashSet,TJclDoubleAbstractContainer,IJclDoubleCollection,IJclDoubleSet,IJclDoubleMap,IJclDoubleIterator, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
+    { IJclDoubleContainer }
+    function GetPrecision: Double; override;
+    procedure SetPrecision(const Value: Double); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,const AValue: Double,AValue,Double)*)
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclExtendedHashSet,TJclExtendedAbstractContainer,IJclExtendedCollection,IJclExtendedSet,IJclExtendedMap,IJclExtendedIterator, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
+    { IJclExtendedContainer }
+    function GetPrecision: Extended; override;
+    procedure SetPrecision(const Value: Extended); override;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,const AValue: Extended,AValue,Extended)*)
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatHashSet = TJclExtendedHashSet;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatHashSet = TJclDoubleHashSet;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatHashSet = TJclSingleHashSet;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclIntegerHashSet,TJclIntegerAbstractContainer,IJclIntegerCollection,IJclIntegerSet,IJclIntegerMap,IJclIntegerIterator, IJclIntegerEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,AValue: Integer,AValue,Integer)*)
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclCardinalHashSet,TJclCardinalAbstractContainer,IJclCardinalCollection,IJclCardinalSet,IJclCardinalMap,IJclCardinalIterator, IJclCardinalEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,AValue: Cardinal,AValue,Cardinal)*)
+
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclInt64HashSet,TJclInt64AbstractContainer,IJclInt64Collection,IJclInt64Set,IJclInt64Map,IJclInt64Iterator, IJclInt64EqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,const AValue: Int64,AValue,Int64)*)
+
+  {$IFNDEF CLR}
+(*$JPPEXPANDMACRO JCLHASHSETINT(TJclPtrHashSet,TJclPtrAbstractContainer,IJclPtrCollection,IJclPtrSet,IJclPtrMap,IJclPtrIterator, IJclPtrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,
+    constructor Create(ACapacity: Integer); overload;,AValue: Pointer,AValue,Pointer)*)
+  {$ENDIF ~CLR}
+
 (*$JPPEXPANDMACRO JCLHASHSETINT(TJclHashSet,TJclAbstractContainer,IJclCollection,IJclSet,IJclMap,IJclIterator, IJclObjectOwner\, IJclEqualityComparer\,,,
     { IJclObjectOwner }
     function FreeObject(var AObject: TObject): TObject; override;
@@ -297,6 +346,213 @@ end;
 {$JPPUNDEFMACRO SETTERADDITIONAL}
 {$JPPUNDEFMACRO FREEITEM}
 {$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclSingleHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclSingleHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclSingleHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL
+function TJclSingleHashSet.GetPrecision: Single;
+begin
+  Result := FMap.GetPrecision;
+end;
+}
+{$JPPDEFINEMACRO SETTERADDITIONAL
+procedure TJclSingleHashSet.SetPrecision(const Value: Single);
+begin
+  FMap.SetPrecision(Value);
+end;
+}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclSingleHashSet,IJclSingleMap,IJclSingleCollection,IJclSingleIterator,,const AValue: Single,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclDoubleHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclDoubleHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclDoubleHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL
+function TJclDoubleHashSet.GetPrecision: Double;
+begin
+  Result := FMap.GetPrecision;
+end;
+}
+{$JPPDEFINEMACRO SETTERADDITIONAL
+procedure TJclDoubleHashSet.SetPrecision(const Value: Double);
+begin
+  FMap.SetPrecision(Value);
+end;
+}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclDoubleHashSet,IJclDoubleMap,IJclDoubleCollection,IJclDoubleIterator,,const AValue: Double,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclExtendedHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclExtendedHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclExtendedHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL
+function TJclExtendedHashSet.GetPrecision: Extended;
+begin
+  Result := FMap.GetPrecision;
+end;
+}
+{$JPPDEFINEMACRO SETTERADDITIONAL
+procedure TJclExtendedHashSet.SetPrecision(const Value: Extended);
+begin
+  FMap.SetPrecision(Value);
+end;
+}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclExtendedHashSet,IJclExtendedMap,IJclExtendedCollection,IJclExtendedIterator,,const AValue: Extended,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclIntegerHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclIntegerHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclIntegerHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL}
+{$JPPDEFINEMACRO SETTERADDITIONAL}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclIntegerHashSet,IJclIntegerMap,IJclIntegerCollection,IJclIntegerIterator,,AValue: Integer,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclCardinalHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclCardinalHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclCardinalHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL}
+{$JPPDEFINEMACRO SETTERADDITIONAL}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclCardinalHashSet,IJclCardinalMap,IJclCardinalCollection,IJclCardinalIterator,,AValue: Cardinal,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclInt64HashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclInt64HashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclInt64HashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64HashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL}
+{$JPPDEFINEMACRO SETTERADDITIONAL}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclInt64HashSet,IJclInt64Map,IJclInt64Collection,IJclInt64Iterator,,const AValue: Int64,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+
+{$IFNDEF CLR}
+{$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
+constructor TJclPtrHashSet.Create(ACapacity: Integer);
+begin
+  Create(TJclPtrHashMap.Create(ACapacity, False));
+end;
+}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclPtrHashSet.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrHashSet.Create(FMap.Size);
+  AssignPropertiesTo(Result);
+end;
+}
+{$JPPDEFINEMACRO GETTERADDITIONAL}
+{$JPPDEFINEMACRO SETTERADDITIONAL}
+{$JPPDEFINEMACRO FREEITEM}
+{$JPPDEFINEMACRO GETOWNSITEMS}
+(*$JPPEXPANDMACRO JCLHASHSETIMP(TJclPtrHashSet,IJclPtrMap,IJclPtrCollection,IJclPtrIterator,,AValue: Pointer,AValue)*)
+{$JPPUNDEFMACRO CONSTRUCTORADDITIONAL}
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$JPPUNDEFMACRO GETTERADDITIONAL}
+{$JPPUNDEFMACRO SETTERADDITIONAL}
+{$JPPUNDEFMACRO FREEITEM}
+{$JPPUNDEFMACRO GETOWNSITEMS}
+{$ENDIF ~CLR}
 
 {$JPPDEFINEMACRO CONSTRUCTORADDITIONAL
 constructor TJclHashSet.Create(ACapacity: Integer; AOwnsObjects: Boolean);

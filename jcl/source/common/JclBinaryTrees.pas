@@ -232,6 +232,417 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
+  TJclSingleBinaryNode = class
+  public
+    Value: Single;
+    Left: TJclSingleBinaryNode;
+    Right: TJclSingleBinaryNode;
+    Parent: TJclSingleBinaryNode;
+  end;
+
+  TJclSingleBinaryTree = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
+    IJclSingleCollection, IJclSingleTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclSingleBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TSingleCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleCollection }
+    function Add(const AValue: Single): Boolean;
+    function AddAll(const ACollection: IJclSingleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Single): Boolean;
+    function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+    function Equals(const ACollection: IJclSingleCollection): Boolean;
+    function First: IJclSingleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclSingleIterator;
+    function Remove(const AValue: Single): Boolean;
+    function RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+    function RetainAll(const ACollection: IJclSingleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclSingleTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclSingleComparer }
+    function ItemsCompare(const A, B: Single): Integer;
+    { IJclSingleEqualityComparer }
+    function ItemsEqual(const A, B: Single): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TSingleCompare);
+    destructor Destroy; override;
+    property Compare: TSingleCompare read FCompare write FCompare;
+  end;
+
+
+  TJclDoubleBinaryNode = class
+  public
+    Value: Double;
+    Left: TJclDoubleBinaryNode;
+    Right: TJclDoubleBinaryNode;
+    Parent: TJclDoubleBinaryNode;
+  end;
+
+  TJclDoubleBinaryTree = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
+    IJclDoubleCollection, IJclDoubleTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclDoubleBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TDoubleCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleCollection }
+    function Add(const AValue: Double): Boolean;
+    function AddAll(const ACollection: IJclDoubleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Double): Boolean;
+    function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Equals(const ACollection: IJclDoubleCollection): Boolean;
+    function First: IJclDoubleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclDoubleIterator;
+    function Remove(const AValue: Double): Boolean;
+    function RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+    function RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclDoubleTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclDoubleComparer }
+    function ItemsCompare(const A, B: Double): Integer;
+    { IJclDoubleEqualityComparer }
+    function ItemsEqual(const A, B: Double): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TDoubleCompare);
+    destructor Destroy; override;
+    property Compare: TDoubleCompare read FCompare write FCompare;
+  end;
+
+
+  TJclExtendedBinaryNode = class
+  public
+    Value: Extended;
+    Left: TJclExtendedBinaryNode;
+    Right: TJclExtendedBinaryNode;
+    Parent: TJclExtendedBinaryNode;
+  end;
+
+  TJclExtendedBinaryTree = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
+    IJclExtendedCollection, IJclExtendedTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclExtendedBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TExtendedCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedCollection }
+    function Add(const AValue: Extended): Boolean;
+    function AddAll(const ACollection: IJclExtendedCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Extended): Boolean;
+    function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Equals(const ACollection: IJclExtendedCollection): Boolean;
+    function First: IJclExtendedIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclExtendedIterator;
+    function Remove(const AValue: Extended): Boolean;
+    function RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+    function RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclExtendedTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclExtendedComparer }
+    function ItemsCompare(const A, B: Extended): Integer;
+    { IJclExtendedEqualityComparer }
+    function ItemsEqual(const A, B: Extended): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TExtendedCompare);
+    destructor Destroy; override;
+    property Compare: TExtendedCompare read FCompare write FCompare;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatBinaryTree = TJclExtendedBinaryTree;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatBinaryTree = TJclDoubleBinaryTree;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatBinaryTree = TJclSingleBinaryTree;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+
+  TJclIntegerBinaryNode = class
+  public
+    Value: Integer;
+    Left: TJclIntegerBinaryNode;
+    Right: TJclIntegerBinaryNode;
+    Parent: TJclIntegerBinaryNode;
+  end;
+
+  TJclIntegerBinaryTree = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
+    IJclIntegerCollection, IJclIntegerTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclIntegerBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TIntegerCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerCollection }
+    function Add(AValue: Integer): Boolean;
+    function AddAll(const ACollection: IJclIntegerCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Integer): Boolean;
+    function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Equals(const ACollection: IJclIntegerCollection): Boolean;
+    function First: IJclIntegerIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclIntegerIterator;
+    function Remove(AValue: Integer): Boolean;
+    function RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntegerTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclIntegerComparer }
+    function ItemsCompare(A, B: Integer): Integer;
+    { IJclIntegerEqualityComparer }
+    function ItemsEqual(A, B: Integer): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TIntegerCompare);
+    destructor Destroy; override;
+    property Compare: TIntegerCompare read FCompare write FCompare;
+  end;
+
+
+  TJclCardinalBinaryNode = class
+  public
+    Value: Cardinal;
+    Left: TJclCardinalBinaryNode;
+    Right: TJclCardinalBinaryNode;
+    Parent: TJclCardinalBinaryNode;
+  end;
+
+  TJclCardinalBinaryTree = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
+    IJclCardinalCollection, IJclCardinalTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclCardinalBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TCardinalCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCardinalCollection }
+    function Add(AValue: Cardinal): Boolean;
+    function AddAll(const ACollection: IJclCardinalCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Cardinal): Boolean;
+    function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Equals(const ACollection: IJclCardinalCollection): Boolean;
+    function First: IJclCardinalIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclCardinalIterator;
+    function Remove(AValue: Cardinal): Boolean;
+    function RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+    function RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCardinalTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclCardinalComparer }
+    function ItemsCompare(A, B: Cardinal): Integer;
+    { IJclCardinalEqualityComparer }
+    function ItemsEqual(A, B: Cardinal): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TCardinalCompare);
+    destructor Destroy; override;
+    property Compare: TCardinalCompare read FCompare write FCompare;
+  end;
+
+
+  TJclInt64BinaryNode = class
+  public
+    Value: Int64;
+    Left: TJclInt64BinaryNode;
+    Right: TJclInt64BinaryNode;
+    Parent: TJclInt64BinaryNode;
+  end;
+
+  TJclInt64BinaryTree = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
+    IJclInt64Collection, IJclInt64Tree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclInt64BinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TInt64Compare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64Collection }
+    function Add(const AValue: Int64): Boolean;
+    function AddAll(const ACollection: IJclInt64Collection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Int64): Boolean;
+    function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+    function Equals(const ACollection: IJclInt64Collection): Boolean;
+    function First: IJclInt64Iterator;
+    function IsEmpty: Boolean;
+    function Last: IJclInt64Iterator;
+    function Remove(const AValue: Int64): Boolean;
+    function RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+    function RetainAll(const ACollection: IJclInt64Collection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64Iterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclInt64Tree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclInt64Comparer }
+    function ItemsCompare(const A, B: Int64): Integer;
+    { IJclInt64EqualityComparer }
+    function ItemsEqual(const A, B: Int64): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TInt64Compare);
+    destructor Destroy; override;
+    property Compare: TInt64Compare read FCompare write FCompare;
+  end;
+
+  {$IFNDEF CLR}
+
+  TJclPtrBinaryNode = class
+  public
+    Value: Pointer;
+    Left: TJclPtrBinaryNode;
+    Right: TJclPtrBinaryNode;
+    Parent: TJclPtrBinaryNode;
+  end;
+
+  TJclPtrBinaryTree = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
+    IJclPtrCollection, IJclPtrTree)
+  private
+    FMaxDepth: Integer;
+    FRoot: TJclPtrBinaryNode;
+    FTraverseOrder: TJclTraverseOrder;
+    FCompare: TPtrCompare;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    procedure AutoPack; override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrCollection }
+    function Add(APtr: Pointer): Boolean;
+    function AddAll(const ACollection: IJclPtrCollection): Boolean;
+    procedure Clear;
+    function Contains(APtr: Pointer): Boolean;
+    function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+    function Equals(const ACollection: IJclPtrCollection): Boolean;
+    function First: IJclPtrIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclPtrIterator;
+    function Remove(APtr: Pointer): Boolean;
+    function RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+    function RetainAll(const ACollection: IJclPtrCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclPtrTree }
+    function GetTraverseOrder: TJclTraverseOrder;
+    procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    { IJclPtrComparer }
+    function ItemsCompare(A, B: Pointer): Integer;
+    { IJclPtrEqualityComparer }
+    function ItemsEqual(A, B: Pointer): Boolean;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACompare: TPtrCompare);
+    destructor Destroy; override;
+    property Compare: TPtrCompare read FCompare write FCompare;
+  end;
+  {$ENDIF ~CLR}
+
+
   TJclBinaryNode = class
   public
     Value: TObject;
@@ -1691,6 +2102,2997 @@ begin
       Result := Result.Left;
   end;
 end;
+
+//=== { TSingleItr } ===========================================================
+
+type
+  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator)
+  protected
+    FCursor: TJclSingleBinaryNode;
+    FOwnList: IJclSingleCollection;
+    FEqualityComparer: IJclSingleEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclSingleBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclSingleBinaryNode; virtual; abstract;
+    { IJclSingleIterator }
+    function Add(const AValue: Single): Boolean;
+    function GetValue: Single;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Single): Boolean;
+    function Next: Single;
+    function NextIndex: Integer;
+    function Previous: Single;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Single);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Single read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
+  end;
+
+constructor TSingleItr.Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclSingleEqualityComparer;
+end;
+
+function TSingleItr.Add(const AValue: Single): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TSingleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TSingleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TSingleItr then
+  begin
+    ADest := TSingleItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TSingleItr.GetValue: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.Insert(const AValue: Single): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TSingleItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TSingleItr.Next: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.Previous: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TSingleItr.Remove;
+var
+  OldCursor: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TSingleItr.SetValue(const AValue: Single);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderSingleItr } ===================================================
+
+type
+  TPreOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclSingleBinaryNode; override;
+    function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderSingleItr.GetPreviousCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderSingleItr } ====================================================
+
+type
+  TInOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclSingleBinaryNode; override;
+    function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderSingleItr.GetPreviousCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderSingleItr } ==================================================
+
+type
+  TPostOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclSingleBinaryNode; override;
+    function GetPreviousCursor: TJclSingleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderSingleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderSingleItr.GetNextCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderSingleItr.GetPreviousCursor: TJclSingleBinaryNode;
+var
+  LastRet: TJclSingleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+
+//=== { TDoubleItr } ===========================================================
+
+type
+  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator)
+  protected
+    FCursor: TJclDoubleBinaryNode;
+    FOwnList: IJclDoubleCollection;
+    FEqualityComparer: IJclDoubleEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclDoubleBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclDoubleBinaryNode; virtual; abstract;
+    { IJclDoubleIterator }
+    function Add(const AValue: Double): Boolean;
+    function GetValue: Double;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Double): Boolean;
+    function Next: Double;
+    function NextIndex: Integer;
+    function Previous: Double;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Double);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Double read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
+  end;
+
+constructor TDoubleItr.Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclDoubleEqualityComparer;
+end;
+
+function TDoubleItr.Add(const AValue: Double): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TDoubleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TDoubleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TDoubleItr then
+  begin
+    ADest := TDoubleItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TDoubleItr.GetValue: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.Insert(const AValue: Double): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TDoubleItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TDoubleItr.Next: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.Previous: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TDoubleItr.Remove;
+var
+  OldCursor: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TDoubleItr.SetValue(const AValue: Double);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderDoubleItr } ===================================================
+
+type
+  TPreOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclDoubleBinaryNode; override;
+    function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderDoubleItr.GetPreviousCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderDoubleItr } ====================================================
+
+type
+  TInOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclDoubleBinaryNode; override;
+    function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderDoubleItr.GetPreviousCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderDoubleItr } ==================================================
+
+type
+  TPostOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclDoubleBinaryNode; override;
+    function GetPreviousCursor: TJclDoubleBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderDoubleItr.GetNextCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderDoubleItr.GetPreviousCursor: TJclDoubleBinaryNode;
+var
+  LastRet: TJclDoubleBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+
+//=== { TExtendedItr } ===========================================================
+
+type
+  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator)
+  protected
+    FCursor: TJclExtendedBinaryNode;
+    FOwnList: IJclExtendedCollection;
+    FEqualityComparer: IJclExtendedEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclExtendedBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclExtendedBinaryNode; virtual; abstract;
+    { IJclExtendedIterator }
+    function Add(const AValue: Extended): Boolean;
+    function GetValue: Extended;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Extended): Boolean;
+    function Next: Extended;
+    function NextIndex: Integer;
+    function Previous: Extended;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Extended);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Extended read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
+  end;
+
+constructor TExtendedItr.Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclExtendedEqualityComparer;
+end;
+
+function TExtendedItr.Add(const AValue: Extended): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TExtendedItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TExtendedItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TExtendedItr then
+  begin
+    ADest := TExtendedItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TExtendedItr.GetValue: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.Insert(const AValue: Extended): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TExtendedItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TExtendedItr.Next: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.Previous: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0.0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TExtendedItr.Remove;
+var
+  OldCursor: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TExtendedItr.SetValue(const AValue: Extended);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderExtendedItr } ===================================================
+
+type
+  TPreOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclExtendedBinaryNode; override;
+    function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderExtendedItr.GetPreviousCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderExtendedItr } ====================================================
+
+type
+  TInOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclExtendedBinaryNode; override;
+    function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderExtendedItr.GetPreviousCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderExtendedItr } ==================================================
+
+type
+  TPostOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclExtendedBinaryNode; override;
+    function GetPreviousCursor: TJclExtendedBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderExtendedItr.GetNextCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderExtendedItr.GetPreviousCursor: TJclExtendedBinaryNode;
+var
+  LastRet: TJclExtendedBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+
+//=== { TIntegerItr } ===========================================================
+
+type
+  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator)
+  protected
+    FCursor: TJclIntegerBinaryNode;
+    FOwnList: IJclIntegerCollection;
+    FEqualityComparer: IJclIntegerEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclIntegerBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclIntegerBinaryNode; virtual; abstract;
+    { IJclIntegerIterator }
+    function Add(AValue: Integer): Boolean;
+    function GetValue: Integer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Integer): Boolean;
+    function Next: Integer;
+    function NextIndex: Integer;
+    function Previous: Integer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Integer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Integer read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
+  end;
+
+constructor TIntegerItr.Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclIntegerEqualityComparer;
+end;
+
+function TIntegerItr.Add(AValue: Integer): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TIntegerItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TIntegerItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TIntegerItr then
+  begin
+    ADest := TIntegerItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TIntegerItr.GetValue: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.Insert(AValue: Integer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntegerItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TIntegerItr.Next: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.Previous: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TIntegerItr.Remove;
+var
+  OldCursor: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TIntegerItr.SetValue(AValue: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderIntegerItr } ===================================================
+
+type
+  TPreOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntegerBinaryNode; override;
+    function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderIntegerItr.GetPreviousCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderIntegerItr } ====================================================
+
+type
+  TInOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntegerBinaryNode; override;
+    function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderIntegerItr.GetPreviousCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderIntegerItr } ==================================================
+
+type
+  TPostOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclIntegerBinaryNode; override;
+    function GetPreviousCursor: TJclIntegerBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderIntegerItr.GetNextCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderIntegerItr.GetPreviousCursor: TJclIntegerBinaryNode;
+var
+  LastRet: TJclIntegerBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+
+//=== { TCardinalItr } ===========================================================
+
+type
+  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator)
+  protected
+    FCursor: TJclCardinalBinaryNode;
+    FOwnList: IJclCardinalCollection;
+    FEqualityComparer: IJclCardinalEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclCardinalBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclCardinalBinaryNode; virtual; abstract;
+    { IJclCardinalIterator }
+    function Add(AValue: Cardinal): Boolean;
+    function GetValue: Cardinal;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Cardinal): Boolean;
+    function Next: Cardinal;
+    function NextIndex: Integer;
+    function Previous: Cardinal;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Cardinal);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Cardinal read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
+  end;
+
+constructor TCardinalItr.Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclCardinalEqualityComparer;
+end;
+
+function TCardinalItr.Add(AValue: Cardinal): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TCardinalItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TCardinalItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TCardinalItr then
+  begin
+    ADest := TCardinalItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TCardinalItr.GetValue: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.Insert(AValue: Cardinal): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TCardinalItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TCardinalItr.Next: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.Previous: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TCardinalItr.Remove;
+var
+  OldCursor: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TCardinalItr.SetValue(AValue: Cardinal);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderCardinalItr } ===================================================
+
+type
+  TPreOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclCardinalBinaryNode; override;
+    function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderCardinalItr.GetPreviousCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderCardinalItr } ====================================================
+
+type
+  TInOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclCardinalBinaryNode; override;
+    function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderCardinalItr.GetPreviousCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderCardinalItr } ==================================================
+
+type
+  TPostOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclCardinalBinaryNode; override;
+    function GetPreviousCursor: TJclCardinalBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderCardinalItr.GetNextCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderCardinalItr.GetPreviousCursor: TJclCardinalBinaryNode;
+var
+  LastRet: TJclCardinalBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+
+//=== { TInt64Itr } ===========================================================
+
+type
+  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator)
+  protected
+    FCursor: TJclInt64BinaryNode;
+    FOwnList: IJclInt64Collection;
+    FEqualityComparer: IJclInt64EqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclInt64BinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclInt64BinaryNode; virtual; abstract;
+    { IJclInt64Iterator }
+    function Add(const AValue: Int64): Boolean;
+    function GetValue: Int64;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Int64): Boolean;
+    function Next: Int64;
+    function NextIndex: Integer;
+    function Previous: Int64;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Int64);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Int64 read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
+  end;
+
+constructor TInt64Itr.Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclInt64EqualityComparer;
+end;
+
+function TInt64Itr.Add(const AValue: Int64): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TInt64Itr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TInt64Itr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TInt64Itr then
+  begin
+    ADest := TInt64Itr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TInt64Itr.GetValue: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.Insert(const AValue: Int64): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TInt64Itr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TInt64Itr.Next: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.Previous: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := 0;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TInt64Itr.Remove;
+var
+  OldCursor: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TInt64Itr.SetValue(const AValue: Int64);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderInt64Itr } ===================================================
+
+type
+  TPreOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclInt64BinaryNode; override;
+    function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderInt64Itr.GetPreviousCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderInt64Itr } ====================================================
+
+type
+  TInOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclInt64BinaryNode; override;
+    function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderInt64Itr.GetPreviousCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderInt64Itr } ==================================================
+
+type
+  TPostOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclInt64BinaryNode; override;
+    function GetPreviousCursor: TJclInt64BinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderInt64Itr.GetNextCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderInt64Itr.GetPreviousCursor: TJclInt64BinaryNode;
+var
+  LastRet: TJclInt64BinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+{$IFNDEF CLR}
+
+//=== { TPtrItr } ===========================================================
+
+type
+  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator)
+  protected
+    FCursor: TJclPtrBinaryNode;
+    FOwnList: IJclPtrCollection;
+    FEqualityComparer: IJclPtrEqualityComparer;
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function GetNextCursor: TJclPtrBinaryNode; virtual; abstract;
+    function GetPreviousCursor: TJclPtrBinaryNode; virtual; abstract;
+    { IJclPtrIterator }
+    function Add(APtr: Pointer): Boolean;
+    function GetPtr: Pointer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(APtr: Pointer): Boolean;
+    function Next: Pointer;
+    function NextIndex: Integer;
+    function Previous: Pointer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetPtr(APtr: Pointer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Pointer read GetPtr;
+    {$ENDIF SUPPORTS_FOR_IN}
+  public
+    constructor Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
+  end;
+
+constructor TPtrItr.Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
+begin
+  inherited Create(OwnList, AValid);
+  FCursor := Start;
+  FOwnList := OwnList;
+  FEqualityComparer := FOwnList as IJclPtrEqualityComparer;
+end;
+
+function TPtrItr.Add(APtr: Pointer): Boolean;
+begin
+  Result := FOwnList.Add(APtr);
+end;
+
+procedure TPtrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TPtrItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TPtrItr then
+  begin
+    ADest := TPtrItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TPtrItr.GetPtr: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetNextCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := GetPreviousCursor <> nil
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.Insert(APtr: Pointer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TPtrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TPtrItr.Next: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetNextCursor
+    else
+      Valid := True;
+    Result := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.NextIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.Previous: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      FCursor := GetPreviousCursor
+    else
+      Valid := True;
+    Result := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.PreviousIndex: Integer;
+begin
+  // No index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TPtrItr.Remove;
+var
+  OldCursor: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    OldCursor := FCursor;
+    if OldCursor <> nil then
+    begin
+      repeat
+        FCursor := GetNextCursor;
+      until (FCursor = nil) or FOwnList.RemoveSingleElement
+        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+      FOwnList.Remove(OldCursor.Value);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TPtrItr.SetPtr(APtr: Pointer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+//=== { TPreOrderPtrItr } ===================================================
+
+type
+  TPreOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclPtrBinaryNode; override;
+    function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPreOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPreOrderPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPreOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  begin
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Right = nil) or (Result.Right = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Right;
+  end;
+end;
+
+function TPreOrderPtrItr.GetPreviousCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+    // come from Right
+  begin
+    Result := Result.Left;
+    while (Result.Left <> nil) or (Result.Right <> nil) do // both childs
+    begin
+      if Result.Right <> nil then // right child first
+        Result := Result.Right
+      else
+        Result := Result.Left;
+    end;
+  end;
+end;
+
+//=== { TInOrderPtrItr } ====================================================
+
+type
+  TInOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclPtrBinaryNode; override;
+    function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TInOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInOrderPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) do
+      Result := Result.Left;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right = LastRet) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+function TInOrderPtrItr.GetPreviousCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Left <> nil then
+  begin
+    Result := Result.Left;
+    while Result.Right <> nil do
+      Result := Result.Right;
+  end
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and (Result.Right <> LastRet) do // Come from Left
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+  end;
+end;
+
+//=== { TPostOrderPtrItr } ==================================================
+
+type
+  TPostOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  protected
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    function GetNextCursor: TJclPtrBinaryNode; override;
+    function GetPreviousCursor: TJclPtrBinaryNode; override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  end;
+
+function TPostOrderPtrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPostOrderPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPostOrderPtrItr.GetNextCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  LastRet := Result;
+  Result := Result.Parent;
+  if (Result <> nil) and (Result.Right <> nil) and (Result.Right <> LastRet) then
+  begin
+    Result := Result.Right;
+    while (Result.Left <> nil) or (Result.Right <> nil) do
+    begin
+      if Result.Left <> nil then
+        Result := Result.Left
+      else
+        Result := Result.Right;
+    end;
+  end;
+end;
+
+function TPostOrderPtrItr.GetPreviousCursor: TJclPtrBinaryNode;
+var
+  LastRet: TJclPtrBinaryNode;
+begin
+  Result := FCursor;
+  if Result = nil then
+    Exit;
+  if Result.Right <> nil then
+    Result := Result.Right
+  else
+  if Result.Left <> nil then
+    Result := Result.Left
+  else
+  begin
+    LastRet := Result;
+    Result := Result.Parent;
+    while (Result <> nil) and ((Result.Left = nil) or (Result.Left = LastRet)) do
+    begin
+      LastRet := Result;
+      Result := Result.Parent;
+    end;
+    if Result <> nil then // not root
+      Result := Result.Left;
+  end;
+end;
+{$ENDIF ~CLR}
 
 //=== { TItr } ===========================================================
 
@@ -4598,6 +8000,4789 @@ begin
 end;
 
 
+//=== { TJclSingleBinaryTree } =================================================
+
+constructor TJclSingleBinaryTree.Create(ACompare: TSingleCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclSingleBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclSingleBinaryTree.Add(const AValue: Single): Boolean;
+var
+  NewNode, Current, Save: TJclSingleBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclSingleBinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.AddAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclSingleBinaryNode): TJclSingleBinaryNode;
+  begin
+    Result := TJclSingleBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclSingleBinaryTree;
+  ACollection: IJclSingleCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclSingleBinaryTree then
+  begin
+    ADest := TJclSingleBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclSingleCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclSingleBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclSingleBinaryTree then
+    TJclSingleBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclSingleBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclSingleBinaryTree.Clear;
+var
+  Current, Parent: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeSingle(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.Contains(const AValue: Single): Boolean;
+var
+  Comp: Integer;
+  Current: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleBinaryTree.Equals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItSelf: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.First: IJclSingleIterator;
+var
+  Start: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderSingleItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderSingleItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderSingleItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleBinaryTree.GetEnumerator: IJclSingleIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclSingleBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclSingleBinaryTree.ItemsCompare(const A, B: Single): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclSingleBinaryTree.ItemsEqual(const A, B: Single): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclSingleBinaryTree.Last: IJclSingleIterator;
+var
+  Start: TJclSingleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderSingleItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderSingleItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderSingleItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleBinaryTree.Pack;
+type
+  TLeafArray = array of TJclSingleBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclSingleBinaryNode;
+    Offset: Integer): TJclSingleBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclSingleBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclSingleBinaryTree.Remove(const AValue: Single): Boolean;
+var
+  Current, Successor: TJclSingleBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeSingle(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleBinaryTree.RetainAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclSingleBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclSingleBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+
+//=== { TJclDoubleBinaryTree } =================================================
+
+constructor TJclDoubleBinaryTree.Create(ACompare: TDoubleCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclDoubleBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclDoubleBinaryTree.Add(const AValue: Double): Boolean;
+var
+  NewNode, Current, Save: TJclDoubleBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclDoubleBinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.AddAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclDoubleBinaryNode): TJclDoubleBinaryNode;
+  begin
+    Result := TJclDoubleBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclDoubleBinaryTree;
+  ACollection: IJclDoubleCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclDoubleBinaryTree then
+  begin
+    ADest := TJclDoubleBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclDoubleCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclDoubleBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclDoubleBinaryTree then
+    TJclDoubleBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclDoubleBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclDoubleBinaryTree.Clear;
+var
+  Current, Parent: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeDouble(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.Contains(const AValue: Double): Boolean;
+var
+  Comp: Integer;
+  Current: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleBinaryTree.Equals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItSelf: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.First: IJclDoubleIterator;
+var
+  Start: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderDoubleItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderDoubleItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderDoubleItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleBinaryTree.GetEnumerator: IJclDoubleIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclDoubleBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclDoubleBinaryTree.ItemsCompare(const A, B: Double): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclDoubleBinaryTree.ItemsEqual(const A, B: Double): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclDoubleBinaryTree.Last: IJclDoubleIterator;
+var
+  Start: TJclDoubleBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderDoubleItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderDoubleItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderDoubleItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleBinaryTree.Pack;
+type
+  TLeafArray = array of TJclDoubleBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclDoubleBinaryNode;
+    Offset: Integer): TJclDoubleBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclDoubleBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclDoubleBinaryTree.Remove(const AValue: Double): Boolean;
+var
+  Current, Successor: TJclDoubleBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeDouble(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleBinaryTree.RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclDoubleBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclDoubleBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+
+//=== { TJclExtendedBinaryTree } =================================================
+
+constructor TJclExtendedBinaryTree.Create(ACompare: TExtendedCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclExtendedBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclExtendedBinaryTree.Add(const AValue: Extended): Boolean;
+var
+  NewNode, Current, Save: TJclExtendedBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclExtendedBinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.AddAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclExtendedBinaryNode): TJclExtendedBinaryNode;
+  begin
+    Result := TJclExtendedBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclExtendedBinaryTree;
+  ACollection: IJclExtendedCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclExtendedBinaryTree then
+  begin
+    ADest := TJclExtendedBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclExtendedCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclExtendedBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclExtendedBinaryTree then
+    TJclExtendedBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclExtendedBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclExtendedBinaryTree.Clear;
+var
+  Current, Parent: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeExtended(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.Contains(const AValue: Extended): Boolean;
+var
+  Comp: Integer;
+  Current: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedBinaryTree.Equals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItSelf: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.First: IJclExtendedIterator;
+var
+  Start: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderExtendedItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderExtendedItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderExtendedItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedBinaryTree.GetEnumerator: IJclExtendedIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclExtendedBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclExtendedBinaryTree.ItemsCompare(const A, B: Extended): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclExtendedBinaryTree.ItemsEqual(const A, B: Extended): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclExtendedBinaryTree.Last: IJclExtendedIterator;
+var
+  Start: TJclExtendedBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderExtendedItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderExtendedItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderExtendedItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedBinaryTree.Pack;
+type
+  TLeafArray = array of TJclExtendedBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclExtendedBinaryNode;
+    Offset: Integer): TJclExtendedBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclExtendedBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclExtendedBinaryTree.Remove(const AValue: Extended): Boolean;
+var
+  Current, Successor: TJclExtendedBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeExtended(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedBinaryTree.RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclExtendedBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclExtendedBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+
+//=== { TJclIntegerBinaryTree } =================================================
+
+constructor TJclIntegerBinaryTree.Create(ACompare: TIntegerCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclIntegerBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclIntegerBinaryTree.Add(AValue: Integer): Boolean;
+var
+  NewNode, Current, Save: TJclIntegerBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclIntegerBinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.AddAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclIntegerBinaryNode): TJclIntegerBinaryNode;
+  begin
+    Result := TJclIntegerBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclIntegerBinaryTree;
+  ACollection: IJclIntegerCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntegerBinaryTree then
+  begin
+    ADest := TJclIntegerBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclIntegerCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclIntegerBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclIntegerBinaryTree then
+    TJclIntegerBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclIntegerBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclIntegerBinaryTree.Clear;
+var
+  Current, Parent: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeInteger(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.Contains(AValue: Integer): Boolean;
+var
+  Comp: Integer;
+  Current: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerBinaryTree.Equals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItSelf: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.First: IJclIntegerIterator;
+var
+  Start: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderIntegerItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderIntegerItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderIntegerItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerBinaryTree.GetEnumerator: IJclIntegerIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclIntegerBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntegerBinaryTree.ItemsCompare(A, B: Integer): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclIntegerBinaryTree.ItemsEqual(A, B: Integer): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclIntegerBinaryTree.Last: IJclIntegerIterator;
+var
+  Start: TJclIntegerBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderIntegerItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderIntegerItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderIntegerItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerBinaryTree.Pack;
+type
+  TLeafArray = array of TJclIntegerBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclIntegerBinaryNode;
+    Offset: Integer): TJclIntegerBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclIntegerBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclIntegerBinaryTree.Remove(AValue: Integer): Boolean;
+var
+  Current, Successor: TJclIntegerBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeInteger(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerBinaryTree.RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclIntegerBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclIntegerBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+
+//=== { TJclCardinalBinaryTree } =================================================
+
+constructor TJclCardinalBinaryTree.Create(ACompare: TCardinalCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclCardinalBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclCardinalBinaryTree.Add(AValue: Cardinal): Boolean;
+var
+  NewNode, Current, Save: TJclCardinalBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclCardinalBinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.AddAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclCardinalBinaryNode): TJclCardinalBinaryNode;
+  begin
+    Result := TJclCardinalBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclCardinalBinaryTree;
+  ACollection: IJclCardinalCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclCardinalBinaryTree then
+  begin
+    ADest := TJclCardinalBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclCardinalCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclCardinalBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclCardinalBinaryTree then
+    TJclCardinalBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclCardinalBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclCardinalBinaryTree.Clear;
+var
+  Current, Parent: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeCardinal(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.Contains(AValue: Cardinal): Boolean;
+var
+  Comp: Integer;
+  Current: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalBinaryTree.Equals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItSelf: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.First: IJclCardinalIterator;
+var
+  Start: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderCardinalItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderCardinalItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderCardinalItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalBinaryTree.GetEnumerator: IJclCardinalIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclCardinalBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclCardinalBinaryTree.ItemsCompare(A, B: Cardinal): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclCardinalBinaryTree.ItemsEqual(A, B: Cardinal): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclCardinalBinaryTree.Last: IJclCardinalIterator;
+var
+  Start: TJclCardinalBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderCardinalItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderCardinalItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderCardinalItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalBinaryTree.Pack;
+type
+  TLeafArray = array of TJclCardinalBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclCardinalBinaryNode;
+    Offset: Integer): TJclCardinalBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclCardinalBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclCardinalBinaryTree.Remove(AValue: Cardinal): Boolean;
+var
+  Current, Successor: TJclCardinalBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeCardinal(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalBinaryTree.RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclCardinalBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclCardinalBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+
+//=== { TJclInt64BinaryTree } =================================================
+
+constructor TJclInt64BinaryTree.Create(ACompare: TInt64Compare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclInt64BinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclInt64BinaryTree.Add(const AValue: Int64): Boolean;
+var
+  NewNode, Current, Save: TJclInt64BinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclInt64BinaryNode.Create;
+        NewNode.Value := AValue;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.AddAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64BinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclInt64BinaryNode): TJclInt64BinaryNode;
+  begin
+    Result := TJclInt64BinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclInt64BinaryTree;
+  ACollection: IJclInt64Collection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclInt64BinaryTree then
+  begin
+    ADest := TJclInt64BinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclInt64Collection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclInt64BinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclInt64BinaryTree then
+    TJclInt64BinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclInt64BinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclInt64BinaryTree.Clear;
+var
+  Current, Parent: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreeInt64(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.Contains(const AValue: Int64): Boolean;
+var
+  Comp: Integer;
+  Current: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, AValue);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64BinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64BinaryTree.Equals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItSelf: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.First: IJclInt64Iterator;
+var
+  Start: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderInt64Itr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderInt64Itr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderInt64Itr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64BinaryTree.GetEnumerator: IJclInt64Iterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64BinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclInt64BinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclInt64BinaryTree.ItemsCompare(const A, B: Int64): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclInt64BinaryTree.ItemsEqual(const A, B: Int64): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclInt64BinaryTree.Last: IJclInt64Iterator;
+var
+  Start: TJclInt64BinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderInt64Itr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderInt64Itr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderInt64Itr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64BinaryTree.Pack;
+type
+  TLeafArray = array of TJclInt64BinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclInt64BinaryNode;
+    Offset: Integer): TJclInt64BinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclInt64BinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclInt64BinaryTree.Remove(const AValue: Int64): Boolean;
+var
+  Current, Successor: TJclInt64BinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate AValue in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(AValue, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreeInt64(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64BinaryTree.RetainAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64BinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclInt64BinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclInt64BinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+{$IFNDEF CLR}
+
+//=== { TJclPtrBinaryTree } =================================================
+
+constructor TJclPtrBinaryTree.Create(ACompare: TPtrCompare);
+begin
+  inherited Create(nil);
+  FTraverseOrder := toOrder;
+  FMaxDepth := 0;
+  FAutoPackParameter := 2;
+  FCompare := ACompare;
+end;
+
+destructor TJclPtrBinaryTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclPtrBinaryTree.Add(APtr: Pointer): Boolean;
+var
+  NewNode, Current, Save: TJclPtrBinaryNode;
+  Comp, Depth: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // Insert into right place
+    if FAllowDefaultElements or not ItemsEqual(APtr, nil) then
+    begin
+      Save := nil;
+      Current := FRoot;
+      Comp := 1;
+      Depth := 0;
+      while Current <> nil do
+      begin
+        Inc(Depth);
+        Save := Current;
+        Comp := ItemsCompare(APtr, Current.Value);
+        if Comp < 0 then
+          Current := Current.Left
+        else
+        if Comp > 0 then
+          Current := Current.Right
+        else
+          Break;
+      end;
+      if (Comp <> 0) or CheckDuplicate then
+      begin
+        NewNode := TJclPtrBinaryNode.Create;
+        NewNode.Value := APtr;
+        NewNode.Parent := Save;
+        if Save = nil then
+          FRoot := NewNode
+        else
+        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+          Save.Left := NewNode
+        else
+          Save.Right := NewNode;
+        Inc(FSize);
+        Inc(Depth);
+        if Depth > FMaxDepth then
+          FMaxDepth := Depth;
+        Result := True;
+        AutoPack;
+      end
+      else
+        Result := False;
+    end
+    else
+      Result := False;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.AddAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Add(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrBinaryTree.AssignDataTo(Dest: TJclAbstractContainerBase);
+  function CloneNode(Node, Parent: TJclPtrBinaryNode): TJclPtrBinaryNode;
+  begin
+    Result := TJclPtrBinaryNode.Create;
+    Result.Value := Node.Value;
+    Result.Parent := Parent;
+    if Node.Left <> nil then
+      Result.Left := CloneNode(Node.Left, Result); // recursive call
+    if Node.Right <> nil then
+      Result.Right := CloneNode(Node.Right, Result); // recursive call
+  end;
+var
+  ADest: TJclPtrBinaryTree;
+  ACollection: IJclPtrCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclPtrBinaryTree then
+  begin
+    ADest := TJclPtrBinaryTree(Dest);
+    ADest.Clear;
+    ADest.FSize := FSize;
+    if FRoot <> nil then
+      ADest.FRoot := CloneNode(FRoot, nil);
+  end
+  else
+  if Supports(IInterface(Dest), IJclPtrCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclPtrBinaryTree.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesto(Dest);
+  if Dest is TJclPtrBinaryTree then
+    TJclPtrBinaryTree(Dest).FTraverseOrder := FTraverseOrder;
+end;
+
+procedure TJclPtrBinaryTree.AutoPack;
+begin
+  case FAutoPackStrategy of
+    //apsDisabled: ;
+    apsAgressive:
+      if (FMaxDepth > 1) and (((1 shl (FMaxDepth - 1)) - 1) > FSize) then
+        Pack;
+    // apsIncremental: ;
+    apsProportional:
+      if (FMaxDepth > FAutoPackParameter) and (((1 shl (FMaxDepth - FAutoPackParameter)) - 1) > FSize) then
+        Pack;
+  end;
+end;
+
+procedure TJclPtrBinaryTree.Clear;
+var
+  Current, Parent: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    // postorder
+    Current := FRoot;
+    if Current = nil then
+      Exit;
+    // find first in post-order
+    while (Current.Left <> nil) or (Current.Right <> nil) do
+    begin
+      if Current.Left <> nil then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    // for all items in the tree in post-order
+    repeat
+      Parent := Current.Parent;
+      // remove reference
+      if Parent <> nil then
+      begin
+        if Parent.Left = Current then
+          Parent.Left := nil
+        else
+        if Parent.Right = Current then
+          Parent.Right := nil;
+      end;
+
+      // free item
+      FreePointer(Current.Value);
+      Current.Free;
+
+      // find next item
+      Current := Parent;
+      if (Current <> nil) and (Current.Right <> nil) then
+      begin
+        Current := Current.Right;
+        while (Current.Left <> nil) or (Current.Right <> nil) do
+        begin
+          if Current.Left <> nil then
+            Current := Current.Left
+          else
+            Current := Current.Right;
+        end;
+      end;
+    until Current = nil;
+    FRoot := nil;
+    FSize := 0;
+    FMaxDepth := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.Contains(APtr: Pointer): Boolean;
+var
+  Comp: Integer;
+  Current: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FRoot;
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(Current.Value, APtr);
+      if Comp = 0 then
+      begin
+        Result := True;
+        Break;
+      end
+      else
+      if Comp > 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrBinaryTree.Create(FCompare);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrBinaryTree.Equals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItSelf: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.First: IJclPtrIterator;
+var
+  Start: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderPtrItr.Create(Self, Start, False);
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Left <> nil do
+              Start := Start.Left;
+          Result := TInOrderPtrItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Left <> nil then
+              Start := Start.Left
+            else
+              Start := Start.Right;
+          end;
+          Result := TPostOrderPtrItr.Create(Self, Start, False);
+        end;
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrBinaryTree.GetEnumerator: IJclPtrIterator;
+begin
+  Result := First;
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
+begin
+  Result := FTraverseOrder;
+end;
+
+function TJclPtrBinaryTree.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclPtrBinaryTree.ItemsCompare(A, B: Pointer): Integer;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
+end;
+
+function TJclPtrBinaryTree.ItemsEqual(A, B: Pointer): Boolean;
+begin
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
+end;
+
+function TJclPtrBinaryTree.Last: IJclPtrIterator;
+var
+  Start: TJclPtrBinaryNode;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Start := FRoot;
+    case FTraverseOrder of
+      toPreOrder:
+        begin
+          if Start <> nil then
+            while (Start.Left <> nil) or (Start.Right <> nil) do
+          begin
+            if Start.Right <> nil then
+              Start := Start.Right
+            else
+              Start := Start.Left;
+          end;
+          Result := TPreOrderPtrItr.Create(Self, Start, False);
+        end;
+      toOrder:
+        begin
+          if Start <> nil then
+            while Start.Right <> nil do
+              Start := Start.Right;
+          Result := TInOrderPtrItr.Create(Self, Start, False);
+        end;
+      toPostOrder:
+        Result := TPostOrderPtrItr.Create(Self, Start, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrBinaryTree.Pack;
+type
+  TLeafArray = array of TJclPtrBinaryNode;
+
+  function BuildTree(var LeafArray: TLeafArray; Left, Right: Integer; Parent: TJclPtrBinaryNode;
+    Offset: Integer): TJclPtrBinaryNode;
+  var
+    Middle: Integer;
+  begin
+    Middle := (Left + Right + Offset) shr 1;
+    Result := LeafArray[Middle];
+    Result.Parent := Parent;
+    if Middle > Left then
+      Result.Left := BuildTree(LeafArray, Left, Middle - 1, Result, 0)
+    else
+      Result.Left := nil;
+    if Middle < Right then
+      Result.Right := BuildTree(LeafArray, Middle + 1, Right, Result, 1)
+    else
+      Result.Right := nil;
+  end;
+var
+  LeafArray: TLeafArray;
+  ANode, BNode: TJclPtrBinaryNode;
+  Index: Integer;
+begin
+  SetLength(Leafarray, FSize);
+  try
+    // in order enumeration of nodes
+    ANode := FRoot;
+    if ANode <> nil then
+    begin
+      // find first node
+      while ANode.Left <> nil do
+        ANode := ANode.Left;
+
+      Index := 0;
+      while ANode <> nil do
+      begin
+        LeafArray[Index] := ANode;
+        Inc(Index);
+        if ANode.Right <> nil then
+        begin
+          ANode := ANode.Right;
+          while (ANode.Left <> nil) do
+            ANode := ANode.Left;
+        end
+        else
+        begin
+          BNode := ANode;
+          ANode := ANode.Parent;
+          while (ANode <> nil) and (ANode.Right = BNode) do
+          begin
+            BNode := ANode;
+            ANode := ANode.Parent;
+          end;
+        end;
+      end;
+
+      Index := FSize shr 1;
+      FRoot := LeafArray[Index];
+      FRoot.Parent := nil;
+      if Index > 0 then
+        FRoot.Left := BuildTree(LeafArray, 0, Index - 1, FRoot, 0)
+      else
+        FRoot.Left := nil;
+      if Index < (FSize - 1) then
+        FRoot.Right := BuildTree(LeafArray, Index + 1, FSize - 1, FRoot, 1)
+      else
+        FRoot.Right := nil;
+    end;
+  finally
+    SetLength(LeafArray, 0);
+  end;
+end;
+
+function TJclPtrBinaryTree.Remove(APtr: Pointer): Boolean;
+var
+  Current, Successor: TJclPtrBinaryNode;
+  Comp: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    // locate APtr in the tree
+    Current := FRoot;
+    repeat
+      while Current <> nil do
+      begin
+        Comp := ItemsCompare(APtr, Current.Value);
+        if Comp = 0 then
+          Break
+        else
+        if Comp < 0 then
+         Current := Current.Left
+        else
+          Current := Current.Right;
+      end;
+      if Current = nil then
+        Break;
+      Result := True;
+      // Remove Current from tree
+      if (Current.Left = nil) and (Current.Right <> nil) then
+      begin
+        // remove references to Current
+        Current.Right.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Right
+          else
+            Current.Parent.Right := Current.Right;
+        end
+        else
+          // fix root
+          FRoot := Current.Right;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right = nil) then
+      begin
+        // remove references to Current
+        Current.Left.Parent := Current.Parent;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Current.Left
+          else
+            Current.Parent.Right := Current.Left;
+        end
+        else
+          // fix root
+          FRoot := Current.Left;
+        Successor := Current.Parent;
+        if Successor = nil then
+          Successor := FRoot;
+      end
+      else
+      if (Current.Left <> nil) and (Current.Right <> nil) then
+      begin
+        // find the successor in tree
+        Successor := Current.Right;
+        while Successor.Left <> nil do
+          Successor := Successor.Left;
+
+        if Successor <> Current.Right then
+        begin
+          // remove references to successor
+          if Successor.Parent.Left = Successor then
+            Successor.Parent.Left := Successor.Right
+          else
+            Successor.Parent.Right := Successor.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor.Parent;
+          Successor.Right := Current.Right;
+        end;
+
+        // insert successor in new position
+        Successor.Parent := Current.Parent;
+        Successor.Left := Current.Left;
+        if Current.Parent <> nil then
+        begin
+          if Current.Parent.Left = Current then
+            Current.Parent.Left := Successor
+          else
+            Current.Parent.Right := Successor;
+        end
+        else
+          // fix root
+          FRoot := Successor;
+        Successor := Current.Parent;
+        if Successor <> nil then
+          Successor := FRoot;
+      end
+      else
+      begin
+        // (Current.Left = nil) and (Current.Right = nil)
+        Successor := Current.Parent;
+        if Successor <> nil then
+        begin
+          // remove references from parent
+          if Successor.Left = Current then
+            Successor.Left := nil
+          else
+            Successor.Right := nil;
+        end
+        else
+          FRoot := nil;
+      end;
+      FreePointer(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Current := Successor;
+    until FRemoveSingleElement or (Current = nil);
+    AutoPack;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrBinaryTree.RetainAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrBinaryTree.SetCapacity(Value: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TJclPtrBinaryTree.SetTraverseOrder(Value: TJclTraverseOrder);
+begin
+  FTraverseOrder := Value;
+end;
+
+function TJclPtrBinaryTree.Size: Integer;
+begin
+  Result := FSize;
+end;
+{$ENDIF ~CLR}
+
+
 //=== { TJclBinaryTree } =================================================
 
 constructor TJclBinaryTree.Create(ACompare: TCompare; AOwnsObjects: Boolean);
@@ -5548,7 +13733,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-
 function TJclBinaryTree<T>.Equals(const ACollection: IJclCollection<T>): Boolean;
 var
   It, ItSelf: IJclIterator<T>;
@@ -5635,8 +13819,6 @@ function TJclBinaryTree<T>.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
 end;
-
-
 
 function TJclBinaryTree<T>.Last: IJclIterator<T>;
 var

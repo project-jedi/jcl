@@ -149,6 +149,221 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
+  TJclSingleQueue = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclSingleQueue)
+  private
+    FElements: JclBase.TDynSingleArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleQueue }
+    procedure Clear;
+    function Contains(const AValue: Single): Boolean;
+    function Dequeue: Single;
+    function Empty: Boolean;
+    function Enqueue(const AValue: Single): Boolean;
+    function Peek: Single;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+
+  TJclDoubleQueue = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclDoubleQueue)
+  private
+    FElements: JclBase.TDynDoubleArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleQueue }
+    procedure Clear;
+    function Contains(const AValue: Double): Boolean;
+    function Dequeue: Double;
+    function Empty: Boolean;
+    function Enqueue(const AValue: Double): Boolean;
+    function Peek: Double;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+
+  TJclExtendedQueue = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclExtendedQueue)
+  private
+    FElements: JclBase.TDynExtendedArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedQueue }
+    procedure Clear;
+    function Contains(const AValue: Extended): Boolean;
+    function Dequeue: Extended;
+    function Empty: Boolean;
+    function Enqueue(const AValue: Extended): Boolean;
+    function Peek: Extended;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatQueue = TJclExtendedQueue;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatQueue = TJclDoubleQueue;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatQueue = TJclSingleQueue;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+
+  TJclIntegerQueue = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
+    IJclIntegerQueue)
+  private
+    FElements: JclBase.TDynIntegerArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerQueue }
+    procedure Clear;
+    function Contains(AValue: Integer): Boolean;
+    function Dequeue: Integer;
+    function Empty: Boolean;
+    function Enqueue(AValue: Integer): Boolean;
+    function Peek: Integer;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+
+  TJclCardinalQueue = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
+    IJclCardinalQueue)
+  private
+    FElements: JclBase.TDynCardinalArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclCardinalQueue }
+    procedure Clear;
+    function Contains(AValue: Cardinal): Boolean;
+    function Dequeue: Cardinal;
+    function Empty: Boolean;
+    function Enqueue(AValue: Cardinal): Boolean;
+    function Peek: Cardinal;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+
+  TJclInt64Queue = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
+    IJclInt64Queue)
+  private
+    FElements: JclBase.TDynInt64Array;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64Queue }
+    procedure Clear;
+    function Contains(const AValue: Int64): Boolean;
+    function Dequeue: Int64;
+    function Empty: Boolean;
+    function Enqueue(const AValue: Int64): Boolean;
+    function Peek: Int64;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+
+  {$IFNDEF CLR}
+
+  TJclPtrQueue = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
+    IJclPtrQueue)
+  private
+    FElements: JclBase.TDynPointerArray;
+    FHead: Integer;
+    FTail: Integer;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPackable }
+    procedure Pack; override;
+    procedure SetCapacity(Value: Integer); override;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrQueue }
+    procedure Clear;
+    function Contains(APtr: Pointer): Boolean;
+    function Dequeue: Pointer;
+    function Empty: Boolean;
+    function Enqueue(APtr: Pointer): Boolean;
+    function Peek: Pointer;
+    function Size: Integer;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(ACapacity: Integer);
+    destructor Destroy; override;
+  end;
+  {$ENDIF ~CLR}
+
+
   TJclQueue = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclEqualityComparer, IJclObjectOwner,
     IJclQueue)
@@ -1033,6 +1248,1793 @@ begin
 end;
 
 
+//=== { TJclSingleQueue } =======================================================
+
+constructor TJclSingleQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclSingleQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclSingleQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclSingleQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclSingleQueue then
+  begin
+    ADest := TJclSingleQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclSingleQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeSingle(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.Contains(const AValue: Single): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleQueue.Dequeue: Single;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0.0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.Enqueue(const AValue: Single): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.Peek: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclDoubleQueue } =======================================================
+
+constructor TJclDoubleQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclDoubleQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclDoubleQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclDoubleQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclDoubleQueue then
+  begin
+    ADest := TJclDoubleQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclDoubleQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeDouble(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.Contains(const AValue: Double): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleQueue.Dequeue: Double;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0.0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.Enqueue(const AValue: Double): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.Peek: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclExtendedQueue } =======================================================
+
+constructor TJclExtendedQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclExtendedQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclExtendedQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclExtendedQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclExtendedQueue then
+  begin
+    ADest := TJclExtendedQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclExtendedQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeExtended(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.Contains(const AValue: Extended): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedQueue.Dequeue: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0.0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.Enqueue(const AValue: Extended): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.Peek: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclIntegerQueue } =======================================================
+
+constructor TJclIntegerQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclIntegerQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclIntegerQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclIntegerQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclIntegerQueue then
+  begin
+    ADest := TJclIntegerQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclIntegerQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeInteger(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.Contains(AValue: Integer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerQueue.Dequeue: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.Enqueue(AValue: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.Peek: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclCardinalQueue } =======================================================
+
+constructor TJclCardinalQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclCardinalQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclCardinalQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclCardinalQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclCardinalQueue then
+  begin
+    ADest := TJclCardinalQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclCardinalQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeCardinal(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.Contains(AValue: Cardinal): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalQueue.Dequeue: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.Enqueue(AValue: Cardinal): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.Peek: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclInt64Queue } =======================================================
+
+constructor TJclInt64Queue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclInt64Queue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclInt64Queue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclInt64Queue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclInt64Queue then
+  begin
+    ADest := TJclInt64Queue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclInt64Queue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreeInt64(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.Contains(const AValue: Int64): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Queue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64Queue.Dequeue: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := 0;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.Enqueue(const AValue: Int64): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := AValue;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Queue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.Peek: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64Queue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64Queue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFNDEF CLR}
+
+//=== { TJclPtrQueue } =======================================================
+
+constructor TJclPtrQueue.Create(ACapacity: Integer);
+begin
+  inherited Create(nil);
+  FHead := 0;
+  FTail := 0;
+  SetCapacity(ACapacity);
+end;
+
+destructor TJclPtrQueue.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TJclPtrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ADest: TJclPtrQueue;
+  I: Integer;
+begin
+  inherited AssignDataTo(Dest);
+  if Dest is TJclPtrQueue then
+  begin
+    ADest := TJclPtrQueue(Dest);
+    ADest.Clear;
+    ADest.SetCapacity(Size + 1);
+    I := FHead;
+    while I <> FTail do
+    begin
+      ADest.Enqueue(FElements[I]);
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  end;
+end;
+
+procedure TJclPtrQueue.Clear;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+     I := FHead;
+     while I <> FTail do
+     begin
+       FreePointer(FElements[I]);
+       Inc(I);
+       if I = FCapacity then
+         I := 0;
+     end;
+     FHead := 0;
+     FTail := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.Contains(APtr: Pointer): Boolean;
+var
+  I: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    I := FHead;
+    while I <> FTail do
+    begin
+      if ItemsEqual(FElements[I], APtr) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Inc(I);
+      if I = FCapacity then
+        I := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrQueue.Create(Size + 1);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrQueue.Dequeue: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FTail <> FHead then
+    begin
+      Result := FElements[FHead];
+      FElements[FHead] := nil;
+      Inc(FHead);
+      if FHead = FCapacity then
+        FHead := 0;
+      AutoPack;
+    end
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.Empty: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FTail = FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.Enqueue(APtr: Pointer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+      AutoGrow;
+    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+    if Result then
+    begin
+      FElements[FTail] := APtr;
+      Inc(FTail);
+      if FTail = FCapacity then
+        FTail := 0;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrQueue.Pack;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    SetCapacity(Size + 1);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.Peek: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FTail <> FHead then
+      Result := FElements[FHead]
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrQueue.SetCapacity(Value: Integer);
+var
+  NewHead: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Value < 1 then
+      raise EJclIllegalQueueCapacityError.Create;
+    if Value <= Size then
+      raise EJclOutOfBoundsError.Create;
+
+    if FHead > FTail then // looped
+    begin
+      NewHead := FHead + Value - FCapacity;
+      if Value > FCapacity then
+        // growing
+        SetLength(FElements, Value);
+      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+      if FCapacity > Value then
+        // packing
+        SetLength(FElements, Value);
+      FHead := NewHead;
+    end
+    else
+    begin
+      // unlooped
+      if Value < FCapacity then
+      begin
+        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+        Dec(FTail, FHead);
+        FHead := 0;
+      end;
+      SetLength(FElements, Value);
+    end;
+    inherited SetCapacity(Value);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrQueue.Size: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if FHead > FTail then
+      Result := FCapacity - FHead + FTail  // looped
+    else
+      Result := FTail - FHead;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF ~CLR}
+
+
 //=== { TJclQueue } =======================================================
 
 constructor TJclQueue.Create(ACapacity: Integer; AOwnsObjects: Boolean);
@@ -1380,7 +3382,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
 
 function TJclQueue<T>.Dequeue: T;
 begin

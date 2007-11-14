@@ -212,6 +212,368 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
+  TJclSingleLinkedListItem = class
+  public
+    Value: Single;
+    Next: TJclSingleLinkedListItem;
+    Previous: TJclSingleLinkedListItem;
+  end;
+
+  TJclSingleLinkedList = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclSingleCollection, IJclSingleList)
+  private
+    FStart: TJclSingleLinkedListItem;
+    FEnd: TJclSingleLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclSingleCollection }
+    function Add(const AValue: Single): Boolean;
+    function AddAll(const ACollection: IJclSingleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Single): Boolean;
+    function ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+    function Equals(const ACollection: IJclSingleCollection): Boolean;
+    function First: IJclSingleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclSingleIterator;
+    function Remove(const AValue: Single): Boolean;
+    function RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+    function RetainAll(const ACollection: IJclSingleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclSingleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclSingleList }
+    function Insert(Index: Integer; const AValue: Single): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+    function GetValue(Index: Integer): Single;
+    function IndexOf(const AValue: Single): Integer;
+    function LastIndexOf(const AValue: Single): Integer;
+    function Delete(Index: Integer): Single; overload;
+    procedure SetValue(Index: Integer; const AValue: Single);
+    function SubList(First, Count: Integer): IJclSingleList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclSingleCollection);
+    destructor Destroy; override;
+  end;
+
+
+  TJclDoubleLinkedListItem = class
+  public
+    Value: Double;
+    Next: TJclDoubleLinkedListItem;
+    Previous: TJclDoubleLinkedListItem;
+  end;
+
+  TJclDoubleLinkedList = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclDoubleCollection, IJclDoubleList)
+  private
+    FStart: TJclDoubleLinkedListItem;
+    FEnd: TJclDoubleLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclDoubleCollection }
+    function Add(const AValue: Double): Boolean;
+    function AddAll(const ACollection: IJclDoubleCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Double): Boolean;
+    function ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Equals(const ACollection: IJclDoubleCollection): Boolean;
+    function First: IJclDoubleIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclDoubleIterator;
+    function Remove(const AValue: Double): Boolean;
+    function RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+    function RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclDoubleIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclDoubleList }
+    function Insert(Index: Integer; const AValue: Double): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+    function GetValue(Index: Integer): Double;
+    function IndexOf(const AValue: Double): Integer;
+    function LastIndexOf(const AValue: Double): Integer;
+    function Delete(Index: Integer): Double; overload;
+    procedure SetValue(Index: Integer; const AValue: Double);
+    function SubList(First, Count: Integer): IJclDoubleList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclDoubleCollection);
+    destructor Destroy; override;
+  end;
+
+
+  TJclExtendedLinkedListItem = class
+  public
+    Value: Extended;
+    Next: TJclExtendedLinkedListItem;
+    Previous: TJclExtendedLinkedListItem;
+  end;
+
+  TJclExtendedLinkedList = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclExtendedCollection, IJclExtendedList)
+  private
+    FStart: TJclExtendedLinkedListItem;
+    FEnd: TJclExtendedLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclExtendedCollection }
+    function Add(const AValue: Extended): Boolean;
+    function AddAll(const ACollection: IJclExtendedCollection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Extended): Boolean;
+    function ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Equals(const ACollection: IJclExtendedCollection): Boolean;
+    function First: IJclExtendedIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclExtendedIterator;
+    function Remove(const AValue: Extended): Boolean;
+    function RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+    function RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclExtendedIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclExtendedList }
+    function Insert(Index: Integer; const AValue: Extended): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+    function GetValue(Index: Integer): Extended;
+    function IndexOf(const AValue: Extended): Integer;
+    function LastIndexOf(const AValue: Extended): Integer;
+    function Delete(Index: Integer): Extended; overload;
+    procedure SetValue(Index: Integer; const AValue: Extended);
+    function SubList(First, Count: Integer): IJclExtendedList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclExtendedCollection);
+    destructor Destroy; override;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatLinkedList = TJclExtendedLinkedList;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatLinkedList = TJclDoubleLinkedList;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatLinkedList = TJclSingleLinkedList;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+
+  TJclIntegerLinkedListItem = class
+  public
+    Value: Integer;
+    Next: TJclIntegerLinkedListItem;
+    Previous: TJclIntegerLinkedListItem;
+  end;
+
+  TJclIntegerLinkedList = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclIntegerEqualityComparer,
+    IJclIntegerCollection, IJclIntegerList)
+  private
+    FStart: TJclIntegerLinkedListItem;
+    FEnd: TJclIntegerLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclIntegerCollection }
+    function Add(AValue: Integer): Boolean;
+    function AddAll(const ACollection: IJclIntegerCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Integer): Boolean;
+    function ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Equals(const ACollection: IJclIntegerCollection): Boolean;
+    function First: IJclIntegerIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclIntegerIterator;
+    function Remove(AValue: Integer): Boolean;
+    function RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+    function RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclIntegerIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntegerList }
+    function Insert(Index: Integer; AValue: Integer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+    function GetValue(Index: Integer): Integer;
+    function IndexOf(AValue: Integer): Integer;
+    function LastIndexOf(AValue: Integer): Integer;
+    function Delete(Index: Integer): Integer; overload;
+    procedure SetValue(Index: Integer; AValue: Integer);
+    function SubList(First, Count: Integer): IJclIntegerList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclIntegerCollection);
+    destructor Destroy; override;
+  end;
+
+
+  TJclCardinalLinkedListItem = class
+  public
+    Value: Cardinal;
+    Next: TJclCardinalLinkedListItem;
+    Previous: TJclCardinalLinkedListItem;
+  end;
+
+  TJclCardinalLinkedList = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCardinalEqualityComparer,
+    IJclCardinalCollection, IJclCardinalList)
+  private
+    FStart: TJclCardinalLinkedListItem;
+    FEnd: TJclCardinalLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclCardinalCollection }
+    function Add(AValue: Cardinal): Boolean;
+    function AddAll(const ACollection: IJclCardinalCollection): Boolean;
+    procedure Clear;
+    function Contains(AValue: Cardinal): Boolean;
+    function ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Equals(const ACollection: IJclCardinalCollection): Boolean;
+    function First: IJclCardinalIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclCardinalIterator;
+    function Remove(AValue: Cardinal): Boolean;
+    function RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+    function RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclCardinalIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCardinalList }
+    function Insert(Index: Integer; AValue: Cardinal): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+    function GetValue(Index: Integer): Cardinal;
+    function IndexOf(AValue: Cardinal): Integer;
+    function LastIndexOf(AValue: Cardinal): Integer;
+    function Delete(Index: Integer): Cardinal; overload;
+    procedure SetValue(Index: Integer; AValue: Cardinal);
+    function SubList(First, Count: Integer): IJclCardinalList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclCardinalCollection);
+    destructor Destroy; override;
+  end;
+
+
+  TJclInt64LinkedListItem = class
+  public
+    Value: Int64;
+    Next: TJclInt64LinkedListItem;
+    Previous: TJclInt64LinkedListItem;
+  end;
+
+  TJclInt64LinkedList = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclInt64EqualityComparer,
+    IJclInt64Collection, IJclInt64List)
+  private
+    FStart: TJclInt64LinkedListItem;
+    FEnd: TJclInt64LinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclInt64Collection }
+    function Add(const AValue: Int64): Boolean;
+    function AddAll(const ACollection: IJclInt64Collection): Boolean;
+    procedure Clear;
+    function Contains(const AValue: Int64): Boolean;
+    function ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+    function Equals(const ACollection: IJclInt64Collection): Boolean;
+    function First: IJclInt64Iterator;
+    function IsEmpty: Boolean;
+    function Last: IJclInt64Iterator;
+    function Remove(const AValue: Int64): Boolean;
+    function RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+    function RetainAll(const ACollection: IJclInt64Collection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclInt64Iterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclInt64List }
+    function Insert(Index: Integer; const AValue: Int64): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+    function GetValue(Index: Integer): Int64;
+    function IndexOf(const AValue: Int64): Integer;
+    function LastIndexOf(const AValue: Int64): Integer;
+    function Delete(Index: Integer): Int64; overload;
+    procedure SetValue(Index: Integer; const AValue: Int64);
+    function SubList(First, Count: Integer): IJclInt64List;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclInt64Collection);
+    destructor Destroy; override;
+  end;
+
+{$IFNDEF CLR}
+
+  TJclPtrLinkedListItem = class
+  public
+    Value: Pointer;
+    Next: TJclPtrLinkedListItem;
+    Previous: TJclPtrLinkedListItem;
+  end;
+
+  TJclPtrLinkedList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclPtrEqualityComparer,
+    IJclPtrCollection, IJclPtrList)
+  private
+    FStart: TJclPtrLinkedListItem;
+    FEnd: TJclPtrLinkedListItem;
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { IJclPtrCollection }
+    function Add(APtr: Pointer): Boolean;
+    function AddAll(const ACollection: IJclPtrCollection): Boolean;
+    procedure Clear;
+    function Contains(APtr: Pointer): Boolean;
+    function ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+    function Equals(const ACollection: IJclPtrCollection): Boolean;
+    function First: IJclPtrIterator;
+    function IsEmpty: Boolean;
+    function Last: IJclPtrIterator;
+    function Remove(APtr: Pointer): Boolean;
+    function RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+    function RetainAll(const ACollection: IJclPtrCollection): Boolean;
+    function Size: Integer;
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: IJclPtrIterator;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclPtrList }
+    function Insert(Index: Integer; APtr: Pointer): Boolean;
+    function InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+    function GetPtr(Index: Integer): Pointer;
+    function IndexOf(APtr: Pointer): Integer;
+    function LastIndexOf(APtr: Pointer): Integer;
+    function Delete(Index: Integer): Pointer; overload;
+    procedure SetPtr(Index: Integer; APtr: Pointer);
+    function SubList(First, Count: Integer): IJclPtrList;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;
+  public
+    constructor Create(const ACollection: IJclPtrCollection);
+    destructor Destroy; override;
+  end;
+{$ENDIF ~CLR}
+
+
   TJclLinkedListItem = class
   public
     Value: TObject;
@@ -1205,6 +1567,1947 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+
+//=== { TSingleItr } ============================================================
+
+type
+  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclSingleLinkedListItem;
+    FOwnList: IJclSingleList;
+    FEqualityComparer: IJclSingleEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclSingleIterator }
+    function Add(const AValue: Single): Boolean;
+    function GetValue: Single;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Single): Boolean;
+    function Next: Single;
+    function NextIndex: Integer;
+    function Previous: Single;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Single);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Single read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclSingleList; Start: TJclSingleLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TSingleItr.Create(const AOwnList: IJclSingleList; Start: TJclSingleLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclSingleEqualityComparer;
+end;
+
+function TSingleItr.Add(const AValue: Single): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TSingleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TSingleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TSingleItr then
+  begin
+    ADest := TSingleItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TSingleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TSingleItr.GetValue: Single;
+begin
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TSingleItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.Insert(const AValue: Single): Boolean;
+var
+  NewCursor: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclSingleLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TSingleItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TSingleItr.Next: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.Previous: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TSingleItr.Remove;
+var
+  OldCursor: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0.0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TSingleItr.SetValue(const AValue: Single);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0.0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TDoubleItr } ============================================================
+
+type
+  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclDoubleLinkedListItem;
+    FOwnList: IJclDoubleList;
+    FEqualityComparer: IJclDoubleEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclDoubleIterator }
+    function Add(const AValue: Double): Boolean;
+    function GetValue: Double;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Double): Boolean;
+    function Next: Double;
+    function NextIndex: Integer;
+    function Previous: Double;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Double);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Double read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclDoubleList; Start: TJclDoubleLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TDoubleItr.Create(const AOwnList: IJclDoubleList; Start: TJclDoubleLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclDoubleEqualityComparer;
+end;
+
+function TDoubleItr.Add(const AValue: Double): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TDoubleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TDoubleItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TDoubleItr then
+  begin
+    ADest := TDoubleItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TDoubleItr.GetValue: Double;
+begin
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TDoubleItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.Insert(const AValue: Double): Boolean;
+var
+  NewCursor: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclDoubleLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TDoubleItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TDoubleItr.Next: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.Previous: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TDoubleItr.Remove;
+var
+  OldCursor: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0.0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TDoubleItr.SetValue(const AValue: Double);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0.0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TExtendedItr } ============================================================
+
+type
+  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclExtendedLinkedListItem;
+    FOwnList: IJclExtendedList;
+    FEqualityComparer: IJclExtendedEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclExtendedIterator }
+    function Add(const AValue: Extended): Boolean;
+    function GetValue: Extended;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Extended): Boolean;
+    function Next: Extended;
+    function NextIndex: Integer;
+    function Previous: Extended;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Extended);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Extended read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclExtendedList; Start: TJclExtendedLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TExtendedItr.Create(const AOwnList: IJclExtendedList; Start: TJclExtendedLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclExtendedEqualityComparer;
+end;
+
+function TExtendedItr.Add(const AValue: Extended): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TExtendedItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TExtendedItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TExtendedItr then
+  begin
+    ADest := TExtendedItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TExtendedItr.GetValue: Extended;
+begin
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TExtendedItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.Insert(const AValue: Extended): Boolean;
+var
+  NewCursor: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclExtendedLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TExtendedItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TExtendedItr.Next: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.Previous: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0.0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TExtendedItr.Remove;
+var
+  OldCursor: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0.0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TExtendedItr.SetValue(const AValue: Extended);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0.0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TIntegerItr } ============================================================
+
+type
+  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclIntegerLinkedListItem;
+    FOwnList: IJclIntegerList;
+    FEqualityComparer: IJclIntegerEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclIntegerIterator }
+    function Add(AValue: Integer): Boolean;
+    function GetValue: Integer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Integer): Boolean;
+    function Next: Integer;
+    function NextIndex: Integer;
+    function Previous: Integer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Integer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Integer read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclIntegerList; Start: TJclIntegerLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TIntegerItr.Create(const AOwnList: IJclIntegerList; Start: TJclIntegerLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclIntegerEqualityComparer;
+end;
+
+function TIntegerItr.Add(AValue: Integer): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TIntegerItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TIntegerItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TIntegerItr then
+  begin
+    ADest := TIntegerItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TIntegerItr.GetValue: Integer;
+begin
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TIntegerItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.Insert(AValue: Integer): Boolean;
+var
+  NewCursor: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclIntegerLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TIntegerItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TIntegerItr.Next: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.Previous: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TIntegerItr.Remove;
+var
+  OldCursor: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TIntegerItr.SetValue(AValue: Integer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TCardinalItr } ============================================================
+
+type
+  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclCardinalLinkedListItem;
+    FOwnList: IJclCardinalList;
+    FEqualityComparer: IJclCardinalEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclCardinalIterator }
+    function Add(AValue: Cardinal): Boolean;
+    function GetValue: Cardinal;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Cardinal): Boolean;
+    function Next: Cardinal;
+    function NextIndex: Integer;
+    function Previous: Cardinal;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(AValue: Cardinal);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Cardinal read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclCardinalList; Start: TJclCardinalLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TCardinalItr.Create(const AOwnList: IJclCardinalList; Start: TJclCardinalLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclCardinalEqualityComparer;
+end;
+
+function TCardinalItr.Add(AValue: Cardinal): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TCardinalItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TCardinalItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TCardinalItr then
+  begin
+    ADest := TCardinalItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TCardinalItr.GetValue: Cardinal;
+begin
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TCardinalItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.Insert(AValue: Cardinal): Boolean;
+var
+  NewCursor: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclCardinalLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TCardinalItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TCardinalItr.Next: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.Previous: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TCardinalItr.Remove;
+var
+  OldCursor: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TCardinalItr.SetValue(AValue: Cardinal);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TInt64Itr } ============================================================
+
+type
+  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclInt64LinkedListItem;
+    FOwnList: IJclInt64List;
+    FEqualityComparer: IJclInt64EqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclInt64Iterator }
+    function Add(const AValue: Int64): Boolean;
+    function GetValue: Int64;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(const AValue: Int64): Boolean;
+    function Next: Int64;
+    function NextIndex: Integer;
+    function Previous: Int64;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetValue(const AValue: Int64);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Int64 read GetValue;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclInt64List; Start: TJclInt64LinkedListItem; AValid: Boolean);
+  end;
+
+constructor TInt64Itr.Create(const AOwnList: IJclInt64List; Start: TJclInt64LinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclInt64EqualityComparer;
+end;
+
+function TInt64Itr.Add(const AValue: Int64): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TInt64Itr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TInt64Itr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TInt64Itr then
+  begin
+    ADest := TInt64Itr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInt64Itr.GetValue: Int64;
+begin
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TInt64Itr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.Insert(const AValue: Int64): Boolean;
+var
+  NewCursor: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclInt64LinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TInt64Itr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TInt64Itr.Next: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.Previous: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := 0;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TInt64Itr.Remove;
+var
+  OldCursor: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := 0;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TInt64Itr.SetValue(const AValue: Int64);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := 0;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+  {$IFNDEF CLR}
+
+//=== { TPtrItr } ============================================================
+
+type
+  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: TJclPtrLinkedListItem;
+    FOwnList: IJclPtrList;
+    FEqualityComparer: IJclPtrEqualityComparer;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { IJclPtrIterator }
+    function Add(AValue: Pointer): Boolean;
+    function GetPtr: Pointer;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(AValue: Pointer): Boolean;
+    function Next: Pointer;
+    function NextIndex: Integer;
+    function Previous: Pointer;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetPtr(AValue: Pointer);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: Pointer read GetPtr;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: IJclPtrList; Start: TJclPtrLinkedListItem; AValid: Boolean);
+  end;
+
+constructor TPtrItr.Create(const AOwnList: IJclPtrList; Start: TJclPtrLinkedListItem; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as IJclPtrEqualityComparer;
+end;
+
+function TPtrItr.Add(AValue: Pointer): Boolean;
+begin
+  Result := FOwnList.Add(AValue);
+end;
+
+procedure TPtrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: TPtrItr;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TPtrItr then
+  begin
+    ADest := TPtrItr(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function TPtrItr.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := TPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPtrItr.GetPtr: Pointer;
+begin
+  CheckValid;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function TPtrItr.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.Insert(AValue: Pointer): Boolean;
+var
+  NewCursor: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, nil);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(AValue);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(AValue);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := TJclPtrLinkedListItem.Create;
+          NewCursor.Value := AValue;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TPtrItr.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TPtrItr.Next: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.Previous: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TPtrItr.Remove;
+var
+  OldCursor: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      FCursor.Value := nil;
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TPtrItr.SetPtr(AValue: Pointer);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    FCursor.Value := nil;
+    FCursor.Value := AValue;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+  {$ENDIF ~CLR}
 
 
 //=== { TItr } ============================================================
@@ -4109,6 +6412,5482 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclSingleLinkedList.Create(const ACollection: IJclSingleCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclSingleLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclSingleLinkedList.Add(const AValue: Single): Boolean;
+var
+  NewItem: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclSingleLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.AddAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+  Item: Single;
+  AddItem: Boolean;
+  NewItem: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclSingleLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclSingleCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclSingleCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclSingleLinkedList.Clear;
+var
+  Old, Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeSingle(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.Contains(const AValue: Single): Boolean;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.ContainsAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclSingleLinkedList.Delete(Index: Integer): Single;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeSingle(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.Equals(const ACollection: IJclSingleCollection): Boolean;
+var
+  It, ItSelf: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.First: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclSingleLinkedList.GetEnumerator: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclSingleLinkedList.GetValue(Index: Integer): Single;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.IndexOf(const AValue: Single): Integer;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.Insert(Index: Integer; const AValue: Single): Boolean;
+var
+  Current, NewItem: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclSingleLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.InsertAll(Index: Integer; const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+  Current, NewItem, Test: TJclSingleLinkedListItem;
+  AddItem: Boolean;
+  Item: Single;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclSingleLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclSingleLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclSingleLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclSingleLinkedList.Last: IJclSingleIterator;
+begin
+  Result := TSingleItr.Create(Self, FEnd, False);
+end;
+
+function TJclSingleLinkedList.LastIndexOf(const AValue: Single): Integer;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.Remove(const AValue: Single): Boolean;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeSingle(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.RemoveAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.RetainAll(const ACollection: IJclSingleCollection): Boolean;
+var
+  It: IJclSingleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclSingleLinkedList.SetValue(Index: Integer; const AValue: Single);
+var
+  Current: TJclSingleLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeSingle(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclSingleLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclSingleLinkedList.SubList(First, Count: Integer): IJclSingleList;
+var
+  Current: TJclSingleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclSingleList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclDoubleLinkedList.Create(const ACollection: IJclDoubleCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclDoubleLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclDoubleLinkedList.Add(const AValue: Double): Boolean;
+var
+  NewItem: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclDoubleLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.AddAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+  Item: Double;
+  AddItem: Boolean;
+  NewItem: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclDoubleLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclDoubleCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclDoubleCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclDoubleLinkedList.Clear;
+var
+  Old, Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeDouble(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.Contains(const AValue: Double): Boolean;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.ContainsAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclDoubleLinkedList.Delete(Index: Integer): Double;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeDouble(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.Equals(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It, ItSelf: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.First: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclDoubleLinkedList.GetEnumerator: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleLinkedList.GetValue(Index: Integer): Double;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.IndexOf(const AValue: Double): Integer;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.Insert(Index: Integer; const AValue: Double): Boolean;
+var
+  Current, NewItem: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclDoubleLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.InsertAll(Index: Integer; const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+  Current, NewItem, Test: TJclDoubleLinkedListItem;
+  AddItem: Boolean;
+  Item: Double;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclDoubleLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclDoubleLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclDoubleLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclDoubleLinkedList.Last: IJclDoubleIterator;
+begin
+  Result := TDoubleItr.Create(Self, FEnd, False);
+end;
+
+function TJclDoubleLinkedList.LastIndexOf(const AValue: Double): Integer;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.Remove(const AValue: Double): Boolean;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeDouble(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.RemoveAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.RetainAll(const ACollection: IJclDoubleCollection): Boolean;
+var
+  It: IJclDoubleIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclDoubleLinkedList.SetValue(Index: Integer; const AValue: Double);
+var
+  Current: TJclDoubleLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeDouble(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclDoubleLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclDoubleLinkedList.SubList(First, Count: Integer): IJclDoubleList;
+var
+  Current: TJclDoubleLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclDoubleList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclExtendedLinkedList.Create(const ACollection: IJclExtendedCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclExtendedLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclExtendedLinkedList.Add(const AValue: Extended): Boolean;
+var
+  NewItem: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclExtendedLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.AddAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+  Item: Extended;
+  AddItem: Boolean;
+  NewItem: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclExtendedLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclExtendedCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclExtendedCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclExtendedLinkedList.Clear;
+var
+  Old, Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeExtended(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.Contains(const AValue: Extended): Boolean;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.ContainsAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclExtendedLinkedList.Delete(Index: Integer): Extended;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeExtended(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.Equals(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It, ItSelf: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.First: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclExtendedLinkedList.GetEnumerator: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclExtendedLinkedList.GetValue(Index: Integer): Extended;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.IndexOf(const AValue: Extended): Integer;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.Insert(Index: Integer; const AValue: Extended): Boolean;
+var
+  Current, NewItem: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclExtendedLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.InsertAll(Index: Integer; const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+  Current, NewItem, Test: TJclExtendedLinkedListItem;
+  AddItem: Boolean;
+  Item: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclExtendedLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclExtendedLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclExtendedLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclExtendedLinkedList.Last: IJclExtendedIterator;
+begin
+  Result := TExtendedItr.Create(Self, FEnd, False);
+end;
+
+function TJclExtendedLinkedList.LastIndexOf(const AValue: Extended): Integer;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.Remove(const AValue: Extended): Boolean;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeExtended(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.RemoveAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.RetainAll(const ACollection: IJclExtendedCollection): Boolean;
+var
+  It: IJclExtendedIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclExtendedLinkedList.SetValue(Index: Integer; const AValue: Extended);
+var
+  Current: TJclExtendedLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeExtended(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclExtendedLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclExtendedLinkedList.SubList(First, Count: Integer): IJclExtendedList;
+var
+  Current: TJclExtendedLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclExtendedList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclIntegerLinkedList.Create(const ACollection: IJclIntegerCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclIntegerLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclIntegerLinkedList.Add(AValue: Integer): Boolean;
+var
+  NewItem: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclIntegerLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.AddAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+  Item: Integer;
+  AddItem: Boolean;
+  NewItem: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclIntegerLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclIntegerCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclIntegerCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclIntegerLinkedList.Clear;
+var
+  Old, Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeInteger(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.Contains(AValue: Integer): Boolean;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.ContainsAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclIntegerLinkedList.Delete(Index: Integer): Integer;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeInteger(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.Equals(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It, ItSelf: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.First: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclIntegerLinkedList.GetEnumerator: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerLinkedList.GetValue(Index: Integer): Integer;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.IndexOf(AValue: Integer): Integer;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.Insert(Index: Integer; AValue: Integer): Boolean;
+var
+  Current, NewItem: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclIntegerLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.InsertAll(Index: Integer; const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+  Current, NewItem, Test: TJclIntegerLinkedListItem;
+  AddItem: Boolean;
+  Item: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclIntegerLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclIntegerLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclIntegerLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclIntegerLinkedList.Last: IJclIntegerIterator;
+begin
+  Result := TIntegerItr.Create(Self, FEnd, False);
+end;
+
+function TJclIntegerLinkedList.LastIndexOf(AValue: Integer): Integer;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.Remove(AValue: Integer): Boolean;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeInteger(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.RemoveAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.RetainAll(const ACollection: IJclIntegerCollection): Boolean;
+var
+  It: IJclIntegerIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclIntegerLinkedList.SetValue(Index: Integer; AValue: Integer);
+var
+  Current: TJclIntegerLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeInteger(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclIntegerLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclIntegerLinkedList.SubList(First, Count: Integer): IJclIntegerList;
+var
+  Current: TJclIntegerLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclIntegerList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclCardinalLinkedList.Create(const ACollection: IJclCardinalCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclCardinalLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclCardinalLinkedList.Add(AValue: Cardinal): Boolean;
+var
+  NewItem: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclCardinalLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.AddAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+  Item: Cardinal;
+  AddItem: Boolean;
+  NewItem: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclCardinalLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclCardinalCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclCardinalCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclCardinalLinkedList.Clear;
+var
+  Old, Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeCardinal(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.Contains(AValue: Cardinal): Boolean;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.ContainsAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclCardinalLinkedList.Delete(Index: Integer): Cardinal;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeCardinal(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.Equals(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It, ItSelf: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.First: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclCardinalLinkedList.GetEnumerator: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclCardinalLinkedList.GetValue(Index: Integer): Cardinal;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.IndexOf(AValue: Cardinal): Integer;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.Insert(Index: Integer; AValue: Cardinal): Boolean;
+var
+  Current, NewItem: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclCardinalLinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.InsertAll(Index: Integer; const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+  Current, NewItem, Test: TJclCardinalLinkedListItem;
+  AddItem: Boolean;
+  Item: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclCardinalLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclCardinalLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclCardinalLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclCardinalLinkedList.Last: IJclCardinalIterator;
+begin
+  Result := TCardinalItr.Create(Self, FEnd, False);
+end;
+
+function TJclCardinalLinkedList.LastIndexOf(AValue: Cardinal): Integer;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.Remove(AValue: Cardinal): Boolean;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeCardinal(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.RemoveAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.RetainAll(const ACollection: IJclCardinalCollection): Boolean;
+var
+  It: IJclCardinalIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclCardinalLinkedList.SetValue(Index: Integer; AValue: Cardinal);
+var
+  Current: TJclCardinalLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeCardinal(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclCardinalLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclCardinalLinkedList.SubList(First, Count: Integer): IJclCardinalList;
+var
+  Current: TJclCardinalLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclCardinalList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclInt64LinkedList.Create(const ACollection: IJclInt64Collection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclInt64LinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclInt64LinkedList.Add(const AValue: Int64): Boolean;
+var
+  NewItem: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(AValue, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclInt64LinkedListItem.Create;
+        NewItem.Value := AValue;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.AddAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+  Item: Int64;
+  AddItem: Boolean;
+  NewItem: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclInt64LinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64LinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclInt64Collection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclInt64Collection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclInt64LinkedList.Clear;
+var
+  Old, Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreeInt64(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.Contains(const AValue: Int64): Boolean;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.ContainsAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64LinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclInt64LinkedList.Delete(Index: Integer): Int64;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreeInt64(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.Equals(const ACollection: IJclInt64Collection): Boolean;
+var
+  It, ItSelf: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.First: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclInt64LinkedList.GetEnumerator: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64LinkedList.GetValue(Index: Integer): Int64;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.IndexOf(const AValue: Int64): Integer;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.Insert(Index: Integer; const AValue: Int64): Boolean;
+var
+  Current, NewItem: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclInt64LinkedListItem.Create;
+        NewItem.Value := AValue;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.InsertAll(Index: Integer; const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+  Current, NewItem, Test: TJclInt64LinkedListItem;
+  AddItem: Boolean;
+  Item: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclInt64LinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclInt64LinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclInt64LinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclInt64LinkedList.Last: IJclInt64Iterator;
+begin
+  Result := TInt64Itr.Create(Self, FEnd, False);
+end;
+
+function TJclInt64LinkedList.LastIndexOf(const AValue: Int64): Integer;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.Remove(const AValue: Int64): Boolean;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, AValue) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreeInt64(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.RemoveAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.RetainAll(const ACollection: IJclInt64Collection): Boolean;
+var
+  It: IJclInt64Iterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclInt64LinkedList.SetValue(Index: Integer; const AValue: Int64);
+var
+  Current: TJclInt64LinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(AValue, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreeInt64(Current.Value);
+            Current.Value := AValue;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclInt64LinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclInt64LinkedList.SubList(First, Count: Integer): IJclInt64List;
+var
+  Current: TJclInt64LinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclInt64List;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFNDEF CLR}
+
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor TJclPtrLinkedList.Create(const ACollection: IJclPtrCollection);
+begin
+  inherited Create(nil);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor TJclPtrLinkedList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TJclPtrLinkedList.Add(APtr: Pointer): Boolean;
+var
+  NewItem: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(APtr, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclPtrLinkedListItem.Create;
+        NewItem.Value := APtr;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.AddAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+  Item: Pointer;
+  AddItem: Boolean;
+  NewItem: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclPtrLinkedListItem.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrLinkedList.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: IJclPtrCollection;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), IJclPtrCollection, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure TJclPtrLinkedList.Clear;
+var
+  Old, Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      FreePointer(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.Contains(APtr: Pointer): Boolean;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, APtr) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.ContainsAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrLinkedList.Create(nil);
+  AssignPropertiesTo(Result);
+end;
+
+function TJclPtrLinkedList.Delete(Index: Integer): Pointer;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := FreePointer(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.Equals(const ACollection: IJclPtrCollection): Boolean;
+var
+  It, ItSelf: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.First: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJclPtrLinkedList.GetEnumerator: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function TJclPtrLinkedList.GetPtr(Index: Integer): Pointer;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.IndexOf(APtr: Pointer): Integer;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.Insert(Index: Integer; APtr: Pointer): Boolean;
+var
+  Current, NewItem: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(APtr, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := TJclPtrLinkedListItem.Create;
+        NewItem.Value := APtr;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.InsertAll(Index: Integer; const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+  Current, NewItem, Test: TJclPtrLinkedListItem;
+  AddItem: Boolean;
+  Item: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclPtrLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := TJclPtrLinkedListItem.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := TJclPtrLinkedListItem.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function TJclPtrLinkedList.Last: IJclPtrIterator;
+begin
+  Result := TPtrItr.Create(Self, FEnd, False);
+end;
+
+function TJclPtrLinkedList.LastIndexOf(APtr: Pointer): Integer;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.Remove(APtr: Pointer): Boolean;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, APtr) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        FreePointer(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.RemoveAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.RetainAll(const ACollection: IJclPtrCollection): Boolean;
+var
+  It: IJclPtrIterator;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TJclPtrLinkedList.SetPtr(Index: Integer; APtr: Pointer);
+var
+  Current: TJclPtrLinkedListItem;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(APtr, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            FreePointer(Current.Value);
+            Current.Value := APtr;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TJclPtrLinkedList.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function TJclPtrLinkedList.SubList(First, Count: Integer): IJclPtrList;
+var
+  Current: TJclPtrLinkedListItem;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as IJclPtrList;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF ~CLR}
 
 
 //=== { TJclLinkedList<T> } ==================================================

@@ -226,6 +226,133 @@ type
     function Hash(const AString: WideString): Integer;
   end;
 
+  TJclSingleAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclSingleComparer, IJclSingleHashConverter)
+  protected
+    FPrecision: Single;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeSingle(var AValue: Single): Single;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclSingleEqualityComparer }
+    function ItemsEqual(const A, B: Single): Boolean;
+    { IJclSingleComparer }
+    function ItemsCompare(const A, B: Single): Integer;
+    { IJclSingleContainer }
+    function GetPrecision: Single; virtual;
+    procedure SetPrecision(const Value: Single); virtual;
+    { IJclSingleHashConverter }
+    function Hash(const AValue: Single): Integer;
+  public
+    property Precision: Single read GetPrecision write SetPrecision;
+  end;
+
+  TJclDoubleAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclDoubleComparer, IJclDoubleHashConverter)
+  protected
+    FPrecision: Double;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeDouble(var AValue: Double): Double;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclDoubleEqualityComparer }
+    function ItemsEqual(const A, B: Double): Boolean;
+    { IJclDoubleComparer }
+    function ItemsCompare(const A, B: Double): Integer;
+    { IJclDoubleContainer }
+    function GetPrecision: Double; virtual;
+    procedure SetPrecision(const Value: Double); virtual;
+    { IJclDoubleHashConverter }
+    function Hash(const AValue: Double): Integer;
+  public
+    property Precision: Double read GetPrecision write SetPrecision;
+  end;
+
+  TJclExtendedAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclExtendedComparer, IJclExtendedHashConverter)
+  protected
+    FPrecision: Extended;
+    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
+    function FreeExtended(var AValue: Extended): Extended;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclExtendedEqualityComparer }
+    function ItemsEqual(const A, B: Extended): Boolean;
+    { IJclExtendedComparer }
+    function ItemsCompare(const A, B: Extended): Integer;
+    { IJclExtendedContainer }
+    function GetPrecision: Extended; virtual;
+    procedure SetPrecision(const Value: Extended); virtual;
+    { IJclExtendedHashConverter }
+    function Hash(const AValue: Extended): Integer;
+  public
+    property Precision: Extended read GetPrecision write SetPrecision;
+  end;
+
+  TJclIntegerAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
+    IJclIntegerHashConverter)
+  protected
+    function FreeInteger(var AValue: Integer): Integer;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerEqualityComparer }
+    function ItemsEqual(A, B: Integer): Boolean;
+    { IJclIntegerComparer }
+    function ItemsCompare(A, B: Integer): Integer;
+    { IJclIntegerHashConverter }
+    function Hash(AValue: Integer): Integer;
+  end;
+
+  TJclCardinalAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
+    IJclCardinalHashConverter)
+  protected
+    function FreeCardinal(var AValue: Cardinal): Cardinal;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclIntegerEqualityComparer }
+    function ItemsEqual(A, B: Cardinal): Boolean;
+    { IJclIntegerComparer }
+    function ItemsCompare(A, B: Cardinal): Integer;
+    { IJclIntegerHashConverter }
+    function Hash(AValue: Cardinal): Integer;
+  end;
+
+  TJclInt64AbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
+    IJclInt64HashConverter)
+  protected
+    function FreeInt64(var AValue: Int64): Int64;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclInt64EqualityComparer }
+    function ItemsEqual(const A, B: Int64): Boolean;
+    { IJclInt64Comparer }
+    function ItemsCompare(const A, B: Int64): Integer;
+    { IJclInt64HashConverter }
+    function Hash(const AValue: Int64): Integer;
+  end;
+
+  {$IFNDEF CLR}
+  TJclPtrAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclCloneable, IJclIntfCloneable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer, IJclPtrHashConverter)
+  protected
+    function FreePointer(var APtr: Pointer): Pointer;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+    { IJclPtrEqualityComparer }
+    function ItemsEqual(A, B: Pointer): Boolean;
+    { IJclPtrComparer }
+    function ItemsCompare(A, B: Pointer): Integer;
+    { IJclPtrHashConverter }
+    function Hash(AValue: Pointer): Integer;
+  end;
+  {$ENDIF ~CLR}
+
   TJclAbstractContainer = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclCloneable, IJclIntfCloneable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer)
   private
@@ -934,6 +1061,269 @@ procedure TJclWideStrAbstractContainer.SetEncoding(Value: TJclWideStrEncoding);
 begin
   FEncoding := Value;
 end;
+
+//=== { TJclSingleAbstractContainer } ========================================
+
+procedure TJclSingleAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclSingleAbstractContainer then
+    TJclSingleAbstractContainer(Dest).Precision := Precision;
+end;
+
+function TJclSingleAbstractContainer.FreeSingle(var AValue: Single): Single;
+begin
+  Result := AValue;
+  AValue := 0.0;
+end;
+
+function TJclSingleAbstractContainer.GetPrecision: Single;
+begin
+  Result := FPrecision;
+end;
+
+function TJclSingleAbstractContainer.Hash(const AValue: Single): Integer;
+const
+  A = 0.6180339887; // (sqrt(5) - 1) / 2
+begin
+  Result := Round(MaxInt * Frac(AValue * A));
+end;
+
+function TJclSingleAbstractContainer.ItemsCompare(const A, B: Single): Integer;
+begin
+  if Abs(A - B) <= FPrecision then
+    Result := 0
+  else
+  if A > B then
+    Result := 1
+  else
+    Result := -1;
+end;
+
+function TJclSingleAbstractContainer.ItemsEqual(const A, B: Single): Boolean;
+begin
+  Result := Abs(A - B) <= FPrecision;
+end;
+
+procedure TJclSingleAbstractContainer.SetPrecision(const Value: Single);
+begin
+  FPrecision := Value;
+end;
+
+//=== { TJclDoubleAbstractContainer } ========================================
+
+procedure TJclDoubleAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclDoubleAbstractContainer then
+    TJclDoubleAbstractContainer(Dest).Precision := Precision;
+end;
+
+function TJclDoubleAbstractContainer.FreeDouble(var AValue: Double): Double;
+begin
+  Result := AValue;
+  AValue := 0.0;
+end;
+
+function TJclDoubleAbstractContainer.GetPrecision: Double;
+begin
+  Result := FPrecision;
+end;
+
+function TJclDoubleAbstractContainer.Hash(const AValue: Double): Integer;
+const
+  A = 0.6180339887; // (sqrt(5) - 1) / 2
+begin
+  Result := Round(MaxInt * Frac(AValue * A));
+end;
+
+function TJclDoubleAbstractContainer.ItemsCompare(const A, B: Double): Integer;
+begin
+  if Abs(A - B) <= FPrecision then
+    Result := 0
+  else
+  if A > B then
+    Result := 1
+  else
+    Result := -1;
+end;
+
+function TJclDoubleAbstractContainer.ItemsEqual(const A, B: Double): Boolean;
+begin
+  Result := Abs(A - B) <= FPrecision;
+end;
+
+procedure TJclDoubleAbstractContainer.SetPrecision(const Value: Double);
+begin
+  FPrecision := Value;
+end;
+
+//=== { TJclExtendedAbstractContainer } ======================================
+
+procedure TJclExtendedAbstractContainer.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is TJclExtendedAbstractContainer then
+    TJclExtendedAbstractContainer(Dest).Precision := Precision;
+end;
+
+function TJclExtendedAbstractContainer.FreeExtended(var AValue: Extended): Extended;
+begin
+  Result := AValue;
+  AValue := 0.0;
+end;
+
+function TJclExtendedAbstractContainer.GetPrecision: Extended;
+begin
+  Result := FPrecision;
+end;
+
+function TJclExtendedAbstractContainer.Hash(const AValue: Extended): Integer;
+const
+  A = 0.6180339887; // (sqrt(5) - 1) / 2
+begin
+  Result := Round(MaxInt * Frac(AValue * A));
+end;
+
+function TJclExtendedAbstractContainer.ItemsCompare(const A, B: Extended): Integer;
+begin
+  if Abs(A - B) <= FPrecision then
+    Result := 0
+  else
+  if A > B then
+    Result := 1
+  else
+    Result := -1;
+end;
+
+function TJclExtendedAbstractContainer.ItemsEqual(const A, B: Extended): Boolean;
+begin
+  Result := Abs(A - B) <= FPrecision;
+end;
+
+procedure TJclExtendedAbstractContainer.SetPrecision(const Value: Extended);
+begin
+  FPrecision := Value;
+end;
+
+//=== { TJclIntegerAbstractContainer } =======================================
+
+function TJclIntegerAbstractContainer.FreeInteger(var AValue: Integer): Integer;
+begin
+  Result := AValue;
+  AValue := 0;
+end;
+
+function TJclIntegerAbstractContainer.Hash(AValue: Integer): Integer;
+begin
+  Result := AValue;
+end;
+
+function TJclIntegerAbstractContainer.ItemsCompare(A, B: Integer): Integer;
+begin
+  if A > B then
+    Result := 1
+  else
+  if A < B then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function TJclIntegerAbstractContainer.ItemsEqual(A, B: Integer): Boolean;
+begin
+  Result := A = B;
+end;
+
+//=== { TJclCardinalAbstractContainer } ======================================
+
+function TJclCardinalAbstractContainer.FreeCardinal(var AValue: Cardinal): Cardinal;
+begin
+  Result := AValue;
+  AValue := 0;
+end;
+
+function TJclCardinalAbstractContainer.Hash(AValue: Cardinal): Integer;
+begin
+  Result := AValue and MaxInt;
+end;
+
+function TJclCardinalAbstractContainer.ItemsCompare(A, B: Cardinal): Integer;
+begin
+  if A > B then
+    Result := 1
+  else
+  if A < B then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function TJclCardinalAbstractContainer.ItemsEqual(A, B: Cardinal): Boolean;
+begin
+  Result := A = B;
+end;
+
+//=== { TJclInt64AbstractContainer } =========================================
+
+function TJclInt64AbstractContainer.FreeInt64(var AValue: Int64): Int64;
+begin
+  Result := AValue;
+  AValue := 0;
+end;
+
+function TJclInt64AbstractContainer.Hash(const AValue: Int64): Integer;
+begin
+  Result := AValue and MaxInt;
+end;
+
+function TJclInt64AbstractContainer.ItemsCompare(const A, B: Int64): Integer;
+begin
+  if A > B then
+    Result := 1
+  else
+  if A < B then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function TJclInt64AbstractContainer.ItemsEqual(const A, B: Int64): Boolean;
+begin
+  Result := A = B;
+end;
+
+{$IFNDEF CLR}
+
+//=== { TJclPtrAbstractContainer } ===========================================
+
+function TJclPtrAbstractContainer.FreePointer(var APtr: Pointer): Pointer;
+begin
+  Result := APtr;
+  APtr := nil;
+end;
+
+function TJclPtrAbstractContainer.Hash(AValue: Pointer): Integer;
+begin
+  Result := Integer(AValue) and MaxInt;
+end;
+
+function TJclPtrAbstractContainer.ItemsCompare(A, B: Pointer): Integer;
+begin
+  if Integer(A) > Integer(B) then
+    Result := 1
+  else
+  if Integer(A) < Integer(B) then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function TJclPtrAbstractContainer.ItemsEqual(A, B: Pointer): Boolean;
+begin
+  Result := Integer(A) = Integer(B);
+end;
+{$ENDIF ~CLR}
 
 //=== { TJclAbstractContainer } ==============================================
 

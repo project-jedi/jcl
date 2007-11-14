@@ -66,6 +66,39 @@ type
   TJclStrStack = TJclWideStrStack;
   {$ENDIF CONTAINER_WIDESTR}
 
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclSingleStack,IJclSingleStack,TJclSingleAbstractContainer,JclBase.TDynSingleArray, IJclSingleContainer\, IJclSingleEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Single,Single)*)
+
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclDoubleStack,IJclDoubleStack,TJclDoubleAbstractContainer,JclBase.TDynDoubleArray, IJclDoubleContainer\, IJclDoubleEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Double,Double)*)
+
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclExtendedStack,IJclExtendedStack,TJclExtendedAbstractContainer,JclBase.TDynExtendedArray, IJclExtendedContainer\, IJclExtendedEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Extended,Extended)*)
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TJclFloatStack = TJclExtendedStack;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TJclFloatStack = TJclDoubleStack;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TJclFloatStack = TJclSingleStack;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclIntegerStack,IJclIntegerStack,TJclIntegerAbstractContainer,JclBase.TDynIntegerArray, IJclIntegerEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Integer,Integer)*)
+
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclCardinalStack,IJclCardinalStack,TJclCardinalAbstractContainer,JclBase.TDynCardinalArray, IJclCardinalEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AValue: Cardinal,Cardinal)*)
+
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclInt64Stack,IJclInt64Stack,TJclInt64AbstractContainer,JclBase.TDynInt64Array, IJclInt64EqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,const AValue: Int64,Int64)*)
+
+  {$IFNDEF CLR}
+(*$JPPEXPANDMACRO JCLSTACKINT(TJclPtrStack,IJclPtrStack,TJclPtrAbstractContainer,JclBase.TDynPointerArray, IJclPtrEqualityComparer\,,,
+    function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,APtr: Pointer,Pointer)*)
+  {$ENDIF ~CLR}
+
 (*$JPPEXPANDMACRO JCLSTACKINT(TJclStack,IJclStack,TJclAbstractContainer,JclBase.TDynObjectArray, IJclEqualityComparer\, IJclObjectOwner\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,; AOwnsObjects: Boolean,AObject: TObject,TObject)*)
 
@@ -165,6 +198,78 @@ end;
 }
 (*$JPPEXPANDMACRO JCLSTACKIMP(TJclWideStrStack,,,const AString: WideString,AString,WideString,'',FreeString)*)
 {$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclSingleStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclSingleStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclSingleStack,,,const AValue: Single,AValue,Single,0.0,FreeSingle)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclDoubleStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclDoubleStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclDoubleStack,,,const AValue: Double,AValue,Double,0.0,FreeDouble)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclExtendedStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclExtendedStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclExtendedStack,,,const AValue: Extended,AValue,Extended,0.0,FreeExtended)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclIntegerStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclIntegerStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclIntegerStack,,,AValue: Integer,AValue,Integer,0,FreeInteger)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclCardinalStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclCardinalStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclCardinalStack,,,AValue: Cardinal,AValue,Cardinal,0,FreeCardinal)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclInt64Stack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclInt64Stack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclInt64Stack,,,const AValue: Int64,AValue,Int64,0,FreeInt64)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+
+{$IFNDEF CLR}
+{$JPPDEFINEMACRO CREATEEMPTYCONTAINER
+function TJclPtrStack.CreateEmptyContainer: TJclAbstractContainerBase;
+begin
+  Result := TJclPtrStack.Create(FSize);
+  AssignPropertiesTo(Result);
+end;
+}
+(*$JPPEXPANDMACRO JCLSTACKIMP(TJclPtrStack,,,APtr: Pointer,APtr,Pointer,nil,FreePointer)*)
+{$JPPUNDEFMACRO CREATEEMPTYCONTAINER}
+{$ENDIF ~CLR}
 
 {$JPPDEFINEMACRO CREATEEMPTYCONTAINER
 function TJclStack.CreateEmptyContainer: TJclAbstractContainerBase;
