@@ -58,7 +58,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
-  JclEDI;
+  JclBase, JclEDI;
 
 const
   SectionTag_VER = '.VER';
@@ -168,17 +168,14 @@ type
     procedure SetData(const Data: string);
     procedure SetParent(const Value: TEDISEFDataObject); virtual;
     property OwnerItemRef: TEDISEFDataObjectListItem read FOwnerItemRef write FOwnerItemRef;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
     procedure UpdateOwnerItemName;
-    {$IFDEF COMPILER6_UP} // Hide warnings in D5
-    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
-    {$ELSE}
-    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual;
-    {$ENDIF COMPILER6_UP}
+    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
   published
     property State: TEDIDataObjectDataState read FState;
     property Id: string read FId write SetId;
@@ -256,6 +253,7 @@ type
     FRepeatCount: Integer;
   protected
     procedure SetParent(const Value: TEDISEFDataObject); override;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -343,6 +341,7 @@ type
     FRequirementDesignator: string;
     FRepeatCount: Integer;
     FEDISEFTextSets: TEDISEFTextSets;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -369,6 +368,8 @@ type
   end;
 
   TEDISEFSubElement = class(TEDISEFElement)
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -386,6 +387,8 @@ type
     FRepeatCount: Integer;
     FExtendedData: string;
     FEDISEFTextSets: TEDISEFTextSets;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -452,6 +455,8 @@ type
     FExtendedData: string;
     function GetOwnerLoopId: string;
     function GetParentLoopId: string;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -524,6 +529,8 @@ type
     function GetParentLoopId: string;
     function GetParentSet: TEDISEFSet;
     function GetParentTable: TEDISEFTable;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -559,6 +566,8 @@ type
   TEDISEFTable = class(TEDISEFDataObjectGroup)
   private
     function GetSEFSet: TEDISEFSet;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -592,6 +601,8 @@ type
     FEDISEFTextSets: TEDISEFTextSets;
     function GetEDISEFTable(Index: Integer): TEDISEFTable;
     procedure BuildSegmentObjectListFromLoop(ObjectList: TObjectList; Loop: TEDISEFLoop);
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -650,6 +661,8 @@ type
     function GetEDISEFCodesList: TStrings;
     function GetEDISEFStd: TStrings;
     function GetEDISEFIni: TStrings;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -2435,12 +2448,10 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF COMPILER6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
 begin
-  Result := nil;
+  Result := CloneDataObject(NewParent);
 end;
-{$ENDIF ~COMPILER6_UP}
 
 function TEDISEFDataObject.GetData: string;
 begin
@@ -2658,6 +2669,11 @@ begin
   FRepeatCount := EDISEFElement.RepeatCount;
 end;
 
+function TEDISEFElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFElement.Clone(NewParent: TEDISEFDataObject): TEDISEFElement;
 begin
   Result := TEDISEFElement.Create(NewParent);
@@ -2753,6 +2769,11 @@ begin
   Result := inherited Assemble;
 end;
 
+function TEDISEFSubElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFSubElement.Clone(NewParent: TEDISEFDataObject): TEDISEFSubElement;
 begin
   Result := TEDISEFSubElement.Create(NewParent);
@@ -2837,6 +2858,11 @@ begin
       AddSubElement;
     ListItem := ListItem.NextItem;
   end;
+end;
+
+function TEDISEFCompositeElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
 end;
 
 function TEDISEFCompositeElement.Clone(NewParent: TEDISEFDataObject): TEDISEFCompositeElement;
@@ -3098,6 +3124,11 @@ begin
     FEDISEFDataObjects.Add(EDISEFDataObject, EDISEFDataObject.Id);
     ListItem := ListItem.NextItem;
   end;
+end;
+
+function TEDISEFSegment.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
 end;
 
 function TEDISEFSegment.Clone(NewParent: TEDISEFDataObject): TEDISEFSegment;
@@ -3423,6 +3454,11 @@ begin
     Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result;
 end;
 
+function TEDISEFLoop.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFLoop.Clone(NewParent: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := nil;
@@ -3589,6 +3625,11 @@ begin
   end;
 end;
 
+function TEDISEFTable.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFTable.Clone(NewParent: TEDISEFDataObject): TEDISEFTable;
 begin
   Result := nil;
@@ -3687,6 +3728,11 @@ begin
     Result := Result + ListItem.EDISEFDataObject.Assemble;
     ListItem := ListItem.NextItem;
   end;
+end;
+
+function TEDISEFSet.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
 end;
 
 function TEDISEFSet.Clone(NewParent: TEDISEFDataObject): TEDISEFSet;
@@ -3973,6 +4019,11 @@ begin
   FData := Result;
 end;
 
+function TEDISEFFile.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFFile.Clone(NewParent: TEDISEFDataObject): TEDISEFFile;
 begin
   Result := nil;
@@ -4017,14 +4068,22 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
+      {$IFDEF CLR}
+      EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
+      {$ELSE}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
+      {$ENDIF CLR}
     finally
       EDIFileStream.Free;
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJclEDIError.Create(RsEDIError001);
+    {$ELSE}
     raise EJclEDIError.CreateRes(@RsEDIError001);
+    {$ENDIF CLR}
 end;
 
 procedure TEDISEFFile.ParseTextSets;
@@ -4299,13 +4358,21 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
+      {$IFDEF CLR}
+      EDIFileStream.WriteStringAnsiBuffer(FData);
+      {$ELSE}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
+      {$ENDIF CLR}
     finally
       EDIFileStream.Free;
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJclEDIError.Create(RsEDIError002);
+    {$ELSE}
     raise EJclEDIError.CreateRes(@RsEDIError002);
+    {$ENDIF CLR}
 end;
 
 procedure TEDISEFTable.Disassemble;
@@ -4374,6 +4441,11 @@ begin
         SEFDelimiter_ClosingBrace;
     ListItem := ListItem.NextItem;
   end;
+end;
+
+function TEDISEFRepeatingPattern.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
 end;
 
 function TEDISEFRepeatingPattern.Clone(NewParent: TEDISEFDataObject): TEDISEFRepeatingPattern;

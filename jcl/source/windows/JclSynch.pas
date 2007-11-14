@@ -47,6 +47,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF CLR}
+  System.Threading, System.Security.AccessControl,
+  {$ENDIF CLR}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -57,7 +60,11 @@ uses
 // Routines to manipulate simple typed variables in a thread safe manner
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
+{$IFDEF CLR}
+function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject; overload;
+{$ELSE}
 function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; overload;
+{$ENDIF CLR}
 function LockedDec(var Target: Integer): Integer;
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
@@ -73,13 +80,19 @@ function LockedSub(var Target: Integer; Value: Integer): Integer;
 type
   TJclWaitResult = (wrAbandoned, wrError, wrIoCompletion, wrSignaled, wrTimeout);
 
+  {$IFDEF CLR}
+  TJclWaitHandle = System.Threading.WaitHandle;
+  {$ELSE}
+  TJclWaitHandle = THandle;
+  {$ENDIF CLR}
+
   TJclDispatcherObject = class(TObject)
   private
     FExisted: Boolean;
-    FHandle: THandle;
+    FHandle: TJclWaitHandle;
     FName: string;
   public
-    constructor Attach(Handle: THandle);
+    constructor Attach(AHandle: TJclWaitHandle);
     destructor Destroy; override;
     //function MsgWaitFor(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
     //function MsgWaitForEx(const TimeOut: Cardinal): TJclWaitResult; Mask: DWORD): TJclWaitResult;
@@ -89,7 +102,7 @@ type
     function WaitFor(const TimeOut: Cardinal): TJclWaitResult;
     function WaitForever: TJclWaitResult;
     property Existed: Boolean read FExisted;
-    property Handle: THandle read FHandle;
+    property Handle: TJclWaitHandle read FHandle;
     property Name: string read FName;
   end;
 
@@ -103,6 +116,7 @@ function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherO
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 
 type
+  {$IFNDEF CLR} // todo
   TJclCriticalSection = class(TObject)
   private
     FCriticalSection: TRTLCriticalSection;
@@ -130,39 +144,43 @@ type
 
   TJclEvent = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; Manual, Signaled: Boolean; const Name: string);
+    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Manual, Signaled: Boolean; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Pulse: Boolean;
     function ResetEvent: Boolean;
     function SetEvent: Boolean;
   end;
 
+  {$IFNDEF CLR}
   TJclWaitableTimer = class(TJclDispatcherObject)
   private
     FResume: Boolean;
   public
-    constructor Create(SecAttr: PSecurityAttributes; Manual: Boolean; const Name: string);
+    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Manual: Boolean; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Cancel: Boolean;
     function SetTimer(const DueTime: Int64; Period: Longint; Resume: Boolean): Boolean;
     function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
   end;
+  {$ENDIF ~CLR}
 
   TJclSemaphore = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; Initial, Maximum: Longint; const Name: string);
+    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Initial, Maximum: Longint; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Release(ReleaseCount: Longint): Boolean;
     function ReleasePrev(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
   end;
+  {$ENDIF ~CLR} // todo
 
   TJclMutex = class(TJclDispatcherObject)
   public
-    constructor Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
-    constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+    constructor Create(SecAttr: {$IFDEF CLR}MutexSecurity{$ELSE}PSecurityAttributes{$ENDIF}; InitialOwner: Boolean; const Name: string);
+    constructor Open({$IFDEF CLR}Rights: MutexRights;{$ELSE}Access: Cardinal; Inheritable: Boolean;{$ENDIF} const Name: string);
     function Release: Boolean;
   end;
 
+  {$IFNDEF CLR}
   POptexSharedInfo = ^TOptexSharedInfo;
   TOptexSharedInfo = record
     SpinCount: Integer;      // number of times to try and enter the optex before
@@ -262,7 +280,9 @@ type
     function Leave(ReleaseCount: Longint): Boolean; overload;
     function Leave(ReleaseCount: Longint; var PrevCount: Longint): Boolean; overload;
   end;
+  {$ENDIF ~CLR}
 
+{$IFNDEF CLR}
 // Debugging
 //
 // Note that the following function and structure declarations are all offically
@@ -297,6 +317,7 @@ function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
+{$ENDIF ~CLR}
 
 type
   // Exceptions
@@ -323,14 +344,76 @@ implementation
 
 uses
   SysUtils,
-  JclLogic, JclRegistry, JclResources, JclSysInfo, JclWin32;
+  {$IFDEF CLR}
+  Math,
+  {$ENDIF CLR}
+  JclLogic, {$IFNDEF CLR}JclWin32, JclRegistry,{$ENDIF} JclResources, JclSysInfo;
 
 const
   RegSessionManager = {HKLM\} 'SYSTEM\CurrentControlSet\Control\Session Manager';
   RegCritSecTimeout = {RegSessionManager\} 'CriticalSectionTimeout';
 
 // Locked Integer manipulation
-function LockedAdd(var Target: Integer; Value: Integer): Integer; assembler;
+{$IFDEF CLR}
+
+function LockedAdd(var Target: Integer; Value: Integer): Integer;
+begin
+  Result := Interlocked.Add(Target, Value);
+end;
+
+function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
+begin
+  Result := Interlocked.CompareExchange(Target, Exch, Comp);
+end;
+
+function LockedCompareExchange(var Target: TObject; Exch, Comp: TObject): TObject;
+begin
+  Result := Interlocked.CompareExchange(Target, Exch, Comp);
+end;
+
+function LockedDec(var Target: Integer): Integer;
+begin
+  Result := Interlocked.Decrement(Target);
+end;
+
+function LockedExchange(var Target: Integer; Value: Integer): Integer;
+begin
+  Result := Interlocked.Exchange(Target, Value);
+end;
+
+function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
+begin
+  Result := InterlockedExchangeAdd(Target, Value);  // P/Invoke
+end;
+
+function LockedExchangeDec(var Target: Integer): Integer;
+begin
+  Result := LockedExchangeAdd(Target, -1);
+end;
+
+function LockedExchangeInc(var Target: Integer): Integer;
+begin
+  Result := LockedExchangeAdd(Target, 1);
+end;
+
+function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
+begin
+  Result := LockedExchangeAdd(Target, -Value);
+end;
+
+function LockedInc(var Target: Integer): Integer;
+begin
+  Result := Interlocked.Increment(Target);
+end;
+
+function LockedSub(var Target: Integer; Value: Integer): Integer;
+begin
+  Result := Interlocked.Add(Target, -Value);
+end;
+
+{$ELSE}
+
+function LockedAdd(var Target: Integer; Value: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, EDX
@@ -338,19 +421,19 @@ asm
         ADD     EAX, EDX
 end;
 
-function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; assembler;
+function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
 asm
         XCHG    EAX, ECX
         LOCK CMPXCHG [ECX], EDX
 end;
 
-function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; assembler;
+function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer;
 asm
         XCHG    EAX, ECX
         LOCK CMPXCHG [ECX], EDX
 end;
 
-function LockedDec(var Target: Integer): Integer; assembler;
+function LockedDec(var Target: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, -1
@@ -358,35 +441,35 @@ asm
         DEC     EAX
 end;
 
-function LockedExchange(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchange(var Target: Integer; Value: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, EDX
         LOCK XCHG [ECX], EAX
 end;
 
-function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, EDX
         LOCK XADD [ECX], EAX
 end;
 
-function LockedExchangeDec(var Target: Integer): Integer; assembler;
+function LockedExchangeDec(var Target: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, -1
         LOCK XADD [ECX], EAX
 end;
 
-function LockedExchangeInc(var Target: Integer): Integer; assembler;
+function LockedExchangeInc(var Target: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, 1
         LOCK XADD [ECX], EAX
 end;
 
-function LockedExchangeSub(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
 asm
         MOV     ECX, EAX
         NEG     EDX
@@ -394,7 +477,7 @@ asm
         LOCK XADD [ECX], EAX
 end;
 
-function LockedInc(var Target: Integer): Integer; assembler;
+function LockedInc(var Target: Integer): Integer;
 asm
         MOV     ECX, EAX
         MOV     EAX, 1
@@ -402,7 +485,7 @@ asm
         INC     EAX
 end;
 
-function LockedSub(var Target: Integer; Value: Integer): Integer; assembler;
+function LockedSub(var Target: Integer; Value: Integer): Integer;
 asm
         MOV     ECX, EAX
         NEG     EDX
@@ -410,6 +493,8 @@ asm
         LOCK XADD [ECX], EAX
         ADD     EAX, EDX
 end;
+
+{$ENDIF CLR}
 
 //=== { TJclDispatcherObject } ===============================================
 
@@ -431,16 +516,21 @@ begin
   end;
 end;
 
-constructor TJclDispatcherObject.Attach(Handle: THandle);
+constructor TJclDispatcherObject.Attach(AHandle: TJclWaitHandle);
 begin
+  inherited Create;
   FExisted := True;
-  FHandle := Handle;
+  FHandle := AHandle;
   FName := '';
 end;
 
 destructor TJclDispatcherObject.Destroy;
 begin
+  {$IFDEF CLR}
+  FHandle.Close;
+  {$ELSE}
   CloseHandle(FHandle);
+  {$ENDIF CLR}
   inherited Destroy;
 end;
 
@@ -449,18 +539,43 @@ end;
 function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
+  {$IFDEF CLR}
+  // Other signal results are handled with exceptions
+  if TJclWaitHandle.SignalAndWait(Obj.Handle, Handle, IfThen(TimeOut = INFINITE,
+                                  System.Threading.Timeout.Infinite, TimeOut), Alertable) then
+    Result := wrSignaled
+  else
+    Result := wrTimeout;
+  {$ELSE}
   // Note: Do not make this method virtual! It's only available on NT 4 up...
   Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
+  {$ENDIF CLR}
 end;
 
 function TJclDispatcherObject.WaitAlertable(const TimeOut: Cardinal): TJclWaitResult;
 begin
+  {$IFDEF CLR}
+  // Other signal results are handled with exceptions
+  if Handle.WaitOne(IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, Timeout), True) then
+    Result := wrSignaled
+  else
+    Result := wrTimeout;
+  {$ELSE}
   Result := MapSignalResult(Windows.WaitForSingleObjectEx(FHandle, TimeOut, True));
+  {$ENDIF CLR}
 end;
 
 function TJclDispatcherObject.WaitFor(const TimeOut: Cardinal): TJclWaitResult;
 begin
+  {$IFDEF CLR}
+  // Other signal results are handled with exceptions
+  if Handle.WaitOne(IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, Timeout), False) then
+    Result := wrSignaled
+  else
+    Result := wrTimeout;
+  {$ELSE}
   Result := MapSignalResult(Windows.WaitForSingleObject(FHandle, TimeOut));
+  {$ENDIF CLR}
 end;
 
 function TJclDispatcherObject.WaitForever: TJclWaitResult;
@@ -472,29 +587,54 @@ end;
 function WaitForMultipleObjects(const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 var
-  Handles: array of THandle;
+  Handles: array of TJclWaitHandle;
   I, Count: Integer;
 begin
   Count := High(Objects) + 1;
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
+  {$IFDEF CLR}
+  if WaitAll then
+  begin
+    if TJclWaitHandle.WaitAll(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), False) then
+      Result := WAIT_OBJECT_0
+    else
+      Result := WAIT_TIMEOUT;
+  end
+  else
+    Result := TJclWaitHandle.WaitAny(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), False);
+  {$ELSE}
   Result := Windows.WaitForMultipleObjects(Count, @Handles[0], WaitAll, TimeOut);
+  {$ENDIF CLR}
 end;
 
 function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherObject;
   WaitAll: Boolean; TimeOut: Cardinal): Cardinal;
 var
-  Handles: array of THandle;
+  Handles: array of TJclWaitHandle;
   I, Count: Integer;
 begin
   Count := High(Objects) + 1;
   SetLength(Handles, Count);
   for I := 0 to Count - 1 do
     Handles[I] := Objects[I].Handle;
+  {$IFDEF CLR}
+  if WaitAll then
+  begin
+    if TJclWaitHandle.WaitAll(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), True) then
+      Result := WAIT_OBJECT_0
+    else
+      Result := WAIT_TIMEOUT;
+  end
+  else
+    Result := TJclWaitHandle.WaitAny(Handles, IfThen(TimeOut = INFINITE, System.Threading.Timeout.Infinite, TimeOut), True);
+  {$ELSE}
   Result := Windows.WaitForMultipleObjectsEx(Count, @Handles[0], WaitAll, TimeOut, True);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR} // todo
 //=== { TJclCriticalSection } ================================================
 
 constructor TJclCriticalSection.Create;
@@ -718,31 +858,52 @@ begin
   Result := Windows.ReleaseSemaphore(FHandle, ReleaseCount, nil);
 end;
 
+{$ENDIF ~CLR} // todo
+
 //=== { TJclMutex } ==========================================================
 
-constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
+constructor TJclMutex.Create(SecAttr: {$IFDEF CLR}MutexSecurity{$ELSE}PSecurityAttributes{$ENDIF};
+  InitialOwner: Boolean; const Name: string);
 begin
+  inherited Create;
   FName := Name;
+  {$IFDEF CLR}
+  FHandle := System.Threading.Mutex.Create(InitialOwner, Name, FExisted, SecAttr);
+  FExisted := not FExisted;
+  {$ELSE}
   FHandle := JclWin32.CreateMutex(SecAttr, Ord(InitialOwner), PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateRes(@RsSynchCreateMutex);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
+  {$ENDIF CLR}
 end;
 
-constructor TJclMutex.Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
+constructor TJclMutex.Open({$IFDEF CLR}Rights: MutexRights;{$ELSE}Access: Cardinal; Inheritable: Boolean;{$ENDIF}
+  const Name: string);
 begin
+  inherited Create;
   FName := Name;
   FExisted := True;
+  {$IFDEF CLR}
+  FHandle := System.Threading.Mutex.OpenExisting(Name, Rights);
+  {$ELSE}
   FHandle := Windows.OpenMutex(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateRes(@RsSynchOpenMutex);
+  {$ENDIF CLR}
 end;
 
 function TJclMutex.Release: Boolean;
 begin
+  {$IFDEF CLR}
+  System.Threading.Mutex(Handle).ReleaseMutex;
+  Result := True;
+  {$ELSE}
   Result := Windows.ReleaseMutex(FHandle);
+  {$ENDIF CLR}
 end;
 
+{$IFNDEF CLR}
 //=== { TJclOptex } ==========================================================
 
 constructor TJclOptex.Create(const Name: string; SpinCount: Integer);
@@ -1349,31 +1510,31 @@ type
  TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
      Len: Longint; ResLen: PLongint): Longint; stdcall;
 
- var
-   _QueryEvent: TNtQueryProc = nil;
-   _QueryMutex: TNtQueryProc = nil;
-   _QuerySemaphore: TNtQueryProc = nil;
-   _QueryTimer: TNtQueryProc = nil;
+var
+  _QueryEvent: TNtQueryProc = nil;
+  _QueryMutex: TNtQueryProc = nil;
+  _QuerySemaphore: TNtQueryProc = nil;
+  _QueryTimer: TNtQueryProc = nil;
 
- function CallQueryProc(var P: TNtQueryProc; const Name: string; Handle: THandle;
-   Info: Pointer; InfoSize: Longint): Boolean;
- var
-   NtDll: THandle;
-   Status: Longint;
- begin
-   Result := False;
-   if @P = nil then
-   begin
-     NtDll := GetModuleHandle(PChar('ntdll.dll'));
-     if NtDll <> 0 then
-       @P := GetProcAddress(NtDll, PChar(Name));
-   end;
-   if @P <> nil then
-   begin
-     Status := P(Handle, 0, Info, InfoSize, nil);
-     Result := (Status and $80000000) = 0;
-   end;
- end;
+function CallQueryProc(var P: TNtQueryProc; const Name: string; Handle: THandle;
+  Info: Pointer; InfoSize: Longint): Boolean;
+var
+  NtDll: THandle;
+  Status: Longint;
+begin
+  Result := False;
+  if @P = nil then
+  begin
+    NtDll := GetModuleHandle(PChar('ntdll.dll'));
+    if NtDll <> 0 then
+      @P := GetProcAddress(NtDll, PChar(Name));
+  end;
+  if @P <> nil then
+  begin
+    Status := P(Handle, 0, Info, InfoSize, nil);
+    Result := (Status and $80000000) = 0;
+  end;
+end;
 
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 begin
@@ -1394,6 +1555,8 @@ function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 begin
   Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
 end;
+
+{$ENDIF ~CLR}
 
 {$IFDEF UNITVERSIONING}
 initialization

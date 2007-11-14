@@ -1,11 +1,12 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>%GUID%</ProjectGuid>
     <MainSource>%NAME%%SOURCEEXTENSION%</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>%NAME%110%BINEXTENSION%</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>%NAME%%BINEXTENSION%</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -70,7 +71,7 @@
             <VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
             <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
             <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-            <VersionInfoKeys Name="OriginalFilename">%NAME%110%BINEXTENSION%</VersionInfoKeys>
+            <VersionInfoKeys Name="OriginalFilename">%NAME%%BINEXTENSION%</VersionInfoKeys>
             <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
             <VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>
             <VersionInfoKeys Name="Comments"></VersionInfoKeys>

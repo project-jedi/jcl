@@ -102,6 +102,15 @@ uses
   SysUtils,
   JclResources;
 
+procedure NoCounterError;
+begin
+  {$IFDEF CLR}
+  raise EJclCounterError.Create(RsNoCounter);
+  {$ELSE}
+  raise EJclCounterError.CreateRes(@RsNoCounter);
+  {$ENDIF CLR}
+end;
+
 constructor TJclCounter.Create(const Compensate: Boolean);
 const
   Iterations: Integer = 10000;
@@ -113,7 +122,7 @@ begin
 
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefore we have to divide by 10E5
@@ -147,8 +156,8 @@ begin
   FElapsedTime := 0;
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
-  if not QueryPerformanceCounter(FStart) then  
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+  if not QueryPerformanceCounter(FStart) then
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -160,7 +169,7 @@ function TJclCounter.Stop: Float;
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStop) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -178,7 +187,7 @@ var
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(TimeNow) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);

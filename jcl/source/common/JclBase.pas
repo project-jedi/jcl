@@ -47,7 +47,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
-  System.Reflection,
+  Classes, System.Reflection,
   {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -162,6 +162,9 @@ procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = Int64;
+  {$IFNDEF COMPILER11_UP}
+  TBytes = array of Byte;
+  {$ENDIF ~COMPILER11_UP}
 
 {$IFDEF CLR}
 type
@@ -265,14 +268,38 @@ procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Inte
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
+
 {$IFDEF CLR}
 function GetBytesEx(const Value): TBytes;
 procedure SetBytesEx(var Value; Bytes: TBytes);
 procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32); inline;
 
-function ByteArrayStringLen(Data: TBytes): Integer;
-function StringToByteArray(const S: string): TBytes;
-function ByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayStringLen(Data: TBytes): Integer;
+function StringToAnsiByteArray(const S: string): TBytes;
+function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
+
+type
+  TStringAnsiBufferStreamHelper = class helper for TStream
+  public
+    function WriteStringAnsiBuffer(const Buffer: string): Integer; overload;
+    function WriteStringAnsiBuffer(const Buffer: string; StrLen: Integer): Integer; overload;
+    function ReadStringAnsiBuffer(var Buffer: string; AnsiLen: Integer): Integer; overload;
+
+    function WriteStringAnsiBuffer(const Buffer: AnsiString): Integer; overload;
+    function WriteStringAnsiBuffer(const Buffer: AnsiString; StrLen: Integer): Integer; overload;
+    function ReadStringAnsiBuffer(var Buffer: AnsiString; AnsiLen: Integer): Integer; overload;
+  end;
+{$ENDIF CLR}
+
+{$IFNDEF CLR}
+function BytesOf(const Value: AnsiString): TBytes; overload;
+{$IFDEF COMPILER6_UP}
+function BytesOf(const Value: WideString): TBytes; overload;
+function BytesOf(const Value: WideChar): TBytes; overload;
+{$ENDIF COMPILER6_UP}
+function BytesOf(const Value: AnsiChar): TBytes; overload;
+function StringOf(const Bytes: array of Byte): AnsiString; overload;
+function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString; overload;
 {$ENDIF CLR}
 
 type
@@ -284,7 +311,7 @@ type
   {$ELSE ~64BIT}
   TJclAddr = TJclAddr32;
   {$ENDIF}
-  
+
   EJclAddr64Exception = class(EJclError);
 
 function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
@@ -1038,7 +1065,7 @@ begin
   DestSet := TIntegerSet(Value);
 end;
 
-function ByteArrayStringLen(Data: TBytes): Integer;
+function AnsiByteArrayStringLen(Data: TBytes): Integer;
 var
   I: Integer;
 begin
@@ -1051,7 +1078,7 @@ begin
   Result := Length(Data);
 end;
 
-function StringToByteArray(const S: string): TBytes;
+function StringToAnsiByteArray(const S: string): TBytes;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -1062,7 +1089,7 @@ begin
     Result[I] := Byte(AnsiS[I + 1]);
 end;
 
-function ByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -1073,6 +1100,121 @@ begin
   for I := 0 to Length(AnsiS) - 1 do
     AnsiS[I + 1] := AnsiChar(Data[I]);
   Result := AnsiS; // convert to System.String
+end;
+
+// == { TStringAnsiBufferStreamHelper } ======================================
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: string; StrLen: Integer): Integer;
+begin
+  Result := WriteStringAnsiBuffer(Copy(Buffer, StrLen));
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: string): Integer;
+var
+  Bytes: TBytes;
+begin
+  Bytes := StringToAnsiByteArray(Buffer);
+  Result := Write(Bytes, Length(Bytes));
+end;
+
+function TStringAnsiBufferStreamHelper.ReadStringAnsiBuffer(var Buffer: string; AnsiLen: Integer): Integer;
+var
+  Bytes: TBytes;
+begin
+  if AnsiLen > 0 then
+  begin
+    SetLength(Bytes, AnsiLen);
+    Result := Read(Bytes, AnsiLen);
+    Buffer := AnsiByteArrayToString(Bytes, Result);
+  end
+  else
+  begin
+    Buffer := '';
+    Result := 0;
+  end;
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: AnsiString; StrLen: Integer): Integer;
+begin
+  Result := WriteStringAnsiBuffer(Copy(Buffer, StrLen));
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: AnsiString): Integer;
+var
+  Bytes: TBytes;
+begin
+  Bytes := BytesOf(Buffer);
+  Result := Write(Bytes, Length(Bytes));
+end;
+
+function TStringAnsiBufferStreamHelper.ReadStringAnsiBuffer(var Buffer: AnsiString; AnsiLen: Integer): Integer;
+var
+  Bytes: TBytes;
+begin
+  if AnsiLen > 0 then
+  begin
+    SetLength(Bytes, AnsiLen);
+    Result := Read(Bytes, AnsiLen);
+    SetLength(Bytes, Result);
+    Buffer := StringOf(Bytes);
+  end
+  else
+  begin
+    Buffer := '';
+    Result := 0;
+  end;
+end;
+
+{$ELSE}
+
+function BytesOf(const Value: AnsiString): TBytes;
+begin
+  SetLength(Result, Length(Value));
+  if Value <> '' then
+    Move(Pointer(Value)^, Result[0], Length(Value));
+end;
+
+{$IFDEF COMPILER6_UP}
+function BytesOf(const Value: WideString): TBytes;
+begin
+  if Value <> '' then
+    Result := BytesOf(AnsiString(Value))
+  else
+    SetLength(Result, 0);
+end;
+
+function BytesOf(const Value: WideChar): TBytes;
+begin
+  Result := BytesOf(WideString(Value));
+end;
+{$ENDIF COMPILER6_UP}
+
+function BytesOf(const Value: AnsiChar): TBytes;
+begin
+  SetLength(Result, 1);
+  Result[0] := Byte(Value);
+end;
+
+function StringOf(const Bytes: array of Byte): AnsiString;
+begin
+  if Length(Bytes) > 0 then
+  begin
+    SetLength(Result, Length(Bytes));
+    Move(Bytes[0], Pointer(Result)^, Length(Bytes));
+  end
+  else
+    Result := '';
+end;
+
+function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString;
+begin
+  if (Bytes <> nil) and (Size > 0) then
+  begin
+    SetLength(Result, Size);
+    Move(Bytes^, Pointer(Result)^, Size);
+  end
+  else
+    Result := '';
 end;
 
 {$ENDIF CLR}

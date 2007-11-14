@@ -62,6 +62,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
   System.Globalization, System.Runtime.InteropServices,
+  System.Runtime.InteropServices.ComTypes,
   {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -87,7 +88,7 @@ const
 
 {$IFDEF CLR}
 type
-  TFileTime = System.Runtime.InteropServices.FILETIME;
+  TFileTime = System.Runtime.InteropServices.ComTypes.FILETIME;
 {$ENDIF CLR}
 
 { Encode / Decode functions }
