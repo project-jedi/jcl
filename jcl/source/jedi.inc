@@ -76,6 +76,7 @@
   MSWINDOWS           Defined when target platform is 32 bit Windows
   LINUX               Defined when target platform is Linux
   UNIX                Defined when target platform is Linux or Unix
+  CLR                 Defined when target platform is .NET
 
 
 - Visual library Directives
@@ -290,6 +291,17 @@
   RTL170_UP     Defined when compiling with Delphi Personalities of BDS 3.0 or later
   RTL180_UP     Defined when compiling with Delphi or C++ Builder Personalities of BDS 4.0 or later
   RTL185_UP     Defined when compiling with Delphi for Win32 2007 or later
+
+
+- CLR Versions
+
+  Directive     Description
+  ------------------------------------------------------------------------------
+  CLR           Defined when compiling for .NET
+  CLR1          Defined when compiling for .NET 1.0 and 1.1
+  CLR1_UP       Defined when compiling for .NET 1.0 or later
+  CLR2          Defined when compiling for .NET 2.0
+  CLR2_UP       Defined when compiling for .NET 2.0 or later
 
 
 - Feature Directives
@@ -549,9 +561,20 @@
       {$UNDEF UNKNOWN_COMPILER_VERSION}
     {$ENDIF}
 
-    {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version
-      {$DEFINE BDS5}
+    {$IFDEF VER190} // Delphi.NET 2007
       {$DEFINE BDS}
+      {$DEFINE BDS5}
+      {$DEFINE COMPILER11}
+      {$DEFINE DELPHI11}
+      {$DEFINE DELPHI2007} // synonym to DELPHI10
+      {$DEFINE DELPHICOMPILER11}
+      {$DEFINE RTL190_UP}
+      {$UNDEF UNKNOWN_COMPILER_VERSION}
+    {$ENDIF VER190}
+
+    {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version (always use latest version)
+      {$DEFINE BDS}
+      {$DEFINE BDS5}
       {$DEFINE COMPILER11}
       {$DEFINE DELPHI11}
       {$DEFINE DELPHI2007} // synonym to DELPHI11
@@ -724,6 +747,7 @@
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF RTL190_UP} {$DEFINE RTL185_UP} {$ENDIF}
 {$IFDEF RTL185_UP} {$DEFINE RTL180_UP} {$ENDIF}
 {$IFDEF RTL180_UP} {$DEFINE RTL170_UP} {$ENDIF}
 {$IFDEF RTL170_UP} {$DEFINE RTL160_UP} {$ENDIF}
@@ -890,6 +914,8 @@
   {$DEFINE SUPPORTS_NESTED_CONSTANTS}
   {$DEFINE SUPPORTS_NESTED_TYPES}
   {$IFDEF CLR}
+    {$DEFINE CLR1}
+    {$DEFINE CLR1_UP}
     {$DEFINE SUPPORTS_ENHANCED_RECORDS}
     {$DEFINE SUPPORTS_CLASS_FIELDS}
     {$DEFINE SUPPORTS_CLASS_HELPERS}
@@ -901,6 +927,10 @@
 {$ENDIF COMPILER9_UP}
 
 {$IFDEF COMPILER10_UP}
+  {$IFDEF CLR}
+    {$DEFINE CLR1}
+    {$DEFINE CLR1_UP}
+  {$ENDIF CLR}
   {$DEFINE SUPPORTS_ENHANCED_RECORDS}
   {$DEFINE SUPPORTS_CLASS_FIELDS}
   {$DEFINE SUPPORTS_CLASS_HELPERS}
@@ -912,6 +942,9 @@
 
 {$IFDEF COMPILER11_UP}
   {$IFDEF CLR}
+    {$DEFINE CLR1_UP}
+    {$DEFINE CLR2}
+    {$DEFINE CLR2_UP}
     {$DEFINE SUPPORTS_GENERICS}
   {$ENDIF CLR}
 {$ENDIF COMPILER11_UP}
