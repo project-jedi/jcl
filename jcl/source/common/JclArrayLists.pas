@@ -2688,13 +2688,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeObject(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeObject(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3249,13 +3252,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeString(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeString(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3810,13 +3816,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeString(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeString(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4371,13 +4380,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeSingle(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeSingle(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4932,13 +4944,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeDouble(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeDouble(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5493,13 +5508,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeExtended(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeExtended(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6054,13 +6072,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeInteger(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeInteger(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6615,13 +6636,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeCardinal(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeCardinal(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7176,13 +7200,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeInt64(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeInt64(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7738,13 +7765,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreePointer(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreePointer(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8300,13 +8330,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeObject(FElementData[Index]);
+      if Index < (FSize - 1) then
+        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeObject(FElementData[Index]);
-    if Index < (FSize - 1) then
-      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8857,13 +8890,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := FreeItem(FElementData[Index]);
+      if Index < (FSize - 1) then
+        TJclBase<T>.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := FreeItem(FElementData[Index]);
-    if Index < (FSize - 1) then
-      TJclBase<T>.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

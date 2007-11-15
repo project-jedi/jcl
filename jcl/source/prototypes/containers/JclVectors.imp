@@ -350,12 +350,15 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Result := RELEASERNAME(FItems[Index]);
+      MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
+      Dec(FSize);
+      AutoPack;
+    end
+    else
       raise EJclOutOfBoundsError.Create;
-    Result := RELEASERNAME(FItems[Index]);
-    MOVEARRAY(FItems, Index + 1, Index, FSize - Index);
-    Dec(FSize);
-    AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
