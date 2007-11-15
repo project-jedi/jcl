@@ -32,8 +32,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDITranslators;
 
@@ -245,7 +249,7 @@ begin
       else
       begin
         // Check to see if the sections have changed
-        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S - 1]);
+        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S-1]);
         if SegmentSpec.Section <> PrevSegmentSpec.Section then
         begin
           // Create new table for new section

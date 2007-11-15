@@ -17,8 +17,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -95,7 +96,7 @@ resourcestring
 // http://msdn.microsoft.com/library/periodic/period99/comtype.htm
 
 type
-  TJclTypeLibScanner = class(TObject)
+  TJclTypeLibScanner = class (TObject)
   private
     FMembersList: TStrings;
     FModuleFileName: TFileName;
@@ -107,7 +108,7 @@ type
     constructor Create(const FileName: TFileName);
     destructor Destroy; override;
     property MembersList: TStrings read FMembersList;
-    property ModuleFileName: TFileName read FModuleFileName;
+    property ModuleFileName: TFileName read FModuleFileName; 
     property ValidFormat: Boolean read FValidFormat;
   end;
 
@@ -141,7 +142,7 @@ var
     if Succeeded(TI.GetDocumentation(MemID, @Name, nil, nil, nil)) then
       Result := Name
     else
-      Result := '';
+      Result := '';  
   end;
 
   procedure EnumTypeInfoMembers(MemTypeInfo: ITypeInfo; MemTypeAttr: PTypeAttr;
@@ -277,8 +278,8 @@ begin
     MapList.Add('');
     MapList.Add(' Start         Length     Name                   Class');
     MapList.Add(Format(' %.4x:%.8x %.8xH  %s                  CODE',
-      [1, CodeSection.VirtualAddress, CodeSection.Misc.VirtualSize,
-      PeImage.ImageSectionNames[0]]));
+       [1, CodeSection.VirtualAddress, CodeSection.Misc.VirtualSize,
+        PeImage.ImageSectionNames[0]]));
     MapList.Add('');
     MapList.Add('');
     MapList.Add('Detailed map of segments');
@@ -375,11 +376,11 @@ begin
   VersionMemo.Lines.Clear;
   if VersionResourceAvailable(Value) then
     with TJclFileVersionInfo.Create(Value) do
-      try
-        VersionMemo.Lines.Assign(Items);
-      finally
-        Free;
-      end;
+    try
+      VersionMemo.Lines.Assign(Items);
+    finally
+      Free;
+    end;
   DisableAlign;
   VersionMemo.Visible := VersionMemo.Lines.Count > 0;
   Splitter1.Visible := VersionMemo.Visible;

@@ -32,8 +32,12 @@
 { higher!                                                                                          }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // Comments on Win9x compatibility of the functions used in this unit
 
@@ -151,17 +155,16 @@ type
   TNtfsHardLinkInfo = record
     LinkCount: Cardinal;
     case Integer of
-      0: (
-        FileIndexHigh: Cardinal;
-        FileIndexLow: Cardinal);
-      1: (
-        FileIndex: Int64);
+    0: (
+      FileIndexHigh: Cardinal;
+      FileIndexLow: Cardinal);
+    1: (
+      FileIndex: Int64);
   end;
 
 function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
 
-function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal;
-  const List: TStrings): Boolean;
+function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 function NtfsDeleteHardLinks(const FileName: string): Boolean;
 
 // NTFS File summary
@@ -580,11 +583,11 @@ uses
 
 const
   CompressionFormat: array [TFileCompressionState] of Short =
-    (
+  (
     COMPRESSION_FORMAT_NONE,
     COMPRESSION_FORMAT_DEFAULT,
     COMPRESSION_FORMAT_LZNT1
-    );
+  );
 
   // use IsDirectory(FileName) as array index
   FileFlag: array [Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
@@ -601,8 +604,8 @@ type
 
 function CallersCallerAddress: Pointer;
 asm
-  MOV     EAX, [EBP]
-  MOV     EAX, TStackFrame([EAX]).CallerAddress
+        MOV     EAX, [EBP]
+        MOV     EAX, TStackFrame([EAX]).CallerAddress
 end;
 
 {$STACKFRAMES ON}
@@ -612,7 +615,7 @@ procedure ValidateArgument(Condition: Boolean; const Routine: string;
 begin
   if not Condition then
     raise EJclInvalidArgument.CreateResFmt(@RsInvalidArgument, [Routine, Argument])
-    at CallersCallerAddress;
+      at CallersCallerAddress;
 end;
 
 {$IFNDEF STACKFRAMES_ON}
@@ -629,13 +632,13 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ, nil, OPEN_EXISTING, FileFlag, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-    try
-      Buffer := State;
-      Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
-        SizeOf(Short), nil, 0, BytesReturned, nil);
-    finally
-      CloseHandle(Handle);
-    end;
+  try
+    Buffer := State;
+    Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
+      SizeOf(Short), nil, 0, BytesReturned, nil);
+  finally
+    CloseHandle(Handle);
+  end
 end;
 
 function SetPathCompression(Dir: string; const Mask: string; const State: Short;
@@ -653,25 +656,25 @@ begin
   begin
     Dir := PathAddSeparator(Dir);
     if FindFirst(Dir + Mask, faAnyFile, SearchRec) = 0 then
-      try
-        repeat
-          if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-          begin
-            FileName := Dir + SearchRec.Name;
-            if (SearchRec.Attr and faDirectory) = 0 then
-              Result := SetCompression(FileName, State, 0)
-            else
+    try
+      repeat
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+        begin
+          FileName := Dir + SearchRec.Name;
+          if (SearchRec.Attr and faDirectory) = 0 then
+            Result := SetCompression(FileName, State, 0)
+          else
             if Recursive then
               Result := SetPathCompression(FileName, Mask, State, SetDefault, True);
-            if not Result then
-              Exit;
-          end;
-          R := FindNext(SearchRec);
-        until R <> 0;
-        Result := (R = ERROR_NO_MORE_FILES);
-      finally
-        SysUtils.FindClose(SearchRec);
-      end;
+          if not Result then
+            Exit;
+        end;
+        R := FindNext(SearchRec);
+      until R <> 0;
+      Result := (R = ERROR_NO_MORE_FILES);
+    finally
+      SysUtils.FindClose(SearchRec);
+    end;
   end;
 end;
 
@@ -864,23 +867,23 @@ begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-    try
-      R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
-      Ranges.MoreData := MoreData;
-      Result := R;
-      if R then
-      begin
-        Ranges.Entries := Size div SizeOf(TFileAllocatedRangeBuffer);
-        Ranges.Data := CurrRanges;
-      end
-      else
-      begin
-        Ranges.Entries := 0;
-        Ranges.Data := nil;
-      end;
-    finally
-      CloseHandle(Handle);
+  try
+    R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
+    Ranges.MoreData := MoreData;
+    Result := R;
+    if R then
+    begin
+      Ranges.Entries := Size div SizeOf(TFileAllocatedRangeBuffer);
+      Ranges.Data := CurrRanges;
+    end
+    else
+    begin
+      Ranges.Entries := 0;
+      Ranges.Data := nil;
     end;
+  finally
+    CloseHandle(Handle);
+  end;
 end;
 
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
@@ -1111,13 +1114,13 @@ end;
 
 type
   TReparseDataBufferOverlay = record
-    case Boolean of
-      False:
+  case Boolean of
+    False:
       (Reparse: TReparseDataBuffer;);
-      True:
+    True:
       (Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;);
   end;
-
+  
 function IsReparseTagValid(Tag: DWORD): Boolean;
 begin
   Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
@@ -1180,24 +1183,24 @@ begin
     Handle := CreateFile(PChar(Source), GENERIC_READ, 0, nil,
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
     if Handle <> INVALID_HANDLE_VALUE then
-      try
-        if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-          MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
+    try
+      if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
+        MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
         IsReparseTagValid(ReparseData.Reparse.ReparseTag) then}
         then
+      begin
+        if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
         begin
-          if BytesReturned >= ReparseData.Reparse.SubstituteNameLength + SizeOf(WideChar) then
-          begin
-            SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
-            WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
-              (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
-              PChar(Destination), Length(Destination), nil, nil);
-            Result := True;
-          end;
+          SetLength(Destination, (ReparseData.Reparse.SubstituteNameLength div SizeOf(WideChar)) + 1);
+          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.Reparse.PathBuffer,
+            (ReparseData.Reparse.SubstituteNameLength div SizeOf(WCHAR)) + 1,
+            PChar(Destination), Length(Destination), nil, nil);
+          Result := True;
         end;
-      finally
-        CloseHandle(Handle);
       end;
+    finally
+      CloseHandle(Handle);
+    end
   end;
 end;
 
@@ -1429,21 +1432,20 @@ begin
   Result := False;
   F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if F <> INVALID_HANDLE_VALUE then
-    try
-      if GetFileInformationByHandle(F, FileInfo) then
-      begin
-        Info.LinkCount := FileInfo.nNumberOfLinks;
-        Info.FileIndexHigh := FileInfo.nFileIndexHigh;
-        Info.FileIndexLow := FileInfo.nFileIndexLow;
-        Result := True;
-      end;
-    finally
-      CloseHandle(F);
+  try
+    if GetFileInformationByHandle(F, FileInfo) then
+    begin
+      Info.LinkCount := FileInfo.nNumberOfLinks;
+      Info.FileIndexHigh := FileInfo.nFileIndexHigh;
+      Info.FileIndexLow := FileInfo.nFileIndexLow;
+      Result := True;
     end;
+  finally
+    CloseHandle(F);
+  end
 end;
 
-function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal;
-  const List: TStrings): Boolean;
+function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 var
   SearchRec: TSearchRec;
   R: Integer;
@@ -1563,11 +1565,11 @@ end;
 
 const
   AccessModes: array [TJclFileSummaryAccess] of DWORD =
-    (STGM_READ, STGM_WRITE, STGM_READWRITE);
+    ( STGM_READ, STGM_WRITE, STGM_READWRITE );
   ShareModes: array [TJclFileSummaryShare] of DWORD =
-    (STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
-    STGM_SHARE_EXCLUSIVE);
-
+    ( STGM_SHARE_DENY_NONE, STGM_SHARE_DENY_READ, STGM_SHARE_DENY_WRITE,
+      STGM_SHARE_EXCLUSIVE );
+      
 constructor TJclFileSummary.Create(AFileName: WideString; AAccessMode: TJclFileSummaryAccess;
   AShareMode: TJclFileSummaryShare; AsDocument: Boolean; ACreate: Boolean);
 var
@@ -1689,7 +1691,7 @@ begin
     else
       OleCheck(FStorage.Create(FMTID, FMTID, PROPSETFLAG_DEFAULT,
         STGM_CREATE or STGM_DIRECT or AccessModes[AccessMode] or ShareModes[ShareMode],
-        Result));
+        Result))
   end
   else
     OleCheck(Status);
@@ -2162,7 +2164,7 @@ end;
 
 class function TJclMediaFileSummaryInformation.GetFMTID: TGUID;
 begin
-  Result := FMTID_MediaFileSummaryInformation;
+  Result := FMTID_MediaFileSummaryInformation
 end;
 
 //=== { TJclMSISummaryInformation } ==========================================
@@ -2260,7 +2262,7 @@ end;
 
 class function TJclVolumeSummaryInformation.GetFMTID: TGUID;
 begin
-  Result := FMTID_Volume;
+  Result := FMTID_Volume; 
 end;
 
 //=== { TJclShareSummaryInformation } ========================================

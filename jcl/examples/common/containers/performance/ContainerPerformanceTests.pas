@@ -13,7 +13,8 @@ procedure TestJclVector(Results: TStrings);
 procedure TestBucketList(Results: TStrings);
 procedure TestJclHashMap(Results: TStrings);
 procedure TestHashedStringList(Results: TStrings);
-procedure TestJclStrStrHashMap(Results: TStrings);
+procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
+procedure TestJclWideStrWideStrHashMap(Results: TStrings);
 
 implementation
 
@@ -238,7 +239,7 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := JclHashMaps.TJclHashMap.Create(256, False);
+    Map := JclHashMaps.TJclHashMap.Create(256, False, False);
     for I := 0 to 100000 do
       Map.PutValue(TObject(Random(100000)), TObject(I));
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
@@ -295,9 +296,9 @@ begin
 end;
 {$ENDIF ~RTL140_UP}
 
-procedure TestJclStrStrHashMap(Results: TStrings);
+procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
 var
-  Map: IJclStrStrMap;
+  Map: IJclAnsiStrAnsiStrMap;
   I: Integer;
   Res: string;
   Start: TDateTime;
@@ -306,7 +307,34 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := TJclStrStrHashMap.Create(256);
+    Map := TJclAnsiStrAnsiStrHashMap.Create(256);
+    for I := 0 to 100000 do
+      Map.PutValue(GenId(123), '');
+    Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+    Start := Now;
+    for I := 0 to 100000 do
+      Res := Map.GetValue(GenId(123));
+    Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+    Start := Now;
+    Map.Clear;
+    Results[3] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TestJclWideStrWideStrHashMap(Results: TStrings);
+var
+  Map: IJclWideStrWideStrMap;
+  I: Integer;
+  Res: string;
+  Start: TDateTime;
+begin
+  Randomize;
+  Screen.Cursor := crHourGlass;
+  try
+    Start := Now;
+    Map := TJclWideStrWideStrHashMap.Create(256);
     for I := 0 to 100000 do
       Map.PutValue(GenId(123), '');
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);

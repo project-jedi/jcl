@@ -1,0 +1,34 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{468f50c8-84e0-4b79-bb57-72d64fff9348}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="d11.net\Jedi.Jcl.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="Jedi_Jcl">
+    <MSBuild Projects="d11.net\Jedi.Jcl.dproj" Targets="" />
+  </Target>
+  <Target Name="Jedi_Jcl:Clean">
+    <MSBuild Projects="d11.net\Jedi.Jcl.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Jedi_Jcl:Make">
+    <MSBuild Projects="d11.net\Jedi.Jcl.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="Jedi_Jcl" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="Jedi_Jcl:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="Jedi_Jcl:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

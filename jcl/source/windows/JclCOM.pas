@@ -28,8 +28,12 @@
 { This unit contains Various COM (Component Object Model) utility routines.                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCOM;
 
@@ -151,7 +155,7 @@ function StringToWideString(const Str: string): WideString;
 var
   iLen: Integer;
 begin
-  iLen := Length(Str) + 1;
+  iLen:= Length(Str) + 1;
   SetLength(Result, (iLen - 1));
   StringToWideChar(Str, PWideChar(Result), iLen);
 end;
@@ -168,11 +172,11 @@ begin
   begin
     OLE32 := SafeLoadLibrary(pcOLE32);
     if OLE32 > 0 then
-      try
-        Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
-      finally
-        FreeLibrary(OLE32);
-      end;
+    try
+      Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
+    finally
+      FreeLibrary(OLE32);
+    end;
   end;
 end;
 
@@ -208,7 +212,7 @@ var
   DLL: string;
   Version: TJclFileVersionInfo;
 begin
-  Result := '';
+  Result := '' ;
   Key := RegReadString(HKEY_CLASSES_ROOT, 'ADODB.Connection\CLSID', '');
   DLL := RegReadString(HKEY_CLASSES_ROOT, 'CLSID\' + Key + '\InprocServer32', '');
   if VersionResourceAvailable(DLL) then
@@ -388,7 +392,7 @@ begin
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -402,10 +406,10 @@ begin
         Only copy the first 127 characters if it is. }
       iLen := Length(sDescription);
       if iLen > icMAX_CATEGORY_DESC_LEN then
-        iLen := icMAX_CATEGORY_DESC_LEN;
+         iLen := icMAX_CATEGORY_DESC_LEN;
 
       sTemp := Copy(sDescription, 1, iLen);
-      wsTemp := StringToWideString(sTemp);
+      wsTemp := StringToWideString(sTemp); 
 
       Move(Pointer(wsTemp)^, CatInfo.szDescription, (iLen * SizeOf(WideChar)));
 
@@ -428,7 +432,7 @@ begin
   { Register your component categories information }
   CatRegister := nil;
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -453,7 +457,7 @@ begin
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-    nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try

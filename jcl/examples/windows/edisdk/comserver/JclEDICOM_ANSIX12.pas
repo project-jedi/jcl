@@ -444,7 +444,7 @@ procedure TEDICOMSegment.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;
+  FDelimitersIntf.ObjAddRef;  
   FElementIntf := TEDICOMElement.Create;
   FElementIntf.ObjAddRef;
   FSegment := nil;
@@ -565,9 +565,9 @@ procedure TEDICOMTransactionSet.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;
+  FDelimitersIntf.ObjAddRef;  
   FSegmentIntf := TEDICOMSegment.Create;
-  FSegmentIntf.ObjAddRef;
+  FSegmentIntf.ObjAddRef;  
   FTransactionSet := nil;
 end;
 
@@ -683,7 +683,7 @@ procedure TEDICOMFunctionalGroup.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;
+  FDelimitersIntf.ObjAddRef;  
   FSegmentIntf := TEDICOMSegment.Create;
   FSegmentIntf.ObjAddRef;
   FTransactionSetIntf := TEDICOMTransactionSet.Create;
@@ -772,7 +772,7 @@ procedure TEDICOMInterchangeControl.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;
+  FDelimitersIntf.ObjAddRef;  
   FSegmentIntf := TEDICOMSegment.Create;
   FSegmentIntf.ObjAddRef;
   FFunctionalGroupIntf := TEDICOMFunctionalGroup.Create;
@@ -925,7 +925,7 @@ procedure TEDICOMFile.Initialize;
 begin
   inherited;
   FDelimitersIntf := TEDICOMDelimiters.Create;
-  FDelimitersIntf.ObjAddRef;
+  FDelimitersIntf.ObjAddRef;  
   FInterchangeControlIntf := TEDICOMInterchangeControl.Create;
   FInterchangeControlIntf.ObjAddRef;
   FEDIFile := TEDIFile.Create(nil);

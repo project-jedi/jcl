@@ -1,53 +1,49 @@
 {$IFNDEF JEDI_INC}
 {$DEFINE JEDI_INC}
 
-{******************************************************************************}
-{                                                                              }
-{  The contents of this file are subject to the Mozilla Public License         }
-{  Version 1.1 (the "License"); you may not use this file except in            }
-{  compliance with the License. You may obtain a copy of the License at        }
-{  http://www.mozilla.org/MPL/                                                 }
-{                                                                              }
-{  Software distributed under the License is distributed on an "AS IS" basis,  }
-{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
-{  for the specific language governing rights and limitations under the        }
-{  License.                                                                    }
-{                                                                              }
-{  The Original Code is: jedi.inc.                                             }
-{  The Initial Developer of the Original Code is Project JEDI                  }
-{  http://www.delphi-jedi.org                                                  }
-{                                                                              }
-{  Alternatively, the contents of this file may be used under the terms of     }
-{  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
-{  the provisions of the LGPL License are applicable instead of those above.   }
-{  If you wish to allow use of your version of this file only under the terms  }
-{  of the LGPL License and not to allow others to use your version of this     }
-{  file under the MPL, indicate your decision by deleting the provisions       }
-{  above and replace them with the notice and other provisions required by     }
-{  the LGPL License. If you do not delete the provisions above, a recipient    }
-{  may use your version of this file under either the MPL or the LGPL License. }
-{                                                                              }
-{  For more information about the LGPL:                                        }
-{  http://www.gnu.org/copyleft/lesser.html                                     }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{  This file defines various generic compiler directives used in different     }
-{  libraries, e.g. in the JEDI Code Library (JCL) and JEDI Visual Component    }
-{  Library Library (J-VCL). The directives in this file are of generic nature  }
-{  and consist mostly of mappings from the VERXXX directives defined by        }
-{  Delphi, C++ Builder and FPC to friendly names such as DELPHI5 and           }
-{  SUPPORTS_WIDESTRING. These friendly names are subsequently used in the      }
-{  libraries to test for compiler versions and/or whether the compiler         }
-{  supports certain features (such as widestrings or 64 bit integers. The      }
-{  libraries provide an additional, library specific, include file. For the    }
-{  JCL e.g. this is jcl.inc. These files should be included in source files    }
-{  instead of this file (which is pulled in automatically).                    }
-{                                                                              }
-{******************************************************************************}
-
-// Last modified: $Date$
-// For history see end of file
+{**************************************************************************************************}
+{                                                                                                  }
+{  The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License");}
+{  you may not use this file except in compliance with the License. You may obtain a copy of the   }
+{  License at http://www.mozilla.org/MPL/                                                          }
+{                                                                                                  }
+{  Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF  }
+{  ANY KIND, either express or implied. See the License for the specific language governing rights }
+{  and limitations under the License.                                                              }
+{                                                                                                  }
+{  The Original Code is: jedi.inc.                                                                 }
+{  The Initial Developer of the Original Code is Project JEDI http://www.delphi-jedi.org           }
+{                                                                                                  }
+{  Alternatively, the contents of this file may be used under the terms of the GNU Lesser General  }
+{  Public License (the  "LGPL License"), in which case the provisions of the LGPL License are      }
+{  applicable instead of those above. If you wish to allow use of your version of this file only   }
+{  under the terms of the LGPL License and not to allow others to use your version of this file    }
+{  under the MPL, indicate your decision by deleting the provisions above and replace them with    }
+{  the notice and other provisions required by the LGPL License. If you do not delete the          }
+{  provisions above, a recipient may use your version of this file under either the MPL or the     }
+{  LGPL License.                                                                                   }
+{                                                                                                  }
+{  For more information about the LGPL: http://www.gnu.org/copyleft/lesser.html                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{  This file defines various generic compiler directives used in different libraries, e.g. in the  }
+{  JEDI Code Library (JCL) and JEDI Visual Component Library Library (J-VCL). The directives in    }
+{  this file are of generic nature and consist mostly of mappings from the VERXXX directives       }
+{  defined by Delphi, C++ Builder and FPC to friendly names such as DELPHI5 and                    }
+{  SUPPORTS_WIDESTRING. These friendly names are subsequently used in the libraries to test for    }
+{  compiler versions and/or whether the compiler supports certain features (such as widestrings or }
+{  64 bit integers. The libraries provide an additional, library specific, include file. For the   }
+{  JCL e.g. this is jcl.inc. These files should be included in source files instead of this file   }
+{  (which is pulled in automatically).                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 (*
 
@@ -80,6 +76,7 @@
   MSWINDOWS           Defined when target platform is 32 bit Windows
   LINUX               Defined when target platform is Linux
   UNIX                Defined when target platform is Linux or Unix
+  CLR                 Defined when target platform is .NET
 
 
 - Visual library Directives
@@ -341,6 +338,7 @@
   SUPPORTS_STRICT               Compiler supports strict keyword (D9.NET, D10+)
   SUPPORTS_STATIC               Compiler supports static keyword (D9.NET, D10+)
   SUPPORTS_FINAL                Compiler supports final keyword (D9.NET, D10+)
+  SUPPORTS_GENERICS             Compiler supports generic implementations (D11.net)
   ACCEPT_DEPRECATED             Compiler supports or ignores the deprecated directive (D6+/BCB6+/FPC)
   ACCEPT_PLATFORM               Compiler supports or ignores the platform directive (D6+/BCB6+)
   ACCEPT_LIBRARY                Compiler supports or ignores the library directive (D6+/BCB6+)
@@ -552,9 +550,20 @@
       {$UNDEF UNKNOWN_COMPILER_VERSION}
     {$ENDIF}
 
-    {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version
-      {$DEFINE BDS5}
+    {$IFDEF VER190} // Delphi.NET 2007
       {$DEFINE BDS}
+      {$DEFINE BDS5}
+      {$DEFINE COMPILER11}
+      {$DEFINE DELPHI11}
+      {$DEFINE DELPHI2007} // synonym to DELPHI10
+      {$DEFINE DELPHICOMPILER11}
+      {$DEFINE RTL190_UP}
+      {$UNDEF UNKNOWN_COMPILER_VERSION}
+    {$ENDIF VER190}
+
+    {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version (always use latest version)
+      {$DEFINE BDS}
+      {$DEFINE BDS5}
       {$DEFINE COMPILER11}
       {$DEFINE DELPHI11}
       {$DEFINE DELPHI2007} // synonym to DELPHI11
@@ -727,6 +736,7 @@
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF RTL190_UP} {$DEFINE RTL185_UP} {$ENDIF}
 {$IFDEF RTL185_UP} {$DEFINE RTL180_UP} {$ENDIF}
 {$IFDEF RTL180_UP} {$DEFINE RTL170_UP} {$ENDIF}
 {$IFDEF RTL170_UP} {$DEFINE RTL160_UP} {$ENDIF}
@@ -912,6 +922,12 @@
   {$DEFINE SUPPORTS_STATIC}
   {$DEFINE SUPPORTS_FINAL}
 {$ENDIF COMPILER10_UP}
+
+{$IFDEF COMPILER11_UP}
+  {$IFDEF CLR}
+    {$DEFINE SUPPORTS_GENERICS}
+  {$ENDIF CLR}
+{$ENDIF COMPILER11_UP}
 
 {$IFDEF RTL140_UP}
   {$IFDEF LINUX}

@@ -1,32 +1,39 @@
-{ zlib.h -- interface of the 'zlib' general purpose compression library
-  version 1.2.1, November 17th, 2003
-
-  Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-
-  Jean-loup Gailly        Mark Adler
-  jloup@gzip.org          madler@alumni.caltech.edu
-
-
-  The data format used by the zlib library is described by RFCs (Request for
-  Comments) 1950 to 1952 in the files http://www.ietf.org/rfc/rfc1950.txt
-  (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
-}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ zlib.h -- interface of the 'zlib' general purpose compression library                            }
+{ version 1.2.1, November 17th, 2003                                                               }
+{                                                                                                  }
+{ Copyright (C) 1995-2003 Jean-loup Gailly and Mark Adler                                          }
+{                                                                                                  }
+{ This software is provided 'as-is', without any express or implied warranty.  In no event will    }
+{ the authors be held liable for any damages arising from the use of this software.                }
+{                                                                                                  }
+{ Permission is granted to anyone to use this software for any purpose, including commercial       }
+{ applications, and to alter it and redistribute it freely, subject to the following restrictions: }
+{                                                                                                  }
+{ 1. The origin of this software must not be misrepresented; you must not claim that you wrote the }
+{    original software. If you use this software in a product, an acknowledgment in the product    }
+{    documentation would be appreciated but is not required.                                       }
+{ 2. Altered source versions must be plainly marked as such, and must not be misrepresented as     }
+{    being the original software.                                                                  }
+{ 3. This notice may not be removed or altered from any source distribution.                       }
+{                                                                                                  }
+{     Jean-loup Gailly        Mark Adler                                                           }
+{     jloup@gzip.org          madler@alumni.caltech.edu                                            }
+{                                                                                                  }
+{ The data format used by the zlib library is described by RFCs (Request for                       }
+{ Comments) 1950 to 1952 in the files http://www.ietf.org/rfc/rfc1950.txt                          }
+{ (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).                       }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {* Set this DEFINE to allow this unit to be linked against a .SO/.DLL
  * The name "DLL" was used because e.g. the wxWidgets projects also uses
@@ -98,7 +105,7 @@ type
 
 type
   {$EXTERNALSYM Bytef}
-  Bytef = Byte;
+  Bytef  = Byte;
   {$EXTERNALSYM PBytef}
   PBytef = ^Bytef;
   {$EXTERNALSYM UnsignedInt}
@@ -116,7 +123,7 @@ type
 
 const
   {$EXTERNALSYM MAX_WBITS}
-  MAX_WBITS = 15; // 32K LZ77 window
+  MAX_WBITS   = 15; // 32K LZ77 window
 
 {* The memory requirements for deflate are (in bytes):
             (1 << (windowBits+2)) +  (1 << (memLevel+9))
@@ -154,21 +161,21 @@ const
 
 type
   {$EXTERNALSYM voidpc}
-  voidpc = Pointer;
+   voidpc = Pointer;
   {$EXTERNALSYM voidpf}
-  voidpf = Pointer;
+   voidpf = Pointer;
   {$EXTERNALSYM voidp}
-  voidp = Pointer;
+   voidp = Pointer;
   {$EXTERNALSYM z_off_t}
-  z_off_t = LongInt;
+   z_off_t = LongInt;
 
 const
   {$EXTERNALSYM SEEK_SET}
-  SEEK_SET = 0;       // Seek from beginning of file.
+  SEEK_SET        =0;       // Seek from beginning of file.
   {$EXTERNALSYM SEEK_CUR}
-  SEEK_CUR = 1;       // Seek from current position.
+  SEEK_CUR        =1;       // Seek from current position.
   {$EXTERNALSYM SEEK_END}
-  SEEK_END = 2;       // Set file pointer to EOF plus "offset" 
+  SEEK_END        =2;       // Set file pointer to EOF plus "offset" 
 
 //-----------------------------------------------------------------------------
 // END of the contents of the converted ZCONF.H
@@ -178,7 +185,7 @@ const
   {$EXTERNALSYM ZLIB_VERSION}
   ZLIB_VERSION = '1.2.2';
   {$EXTERNALSYM ZLIB_VERNUM}
-  ZLIB_VERNUM = $1210;
+  ZLIB_VERNUM =$1210;
 
 {*
      The 'zlib' compression library provides in-memory compression and
@@ -218,9 +225,9 @@ const
 
 type
   {$EXTERNALSYM alloc_func}
-  alloc_func = function(opaque: voidpf; items: uInt; size: uInt): voidpf;
+  alloc_func = function(opaque:voidpf; items:uInt; size:uInt):voidpf;
   {$EXTERNALSYM free_func}
-  free_func = procedure(opaque: voidpf; address: voidpf);
+  free_func = procedure(opaque:voidpf; address:voidpf);
   TFNAllocFunc = alloc_func;
   TFNFreeFunc = free_func;
 
@@ -233,24 +240,24 @@ type
 type
   {$EXTERNALSYM z_stream_s}
   z_stream_s = packed record
-    next_in: PBytef;       // next input byte
-    avail_in: uInt;        // number of bytes available at next_in 
-    total_in: uLong;       // total nb of input bytes read so far 
+      next_in: PBytef;       // next input byte
+      avail_in: uInt;        // number of bytes available at next_in 
+      total_in: uLong;       // total nb of input bytes read so far 
 
-    next_out: PBytef;       // next output byte should be put there 
-    avail_out: uInt;        // remaining free space at next_out
-    total_out: uLong;       // total nb of bytes output so far
+      next_out: PBytef;       // next output byte should be put there 
+      avail_out:uInt;        // remaining free space at next_out
+      total_out:uLong;       // total nb of bytes output so far
 
-    msg: PChar;        // last error message, NULL if no error
-    state: PInternalState;  // not visible by applications 
+      msg:     PChar;        // last error message, NULL if no error
+      state:PInternalState;  // not visible by applications 
 
-    zalloc: TFNAllocFunc;// used to allocate the internal state 
-    zfree: TFNFreeFunc; // used to free the internal state 
-    opaque: voidpf;      // private data object passed to zalloc and zfree 
+      zalloc:   TFNAllocFunc;// used to allocate the internal state 
+      zfree:    TFNFreeFunc; // used to free the internal state 
+      opaque:   voidpf;      // private data object passed to zalloc and zfree 
 
-    data_type: Integer;     // best guess about the data type: ascii or binary 
-    adler: uLong;       // adler32 value of the uncompressed data 
-    reserved: uLong;       // reserved for future use 
+      data_type: Integer;     // best guess about the data type: ascii or binary 
+      adler:    uLong;       // adler32 value of the uncompressed data 
+      reserved: uLong;       // reserved for future use 
   end;
 
   {$EXTERNALSYM z_stream}
@@ -297,36 +304,36 @@ type
 
 const
   {$EXTERNALSYM Z_NO_FLUSH}
-  Z_NO_FLUSH = 0;
+  Z_NO_FLUSH      = 0;
   {$EXTERNALSYM Z_PARTIAL_FLUSH}
   Z_PARTIAL_FLUSH = 1; // will be removed, use Z_SYNC_FLUSH instead
   {$EXTERNALSYM Z_SYNC_FLUSH}
-  Z_SYNC_FLUSH = 2;
+  Z_SYNC_FLUSH    = 2;
   {$EXTERNALSYM Z_FULL_FLUSH}
-  Z_FULL_FLUSH = 3;
+  Z_FULL_FLUSH    = 3;
   {$EXTERNALSYM Z_FINISH}
-  Z_FINISH = 4;
+  Z_FINISH        = 4;
   {$EXTERNALSYM Z_BLOCK}
-  Z_BLOCK = 5;
+  Z_BLOCK         = 5;
 
 {* Allowed flush values; see deflate() and inflate() below for details *}
 
   {$EXTERNALSYM Z_OK}
-  Z_OK = 0;
+  Z_OK            = 0;
   {$EXTERNALSYM Z_STREAM_END}
-  Z_STREAM_END = 1;
+  Z_STREAM_END    = 1;
   {$EXTERNALSYM Z_NEED_DICT}
-  Z_NEED_DICT = 2;
+  Z_NEED_DICT     = 2;
   {$EXTERNALSYM Z_ERRNO}
-  Z_ERRNO = -1;
+  Z_ERRNO        = -1;
   {$EXTERNALSYM Z_STREAM_ERROR}
   Z_STREAM_ERROR = -2;
   {$EXTERNALSYM Z_DATA_ERROR}
-  Z_DATA_ERROR = -3;
+  Z_DATA_ERROR   = -3;
   {$EXTERNALSYM Z_MEM_ERROR}
-  Z_MEM_ERROR = -4;
+  Z_MEM_ERROR    = -4;
   {$EXTERNALSYM Z_BUF_ERROR}
-  Z_BUF_ERROR = -5;
+  Z_BUF_ERROR    = -5;
   {$EXTERNALSYM Z_VERSION_ERROR}
   Z_VERSION_ERROR = -6;
 {* Return codes for the compression/decompression functions. Negative
@@ -334,40 +341,40 @@ const
  *}
 
   {$EXTERNALSYM Z_NO_COMPRESSION}
-  Z_NO_COMPRESSION = 0;
+  Z_NO_COMPRESSION       = 0;
   {$EXTERNALSYM Z_BEST_SPEED}
-  Z_BEST_SPEED = 1;
+  Z_BEST_SPEED           = 1;
   {$EXTERNALSYM Z_BEST_COMPRESSION}
-  Z_BEST_COMPRESSION = 9;
+  Z_BEST_COMPRESSION     = 9;
   {$EXTERNALSYM Z_DEFAULT_COMPRESSION}
   Z_DEFAULT_COMPRESSION = -1;
 
 {* compression levels *}
 
   {$EXTERNALSYM Z_FILTERED}
-  Z_FILTERED = 1;
+  Z_FILTERED           = 1;
   {$EXTERNALSYM Z_HUFFMAN_ONLY}
-  Z_HUFFMAN_ONLY = 2;
+  Z_HUFFMAN_ONLY       = 2;
   {$EXTERNALSYM Z_RLE}
-  Z_RLE = 3;
+  Z_RLE                = 3;
   {$EXTERNALSYM Z_DEFAULT_STRATEGY}
-  Z_DEFAULT_STRATEGY = 0;
+  Z_DEFAULT_STRATEGY   = 0;
 {* compression strategy; see deflateInit2() below for details *}
 
   {$EXTERNALSYM Z_BINARY}
-  Z_BINARY = 0;
+  Z_BINARY  = 0;
   {$EXTERNALSYM Z_ASCII}
-  Z_ASCII = 1;
+  Z_ASCII   = 1;
   {$EXTERNALSYM Z_UNKNOWN}
   Z_UNKNOWN = 2;
 {* Possible values of the data_type field (though see inflate()) *}
 
   {$EXTERNALSYM Z_DEFLATED}
-  Z_DEFLATED = 8;
+  Z_DEFLATED  = 8;
 {* The deflate compression method (the only one supported in this version) *}
 
   {$EXTERNALSYM Z_NULL}
-  Z_NULL = 0;  {* for initializing zalloc, zfree, opaque *}
+  Z_NULL  = 0;  {* for initializing zalloc, zfree, opaque *}
 
 {* for compatibility with versions < 1.0.2 *}
 
@@ -643,11 +650,11 @@ function inflateEnd(var strm: TZStreamRec): Integer;
 
 {$EXTERNALSYM deflateInit2}
 function deflateInit2(var strm: TZStreamRec;
-  level: Integer;
-  method: Integer;
-  windowBits: Integer;
-  memLevel: Integer;
-  strategy: Integer): Integer; // macro
+                      level: Integer;
+                      method: Integer;
+                      windowBits: Integer;
+                      memLevel: Integer;
+                      strategy: Integer): Integer; // macro
 {*
      This is another version of deflateInit with more compression options. The
    fields next_in, zalloc, zfree and opaque must be initialized before by
@@ -700,7 +707,7 @@ function deflateInit2(var strm: TZStreamRec;
 {$EXTERNALSYM deflateSetDictionary}
 function deflateSetDictionary(var strm: TZStreamRec;
                               {const} dictionary: PBytef;
-  dictLength: uInt): Integer;
+                              dictLength:uInt): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Initializes the compression dictionary from the given byte sequence
@@ -738,7 +745,7 @@ function deflateSetDictionary(var strm: TZStreamRec;
 
 {$EXTERNALSYM deflateCopy}
 function deflateCopy(var dest: TZStreamRec;
-  var source: TZStreamRec): Integer;
+                     var source: TZStreamRec): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Sets the destination stream as a complete copy of the source stream.
@@ -771,8 +778,8 @@ function deflateReset(var strm: TZStreamRec): Integer;
 
 {$EXTERNALSYM deflateParams}
 function deflateParams(var strm: TZStreamRec;
-  level: Integer;
-  strategy: Integer): Integer;
+                       level: Integer;
+                       strategy: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Dynamically update the compression level and compression strategy.  The
@@ -794,7 +801,7 @@ function deflateParams(var strm: TZStreamRec;
 
 {$EXTERNALSYM deflateBound}
 function deflateBound(var strm: TZStreamRec;
-  sourceLen: uLong): uLong;
+                      sourceLen:uLong):uLong;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      deflateBound() returns an upper bound on the compressed size after
@@ -805,8 +812,8 @@ function deflateBound(var strm: TZStreamRec;
 
 {$EXTERNALSYM deflatePrime}
 function deflatePrime(var strm: TZStreamRec;
-  bits: Integer;
-  value: Integer): Integer;
+                      bits: Integer;
+                      value: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      deflatePrime() inserts bits in the deflate output stream.  The intent
@@ -823,7 +830,7 @@ function deflatePrime(var strm: TZStreamRec;
 
 {$EXTERNALSYM inflateInit2}
 function inflateInit2(var strm: TZStreamRec;
-  windowBits: Integer): Integer; // macro
+                      windowBits: Integer): Integer; // macro
 {*
      This is another version of inflateInit with an extra parameter. The
    fields next_in, avail_in, zalloc, zfree and opaque must be initialized
@@ -866,7 +873,7 @@ function inflateInit2(var strm: TZStreamRec;
 {$EXTERNALSYM inflateSetDictionary}
 function inflateSetDictionary(var strm: TZStreamRec;
                               {const} dictionary: PBytef;
-  dictLength: uInt): Integer;
+                              dictLength:uInt): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Initializes the decompression dictionary from the given uncompressed byte
@@ -903,7 +910,7 @@ function inflateSync(var strm: TZStreamRec): Integer;
 
 {$EXTERNALSYM inflateCopy}
 function inflateCopy(var dest: TZStreamRec;
-  var source: TZStreamRec): Integer;
+                     var source: TZStreamRec): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Sets the destination stream as a complete copy of the source stream.
@@ -933,8 +940,8 @@ function inflateReset(var strm: TZStreamRec): Integer;
 
 {$EXTERNALSYM inflateBackInit}
 function inflateBackInit(var strm: TZStreamRec;
-  windowBits: Integer;
-  window: PByte): Integer; // macro
+                         windowBits: Integer;
+                         window: PByte): Integer; // macro
 {*
      Initialize the internal stream state for decompression using inflateBack()
    calls.  The fields zalloc, zfree and opaque in strm must be initialized
@@ -956,18 +963,18 @@ function inflateBackInit(var strm: TZStreamRec;
 
 type
   {$EXTERNALSYM in_func}
-  in_func = function(p1: Pointer; p2: PByte): UnsignedInt;
+  in_func = function(p1: Pointer; p2: PByte):UnsignedInt;
   {$EXTERNALSYM out_func}
-  out_func = function(p1: Pointer; p2: PByte; p3: UnsignedInt): Longint;
+  out_func = function (p1: Pointer; p2: PByte; p3:UnsignedInt): Longint;
   TFNInFunc = in_func;
   TFNOutFunc = out_func;
 
 {$EXTERNALSYM inflateBack}
 function inflateBack(var strm: TZStreamRec;
-  input: TFNInFunc;
-  in_desc: Pointer;
-  ouput: TFNOutFunc;
-  out_desc: Pointer): Integer; // OS: CHECKTHIS - should the parameter names
+                     input:TFNInFunc;
+                     in_desc: Pointer;
+                     ouput:TFNOutFunc;
+                     out_desc: Pointer): Integer; // OS: CHECKTHIS - should the parameter names
                                                 //     be the same as in PHs translation? They
                                                 //     are wrong there, but in/out are reserved
                                                 //     words in Delphi
@@ -1049,7 +1056,7 @@ function inflateBackEnd(var strm: TZStreamRec): Integer;
 *}
 
 {$EXTERNALSYM zlibCompileFlags}
-function zlibCompileFlags(): uLong;
+function zlibCompileFlags():uLong;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {* Return flags indicating compile-time options.
 
@@ -1104,9 +1111,9 @@ function zlibCompileFlags(): uLong;
 
 {$EXTERNALSYM compress}
 function compress(dest: PBytef;
-  var destLen: uLongf;
+                  var destLen:uLongf;
                   {const} source: PBytef;
-  sourceLen: uLong): Integer;
+                  sourceLen:uLong): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Compresses the source buffer into the destination buffer.  sourceLen is
@@ -1123,10 +1130,10 @@ function compress(dest: PBytef;
 
 {$EXTERNALSYM compress2}
 function compress2(dest: PBytef;
-  var destLen: uLongf;
+                   var destLen:uLongf;
                    {const} source: PBytef;
-  sourceLen: uLong;
-  level: Integer): Integer;
+                   sourceLen:uLong;
+                   level: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Compresses the source buffer into the destination buffer. The level
@@ -1142,7 +1149,7 @@ function compress2(dest: PBytef;
 *}
 
 {$EXTERNALSYM compressBound}
-function compressBound(sourceLen: uLong): uLong;
+function compressBound(sourceLen:uLong):uLong;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      compressBound() returns an upper bound on the compressed size after
@@ -1152,9 +1159,9 @@ function compressBound(sourceLen: uLong): uLong;
 
 {$EXTERNALSYM uncompress}
 function uncompress(dest: PBytef;
-  var destLen: uLongf;
+                    var destLen:uLongf;
                     {const} source: PBytef;
-  sourceLen: uLong): Integer;
+                    sourceLen:uLong): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 {*
      Decompresses the source buffer into the destination buffer.  sourceLen is
@@ -1366,7 +1373,7 @@ procedure gzclearerr(file_:gzFile);
 *}
 
 {$EXTERNALSYM adler32}
-function adler32(adler: uLong; {const} buf: PBytef; len: uInt): uLong;
+function adler32(adler:uLong; {const} buf: PBytef; len:uInt):uLong;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 (*
      Update a running Adler-32 checksum with the bytes buf[0..len-1] and
@@ -1384,7 +1391,7 @@ function adler32(adler: uLong; {const} buf: PBytef; len: uInt): uLong;
 *)
 
 {$EXTERNALSYM crc32}
-function crc32(crc: uLong; {const} buf: PBytef; len: uInt): uLong;
+function crc32 (crc:uLong; {const} buf: PBytef; len:uInt):uLong;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 (*
      Update a running crc with the bytes buf[0..len-1] and return the updated
@@ -1407,42 +1414,42 @@ function crc32(crc: uLong; {const} buf: PBytef; len: uInt): uLong;
  * and the compiler's view of z_stream:
  *}
 {$EXTERNALSYM deflateInit_}
-function deflateInit_(var strm: z_stream;
-  level: Integer;
+function deflateInit_(var strm:z_stream;
+                      level: Integer;
                       {const} version: PChar;
-  stream_size: Integer): Integer;
+                      stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateInit_}
-function inflateInit_(var strm: z_stream;
+function inflateInit_(var strm:z_stream;
                       {const} version: PChar;
-  stream_size: Integer): Integer;
+                      stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM deflateInit2_}
-function deflateInit2_(var strm: z_stream;
-  level: Integer;
-  method: Integer;
-  windowBits: Integer;
-  memLevel: Integer;
-  strategy: Integer;
+function deflateInit2_(var strm:z_stream;
+                       level: Integer;
+                       method: Integer;
+                       windowBits: Integer;
+                       memLevel: Integer;
+                       strategy: Integer;
                        {const} version: PChar;
-  stream_size: Integer): Integer;
+                       stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateInit2_}
-function inflateInit2_(var strm: z_stream;
-  windowBits: Integer;
+function inflateInit2_(var strm:z_stream;
+                       windowBits: Integer;
                        {const} version: PChar;
-  stream_size: Integer): Integer;
+                       stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM inflateBackInit_}
-function inflateBackInit_(var strm: z_stream;
-  windowBits: Integer;
-  window: PByte;
+function inflateBackInit_(var strm:z_stream;
+                          windowBits: Integer;
+                          window: PByte;
                           {const} version: PChar;
-  stream_size: Integer): Integer;
+                          stream_size: Integer): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM zError}
@@ -1454,7 +1461,7 @@ function inflateSyncPoint(var z: TZStreamRec): Integer;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 {$EXTERNALSYM get_crc_table}
-function get_crc_table(): PuLongf;
+function get_crc_table():PuLongf;
 {$IFDEF ZEXPORT_CDECL} cdecl; {$ENDIF}
 
 //-----------------------------------------------------------------------------
@@ -1548,25 +1555,25 @@ end;
 {$ENDIF ~ZLIB_DLL}
 
 // Core functions
-function zlibVersion; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateInit_; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by deflateInit()
-function deflate; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateEnd; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateInit_; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by inflateInit()
-function inflate; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateEnd; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateInit2_; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by deflateInit2()
+function zlibVersion;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateInit_;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by deflateInit()
+function deflate;              external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateEnd;           external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateInit_;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by inflateInit()
+function inflate;              external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateEnd;           external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateInit2_;        external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by deflateInit2()
 function deflateSetDictionary; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateCopy; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateReset; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateParams; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflateBound; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function deflatePrime; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateInit2_; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by inflateInit2()
+function deflateCopy;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateReset;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateParams;        external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflateBound;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function deflatePrime;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateInit2_;        external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF}; // wrapped by inflateInit2()
 function inflateSetDictionary; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateSync; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateCopy; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateReset; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateSync;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateCopy;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateReset;         external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 
 {$IFDEF ZLIB_DLL}
 var
@@ -1583,21 +1590,21 @@ end;
 function inflateBackInit_; external;
 {$ENDIF}
 
-function inflateBack; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateBackEnd; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function zlibCompileFlags; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function compress; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function compress2; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function compressBound; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function uncompress; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateBack;          external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateBackEnd;       external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function zlibCompileFlags;     external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function compress;             external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function compress2;            external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function compressBound;        external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function uncompress;           external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 
 // Checksums
-function adler32; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function crc32; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function adler32;              external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function crc32;                external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 
-function zError; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function inflateSyncPoint; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
-function get_crc_table; external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function zError;               external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function inflateSyncPoint;     external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
+function get_crc_table;        external {$IFDEF ZLIB_DLL}ZLibModuleName{$ENDIF};
 
 {$IFNDEF ZLIB_DLL}
 {$IFDEF LINKTO_MSVCRT_DLL}
@@ -1650,13 +1657,10 @@ function _fdopen(handle: Integer; mode: PChar): Pointer; cdecl; external szMSVCR
 function _fprintf(stream: Pointer; format: PChar {, ...}): Integer; cdecl; external szMSVCRT name 'fprintf';
 function _ftell(stream: Pointer): Longint; cdecl; external szMSVCRT name 'ftell';
 function _sprintf(buffer: PChar; format: PChar {, ...}): Integer; cdecl; external szMSVCRT name 'sprintf';
-function _fwrite(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl;
-  external szMSVCRT name 'fwrite';
-function _fread(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl;
-  external szMSVCRT name 'fread';
+function _fwrite(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl; external szMSVCRT name 'fwrite';
+function _fread(buffer: Pointer; size: size_t; count: size_t; stream: Pointer): size_t; cdecl; external szMSVCRT name 'fread';
 function _fclose(stream: Pointer): Integer; cdecl; external szMSVCRT name 'fclose';
-function _vsnprintf(buffer: PChar; count: size_t; format: PChar; argptr: array of const): Integer;
-  cdecl; external szMSVCRT name '_vsnprintf';
+function _vsnprintf(buffer: PChar; count: size_t; format: PChar; argptr:array of const): Integer; cdecl; external szMSVCRT name '_vsnprintf';
 function _fflush(stream: Pointer): Integer; cdecl; external szMSVCRT name 'fflush';
 function _fseek(stream: Pointer; offset: Longint; origin: Integer): Integer; cdecl; external szMSVCRT name 'fseek';
 function _fputc(c: Integer; stream: Pointer): Integer; cdecl; external szMSVCRT name 'fputc';
@@ -1709,8 +1713,7 @@ begin
   result := inflateInit_(strm, ZLIB_VERSION, sizeof(TZStreamRec));
 end;
 
-function deflateInit2(var strm: TZStreamRec; level: Integer; method: Integer; windowBits: Integer;
-  memLevel: Integer; strategy: Integer): Integer;
+function deflateInit2(var strm: TZStreamRec; level: Integer; method: Integer; windowBits: Integer; memLevel: Integer; strategy: Integer): Integer;
 begin
   result := deflateInit2_(strm, level, method, windowBits, memLevel, strategy, ZLIB_VERSION, sizeof(TZStreamRec));
 end;
@@ -1726,3 +1729,7 @@ begin
 end;
 
 end.
+
+
+
+

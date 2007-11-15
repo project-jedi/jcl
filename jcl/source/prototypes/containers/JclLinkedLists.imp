@@ -1,0 +1,1104 @@
+(*$JPPDEFINEMACRO JCLLINKEDLISTINT(DATATYPENAME, ITEMCLASSNAME, SELFCLASSNAME, ANCESTORCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME,
+  INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION, PARAMETERDECLARATION, GETTERNAME, SETTERNAME)
+  ITEMCLASSNAME = class
+  public
+    Value: DATATYPENAME;
+    Next: ITEMCLASSNAME;
+    Previous: ITEMCLASSNAME;
+  end;
+
+  SELFCLASSNAME = class(ANCESTORCLASSNAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable, IJclContainer,INTERFACEADDITIONAL
+    COLLECTIONINTERFACENAME, LISTINTERFACENAME)
+  private
+    FStart: ITEMCLASSNAME;
+    FEnd: ITEMCLASSNAME;PRIVATEADDITIONAL
+  protected
+    procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
+    { COLLECTIONINTERFACENAME }
+    function Add(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    function AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    procedure Clear;COLLECTIONFLAGS
+    function Contains(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    function ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function First: ITRINTERFACENAME;COLLECTIONFLAGS
+    function IsEmpty: Boolean;COLLECTIONFLAGS
+    function Last: ITRINTERFACENAME;COLLECTIONFLAGS
+    function Remove(PARAMETERDECLARATION): Boolean;COLLECTIONFLAGS
+    function RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;COLLECTIONFLAGS
+    function Size: Integer;COLLECTIONFLAGS
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: ITRINTERFACENAME;COLLECTIONFLAGS
+    {$ENDIF SUPPORTS_FOR_IN}
+    { LISTINTERFACENAME }
+    function Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
+    function InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
+    function GETTERNAME(Index: Integer): DATATYPENAME;
+    function IndexOf(PARAMETERDECLARATION): Integer;
+    function LastIndexOf(PARAMETERDECLARATION): Integer;
+    function Delete(Index: Integer): DATATYPENAME; overload;
+    procedure SETTERNAME(Index: Integer; PARAMETERDECLARATION);
+    function SubList(First, Count: Integer): LISTINTERFACENAME;
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;PROTECTEDADDITIONAL
+  public
+    constructor Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
+    destructor Destroy; override;PUBLICADDITIONAL
+  end;*)
+(*$JPPDEFINEMACRO JCLLINKEDLISTITR(SELFCLASSNAME, ITRINTERFACENAME, LISTINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+  ITEMCLASSNAME, DATATYPENAME, PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME)
+//=== { SELFCLASSNAME } ============================================================
+
+type
+  SELFCLASSNAME = class(TJclAbstractIterator, ITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+    IJclIntfCloneable, IJclCloneable)
+  private
+    FCursor: ITEMCLASSNAME;
+    FOwnList: LISTINTERFACENAME;
+    FEqualityComparer: EQUALITYCOMPARERINTERFACENAME;
+  public
+    procedure AssignPropertiesTo(Dest: TJclAbstractIterator); override;
+    function CreateEmptyIterator: TJclAbstractIterator; override;
+    { ITRINTERFACENAME }
+    function Add(PARAMETERDECLARATION): Boolean;
+    function GETTERNAME: DATATYPENAME;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Insert(PARAMETERDECLARATION): Boolean;
+    function Next: DATATYPENAME;
+    function NextIndex: Integer;
+    function Previous: DATATYPENAME;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SETTERNAME(PARAMETERDECLARATION);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function MoveNext: Boolean;
+    property Current: DATATYPENAME read GETTERNAME;
+    {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfCloneable }
+    function IJclIntfCloneable.Clone = IntfClone;
+  public
+    constructor Create(const AOwnList: LISTINTERFACENAME; Start: ITEMCLASSNAME; AValid: Boolean);
+  end;
+
+constructor SELFCLASSNAME.Create(const AOwnList: LISTINTERFACENAME; Start: ITEMCLASSNAME; AValid: Boolean);
+begin
+  inherited Create(AOwnList, AValid);
+  FCursor := Start;
+  FOwnList := AOwnList;
+  FEqualityComparer := AOwnList as EQUALITYCOMPARERINTERFACENAME;
+end;
+
+function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+begin
+  Result := FOwnList.Add(PARAMETERNAME);
+end;
+
+procedure SELFCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractIterator);
+var
+  ADest: SELFCLASSNAME;
+begin
+  inherited AssignPropertiesTo(Dest);
+  if Dest is SELFCLASSNAME then
+  begin
+    ADest := SELFCLASSNAME(Dest);
+    ADest.FCursor := FCursor;
+    ADest.FOwnList := FOwnList;
+    ADest.FEqualityComparer := FEqualityComparer;
+  end;
+end;
+
+function SELFCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
+begin
+  Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+end;
+
+function SELFCLASSNAME.GETTERNAME: DATATYPENAME;
+begin
+  CheckValid;
+  Result := DEFAULTVALUE;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+end;
+
+function SELFCLASSNAME.HasNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.HasPrevious: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid then
+      Result := (FCursor <> nil) and (FCursor.Next <> nil)
+    else
+      Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
+var
+  NewCursor: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Result := FCursor <> nil;
+    if Result then
+    begin
+      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
+      if Result then
+      begin
+        case FOwnList.Duplicates of
+          dupIgnore:
+            Result := not FOwnList.Contains(PARAMETERNAME);
+          dupAccept:
+            Result := True;
+          dupError:
+            begin
+              Result := FOwnList.Contains(PARAMETERNAME);
+              if not Result then
+                raise EJclDuplicateElementError.Create;
+            end;
+        end;
+        if Result then
+        begin
+          NewCursor := ITEMCLASSNAME.Create;
+          NewCursor.Value := PARAMETERNAME;
+          NewCursor.Next := FCursor;
+          NewCursor.Previous := FCursor.Previous;
+          if FCursor.Previous <> nil then
+            FCursor.Previous.Next := NewCursor;
+          FCursor.Previous := NewCursor;
+          FCursor := NewCursor;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.MoveNext: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function SELFCLASSNAME.Next: DATATYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Next
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := DEFAULTVALUE;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.NextIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function SELFCLASSNAME.Previous: DATATYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if Valid and (FCursor <> nil) then
+      FCursor := FCursor.Previous
+    else
+      Valid := True;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+      Result := DEFAULTVALUE;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.PreviousIndex: Integer;
+begin
+  // No Index
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure SELFCLASSNAME.Remove;
+var
+  OldCursor: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    Valid := False;
+    if FCursor <> nil then
+    begin
+      {$JPPEXPANDMACRO ITEMFREE(FCursor.Value)};
+      if FCursor.Next <> nil then
+        FCursor.Next.Previous := FCursor.Previous;
+      if FCursor.Previous <> nil then
+        FCursor.Previous.Next := FCursor.Next;
+      OldCursor := FCursor;
+      FCursor := FCursor.Next;
+      OldCursor.Free;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    CheckValid;
+    {$JPPEXPANDMACRO ITEMFREE(FCursor.Value)};
+    FCursor.Value := PARAMETERNAME;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;*)
+(*$JPPDEFINEMACRO JCLLINKEDLISTIMP(SELFCLASSNAME, DATATYPENAME, ITEMCLASSNAME, COLLECTIONINTERFACENAME, LISTINTERFACENAME, ITRINTERFACENAME, ITRCLASSNAME,
+  OWNERSHIPDECLARATION, OWNERSHIPPARAMETER,
+  PARAMETERDECLARATION, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
+//=== { TJclLinkedList<T> } ==================================================
+
+constructor SELFCLASSNAME.Create(const ACollection: COLLECTIONINTERFACENAMEOWNERSHIPDECLARATION);
+begin
+  inherited Create(nilOWNERSHIPPARAMETER);
+  FStart := nil;
+  FEnd := nil;
+  if ACollection <> nil then
+    AddAll(ACollection);
+end;
+
+destructor SELFCLASSNAME.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function SELFCLASSNAME.Add(PARAMETERDECLARATION): Boolean;
+var
+  NewItem: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        NewItem := FStart;
+        while NewItem <> nil do
+        begin
+          if ItemsEqual(PARAMETERNAME, NewItem.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          NewItem := NewItem.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := ITEMCLASSNAME.Create;
+        NewItem.Value := PARAMETERNAME;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.AddAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+  Item: DATATYPENAME;
+  AddItem: Boolean;
+  NewItem: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          NewItem := FStart;
+          while NewItem <> nil do
+          begin
+            if ItemsEqual(Item, NewItem.Value) then
+            begin
+              AddItem := CheckDuplicate;
+              Break;
+            end;
+            NewItem := NewItem.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := ITEMCLASSNAME.Create;
+          NewItem.Value := Item;
+          if FStart <> nil then
+          begin
+            NewItem.Next := nil;
+            NewItem.Previous := FEnd;
+            FEnd.Next := NewItem;
+            FEnd := NewItem;
+          end
+          else
+          begin
+            FStart := NewItem;
+            FEnd := NewItem;
+          end;
+          Inc(FSize);
+        end;
+      end;
+      Result := AddItem and Result;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
+var
+  ACollection: COLLECTIONINTERFACENAME;
+begin
+  inherited AssignDataTo(Dest);
+  if Supports(IInterface(Dest), COLLECTIONINTERFACENAME, ACollection) then
+  begin
+    ACollection.Clear;
+    ACollection.AddAll(Self);
+  end;
+end;
+
+procedure SELFCLASSNAME.Clear;
+var
+  Old, Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    while Current <> nil do
+    begin
+      RELEASERNAME(Current.Value);
+      Old := Current;
+      Current := Current.Next;
+      Old.Free;
+    end;
+    FSize := 0;
+
+    //Daniele Teti 27/12/2004
+    FStart := nil;
+    FEnd := nil;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, PARAMETERNAME) then
+      begin
+        Result := True;
+        Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.ContainsAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    while Result and It.HasNext do
+      Result := Contains(It.Next);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+{$JPPEXPANDMACRO CREATEEMPTYCONTAINER}
+function SELFCLASSNAME.Delete(Index: Integer): DATATYPENAME;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := DEFAULTVALUE;
+    if (Index >= 0) and (Index < FSize) then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          if Current.Previous <> nil then
+            Current.Previous.Next := Current.Next
+          else
+            FStart := Current.Next;
+          if Current.Next <> nil then
+            Current.Next.Previous := Current.Previous
+          else
+            FEnd := Current.Previous;
+          Result := RELEASERNAME(Current.Value);
+          Current.Free;
+          Dec(FSize);
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end
+    else
+      raise EJclOutOfBoundsError.Create;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Equals(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It, ItSelf: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    if FSize <> ACollection.Size then
+      Exit;
+    Result := True;
+    It := ACollection.First;
+    ItSelf := First;
+    while ItSelf.HasNext and It.HasNext do
+      if not ItemsEqual(ItSelf.Next, It.Next) then
+      begin
+        Result := False;
+        Break;
+      end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.First: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, FStart, False);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function SELFCLASSNAME.GetEnumerator: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, FStart, False);
+end;
+{$ENDIF SUPPORTS_FOR_IN}
+
+function SELFCLASSNAME.GETTERNAME(Index: Integer): DATATYPENAME;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := DEFAULTVALUE;
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
+      Result := Current.Value
+    else
+    if not FReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.IndexOf(PARAMETERDECLARATION): Integer;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Current := FStart;
+    Result := 0;
+    while (Current <> nil) and not ItemsEqual(Current.Value, PARAMETERNAME) do
+    begin
+      Inc(Result);
+      Current := Current.Next;
+    end;
+    if Current = nil then
+      Result := -1;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Insert(Index: Integer; PARAMETERDECLARATION): Boolean;
+var
+  Current, NewItem: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if Result then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(PARAMETERNAME, Current.Value) then
+          begin
+            Result := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if Result then
+      begin
+        NewItem := ITEMCLASSNAME.Create;
+        NewItem.Value := PARAMETERNAME;
+        if Index = 0 then
+        begin
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        if Index = FSize then
+        begin
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end
+        else
+        begin
+          Current := FStart;
+          while (Current <> nil) and (Index > 0) do
+          begin
+            Current := Current.Next;
+            Dec(Index);
+          end;
+          if Current <> nil then
+          begin
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
+            Inc(FSize);
+          end;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.InsertAll(Index: Integer; const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+  Current, NewItem, Test: ITEMCLASSNAME;
+  AddItem: Boolean;
+  Item: DATATYPENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if (Index < 0) or (Index > FSize) then
+      raise EJclOutOfBoundsError.Create;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    if Index = 0 then
+    begin
+      It := ACollection.Last;
+      while It.HasPrevious do
+      begin
+        Item := It.Previous;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := ITEMCLASSNAME.Create;
+            NewItem.Value := Item;
+            NewItem.Next := FStart;
+            if FStart <> nil then
+              FStart.Previous := NewItem;
+            FStart := NewItem;
+            if FSize = 0 then
+              FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    if Index = Size then
+    begin
+      It := ACollection.First;
+      while It.HasNext do
+      begin
+        Item := It.Next;
+        AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
+        if AddItem then
+        begin
+          if FDuplicates <> dupAccept then
+          begin
+            Test := FStart;
+            while Test <> nil do
+            begin
+              if ItemsEqual(Item, Test.Value) then
+              begin
+                Result := CheckDuplicate;
+                Break;
+              end;
+              Test := Test.Next;
+            end;
+          end;
+          if AddItem then
+          begin
+            NewItem := ITEMCLASSNAME.Create;
+            NewItem.Value := Item;
+            NewItem.Previous := FEnd;
+            if FEnd <> nil then
+              FEnd.Next := NewItem;
+            FEnd := NewItem;
+            Inc(FSize);
+          end;
+        end;
+        Result := Result and AddItem;
+      end;
+    end
+    else
+    begin
+      Current := FStart;
+      while (Current <> nil) and (Index > 0) do
+      begin
+        Current := Current.Next;
+        Dec(Index);
+      end;
+      if Current <> nil then
+      begin
+        It := ACollection.First;
+        while It.HasNext do
+        begin
+          Item := It.Next;
+          AddItem := FAllowDefaultElements or not ItemsEqual(Item, DEFAULTVALUE);
+          if AddItem then
+          begin
+            if FDuplicates <> dupAccept then
+            begin
+              Test := FStart;
+              while Test <> nil do
+              begin
+                if ItemsEqual(Item, Test.Value) then
+                begin
+                  Result := CheckDuplicate;
+                  Break;
+                end;
+                Test := Test.Next;
+              end;
+            end;
+            if AddItem then
+            begin
+              NewItem := ITEMCLASSNAME.Create;
+              NewItem.Value := Item;
+              NewItem.Next := Current;
+              NewItem.Previous := Current.Previous;
+              if Current.Previous <> nil then
+                Current.Previous.Next := NewItem;
+              Current.Previous := NewItem;
+              Inc(FSize);
+            end;
+          end;
+          Result := Result and AddItem;
+        end;
+      end;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.IsEmpty: Boolean;
+begin
+  Result := FSize = 0;
+end;
+
+function SELFCLASSNAME.Last: ITRINTERFACENAME;
+begin
+  Result := ITRCLASSNAME.Create(Self, FEnd, False);
+end;
+
+function SELFCLASSNAME.LastIndexOf(PARAMETERDECLARATION): Integer;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FEnd <> nil then
+    begin
+      Current := FEnd;
+      Result := FSize - 1;
+      while (Current <> nil) and not ItemsEqual(Current.Value, PARAMETERNAME) do
+      begin
+        Dec(Result);
+        Current := Current.Previous;
+      end;
+      if Current = nil then
+        Result := -1;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Remove(PARAMETERDECLARATION): Boolean;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    Current := FStart;
+    while Current <> nil do
+    begin
+      if ItemsEqual(Current.Value, PARAMETERNAME) then
+      begin
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        RELEASERNAME(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Result := True;
+        if FRemoveSingleElement then
+          Break;
+      end;
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.RemoveAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := True;
+    if ACollection = nil then
+      Exit;
+    It := ACollection.First;
+    while It.HasNext do
+      Result := Remove(It.Next) and Result;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.RetainAll(const ACollection: COLLECTIONINTERFACENAME): Boolean;
+var
+  It: ITRINTERFACENAME;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := False;
+    if ACollection = nil then
+      Exit;
+    Result := True;
+    It := First;
+    while It.HasNext do
+      if not ACollection.Contains(It.Next) then
+        It.Remove;
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure SELFCLASSNAME.SETTERNAME(Index: Integer; PARAMETERDECLARATION);
+var
+  Current: ITEMCLASSNAME;
+  ReplaceItem: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  WriteLock;
+  try
+  {$ENDIF THREADSAFE}
+    ReplaceItem := FAllowDefaultElements or not ItemsEqual(PARAMETERNAME, DEFAULTVALUE);
+    if ReplaceItem then
+    begin
+      if FDuplicates <> dupAccept then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if ItemsEqual(PARAMETERNAME, Current.Value) then
+          begin
+            ReplaceItem := CheckDuplicate;
+            Break;
+          end;
+          Current := Current.Next;
+        end;
+      end;
+      if ReplaceItem then
+      begin
+        Current := FStart;
+        while Current <> nil do
+        begin
+          if Index = 0 then
+          begin
+            RELEASERNAME(Current.Value);
+            Current.Value := PARAMETERNAME;
+            Break;
+          end;
+          Dec(Index);
+          Current := Current.Next;
+        end;
+      end;
+    end;
+    if not ReplaceItem then
+      Delete(Index);
+  {$IFDEF THREADSAFE}
+  finally
+    WriteUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function SELFCLASSNAME.Size: Integer;
+begin
+  Result := FSize;
+end;
+
+function SELFCLASSNAME.SubList(First, Count: Integer): LISTINTERFACENAME;
+var
+  Current: ITEMCLASSNAME;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := CreateEmptyContainer as LISTINTERFACENAME;
+    Current := FStart;
+    while (Current <> nil) and (First > 0) do
+    begin
+      Dec(First);
+      Current := Current.Next;
+    end;
+    while (Current <> nil) and (Count > 0) do
+    begin
+      Result.Add(Current.Value);
+      Dec(Count);
+      Current := Current.Next;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;*)

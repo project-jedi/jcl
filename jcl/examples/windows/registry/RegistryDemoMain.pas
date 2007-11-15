@@ -51,7 +51,7 @@ begin
 
   with tvKeys.Items.AddChild(nil, 'HKEY_USERS') do
     HasChildren := true;
-
+    
 end;
 
 function TForm1.BuildPath(const Node: TTreeNode): string;
@@ -96,7 +96,7 @@ begin
   if strRootKey = 'HKEY_USERS' then
     RootKey := HKEY_USERS;
 
-  Key := ExtractKey(strTmp);
+  Key:= ExtractKey(strTmp);
 end;
 
 procedure TForm1.tvKeysExpanding(Sender: TObject; Node: TTreeNode; var AllowExpansion: Boolean);
@@ -113,8 +113,7 @@ begin
   stlSubKeys := TStringList.Create;
   RegGetKeyNames(RootKey, Key, stlSubKeys);
 
-  for i := 0 to stlSubKeys.Count - 1 do
-  begin
+  for i := 0 to stlSubKeys.Count - 1 do begin
     strTmp := stlSubKeys[i];
     NewNode := AddChildNode(Node, strTmp);
     if NewNode <> nil then
@@ -132,10 +131,9 @@ var
 begin
   DoesExist := false;
   Result := nil;
-
+  
   for i := 0 to Node.Count - 1 do
-    if Node.Item[i].Text = Text then
-    begin
+    if Node.Item[i].Text = Text then begin
       DoesExist := true;
       break;
     end;
@@ -161,13 +159,10 @@ begin
   GetKeyInfos(Node, RootKey, Key);
 
   stlValueNames := TStringList.Create;
-  if RegGetValueNames(RootKey, Key, stlValueNames) then
-  begin
-    for i := 0 to stlValueNames.Count - 1 do
-    begin
+  if RegGetValueNames(RootKey, Key, stlValueNames) then begin
+    for i := 0 to stlValueNames.Count - 1 do begin
       strTmp := stlValueNames[i];
-      with lvValues.Items.Add do
-      begin
+      with lvValues.Items.Add do begin
         Caption := strTmp;
         SubItems.Add(RegReadString(RootKey, Key, strTmp));
       end;

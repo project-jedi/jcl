@@ -36,7 +36,7 @@ uses
 
 const
   UM_CHECKPARAMSTR = WM_USER + $100;
-
+  
 type
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
@@ -163,8 +163,8 @@ begin
   try
 {    if IsPeExe(FileName) then
     begin}
-    TFileViewerChild.Create(Self).FileName := FileName;
-    OnActiveFormChange(nil);
+      TFileViewerChild.Create(Self).FileName := FileName;
+      OnActiveFormChange(nil);
 {    end else
       MessBox(sNotValidFile, MB_ICONINFORMATION);}
   finally
@@ -185,8 +185,7 @@ begin
   begin
     FileName := '';
     if Execute then
-      for I := 0 to Files.Count - 1 do
-        OpenFile(Files[I], True);
+      for I := 0 to Files.Count - 1 do OpenFile(Files[I], True);
   end;
 end;
 
@@ -237,16 +236,13 @@ begin
     SL.Capacity := 256;
     ListViewToStrings(Screen.ActiveControl as TListView, SL, True);
     case TAction(Sender).Tag of
-      0:
-        Clipboard.AsText := SL.Text;
-      1:
-        with SaveDialog do
-        begin
-          FileName := '';
-          if Execute then
-            SL.SaveToFile(FileName);
-        end;
-    end;
+      0: Clipboard.AsText := SL.Text;
+      1: with SaveDialog do
+         begin
+           FileName := '';
+           if Execute then SL.SaveToFile(FileName);
+         end;
+    end;        
   finally
     Screen.Cursor := crDefault;
     SL.Free;
@@ -340,7 +336,7 @@ begin
   begin
     if (DragQueryFile(Message.Drop, I, @FileName, SizeOf(FileName)) > 0) and
       IsValidPeFile(FileName) then
-      OpenFile(FileName, True);
+        OpenFile(FileName, True);
   end;
   DragFinish(Message.Drop);
   Message.Result := 0;

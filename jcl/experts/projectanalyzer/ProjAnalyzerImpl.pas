@@ -17,8 +17,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: March 17, 2002                                                                    }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -59,7 +60,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclOtaConsts,
+  JclDebug, JclFileUtils, JclOtaConsts, 
   JclOtaResources;
 
 procedure Register;
@@ -100,8 +101,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -158,7 +159,7 @@ begin
     ProjOptions := TempActiveProject.ProjectOptions;
     if not Assigned(ProjOptions) then
       raise EJclExpertException.CreateTrace(RsENoProjectOptions);
-
+      
     OutputDirectory := GetOutputDirectory(TempActiveProject);
     MapFileName := GetMapFileName(TempActiveProject);
 

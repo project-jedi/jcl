@@ -50,7 +50,7 @@ begin
   begin
     Items.BeginUpdate;
     Items.Clear;
-    for I := 0 to InstanceCount - 1 do
+    for I := 0 to InstanceCount -1 do
       with Items.Add do
       begin
         Caption := IntToStr(I + 1);
@@ -124,20 +124,20 @@ begin
     // message sent from window of this instance
     case ReadMessageCheck(Message, Handle) of
       MyDataKind: // It is our data
-      begin
-        MemoChanging := True; // prevent deadlock, TMemo.OnChange is also fired now
-        Memo1.Lines.BeginUpdate;
-        try
+        begin
+          MemoChanging := True; // prevent deadlock, TMemo.OnChange is also fired now
+          Memo1.Lines.BeginUpdate;
+          try
             // Read TStrings from the message
-          ReadMessageStrings(Message, Memo1.Lines)
-        finally
-          Memo1.Lines.EndUpdate;
-          MemoChanging := False;
-        end;
-      end;
-    else
-      inherited;
-    end;
+            ReadMessageStrings(Message, Memo1.Lines)
+          finally
+            Memo1.Lines.EndUpdate;
+            MemoChanging := False;
+          end;
+        end;  
+     else
+       inherited;
+     end;  
   end
   else
     inherited;

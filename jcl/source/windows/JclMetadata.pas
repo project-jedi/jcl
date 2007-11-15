@@ -24,11 +24,13 @@
 {                                                                                                  }
 { Microsoft .Net framework Clr information support routines and classes.                           }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclMetadata;
 
@@ -47,7 +49,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase, JclCLR, JclFileUtils, JclPeImage, JclSysUtils;
+  JclBase, JclClr, JclFileUtils, JclPeImage, JclSysUtils;
 
 type
   TJclClrElementType = (etEnd, etVoid, etBoolean, etChar,
@@ -119,9 +121,9 @@ type
 
   TJclClrAssemblyFlag =
     (cafPublicKey, cafCompatibilityMask, cafSideBySideCompatible,
-    cafNonSideBySideAppDomain, cafNonSideBySideProcess,
-    cafNonSideBySideMachine, cafEnableJITcompileTracking,
-    cafDisableJITcompileOptimizer);
+     cafNonSideBySideAppDomain, cafNonSideBySideProcess,
+     cafNonSideBySideMachine, cafEnableJITcompileTracking,
+     cafDisableJITcompileOptimizer);
   TJclClrAssemblyFlags = set of TJclClrAssemblyFlag;
 
   TJclClrTableAssemblyRow = class(TJclClrTableRow)
@@ -399,7 +401,7 @@ type
   public
     property Action: Word read FAction;
     property ParentIdx: DWORD read FParentIdx;
-    property PermissionSetOffset: DWORD read FPermissionSetOffset;
+    property PermissionSetOffset: DWORD read FPermissionSetOffset;  
   end;
 
   TJclClrTableDeclSecurity = class(TJclClrTable)
@@ -511,11 +513,11 @@ type
   TJclClrTableTypeDefRow = class;
 
   TJclClrTableFieldDefVisibility =
-    (fvPrivateScope, fvPrivate, fvFamANDAssem,
+   (fvPrivateScope, fvPrivate, fvFamANDAssem,
     fvAssembly, fvFamily, fvFamORAssem, fvPublic);
 
   TJclClrTableFieldDefFlag =
-    (ffStatic, ffInitOnly, ffLiteral, ffNotSerialized,
+   (ffStatic, ffInitOnly, ffLiteral, ffNotSerialized,
     ffSpecialName, ffPinvokeImpl, ffRTSpecialName,
     ffHasFieldMarshal, ffHasDefault, ffHasFieldRVA);
   TJclClrTableFieldDefFlags = set of TJclClrTableFieldDefFlag;
@@ -864,10 +866,10 @@ type
 
   PImageCorILMethodHeader = ^TImageCorILMethodHeader;
   TImageCorILMethodHeader = packed record
-    case Boolean of
-      True:
+  case Boolean of
+    True:
       (Tiny: TImageCorILMethodTiny);
-      False:
+    False:
       (Fat: TImageCorILMethodFat);
   end;
 
@@ -887,10 +889,10 @@ type
 
   PImageCorILMethodSectHeader = ^TImageCorILMethodSectHeader;
   TImageCorILMethodSectHeader = packed record
-    case Boolean of
-      True:
+  case Boolean of
+    True:
       (Small: TImageCorILMethodSectSmall);
-      False:
+    False:
       (Fat: TImageCorILMethodSectFat);
   end;
 
@@ -902,16 +904,16 @@ type
     HandlerLength: DWORD;  // relative to start of handler
     case Boolean of
       True:
-      (ClassToken: DWORD);   // use for type-based exception handlers
+        (ClassToken: DWORD);   // use for type-based exception handlers
       False:
-      (FilterOffset: DWORD); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
+        (FilterOffset: DWORD); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
   end;
   TImageCorILMethodSectEHClauseFat = IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT;
   PImageCorILMethodSectEHClauseFat = ^TImageCorILMethodSectEHClauseFat;
 
   IMAGE_COR_ILMETHOD_SECT_EH_FAT = packed record
     SectFat: IMAGE_COR_ILMETHOD_SECT_FAT;
-    Clauses: array [0..MaxWord - 1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT; // actually variable size
+    Clauses: array [0..MaxWord-1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_FAT; // actually variable size
   end;
   TImageCorILMethodSectEHFat = IMAGE_COR_ILMETHOD_SECT_EH_FAT;
   PImageCorILMethodSectEHFat = ^TImageCorILMethodSectEHFat;
@@ -924,25 +926,25 @@ type
     HandlerLength: Byte; // relative to start of handler
     case Boolean of
       True:
-      (ClassToken: DWORD);   // use for type-based exception handlers
+        (ClassToken: DWORD);   // use for type-based exception handlers
       False:
-      (FilterOffset: DWORD); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
+        (FilterOffset: DWORD); // use for filter-based exception handlers (COR_ILEXCEPTION_FILTER is set)
   end;
   TImageCorILMethodSectEHClauseSmall = IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL;
   PImageCorILMethodSectEHClauseSmall = ^TImageCorILMethodSectEHClauseSmall;
 
   IMAGE_COR_ILMETHOD_SECT_EH_SMALL = packed record
     SectSmall: IMAGE_COR_ILMETHOD_SECT_SMALL;
-    Clauses: array [0..MaxWord - 1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL; // actually variable size
+    Clauses: array [0..MaxWord-1] of IMAGE_COR_ILMETHOD_SECT_EH_CLAUSE_SMALL; // actually variable size
   end;
   TImageCorILMethodSectEHSmall = IMAGE_COR_ILMETHOD_SECT_EH_SMALL;
   PImageCorILMethodSectEHSmall = ^TImageCorILMethodSectEHSmall;
 
   IMAGE_COR_ILMETHOD_SECT_EH = packed record
-    case Boolean of
-      True:
+  case Boolean of
+    True:
       (Small: IMAGE_COR_ILMETHOD_SECT_EH_SMALL);
-      False:
+    False:
       (Fat: IMAGE_COR_ILMETHOD_SECT_EH_FAT);
   end;
   TImageCorILMethodSectEH = IMAGE_COR_ILMETHOD_SECT_EH;
@@ -1145,11 +1147,11 @@ type
   end;
 
   TJclClrMemberAccess =
-    (maCompilercontrolled, maPrivate, maFamilyAndAssembly,
+   (maCompilercontrolled, maPrivate, maFamilyAndAssembly,
     maAssembly, maFamily, maFamilyOrAssembly, maPublic);
 
   TJclClrMethodFlag =
-    (mfStatic, mfFinal, mfVirtual, mfHideBySig,
+   (mfStatic, mfFinal, mfVirtual, mfHideBySig,
     mfCheckAccessOnOverride, mfAbstract, mfSpecialName,
     mfPInvokeImpl, mfUnmanagedExport,
     mfRTSpcialName, mfHasSecurity, mfRequireSecObject);
@@ -1158,7 +1160,7 @@ type
   TJclClrMethodCodeType = (ctIL, ctNative, ctOptIL, ctRuntime);
 
   TJclClrMethodImplFlag =
-    (mifForwardRef, mifPreserveSig, mifInternalCall,
+   (mifForwardRef, mifPreserveSig, mifInternalCall,
     mifSynchronized, mifNoInlining);
   TJclClrMethodImplFlags = set of TJclClrMethodImplFlag;
 
@@ -1264,7 +1266,7 @@ type
   public
     property ClassIdx: DWORD read FClassIdx;
     property MethodBodyIdx: DWORD read FMethodBodyIdx;
-    property MethodDeclarationIdx: DWORD read FMethodDeclarationIdx;
+    property MethodDeclarationIdx: DWORD read FMethodDeclarationIdx;    
   end;
 
   TJclClrTableMethodImpl = class(TJclClrTable)
@@ -1449,7 +1451,7 @@ type
   end;
 
   TJclClrTypeVisibility =
-    (tvNotPublic, tvPublic, tvNestedPublic,
+   (tvNotPublic, tvPublic, tvNestedPublic,
     tvNestedPrivate, tvNestedFamily, tvNestedAssembly,
     tvNestedFamANDAssem, tvNestedFamORAssem);
   TJclClrClassLayout = (clAuto, clSequential, clExplicit);
@@ -1457,7 +1459,7 @@ type
   TJclClrStringFormatting = (sfAnsi, sfUnicode, sfAutoChar);
 
   TJclClrTypeAttribute =
-    (taAbstract, taSealed, taSpecialName, taImport,
+   (taAbstract, taSealed, taSpecialName, taImport,
     taSerializable, taBeforeFieldInit, taRTSpecialName, taHasSecurity);
   TJclClrTypeAttributes = set of TJclClrTypeAttribute;
 
@@ -1641,257 +1643,257 @@ uses
 
 const
   MAX_CLASS_NAME = 1024;
-  MAX_PATH_NAME = 260;
+  MAX_PATH_NAME  = 260;
 
   // Assembly attr bits, used by DefineAssembly.
-  afPublicKey = $0001; // The assembly ref holds the full (unhashed) public key.
-  afCompatibilityMask = $0070;
-  afSideBySideCompatible = $0000; // The assembly is side by side compatible.
-  afNonSideBySideAppDomain = $0010; // The assembly cannot execute with other versions if
+  afPublicKey                  = $0001; // The assembly ref holds the full (unhashed) public key.
+  afCompatibilityMask          = $0070;
+  afSideBySideCompatible       = $0000; // The assembly is side by side compatible.
+  afNonSideBySideAppDomain     = $0010; // The assembly cannot execute with other versions if
                                         // they are executing in the same application domain.
-  afNonSideBySideProcess = $0020; // The assembly cannot execute with other versions if
+  afNonSideBySideProcess       = $0020; // The assembly cannot execute with other versions if
                                         // they are executing in the same process.
-  afNonSideBySideMachine = $0030; // The assembly cannot execute with other versions if
+  afNonSideBySideMachine       = $0030; // The assembly cannot execute with other versions if
                                         // they are executing on the same machine.
-  afEnableJITcompileTracking = $8000; // From "DebuggableAttribute".
+  afEnableJITcompileTracking   = $8000; // From "DebuggableAttribute".
   afDisableJITcompileOptimizer = $4000; // From "DebuggableAttribute".
 
   ClrAssemblyFlagMapping: array [TJclClrAssemblyFlag] of DWORD =
     (afPublicKey, afCompatibilityMask, afSideBySideCompatible,
-    afNonSideBySideAppDomain, afNonSideBySideProcess,
-    afNonSideBySideMachine, afEnableJITcompileTracking,
-    afDisableJITcompileOptimizer);
+     afNonSideBySideAppDomain, afNonSideBySideProcess,
+     afNonSideBySideMachine, afEnableJITcompileTracking,
+     afDisableJITcompileOptimizer);
 
   mrVisibilityMask = $0007;
-  mrPublic = $0001;     // The Resource is exported from the Assembly.
-  mrPrivate = $0002;     // The Resource is private to the Assembly.
+  mrPublic         = $0001;     // The Resource is exported from the Assembly.
+  mrPrivate        = $0002;     // The Resource is private to the Assembly.
 
   ManifestResourceVisibilityMapping: array [TJclClrTableManifestResourceVisibility] of DWORD =
     (mrPublic, mrPrivate);
 
   // MethodDef attr bits, Used by DefineMethod.
   // member access mask - Use this mask to retrieve accessibility information.
-  mdMemberAccessMask = $0007;
-  mdPrivateScope = $0000;     // Member not referenceable.
-  mdPrivate = $0001;     // Accessible only by the parent type.
-  mdFamANDAssem = $0002;     // Accessible by sub-types only in this Assembly.
-  mdAssem = $0003;     // Accessibly by anyone in the Assembly.
-  mdFamily = $0004;     // Accessible only by type and sub-types.
-  mdFamORAssem = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
-  mdPublic = $0006;     // Accessibly by anyone who has visibility to this scope.
+  mdMemberAccessMask      = $0007;
+  mdPrivateScope          = $0000;     // Member not referenceable.
+  mdPrivate               = $0001;     // Accessible only by the parent type.
+  mdFamANDAssem           = $0002;     // Accessible by sub-types only in this Assembly.
+  mdAssem                 = $0003;     // Accessibly by anyone in the Assembly.
+  mdFamily                = $0004;     // Accessible only by type and sub-types.
+  mdFamORAssem            = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
+  mdPublic                = $0006;     // Accessibly by anyone who has visibility to this scope.
   // end member access mask
 
   // method contract attributes.
-  mdStatic = $0010;     // Defined on type, else per instance.
-  mdFinal = $0020;     // Method may not be overridden.
-  mdVirtual = $0040;     // Method virtual.
-  mdHideBySig = $0080;     // Method hides by name+sig, else just by name.
+  mdStatic                = $0010;     // Defined on type, else per instance.
+  mdFinal                 = $0020;     // Method may not be overridden.
+  mdVirtual               = $0040;     // Method virtual.
+  mdHideBySig             = $0080;     // Method hides by name+sig, else just by name.
 
   // vtable layout mask - Use this mask to retrieve vtable attributes.
-  mdVtableLayoutMask = $0100;
-  mdReuseSlot = $0000;     // The default.
-  mdNewSlot = $0100;     // Method always gets a new slot in the vtable.
+  mdVtableLayoutMask      = $0100;
+  mdReuseSlot             = $0000;     // The default.
+  mdNewSlot               = $0100;     // Method always gets a new slot in the vtable.
   // end vtable layout mask
 
   // method implementation attributes.
   mdCheckAccessOnOverride = $0200;     // Overridability is the same as the visibility.
-  mdAbstract = $0400;     // Method does not provide an implementation.
-  mdSpecialName = $0800;     // Method is special.  Name describes how.
+  mdAbstract              = $0400;     // Method does not provide an implementation.
+  mdSpecialName           = $0800;     // Method is special.  Name describes how.
 
   // interop attributes
-  mdPinvokeImpl = $2000;     // Implementation is forwarded through pinvoke.
-  mdUnmanagedExport = $0008;     // Managed method exported via thunk to unmanaged code.
+  mdPinvokeImpl           = $2000;     // Implementation is forwarded through pinvoke.
+  mdUnmanagedExport       = $0008;     // Managed method exported via thunk to unmanaged code.
 
   // Reserved flags for runtime use only.
-  mdReservedMask = $d000;
-  mdRTSpecialName = $1000;     // Runtime should check name encoding.
-  mdHasSecurity = $4000;     // Method has security associate with it.
-  mdRequireSecObject = $8000;     // Method calls another method containing security code.
+  mdReservedMask          = $d000;
+  mdRTSpecialName         = $1000;     // Runtime should check name encoding.
+  mdHasSecurity           = $4000;     // Method has security associate with it.
+  mdRequireSecObject      = $8000;     // Method calls another method containing security code.
 
   // MethodImpl attr bits, used by DefineMethodImpl.
   // code impl mask
-  miCodeTypeMask = $0003;   // Flags about code type.
-  miIL = $0000;   // Method impl is IL.
-  miNative = $0001;   // Method impl is native.
-  miOPTIL = $0002;   // Method impl is OPTIL
-  miRuntime = $0003;   // Method impl is provided by the runtime.
+  miCodeTypeMask     = $0003;   // Flags about code type.
+  miIL               = $0000;   // Method impl is IL.
+  miNative           = $0001;   // Method impl is native.
+  miOPTIL            = $0002;   // Method impl is OPTIL
+  miRuntime          = $0003;   // Method impl is provided by the runtime.
   // end code impl mask
 
   // managed mask
-  miManagedMask = $0004;   // Flags specifying whether the code is managed or unmanaged.
-  miUnmanaged = $0004;   // Method impl is unmanaged, otherwise managed.
-  miManaged = $0000;   // Method impl is managed.
+  miManagedMask      = $0004;   // Flags specifying whether the code is managed or unmanaged.
+  miUnmanaged        = $0004;   // Method impl is unmanaged, otherwise managed.
+  miManaged          = $0000;   // Method impl is managed.
   // end managed mask
 
   // implementation info and interop
-  miForwardRef = $0010;   // Indicates method is defined; used primarily in merge scenarios.
-  miPreserveSig = $0080;   // Indicates method sig is not to be mangled to do HRESULT conversion.
+  miForwardRef       = $0010;   // Indicates method is defined; used primarily in merge scenarios.
+  miPreserveSig      = $0080;   // Indicates method sig is not to be mangled to do HRESULT conversion.
 
-  miInternalCall = $1000;   // Reserved for internal use.
+  miInternalCall     = $1000;   // Reserved for internal use.
 
-  miSynchronized = $0020;   // Method is single threaded through the body.
-  miNoInlining = $0008;   // Method may not be inlined.
+  miSynchronized     = $0020;   // Method is single threaded through the body.
+  miNoInlining       = $0008;   // Method may not be inlined.
   miMaxMethodImplVal = $ffff;   // Range check value
 
   // Calling convention flags.
-  IMAGE_CEE_CS_CALLCONV_DEFAULT = $0;
-  IMAGE_CEE_CS_CALLCONV_VARARG = $5;
-  IMAGE_CEE_CS_CALLCONV_FIELD = $6;
-  IMAGE_CEE_CS_CALLCONV_LOCAL_SIG = $7;
-  IMAGE_CEE_CS_CALLCONV_PROPERTY = $8;
-  IMAGE_CEE_CS_CALLCONV_UNMGD = $9;
-  IMAGE_CEE_CS_CALLCONV_MAX = $10;  // first invalid calling convention
+  IMAGE_CEE_CS_CALLCONV_DEFAULT      = $0;
+  IMAGE_CEE_CS_CALLCONV_VARARG       = $5;
+  IMAGE_CEE_CS_CALLCONV_FIELD        = $6;
+  IMAGE_CEE_CS_CALLCONV_LOCAL_SIG    = $7;
+  IMAGE_CEE_CS_CALLCONV_PROPERTY     = $8;
+  IMAGE_CEE_CS_CALLCONV_UNMGD        = $9;
+  IMAGE_CEE_CS_CALLCONV_MAX          = $10;  // first invalid calling convention
   // The high bits of the calling convention convey additional info
-  IMAGE_CEE_CS_CALLCONV_MASK = $0f;  // Calling convention is bottom 4 bits
-  IMAGE_CEE_CS_CALLCONV_HASTHIS = $20;  // Top bit indicates a 'this' parameter
+  IMAGE_CEE_CS_CALLCONV_MASK         = $0f;  // Calling convention is bottom 4 bits
+  IMAGE_CEE_CS_CALLCONV_HASTHIS      = $20;  // Top bit indicates a 'this' parameter
   IMAGE_CEE_CS_CALLCONV_EXPLICITTHIS = $40;  // This parameter is explicitly in the signature
 
   // TypeDef/ExportedType attr bits, used by DefineTypeDef.
   // Use this mask to retrieve the type visibility information.
-  tdVisibilityMask = $00000007;
-  tdNotPublic = $00000000;     // Class is not public scope.
-  tdPublic = $00000001;     // Class is public scope.
-  tdNestedPublic = $00000002;     // Class is nested with public visibility.
-  tdNestedPrivate = $00000003;     // Class is nested with private visibility.
-  tdNestedFamily = $00000004;     // Class is nested with family visibility.
-  tdNestedAssembly = $00000005;     // Class is nested with assembly visibility.
-  tdNestedFamANDAssem = $00000006;     // Class is nested with family and assembly visibility.
-  tdNestedFamORAssem = $00000007;     // Class is nested with family or assembly visibility.
+  tdVisibilityMask     = $00000007;
+  tdNotPublic          = $00000000;     // Class is not public scope.
+  tdPublic             = $00000001;     // Class is public scope.
+  tdNestedPublic       = $00000002;     // Class is nested with public visibility.
+  tdNestedPrivate      = $00000003;     // Class is nested with private visibility.
+  tdNestedFamily       = $00000004;     // Class is nested with family visibility.
+  tdNestedAssembly     = $00000005;     // Class is nested with assembly visibility.
+  tdNestedFamANDAssem  = $00000006;     // Class is nested with family and assembly visibility.
+  tdNestedFamORAssem   = $00000007;     // Class is nested with family or assembly visibility.
 
   // Use this mask to retrieve class layout information
-  tdLayoutMask = $00000018;
-  tdAutoLayout = $00000000;     // Class fields are auto-laid out
-  tdSequentialLayout = $00000008;     // Class fields are laid out sequentially
-  tdExplicitLayout = $00000010;     // Layout is supplied explicitly
+  tdLayoutMask         = $00000018;
+  tdAutoLayout         = $00000000;     // Class fields are auto-laid out
+  tdSequentialLayout   = $00000008;     // Class fields are laid out sequentially
+  tdExplicitLayout     = $00000010;     // Layout is supplied explicitly
   // end layout mask
 
   // Use this mask to retrieve class semantics information.
   tdClassSemanticsMask = $00000020;
-  tdClass = $00000000;     // Type is a class.
-  tdInterface = $00000020;     // Type is an interface.
+  tdClass              = $00000000;     // Type is a class.
+  tdInterface          = $00000020;     // Type is an interface.
   // end semantics mask
 
   // Special semantics in addition to class semantics.
-  tdAbstract = $00000080;     // Class is abstract
-  tdSealed = $00000100;     // Class is concrete and may not be extended
-  tdSpecialName = $00000400;     // Class name is special.  Name describes how.
+  tdAbstract           = $00000080;     // Class is abstract
+  tdSealed             = $00000100;     // Class is concrete and may not be extended
+  tdSpecialName        = $00000400;     // Class name is special.  Name describes how.
 
   // Implementation attributes.
-  tdImport = $00001000;     // Class / interface is imported
-  tdSerializable = $00002000;     // The class is Serializable.
+  tdImport             = $00001000;     // Class / interface is imported
+  tdSerializable       = $00002000;     // The class is Serializable.
 
   // Use tdStringFormatMask to retrieve string information for native interop
-  tdStringFormatMask = $00030000;
-  tdAnsiClass = $00000000;     // LPTSTR is interpreted as ANSI in this class
-  tdUnicodeClass = $00010000;     // LPTSTR is interpreted as UNICODE
-  tdAutoClass = $00020000;     // LPTSTR is interpreted automatically
+  tdStringFormatMask   = $00030000;
+  tdAnsiClass          = $00000000;     // LPTSTR is interpreted as ANSI in this class
+  tdUnicodeClass       = $00010000;     // LPTSTR is interpreted as UNICODE
+  tdAutoClass          = $00020000;     // LPTSTR is interpreted automatically
   // end string format mask
 
-  tdBeforeFieldInit = $00100000;     // Initialize the class any time before first static field access.
+  tdBeforeFieldInit    = $00100000;     // Initialize the class any time before first static field access.
 
   // Flags reserved for runtime use.
-  tdReservedMask = $00040800;
-  tdRTSpecialName = $00000800;     // Runtime should check name encoding.
-  tdHasSecurity = $00040000;     // Class has security associate with it.
+  tdReservedMask       = $00040800;
+  tdRTSpecialName      = $00000800;     // Runtime should check name encoding.
+  tdHasSecurity        = $00040000;     // Class has security associate with it.
 
   // FieldDef attr bits, used by DefineField.
   // member access mask - Use this mask to retrieve accessibility information.
   fdFieldAccessMask = $0007;
-  fdPrivateScope = $0000;     // Member not referenceable.
-  fdPrivate = $0001;     // Accessible only by the parent type.
-  fdFamANDAssem = $0002;     // Accessible by sub-types only in this Assembly.
-  fdAssembly = $0003;     // Accessibly by anyone in the Assembly.
-  fdFamily = $0004;     // Accessible only by type and sub-types.
-  fdFamORAssem = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
-  fdPublic = $0006;     // Accessibly by anyone who has visibility to this scope.
+  fdPrivateScope    = $0000;     // Member not referenceable.
+  fdPrivate         = $0001;     // Accessible only by the parent type.
+  fdFamANDAssem     = $0002;     // Accessible by sub-types only in this Assembly.
+  fdAssembly        = $0003;     // Accessibly by anyone in the Assembly.
+  fdFamily          = $0004;     // Accessible only by type and sub-types.
+  fdFamORAssem      = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
+  fdPublic          = $0006;     // Accessibly by anyone who has visibility to this scope.
   // end member access mask
 
   // field contract attributes.
-  fdStatic = $0010;     // Defined on type, else per instance.
-  fdInitOnly = $0020;     // Field may only be initialized, not written to after init.
-  fdLiteral = $0040;     // Value is compile time constant.
-  fdNotSerialized = $0080;     // Field does not have to be serialized when type is remoted.
+  fdStatic          = $0010;     // Defined on type, else per instance.
+  fdInitOnly        = $0020;     // Field may only be initialized, not written to after init.
+  fdLiteral         = $0040;     // Value is compile time constant.
+  fdNotSerialized   = $0080;     // Field does not have to be serialized when type is remoted.
 
-  fdSpecialName = $0200;     // field is special.  Name describes how.
+  fdSpecialName     = $0200;     // field is special.  Name describes how.
 
   // interop attributes
-  fdPinvokeImpl = $2000;     // Implementation is forwarded through pinvoke.
+  fdPinvokeImpl     = $2000;     // Implementation is forwarded through pinvoke.
 
   // Reserved flags for runtime use only.
-  fdReservedMask = $9500;
-  fdRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
+  fdReservedMask    = $9500;
+  fdRTSpecialName   = $0400;     // Runtime(metadata internal APIs) should check name encoding.
   fdHasFieldMarshal = $1000;     // Field has marshalling information.
-  fdHasDefault = $8000;     // Field has default.
-  fdHasFieldRVA = $0100;     // Field has RVA.
+  fdHasDefault      = $8000;     // Field has default.
+  fdHasFieldRVA     = $0100;     // Field has RVA.
 
   // Flags for Params
-  pdIn = $0001;     // Param is [In]
-  pdOut = $0002;     // Param is [out]
-  pdOptional = $0010;     // Param is optional
+  pdIn              = $0001;     // Param is [In]
+  pdOut             = $0002;     // Param is [out]
+  pdOptional        = $0010;     // Param is optional
 
   // Reserved flags for Runtime use only.
-  pdReservedMask = $f000;
-  pdHasDefault = $1000;     // Param has default value.
+  pdReservedMask    = $f000;
+  pdHasDefault      = $1000;     // Param has default value.
   pdHasFieldMarshal = $2000;     // Param has FieldMarshal.
 
-  pdUnused = $cfe0;
+  pdUnused          = $cfe0;
 
   ClrParamKindMapping: array [TJclClrParamKind] of DWORD =
     (pdIn, pdOut, pdOptional, pdHasDefault, pdHasFieldMarshal);
 
   // Element type for Cor signature
-  ELEMENT_TYPE_END = $0;
-  ELEMENT_TYPE_VOID = $1;
-  ELEMENT_TYPE_BOOLEAN = $2;
-  ELEMENT_TYPE_CHAR = $3;
-  ELEMENT_TYPE_I1 = $4;
-  ELEMENT_TYPE_U1 = $5;
-  ELEMENT_TYPE_I2 = $6;
-  ELEMENT_TYPE_U2 = $7;
-  ELEMENT_TYPE_I4 = $8;
-  ELEMENT_TYPE_U4 = $9;
-  ELEMENT_TYPE_I8 = $a;
-  ELEMENT_TYPE_U8 = $b;
-  ELEMENT_TYPE_R4 = $c;
-  ELEMENT_TYPE_R8 = $d;
-  ELEMENT_TYPE_STRING = $e;
+  ELEMENT_TYPE_END        = $0;
+  ELEMENT_TYPE_VOID       = $1;
+  ELEMENT_TYPE_BOOLEAN    = $2;
+  ELEMENT_TYPE_CHAR       = $3;
+  ELEMENT_TYPE_I1         = $4;
+  ELEMENT_TYPE_U1         = $5;
+  ELEMENT_TYPE_I2         = $6;
+  ELEMENT_TYPE_U2         = $7;
+  ELEMENT_TYPE_I4         = $8;
+  ELEMENT_TYPE_U4         = $9;
+  ELEMENT_TYPE_I8         = $a;
+  ELEMENT_TYPE_U8         = $b;
+  ELEMENT_TYPE_R4         = $c;
+  ELEMENT_TYPE_R8         = $d;
+  ELEMENT_TYPE_STRING     = $e;
 
   // every type above PTR will be simple type
-  ELEMENT_TYPE_PTR = $f;      // PTR <type>
-  ELEMENT_TYPE_BYREF = $10;     // BYREF <type>
+  ELEMENT_TYPE_PTR        = $f;      // PTR <type>
+  ELEMENT_TYPE_BYREF      = $10;     // BYREF <type>
 
   // Please use ELEMENT_TYPE_VALUETYPE. ELEMENT_TYPE_VALUECLASS is deprecated.
-  ELEMENT_TYPE_VALUETYPE = $11;     // VALUETYPE <class Token>
-  ELEMENT_TYPE_CLASS = $12;     // CLASS <class Token>
+  ELEMENT_TYPE_VALUETYPE  = $11;     // VALUETYPE <class Token>
+  ELEMENT_TYPE_CLASS      = $12;     // CLASS <class Token>
 
-  ELEMENT_TYPE_ARRAY = $14;     // MDARRAY <type> <rank> <bcount> <bound1> ... <lbcount> <lb1> ...
+  ELEMENT_TYPE_ARRAY      = $14;     // MDARRAY <type> <rank> <bcount> <bound1> ... <lbcount> <lb1> ...
 
   ELEMENT_TYPE_TYPEDBYREF = $16;     // This is a simple type.
 
-  ELEMENT_TYPE_I = $18;     // native integer size
-  ELEMENT_TYPE_U = $19;     // native unsigned integer size
-  ELEMENT_TYPE_FNPTR = $1B;     // FNPTR <complete sig for the function including calling convention>
-  ELEMENT_TYPE_OBJECT = $1C;     // Shortcut for System.Object
-  ELEMENT_TYPE_SZARRAY = $1D;     // Shortcut for single dimension zero lower bound array
+  ELEMENT_TYPE_I          = $18;     // native integer size
+  ELEMENT_TYPE_U          = $19;     // native unsigned integer size
+  ELEMENT_TYPE_FNPTR      = $1B;     // FNPTR <complete sig for the function including calling convention>
+  ELEMENT_TYPE_OBJECT     = $1C;     // Shortcut for System.Object
+  ELEMENT_TYPE_SZARRAY    = $1D;     // Shortcut for single dimension zero lower bound array
                                           // SZARRAY <type>
 
   // This is only for binding
-  ELEMENT_TYPE_CMOD_REQD = $1F;     // required C modifier : E_T_CMOD_REQD <mdTypeRef/mdTypeDef>
-  ELEMENT_TYPE_CMOD_OPT = $20;     // optional C modifier : E_T_CMOD_OPT <mdTypeRef/mdTypeDef>
+  ELEMENT_TYPE_CMOD_REQD  = $1F;     // required C modifier : E_T_CMOD_REQD <mdTypeRef/mdTypeDef>
+  ELEMENT_TYPE_CMOD_OPT   = $20;     // optional C modifier : E_T_CMOD_OPT <mdTypeRef/mdTypeDef>
 
   // This is for signatures generated internally (which will not be persisted in any way).
-  ELEMENT_TYPE_INTERNAL = $21;     // INTERNAL <typehandle>
+  ELEMENT_TYPE_INTERNAL   = $21;     // INTERNAL <typehandle>
 
   // Note that this is the max of base type excluding modifiers
-  ELEMENT_TYPE_MAX = $22;     // first invalid element type
+  ELEMENT_TYPE_MAX        = $22;     // first invalid element type
 
 
-  ELEMENT_TYPE_MODIFIER = $40;
-  ELEMENT_TYPE_SENTINEL = $01 or ELEMENT_TYPE_MODIFIER; // sentinel for varargs
-  ELEMENT_TYPE_PINNED = $05 or ELEMENT_TYPE_MODIFIER;
+  ELEMENT_TYPE_MODIFIER   = $40;
+  ELEMENT_TYPE_SENTINEL   = $01 or ELEMENT_TYPE_MODIFIER; // sentinel for varargs
+  ELEMENT_TYPE_PINNED     = $05 or ELEMENT_TYPE_MODIFIER;
 
   ClrElementTypeMapping: array [TJclClrElementType] of Byte =
-    (ELEMENT_TYPE_END, ELEMENT_TYPE_VOID, ELEMENT_TYPE_BOOLEAN,
+   (ELEMENT_TYPE_END, ELEMENT_TYPE_VOID, ELEMENT_TYPE_BOOLEAN,
     ELEMENT_TYPE_CHAR, ELEMENT_TYPE_I1, ELEMENT_TYPE_U1,
     ELEMENT_TYPE_I2, ELEMENT_TYPE_U2, ELEMENT_TYPE_I4, ELEMENT_TYPE_U4,
     ELEMENT_TYPE_I8, ELEMENT_TYPE_U8, ELEMENT_TYPE_R4, ELEMENT_TYPE_R8,
@@ -1904,84 +1906,84 @@ const
     ELEMENT_TYPE_PINNED);
 
   ClrMethodFlagMapping: array [TJclClrMethodFlag] of Word =
-    (mdStatic, mdFinal, mdVirtual, mdHideBySig, mdCheckAccessOnOverride,
+   (mdStatic, mdFinal, mdVirtual, mdHideBySig, mdCheckAccessOnOverride,
     mdAbstract, mdSpecialName, mdPinvokeImpl, mdUnmanagedExport,
     mdRTSpecialName, mdHasSecurity, mdRequireSecObject);
 
   ClrMethodImplFlagMapping: array [TJclClrMethodImplFlag] of Word =
-    (miForwardRef, miPreserveSig, miInternalCall, miSynchronized, miNoInlining);
+   (miForwardRef, miPreserveSig, miInternalCall, miSynchronized, miNoInlining);
 
   // Property attr bits, used by DefineProperty.
-  prSpecialName = $0200;     // property is special.  Name describes how.
+  prSpecialName   = $0200;     // property is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
-  prReservedMask = $f400;
+  prReservedMask  = $f400;
   prRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
-  prHasDefault = $1000;     // Property has default
+  prHasDefault    = $1000;     // Property has default
 
-  prUnused = $e9ff;
+  prUnused        = $e9ff;
 
   ClrTablePropertyFlagMapping: array [TJclClrTablePropertyFlag] of Word =
-    (prSpecialName, prRTSpecialName, prHasDefault);
+   (prSpecialName, prRTSpecialName, prHasDefault);
 
   // Event attr bits, used by DefineEvent.
-  evSpecialName = $0200;     // event is special.  Name describes how.
+  evSpecialName   = $0200;     // event is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
-  evReservedMask = $0400;
+  evReservedMask  = $0400;
   evRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
 
   ClrTableEventFlagMapping: array [TJclClrTableEventFlag] of Word =
-    (evSpecialName, evRTSpecialName);
+   (evSpecialName, evRTSpecialName);
 
   // DeclSecurity attr bits, used by DefinePermissionSet
-  dclActionMask = $000f;     // Mask allows growth of enum.
-  dclActionNil = $0000;
-  dclRequest = $0001;
-  dclDemand = $0002;
-  dclAssert = $0003;
-  dclDeny = $0004;
-  dclPermitOnly = $0005;
-  dclLinktimeCheck = $0006;
-  dclInheritanceCheck = $0007;
-  dclRequestMinimum = $0008;
-  dclRequestOptional = $0009;
-  dclRequestRefuse = $000a;
-  dclPrejitGrant = $000b;     // Persisted grant set at prejit time
-  dclPrejitDenied = $000c;     // Persisted denied set at prejit time
-  dclNonCasDemand = $000d;     //
-  dclNonCasLinkDemand = $000e;
+  dclActionMask        = $000f;     // Mask allows growth of enum.
+  dclActionNil         = $0000;
+  dclRequest           = $0001;
+  dclDemand            = $0002;
+  dclAssert            = $0003;
+  dclDeny              = $0004;
+  dclPermitOnly        = $0005;
+  dclLinktimeCheck     = $0006;
+  dclInheritanceCheck  = $0007;
+  dclRequestMinimum    = $0008;
+  dclRequestOptional   = $0009;
+  dclRequestRefuse     = $000a;
+  dclPrejitGrant       = $000b;     // Persisted grant set at prejit time
+  dclPrejitDenied      = $000c;     // Persisted denied set at prejit time
+  dclNonCasDemand      = $000d;     //
+  dclNonCasLinkDemand  = $000e;
   dclNonCasInheritance = $000f;
-  dclMaximumValue = $000f;     // Maximum legal value
+  dclMaximumValue      = $000f;     // Maximum legal value
 
   // PinvokeMap attr bits, used by DefinePinvokeMap
-  pmNoMangle = $0001;   // Pinvoke is to use the member name as specified.
+  pmNoMangle        = $0001;   // Pinvoke is to use the member name as specified.
 
   // Use this mask to retrieve the CharSet information.
-  pmCharSetMask = $0006;
-  pmCharSetNotSpec = $0000;
-  pmCharSetAnsi = $0002;
-  pmCharSetUnicode = $0004;
-  pmCharSetAuto = $0006;
+  pmCharSetMask     = $0006;
+  pmCharSetNotSpec  = $0000;
+  pmCharSetAnsi     = $0002;
+  pmCharSetUnicode  = $0004;
+  pmCharSetAuto     = $0006;
 
 
   pmBestFitUseAssem = $0000;
-  pmBestFitEnabled = $0010;
+  pmBestFitEnabled  = $0010;
   pmBestFitDisabled = $0020;
-  pmBestFitMask = $0030;
+  pmBestFitMask     = $0030;
 
   pmThrowOnUnmappableCharUseAssem = $0000;
-  pmThrowOnUnmappableCharEnabled = $1000;
+  pmThrowOnUnmappableCharEnabled  = $1000;
   pmThrowOnUnmappableCharDisabled = $2000;
-  pmThrowOnUnmappableCharMask = $3000;
+  pmThrowOnUnmappableCharMask     = $3000;
 
   pmSupportsLastError = $0040;   // Information about target function. Not relevant for fields.
 
   // None of the calling convention flags is relevant for fields.
-  pmCallConvMask = $0700;
-  pmCallConvWinapi = $0100;   // Pinvoke will use native callconv appropriate to target windows platform.
-  pmCallConvCdecl = $0200;
-  pmCallConvStdcall = $0300;
+  pmCallConvMask     = $0700;
+  pmCallConvWinapi   = $0100;   // Pinvoke will use native callconv appropriate to target windows platform.
+  pmCallConvCdecl    = $0200;
+  pmCallConvStdcall  = $0300;
   pmCallConvThiscall = $0400;   // In M9, pinvoke will raise exception.
   pmCallConvFastcall = $0500;
 
@@ -2023,19 +2025,19 @@ function TJclClrSignature.UncompressData(DataPtr: PJclByteArray; var Value: DWor
 begin
   if (DataPtr[0] and $80) = 0 then // 0??? ????
   begin
-    Value := DataPtr[0];
+    Value  := DataPtr[0];
     Result := 1;
   end
   else
   if (DataPtr[0] and $C0) = $80 then // 10?? ????
   begin
-    Value := (DataPtr[0] and $3F) shl 8 + DataPtr[1];
+    Value  := (DataPtr[0] and $3F) shl 8 + DataPtr[1];
     Result := 2;
   end
   else
   if (DataPtr[0] and $E0) = $C0 then // 110? ????
   begin
-    Value := (DataPtr[0] and $1F) shl 24 + DataPtr[1] shl 16 + DataPtr[2] shl 8 + DataPtr[3];
+    Value  := (DataPtr[0] and $1F) shl 24 + DataPtr[1] shl 16 + DataPtr[2] shl 8 + DataPtr[3];
     Result := 4;
   end
   else
@@ -2048,7 +2050,7 @@ const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
   Result := UncompressData(DataPtr, Token);
-  Token := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
+  Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
 end;
 
 function TJclClrSignature.UncompressCallingConv(DataPtr: PJclByteArray): Byte;
@@ -2096,7 +2098,7 @@ end;
 function TJclClrSignature.UncompressTypeSignature(DataPtr: PJclByteArray): string;
 const
   SimpleTypeName: array [etVoid..etString] of PChar =
-    ('void', 'bool', 'char',
+   ('void', 'bool', 'char',
     'int8', 'unsigned int8', 'int16', 'unsigned int16',
     'int32', 'unsigned int32', 'int64', 'unsigned int64',
     'float32', 'float64', 'string');
@@ -2120,21 +2122,21 @@ begin
     etTypedByRef:
       Result := 'Typed By Ref';
     etPtr, etByRef, etValueType, etClass:
-    begin
-      UncompressToken(DataPtr, Token);
-      Result := Format('%s /*%.8x*/', [TypedTypeName[ElementType], Token]);
-    end;
+      begin
+        UncompressToken(DataPtr, Token);
+        Result := Format('%s /*%.8x*/', [TypedTypeName[ElementType], Token]);
+      end;
     etSzArray:
-    begin
-    end;
+      begin
+      end;
     etFnPtr:
-    begin
-    end;
+      begin
+      end;
     etArray:
-    begin
-    end;
-  else
-    Result := 'Unknown Type';
+      begin
+      end;
+    else
+      Result := 'Unknown Type';
   end;
 end;
 
@@ -2181,14 +2183,14 @@ begin
 
   SetLength(FBounds, ReadInteger);
 
-  for I := 0 to Length(FBounds) - 1 do
+  for I := 0 to Length(FBounds)-1 do
   begin
     FBounds[I][adSize] := 0;
     FBounds[I][adLowBound] := 0;
   end;
-  for I := 0 to ReadInteger - 1 do
+  for I := 0 to ReadInteger-1 do
     FBounds[I][adSize] := ReadInteger;
-  for I := 0 to ReadInteger - 1 do
+  for I := 0 to ReadInteger-1 do
     FBounds[I][adLowBound] := ReadInteger;
 end;
 
@@ -2197,10 +2199,10 @@ end;
 constructor TJclClrTableModuleRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FGeneration := Table.ReadWord;            // Generation (reserved, shall be zero)
-  FNameOffset := Table.ReadIndex(hkString); // Name (index into String heap)
-  FMvidIdx := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
-  FEncIdIdx := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
+  FGeneration   := Table.ReadWord;            // Generation (reserved, shall be zero)
+  FNameOffset   := Table.ReadIndex(hkString); // Name (index into String heap)
+  FMvidIdx      := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
+  FEncIdIdx     := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
   FEncBaseIdIdx := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
 end;
 
@@ -2225,17 +2227,17 @@ function TJclClrTableModuleRow.GetMvid: TGUID;
 begin
   // Mvid shall index a non-null GUID in the Guid heap
   Assert(FMvidIdx <= DWORD(Table.Stream.Metadata.GuidCount));
-  Result := Table.Stream.Metadata.Guids[FMvidIdx - 1];
+  Result := Table.Stream.Metadata.Guids[FMvidIdx-1];
 end;
 
 function TJclClrTableModuleRow.GetEncId: TGUID;
 begin
-  Result := Table.Stream.Metadata.Guids[FEncIdIdx - 1];
+  Result := Table.Stream.Metadata.Guids[FEncIdIdx-1];
 end;
 
 function TJclClrTableModuleRow.GetEncBaseId: TGUID;
 begin
-  Result := Table.Stream.Metadata.Guids[FEncBaseIdIdx - 1];
+  Result := Table.Stream.Metadata.Guids[FEncBaseIdIdx-1];
 end;
 
 function TJclClrTableModuleRow.DumpIL: string;
@@ -2287,18 +2289,18 @@ constructor TJclClrTableAssemblyRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
 
-  FHashAlgId := Table.ReadDWord;
+  FHashAlgId       := Table.ReadDWord;
 
-  FMajorVersion := Table.ReadWord;
-  FMinorVersion := Table.ReadWord;
-  FBuildNumber := Table.ReadWord;
-  FRevisionNumber := Table.ReadWord;
+  FMajorVersion    := Table.ReadWord;
+  FMinorVersion    := Table.ReadWord;
+  FBuildNumber     := Table.ReadWord;
+  FRevisionNumber  := Table.ReadWord;
 
-  FFlagMask := Table.ReadDWord;
+  FFlagMask        := Table.ReadDWord;
 
   FPublicKeyOffset := Table.ReadIndex(hkBlob);
-  FNameOffset := Table.ReadIndex(hkString);
-  FCultureOffset := Table.ReadIndex(hkString);
+  FNameOffset      := Table.ReadIndex(hkString);
+  FCultureOffset   := Table.ReadIndex(hkString);
 end;
 
 function TJclClrTableAssemblyRow.GetCulture: WideString;
@@ -2357,13 +2359,13 @@ begin
       Add('{');
 
       if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
-        for I := 0 to TblCustomAttribute.RowCount - 1 do
+        for I := 0 to TblCustomAttribute.RowCount-1 do
           if TblCustomAttribute.Rows[I].Parent = Self then
             Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
       if FPublicKeyOffset <> 0 then
         Add(PublicKey.Dump('  .publickey = '));
-
+        
       Add('  .hash algorithm 0x' + IntToHex(HashAlgId, 8));
 
       if FCultureOffset <> 0 then
@@ -2393,7 +2395,7 @@ constructor TJclClrTableAssemblyOSRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
 
-  FPlatformID := Table.ReadDWord;
+  FPlatformID   := Table.ReadDWord;
   FMajorVersion := Table.ReadDWord;
   FMinorVersion := Table.ReadDWord;
 end;
@@ -2437,17 +2439,17 @@ constructor TJclClrTableAssemblyRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
 
-  FMajorVersion := Table.ReadWord;
-  FMinorVersion := Table.ReadWord;
-  FBuildNumber := Table.ReadWord;
-  FRevisionNumber := Table.ReadWord;
+  FMajorVersion           := Table.ReadWord;
+  FMinorVersion           := Table.ReadWord;
+  FBuildNumber            := Table.ReadWord;
+  FRevisionNumber         := Table.ReadWord;
 
-  FFlagMask := Table.ReadDWord;
+  FFlagMask               := Table.ReadDWord;
 
   FPublicKeyOrTokenOffset := Table.ReadIndex(hkBlob);
-  FNameOffset := Table.ReadIndex(hkString);
-  FCultureOffset := Table.ReadIndex(hkString);
-  FHashValueOffset := Table.ReadIndex(hkBlob);
+  FNameOffset             := Table.ReadIndex(hkString);
+  FCultureOffset          := Table.ReadIndex(hkString);
+  FHashValueOffset        := Table.ReadIndex(hkBlob);
 end;
 
 function TJclClrTableAssemblyRefRow.DumpIL: string;
@@ -2480,7 +2482,7 @@ begin
       Add('{');
 
       if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
-        for I := 0 to TblCustomAttribute.RowCount - 1 do
+        for I := 0 to TblCustomAttribute.RowCount-1 do
           if TblCustomAttribute.Rows[I].Parent = Self then
             Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
@@ -2554,7 +2556,7 @@ var
   AssemblyRefTable: TJclClrTableAssemblyRef;
 begin
   if Table.Stream.FindTable(ttAssemblyRef, TJclClrTable(AssemblyRefTable)) then
-    Result := AssemblyRefTable[FAssemblyRefIdx - 1]
+    Result := AssemblyRefTable[FAssemblyRefIdx-1]
   else
     Result := nil;
 end;
@@ -2582,7 +2584,7 @@ var
   AssemblyRefTable: TJclClrTableAssemblyRef;
 begin
   if Table.Stream.FindTable(ttAssemblyRef, TJclClrTable(AssemblyRefTable)) then
-    Result := AssemblyRefTable[FAssemblyRefIdx - 1]
+    Result := AssemblyRefTable[FAssemblyRefIdx-1]
   else
     Result := nil;
 end;
@@ -2604,8 +2606,8 @@ constructor TJclClrTableClassLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FPackingSize := Table.ReadWord;
-  FClassSize := Table.ReadDWord;
-  FParentIdx := Table.ReadIndex([ttTypeDef]);
+  FClassSize   := Table.ReadDWord;
+  FParentIdx   := Table.ReadIndex([ttTypeDef]);
 end;
 
 function TJclClrTableClassLayout.GetRow(const Idx: Integer): TJclClrTableClassLayoutRow;
@@ -2623,9 +2625,9 @@ end;
 constructor TJclClrTableConstantRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FKind := Table.ReadByte;
+  FKind        := Table.ReadByte;
   Table.ReadByte; // padding zero
-  FParentIdx := Table.ReadIndex([ttParamDef, ttFieldDef, ttPropertyDef]);
+  FParentIdx   := Table.ReadIndex([ttParamDef, ttFieldDef, ttPropertyDef]);
   FValueOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -2659,15 +2661,15 @@ begin
     etString:
       Result := '"' + WideCharLenToString(PWideChar(Value.Memory), Value.Size div 2) + '"';
     etClass:
-    begin
-      if FValueOffset = 0 then
       begin
-        Result := ' nullref';
-        Exit;
-      end;
+        if FValueOffset = 0 then
+        begin
+          Result := ' nullref';
+          Exit;
+        end;
 
-      Result := Table.Stream.Metadata.Tokens[PJclClrToken(Value.Memory)^].DumpIL;
-    end;
+        Result := Table.Stream.Metadata.Tokens[PJclClrToken(Value.Memory)^].DumpIL;
+      end;
   end;
   Result := ' = ' + Result;
 end;
@@ -2723,7 +2725,7 @@ end;
 function TJclClrTableCustomAttributeRow.GetParent: TJclClrTableRow;
 const
   MapTagToTable: array [0..18] of TJclClrTableKind =
-    (ttMethodDef, ttFieldDef, ttTypeRef, ttTypeDef, ttParamDef, ttInterfaceImpl,
+   (ttMethodDef, ttFieldDef, ttTypeRef, ttTypeDef, ttParamDef, ttInterfaceImpl,
     ttMemberRef, ttModule, ttDeclSecurity, ttPropertyDef, ttEventDef, ttSignature,
     ttModuleRef, ttTypeSpec, ttAssembly, ttAssemblyRef, ttFile, ttExportedType,
     ttManifestResource);
@@ -2741,7 +2743,7 @@ begin
   Assert(Table.GetCodedIndexTag(FParentIdx, 5, WideIndex) <= 18);
   Result := Table.Stream.Tables[
     MapTagToTable[Table.GetCodedIndexTag(FParentIdx, 5, WideIndex)]].
-    Rows[Table.GetCodedIndexValue(FParentIdx, 5, WideIndex) - 1];
+    Rows[Table.GetCodedIndexValue(FParentIdx, 5, WideIndex)-1];
 end;
 
 function TJclClrTableCustomAttributeRow.GetMethod: TJclClrTableRow;
@@ -2754,7 +2756,7 @@ begin
   Assert(Table.GetCodedIndexTag(FTypeIdx, 3, WideIndex) in [2, 3]);
   Result := Table.Stream.Tables[
     MapTagToTable[Table.GetCodedIndexTag(FTypeIdx, 3, WideIndex)]].
-    Rows[Table.GetCodedIndexValue(FTypeIdx, 3, WideIndex) - 1];
+    Rows[Table.GetCodedIndexValue(FTypeIdx, 3, WideIndex)-1];
 end;
 
 function TJclClrTableCustomAttributeRow.GetValue: TJclClrBlobRecord;
@@ -2783,8 +2785,8 @@ end;
 constructor TJclClrTableDeclSecurityRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FAction := Table.ReadWord;
-  FParentIdx := Table.ReadIndex([ttTypeDef, ttMethodDef, ttAssembly]);
+  FAction              := Table.ReadWord;
+  FParentIdx           := Table.ReadIndex([ttTypeDef, ttMethodDef, ttAssembly]);
   FPermissionSetOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -2822,8 +2824,8 @@ end;
 constructor TJclClrTableEventDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FEventFlags := Table.ReadWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FEventFlags   := Table.ReadWord;
+  FNameOffset   := Table.ReadIndex(hkString);
   FEventTypeIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
 end;
 
@@ -2852,7 +2854,7 @@ end;
 
 function TJclClrTableEventPtrRow.GetEvent: TJclClrTableEventDefRow;
 begin
-  Result := TJclClrTableEventDef(Table.Stream.Tables[ttEventDef]).Rows[FEventIdx - 1];
+  Result := TJclClrTableEventDef(Table.Stream.Tables[ttEventDef]).Rows[FEventIdx-1];
 end;
 
 function TJclClrTableEventPtr.GetRow(const Idx: Integer): TJclClrTableEventPtrRow;
@@ -2870,11 +2872,11 @@ end;
 constructor TJclClrTableExportedTypeRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags := Table.ReadDWord;
-  FTypeDefIdx := Table.ReadDWord;
-  FTypeNameOffset := Table.ReadIndex(hkString);
+  FFlags               := Table.ReadDWord;
+  FTypeDefIdx          := Table.ReadDWord;
+  FTypeNameOffset      := Table.ReadIndex(hkString);
   FTypeNamespaceOffset := Table.ReadIndex(hkString);
-  FImplementationIdx := Table.ReadIndex([ttFile, ttExportedType]);
+  FImplementationIdx   := Table.ReadIndex([ttFile, ttExportedType]);
 end;
 
 function TJclClrTableExportedTypeRow.GetTypeName: WideString;
@@ -2902,10 +2904,10 @@ end;
 constructor TJclClrTableFieldDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags := Table.ReadWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FFlags           := Table.ReadWord;
+  FNameOffset      := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
-  FParentToken := nil;
+  FParentToken     := nil;
 end;
 
 function TJclClrTableFieldDefRow.DumpIL: string;
@@ -2947,7 +2949,7 @@ begin
   if ffHasDefault in Flags then
   begin
     with TJclClrTableConstant(Table.Stream.Tables[ttConstant]) do
-      for I := 0 to RowCount - 1 do
+      for I := 0 to RowCount-1 do
         if Rows[I].Parent = Self then
         begin
           Result := Result + Rows[I].DumpIL;
@@ -2974,7 +2976,7 @@ end;
 function TJclClrTableFieldDefRow.GetVisibility: TJclClrTableFieldDefVisibility;
 const
   FieldVisibilityMapping: array [fdPrivateScope..fdPublic] of TJclClrTableFieldDefVisibility =
-    (fvPrivateScope, fvPrivate, fvFamANDAssem, fvAssembly, fvFamily, fvFamORAssem, fvPublic);
+   (fvPrivateScope, fvPrivate, fvFamANDAssem, fvAssembly, fvFamily, fvFamORAssem, fvPublic);
 begin
   Result := FieldVisibilityMapping[FFlags and fdFieldAccessMask];
 end;
@@ -2983,7 +2985,7 @@ function TJclClrTableFieldDefRow.GetFlag: TJclClrTableFieldDefFlags;
 const
   FieldFlagMapping: array [TJclClrTableFieldDefFlag] of Word =
     (fdStatic, fdInitOnly, fdLiteral, fdNotSerialized, fdSpecialName,
-    fdPinvokeImpl, fdRTSpecialName, fdHasFieldMarshal, fdHasDefault, fdHasFieldRVA);
+     fdPinvokeImpl, fdRTSpecialName, fdHasFieldMarshal, fdHasDefault, fdHasFieldRVA);
 var
   AFlag: TJclClrTableFieldDefFlag;
 begin
@@ -3017,7 +3019,7 @@ end;
 
 function TJclClrTableFieldPtrRow.GetField: TJclClrTableFieldDefRow;
 begin
-  Result := TJclClrTableFieldDef(Table.Stream.Tables[ttFieldDef]).Rows[FFieldIdx - 1];
+  Result := TJclClrTableFieldDef(Table.Stream.Tables[ttFieldDef]).Rows[FFieldIdx-1];
 end;
 
 function TJclClrTableFieldPtr.GetRow(const Idx: Integer): TJclClrTableFieldPtrRow;
@@ -3035,7 +3037,7 @@ end;
 constructor TJclClrTableFieldLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FOffset := Table.ReadDWord;
+  FOffset   := Table.ReadDWord;
   FFieldIdx := Table.ReadIndex([ttFieldDef]);
 end;
 
@@ -3055,7 +3057,7 @@ end;
 constructor TJclClrTableFieldMarshalRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FParentIdx := Table.ReadIndex([ttFieldDef, ttParamDef]);
+  FParentIdx        := Table.ReadIndex([ttFieldDef, ttParamDef]);
   FNativeTypeOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -3075,7 +3077,7 @@ end;
 constructor TJclClrTableFieldRVARow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FRVA := Table.ReadDWord;
+  FRVA      := Table.ReadDWord;
   FFieldIdx := Table.ReadIndex([ttFieldDef]);
 end;
 
@@ -3094,8 +3096,8 @@ end;
 constructor TJclClrTableFileRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags := Table.ReadDWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FFlags           := Table.ReadDWord;
+  FNameOffset      := Table.ReadIndex(hkString);
   FHashValueOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -3121,7 +3123,7 @@ function TJclClrTableFileRow.DumpIL: string;
   function GetMetadataName: string;
   begin
     if not ContainsMetadata then
-      Result := 'nometadata ';
+      Result := 'nometadata '
   end;
 
 begin
@@ -3143,10 +3145,10 @@ end;
 constructor TJclClrTableImplMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FMappingFlags := Table.ReadWord;
+  FMappingFlags       := Table.ReadWord;
   FMemberForwardedIdx := Table.ReadIndex([ttFieldDef, ttMethodDef]);
-  FImportNameOffset := Table.ReadIndex(hkString);
-  FImportScopeIdx := Table.ReadIndex([ttModuleRef]);
+  FImportNameOffset   := Table.ReadIndex(hkString);
+  FImportScopeIdx     := Table.ReadIndex([ttModuleRef]);
 end;
 
 function TJclClrTableImplMapRow.GetImportName: WideString;
@@ -3169,7 +3171,7 @@ end;
 constructor TJclClrTableInterfaceImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FClassIdx := Table.ReadIndex([ttTypeDef]);
+  FClassIdx     := Table.ReadIndex([ttTypeDef]);
   FInterfaceIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
 end;
 
@@ -3211,9 +3213,9 @@ end;
 constructor TJclClrTableManifestResourceRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FOffset := Table.ReadDWord;
-  FFlags := Table.ReadDWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FOffset            := Table.ReadDWord;
+  FFlags             := Table.ReadDWord;
+  FNameOffset        := Table.ReadIndex(hkString);
   FImplementationIdx := Table.ReadIndex([ttFile, ttAssemblyRef]);
 end;
 
@@ -3231,7 +3233,7 @@ begin
       Add('(');
 
       if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
-        for I := 0 to TblCustomAttribute.RowCount - 1 do
+        for I := 0 to TblCustomAttribute.RowCount-1 do
           if TblCustomAttribute.Rows[I].Parent = Self then
             Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
@@ -3283,8 +3285,8 @@ end;
 constructor TJclClrTableMemberRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FClassIdx := Table.ReadIndex([ttTypeRef, ttModuleRef, ttMethodDef, ttTypeSpec, ttTypeDef]);
-  FNameOffset := Table.ReadIndex(hkString);
+  FClassIdx     := Table.ReadIndex([ttTypeRef, ttModuleRef, ttMethodDef, ttTypeSpec, ttTypeDef]);
+  FNameOffset   := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -3309,7 +3311,7 @@ begin
   Assert(Table.GetCodedIndexTag(FClassIdx, 3, WideIndex) in [1..5]);
   Result := Table.Stream.Tables[
     MapTagToTable[Table.GetCodedIndexTag(FClassIdx, 3, WideIndex)]].
-    Rows[Table.GetCodedIndexValue(FClassIdx, 3, WideIndex) - 1];
+    Rows[Table.GetCodedIndexValue(FClassIdx, 3, WideIndex)-1];
 end;
 
 function TJclClrTableMemberRefRow.GetFullName: WideString;
@@ -3351,12 +3353,12 @@ end;
 constructor TJclClrTableParamDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlagMask := Table.ReadWord;
-  FSequence := Table.ReadWord;
+  FFlagMask   := Table.ReadWord;
+  FSequence   := Table.ReadWord;
   FNameOffset := Table.ReadIndex(hkString);
 
-  FMethod := nil;
-  FFlags := ParamFlags(FFlagMask);
+  FMethod     := nil;
+  FFlags      := ParamFlags(FFlagMask);
 end;
 
 function TJclClrTableParamDefRow.GetName: WideString;
@@ -3414,7 +3416,7 @@ end;
 
 function TJclClrTableParamPtrRow.GetParam: TJclClrTableParamDefRow;
 begin
-  Result := TJclClrTableParamDef(Table.Stream.Tables[ttParamDef]).Rows[FParamIdx - 1];
+  Result := TJclClrTableParamDef(Table.Stream.Tables[ttParamDef]).Rows[FParamIdx-1];
 end;
 
 function TJclClrTableParamPtr.GetRow(const Idx: Integer): TJclClrTableParamPtrRow;
@@ -3431,71 +3433,71 @@ end;
 
 const
   // Indicates the format for the COR_ILMETHOD header
-  CorILMethod_FormatShift = 2;
-  CorILMethod_FormatMask = ((1 shl CorILMethod_FormatShift) - 1);
+  CorILMethod_FormatShift     = 2;
+  CorILMethod_FormatMask      = ((1 shl CorILMethod_FormatShift) - 1);
 
-  CorILMethod_TinyFormat = $0002;
-  CorILMethod_FatFormat = $0003;
+  CorILMethod_TinyFormat      = $0002;
+  CorILMethod_FatFormat       = $0003;
 
-  CorILMethod_TinyFormatEven = $0002;
-  CorILMethod_TinyFormatOdd = $0006;
+  CorILMethod_TinyFormatEven  = $0002;
+  CorILMethod_TinyFormatOdd   = $0006;
 
-  CorILMethod_InitLocals = $0010;
-  CorILMethod_MoreSects = $0008;
+  CorILMethod_InitLocals      = $0010;
+  CorILMethod_MoreSects       = $0008;
 
-  CorILMethod_Sect_Reserved = 0;
-  CorILMethod_Sect_EHTable = 1;
+  CorILMethod_Sect_Reserved   = 0;
+  CorILMethod_Sect_EHTable    = 1;
   CorILMethod_Sect_OptILTable = 2;
 
-  CorILMethod_Sect_KindMask = $3F; // The mask for decoding the type code
-  CorILMethod_Sect_FatFormat = $40; // fat format
-  CorILMethod_Sect_MoreSects = $80; // there is another attribute after this one
+  CorILMethod_Sect_KindMask   = $3F; // The mask for decoding the type code
+  CorILMethod_Sect_FatFormat  = $40; // fat format
+  CorILMethod_Sect_MoreSects  = $80; // there is another attribute after this one
 
-  COR_ILEXCEPTION_CLAUSE_NONE = $0000; // This is a typed handler
-  COR_ILEXCEPTION_CLAUSE_OFFSETLEN = $0000; // Deprecated
+  COR_ILEXCEPTION_CLAUSE_NONE       = $0000; // This is a typed handler
+  COR_ILEXCEPTION_CLAUSE_OFFSETLEN  = $0000; // Deprecated
   COR_ILEXCEPTION_CLAUSE_DEPRECATED = $0000; // Deprecated
-  COR_ILEXCEPTION_CLAUSE_FILTER = $0001; // If this bit is on, then this EH entry is for a filter
-  COR_ILEXCEPTION_CLAUSE_FINALLY = $0002; // This clause is a finally clause
-  COR_ILEXCEPTION_CLAUSE_FAULT = $0004; // Fault clause (finally that is called on exception only)
+  COR_ILEXCEPTION_CLAUSE_FILTER     = $0001; // If this bit is on, then this EH entry is for a filter
+  COR_ILEXCEPTION_CLAUSE_FINALLY    = $0002; // This clause is a finally clause
+  COR_ILEXCEPTION_CLAUSE_FAULT      = $0004; // Fault clause (finally that is called on exception only)
 
   ExceptionClauseFlags: array [TJclClrExceptionClauseFlag] of DWORD =
-    (COR_ILEXCEPTION_CLAUSE_NONE, COR_ILEXCEPTION_CLAUSE_FILTER,
+   (COR_ILEXCEPTION_CLAUSE_NONE, COR_ILEXCEPTION_CLAUSE_FILTER,
     COR_ILEXCEPTION_CLAUSE_FINALLY, COR_ILEXCEPTION_CLAUSE_FAULT);
 
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseSmall);
 begin
-  FFlags := EHClause.Flags;
-  FTryBlock.Offset := EHClause.TryOffset;
-  FTryBlock.Length := EHClause.TryLength;
+  FFlags               := EHClause.Flags;
+  FTryBlock.Offset     := EHClause.TryOffset;
+  FTryBlock.Length     := EHClause.TryLength;
   FHandlerBlock.Offset := EHClause.HandlerOffset;
   FHandlerBlock.Length := EHClause.HandlerLength;
   if (FFlags and COR_ILEXCEPTION_CLAUSE_FILTER) = COR_ILEXCEPTION_CLAUSE_FILTER then
   begin
-    FClassToken := 0;
+    FClassToken   := 0;
     FFilterOffset := EHClause.FilterOffset;
   end
   else
   begin
-    FClassToken := EHClause.ClassToken;
+    FClassToken   := EHClause.ClassToken;
     FFilterOffset := 0;
   end;
 end;
 
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseFat);
 begin
-  FFlags := EHClause.Flags;
-  FTryBlock.Offset := EHClause.TryOffset;
-  FTryBlock.Length := EHClause.TryLength;
+  FFlags               := EHClause.Flags;
+  FTryBlock.Offset     := EHClause.TryOffset;
+  FTryBlock.Length     := EHClause.TryLength;
   FHandlerBlock.Offset := EHClause.HandlerOffset;
   FHandlerBlock.Length := EHClause.HandlerLength;
   if (FFlags and COR_ILEXCEPTION_CLAUSE_FILTER) = COR_ILEXCEPTION_CLAUSE_FILTER then
   begin
-    FClassToken := 0;
+    FClassToken   := 0;
     FFilterOffset := EHClause.FilterOffset;
   end
   else
   begin
-    FClassToken := EHClause.ClassToken;
+    FClassToken   := EHClause.ClassToken;
     FFilterOffset := 0;
   end;
 end;
@@ -3516,7 +3518,7 @@ constructor TJclClrMethodBody.Create(const AMethod: TJclClrTableMethodDefRow);
 var
   ILMethod: PImageCorILMethodHeader;
 begin
-  FMethod := AMethod;
+  FMethod  := AMethod;
   FEHTable := TObjectList.Create;
 
   FLocalVarSign := nil;
@@ -3524,16 +3526,16 @@ begin
   ILMethod := FMethod.Table.Stream.Metadata.Image.RvaToVa(FMethod.RVA);
   if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
   begin
-    FSize := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
-    FCode := Pointer(DWORD(ILMethod) + 1);
-    FMaxStack := 0;
+    FSize              := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
+    FCode              := Pointer(DWORD(ILMethod) + 1);
+    FMaxStack          := 0;
     FLocalVarSignToken := 0;
   end
   else
   begin
-    FSize := ILMethod.Fat.CodeSize;
-    FCode := Pointer(DWORD(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
-    FMaxStack := ILMethod.Fat.MaxStack;
+    FSize              := ILMethod.Fat.CodeSize;
+    FCode              := Pointer(DWORD(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
+    FMaxStack          := ILMethod.Fat.MaxStack;
     FLocalVarSignToken := ILMethod.Fat.LocalVarSigTok;
 
     if IsBitSet(ILMethod.Fat.Flags_Size, CorILMethod_MoreSects) then
@@ -3553,13 +3555,13 @@ var
   I, Count: Integer;
   FatFormat: Boolean;
 begin
-  FatFormat := IsBitSet(EHTable.Small.SectSmall.Kind, CorILMethod_Sect_FatFormat);
+  FatFormat := IsBitSet( EHTable.Small.SectSmall.Kind, CorILMethod_Sect_FatFormat);
   if FatFormat then
     Count := ((EHTable.Fat.SectFat.Kind_DataSize shr 8) - SizeOf(DWORD)) div SizeOf(TImageCorILMethodSectEHClauseFat)
   else
     Count := (EHTable.Small.SectSmall.Datasize - SizeOf(DWORD)) div SizeOf(TImageCorILMethodSectEHClauseSmall);
 
-  for I := 0 to Count - 1 do
+  for I := 0 to Count-1 do
   begin
     if FatFormat then
       FEHTable.Add(TJclClrExceptionHandler.Create(EHTable.Fat.Clauses[I]))
@@ -3621,16 +3623,16 @@ constructor TJclClrTableMethodDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
 
-  FRVA := Table.ReadDWord;
-  FImplFlags := Table.ReadWord;
-  FFlags := Table.ReadWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FRVA          := Table.ReadDWord;
+  FImplFlags    := Table.ReadWord;
+  FFlags        := Table.ReadWord;
+  FNameOffset   := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
   FParamListIdx := Table.ReadIndex([ttParamDef]);
-
-  FParentToken := nil;
-  FParams := nil;
-  FSignature := nil;
+  
+  FParentToken  := nil;
+  FParams       := nil;
+  FSignature    := nil;
 
   if FRVA <> 0 then
     FMethodBody := TJclClrMethodBody.Create(Self)
@@ -3669,14 +3671,14 @@ begin
     if not Assigned(FParams) and (ParamListIdx <> 0) and
       Stream.FindTable(ttParamDef, TJclClrTable(ParamTable)) then
     begin
-      if RowCount > (Index + 1) then
-        MaxParamListIdx := Rows[Index + 1].ParamListIdx - 1
+      if RowCount > (Index+1) then
+        MaxParamListIdx := Rows[Index+1].ParamListIdx-1
       else
         MaxParamListIdx := ParamTable.RowCount;
-      if (ParamListIdx - 1) < MaxParamListIdx then
+      if (ParamListIdx-1) < MaxParamListIdx then
       begin
         FParams := TList.Create;
-        for Idx := ParamListIdx - 1 to MaxParamListIdx - 1 do
+        for Idx := ParamListIdx-1 to MaxParamListIdx-1 do
         begin
           FParams.Add(ParamTable.Rows[Idx]);
           ParamTable.Rows[Idx].SetMethod(Self);
@@ -3689,7 +3691,7 @@ procedure TJclClrTableMethodDefRow.Update;
 begin
   UpdateParams;
 end;
-
+              
 function TJclClrTableMethodDefRow.GetHasParam: Boolean;
 begin
   Result := Assigned(FParams);
@@ -3709,7 +3711,7 @@ function TJclClrTableMethodDefRow.DumpIL: string;
 const
   MemberAccessNames: array [TJclClrMemberAccess] of PChar =
     ('compilercontrolled', 'private', 'famandassem',
-    'assembly', 'family', 'famorassem', 'public');
+     'assembly', 'family', 'famorassem', 'public');
   CodeTypeNames: array [TJclClrMethodCodeType] of PChar =
     ('cil', 'native', 'optil', 'runtime');
   ManagedNames: array [Boolean] of PChar =
@@ -3746,7 +3748,7 @@ var
   const
     MethodFlagName: array [TJclClrMethodFlag] of PChar =
       ('static', 'final', 'virtual', 'hidebysig', '', 'abstract',
-      'specialname', 'pinvokeimpl', 'unmanagedexp', 'rtspecialname', '', '');
+       'specialname', 'pinvokeimpl', 'unmanagedexp', 'rtspecialname', '', '');
   var
     AFlag: TJclClrMethodFlag;
   begin
@@ -3771,7 +3773,7 @@ var
   const
     BuildInTypeNames: array [etVoid..etString] of PChar =
       ('void', 'bool', 'char', 'sbyte', 'byte', 'short', 'ushort',
-      'int', 'uint', 'long', 'ulong', 'float', 'double', 'string');
+       'int', 'uint', 'long', 'ulong', 'float', 'double', 'string');
   var
     Row: TJclClrTableRow;
   begin
@@ -3787,16 +3789,16 @@ var
       etObject:
         Result := 'object';
       etClass:
-      begin
-        Row := Table.Stream.Metadata.Tokens[Param.Token];
-        if Row is TJclClrTableTypeDefRow then
-          Result := TJclClrTableTypeDefRow(Row).FullName
-        else
-        if Row is TJclClrTableTypeRefRow then
-          Result := TJclClrTableTypeRefRow(Row).FullName;
+        begin
+          Row := Table.Stream.Metadata.Tokens[Param.Token];
+          if Row is TJclClrTableTypeDefRow then
+            Result := TJclClrTableTypeDefRow(Row).FullName
+          else
+          if Row is TJclClrTableTypeRefRow then
+            Result := TJclClrTableTypeRefRow(Row).FullName;
 
-        Result := Result + ' /* ' + IntToHex(Param.Token, 8) + ' */';
-      end;
+          Result := Result + ' /* ' + IntToHex(Param.Token, 8) + ' */';
+        end;
       etSzArray:
         Result := 'char *';
     end;
@@ -3809,10 +3811,10 @@ begin
     MemberAccessNames[MemberAccess], GetMethodFlagDescription,
     GetParamTypeName(Signature.RetType), Name]);
   if HasParam then
-    for I := 0 to Min(ParamCount, Signature.ParamCount) - 1 do
+    for I := 0 to Min(ParamCount, Signature.ParamCount)-1 do
     begin
       Result := Result + GetParamTypeName(Signature.Params[I]) + ' ' + Params[I].Name;
-      if I <> ParamCount - 1 then
+      if I <> ParamCount-1 then
         Result := Result + ', ';
     end;
   Result := Result + ') ' + CodeTypeNames[CodeType] + ' ' + ManagedNames[Managed] + GetMethodImplFlagDescription;
@@ -3825,10 +3827,10 @@ begin
     if MethodBody.LocalVarSignToken <> 0 then
     begin
       Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + AnsiLineBreak;
-      for I := 0 to MethodBody.LocalVarSign.LocalVarCount - 1 do
+      for I := 0 to MethodBody.LocalVarSign.LocalVarCount-1 do
       begin
-        Result := Format(Result + '  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
-        if I = MethodBody.LocalVarSign.LocalVarCount - 1 then
+        Result := Format(Result+'  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
+        if I = MethodBody.LocalVarSign.LocalVarCount-1 then
           Result := Result + ')' + AnsiLineBreak
         else
           Result := Result + ',' + AnsiLineBreak;
@@ -3859,7 +3861,7 @@ end;
 
 function TJclClrTableMethodDefRow.GetMemberAccess: TJclClrMemberAccess;
 begin
-  Result := TJclClrMemberAccess(FFlags and mdMemberAccessMask);
+  Result := TJclClrMemberAccess(FFlags and mdMemberAccessMask)
 end;
 
 function TJclClrTableMethodDefRow.GetMethodFlags: TJclClrMethodFlags;
@@ -3915,7 +3917,7 @@ end;
 
 function TJclClrTableMethodPtrRow.GetMethod: TJclClrTableMethodDefRow;
 begin
-  Result := TJclClrTableMethodDef(Table.Stream.Tables[ttMethodDef]).Rows[FMethodIdx - 1];
+  Result := TJclClrTableMethodDef(Table.Stream.Tables[ttMethodDef]).Rows[FMethodIdx-1];
 end;
 
 function TJclClrTableMethodPtr.GetRow(const Idx: Integer): TJclClrTableMethodPtrRow;
@@ -3933,8 +3935,8 @@ end;
 constructor TJclClrTableMethodImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FClassIdx := Table.ReadIndex([ttTypeDef]);
-  FMethodBodyIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
+  FClassIdx             := Table.ReadIndex([ttTypeDef]);
+  FMethodBodyIdx        := Table.ReadIndex([ttMethodDef, ttMemberRef]);
   FMethodDeclarationIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
 end;
 
@@ -3954,8 +3956,8 @@ end;
 constructor TJclClrTableMethodSemanticsRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FSemantics := Table.ReadWord;
-  FMethodIdx := Table.ReadIndex([ttMethodDef]);
+  FSemantics      := Table.ReadWord;
+  FMethodIdx      := Table.ReadIndex([ttMethodDef]);
   FAssociationIdx := Table.ReadIndex([ttEventDef, ttPropertyDef]);
 end;
 
@@ -3974,7 +3976,7 @@ end;
 constructor TJclClrTableMethodSpecRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FMethodIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
+  FMethodIdx           := Table.ReadIndex([ttMethodDef, ttMemberRef]);
   FInstantiationOffset := Table.ReadIndex(hkBlob);
 end;
 
@@ -4006,7 +4008,7 @@ end;
 constructor TJclClrTableNestedClassRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FNestedClassIdx := Table.ReadIndex([ttTypeDef]);
+  FNestedClassIdx    := Table.ReadIndex([ttTypeDef]);
   FEnclosingClassIdx := Table.ReadIndex([ttTypeDef]);
 end;
 
@@ -4025,9 +4027,9 @@ end;
 constructor TJclClrTablePropertyDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags := Table.ReadWord;
+  FFlags      := Table.ReadWord;
   FNameOffset := Table.ReadIndex(hkString);
-  FKindIdx := Table.ReadIndex(hkBlob);
+  FKindIdx    := Table.ReadIndex(hkBlob);
 end;
 
 function TJclClrTablePropertyDefRow.DumpIL: string;
@@ -4079,7 +4081,7 @@ end;
 
 function TJclClrTablePropertyPtrRow.GetProperty: TJclClrTablePropertyDefRow;
 begin
-  Result := TJclClrTablePropertyDef(Table.Stream.Tables[ttPropertyDef]).Rows[FPropertyIdx - 1];
+  Result := TJclClrTablePropertyDef(Table.Stream.Tables[ttPropertyDef]).Rows[FPropertyIdx-1];
 end;
 
 function TJclClrTablePropertyPtr.GetRow(const Idx: Integer): TJclClrTablePropertyPtrRow;
@@ -4097,9 +4099,9 @@ end;
 constructor TJclClrTablePropertyMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FParentIdx := Table.ReadIndex([ttTypeDef]);
+  FParentIdx       := Table.ReadIndex([ttTypeDef]);
   FPropertyListIdx := Table.ReadIndex([ttPropertyDef]);
-  FProperties := TList.Create;
+  FProperties      := TList.Create;
 end;
 
 destructor TJclClrTablePropertyMapRow.Destroy;
@@ -4110,7 +4112,7 @@ end;
 
 function TJclClrTablePropertyMapRow.GetParent: TJclClrTableTypeDefRow;
 begin
-  Result := TJclClrTableTypeDef(Table.Stream.Tables[ttTypeDef]).Rows[FParentIdx - 1];
+  Result := TJclClrTableTypeDef(Table.Stream.Tables[ttTypeDef]).Rows[FParentIdx-1];
 end;
 
 function TJclClrTablePropertyMapRow.Add(const ARow: TJclClrTablePropertyDefRow): Integer;
@@ -4144,7 +4146,7 @@ var
 begin
   J := 0;
   with TJclClrTablePropertyDef(Stream.Tables[ttPropertyDef]) do
-    for I := 0 to RowCount - 1 do
+    for I := 0 to RowCount-1 do
     begin
       if I >= Integer(Self.Rows[J].PropertyListIdx) then
         Inc(J);
@@ -4183,12 +4185,12 @@ end;
 constructor TJclClrTableTypeDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags := Table.ReadDWord;
-  FNameOffset := Table.ReadIndex(hkString);
+  FFlags           := Table.ReadDWord;
+  FNameOffset      := Table.ReadIndex(hkString);
   FNamespaceOffset := Table.ReadIndex(hkString);
-  FExtendsIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
-  FFieldListIdx := Table.ReadIndex([ttFieldDef]);
-  FMethodListIdx := Table.ReadIndex([ttMethodDef]);
+  FExtendsIdx      := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
+  FFieldListIdx    := Table.ReadIndex([ttFieldDef]);
+  FMethodListIdx   := Table.ReadIndex([ttMethodDef]);
 
   FFields := nil;
   FMethods := nil;
@@ -4213,12 +4215,12 @@ end;
 
 function TJclClrTableTypeDefRow.GetField(const Idx: Integer): TJclClrTableFieldDefRow;
 begin
-  Result := TJclClrTableFieldDefRow(FFields.Items[Idx]);
+  Result := TJclClrTableFieldDefRow(FFields.Items[Idx])
 end;
 
 function TJclClrTableTypeDefRow.GetFieldCount: Integer;
 begin
-  Result := FFields.Count;
+  Result := FFields.Count
 end;
 
 function TJclClrTableTypeDefRow.HasField: Boolean;
@@ -4228,12 +4230,12 @@ end;
 
 function TJclClrTableTypeDefRow.GetMethod(const Idx: Integer): TJclClrTableMethodDefRow;
 begin
-  Result := TJclClrTableMethodDefRow(FMethods.Items[Idx]);
+  Result := TJclClrTableMethodDefRow(FMethods.Items[Idx])
 end;
 
 function TJclClrTableTypeDefRow.GetMethodCount: Integer;
 begin
-  Result := FMethods.Count;
+  Result := FMethods.Count
 end;
 
 function TJclClrTableTypeDefRow.HasMethod: Boolean;
@@ -4250,14 +4252,14 @@ begin
     if not Assigned(FFields) and (FieldListIdx <> 0) and
       Stream.FindTable(ttFieldDef, TJclClrTable(FieldTable)) then
     begin
-      if RowCount > (Index + 1) then
-        MaxFieldListIdx := Rows[Index + 1].FieldListIdx - 1
+      if RowCount > (Index+1) then
+        MaxFieldListIdx := Rows[Index+1].FieldListIdx-1
       else
         MaxFieldListIdx := FieldTable.RowCount;
-      if (FieldListIdx - 1) < MaxFieldListIdx then
+      if (FieldListIdx-1) < MaxFieldListIdx then
       begin
         FFields := TList.Create;
-        for Idx := FieldListIdx - 1 to MaxFieldListIdx - 1 do
+        for Idx := FieldListIdx-1 to MaxFieldListIdx-1 do
         begin
           FFields.Add(FieldTable.Rows[Idx]);
           FieldTable.Rows[Idx].SetParentToken(Self);
@@ -4275,14 +4277,14 @@ begin
     if not Assigned(FMethods) and (MethodListIdx <> 0) and
       Stream.FindTable(ttMethodDef, TJclClrTable(MethodTable)) then
     begin
-      if RowCount > (Index + 1) then
-        MaxMethodListIdx := Rows[Index + 1].MethodListIdx - 1
+      if RowCount > (Index+1) then
+        MaxMethodListIdx := Rows[Index+1].MethodListIdx-1
       else
         MaxMethodListIdx := MethodTable.RowCount;
-      if (MethodListIdx - 1) < MaxMethodListIdx then
+      if (MethodListIdx-1) < MaxMethodListIdx then
       begin
         FMethods := TList.Create;
-        for Idx := MethodListIdx - 1 to MaxMethodListIdx - 1 do
+        for Idx := MethodListIdx-1 to MaxMethodListIdx-1 do
         begin
           FMethods.Add(MethodTable.Rows[Idx]);
           MethodTable.Rows[Idx].SetParentToken(Self);
@@ -4310,7 +4312,7 @@ function TJclClrTableTypeDefRow.GetAttributes: TJclClrTypeAttributes;
 const
   TypeAttributesMapping: array [TJclClrTypeAttribute] of DWORD =
     (tdAbstract, tdSealed, tdSpecialName, tdImport,
-    tdSerializable, tdBeforeFieldInit, tdRTSpecialName, tdHasSecurity);
+     tdSerializable, tdBeforeFieldInit, tdRTSpecialName, tdHasSecurity);
 var
   Attr: TJclClrTypeAttribute;
 begin
@@ -4372,14 +4374,14 @@ const
     ('class', 'interface');
   VisibilityName: array [TJclClrTypeVisibility] of PChar =
     ('private', 'public', 'nested public', 'nested private',
-    'nested family', 'nested assembly', 'nested famandassem', 'nested famorassem');
+     'nested family', 'nested assembly', 'nested famandassem', 'nested famorassem');
   ClassLayoutName: array [TJclClrClassLayout] of PChar =
     ('auto', 'explicit', 'sequential');
   StringFormattingName: array [TJclClrStringFormatting] of PChar =
     ('ansi', 'unicode', 'autoChar');
   TypeAttributeName: array [TJclClrTypeAttribute] of PChar =
     ('abstract', 'sealed', 'specialname', '' {'import'},
-    'serializable', 'beforefieldinit', 'rtspecialname', '' {'hassecurity'});
+     'serializable', 'beforefieldinit', 'rtspecialname', '' {'hassecurity'});
   Indent = '  ';
   IntfPrefix: array [Boolean] of PChar = ('           ', 'implements ');
 var
@@ -4419,9 +4421,9 @@ begin
     try
       Add(Format('.%s /*%.8x*/ %s %s %s %s%s.%s',
         [ClassSemanticName[ClassSemantics], Token,
-        VisibilityName[Visibility], ClassLayoutName[ClassLayout],
-        StringFormattingName[StringFormatting], GetTypeAttributesName,
-        Namespace, Name]));
+         VisibilityName[Visibility], ClassLayoutName[ClassLayout],
+         StringFormattingName[StringFormatting], GetTypeAttributesName,
+         Namespace, Name]));
 
       if ExtendsIdx <> 0 then
         Add(Indent + 'extends ' + GetExtends(Extends));
@@ -4430,12 +4432,12 @@ begin
       try
         if Assigned(Table.Stream.Tables[ttInterfaceImpl]) then
           with TJclClrTableInterfaceImpl(Table.Stream.Tables[ttInterfaceImpl]) do
-            for I := 0 to RowCount - 1 do
+            for I := 0 to RowCount-1 do
               if Rows[I].ClassIdx = DWORD(Index + 1) then
                 ListIntfs.Add(Rows[I]);
 
         if ListIntfs.Count > 0 then
-          for I := 0 to ListIntfs.Count - 1 do
+          for I := 0 to ListIntfs.Count-1 do
             Add(Indent + IntfPrefix[I = 0] + TJclClrTableInterfaceImplRow(ListIntfs[I]).DumpIL);
       finally
         ListIntfs.Free;
@@ -4444,18 +4446,18 @@ begin
       Add('(');
 
       if HasField then
-        for I := 0 to FieldCount - 1 do
-          Add(Indent + Fields[I].DumpIL);
+      for I := 0 to FieldCount-1 do
+        Add(Indent + Fields[I].DumpIL);
 
       if HasMethod then
-        for I := 0 to MethodCount - 1 do
-          Add(Indent + Methods[I].DumpIL);
+      for I := 0 to MethodCount-1 do
+        Add(Indent + Methods[I].DumpIL);
 
       if Assigned(Table.Stream.Tables[ttPropertyMap]) then
         with TJclClrTablePropertyMap(Table.Stream.Tables[ttPropertyMap]) do
-          for I := 0 to RowCount - 1 do
+          for I := 0 to RowCount-1 do
             if Rows[I].Parent = Self then
-              for J := 0 to Rows[I].PropertyCount - 1 do
+              for J := 0 to Rows[I].PropertyCount-1 do
                 Add(Indent + Rows[I].Properties[J].DumpIL);
 
       Add(') // end of class ' + Name);
@@ -4481,8 +4483,8 @@ constructor TJclClrTableTypeRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FResolutionScopeIdx := Table.ReadIndex([ttModule, ttModuleRef, ttAssemblyRef, ttTypeRef]);
-  FNameOffset := Table.ReadIndex(hkString);
-  FNamespaceOffset := Table.ReadIndex(hkString);
+  FNameOffset         := Table.ReadIndex(hkString);
+  FNamespaceOffset    := Table.ReadIndex(hkString);
 end;
 
 function TJclClrTableTypeRefRow.DumpIL: string;
@@ -4602,10 +4604,10 @@ function TJclClrLocalVar.GetName: WideString;
 const
   ClrElementTypeNameMapping: array [etVoid..etString] of PChar =
     ('void', 'bool',
-    'char', 'sbyte', 'byte',
-    'short', 'ushort', 'int', 'unit',
-    'long', 'ulong', 'float', 'Double',
-    'string');
+     'char', 'sbyte', 'byte',
+     'short', 'ushort', 'int', 'unit',
+     'long', 'ulong', 'float', 'Double',
+     'string');
 begin
   case ElementType of
     etVoid, etBoolean, etChar,
@@ -4659,7 +4661,7 @@ begin
 
   LocalVar := TJclClrLocalVar.Create;
 
-  for I := 0 to VarCount - 1 do
+  for I := 0 to VarCount-1 do
   begin
     ElemType := ReadByte;
 
@@ -4735,7 +4737,7 @@ begin
 
   FRetType := TJclClrMethodRetType.Create(Blob);
 
-  for I := 0 to ParamCount - 1 do
+  for I := 0 to ParamCount-1 do
     FParams.Add(TJclClrMethodParam.Create(Blob));
 end;
 
@@ -4761,7 +4763,7 @@ constructor TJclClrCustomModifierSign.Create(const ABlob: TJclClrBlobRecord);
 begin
   inherited Create(ABlob);
   FRequired := ReadByte = ELEMENT_TYPE_CMOD_REQD;
-  FToken := ReadToken;
+  FToken    := ReadToken;
 end;
 
 //=== { TJclClrMethodParam } =================================================
@@ -4773,11 +4775,11 @@ var
 begin
   inherited Create(ABlob);
 
-  FCustomMods := TObjectList.Create;
-  FByRef := False;
+  FCustomMods  := TObjectList.Create;
+  FByRef       := False;
   FElementType := etEnd;
-  FToken := 0;
-  FMethodSign := nil;
+  FToken       := 0;
+  FMethodSign  := nil;
 
   Finished := False;
   while not Finished and (Blob.Position < Blob.Size) do
@@ -4785,10 +4787,10 @@ begin
     By := ReadByte;
     case By of
       ELEMENT_TYPE_CMOD_REQD, ELEMENT_TYPE_CMOD_OPT:
-      begin
-        Blob.Seek(-SizeOf(Byte), soFromCurrent);
-        FCustomMods.Add(TJclClrCustomModifierSign.Create(Blob));
-      end;
+        begin
+          Blob.Seek(-SizeOf(Byte), soFromCurrent);
+          FCustomMods.Add(TJclClrCustomModifierSign.Create(Blob));
+        end;
       ELEMENT_TYPE_BYREF:
         FByRef := True;
     else

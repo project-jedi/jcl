@@ -21,8 +21,12 @@
 {   Florent Ouchet (outchy) - new installer core                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
@@ -50,6 +54,9 @@ uses
   {$ENDIF}
   JclBorlandTools, JclContainerIntf, JediInstall;
 
+const
+  WM_AFTERSHOW = WM_USER + 10;
+
 type
   TMainForm = class(TForm, IJediInstallGUI)
     InstallBtn: TBitBtn;
@@ -66,14 +73,21 @@ type
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure QuitBtnClick(Sender: TObject);
     procedure InstallBtnClick(Sender: TObject);
     procedure UninstallBtnClick(Sender: TObject);
     procedure JediImageClick(Sender: TObject);
   protected
     FPages: IJclIntfList;
+    FAutoAcceptDialogs: TDialogTypes;
+    FAutoCloseOnFailure: Boolean;
+    FAutoCloseOnSuccess: Boolean;
+    FAutoInstall: Boolean;
+    FAutoUninstall: Boolean;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
+    procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -84,6 +98,7 @@ type
       Options: TDialogResponses = [drOK]): TDialogResponse;
     function CreateReadmePage: IJediReadmePage;
     function CreateInstallPage: IJediInstallPage;
+    function CreateProfilesPage: IJediProfilesPage;
     function GetPageCount: Integer;
     function GetPage(Index: Integer): IJediPage;
     function GetStatus: string;
@@ -92,6 +107,16 @@ type
     procedure SetCaption(const Value: string);
     function GetProgress: Integer;
     procedure SetProgress(Value: Integer);
+    function GetAutoAcceptDialogs: TDialogTypes;
+    procedure SetAutoAcceptDialogs(Value: TDialogTypes);
+    function GetAutoCloseOnFailure: Boolean;
+    procedure SetAutoCloseOnFailure(Value: Boolean);
+    function GetAutoCloseOnSuccess: Boolean;
+    procedure SetAutoCloseOnSuccess(Value: Boolean);
+    function GetAutoInstall: Boolean;
+    procedure SetAutoInstall(Value: Boolean);
+    function GetAutoUninstall: Boolean;
+    procedure SetAutoUninstall(Value: Boolean);
     procedure Execute;
   end;
 
@@ -109,7 +134,7 @@ uses
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   FileCtrl,
-  JclDebug, JclShell,
+  JclDebug, JclShell, JediGUIProfiles,
   {$ENDIF MSWINDOWS}
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclArrayLists,
   {$IFDEF VisualCLX}
@@ -119,7 +144,7 @@ uses
   {$ENDIF ~VisualCLX}
 
 const
-  DelphiJediURL = 'http://www.delphi-jedi.org/';
+  DelphiJediURL     = 'http://www.delphi-jedi.org/';
 
 function CreateMainForm: IJediInstallGUI;
 var
@@ -134,7 +159,7 @@ end;
 constructor TMainForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPages := TJclIntfArrayList.Create;
+  FPages := TJclIntfArrayList.Create(5);
 end;
 
 destructor TMainForm.Destroy;
@@ -164,6 +189,9 @@ begin
 
   {$IFDEF VCL}
   TitlePanel.DoubleBuffered := True;
+  {$IFDEF COMPILER7_UP}
+  TitlePanel.ParentBackground := False;
+  {$ENDIF}
   {$ELSE}
   //WindowState := wsMaximized; // wouldn't work in Form resource
   {$ENDIF}
@@ -174,6 +202,11 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   InstallCore.Close;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  PostMessage(Handle, WM_AFTERSHOW, 0, 0);
 end;
 
 procedure TMainForm.ShowFeatureHint(var HintStr: {$IFDEF VisualCLX}WideString{$ELSE ~VisualCLX}string{$ENDIF ~VisualCLX};
@@ -210,21 +243,21 @@ begin
       LR_LOADFROMFILE or LR_LOADTRANSPARENT)
   else
   begin
-    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, DONT_RESOLVE_DLL_REFERENCES);
+    ModuleHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
     if ModuleHandle <> 0 then
-      try
-        IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
-          LR_LOADTRANSPARENT);
-      finally
-        FreeLibrary(ModuleHandle);
-      end;
+    try
+      IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
+        LR_LOADTRANSPARENT);
+    finally
+      FreeLibrary(ModuleHandle);
+    end;
   end;
   if IconHandle <> 0 then
-    try
-      ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
-    finally
-      DestroyIcon(IconHandle);
-    end;
+  try
+    ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
+  finally
+    DestroyIcon(IconHandle);
+  end;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -234,12 +267,16 @@ begin
 end;
 
 procedure TMainForm.InstallBtnClick(Sender: TObject);
+var
+  Success: Boolean;
 begin
   ProgressBar.Position := 0;
   ProgressBar.Visible := True;
   Screen.Cursor := crHourGlass;
   try
-    InstallCore.Install;
+    Success := InstallCore.Install;
+    if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
+      Close;
   finally
     ProgressBar.Visible := False;
     Screen.Cursor := crDefault;
@@ -248,9 +285,30 @@ begin
 end;
 
 procedure TMainForm.UninstallBtnClick(Sender: TObject);
+var
+  Success: Boolean;
 begin
-  InstallCore.Uninstall;
+  ProgressBar.Position := 0;
+  ProgressBar.Visible := True;
+  Screen.Cursor := crHourGlass;
+  try
+    Success := InstallCore.Uninstall;
+    if (Success and FAutoCloseOnSuccess) or (not Success and FAutoCloseOnFailure) then
+      Close;
+  finally
+    ProgressBar.Visible := False;
+    Screen.Cursor := crDefault;
+  end;
   QuitBtn.SetFocus;
+end;
+
+procedure TMainForm.WMAfterShow(var Message: TMessage);
+begin
+  if FAutoInstall then
+    InstallBtnClick(InstallBtn)
+  else
+  if FAutoUninstall then
+    UninstallBtnClick(UninstallBtn);
 end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
@@ -271,7 +329,17 @@ var
   Buttons: TMsgDlgButtons;
   Res: Integer;
   OldCursor: TCursor;
+  DialogResponse: TDialogResponse;
 begin
+  if DialogType in FAutoAcceptDialogs then
+  begin
+    for DialogResponse := Low(TDialogResponse) to High(TDialogResponse) do
+      if DialogResponse in Options then
+    begin
+      Result := DialogResponse;
+      Exit;
+    end;
+  end;
   OldCursor := Screen.Cursor;
   try
     Screen.Cursor := crDefault;
@@ -326,6 +394,24 @@ begin
   FPages.Add(Result);
 end;
 
+function TMainForm.CreateProfilesPage: IJediProfilesPage;
+var
+  AProfilesFrame: TProfilesFrame;
+  ATabSheet: TTabSheet;
+begin
+  ATabSheet := TTabSheet.Create(Self);
+  ATabSheet.PageControl := ProductsPageControl;
+  ATabSheet.ImageIndex := -1;
+
+  AProfilesFrame := TProfilesFrame.Create(Self);
+  AProfilesFrame.Parent := ATabSheet;
+  AProfilesFrame.Align := alClient;
+  AProfilesFrame.Name := '';
+
+  Result := AProfilesFrame;
+  FPages.Add(Result);
+end;
+
 function TMainForm.GetPageCount: Integer;
 begin
   Result := FPages.Size;
@@ -357,9 +443,59 @@ begin
   Application.ProcessMessages;  //Update;
 end;
 
+function TMainForm.GetAutoAcceptDialogs: TDialogTypes;
+begin
+  Result := FAutoAcceptDialogs;
+end;
+
+function TMainForm.GetAutoCloseOnFailure: Boolean;
+begin
+  Result := FAutoCloseOnFailure;
+end;
+
+function TMainForm.GetAutoCloseOnSuccess: Boolean;
+begin
+  Result := FAutoCloseOnSuccess;
+end;
+
+function TMainForm.GetAutoInstall: Boolean;
+begin
+  Result := FAutoInstall;
+end;
+
+function TMainForm.GetAutoUninstall: Boolean;
+begin
+  Result := FAutoUninstall;
+end;
+
 function TMainForm.GetCaption: string;
 begin
   Result := Caption;
+end;
+
+procedure TMainForm.SetAutoAcceptDialogs(Value: TDialogTypes);
+begin
+  FAutoAcceptDialogs := Value;
+end;
+
+procedure TMainForm.SetAutoCloseOnFailure(Value: Boolean);
+begin
+  FAutoCloseOnFailure := Value;
+end;
+
+procedure TMainForm.SetAutoCloseOnSuccess(Value: Boolean);
+begin
+  FAutoCloseOnSuccess := Value;
+end;
+
+procedure TMainForm.SetAutoInstall(Value: Boolean);
+begin
+  FAutoInstall := Value;
+end;
+
+procedure TMainForm.SetAutoUninstall(Value: Boolean);
+begin
+  FAutoUninstall := Value;
 end;
 
 procedure TMainForm.SetCaption(const Value: string);
@@ -384,6 +520,6 @@ end;
 
 initialization
 
-  InstallCore.InstallGUICreator := CreateMainForm;
+InstallCore.InstallGUICreator := CreateMainForm;
 
 end.

@@ -111,8 +111,7 @@ function TGlobalModule.ExecuteSaveDialog(var FileName: TFileName): Boolean;
 begin
   SaveDialog.FileName := ChangeFileExt(FileName, '');
   Result := SaveDialog.Execute;
-  if Result then
-    FileName := SaveDialog.FileName;
+  if Result then FileName := SaveDialog.FileName;
 end;
 
 procedure TGlobalModule.DataModuleCreate(Sender: TObject);

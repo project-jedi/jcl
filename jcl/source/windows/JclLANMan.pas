@@ -28,8 +28,12 @@
 { implies, it uses the LAN Manager API.                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // Comments to Win9x compatibility of the functions used in this unit
 
@@ -397,21 +401,21 @@ begin
     ridCount := 2;
   end;
   if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0, 0, 0, 0, 0, sd) then
-    try
-      AccountNameLen := 0;
-      DomainNameLen := 0;
-      if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-        nil, DomainNameLen, SidNameUse) then
-        SetLength(Result, AccountNamelen);
+  try
+    AccountNameLen := 0;
+    DomainNameLen := 0;
+    if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+      nil, DomainNameLen, SidNameUse) then
+      SetLength(Result, AccountNamelen);
 
-      if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-        nil, DomainNameLen, sidNameUse) then
-        StrResetLength(Result)
-      else
-        RaiseLastOSError;
-    finally
-      FreeSID(sd);
-    end;
+    if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+      nil, DomainNameLen, sidNameUse) then
+      StrResetLength(Result)
+    else
+      RaiseLastOSError;
+  finally
+    FreeSID(sd);
+  end;
 end;
 
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);

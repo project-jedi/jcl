@@ -149,23 +149,24 @@ var
 begin
   frmProps := self.Create(Application);
   with frmProps, Stat do
-    try
-      edName.Text := WideCharToString(pwcsName);
+  try
+    edName.Text := WideCharToString(pwcsName);
 
-      edType.Text := StgTypeToStr(dwType);
-      nSize := cbSize;
-      edSize.Text := Format(SBytesFloatFmt, [nSize]);
-      edCreated.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(ctime));
-      edModified.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(mtime));
-      edAccessed.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(atime));
-      edCLSID.Text := MyGUIDToString(clsid);
-      for i := 0 to ComponentCount - 1 do
-        if Components[i] is TEdit then
-          TEdit(Components[i]).Hint := TEdit(Components[i]).Text;
-      ShowModal;
-    finally
-      Free;
-    end;
+    edType.Text := StgTypeToStr(dwType);
+    nSize := cbSize;
+    edSize.Text := Format(SBytesFloatFmt, [nSize]);
+    edCreated.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(ctime));
+    edModified.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(mtime));
+    edAccessed.Text := LimitedDateTimeToStr(FileTimeToLocalDateTime(atime));
+    edCLSID.Text := MyGUIDToString(clsid);
+    for i := 0 to ComponentCount - 1 do
+      if Components[i] is TEdit then
+        TEdit(Components[i]).Hint := TEdit(Components[i]).Text;
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 end.
+

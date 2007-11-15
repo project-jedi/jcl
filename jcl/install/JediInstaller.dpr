@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 program JediInstaller;
 
 {$I jcl.inc}
@@ -14,7 +22,9 @@ uses
   FrmCompile in 'VclGui\FrmCompile.pas' {FormCompile},
   JediGUIReadme in 'VclGui\JediGUIReadme.pas' {ReadmeFrame: TFrame},
   JediGUIInstall in 'VclGui\JediGUIInstall.pas' {InstallFrame: TFrame},
-  JediGUIMain in 'VclGui\JediGUIMain.pas' {MainForm};
+  JediGUIMain in 'VclGui\JediGUIMain.pas' {MainForm},
+  JediGUIProfiles in 'VclGui\JediGUIProfiles.pas' {ProfilesFrame: TFrame},
+  JediProfiles in 'JediProfiles.pas';
 
 {$R *.res}
 {$R ..\source\windows\JclCommCtrlAsInvoker.res}

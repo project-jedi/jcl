@@ -26,14 +26,19 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {   Peter Schraut (http://www.console-dev.de)                                                      }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnicode;
 
@@ -99,7 +104,7 @@ unit JclUnicode;
 //     a reallocation to work correctly (use the WideString versions instead)
 //   - further improvements related to internal data
 //   - introduced TUnicodeBlock
-//   - CodeBlockFromChar improved                     
+//   - CodeBlockFromChar improved
 // 07-JAN-2001:
 //   optimized access to character properties, combining class etc.
 // 06-JAN-2001:
@@ -177,8 +182,6 @@ uses
   {$DEFINE OWN_WIDESTRING_MEMMGR}
  {$ENDIF MSWINDOWS}
 {$ENDIF ~FPC}
-
-{$IFDEF SUPPORTS_WIDESTRING}
 
 const
   // definitions of often used characters:
@@ -328,6 +331,7 @@ type
 
   // An Unicode block usually corresponds to a particular language script but
   // can also represent special characters, musical symbols and the like.
+  // http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
   TUnicodeBlock = (
     ubUndefined,
     ubBasicLatin,
@@ -337,8 +341,7 @@ type
     ubIPAExtensions,
     ubSpacingModifierLetters,
     ubCombiningDiacriticalMarks,
-    //ubGreekandCoptic,
-    ubGreek,
+    ubGreekandCoptic,
     ubCyrillic,
     ubCyrillicSupplement,
     ubArmenian,
@@ -347,6 +350,7 @@ type
     ubSyriac,
     ubArabicSupplement,
     ubThaana,
+    ubNKo,
     ubDevanagari,
     ubBengali,
     ubGurmukhi,
@@ -380,6 +384,7 @@ type
     ubNewTaiLue,
     ubKhmerSymbols,
     ubBuginese,
+    ubBalinese,
     ubPhoneticExtensions,
     ubPhoneticExtensionsSupplement,
     ubCombiningDiacriticalMarksSupplement,
@@ -388,8 +393,7 @@ type
     ubGeneralPunctuation,
     ubSuperscriptsandSubscripts,
     ubCurrencySymbols,
-    //ubCombiningDiacriticalMarksforSymbols,
-    ubCombiningMarksforSymbols,
+    ubCombiningDiacriticalMarksforSymbols,
     ubLetterlikeSymbols,
     ubNumberForms,
     ubArrows,
@@ -411,6 +415,7 @@ type
     ubSupplementalMathematicalOperators,
     ubMiscellaneousSymbolsandArrows,
     ubGlagolitic,
+    ubLatinExtendedC,
     ubCoptic,
     ubGeorgianSupplement,
     ubTifinagh,
@@ -436,13 +441,14 @@ type
     ubYiSyllables,
     ubYiRadicals,
     ubModifierToneLetters,
+    ubLatinExtendedD,
     ubSylotiNagri,
+    ubPhagsPa,
     ubHangulSyllables,
     ubHighSurrogates,
     ubHighPrivateUseSurrogates,
     ubLowSurrogates,
-    //ubPrivateUseArea,
-    ubPrivateUse,
+    ubPrivateUseArea,
     ubCJKCompatibilityIdeographs,
     ubAlphabeticPresentationForms,
     ubArabicPresentationFormsA,
@@ -466,11 +472,15 @@ type
     ubShavian,
     ubOsmanya,
     ubCypriotSyllabary,
+    ubPhoenician,
     ubKharoshthi,
+    ubCuneiform,
+    ubCuneiformNumbersAndPunctuation,
     ubByzantineMusicalSymbols,
     ubMusicalSymbols,
     ubAncientGreekMusicalNotation,
     ubTaiXuanJingSymbols,
+    ubCountingRodNumerals,
     ubMathematicalAlphanumericSymbols,
     ubCJKUnifiedIdeographsExtensionB,
     ubCJKCompatibilityIdeographsSupplement,
@@ -478,9 +488,173 @@ type
     ubVariationSelectorsSupplement,
     ubSupplementaryPrivateUseAreaA,
     ubSupplementaryPrivateUseAreaB
-);
+  );
 
+  TUnicodeBlockData = record
+    Range: TUnicodeBlockRange;
+    Name: string;
+  end;
+  PUnicodeBlockData = ^TUnicodeBlockData;
 
+const
+  UnicodeBlockData: array [TUnicodeBlock] of TUnicodeBlockData =
+    ((Range:(RangeStart: $FFFFFFFF; RangeEnd: $0000); Name: 'No-block'),
+    (Range:(RangeStart: $0000; RangeEnd: $007F); Name: 'Basic Latin'),
+    (Range:(RangeStart: $0080; RangeEnd: $00FF); Name: 'Latin-1 Supplement'),
+    (Range:(RangeStart: $0100; RangeEnd: $017F); Name: 'Latin Extended-A'),
+    (Range:(RangeStart: $0180; RangeEnd: $024F); Name: 'Latin Extended-B'),
+    (Range:(RangeStart: $0250; RangeEnd: $02AF); Name: 'IPA Extensions'),
+    (Range:(RangeStart: $02B0; RangeEnd: $02FF); Name: 'Spacing Modifier Letters'),
+    (Range:(RangeStart: $0300; RangeEnd: $036F); Name: 'Combining Diacritical Marks'),
+    (Range:(RangeStart: $0370; RangeEnd: $03FF); Name: 'Greek and Coptic'),
+    (Range:(RangeStart: $0400; RangeEnd: $04FF); Name: 'Cyrillic'),
+    (Range:(RangeStart: $0500; RangeEnd: $052F); Name: 'Cyrillic Supplement'),
+    (Range:(RangeStart: $0530; RangeEnd: $058F); Name: 'Armenian'),
+    (Range:(RangeStart: $0590; RangeEnd: $05FF); Name: 'Hebrew'),
+    (Range:(RangeStart: $0600; RangeEnd: $06FF); Name: 'Arabic'),
+    (Range:(RangeStart: $0700; RangeEnd: $074F); Name: 'Syriac'),
+    (Range:(RangeStart: $0750; RangeEnd: $077F); Name: 'Arabic Supplement'),
+    (Range:(RangeStart: $0780; RangeEnd: $07BF); Name: 'Thaana'),
+    (Range:(RangeStart: $07C0; RangeEnd: $07FF); Name: 'NKo'),
+    (Range:(RangeStart: $0900; RangeEnd: $097F); Name: 'Devanagari'),
+    (Range:(RangeStart: $0980; RangeEnd: $09FF); Name: 'Bengali'),
+    (Range:(RangeStart: $0A00; RangeEnd: $0A7F); Name: 'Gurmukhi'),
+    (Range:(RangeStart: $0A80; RangeEnd: $0AFF); Name: 'Gujarati'),
+    (Range:(RangeStart: $0B00; RangeEnd: $0B7F); Name: 'Oriya'),
+    (Range:(RangeStart: $0B80; RangeEnd: $0BFF); Name: 'Tamil'),
+    (Range:(RangeStart: $0C00; RangeEnd: $0C7F); Name: 'Telugu'),
+    (Range:(RangeStart: $0C80; RangeEnd: $0CFF); Name: 'Kannada'),
+    (Range:(RangeStart: $0D00; RangeEnd: $0D7F); Name: 'Malayalam'),
+    (Range:(RangeStart: $0D80; RangeEnd: $0DFF); Name: 'Sinhala'),
+    (Range:(RangeStart: $0E00; RangeEnd: $0E7F); Name: 'Thai'),
+    (Range:(RangeStart: $0E80; RangeEnd: $0EFF); Name: 'Lao'),
+    (Range:(RangeStart: $0F00; RangeEnd: $0FFF); Name: 'Tibetan'),
+    (Range:(RangeStart: $1000; RangeEnd: $109F); Name: 'Myanmar'),
+    (Range:(RangeStart: $10A0; RangeEnd: $10FF); Name: 'Georgian'),
+    (Range:(RangeStart: $1100; RangeEnd: $11FF); Name: 'Hangul Jamo'),
+    (Range:(RangeStart: $1200; RangeEnd: $137F); Name: 'Ethiopic'),
+    (Range:(RangeStart: $1380; RangeEnd: $139F); Name: 'Ethiopic Supplement'),
+    (Range:(RangeStart: $13A0; RangeEnd: $13FF); Name: 'Cherokee'),
+    (Range:(RangeStart: $1400; RangeEnd: $167F); Name: 'Unified Canadian Aboriginal Syllabics'),
+    (Range:(RangeStart: $1680; RangeEnd: $169F); Name: 'Ogham'),
+    (Range:(RangeStart: $16A0; RangeEnd: $16FF); Name: 'Runic'),
+    (Range:(RangeStart: $1700; RangeEnd: $171F); Name: 'Tagalog'),
+    (Range:(RangeStart: $1720; RangeEnd: $173F); Name: 'Hanunoo'),
+    (Range:(RangeStart: $1740; RangeEnd: $175F); Name: 'Buhid'),
+    (Range:(RangeStart: $1760; RangeEnd: $177F); Name: 'Tagbanwa'),
+    (Range:(RangeStart: $1780; RangeEnd: $17FF); Name: 'Khmer'),
+    (Range:(RangeStart: $1800; RangeEnd: $18AF); Name: 'Mongolian'),
+    (Range:(RangeStart: $1900; RangeEnd: $194F); Name: 'Limbu'),
+    (Range:(RangeStart: $1950; RangeEnd: $197F); Name: 'Tai Le'),
+    (Range:(RangeStart: $1980; RangeEnd: $19DF); Name: 'New Tai Lue'),
+    (Range:(RangeStart: $19E0; RangeEnd: $19FF); Name: 'Khmer Symbols'),
+    (Range:(RangeStart: $1A00; RangeEnd: $1A1F); Name: 'Buginese'),
+    (Range:(RangeStart: $1B00; RangeEnd: $1B7F); Name: 'Balinese'),
+    (Range:(RangeStart: $1D00; RangeEnd: $1D7F); Name: 'Phonetic Extensions'),
+    (Range:(RangeStart: $1D80; RangeEnd: $1DBF); Name: 'Phonetic Extensions Supplement'),
+    (Range:(RangeStart: $1DC0; RangeEnd: $1DFF); Name: 'Combining Diacritical Marks Supplement'),
+    (Range:(RangeStart: $1E00; RangeEnd: $1EFF); Name: 'Latin Extended Additional'),
+    (Range:(RangeStart: $1F00; RangeEnd: $1FFF); Name: 'Greek Extended'),
+    (Range:(RangeStart: $2000; RangeEnd: $206F); Name: 'General Punctuation'),
+    (Range:(RangeStart: $2070; RangeEnd: $209F); Name: 'Superscripts and Subscripts'),
+    (Range:(RangeStart: $20A0; RangeEnd: $20CF); Name: 'Currency Symbols'),
+    (Range:(RangeStart: $20D0; RangeEnd: $20FF); Name: 'Combining Diacritical Marks for Symbols'),
+    (Range:(RangeStart: $2100; RangeEnd: $214F); Name: 'Letterlike Symbols'),
+    (Range:(RangeStart: $2150; RangeEnd: $218F); Name: 'Number Forms'),
+    (Range:(RangeStart: $2190; RangeEnd: $21FF); Name: 'Arrows'),
+    (Range:(RangeStart: $2200; RangeEnd: $22FF); Name: 'Mathematical Operators'),
+    (Range:(RangeStart: $2300; RangeEnd: $23FF); Name: 'Miscellaneous Technical'),
+    (Range:(RangeStart: $2400; RangeEnd: $243F); Name: 'Control Pictures'),
+    (Range:(RangeStart: $2440; RangeEnd: $245F); Name: 'Optical Character Recognition'),
+    (Range:(RangeStart: $2460; RangeEnd: $24FF); Name: 'Enclosed Alphanumerics'),
+    (Range:(RangeStart: $2500; RangeEnd: $257F); Name: 'Box Drawing'),
+    (Range:(RangeStart: $2580; RangeEnd: $259F); Name: 'Block Elements'),
+    (Range:(RangeStart: $25A0; RangeEnd: $25FF); Name: 'Geometric Shapes'),
+    (Range:(RangeStart: $2600; RangeEnd: $26FF); Name: 'Miscellaneous Symbols'),
+    (Range:(RangeStart: $2700; RangeEnd: $27BF); Name: 'Dingbats'),
+    (Range:(RangeStart: $27C0; RangeEnd: $27EF); Name: 'Miscellaneous Mathematical Symbols-A'),
+    (Range:(RangeStart: $27F0; RangeEnd: $27FF); Name: 'Supplemental Arrows-A'),
+    (Range:(RangeStart: $2800; RangeEnd: $28FF); Name: 'Braille Patterns'),
+    (Range:(RangeStart: $2900; RangeEnd: $297F); Name: 'Supplemental Arrows-B'),
+    (Range:(RangeStart: $2980; RangeEnd: $29FF); Name: 'Miscellaneous Mathematical Symbols-B'),
+    (Range:(RangeStart: $2A00; RangeEnd: $2AFF); Name: 'Supplemental Mathematical Operators'),
+    (Range:(RangeStart: $2B00; RangeEnd: $2BFF); Name: 'Miscellaneous Symbols and Arrows'),
+    (Range:(RangeStart: $2C00; RangeEnd: $2C5F); Name: 'Glagolitic'),
+    (Range:(RangeStart: $2C60; RangeEnd: $2C7F); Name: 'Latin Extended-C'),
+    (Range:(RangeStart: $2C80; RangeEnd: $2CFF); Name: 'Coptic'),
+    (Range:(RangeStart: $2D00; RangeEnd: $2D2F); Name: 'Georgian Supplement'),
+    (Range:(RangeStart: $2D30; RangeEnd: $2D7F); Name: 'Tifinagh'),
+    (Range:(RangeStart: $2D80; RangeEnd: $2DDF); Name: 'Ethiopic Extended'),
+    (Range:(RangeStart: $2E00; RangeEnd: $2E7F); Name: 'Supplemental Punctuation'),
+    (Range:(RangeStart: $2E80; RangeEnd: $2EFF); Name: 'CJK Radicals Supplement'),
+    (Range:(RangeStart: $2F00; RangeEnd: $2FDF); Name: 'Kangxi Radicals'),
+    (Range:(RangeStart: $2FF0; RangeEnd: $2FFF); Name: 'Ideographic Description Characters'),
+    (Range:(RangeStart: $3000; RangeEnd: $303F); Name: 'CJK Symbols and Punctuation'),
+    (Range:(RangeStart: $3040; RangeEnd: $309F); Name: 'Hiragana'),
+    (Range:(RangeStart: $30A0; RangeEnd: $30FF); Name: 'Katakana'),
+    (Range:(RangeStart: $3100; RangeEnd: $312F); Name: 'Bopomofo'),
+    (Range:(RangeStart: $3130; RangeEnd: $318F); Name: 'Hangul Compatibility Jamo'),
+    (Range:(RangeStart: $3190; RangeEnd: $319F); Name: 'Kanbun'),
+    (Range:(RangeStart: $31A0; RangeEnd: $31BF); Name: 'Bopomofo Extended'),
+    (Range:(RangeStart: $31C0; RangeEnd: $31EF); Name: 'CJK Strokes'),
+    (Range:(RangeStart: $31F0; RangeEnd: $31FF); Name: 'Katakana Phonetic Extensions'),
+    (Range:(RangeStart: $3200; RangeEnd: $32FF); Name: 'Enclosed CJK Letters and Months'),
+    (Range:(RangeStart: $3300; RangeEnd: $33FF); Name: 'CJK Compatibility'),
+    (Range:(RangeStart: $3400; RangeEnd: $4DBF); Name: 'CJK Unified Ideographs Extension A'),
+    (Range:(RangeStart: $4DC0; RangeEnd: $4DFF); Name: 'Yijing Hexagram Symbols'),
+    (Range:(RangeStart: $4E00; RangeEnd: $9FFF); Name: 'CJK Unified Ideographs'),
+    (Range:(RangeStart: $A000; RangeEnd: $A48F); Name: 'Yi Syllables'),
+    (Range:(RangeStart: $A490; RangeEnd: $A4CF); Name: 'Yi Radicals'),
+    (Range:(RangeStart: $A700; RangeEnd: $A71F); Name: 'Modifier Tone Letters'),
+    (Range:(RangeStart: $A720; RangeEnd: $A7FF); Name: 'Latin Extended-D'),
+    (Range:(RangeStart: $A800; RangeEnd: $A82F); Name: 'Syloti Nagri'),
+    (Range:(RangeStart: $A840; RangeEnd: $A87F); Name: 'Phags-pa'),
+    (Range:(RangeStart: $AC00; RangeEnd: $D7AF); Name: 'Hangul Syllables'),
+    (Range:(RangeStart: $D800; RangeEnd: $DB7F); Name: 'High Surrogates'),
+    (Range:(RangeStart: $DB80; RangeEnd: $DBFF); Name: 'High Private Use Surrogates'),
+    (Range:(RangeStart: $DC00; RangeEnd: $DFFF); Name: 'Low Surrogates'),
+    (Range:(RangeStart: $E000; RangeEnd: $F8FF); Name: 'Private Use Area'),
+    (Range:(RangeStart: $F900; RangeEnd: $FAFF); Name: 'CJK Compatibility Ideographs'),
+    (Range:(RangeStart: $FB00; RangeEnd: $FB4F); Name: 'Alphabetic Presentation Forms'),
+    (Range:(RangeStart: $FB50; RangeEnd: $FDFF); Name: 'Arabic Presentation Forms-A'),
+    (Range:(RangeStart: $FE00; RangeEnd: $FE0F); Name: 'Variation Selectors'),
+    (Range:(RangeStart: $FE10; RangeEnd: $FE1F); Name: 'Vertical Forms'),
+    (Range:(RangeStart: $FE20; RangeEnd: $FE2F); Name: 'Combining Half Marks'),
+    (Range:(RangeStart: $FE30; RangeEnd: $FE4F); Name: 'CJK Compatibility Forms'),
+    (Range:(RangeStart: $FE50; RangeEnd: $FE6F); Name: 'Small Form Variants'),
+    (Range:(RangeStart: $FE70; RangeEnd: $FEFF); Name: 'Arabic Presentation Forms-B'),
+    (Range:(RangeStart: $FF00; RangeEnd: $FFEF); Name: 'Halfwidth and Fullwidth Forms'),
+    (Range:(RangeStart: $FFF0; RangeEnd: $FFFF); Name: 'Specials'),
+    (Range:(RangeStart: $10000; RangeEnd: $1007F); Name: 'Linear B Syllabary'),
+    (Range:(RangeStart: $10080; RangeEnd: $100FF); Name: 'Linear B Ideograms'),
+    (Range:(RangeStart: $10100; RangeEnd: $1013F); Name: 'Aegean Numbers'),
+    (Range:(RangeStart: $10140; RangeEnd: $1018F); Name: 'Ancient Greek Numbers'),
+    (Range:(RangeStart: $10300; RangeEnd: $1032F); Name: 'Old Italic'),
+    (Range:(RangeStart: $10330; RangeEnd: $1034F); Name: 'Gothic'),
+    (Range:(RangeStart: $10380; RangeEnd: $1039F); Name: 'Ugaritic'),
+    (Range:(RangeStart: $103A0; RangeEnd: $103DF); Name: 'Old Persian'),
+    (Range:(RangeStart: $10400; RangeEnd: $1044F); Name: 'Deseret'),
+    (Range:(RangeStart: $10450; RangeEnd: $1047F); Name: 'Shavian'),
+    (Range:(RangeStart: $10480; RangeEnd: $104AF); Name: 'Osmanya'),
+    (Range:(RangeStart: $10800; RangeEnd: $1083F); Name: 'Cypriot Syllabary'),
+    (Range:(RangeStart: $10900; RangeEnd: $1091F); Name: 'Phoenician'),
+    (Range:(RangeStart: $10A00; RangeEnd: $10A5F); Name: 'Kharoshthi'),
+    (Range:(RangeStart: $12000; RangeEnd: $123FF); Name: 'Cuneiform'),
+    (Range:(RangeStart: $12400; RangeEnd: $1247F); Name: 'Cuneiform Numbers and Punctuation'),
+    (Range:(RangeStart: $1D000; RangeEnd: $1D0FF); Name: 'Byzantine Musical Symbols'),
+    (Range:(RangeStart: $1D100; RangeEnd: $1D1FF); Name: 'Musical Symbols'),
+    (Range:(RangeStart: $1D200; RangeEnd: $1D24F); Name: 'Ancient Greek Musical Notation'),
+    (Range:(RangeStart: $1D300; RangeEnd: $1D35F); Name: 'Tai Xuan Jing Symbols'),
+    (Range:(RangeStart: $1D360; RangeEnd: $1D37F); Name: 'Counting Rod Numerals'),
+    (Range:(RangeStart: $1D400; RangeEnd: $1D7FF); Name: 'Mathematical Alphanumeric Symbols'),
+    (Range:(RangeStart: $20000; RangeEnd: $2A6DF); Name: 'CJK Unified Ideographs Extension B'),
+    (Range:(RangeStart: $2F800; RangeEnd: $2FA1F); Name: 'CJK Compatibility Ideographs Supplement'),
+    (Range:(RangeStart: $E0000; RangeEnd: $E007F); Name: 'Tags'),
+    (Range:(RangeStart: $E0100; RangeEnd: $E01EF); Name: 'Variation Selectors Supplement'),
+    (Range:(RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
+    (Range:(RangeStart: $100000; RangeEnd: $10FFFF); Name: 'Supplementary Private Use Area-B'));
+
+type
   TWideStrings = class;
 
   TSearchFlag = (
@@ -950,18 +1124,16 @@ type
     Denominator: Integer;
   end;
 
-  TFontCharSet = 0..255;
-
 const
   ReplacementCharacter: UCS4 = $0000FFFD;
   MaximumUCS2: UCS4 = $0000FFFF;
   MaximumUTF16: UCS4 = $0010FFFF;
   MaximumUCS4: UCS4 = $7FFFFFFF;
 
-  SurrogateHighStart: UCS4 = $D800;
-  SurrogateHighEnd: UCS4 = $DBFF;
-  SurrogateLowStart: UCS4 = $DC00;
-  SurrogateLowEnd: UCS4 = $DFFF;
+  SurrogateHighStart = UCS4($D800);
+  SurrogateHighEnd = UCS4($DBFF);
+  SurrogateLowStart = UCS4($DC00);
+  SurrogateLowEnd = UCS4($DFFF);
 
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
@@ -1020,7 +1192,7 @@ function WideUpperCase(const S: WideString): WideString; overload;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
-function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
+function UnicodeCompose(const Codes: array of UCS4; var Composite: UCS4): Integer;
 function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
@@ -1089,8 +1261,8 @@ function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
-function CharSetFromLocale(Language: LCID): TFontCharSet;
-function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
+function CharSetFromLocale(Language: LCID): Byte;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
 function CodeBlockName(const CB: TUnicodeBlock): string;
 function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
@@ -1101,10 +1273,86 @@ function StringToWideStringEx(const S: string; CodePage: Word): WideString;
 function TranslateString(const S: string; CP1, CP2: Word): string;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 
-// WideString conversion routines
+// conversion routines between WideString (handled as UCS-2), UTF-16, UCS-4 and UTF8
+
+// iterative conversions
+
+// UTF8GetNextChar = read next UTF8 sequence at StrPos
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF8GetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+
+// UTF8SkipChars = skip NbSeq UTF8 sequences starting from StrPos
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbSeq contains the number of UTF8 sequences that were skipped
+function UTF8SkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+
+// UTF8SetNextChar = append an UTF8 sequence at StrPos
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, callee did nothing, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF8SetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+
+// UTF16GetNextChar = read next UTF16 sequence at StrPos
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
+
+// UTF16GetPreviousChar = read previous UTF16 sequence starting at StrPos-1
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be decremented by the number of chars that were read
+function UTF16GetPreviousChar(const S: WideString; var StrPos: Integer): UCS4;
+
+// UTF16SkipChars = skip NbSeq UTF16 sequences starting from StrPos
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbChar contains the number of UTF16 sequences that were skipped
+function UTF16SkipChars(const S: WideString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+
+// UTF16SetNextChar = append an UTF16 sequence at StrPos
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, callee did nothing and caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF16SetNextChar(var S: WideString; var StrPos: Integer; Ch: UCS4): Boolean;
+
+// one shot conversions
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
-function WideStringToUTF8(S: WideString): AnsiString;
-function UTF8ToWideString(S: AnsiString): WideString;
+function WideStringToUTF8(const S: WideString): AnsiString; // WideString = UCS2
+function UTF8ToWideString(const S: AnsiString): WideString; // WideString = UCS2
+function WideStringToUTF16(const S: WideString): WideString; // WideString = UCS2
+function UTF16ToWideString(const S: WideString): WideString; // WideString = UCS2
+function WideStringToUCS4(const S: WideString): TUCS4Array; // WideString = UCS2
+function UCS4ToWideString(const S: TUCS4Array): WideString; // WideString = UCS2
+function UTF8ToUTF16(const S: AnsiString): WideString;
+function UTF16ToUTF8(const S: WideString): AnsiString;
+function UTF8ToUCS4(const S: AnsiString): TUCS4Array;
+function UCS4ToUTF8(const S: TUCS4Array): AnsiString;
+function UTF16ToUCS4(const S: WideString): TUCS4Array;
+function UCS4ToUTF16(const S: TUCS4Array): WideString;
+
+// indexed conversions
+function UTF8CharCount(const S: AnsiString): Integer;
+function UTF16CharCount(const S: WideString): Integer;
+function UCS2CharCount(const S: WideString): Integer;
+function UCS4CharCount(const S: TUCS4Array): Integer;
+// returns False if string is too small
+// if UNICODE_SILENT_FAILURE is not defined and an invalid UTFX sequence is detected, an exception is raised
+// returns True on success and Value contains UCS4 character that was read
+function GetUCS4CharAt(const UTF8Str: AnsiString; Index: Integer; out Value: UCS4): Boolean; overload;
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
 
 type
   TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
@@ -1112,10 +1360,16 @@ type
 var
   WideCompareText: TCompareFunc;
 
-{$ENDIF SUPPORTS_WIDESTRING}
-
 type
   EJclUnicodeError = class(EJclError);
+
+// functions to load Unicode data from resource
+procedure LoadCharacterCategories;
+procedure LoadCaseMappingData;
+procedure LoadDecompositionData;
+procedure LoadCombiningClassData;
+procedure LoadNumberData;
+procedure LoadCompositionData;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1129,8 +1383,6 @@ const
 
 implementation
 
-{$IFDEF SUPPORTS_WIDESTRING}
-
 // Unicode data for case mapping, decomposition, numbers etc. This data is
 // loaded on demand which means only those parts will be put in memory which are
 // needed by one of the lookup functions.
@@ -1138,7 +1390,15 @@ implementation
 //       the Unicode database file which can be compiled to the needed res file.
 //       This tool, including its source code, can be downloaded from www.lischke-online.de/Unicode.html.
 
+{$IFDEF UNICODE_RAW_DATA}
 {$R JclUnicode.res}
+{$ENDIF UNICODE_RAW_DATA}
+{$IFDEF UNICODE_BZIP2_DATA}
+{$R JclUnicodeBZip2.res}
+{$ENDIF UNICODE_BZIP2_DATA}
+{$IFDEF UNICODE_ZLIB_DATA}
+{$R JclUnicodeZLib.res}
+{$ENDIF UNICODE_ZLIB_DATA}
 
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
@@ -1149,7 +1409,14 @@ uses
   {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils,
-  JclResources, JclSynch;
+  {$IFDEF UNICODE_BZIP2_DATA}
+  BZip2,
+  {$ENDIF UNICODE_BZIP2_DATA}
+  {$IFNDEF UNICODE_RAW_DATA}
+  JclStreams,
+  JclCompression,
+  {$ENDIF ~UNICODE_RAW_DATA}
+  JclResources, JclSynch, JclSysUtils;
 
 const
   {$IFDEF FPC} // declarations from unit [Rtl]Consts
@@ -1174,6 +1441,48 @@ var
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
   LoadInProgress: TJclCriticalSection;
+
+function OpenResourceStream(const ResName: string): TStream;
+var
+  ResourceStream: TStream;
+  {$IFNDEF UNICODE_RAW_DATA}
+  DecompressionStream: TStream;
+  {$ENDIF ~UNICODE_RAW_DATA}
+begin
+  ResourceStream := TResourceStream.Create(HInstance, ResName, 'UNICODEDATA');
+  {$IFDEF UNICODE_RAW_DATA}
+  Result := ResourceStream;
+  {$ENDIF UNICODE_RAW_DATA}
+  {$IFDEF UNICODE_BZIP2_DATA}
+  try
+    LoadBZip2;
+    DecompressionStream := TJclBZIP2DecompressionStream.Create(ResourceStream);
+    try
+      Result := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, Result);
+      StreamSeek(Result, 0, soBeginning);
+    finally
+      DecompressionStream.Free;
+    end;
+  finally
+    ResourceStream.Free;
+  end;
+  {$ENDIF UNICODE_BZIP2_DATA}
+  {$IFDEF UNICODE_ZLIB_DATA}
+  try
+    DecompressionStream := TJclZLibDecompressStream.Create(ResourceStream);
+    try
+      Result := TMemoryStream.Create;
+      StreamCopy(DecompressionStream, Result);
+      StreamSeek(Result, 0, soBeginning);
+    finally
+      DecompressionStream.Free;
+    end;
+  finally
+    ResourceStream.Free;
+  end;
+  {$ENDIF UNICODE_ZLIB_DATA}
+end;
 
 //----------------- support for character categories -----------------------------------------------
 
@@ -1206,7 +1515,7 @@ procedure LoadCharacterCategories;
 // the comments about JclUnicode.res above).
 var
   Size: Integer;
-  Stream: TResourceStream;
+  Stream: TStream;
   Category: TCharacterCategory;
   Buffer: TRangeArray;
   First, Second, Third: Byte;
@@ -1219,7 +1528,7 @@ begin
     LoadInProgress.Enter;
     try
       CategoriesLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'CATEGORIES', 'UNICODEDATA');
+      Stream := OpenResourceStream('CATEGORIES');
       try
         while Stream.Position < Stream.Size do
         begin
@@ -1295,7 +1604,7 @@ var
 
 procedure LoadCaseMappingData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, Code,
   Size: Cardinal;
   First, Second, Third: Byte;
@@ -1308,7 +1617,7 @@ begin
     try
       SetLength(SingletonMapping, 1);
       CaseDataLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+      Stream := OpenResourceStream('CASE');
       try
         // the first entry in the stream is the number of entries in the case mapping table
         Stream.ReadBuffer(Size, 4);
@@ -1438,7 +1747,7 @@ type
   TDecompositionsArray = array [Byte] of TDecompositions;
   
 var
-  // list of decompositions, organized (again) as two stage matrix
+  // list of decompositions, organized (again) as three stage matrix
   // Note: there are two tables, one for canonical decompositions and the other one
   //       for compatibility decompositions.
   DecompositionsLoaded: Boolean;
@@ -1447,7 +1756,7 @@ var
 
 procedure LoadDecompositionData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, Code,
   Size: Cardinal;
   First, Second, Third: Byte;
@@ -1459,7 +1768,7 @@ begin
 
     try
       DecompositionsLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'DECOMPOSITION', 'UNICODEDATA');
+      Stream := OpenResourceStream('DECOMPOSITION');
       try
         // determine how many decomposition entries we have
         Stream.ReadBuffer(Size, 4);
@@ -1591,7 +1900,7 @@ var
 
 procedure LoadCombiningClassData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   I, J, K,
   Size: Cardinal;
   Buffer: TRangeArray;
@@ -1604,7 +1913,7 @@ begin
     if not CCCsLoaded then
     begin
       CCCsLoaded := True;
-      Stream := TResourceStream.Create(HInstance, 'COMBINING', 'UNICODEDATA');
+      Stream := OpenResourceStream('COMBINING');
       try
         while Stream.Position < Stream.Size do
         begin
@@ -1681,7 +1990,7 @@ var
 
 procedure LoadNumberData;
 var
-  Stream: TResourceStream;
+  Stream: TStream;
   Size: Cardinal;
 begin
   // make sure no other code is currently modifying the global data area
@@ -1690,7 +1999,7 @@ begin
   try
     if NumberCodes = nil then
     begin
-      Stream := TResourceStream.Create(HInstance, 'NUMBERS', 'UNICODEDATA');
+      Stream := OpenResourceStream('NUMBERS');
       // Numbers are special (compared to other Unicode data) as they utilize two
       // arrays, one containing all used numbers (in nominator-denominator format) and
       // another one which maps a code point to one of the numbers in the first array.
@@ -1750,19 +2059,21 @@ end;
 type
   // maps between a pair of code points to a composite code point
   // Note: the source pair is packed into one 4 byte value to speed up search. 
-  TCompositionPair = record
+  TComposition = record
     Code: Cardinal;
-    Composition: UCS4;
+    First: Cardinal;
+    Next: array of Cardinal;
   end;
 
 var
   // list of composition mappings
-  Compositions: array of TCompositionPair;
+  Compositions: array of TComposition;
+  MaxCompositionSize: Integer;
 
 procedure LoadCompositionData;
 var
-  Stream: TResourceStream;
-  Size: Cardinal;
+  Stream: TStream;
+  I, Size: Integer;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -1770,51 +2081,97 @@ begin
   try
     if Compositions = nil then
     begin
-      Stream := TResourceStream.Create(HInstance, 'COMPOSITION', 'UNICODEDATA');
-      // a) determine size of compositions array
-      Stream.ReadBuffer(Size, 4);
-      SetLength(Compositions, Size);
-      // b) read data
-      Stream.ReadBuffer(Compositions[0], Size * SizeOf(TCompositionPair));
-      Stream.Free;
+      Stream := OpenResourceStream('COMPOSITION');
+      try
+        // a) determine size of compositions array
+        Stream.ReadBuffer(Size, 4);
+        SetLength(Compositions, Size);
+        // b) read data
+        for I := 0 to Size - 1 do
+        begin
+          Stream.ReadBuffer(Compositions[I].Code, 4);
+          Stream.ReadBuffer(Size, 4);
+          if Size > MaxCompositionSize then
+            MaxCompositionSize := Size;
+          SetLength(Compositions[I].Next, Size - 1);
+          Stream.ReadBuffer(Compositions[I].First, 4);
+          Stream.ReadBuffer(Compositions[I].Next[0], 4 * (Size - 1));
+        end;
+      finally
+        Stream.Free;
+      end;
     end;
   finally
     LoadInProgress.Leave;
   end;
 end;
 
-function UnicodeComposePair(First, Second: UCS4; var Composite: UCS4): Boolean;
-// Maps the sequence of First and Second to a composite.
-// Result is True if there was a mapping otherwise it is False.
+function UnicodeCompose(const Codes: array of UCS4; var Composite: UCS4): Integer;
+// Maps the sequence of Codes (up to MaxCompositionSize codes) to a composite
+// Result is the number of Codes that were composed (at least 1 if Codes is not empty)
 var
-  L, R, M, C: Integer;
-  Pair: Integer;
+  L, R, M, I, HighCodes, HighNext: Integer;
 begin
   if Compositions = nil then
     LoadCompositionData;
 
-  Result := False;
+  Result := 0;
+  HighCodes := High(Codes);
+
+  if HighCodes = -1 then
+    Exit;
+
+  if HighCodes = 0 then
+  begin
+    Result := 1;
+    Composite := Codes[0];
+    Exit;
+  end;
+
   L := 0;
   R := High(Compositions);
-  Pair := Integer((First shl 16) or Word(Second));
+
   while L <= R do
   begin
     M := (L + R) shr 1;
-    C := Integer(Compositions[M].Code) - Pair;
-    if C < 0  then
+    if Compositions[M].First > Codes[0] then
+      R := M - 1
+    else
+    if Compositions[M].First < Codes[0] then
       L := M + 1
     else
     begin
-      R := M - 1;
-      if C = 0 then
+      // back to the first element where Codes[0] = First
+      while (M > 0) and (Compositions[M-1].First = Codes[0]) do
+        Dec(M);
+
+      while (M <= High(Compositions)) and (Compositions[M].First = Codes[0]) do
       begin
-        Result := True;
-        L := M;
+        HighNext := High(Compositions[M].Next);
+        Result := 0;
+
+        if HighNext < HighCodes then // enough characters in buffer to be tested
+        begin
+          for I := 0 to HighNext do
+            if Compositions[M].Next[I] = Codes[I + 1] then
+              Result := I + 2 { +1 for first, +1 because of 0-based array }
+            else
+              Break;
+
+          if Result = HighNext + 2 then // all codes matched
+          begin
+            Composite := Compositions[M].Code;
+            Exit;
+          end;
+        end;
+
+        Inc(M);
       end;
+      Break;
     end;
   end;
-  if Result then
-    Composite := Compositions[L].Composition;
+  Result := 1;
+  Composite := Codes[0];
 end;
 
 //=== { TSearchEngine } ======================================================
@@ -6351,14 +6708,9 @@ end;
 
 function WideCompose(const S: WideString): WideString;
 var
-  StarterPos,
-  CompPos,
-  DecompPos: Integer;
+  Buffer: array of UCS4;
+  LastInPos, InPos, OutPos, BufferSize, NbProcessed: Integer;
   Composite: UCS4;
-  Ch,
-  StarterChar: WideChar;
-  LastClass,
-  CurrentClass: Cardinal;
 begin
   // Set an arbitrary length for the result. This is automatically done when checking
   // for hangul composition.
@@ -6367,39 +6719,51 @@ begin
   if Result = '' then
     Exit;
 
-  StarterPos := 1;
-  CompPos := 2;
+  if Compositions = nil then
+    LoadCompositionData;
 
-  StarterChar := Result[StarterPos];
-  LastClass := CanonicalCombiningClass(UCS4(StarterChar));
-  if LastClass <> 0 then
-    LastClass := 256; // fix for irregular combining sequence
+  LastInPos := Length(Result);
+  if LastInPos > MaxCompositionSize then
+    SetLength(Buffer, MaxCompositionSize)
+  else
+    SetLength(Buffer, LastInPos);
 
-  // Loop on the (decomposed) characters, combining where possible.
-  for DecompPos := 2 to Length(Result) do
+  BufferSize := 0;
+  InPos := 0;
+  OutPos := 0;
+
+  while (InPos < LastInPos) or (BufferSize > 0) do
   begin
-    Ch := Result[DecompPos];
-    CurrentClass := CanonicalCombiningClass(UCS4(Ch));
-    if UnicodeComposePair(UCS4(StarterChar), UCS4(Ch), Composite) and
-      ((LastClass < CurrentClass) or (LastClass = 0)) then
+    // fill buffer from input
+
+    while BufferSize < Length(Buffer) do
     begin
-      Result[StarterPos] := UCS2(Composite);
-      StarterChar := UCS2(Composite);
-    end
-    else
-    begin
-      if CurrentClass = 0 then
+      if InPos < LastInPos then
       begin
-        StarterPos := CompPos;
-        StarterChar := Ch;
-      end;
-      LastClass := CurrentClass;
-      Result[CompPos] := Ch;
-      Inc(CompPos);
+        Inc(InPos);
+        Buffer[BufferSize] := UCS4(Result[InPos]);
+        Inc(BufferSize);
+      end
+      else
+        SetLength(Buffer, BufferSize);
     end;
+
+    if Length(Buffer) = 0 then
+      Break;
+
+    NbProcessed := UnicodeCompose(Buffer, Composite);
+    if NbProcessed = 0 then
+      Break;
+
+    if BufferSize > NbProcessed then
+      Move(Buffer[NbProcessed], Buffer[0], (BufferSize - NbProcessed) * SizeOf(UCS4));
+    Dec(BufferSize, NbProcessed);
+
+    Inc(OutPos);
+    Result[OutPos] := UCS2(Composite);
   end;
   // since we have likely shortened the source string we have to set the correct length on exit
-  SetLength(Result, CompPos - 1);
+  SetLength(Result, OutPos);
 end;
 
 procedure FixCanonical(var S: WideString);
@@ -6459,7 +6823,7 @@ begin
 end;
 
 function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
-// returns a string with all characters of S but decomposed, e.g. Ê is returned as E^ etc.
+// returns a string with all characters of S but decomposed, e.g.  is returned as E^ etc.
 var
   I, J: Integer;
   Decomp: TUCS4Array;
@@ -6487,7 +6851,7 @@ end;
 
 // Note that most of the assigned code points don't have a case mapping and are therefore
 // returned as they are. Other code points, however, might be converted into several characters
-// like the german ß (eszett) whose upper case mapping is SS.
+// like the german  (eszett) whose upper case mapping is SS.
 
 function WideCaseFolding(C: WideChar): WideString;
 // Special case folding function to map a string to either its lower case or
@@ -6945,7 +7309,7 @@ end;
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
   external 'gdi32.dll' name 'TranslateCharsetInfo';
 
-function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: Byte): Boolean;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
@@ -6956,7 +7320,7 @@ begin
     FontCharset := CSI.ciCharset;
 end;
 
-function CharSetFromLocale(Language: LCID): TFontCharSet;
+function CharSetFromLocale(Language: LCID): Byte;
 begin
   if not GetCharSetFromLocale(Language, Result) then
     RaiseLastOSError;
@@ -6984,1345 +7348,48 @@ begin
 end;
 
 function CodeBlockRange(const CB: TUnicodeBlock): TUnicodeBlockRange;
-// http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
+// http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
 begin
-  case CB of
-    ubBasicLatin:
-      begin
-        Result.RangeStart := $0000;
-        Result.RangeEnd := $007F;
-      end;
-    ubLatin1Supplement:
-      begin
-        Result.RangeStart := $0080;
-        Result.RangeEnd := $00FF;
-      end;
-    ubLatinExtendedA:
-      begin
-        Result.RangeStart := $0100;
-        Result.RangeEnd := $017F;
-      end;
-    ubLatinExtendedB:
-      begin
-        Result.RangeStart := $0180;
-        Result.RangeEnd := $024F;
-      end;
-    ubIPAExtensions:
-      begin
-        Result.RangeStart := $0250;
-        Result.RangeEnd := $02AF;
-      end;
-    ubSpacingModifierLetters:
-      begin
-        Result.RangeStart := $02B0;
-        Result.RangeEnd := $02FF;
-      end;
-    ubCombiningDiacriticalMarks:
-      begin
-        Result.RangeStart := $0300;
-        Result.RangeEnd := $036F;
-      end;
-    ubGreek:
-      begin
-        Result.RangeStart := $0370;
-        Result.RangeEnd := $03FF;
-      end;
-    ubCyrillic:
-      begin
-        Result.RangeStart := $0400;
-        Result.RangeEnd := $04FF;
-      end;
-    ubCyrillicSupplement:
-      begin
-        Result.RangeStart := $0500;
-        Result.RangeEnd := $052F;
-      end;
-    ubArmenian:
-      begin
-        Result.RangeStart := $0530;
-        Result.RangeEnd := $058F;
-      end;
-    ubHebrew:
-      begin
-        Result.RangeStart := $0590;
-        Result.RangeEnd := $05FF;
-      end;
-    ubArabic:
-      begin
-        Result.RangeStart := $0600;
-        Result.RangeEnd := $06FF;
-      end;
-    ubSyriac:
-      begin
-        Result.RangeStart := $0700;
-        Result.RangeEnd := $074F;
-      end;
-    ubArabicSupplement:
-      begin
-        Result.RangeStart := $0750;
-        Result.RangeEnd := $077F;
-      end;
-    ubThaana:
-      begin
-        Result.RangeStart := $0780;
-        Result.RangeEnd := $07BF;
-      end;
-    ubDevanagari:
-      begin
-        Result.RangeStart := $0900;
-        Result.RangeEnd := $097F;
-      end;
-    ubBengali:
-      begin
-        Result.RangeStart := $0980;
-        Result.RangeEnd := $09FF;
-      end;
-    ubGurmukhi:
-      begin
-        Result.RangeStart := $0A00;
-        Result.RangeEnd := $0A7F;
-      end;
-    ubGujarati:
-      begin
-        Result.RangeStart := $0A80;
-        Result.RangeEnd := $0AFF;
-      end;
-    ubOriya:
-      begin
-        Result.RangeStart := $0B00;
-        Result.RangeEnd := $0B7F;
-      end;
-    ubTamil:
-      begin
-        Result.RangeStart := $0B80;
-        Result.RangeEnd := $0BFF;
-      end;
-    ubTelugu:
-      begin
-        Result.RangeStart := $0C00;
-        Result.RangeEnd := $0C7F;
-      end;
-    ubKannada:
-      begin
-        Result.RangeStart := $0C80;
-        Result.RangeEnd := $0CFF;
-      end;
-    ubMalayalam:
-      begin
-        Result.RangeStart := $0D00;
-        Result.RangeEnd := $0D7F;
-      end;
-    ubSinhala:
-      begin
-        Result.RangeStart := $0D80;
-        Result.RangeEnd := $0DFF;
-      end;
-    ubThai:
-      begin
-        Result.RangeStart := $0E00;
-        Result.RangeEnd := $0E7F;
-      end;
-    ubLao:
-      begin
-        Result.RangeStart := $0E80;
-        Result.RangeEnd := $0EFF;
-      end;
-    ubTibetan:
-      begin
-        Result.RangeStart := $0F00;
-        Result.RangeEnd := $0FFF;
-      end;
-    ubMyanmar:
-      begin
-        Result.RangeStart := $1000;
-        Result.RangeEnd := $109F;
-      end;
-    ubGeorgian:
-      begin
-        Result.RangeStart := $10A0;
-        Result.RangeEnd := $10FF;
-      end;
-    ubHangulJamo:
-      begin
-        Result.RangeStart := $1100;
-        Result.RangeEnd := $11FF;
-      end;
-    ubEthiopic:
-      begin
-        Result.RangeStart := $1200;
-        Result.RangeEnd := $137F;
-      end;
-    ubEthiopicSupplement:
-      begin
-        Result.RangeStart := $1380;
-        Result.RangeEnd := $139F;
-      end;
-    ubCherokee:
-      begin
-        Result.RangeStart := $13A0;
-        Result.RangeEnd := $13FF;
-      end;
-    ubUnifiedCanadianAboriginalSyllabics:
-      begin
-        Result.RangeStart := $1400;
-        Result.RangeEnd := $167F;
-      end;
-    ubOgham:
-      begin
-        Result.RangeStart := $1680;
-        Result.RangeEnd := $169F;
-      end;
-    ubRunic:
-      begin
-        Result.RangeStart := $16A0;
-        Result.RangeEnd := $16FF;
-      end;
-    ubTagalog:
-      begin
-        Result.RangeStart := $1700;
-        Result.RangeEnd := $171F;
-      end;
-    ubHanunoo:
-      begin
-        Result.RangeStart := $1720;
-        Result.RangeEnd := $173F;
-      end;
-    ubBuhid:
-      begin
-        Result.RangeStart := $1740;
-        Result.RangeEnd := $175F;
-      end;
-    ubTagbanwa:
-      begin
-        Result.RangeStart := $1760;
-        Result.RangeEnd := $177F;
-      end;
-    ubKhmer:
-      begin
-        Result.RangeStart := $1780;
-        Result.RangeEnd := $17FF;
-      end;
-    ubMongolian:
-      begin
-        Result.RangeStart := $1800;
-        Result.RangeEnd := $18AF;
-      end;
-    ubLimbu:
-      begin
-        Result.RangeStart := $1900;
-        Result.RangeEnd := $194F;
-      end;
-    ubTaiLe:
-      begin
-        Result.RangeStart := $1950;
-        Result.RangeEnd := $197F;
-      end;
-    ubNewTaiLue:
-      begin
-        Result.RangeStart := $1980;
-        Result.RangeEnd := $19DF;
-      end;
-    ubKhmerSymbols:
-      begin
-        Result.RangeStart := $19E0;
-        Result.RangeEnd := $19FF;
-      end;
-    ubBuginese:
-      begin
-        Result.RangeStart := $1A00;
-        Result.RangeEnd := $1A1F;
-      end;
-    ubPhoneticExtensions:
-      begin
-        Result.RangeStart := $1D00;
-        Result.RangeEnd := $1D7F;
-      end;
-    ubPhoneticExtensionsSupplement:
-      begin
-        Result.RangeStart := $1D80;
-        Result.RangeEnd := $1DBF;
-      end;
-    ubCombiningDiacriticalMarksSupplement:
-      begin
-        Result.RangeStart := $1DC0;
-        Result.RangeEnd := $1DFF;
-      end;
-    ubLatinExtendedAdditional:
-      begin
-        Result.RangeStart := $1E00;
-        Result.RangeEnd := $1EFF;
-      end;
-    ubGreekExtended:
-      begin
-        Result.RangeStart := $1F00;
-        Result.RangeEnd := $1FFF;
-      end;
-    ubGeneralPunctuation:
-      begin
-        Result.RangeStart := $2000;
-        Result.RangeEnd := $206F;
-      end;
-    ubSuperscriptsandSubscripts:
-      begin
-        Result.RangeStart := $2070;
-        Result.RangeEnd := $209F;
-      end;
-    ubCurrencySymbols:
-      begin
-        Result.RangeStart := $20A0;
-        Result.RangeEnd := $20CF;
-      end;
-    ubCombiningMarksforSymbols:
-      begin
-        Result.RangeStart := $20D0;
-        Result.RangeEnd := $20FF;
-      end;
-    ubLetterlikeSymbols:
-      begin
-        Result.RangeStart := $2100;
-        Result.RangeEnd := $214F;
-      end;
-    ubNumberForms:
-      begin
-        Result.RangeStart := $2150;
-        Result.RangeEnd := $218F;
-      end;
-    ubArrows:
-      begin
-        Result.RangeStart := $2190;
-        Result.RangeEnd := $21FF;
-      end;
-    ubMathematicalOperators:
-      begin
-        Result.RangeStart := $2200;
-        Result.RangeEnd := $22FF;
-      end;
-    ubMiscellaneousTechnical:
-      begin
-        Result.RangeStart := $2300;
-        Result.RangeEnd := $23FF;
-      end;
-    ubControlPictures:
-      begin
-        Result.RangeStart := $2400;
-        Result.RangeEnd := $243F;
-      end;
-    ubOpticalCharacterRecognition:
-      begin
-        Result.RangeStart := $2440;
-        Result.RangeEnd := $245F;
-      end;
-    ubEnclosedAlphanumerics:
-      begin
-        Result.RangeStart := $2460;
-        Result.RangeEnd := $24FF;
-      end;
-    ubBoxDrawing:
-      begin
-        Result.RangeStart := $2500;
-        Result.RangeEnd := $257F;
-      end;
-    ubBlockElements:
-      begin
-        Result.RangeStart := $2580;
-        Result.RangeEnd := $259F;
-      end;
-    ubGeometricShapes:
-      begin
-        Result.RangeStart := $25A0;
-        Result.RangeEnd := $25FF;
-      end;
-    ubMiscellaneousSymbols:
-      begin
-        Result.RangeStart := $2600;
-        Result.RangeEnd := $26FF;
-      end;
-    ubDingbats:
-      begin
-        Result.RangeStart := $2700;
-        Result.RangeEnd := $27BF;
-      end;
-    ubMiscellaneousMathematicalSymbolsA:
-      begin
-        Result.RangeStart := $27C0;
-        Result.RangeEnd := $27EF;
-      end;
-    ubSupplementalArrowsA:
-      begin
-        Result.RangeStart := $27F0;
-        Result.RangeEnd := $27FF;
-      end;
-    ubBraillePatterns:
-      begin
-        Result.RangeStart := $2800;
-        Result.RangeEnd := $28FF;
-      end;
-    ubSupplementalArrowsB:
-      begin
-        Result.RangeStart := $2900;
-        Result.RangeEnd := $297F;
-      end;
-    ubMiscellaneousMathematicalSymbolsB:
-      begin
-        Result.RangeStart := $2980;
-        Result.RangeEnd := $29FF;
-      end;
-    ubSupplementalMathematicalOperators:
-      begin
-        Result.RangeStart := $2A00;
-        Result.RangeEnd := $2AFF;
-      end;
-    ubMiscellaneousSymbolsandArrows:
-      begin
-        Result.RangeStart := $2B00;
-        Result.RangeEnd := $2BFF;
-      end;
-    ubGlagolitic:
-      begin
-        Result.RangeStart := $2C00;
-        Result.RangeEnd := $2C5F;
-      end;
-    ubCoptic:
-      begin
-        Result.RangeStart := $2C80;
-        Result.RangeEnd := $2CFF;
-      end;
-    ubGeorgianSupplement:
-      begin
-        Result.RangeStart := $2D00;
-        Result.RangeEnd := $2D2F;
-      end;
-    ubTifinagh:
-      begin
-        Result.RangeStart := $2D30;
-        Result.RangeEnd := $2D7F;
-      end;
-    ubEthiopicExtended:
-      begin
-        Result.RangeStart := $2D80;
-        Result.RangeEnd := $2DDF;
-      end;
-    ubSupplementalPunctuation:
-      begin
-        Result.RangeStart := $2E00;
-        Result.RangeEnd := $2E7F;
-      end;
-    ubCJKRadicalsSupplement:
-      begin
-        Result.RangeStart := $2E80;
-        Result.RangeEnd := $2EFF;
-      end;
-    ubKangxiRadicals:
-      begin
-        Result.RangeStart := $2F00;
-        Result.RangeEnd := $2FDF;
-      end;
-    ubIdeographicDescriptionCharacters:
-      begin
-        Result.RangeStart := $2FF0;
-        Result.RangeEnd := $2FFF;
-      end;
-    ubCJKSymbolsandPunctuation:
-      begin
-        Result.RangeStart := $3000;
-        Result.RangeEnd := $303F;
-      end;
-    ubHiragana:
-      begin
-        Result.RangeStart := $3040;
-        Result.RangeEnd := $309F;
-      end;
-    ubKatakana:
-      begin
-        Result.RangeStart := $30A0;
-        Result.RangeEnd := $30FF;
-      end;
-    ubBopomofo:
-      begin
-        Result.RangeStart := $3100;
-        Result.RangeEnd := $312F;
-      end;
-    ubHangulCompatibilityJamo:
-      begin
-        Result.RangeStart := $3130;
-        Result.RangeEnd := $318F;
-      end;
-    ubKanbun:
-      begin
-        Result.RangeStart := $3190;
-        Result.RangeEnd := $319F;
-      end;
-    ubBopomofoExtended:
-      begin
-        Result.RangeStart := $31A0;
-        Result.RangeEnd := $31BF;
-      end;
-    ubCJKStrokes:
-      begin
-        Result.RangeStart := $31C0;
-        Result.RangeEnd := $31EF;
-      end;
-    ubKatakanaPhoneticExtensions:
-      begin
-        Result.RangeStart := $31F0;
-        Result.RangeEnd := $31FF;
-      end;
-    ubEnclosedCJKLettersandMonths:
-      begin
-        Result.RangeStart := $3200;
-        Result.RangeEnd := $32FF;
-      end;
-    ubCJKCompatibility:
-      begin
-        Result.RangeStart := $3300;
-        Result.RangeEnd := $33FF;
-      end;
-    ubCJKUnifiedIdeographsExtensionA:
-      begin
-        Result.RangeStart := $3400;
-        Result.RangeEnd := $4DBF;
-      end;
-    ubYijingHexagramSymbols:
-      begin
-        Result.RangeStart := $4DC0;
-        Result.RangeEnd := $4DFF;
-      end;
-    ubCJKUnifiedIdeographs:
-      begin
-        Result.RangeStart := $4E00;
-        Result.RangeEnd := $9FFF;
-      end;
-    ubYiSyllables:
-      begin
-        Result.RangeStart := $A000;
-        Result.RangeEnd := $A48F;
-      end;
-    ubYiRadicals:
-      begin
-        Result.RangeStart := $A490;
-        Result.RangeEnd := $A4CF;
-      end;
-    ubModifierToneLetters:
-      begin
-        Result.RangeStart := $A700;
-        Result.RangeEnd := $A71F;
-      end;
-    ubSylotiNagri:
-      begin
-        Result.RangeStart := $A800;
-        Result.RangeEnd := $A82F;
-      end;
-    ubHangulSyllables:
-      begin
-        Result.RangeStart := $AC00;
-        Result.RangeEnd := $D7AF;
-      end;
-    ubHighSurrogates:
-      begin
-        Result.RangeStart := $D800;
-        Result.RangeEnd := $DB7F;
-      end;
-    ubHighPrivateUseSurrogates:
-      begin
-        Result.RangeStart := $DB80;
-        Result.RangeEnd := $DBFF;
-      end;
-    ubLowSurrogates:
-      begin
-        Result.RangeStart := $DC00;
-        Result.RangeEnd := $DFFF;
-      end;
-    ubPrivateUse:
-      begin
-        Result.RangeStart := $E000;
-        Result.RangeEnd := $F8FF;
-      end;
-    ubCJKCompatibilityIdeographs:
-      begin
-        Result.RangeStart := $F900;
-        Result.RangeEnd := $FAFF;
-      end;
-    ubAlphabeticPresentationForms:
-      begin
-        Result.RangeStart := $FB00;
-        Result.RangeEnd := $FB4F;
-      end;
-    ubArabicPresentationFormsA:
-      begin
-        Result.RangeStart := $FB50;
-        Result.RangeEnd := $FDFF;
-      end;
-    ubVariationSelectors:
-      begin
-        Result.RangeStart := $FE00;
-        Result.RangeEnd := $FE0F;
-      end;
-    ubVerticalForms:
-      begin
-        Result.RangeStart := $FE10;
-        Result.RangeEnd := $FE1F;
-      end;
-    ubCombiningHalfMarks:
-      begin
-        Result.RangeStart := $FE20;
-        Result.RangeEnd := $FE2F;
-      end;
-    ubCJKCompatibilityForms:
-      begin
-        Result.RangeStart := $FE30;
-        Result.RangeEnd := $FE4F;
-      end;
-    ubSmallFormVariants:
-      begin
-        Result.RangeStart := $FE50;
-        Result.RangeEnd := $FE6F;
-      end;
-    ubArabicPresentationFormsB:
-      begin
-        Result.RangeStart := $FE70;
-        Result.RangeEnd := $FEFF;
-      end;
-    ubHalfwidthandFullwidthForms:
-      begin
-        Result.RangeStart := $FF00;
-        Result.RangeEnd := $FFEF;
-      end;
-    ubSpecials:
-      begin
-        Result.RangeStart := $FFF0;
-        Result.RangeEnd := $FFFF;
-      end;
-    ubLinearBSyllabary:
-      begin
-        Result.RangeStart := $10000;
-        Result.RangeEnd := $1007F;
-      end;
-    ubLinearBIdeograms:
-      begin
-        Result.RangeStart := $10080;
-        Result.RangeEnd := $100FF;
-      end;
-    ubAegeanNumbers:
-      begin
-        Result.RangeStart := $10100;
-        Result.RangeEnd := $1013F;
-      end;
-    ubAncientGreekNumbers:
-      begin
-        Result.RangeStart := $10140;
-        Result.RangeEnd := $1018F;
-      end;
-    ubOldItalic:
-      begin
-        Result.RangeStart := $10300;
-        Result.RangeEnd := $1032F;
-      end;
-    ubGothic:
-      begin
-        Result.RangeStart := $10330;
-        Result.RangeEnd := $1034F;
-      end;
-    ubUgaritic:
-      begin
-        Result.RangeStart := $10380;
-        Result.RangeEnd := $1039F;
-      end;
-    ubOldPersian:
-      begin
-        Result.RangeStart := $103A0;
-        Result.RangeEnd := $103DF;
-      end;
-    ubDeseret:
-      begin
-        Result.RangeStart := $10400;
-        Result.RangeEnd := $1044F;
-      end;
-    ubShavian:
-      begin
-        Result.RangeStart := $10450;
-        Result.RangeEnd := $1047F;
-      end;
-    ubOsmanya:
-      begin
-        Result.RangeStart := $10480;
-        Result.RangeEnd := $104AF;
-      end;
-    ubCypriotSyllabary:
-      begin
-        Result.RangeStart := $10800;
-        Result.RangeEnd := $1083F;
-      end;
-    ubKharoshthi:
-      begin
-        Result.RangeStart := $10A00;
-        Result.RangeEnd := $10A5F;
-      end;
-    ubByzantineMusicalSymbols:
-      begin
-        Result.RangeStart := $1D000;
-        Result.RangeEnd := $1D0FF;
-      end;
-    ubMusicalSymbols:
-      begin
-        Result.RangeStart := $1D100;
-        Result.RangeEnd := $1D1FF;
-      end;
-    ubAncientGreekMusicalNotation:
-      begin
-        Result.RangeStart := $1D200;
-        Result.RangeEnd := $1D24F;
-      end;
-    ubTaiXuanJingSymbols:
-      begin
-        Result.RangeStart := $1D300;
-        Result.RangeEnd := $1D35F;
-      end;
-    ubMathematicalAlphanumericSymbols:
-      begin
-        Result.RangeStart := $1D400;
-        Result.RangeEnd := $1D7FF;
-      end;
-    ubCJKUnifiedIdeographsExtensionB:
-      begin
-        Result.RangeStart := $20000;
-        Result.RangeEnd := $2A6DF;
-      end;
-    ubCJKCompatibilityIdeographsSupplement:
-      begin
-        Result.RangeStart := $2F800;
-        Result.RangeEnd := $2FA1F;
-      end;
-    ubTags:
-      begin
-        Result.RangeStart := $E0000;
-        Result.RangeEnd := $E007F;
-      end;
-    ubVariationSelectorsSupplement:
-      begin
-        Result.RangeStart := $E0100;
-        Result.RangeEnd := $E01EF;
-      end;
-    ubSupplementaryPrivateUseAreaA:
-      begin
-        Result.RangeStart := $F0000;
-        Result.RangeEnd := $FFFFF;
-      end;
-    ubSupplementaryPrivateUseAreaB:
-      begin
-        Result.RangeStart := $100000;
-        Result.RangeEnd := $10FFFF;
-      end;
-  else
-    begin
-      Result.RangeStart := 0;
-      Result.RangeEnd := 0;
-    end;
-  end;
+  Result := UnicodeBlockData[CB].Range;
 end;
 
 
-// Returns the CodeBlockName of the Block specified by CB
-// Names taken from http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
+// Names taken from http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
 function CodeBlockName(const CB: TUnicodeBlock): string;
 begin
-  case CB of
-    ubBasicLatin:
-      Result := 'Basic Latin';
-    ubLatin1Supplement:
-      Result := 'Latin-1 Supplement';
-    ubLatinExtendedA:
-      Result := 'Latin Extended-A';
-    ubLatinExtendedB:
-      Result := 'Latin Extended-B';
-    ubIPAExtensions:
-      Result := 'IPA Extensions';
-    ubSpacingModifierLetters:
-      Result := 'Spacing Modifier Letters';
-    ubCombiningDiacriticalMarks:
-      Result := 'Combining Diacritical Marks';
-    //ubGreekandCoptic:
-    ubGreek:
-      Result := 'Greek and Coptic';
-    ubCyrillic:
-      Result := 'Cyrillic';
-    ubCyrillicSupplement:
-      Result := 'Cyrillic Supplement';
-    ubArmenian:
-      Result := 'Armenian';
-    ubHebrew:
-      Result := 'Hebrew';
-    ubArabic:
-      Result := 'Arabic';
-    ubSyriac:
-      Result := 'Syriac';
-    ubArabicSupplement:
-      Result := 'Arabic Supplement';
-    ubThaana:
-      Result := 'Thaana';
-    ubDevanagari:
-      Result := 'Devanagari';
-    ubBengali:
-      Result := 'Bengali';
-    ubGurmukhi:
-      Result := 'Gurmukhi';
-    ubGujarati:
-      Result := 'Gujarati';
-    ubOriya:
-      Result := 'Oriya';
-    ubTamil:
-      Result := 'Tamil';
-    ubTelugu:
-      Result := 'Telugu';
-    ubKannada:
-      Result := 'Kannada';
-    ubMalayalam:
-      Result := 'Malayalam';
-    ubSinhala:
-      Result := 'Sinhala';
-    ubThai:
-      Result := 'Thai';
-    ubLao:
-      Result := 'Lao';
-    ubTibetan:
-      Result := 'Tibetan';
-    ubMyanmar:
-      Result := 'Myanmar';
-    ubGeorgian:
-      Result := 'Georgian';
-    ubHangulJamo:
-      Result := 'Hangul Jamo';
-    ubEthiopic:
-      Result := 'Ethiopic';
-    ubEthiopicSupplement:
-      Result := 'Ethiopic Supplement';
-    ubCherokee:
-      Result := 'Cherokee';
-    ubUnifiedCanadianAboriginalSyllabics:
-      Result := 'Unified Canadian Aboriginal Syllabics';
-    ubOgham:
-      Result := 'Ogham';
-    ubRunic:
-      Result := 'Runic';
-    ubTagalog:
-      Result := 'Tagalog';
-    ubHanunoo:
-      Result := 'Hanunoo';
-    ubBuhid:
-      Result := 'Buhid';
-    ubTagbanwa:
-      Result := 'Tagbanwa';
-    ubKhmer:
-      Result := 'Khmer';
-    ubMongolian:
-      Result := 'Mongolian';
-    ubLimbu:
-      Result := 'Limbu';
-    ubTaiLe:
-      Result := 'Tai Le';
-    ubNewTaiLue:
-      Result := 'New Tai Lue';
-    ubKhmerSymbols:
-      Result := 'Khmer Symbols';
-    ubBuginese:
-      Result := 'Buginese';
-    ubPhoneticExtensions:
-      Result := 'Phonetic Extensions';
-    ubPhoneticExtensionsSupplement:
-      Result := 'Phonetic Extensions Supplement';
-    ubCombiningDiacriticalMarksSupplement:
-      Result := 'Combining Diacritical Marks Supplement';
-    ubLatinExtendedAdditional:
-      Result := 'Latin Extended Additional';
-    ubGreekExtended:
-      Result := 'Greek Extended';
-    ubGeneralPunctuation:
-      Result := 'General Punctuation';
-    ubSuperscriptsandSubscripts:
-      Result := 'Superscripts and Subscripts';
-    ubCurrencySymbols:
-      Result := 'Currency Symbols';
-    //ubCombiningDiacriticalMarksforSymbols:
-    ubCombiningMarksforSymbols:
-      Result := 'Combining Diacritical Marks for Symbols';
-    ubLetterlikeSymbols:
-      Result := 'Letterlike Symbols';
-    ubNumberForms:
-      Result := 'Number Forms';
-    ubArrows:
-      Result := 'Arrows';
-    ubMathematicalOperators:
-      Result := 'Mathematical Operators';
-    ubMiscellaneousTechnical:
-      Result := 'Miscellaneous Technical';
-    ubControlPictures:
-      Result := 'Control Pictures';
-    ubOpticalCharacterRecognition:
-      Result := 'Optical Character Recognition';
-    ubEnclosedAlphanumerics:
-      Result := 'Enclosed Alphanumerics';
-    ubBoxDrawing:
-      Result := 'Box Drawing';
-    ubBlockElements:
-      Result := 'Block Elements';
-    ubGeometricShapes:
-      Result := 'Geometric Shapes';
-    ubMiscellaneousSymbols:
-      Result := 'Miscellaneous Symbols';
-    ubDingbats:
-      Result := 'Dingbats';
-    ubMiscellaneousMathematicalSymbolsA:
-      Result := 'Miscellaneous Mathematical Symbols-A';
-    ubSupplementalArrowsA:
-      Result := 'Supplemental Arrows-A';
-    ubBraillePatterns:
-      Result := 'Braille Patterns';
-    ubSupplementalArrowsB:
-      Result := 'Supplemental Arrows-B';
-    ubMiscellaneousMathematicalSymbolsB:
-      Result := 'Miscellaneous Mathematical Symbols-B';
-    ubSupplementalMathematicalOperators:
-      Result := 'Supplemental Mathematical Operators';
-    ubMiscellaneousSymbolsandArrows:
-      Result := 'Miscellaneous Symbols and Arrows';
-    ubGlagolitic:
-      Result := 'Glagolitic';
-    ubCoptic:
-      Result := 'Coptic';
-    ubGeorgianSupplement:
-      Result := 'Georgian Supplement';
-    ubTifinagh:
-      Result := 'Tifinagh';
-    ubEthiopicExtended:
-      Result := 'Ethiopic Extended';
-    ubSupplementalPunctuation:
-      Result := 'Supplemental Punctuation';
-    ubCJKRadicalsSupplement:
-      Result := 'CJK Radicals Supplement';
-    ubKangxiRadicals:
-      Result := 'Kangxi Radicals';
-    ubIdeographicDescriptionCharacters:
-      Result := 'Ideographic Description Characters';
-    ubCJKSymbolsandPunctuation:
-      Result := 'CJK Symbols and Punctuation';
-    ubHiragana:
-      Result := 'Hiragana';
-    ubKatakana:
-      Result := 'Katakana';
-    ubBopomofo:
-      Result := 'Bopomofo';
-    ubHangulCompatibilityJamo:
-      Result := 'Hangul Compatibility Jamo';
-    ubKanbun:
-      Result := 'Kanbun';
-    ubBopomofoExtended:
-      Result := 'Bopomofo Extended';
-    ubCJKStrokes:
-      Result := 'CJK Strokes';
-    ubKatakanaPhoneticExtensions:
-      Result := 'Katakana Phonetic Extensions';
-    ubEnclosedCJKLettersandMonths:
-      Result := 'Enclosed CJK Letters and Months';
-    ubCJKCompatibility:
-      Result := 'CJK Compatibility';
-    ubCJKUnifiedIdeographsExtensionA:
-      Result := 'CJK Unified Ideographs Extension A';
-    ubYijingHexagramSymbols:
-      Result := 'Yijing Hexagram Symbols';
-    ubCJKUnifiedIdeographs:
-      Result := 'CJK Unified Ideographs';
-    ubYiSyllables:
-      Result := 'Yi Syllables';
-    ubYiRadicals:
-      Result := 'Yi Radicals';
-    ubModifierToneLetters:
-      Result := 'Modifier Tone Letters';
-    ubSylotiNagri:
-      Result := 'Syloti Nagri';
-    ubHangulSyllables:
-      Result := 'Hangul Syllables';
-    ubHighSurrogates:
-      Result := 'High Surrogates';
-    ubHighPrivateUseSurrogates:
-      Result := 'High Private Use Surrogates';
-    ubLowSurrogates:
-      Result := 'Low Surrogates';
-    //ubPrivateUseArea:
-    ubPrivateUse:
-      Result := 'Private Use Area';
-    ubCJKCompatibilityIdeographs:
-      Result := 'CJK Compatibility Ideographs';
-    ubAlphabeticPresentationForms:
-      Result := 'Alphabetic Presentation Forms';
-    ubArabicPresentationFormsA:
-      Result := 'Arabic Presentation Forms-A';
-    ubVariationSelectors:
-      Result := 'Variation Selectors';
-    ubVerticalForms:
-      Result := 'Vertical Forms';
-    ubCombiningHalfMarks:
-      Result := 'Combining Half Marks';
-    ubCJKCompatibilityForms:
-      Result := 'CJK Compatibility Forms';
-    ubSmallFormVariants:
-      Result := 'Small Form Variants';
-    ubArabicPresentationFormsB:
-      Result := 'Arabic Presentation Forms-B';
-    ubHalfwidthandFullwidthForms:
-      Result := 'Halfwidth and Fullwidth Forms';
-    ubSpecials:
-      Result := 'Specials';
-    ubLinearBSyllabary:
-      Result := 'Linear B Syllabary';
-    ubLinearBIdeograms:
-      Result := 'Linear B Ideograms';
-    ubAegeanNumbers:
-      Result := 'Aegean Numbers';
-    ubAncientGreekNumbers:
-      Result := 'Ancient Greek Numbers';
-    ubOldItalic:
-      Result := 'Old Italic';
-    ubGothic:
-      Result := 'Gothic';
-    ubUgaritic:
-      Result := 'Ugaritic';
-    ubOldPersian:
-      Result := 'Old Persian';
-    ubDeseret:
-      Result := 'Deseret';
-    ubShavian:
-      Result := 'Shavian';
-    ubOsmanya:
-      Result := 'Osmanya';
-    ubCypriotSyllabary:
-      Result := 'Cypriot Syllabary';
-    ubKharoshthi:
-      Result := 'Kharoshthi';
-    ubByzantineMusicalSymbols:
-      Result := 'Byzantine Musical Symbols';
-    ubMusicalSymbols:
-      Result := 'Musical Symbols';
-    ubAncientGreekMusicalNotation:
-      Result := 'Ancient Greek Musical Notation';
-    ubTaiXuanJingSymbols:
-      Result := 'Tai Xuan Jing Symbols';
-    ubMathematicalAlphanumericSymbols:
-      Result := 'Mathematical Alphanumeric Symbols';
-    ubCJKUnifiedIdeographsExtensionB:
-      Result := 'CJK Unified Ideographs Extension B';
-    ubCJKCompatibilityIdeographsSupplement:
-      Result := 'CJK Compatibility Ideographs Supplement';
-    ubTags:
-      Result := 'Tags';
-    ubVariationSelectorsSupplement:
-      Result := 'Variation Selectors Supplement';
-    ubSupplementaryPrivateUseAreaA:
-      Result := 'Supplementary Private Use Area-A';
-    ubSupplementaryPrivateUseAreaB:
-      Result := 'Supplementary Private Use Area-B';
-  else
-    Result := 'Undefined';
-  end;
+  Result := UnicodeBlockData[CB].Name;
 end;
 
 // Returns an ID for the Unicode code block to which C belongs.
 // If C does not belong to any of the defined blocks then ubUndefined is returned.
-// Note: the code blocks listed here are based on Unicode Version 3.1.
+// Note: the code blocks listed here are based on Unicode Version 5.0.0
 function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
-// http://www.unicode.org/Public/4.1.0/ucd/Blocks.txt
+// http://www.unicode.org/Public/5.0.0/ucd/Blocks.txt
+var
+  L, H, I: TUnicodeBlock;
 begin
-  case C of
-    $0000..$007F:
-      Result := ubBasicLatin;
-    $0080..$00FF:
-      Result := ubLatin1Supplement;
-    $0100..$017F:
-      Result := ubLatinExtendedA;
-    $0180..$024F:
-      Result := ubLatinExtendedB;
-    $0250..$02AF:
-      Result := ubIPAExtensions;
-    $02B0..$02FF:
-      Result := ubSpacingModifierLetters;
-    $0300..$036F:
-      Result := ubCombiningDiacriticalMarks;
-    $0370..$03FF:
-      Result := ubGreek; //ubGreekandCoptic;
-    $0400..$04FF:
-      Result := ubCyrillic;
-    $0500..$052F:
-      Result := ubCyrillicSupplement;
-    $0530..$058F:
-      Result := ubArmenian;
-    $0590..$05FF:
-      Result := ubHebrew;
-    $0600..$06FF:
-      Result := ubArabic;
-    $0700..$074F:
-      Result := ubSyriac;
-    $0750..$077F:
-      Result := ubArabicSupplement;
-    $0780..$07BF:
-      Result := ubThaana;
-    $0900..$097F:
-      Result := ubDevanagari;
-    $0980..$09FF:
-      Result := ubBengali;
-    $0A00..$0A7F:
-      Result := ubGurmukhi;
-    $0A80..$0AFF:
-      Result := ubGujarati;
-    $0B00..$0B7F:
-      Result := ubOriya;
-    $0B80..$0BFF:
-      Result := ubTamil;
-    $0C00..$0C7F:
-      Result := ubTelugu;
-    $0C80..$0CFF:
-      Result := ubKannada;
-    $0D00..$0D7F:
-      Result := ubMalayalam;
-    $0D80..$0DFF:
-      Result := ubSinhala;
-    $0E00..$0E7F:
-      Result := ubThai;
-    $0E80..$0EFF:
-      Result := ubLao;
-    $0F00..$0FFF:
-      Result := ubTibetan;
-    $1000..$109F:
-      Result := ubMyanmar;
-    $10A0..$10FF:
-      Result := ubGeorgian;
-    $1100..$11FF:
-      Result := ubHangulJamo;
-    $1200..$137F:
-      Result := ubEthiopic;
-    $1380..$139F:
-      Result := ubEthiopicSupplement;
-    $13A0..$13FF:
-      Result := ubCherokee;
-    $1400..$167F:
-      Result := ubUnifiedCanadianAboriginalSyllabics;
-    $1680..$169F:
-      Result := ubOgham;
-    $16A0..$16FF:
-      Result := ubRunic;
-    $1700..$171F:
-      Result := ubTagalog;
-    $1720..$173F:
-      Result := ubHanunoo;
-    $1740..$175F:
-      Result := ubBuhid;
-    $1760..$177F:
-      Result := ubTagbanwa;
-    $1780..$17FF:
-      Result := ubKhmer;
-    $1800..$18AF:
-      Result := ubMongolian;
-    $1900..$194F:
-      Result := ubLimbu;
-    $1950..$197F:
-      Result := ubTaiLe;
-    $1980..$19DF:
-      Result := ubNewTaiLue;
-    $19E0..$19FF:
-      Result := ubKhmerSymbols;
-    $1A00..$1A1F:
-      Result := ubBuginese;
-    $1D00..$1D7F:
-      Result := ubPhoneticExtensions;
-    $1D80..$1DBF:
-      Result := ubPhoneticExtensionsSupplement;
-    $1DC0..$1DFF:
-      Result := ubCombiningDiacriticalMarksSupplement;
-    $1E00..$1EFF:
-      Result := ubLatinExtendedAdditional;
-    $1F00..$1FFF:
-      Result := ubGreekExtended;
-    $2000..$206F:
-      Result := ubGeneralPunctuation;
-    $2070..$209F:
-      Result := ubSuperscriptsandSubscripts;
-    $20A0..$20CF:
-      Result := ubCurrencySymbols;
-    $20D0..$20FF:
-      Result := ubCombiningMarksforSymbols; //ubCombiningDiacriticalMarksforSymbols;
-    $2100..$214F:
-      Result := ubLetterlikeSymbols;
-    $2150..$218F:
-      Result := ubNumberForms;
-    $2190..$21FF:
-      Result := ubArrows;
-    $2200..$22FF:
-      Result := ubMathematicalOperators;
-    $2300..$23FF:
-      Result := ubMiscellaneousTechnical;
-    $2400..$243F:
-      Result := ubControlPictures;
-    $2440..$245F:
-      Result := ubOpticalCharacterRecognition;
-    $2460..$24FF:
-      Result := ubEnclosedAlphanumerics;
-    $2500..$257F:
-      Result := ubBoxDrawing;
-    $2580..$259F:
-      Result := ubBlockElements;
-    $25A0..$25FF:
-      Result := ubGeometricShapes;
-    $2600..$26FF:
-      Result := ubMiscellaneousSymbols;
-    $2700..$27BF:
-      Result := ubDingbats;
-    $27C0..$27EF:
-      Result := ubMiscellaneousMathematicalSymbolsA;
-    $27F0..$27FF:
-      Result := ubSupplementalArrowsA;
-    $2800..$28FF:
-      Result := ubBraillePatterns;
-    $2900..$297F:
-      Result := ubSupplementalArrowsB;
-    $2980..$29FF:
-      Result := ubMiscellaneousMathematicalSymbolsB;
-    $2A00..$2AFF:
-      Result := ubSupplementalMathematicalOperators;
-    $2B00..$2BFF:
-      Result := ubMiscellaneousSymbolsandArrows;
-    $2C00..$2C5F:
-      Result := ubGlagolitic;
-    $2C80..$2CFF:
-      Result := ubCoptic;
-    $2D00..$2D2F:
-      Result := ubGeorgianSupplement;
-    $2D30..$2D7F:
-      Result := ubTifinagh;
-    $2D80..$2DDF:
-      Result := ubEthiopicExtended;
-    $2E00..$2E7F:
-      Result := ubSupplementalPunctuation;
-    $2E80..$2EFF:
-      Result := ubCJKRadicalsSupplement;
-    $2F00..$2FDF:
-      Result := ubKangxiRadicals;
-    $2FF0..$2FFF:
-      Result := ubIdeographicDescriptionCharacters;
-    $3000..$303F:
-      Result := ubCJKSymbolsandPunctuation;
-    $3040..$309F:
-      Result := ubHiragana;
-    $30A0..$30FF:
-      Result := ubKatakana;
-    $3100..$312F:
-      Result := ubBopomofo;
-    $3130..$318F:
-      Result := ubHangulCompatibilityJamo;
-    $3190..$319F:
-      Result := ubKanbun;
-    $31A0..$31BF:
-      Result := ubBopomofoExtended;
-    $31C0..$31EF:
-      Result := ubCJKStrokes;
-    $31F0..$31FF:
-      Result := ubKatakanaPhoneticExtensions;
-    $3200..$32FF:
-      Result := ubEnclosedCJKLettersandMonths;
-    $3300..$33FF:
-      Result := ubCJKCompatibility;
-    $3400..$4DBF:
-      Result := ubCJKUnifiedIdeographsExtensionA;
-    $4DC0..$4DFF:
-      Result := ubYijingHexagramSymbols;
-    $4E00..$9FFF:
-      Result := ubCJKUnifiedIdeographs;
-    $A000..$A48F:
-      Result := ubYiSyllables;
-    $A490..$A4CF:
-      Result := ubYiRadicals;
-    $A700..$A71F:
-      Result := ubModifierToneLetters;
-    $A800..$A82F:
-      Result := ubSylotiNagri;
-    $AC00..$D7AF:
-      Result := ubHangulSyllables;
-    $D800..$DB7F:
-      Result := ubHighSurrogates;
-    $DB80..$DBFF:
-      Result := ubHighPrivateUseSurrogates;
-    $DC00..$DFFF:
-      Result := ubLowSurrogates;
-    $E000..$F8FF:
-      Result := ubPrivateUse; //ubPrivateUseArea;
-    $F900..$FAFF:
-      Result := ubCJKCompatibilityIdeographs;
-    $FB00..$FB4F:
-      Result := ubAlphabeticPresentationForms;
-    $FB50..$FDFF:
-      Result := ubArabicPresentationFormsA;
-    $FE00..$FE0F:
-      Result := ubVariationSelectors;
-    $FE10..$FE1F:
-      Result := ubVerticalForms;
-    $FE20..$FE2F:
-      Result := ubCombiningHalfMarks;
-    $FE30..$FE4F:
-      Result := ubCJKCompatibilityForms;
-    $FE50..$FE6F:
-      Result := ubSmallFormVariants;
-    $FE70..$FEFF:
-      Result := ubArabicPresentationFormsB;
-    $FF00..$FFEF:
-      Result := ubHalfwidthandFullwidthForms;
-    $FFF0..$FFFF:
-      Result := ubSpecials;
-    $10000..$1007F:
-      Result := ubLinearBSyllabary;
-    $10080..$100FF:
-      Result := ubLinearBIdeograms;
-    $10100..$1013F:
-      Result := ubAegeanNumbers;
-    $10140..$1018F:
-      Result := ubAncientGreekNumbers;
-    $10300..$1032F:
-      Result := ubOldItalic;
-    $10330..$1034F:
-      Result := ubGothic;
-    $10380..$1039F:
-      Result := ubUgaritic;
-    $103A0..$103DF:
-      Result := ubOldPersian;
-    $10400..$1044F:
-      Result := ubDeseret;
-    $10450..$1047F:
-      Result := ubShavian;
-    $10480..$104AF:
-      Result := ubOsmanya;
-    $10800..$1083F:
-      Result := ubCypriotSyllabary;
-    $10A00..$10A5F:
-      Result := ubKharoshthi;
-    $1D000..$1D0FF:
-      Result := ubByzantineMusicalSymbols;
-    $1D100..$1D1FF:
-      Result := ubMusicalSymbols;
-    $1D200..$1D24F:
-      Result := ubAncientGreekMusicalNotation;
-    $1D300..$1D35F:
-      Result := ubTaiXuanJingSymbols;
-    $1D400..$1D7FF:
-      Result := ubMathematicalAlphanumericSymbols;
-    $20000..$2A6DF:
-      Result := ubCJKUnifiedIdeographsExtensionB;
-    $2F800..$2FA1F:
-      Result := ubCJKCompatibilityIdeographsSupplement;
-    $E0000..$E007F:
-      Result := ubTags;
-    $E0100..$E01EF:
-      Result := ubVariationSelectorsSupplement;
-    $F0000..$FFFFF:
-      Result := ubSupplementaryPrivateUseAreaA;
-    $100000..$10FFFF:
-      Result := ubSupplementaryPrivateUseAreaB;
-  else
-    Result := ubUndefined;
+  Result := ubUndefined;
+  L := ubBasicLatin;
+  H := High(TUnicodeBlock);
+  while L <= H do
+  begin
+    I := TUnicodeBlock((Cardinal(L) + Cardinal(H)) shr 1);
+    if (C >= UnicodeBlockData[I].Range.RangeStart) and (C <= UnicodeBlockData[I].Range.RangeEnd) then
+    begin
+      Result := I;
+      Break;
+    end
+    else
+    if C < UnicodeBlockData[I].Range.RangeStart then
+    begin
+      Dec(I);
+      H := I;
+    end
+    else
+    begin
+      Inc(I);
+      L := I;
+    end;
   end;
 end;
 
@@ -8389,8 +7456,11 @@ end;
 // EAX contains Source, EDX contains Target, ECX contains Count
 
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+// Source in EAX
+// Target in EDX
+// Count in ECX
 asm
-       JECXZ   @@Finish           // go out if there is nothing to do
+       JECXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
        PUSH    ESI
        MOV     ESI, EAX
        XOR     EAX, EAX
@@ -8428,113 +7498,1035 @@ const
   FirstByteMark: array [0..6] of Byte =
     ($00, $00, $C0, $E0, $F0, $F8, $FC);
 
-function WideStringToUTF8(S: WideString): AnsiString;
-var
-  Ch: UCS4;
-  L, J, T,
-  BytesToWrite: Cardinal;
-  ByteMask: UCS4;
-  ByteMark: UCS4;
+procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer; var Ch: UCS4); overload;
 begin
-  if S = '' then
-    Result := ''
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Ch := ReplacementCharacter;
+  Inc(StrPos, Increment);
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  StrPos := -1;
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+procedure FlagInvalidUCS2Char(var Ch: UCS4);
+begin
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Ch := ReplacementCharacter;
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  raise EJclUnicodeError.CreateResFmt(@RsEInvalidUCS2Char, [Ch]);
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+procedure FlagInvalidSequence(var StrPos: Integer; Increment: Integer); overload;
+begin
+  {$IFDEF UNICODE_SILENT_FAILURE}
+  Inc(StrPos, Increment);
+  {$ELSE ~UNICODE_SILENT_FAILURE}
+  StrPos := -1;
+  {$ENDIF ~UNICODE_SILENT_FAILURE}
+end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF8GetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChNext: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= StrLength) and (StrPos > 0) then
+  begin
+    Result := UCS4(S[StrPos]);
+
+    case Result of
+      $00..$7F:
+        // 1 byte to read
+        Inc(StrPos);
+      $C0..$DF:
+        begin
+          // 2 bytes to read
+          if StrPos >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $1F) shl 6) or (ChNext and $3F);
+          Inc(StrPos, 2);
+        end;
+      $E0..$EF:
+        begin
+          // 3 bytes to read
+          if (StrPos + 1) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $0F) shl 12) or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 3);
+        end;
+      $F0..$F7:
+        begin
+          // 4 bytes to read
+          if (StrPos + 2) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $07) shl 18) or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 4);
+        end;
+      $F8..$FB:
+        begin
+          // 5 bytes to read
+          if (StrPos + 3) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $03) shl 24) or ((ChNext and $3F) shl 18);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 4]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 4, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 5);
+        end;
+      $FC..$FD:
+        begin
+          // 6 bytes to read
+          if (StrPos + 4) >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result and $01) shl 30) or ((ChNext and $3F) shl 24);
+          ChNext := UCS4(S[StrPos + 2]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 2, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 18);
+          ChNext := UCS4(S[StrPos + 3]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 3, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 12);
+          ChNext := UCS4(S[StrPos + 4]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 4, Result);
+            Exit;
+          end;
+          Result := Result or ((ChNext and $3F) shl 6);
+          ChNext := UCS4(S[StrPos + 5]);
+          if (ChNext and $C0) <> $80 then
+          begin
+            FlagInvalidSequence(StrPos, 5, Result);
+            Exit;
+          end;
+          Result := Result or (ChNext and $3F);
+          Inc(StrPos, 6);
+        end;
+    else
+      FlagInvalidSequence(StrPos, 1, Result);
+      Exit;
+    end;
+  end
   else
   begin
-    SetLength(Result, Length(S) * 6); // assume worst case
-    T := 1;
-    ByteMask := $BF;
-    ByteMark := $80;
-
-    for J := 1 to Length(S) do
-    begin
-      Ch := UCS4(S[J]);
-
-      if Ch < $80 then
-        BytesToWrite := 1
-      else
-        if Ch < $800 then
-          BytesToWrite := 2
-        else
-          if Ch < $10000 then
-            BytesToWrite := 3
-          else
-            if Ch < $200000 then
-              BytesToWrite := 4
-            else
-              if Ch < $4000000 then
-                BytesToWrite := 5
-              else
-                if Ch <= MaximumUCS4 then
-                  BytesToWrite := 6
-                else
-                begin
-                  BytesToWrite := 2;
-                  Ch := ReplacementCharacter;
-                end;
-
-      for L := BytesToWrite downto 2 do
-      begin
-        Result[T + L - 1] := Char((Ch or ByteMark) and ByteMask);
-        Ch := Ch shr 6;
-      end;
-      Result[T] := Char(Ch or FirstByteMark[BytesToWrite]);
-      Inc(T, BytesToWrite);
-    end;
-    SetLength(Result, T - 1); // set to actual length
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
   end;
 end;
 
-function UTF8ToWideString(S: AnsiString): WideString;
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF8 sequence)
+// StrPos will be incremented by the number of ansi chars that were skipped
+// On return, NbSeq contains the number of UTF8 sequences that were skipped
+function UTF8SkipChars(const S: AnsiString; var StrPos: Integer; var NbSeq: Integer): Boolean;
 var
-  L, J, T: Cardinal;
+  StrLength: Integer;
   Ch: UCS4;
-  ExtraBytesToWrite: Word;
+  Index: Integer;
+begin
+  Result := True;
+  StrLength := Length(S);
+
+  Index := 0;
+  while (Index < NbSeq) and (StrPos > 0) do
+  begin
+    Ch := UCS4(S[StrPos]);
+
+    case Ch of
+      $00..$7F:
+        // 1 byte to skip
+        Inc(StrPos);
+      $C0..$DF:
+        // 2 bytes to skip
+        if (StrPos >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+          Inc(StrPos, 2);
+      $E0..$EF:
+        // 3 bytes to skip
+        if ((StrPos + 1) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+          Inc(StrPos, 3);
+      $F0..$F7:
+        // 4 bytes to skip
+        if ((StrPos + 2) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+          Inc(StrPos, 4);
+      $F8..$FB:
+        // 5 bytes to skip
+        if ((StrPos + 3) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+        if (UCS4(S[StrPos + 4]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 4)
+        else
+          Inc(StrPos, 5);
+      $FC..$FD:
+        // 6 bytes to skip
+        if ((StrPos + 4) >= StrLength) or ((UCS4(S[StrPos + 1]) and $C0) <> $80) then
+          FlagInvalidSequence(StrPos, 1)
+        else
+        if (UCS4(S[StrPos + 2]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 2)
+        else
+        if (UCS4(S[StrPos + 3]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 3)
+        else
+        if (UCS4(S[StrPos + 4]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 4)
+        else
+        if (UCS4(S[StrPos + 5]) and $C0) <> $80 then
+          FlagInvalidSequence(StrPos, 5)
+        else
+          Inc(StrPos, 6);
+    else
+      FlagInvalidSequence(StrPos, 1);
+    end;
+
+    if StrPos <> -1 then
+      Inc(Index);
+    if (StrPos > StrLength) and (Index < NbSeq) then
+    begin
+      Result := False;
+      Break;
+    end;
+  end;
+  NbSeq := Index;
+end;
+
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF8SetNextChar(var S: AnsiString; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLength: Integer;
+begin
+  StrLength := Length(S);
+
+  if Ch <= $7F then
+  begin
+    // 7 bits to store
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := AnsiChar(Ch);
+      Inc(StrPos);
+    end;
+  end
+  else
+  if Ch <= $7FF then
+  begin
+    // 11 bits to store
+    Result := StrPos < StrLength;
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($C0 or (Ch shr 6));  // 5 bits
+      S[StrPos + 1] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 2);
+    end;
+  end
+  else
+  if Ch <= $FFFF then
+  begin
+    // 16 bits to store
+    Result := StrPos < (StrLength - 1);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($E0 or (Ch shr 12)); // 4 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 3);
+    end;
+  end
+  else
+  if Ch <= $1FFFFF then
+  begin
+    // 21 bits to store
+    Result := StrPos < (StrLength - 2);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($F0 or (Ch shr 18)); // 3 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 4);
+    end;
+  end
+  else
+  if Ch <= $3FFFFFF then
+  begin
+    // 26 bits to store
+    Result := StrPos < (StrLength - 2);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($F8 or (Ch shr 24)); // 2 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 18) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 4] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 5);
+    end;
+  end
+  else
+  if Ch <= MaximumUCS4 then
+  begin
+    // 31 bits to store
+    Result := StrPos < (StrLength - 3);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($FC or (Ch shr 30)); // 1 bits
+      S[StrPos + 1] := AnsiChar(((Ch shr 24) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar(((Ch shr 18) and $3F) or $80); // 6 bits
+      S[StrPos + 3] := AnsiChar(((Ch shr 12) and $3F) or $80); // 6 bits
+      S[StrPos + 4] := AnsiChar(((Ch shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 5] := AnsiChar((Ch and $3F) or $80); // 6 bits
+      Inc(StrPos, 6);
+    end;
+  end
+  else
+  begin
+    {$IFDEF UNICOLE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := StrPos < (StrLength - 1);
+    if Result then
+    begin
+      S[StrPos] := AnsiChar($E0 or (ReplacementCharacter shr 12)); // 4 bits
+      S[StrPos + 1] := AnsiChar(((ReplacementCharacter shr 6) and $3F) or $80); // 6 bits
+      S[StrPos + 2] := AnsiChar((ReplacementCharacter and $3F) or $80); // 6 bits
+      Inc(StrPos, 3);
+    end;
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    StrPos := -1;
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were read
+function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChNext: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= StrLength) and (StrPos > 0) then
+  begin
+    Result := UCS4(S[StrPos]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        begin
+          // 2 bytes to read
+          if StrPos >= StrLength then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          ChNext := UCS4(S[StrPos + 1]);
+          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+          begin
+            FlagInvalidSequence(StrPos, 1, Result);
+            Exit;
+          end;
+          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
+          Inc(StrPos, 2);
+        end;
+      SurrogateLowStart..SurrogateLowEnd:
+        FlagInvalidSequence(StrPos, 1, Result);
+    else
+      // 1 byte to read
+      Inc(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+
+// if UNICODE_SILENT_FAILURE is defined, invalid sequences will be replaced by ReplacementCharacter
+// otherwise StrPos is set to -1 on return to flag an error (invalid UTF16 sequence)
+// StrPos will be decremented by the number of chars that were read
+function UTF16GetPreviousChar(const S: WideString; var StrPos: Integer): UCS4;
+var
+  StrLength: Integer;
+  ChPrev: UCS4;
+begin
+  StrLength := Length(S);
+
+  if (StrPos <= (StrLength + 1)) and (StrPos > 1) then
+  begin
+    Result := UCS4(S[StrPos - 1]);
+
+    case Result of
+      SurrogateHighStart..SurrogateHighEnd:
+        FlagInvalidSequence(StrPos, -1, Result);
+      SurrogateLowStart..SurrogateLowEnd:
+        begin
+          // 2 bytes to read
+          if StrPos <= 2 then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          ChPrev := UCS4(S[StrPos - 2]);
+          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
+          begin
+            FlagInvalidSequence(StrPos, -1, Result);
+            Exit;
+          end;
+          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
+          Dec(StrPos, 2);
+        end;
+    else
+      // 1 byte to read
+      Dec(StrPos);
+    end;
+  end
+  else
+  begin
+    // StrPos > StrLength
+    Result := 0;
+    FlagInvalidSequence(StrPos, 0, Result);
+  end;
+end;
+
+// returns False if String is too small
+// if UNICODE_SILENT_FAILURE is not defined StrPos is set to -1 on error (invalid UTF16 sequence)
+// StrPos will be incremented by the number of chars that were skipped
+// On return, NbSeq contains the number of UTF16 sequences that were skipped
+function UTF16SkipChars(const S: WideString; var StrPos: Integer; var NbSeq: Integer): Boolean;
+var
+  StrLength, Index: Integer;
+  Ch, ChNext: UCS4;
+begin
+  Result := True;
+  StrLength := Length(S);
+
+  Index := 0;
+  if NbSeq >= 0 then
+    while (Index < NbSeq) and (StrPos > 0) do
+    begin
+      Ch := UCS4(S[StrPos]);
+  
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // 2 bytes to skip
+          if StrPos >= StrLength then
+            FlagInvalidSequence(StrPos, 1)
+          else
+          begin
+            ChNext := UCS4(S[StrPos + 1]);
+            if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+              FlagInvalidSequence(StrPos, 1)
+            else
+              Inc(StrPos, 2);
+          end;
+        SurrogateLowStart..SurrogateLowEnd:
+          // error
+          FlagInvalidSequence(StrPos, 1);
+      else
+        // 1 byte to skip
+        Inc(StrPos);
+      end;
+
+      if StrPos <> -1 then
+        Inc(Index);
+
+      if (StrPos > StrLength) and (Index < NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
+    end
+  else
+    while (Index > NbSeq) and (StrPos > 1) do
+    begin
+      Ch := UCS4(S[StrPos - 1]);
+
+      case Ch of
+        SurrogateHighStart..SurrogateHighEnd:
+          // error
+          FlagInvalidSequence(StrPos, -1);
+        SurrogateLowStart..SurrogateLowEnd:
+          // 2 bytes to skip
+          if StrPos <= 2 then
+            FlagInvalidSequence(StrPos, -1)
+          else
+          begin
+            ChNext := UCS4(S[StrPos - 2]);
+            if (ChNext < SurrogateHighStart) or (ChNext > SurrogateHighEnd) then
+              FlagInvalidSequence(StrPos, -1)
+            else
+              Dec(StrPos, 2);
+          end;
+      else
+        // 1 byte to skip
+        Dec(StrPos);
+      end;
+
+      if StrPos <> -1 then
+        Dec(Index);
+
+      if (StrPos = 1) and (Index > NbSeq) then
+      begin
+        Result := False;
+        Break;
+      end;
+    end;
+  NbSeq := Index;
+end;
+
+// returns False on error:
+//    - if an UCS4 character cannot be stored to an UTF-8 string:
+//        - if UNICODE_SILENT_FAILURE is defined, ReplacementCharacter is added
+//        - if UNICODE_SILENT_FAILURE is not defined, StrPos is set to -1
+//    - StrPos > -1 flags string being too small, caller is responsible for allocating space
+// StrPos will be incremented by the number of chars that were written
+function UTF16SetNextChar(var S: WideString; var StrPos: Integer; Ch: UCS4): Boolean;
+var
+  StrLength: Integer;
+begin
+  StrLength := Length(S);
+
+  if Ch <= MaximumUCS2 then
+  begin
+    // 16 bits to store in place
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := WideChar(Ch);
+      Inc(StrPos);
+    end;
+  end
+  else
+  if Ch <= MaximumUTF16 then
+  begin
+    // stores a surrogate pair
+    Result := StrPos < StrLength;
+    if Result then
+    begin
+      Ch := Ch - HalfBase;
+      S[StrPos] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
+      S[StrPos + 1] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+      Inc(StrPos, 2);
+    end;
+  end
+  else
+  begin
+    {$IFDEF UNICOLE_SILENT_FAILURE}
+    // add ReplacementCharacter
+    Result := StrPos <= StrLength;
+    if Result then
+    begin
+      S[StrPos] := WideChar(ReplacementCharacter);
+      Inc(StrPos, 1);
+    end;
+    {$ELSE ~UNICODE_SILENT_FAILURE}
+    StrPos := -1;
+    Result := False;
+    {$ENDIF ~UNICODE_SILENT_FAILURE}
+  end;
+end;
+
+function WideStringToUTF8(const S: WideString): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
 begin
   if S = '' then
     Result := ''
   else
   begin
-    SetLength(Result, Length(S)); // create enough room
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
 
-    L := 1;
-    T := 1;
-    while L <= Cardinal(Length(S)) do
+    for SrcIndex := 1 to SrcLength do
     begin
-      Ch := 0;
-      ExtraBytesToWrite := BytesFromUTF8[Ord(S[L])];
-
-      for J := ExtraBytesToWrite downto 1 do
-      begin
-        Ch := Ch + Ord(S[L]);
-        Inc(L);
-        Ch := Ch shl 6;
-      end;
-      Ch := Ch + Ord(S[L]);
-      Inc(L);
-      Ch := Ch - OffsetsFromUTF8[ExtraBytesToWrite];
-
-      if Ch <= MaximumUCS2 then
-      begin
-        Result[T] := WideChar(Ch);
-        Inc(T);
-      end
-      else
-        if Ch > MaximumUCS4 then
-        begin
-          Result[T] := WideChar(ReplacementCharacter);
-          Inc(T);
-        end
-        else
-        begin
-          Ch := Ch - HalfBase;
-          Result[T] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
-          Inc(T);
-          Result[T] := WideChar((Ch and HalfMask) + SurrogateLowStart);
-          Inc(T);
-        end;
+      UTF8SetNextChar(Result, DestIndex, UCS4(S[SrcIndex]));
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
     end;
-    SetLength(Result, T - 1); // now fix up length
+
+    SetLength(Result, DestIndex - 1); // set to actual length
   end;
+end;
+
+function UTF8ToWideString(const S: AnsiString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[DestIndex] := UCS2(Ch);
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function WideStringToUTF16(const S: WideString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 2); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 1 to SrcLength do
+    begin
+      UTF16SetNextChar(Result, DestIndex, UCS4(S[SrcIndex]));
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF16ToWideString(const S: WideString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[DestIndex] := UCS2(Ch);
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function WideStringToUCS4(const S: WideString): TUCS4Array;
+var
+  Index, SrcLength: Integer;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // same length
+
+    for Index := 0 to SrcLength - 1 do
+      Result[Index] := UCS4(S[Index + 1]);
+  end;
+end;
+
+function UCS4ToWideString(const S: TUCS4Array): WideString;
+var
+  Index, SrcLength: Integer;
+  Ch: UCS4;
+begin
+  SrcLength := Length(S);
+  if SrcLength = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength); // same length
+
+    for Index := 0 to SrcLength - 1 do
+    begin
+      Ch := S[Index];
+
+      if Ch > MaximumUCS2 then
+        FlagInvalidUCS2Char(Ch);
+
+      Result[Index + 1] := WideChar(Ch);
+    end;
+  end;
+end;
+
+function UTF8ToUTF16(const S: AnsiString): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      UTF16SetNextChar(Result, DestIndex, Ch);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function UTF16ToUTF8(const S: WideString): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S = '' then
+    Result := ''
+  else
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength * 3); // worste case
+
+    SrcIndex := 1;
+    DestIndex := 1;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      UTF8SetNextChar(Result, DestIndex, Ch);
+    end;
+    SetLength(Result, DestIndex - 1); // now fix up length
+  end;
+end;
+
+function UTF8ToUCS4(const S: AnsiString): TUCS4Array;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF8GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      Result[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex); // now fix up length
+  end;
+end;
+
+function UCS4ToUTF8(const S: TUCS4Array): AnsiString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  if Length(S) = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF8SetNextChar(Result, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF16ToUCS4(const S: WideString): TUCS4Array;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+  Ch: UCS4;
+begin
+  if S <> '' then
+  begin
+    SrcLength := Length(S);
+    SetLength(Result, SrcLength); // create enough room
+
+    SrcIndex := 1;
+    DestIndex := 0;
+    while SrcIndex <= SrcLength do
+    begin
+      Ch := UTF16GetNextChar(S, SrcIndex);
+      if SrcIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+
+      Result[DestIndex] := Ch;
+      Inc(DestIndex);
+    end;
+    SetLength(Result, DestIndex); // now fix up length
+  end;
+end;
+
+function UCS4ToUTF16(const S: TUCS4Array): WideString;
+var
+  SrcIndex, SrcLength, DestIndex: Integer;
+begin
+  SrcLength := Length(S);
+  if SrcLength = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, SrcLength * 3); // assume worst case
+    DestIndex := 1;
+
+    for SrcIndex := 0 to SrcLength - 1 do
+    begin
+      UTF16SetNextChar(Result, DestIndex, S[SrcIndex]);
+      if DestIndex = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+
+    SetLength(Result, DestIndex - 1); // set to actual length
+  end;
+end;
+
+function UTF8CharCount(const S: AnsiString): Integer;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Length(S);
+  UTF8SkipChars(S, StrPos, Result);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+end;
+
+function UTF16CharCount(const S: WideString): Integer;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Length(S);
+  UTF16SkipChars(S, StrPos, Result);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+end;
+
+function UCS2CharCount(const S: WideString): Integer;
+begin
+  Result := Length(S);
+end;
+
+function UCS4CharCount(const S: TUCS4Array): Integer;
+begin
+  Result := Length(S);
+end;
+
+function GetUCS4CharAt(const UTF8Str: AnsiString; Index: Integer; out Value: UCS4): Boolean; overload;
+var
+  StrPos: Integer;
+begin
+  StrPos := 1;
+  Result := Index >= 0;
+  if Result then
+    Result := UTF8SkipChars(UTF8Str, StrPos, Index);
+  if StrPos = -1 then
+    raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+  Result := Result and (StrPos <= Length(UTF8Str));
+  if Result then
+  begin
+    Value := UTF8GetNextChar(UTF8Str, StrPos);
+    if StrPos = -1 then
+      raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+  end;
+end;
+
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+var
+  StrPos: Integer;
+begin
+  if IsUTF16 then
+  begin
+    StrPos := 1;
+    Result := Index >= 0;
+    if Result then
+      Result := UTF16SkipChars(WideStr, StrPos, Index);
+    if StrPos = -1 then
+      raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    Result := Result and (StrPos <= Length(WideStr));
+    if Result then
+    begin
+      Value := UTF16GetNextChar(WideStr, StrPos);
+      if StrPos = -1 then
+        raise EJclUnicodeError.CreateRes(@RsEUnexpectedEOSeq);
+    end;
+  end
+  else
+  begin
+    Result := (Index >= 1) and (Index <= Length(WideStr));
+    Value := UCS4(WideStr[Index]);
+  end;
+end;
+
+function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
+begin
+  Result := (Index >= 0) and (Index < Length(UCS4Str));
+  if Result then
+    Value := UCS4Str[Index];
 end;
 
 procedure PrepareUnicodeData;
@@ -8565,7 +8557,5 @@ finalization
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
   FreeUnicodeData;
-
-{$ENDIF SUPPORTS_WIDESTRING}
 
 end.

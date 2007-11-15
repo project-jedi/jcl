@@ -34,8 +34,12 @@
 { conversion to string.                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {.$DEFINE PUREPASCAL}
 
@@ -255,35 +259,35 @@ function Min(const B1, B2: Int64): Int64; overload;
 const
   // Constants defining the number of bits in each Integer type
 
-  BitsPerNibble = 4;
-  BitsPerByte = 8;
+  BitsPerNibble   = 4;
+  BitsPerByte     = 8;
   BitsPerShortint = SizeOf(Shortint) * BitsPerByte;
   BitsPerSmallint = SizeOf(Smallint) * BitsPerByte;
-  BitsPerWord = SizeOf(Word) * BitsPerByte;
-  BitsPerInteger = SizeOf(Integer) * BitsPerByte;
+  BitsPerWord     = SizeOf(Word) * BitsPerByte;
+  BitsPerInteger  = SizeOf(Integer) * BitsPerByte;
   BitsPerCardinal = SizeOf(Cardinal) * BitsPerByte;
-  BitsPerInt64 = SizeOf(Int64) * BitsPerByte;
+  BitsPerInt64    = SizeOf(Int64) * BitsPerByte;
 
   // Constants defining the number of nibbles in each Integer type
 
-  NibblesPerByte = BitsPerByte div BitsPerNibble;
+  NibblesPerByte     = BitsPerByte div BitsPerNibble;
   NibblesPerShortint = SizeOf(Shortint) * NibblesPerByte;
   NibblesPerSmallint = SizeOf(Smallint) * NibblesPerByte;
-  NibblesPerWord = SizeOf(Word) * NibblesPerByte;
-  NibblesPerInteger = SizeOf(Integer) * NibblesPerByte;
+  NibblesPerWord     = SizeOf(Word) * NibblesPerByte;
+  NibblesPerInteger  = SizeOf(Integer) * NibblesPerByte;
   NibblesPerCardinal = SizeOf(Cardinal) * NibblesPerByte;
-  NibblesPerInt64 = SizeOf(Int64) * NibblesPerByte;
+  NibblesPerInt64    = SizeOf(Int64) * NibblesPerByte;
 
   // Constants defining a mask with all bits set for each Integer type
 
-  NibbleMask = $F;
-  ByteMask = Byte($FF);
-  ShortintMask = Shortint($FF);
-  SmallintMask = Smallint($FFFF);
-  WordMask = Word($FFFF);
-  IntegerMask = Integer($FFFFFFFF);
-  CardinalMask = Cardinal($FFFFFFFF);
-  Int64Mask = Int64($FFFFFFFFFFFFFFFF);
+  NibbleMask      = $F;
+  ByteMask        = Byte($FF);
+  ShortintMask    = Shortint($FF);
+  SmallintMask    = Smallint($FFFF);
+  WordMask        = Word($FFFF);
+  IntegerMask     = Integer($FFFFFFFF);
+  CardinalMask    = Cardinal($FFFFFFFF);
+  Int64Mask       = Int64($FFFFFFFFFFFFFFFF);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -405,9 +409,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSR     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -424,9 +428,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSR     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -478,9 +482,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSF     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -497,9 +501,9 @@ asm
   MOV     ECX, EAX
   MOV     EAX, -1
   BSF     EAX, ECX
-  JNZ     @@end
+  JNZ     @@End
   MOV     EAX, -1
-  @@end:
+@@End:
 end;
 {$ENDIF CLR}
 
@@ -545,7 +549,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerByte - 1   // modulo BitsPerByte
+  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -557,7 +561,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
+  AND    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -569,7 +573,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
+  AND    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -581,7 +585,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerWord - 1   // modulo BitsPerWord
+  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   BTR    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -645,7 +649,7 @@ end;
 {$ENDIF CLR}
 
 const
-  BitSetPerNibble: array[0..15] of Byte = (0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
+  BitSetPerNibble: array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
 
 function CountBitsSet(X: Cardinal): Integer;
 var
@@ -714,7 +718,7 @@ begin
   while Count > 0 do
   begin
     b := PByte(P)^;
-
+    
     // lower Nibble
     Inc(Result, BitSetPerNibble[b and $0F]);
     // upper Nibble
@@ -813,8 +817,8 @@ end;
 
 function LRot(const Value: Word; const Count: TBitRange): Word; assembler;
 asm
-  MOV     CL, Count
-  ROL     AX, CL
+   MOV     CL, Count
+   ROL     AX, CL
 end;
 
 function LRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
@@ -1047,7 +1051,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerByte - 1   // modulo BitsPerByte
+  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1059,7 +1063,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
+  AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1071,7 +1075,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
+  AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}
@@ -1083,7 +1087,7 @@ begin
 end;
 {$ELSE CLR}
 asm
-  and    EDX, BitsPerWord - 1   // modulo BitsPerWord
+  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
   BTS    EAX, EDX
 end;
 {$ENDIF CLR}

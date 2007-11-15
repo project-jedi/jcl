@@ -30,12 +30,12 @@ uses
 class procedure TfrmStrings.Execute(const AStream: TJclCLRStringsStream);
 begin
   with TfrmStrings.Create(nil) do
-    try
-      ShowStrings(AStream);
-      ShowModal;
-    finally
-      Free;
-    end;
+  try
+    ShowStrings(AStream);
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 procedure TfrmStrings.ShowStrings(const AStream: TJclCLRStringsStream);

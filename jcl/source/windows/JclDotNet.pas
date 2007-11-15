@@ -25,11 +25,13 @@
 {                                                                                                  }
 { Microsoft .Net framework support routines and classes.                                           }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 unit JclDotNet;
 
@@ -71,15 +73,15 @@ type
 
 type
   IJclClrAppDomain = mscorlib_TLB._AppDomain;
-  IJclClrEvidence = mscorlib_TLB._Evidence;
-  IJclClrAssembly = mscorlib_TLB._Assembly;
-  IJclClrMethod = mscorlib_TLB._MethodInfo;
+  IJclClrEvidence  = mscorlib_TLB._Evidence;
+  IJclClrAssembly  = mscorlib_TLB._Assembly;
+  IJclClrMethod    = mscorlib_TLB._MethodInfo;
 
 type
   TJclClrHostFlavor = (hfServer, hfWorkStation);
 
   TJclClrHostLoaderFlag =
-    (hlOptSingleDomain,
+   (hlOptSingleDomain,
     hlOptMultiDomain,
     hlOptMultiDomainHost,
     hlSafeMode,
@@ -88,7 +90,7 @@ type
 
 type
   EJclClrException = class(SysUtils.Exception);
-
+  
   TJclClrAppDomain = class;
   TJclClrAppDomainSetup = class;
   TJclClrAssembly = class;
@@ -104,7 +106,7 @@ type
     function GetCurrentAppDomain: IJclClrAppDomain;
   protected
     function AddAppDomain(const AppDomain: TJclClrAppDomain): Integer;
-    function RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer;
+    function RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer; 
   public
     constructor Create(const ClrVer: WideString = '';
       const Flavor: TJclClrHostFlavor = hfWorkStation;
@@ -244,21 +246,21 @@ type
   {$EXTERNALSYM HDOMAINENUM}
 
 const
-  STARTUP_CONCURRENT_GC = $1;
-  STARTUP_LOADER_OPTIMIZATION_MASK = $3 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN = $1 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN = $2 shl 1;
+  STARTUP_CONCURRENT_GC                         = $1;
+  STARTUP_LOADER_OPTIMIZATION_MASK              = $3 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
   STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST = $3 shl 1;
-  STARTUP_LOADER_SAFEMODE = $10;
-  STARTUP_LOADER_SETPREFERENCE = $100;
+  STARTUP_LOADER_SAFEMODE                       = $10;
+  STARTUP_LOADER_SETPREFERENCE                  = $100;
 
-  RUNTIME_INFO_UPGRADE_VERSION = $01;
-  RUNTIME_INFO_REQUEST_IA64 = $02;
-  RUNTIME_INFO_REQUEST_AMD64 = $04;
-  RUNTIME_INFO_REQUEST_X86 = $08;
-  RUNTIME_INFO_DONT_RETURN_DIRECTORY = $10;
-  RUNTIME_INFO_DONT_RETURN_VERSION = $20;
-  RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG = $40;
+  RUNTIME_INFO_UPGRADE_VERSION         = $01;
+  RUNTIME_INFO_REQUEST_IA64            = $02;
+  RUNTIME_INFO_REQUEST_AMD64           = $04;
+  RUNTIME_INFO_REQUEST_X86             = $08;
+  RUNTIME_INFO_DONT_RETURN_DIRECTORY   = $10;
+  RUNTIME_INFO_DONT_RETURN_VERSION     = $20;
+  RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG  = $40;
 
 function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
@@ -325,9 +327,9 @@ type
   {$EXTERNALSYM CLSID_RESOLUTION_FLAGS}
 
 const
-  CLSID_RESOLUTION_DEFAULT = $0;
+  CLSID_RESOLUTION_DEFAULT	  = $0;
   {$EXTERNALSYM CLSID_RESOLUTION_DEFAULT}
-  CLSID_RESOLUTION_REGISTERED = $1;
+	CLSID_RESOLUTION_REGISTERED	= $1;
   {$EXTERNALSYM CLSID_RESOLUTION_REGISTERED}
 
 function GetRequestedRuntimeVersionForCLSID(rclsid: TGuid; pVersion: PWideChar;
@@ -421,8 +423,7 @@ begin
 
   if LeftBuild < RightBuild then
     Result := -1
-  else
-  if LeftBuild > RightBuild then
+  else if LeftBuild > RightBuild then
     Result := 1
   else
     Result := 0;
@@ -458,7 +459,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetCORSystemDirectory]
+    jmp [_GetCORSystemDirectory]
   end;
 end;
 
@@ -471,7 +472,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetCORVersion]
+    jmp [_GetCORVersion]
   end;
 end;
 
@@ -484,7 +485,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetFileVersion]
+    jmp [_GetFileVersion]
   end;
 end;
 
@@ -497,7 +498,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetCORRequiredVersion]
+    jmp [_GetCORRequiredVersion]
   end;
 end;
 
@@ -510,7 +511,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetRequestedRuntimeInfo]
+    jmp [_GetRequestedRuntimeInfo]
   end;
 end;
 
@@ -523,7 +524,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetRequestedRuntimeVersion]
+    jmp [_GetRequestedRuntimeVersion]
   end;
 end;
 
@@ -536,7 +537,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorBindToRuntimeHost]
+    jmp [_CorBindToRuntimeHost]
   end;
 end;
 
@@ -549,7 +550,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorBindToRuntimeEx]
+    jmp [_CorBindToRuntimeEx]
   end;
 end;
 
@@ -562,7 +563,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorBindToRuntimeByCfg]
+    jmp [_CorBindToRuntimeByCfg]
   end;
 end;
 
@@ -575,7 +576,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorBindToRuntime]
+    jmp [_CorBindToRuntime]
   end;
 end;
 
@@ -588,7 +589,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorBindToCurrentRuntime]
+    jmp [_CorBindToCurrentRuntime]
   end;
 end;
 
@@ -601,7 +602,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_ClrCreateManagedInstance]
+    jmp [_ClrCreateManagedInstance]
   end;
 end;
 
@@ -614,7 +615,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorMarkThreadInThreadPool]
+    jmp [_CorMarkThreadInThreadPool]
   end;
 end;
 
@@ -627,7 +628,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_RunDll32ShimW]
+    jmp [_RunDll32ShimW]
   end;
 end;
 
@@ -640,7 +641,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_LoadLibraryShim]
+    jmp [_LoadLibraryShim]
   end;
 end;
 
@@ -653,7 +654,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CallFunctionShim]
+    jmp [_CallFunctionShim]
   end;
 end;
 
@@ -666,7 +667,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetRealProcAddress]
+    jmp [_GetRealProcAddress]
   end;
 end;
 
@@ -679,7 +680,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_CorExitProcess]
+    jmp [_CorExitProcess]
   end;
 end;
 
@@ -693,7 +694,7 @@ begin
   asm
     mov esp, ebp
     pop ebp
-    jmp[_GetRequestedRuntimeVersionForCL]
+    jmp [_GetRequestedRuntimeVersionForCL]
   end;
 end;
 
@@ -711,7 +712,7 @@ constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHo
 const
   ClrHostFlavorNames: array [TJclClrHostFlavor] of WideString = ('srv', 'wks');
   ClrHostLoaderFlagValues: array [TJclClrHostLoaderFlag] of DWORD =
-    (STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN,
+   (STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST,
     STARTUP_LOADER_SAFEMODE,
@@ -762,7 +763,7 @@ function TJclClrHost.FindAppDomain(const Intf: IJclClrAppDomain;
 var
   I: Integer;
 begin
-  for I := 0 to AppDomainCount - 1 do
+  for I := 0 to AppDomainCount-1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface = Intf then
@@ -780,7 +781,7 @@ function TJclClrHost.FindAppDomain(const Name: WideString;
 var
   I: Integer;
 begin
-  for I := 0 to AppDomainCount - 1 do
+  for I := 0 to AppDomainCount-1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface.FriendlyName = Name then
@@ -843,11 +844,11 @@ begin
   PathOk := False;
   for Index := Length(SystemDirectory) - 1 downto 1 do
     if SystemDirectory[Index] = WideDirDelimiter then
-    begin
-      SetLength(SystemDirectory, Index);
-      PathOk := True;
-      Break;
-    end;
+  begin
+    SetLength(SystemDirectory, Index);
+    PathOk := True;
+    Break;
+  end;
 
   if PathOk then
   begin
@@ -1053,7 +1054,7 @@ var
   RawAssembly, RawSymbolStore: Variant;
 begin
   Assert(Assigned(RawAssemblyStream));
-  RawAssembly := VarArrayCreate([0, RawAssemblyStream.Size - 1], varByte);
+  RawAssembly := VarArrayCreate([0, RawAssemblyStream.Size-1], varByte);
   try
     try
       RawAssemblyStream.Read(VarArrayLock(RawAssembly)^, RawAssemblyStream.Size);
@@ -1065,7 +1066,7 @@ begin
       Result := TJclClrAssembly.Create(DefaultInterface.Load_3(PSafeArray(TVarData(RawAssembly).VArray)))
     else
     begin
-      RawSymbolStore := VarArrayCreate([0, RawSymbolStoreStream.Size - 1], varByte);
+      RawSymbolStore := VarArrayCreate([0, RawSymbolStoreStream.Size-1], varByte);
       try
         try
           RawSymbolStoreStream.Read(VarArrayLock(RawSymbolStore)^, RawSymbolStoreStream.Size);

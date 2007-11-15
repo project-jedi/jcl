@@ -17,8 +17,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -63,16 +64,16 @@ type
 implementation
 
 uses
- // do not reference Ota units there because of the ThreadExceptExample
- {JclOtaConsts, JclOtaResources,} JclSysUtils;
+  // do not reference Ota units there because of the ThreadExceptExample
+  {JclOtaConsts, JclOtaResources,} JclSysUtils;
 
 const
-  MaxThreadCount = 256;
+  MaxThreadCount       = 256;
   IdeEnterMutexTimeout = 5000;
-  MutexName = 'DebugThreadNamesMutex';
-  MutexReadName = 'DebugThreadNamesReadMutex';
-  MappingName = 'DebugThreadNamesMapping';
-  EventName = 'DebugThreadNamesEvent';
+  MutexName            = 'DebugThreadNamesMutex';
+  MutexReadName        = 'DebugThreadNamesReadMutex';
+  MappingName          = 'DebugThreadNamesMapping';
+  EventName            = 'DebugThreadNamesEvent';
 
 resourcestring
   RsEnterMutexTimeout = 'JCL Thread Name IDE Expert Mutex Timeout';
@@ -140,24 +141,24 @@ var
   I: Integer;
 begin
   if EnterMutex then
-    try
-      with PThreadNames(FView.Memory)^ do
-        for I := Low(Threads) to High(Threads) do
-          with Threads[I] do
-            if ProcessID = ProcessID then
-            begin
-              FReadMutex.WaitForever;
-              try
-                ProcessID := 0;
-                ThreadID := 0;
-                ThreadName := '';
-              finally
-                FReadMutex.Release;
-              end;
-            end;
-    finally
-      FMutex.Release;
-    end;
+  try
+    with PThreadNames(FView.Memory)^ do
+      for I := Low(Threads) to High(Threads) do
+        with Threads[I] do
+          if ProcessID = ProcessID then
+          begin
+            FReadMutex.WaitForever;
+            try
+              ProcessID := 0;
+              ThreadID := 0;
+              ThreadName := '';
+            finally
+              FReadMutex.Release;
+            end;    
+          end;
+  finally
+    FMutex.Release;
+  end;
 end;
 
 function TSharedThreadNames.EnterMutex: Boolean;
@@ -184,7 +185,7 @@ class function TSharedThreadNames.Exists: Boolean;
 {$IFDEF DELPHI7_UP}
 begin
   Result := True;
-end;
+end;  
 {$ELSE DELPHI7_UP}
 var
   H: THandle;
@@ -202,17 +203,17 @@ var
 begin
   Result := '';
   if FReadMutex.WaitForever = wrSignaled then
-    try
-      with PThreadNames(FView.Memory)^ do
-        for I := Low(Threads) to High(Threads) do
-          if Threads[I].ThreadID = ThreadID then
-          begin
-            Result := Threads[I].ThreadName;
-            Break;
-          end;
-    finally
-      FReadMutex.Release;
-    end;
+  try
+    with PThreadNames(FView.Memory)^ do
+      for I := Low(Threads) to High(Threads) do
+        if Threads[I].ThreadID = ThreadID then
+        begin
+          Result := Threads[I].ThreadName;
+          Break;
+        end;
+  finally
+    FReadMutex.Release;
+  end;
 end;
 
 procedure TSharedThreadNames.InternalRegisterThread(ThreadID: DWORD; const ThreadName: string; UpdateOnly: Boolean);
@@ -221,41 +222,41 @@ var
   NeedNotify: Boolean;
 begin
   if EnterMutex then
-    try
-      Slot := -1;
-      NeedNotify := ThreadID = MainThreadID;
-      with PThreadNames(FView.Memory)^ do
-      begin
-        for I := Low(Threads) to High(Threads) do
-          if Threads[I].ThreadID = ThreadID then
-          begin
-            Slot := I;
-            NeedNotify := True;
-            Break;
-          end
-          else
-          if (not UpdateOnly) and (Slot = -1) and (Threads[I].ThreadID = 0) then
-            Slot := I;
-        if Slot <> -1 then
+  try
+    Slot := -1;
+    NeedNotify := ThreadID = MainThreadID;
+    with PThreadNames(FView.Memory)^ do
+    begin
+      for I := Low(Threads) to High(Threads) do
+        if Threads[I].ThreadID = ThreadID then
         begin
-          FReadMutex.WaitForever;
-          try
-            Threads[Slot].ProcessID := FProcessID;
-            Threads[Slot].ThreadID := ThreadID;
-            Threads[Slot].ThreadName := ThreadName;
-          finally
-            FReadMutex.Release;
-          end;
+          Slot := I;
+          NeedNotify := True;
+          Break;
+        end
+        else
+        if (not UpdateOnly) and (Slot = -1) and (Threads[I].ThreadID = 0) then
+          Slot := I;
+      if Slot <> -1 then
+      begin
+        FReadMutex.WaitForever;
+        try
+          Threads[Slot].ProcessID := FProcessID;
+          Threads[Slot].ThreadID := ThreadID;
+          Threads[Slot].ThreadName := ThreadName;
+        finally
+          FReadMutex.Release;
         end;
       end;
-    {$IFDEF DELPHI7_UP}
-      SetIdeDebuggerThreadName(ThreadID, ThreadName);
-    {$ENDIF DELPHI7_UP}
-      if NeedNotify then
-        FNotifyEvent.SetEvent;
-    finally
-      FMutex.Release;
     end;
+    {$IFDEF DELPHI7_UP}
+    SetIdeDebuggerThreadName(ThreadID, ThreadName);
+    {$ENDIF DELPHI7_UP}
+    if NeedNotify then
+      FNotifyEvent.SetEvent;
+  finally
+    FMutex.Release;
+  end;
 end;
 
 procedure TSharedThreadNames.RegisterThread(ThreadID: DWORD; const ThreadName: string);

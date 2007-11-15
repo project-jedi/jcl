@@ -33,8 +33,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDI;
 
@@ -93,7 +97,7 @@ type
   TEDIObjectListItem = class;
   TEDIObjectList = class;
   TEDIDataObjectListItem = class;
-  TEDIDataObjectList = class;
+  TEDIDataObjectList = class;  
 
   //  EDI Delimiters Object
   TEDIDelimiters = class(TEDIObject)
@@ -121,7 +125,7 @@ type
 
   //  EDI Data Object
   TEDIDataObjectType =
-    (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
+   (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
     ediTransactionSet, ediMessage, ediFunctionalGroup,
     ediInterchangeControl, ediFile, ediCustom);
 
@@ -293,7 +297,7 @@ type
     property Count: Integer read FCount;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
     property Options: TEDIDataObjectListOptions read FOptions write FOptions;
-    property CurrentItem: TEDIObjectListItem read FCurrentItem;
+    property CurrentItem: TEDIObjectListItem read FCurrentItem;    
   end;
 
   TEDIDataObjectListItem = class(TEDIObjectListItem)
@@ -310,7 +314,7 @@ type
     procedure SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
   public
     function CreateListItem(PriorItem: TEDIObjectListItem;
-      EDIObject: TEDIObject = nil): TEDIObjectListItem; override;
+      EDIObject: TEDIObject = nil): TEDIObjectListItem; override;  
     property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
   end;
@@ -322,7 +326,7 @@ type
     OwnerLoopId: string;
     ParentLoopId: string;
     EDIObject: TEDIObject;
-    EDISpecObject: TEDIObject;
+    EDISpecObject: TEDIObject;    
   end;
 
   TEDILoopStackArray = array of TEDILoopStackRecord;
@@ -441,7 +445,7 @@ begin
     else
     begin
       Result[I] := #0;
-      SetLength(Result, I - 1);
+      SetLength(Result, I-1);
       Break;
     end;
 
@@ -485,8 +489,8 @@ begin
       SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
     end
   else
-  if SearchResult <> 0 then
-    Inc(ReplaceCount);
+    if SearchResult <> 0 then
+      Inc(ReplaceCount);
   SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
   // Copy the characters by looping through the result and source at the same time
   ReplaceCount := 0;
@@ -1606,7 +1610,7 @@ begin
       if ediLoopRepeated in FFlags then
       begin
         // Get the previous stack record so the repeated loop will not be nested
-        StackRecord := Peek(I - 1);
+        StackRecord := Peek(I-1);
         // In event handler add loop to external data structure since it repeated
         // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
         DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
@@ -1620,7 +1624,7 @@ begin
       begin
         // Get the previous stack record because the loop
         // is not to be nested at the current stack pointer
-        StackRecord := Peek(I - 1);
+        StackRecord := Peek(I-1);
         // In event handler add loop to external data structure since it is new
         // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
         DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);

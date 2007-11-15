@@ -902,25 +902,7 @@ See also:
 Donator:
   Heinz Zastrau
 --------------------------------------------------------------------------------
-@@TJclEasyStream.WriteCString
-Description:
-  The WriteCString method writes a C-like string (null terminated) to this stream.
-See also:
-  TJclEasyStream.ReadCString
-  TJclEasyStream.WriteBoolean
-  TJclEasyStream.WriteChar
-  TJclEasyStream.WriteCurrency
-  TJclEasyStream.WriteDateTime
-  TJclEasyStream.WriteDouble
-  TJclEasyStream.WriteExtended
-  TJclEasyStream.WriteInt64
-  TJclEasyStream.WriteInteger
-  TJclEasyStream.WriteShortString
-  TJclEasyStream.WriteSingle
-  TJclEasyStream.WriteSizedString
-Donator:
-  Heinz Zastrau
---------------------------------------------------------------------------------
+
 @@TJclEasyStream.WriteCurrency@Currency
 Description:
   The WriteCurrency method writes a currency value to this
@@ -1270,26 +1252,20 @@ Donator:
 @@TJclEventStream.Seek@Longint@Word
 <COMBINEWITH !!OVERLOADED_Seek_TJclEventStream>
 --------------------------------------------------------------------------------
-@@!!OVERLOADED_SetSize_TJclEventStream
-Description:
+@@TJclEventStream.SetSize@Int64
+Description
   Overridden method of TStream.SetSize, all calls to this
   methods are redirected to data stream and notified to event
   handler.
-Parameters:
+Parameters
   NewSize - Requested new size of the stream.
-See also:
+See Also
   TJclEventStream.OnNotification
   TJclEventStream.Read
   TJclEventStream.Seek
   TJclEventStream.Write
-Donator:
+Donator
   Heinz Zastrau
---------------------------------------------------------------------------------
-@@TJclEventStream.SetSize@Int64
-<COMBINEWITH !!OVERLOADED_SetSize_TJclEventStream>
---------------------------------------------------------------------------------
-@@TJclEventStream.SetSize@Longint
-<COMBINEWITH !!OVERLOADED_SetSize_TJclEventStream>
 --------------------------------------------------------------------------------
 @@TJclEventStream.Write@@Longint
 Description:
@@ -1633,26 +1609,20 @@ Donator:
 @@TJclStreamDecorator.Seek@Longint@Word
 <COMBINEWITH !!OVERLOADED_Seek_TJclStreamDecorator>
 --------------------------------------------------------------------------------
-@@!!OVERLOADED_SetSize_TJclStreamDecorator
-Summary:
+@@TJclStreamDecorator.SetSize@Int64
+Summary
   Overridden function of TStream.SetSize.
-Description:
-  Change the size of attached stream. For a more complete description, refer
-  to TStream.SetSize documentation.
-Parameters:
+Description
+  Change the size of attached stream. For a more complete
+  description, refer to TStream.SetSize documentation.
+Parameters
   NewSize - requested new size in bytes.
-See also:
+See Also
   TJclStreamDecorator.Read
   TJclStreamDecorator.Seek
   TJclStreamDecorator.Write
-Donator:
+Donator
   Heinz Zastrau
---------------------------------------------------------------------------------
-@@TJclStreamDecorator.SetSize@Int64
-<COMBINEWITH !!OVERLOADED_SetSize_TJclStreamDecorator>
---------------------------------------------------------------------------------
-@@TJclStreamDecorator.SetSize@Longint
-<COMBINEWITH !!OVERLOADED_SetSize_TJclStreamDecorator>
 --------------------------------------------------------------------------------
 @@TJclStreamDecorator.AfterStreamChange
 Summary:
@@ -2149,27 +2119,22 @@ See also:
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
-@@!!OVERLOADED_SetSize_TJclEmptyStream
-Summary:
+@@TJclEmptyStream.SetSize@Int64
+Summary
   Overridden procedure of TStream.SetSize.
-Description:
-  This procedure sets a new size for the stream. For a more complete
-  description of this procedure, refer to the documentation of TStream.SetSize.
-  As implemented, this function does nothing to keep stream size to 0.
-Parameters:
+Description
+  This procedure sets a new size for the stream. For a more
+  complete description of this procedure, refer to the
+  documentation of TStream.SetSize. As implemented, this
+  function does nothing to keep stream size to 0.
+Parameters
   Value - New size in bytes.
-See also:
+See Also
   TJclEmptyStream.Read
   TJclEmptyStream.Seek
   TJclEmptyStream.Write
-Donator:
+Donator
   Robert Marquardt
---------------------------------------------------------------------------------
-@@TJclEmptyStream.SetSize@Int64
-<COMBINEWITH !!OVERLOADED_SetSize_TJclEmptyStream>
---------------------------------------------------------------------------------
-@@TJclEmptyStream.SetSize@Longint
-<COMBINEWITH !!OVERLOADED_SetSize_TJclEmptyStream>
 --------------------------------------------------------------------------------
 @@TJclEmptyStream.Read@@Longint
 Summary:
@@ -2282,15 +2247,9 @@ See also:
 Donator:
   Robert Marquardt
 --------------------------------------------------------------------------------
-@@!!OVERLOADED_SetSize_TJclHandleStream
-Donator:
-  Robert Marquardt
---------------------------------------------------------------------------------
 @@TJclHandleStream.SetSize@Int64
-<COMBINEWITH !!OVERLOADED_SetSize_TJclHandleStream>
---------------------------------------------------------------------------------
-@@TJclHandleStream.SetSize@Longint
-<COMBINEWITH !!OVERLOADED_SetSize_TJclHandleStream>
+Donator
+  Robert Marquardt
 --------------------------------------------------------------------------------
 @@TJclHandleStream.Create@THandle
 Summary:
@@ -2370,3 +2329,6 @@ Donator:
 Donator:
   Florent Ouchet
 --------------------------------------------------------------------------------
+
+@@StreamSeek@TStream@Int64@TSeekOrigin
+\ \ 

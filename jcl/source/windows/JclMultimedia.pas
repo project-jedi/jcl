@@ -29,8 +29,12 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclMultimedia;
 
@@ -229,8 +233,7 @@ type
     property Lines[Index: Integer]: TJclMixerLine read GetLines;
     property LineCount: Integer read GetLineCount;
     property LineControlByID[ControlID: DWORD]: TJclMixerLineControl read GetLineControlByID;
-    property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal
-      read GetLineUniformValue write SetLineUniformValue;
+    property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal read GetLineUniformValue write SetLineUniformValue;
     property ProductName: string read GetProductName;
   end;
 
@@ -261,11 +264,10 @@ type
     property LineMute[ComponentType: Integer]: Boolean read GetLineMute write SetLineMute;
     property LineVolume[ComponentType: Integer]: Cardinal read GetLineVolume write SetLineVolume;
     property SpeakersMute: Boolean index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineMute write SetLineMute;
-    property SpeakersVolume: Cardinal index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS
-      read GetLineVolume write SetLineVolume;
+    property SpeakersVolume: Cardinal index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineVolume write SetLineVolume;
   end;
 
-function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
+  function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
 
 type
   // MCI Error checking
@@ -307,8 +309,7 @@ type
 function GetCdInfo(InfoType: TJclCdMediaInfo; Drive: Char = #0): string;
 
 function GetCDAudioTrackList(var TrackList: TJclCdTrackInfoArray; Drive: Char = #0): TJclCdTrackInfo; overload;
-function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean = False; Drive: Char = #0): string;
-  overload;
+function GetCDAudioTrackList(TrackList: TStrings; IncludeTrackType: Boolean = False; Drive: Char = #0): string; overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -326,7 +327,7 @@ uses
   SysUtils,
   JclResources, JclSysUtils;
 
-{ TODO : move to JclWin32? }
+{ TODO : move to JclWin32? }  
 {$IFDEF FPC}
 // declarations missing from mmsystem.pp
 const
@@ -401,20 +402,20 @@ begin
   end;
   case FNotification of
     nkCallback:
-    begin
-      Event := Event or TIME_CALLBACK_FUNCTION;
-      TimerCallback := @MmTimerCallback;
-    end;
+      begin
+        Event := Event or TIME_CALLBACK_FUNCTION;
+        TimerCallback := @MmTimerCallback;
+      end;
     nkSetEvent:
-    begin
-      Event := Event or TIME_CALLBACK_EVENT_SET;
-      TimerCallback := TFNTimeCallback(FEvent.Handle);
-    end;
+      begin
+        Event := Event or TIME_CALLBACK_EVENT_SET;
+        TimerCallback := TFNTimeCallback(FEvent.Handle);
+      end;
     nkPulseEvent:
-    begin
-      Event := Event or TIME_CALLBACK_EVENT_PULSE;
-      TimerCallback := TFNTimeCallback(FEvent.Handle);
-    end;
+      begin
+        Event := Event or TIME_CALLBACK_EVENT_PULSE;
+        TimerCallback := TFNTimeCallback(FEvent.Handle);
+      end;
   end;
   FStartTime := GetTime;
   if timeBeginPeriod(FPeriod) = TIMERR_NOERROR then
@@ -570,8 +571,7 @@ begin
       GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) * ControlDetails.cMultipleItems);
       try
         ControlDetails.paDetails := ListTexts;
-        if mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) =
-          MMSYSERR_NOERROR then
+        if mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT) = MMSYSERR_NOERROR then
         begin
           P := ListTexts;
           for I := 1 to ControlDetails.cMultipleItems do
@@ -579,7 +579,7 @@ begin
             FListText.AddObject(P^.szName, Pointer(P^.dwParam1));
             Inc(P);
           end;
-        end;
+        end;  
       finally
         FreeMem(ListTexts);
       end;
@@ -726,7 +726,7 @@ begin
         FLineControls.Add(Item);
         Inc(P);
       end;
-    end;
+    end;  
   finally
     FreeMem(Controls);
   end;
@@ -1002,7 +1002,7 @@ begin
   begin
     BuildLines;
     Result := FLines.Count;
-  end;
+  end;  
 end;
 
 function TJclMixerDevice.GetLines(Index: Integer): TJclMixerLine;
@@ -1018,7 +1018,7 @@ begin
   if LineControl <> nil then
     Result := LineControl.UniformValue
   else
-    Result := 0;
+    Result := 0;  
 end;
 
 function TJclMixerDevice.GetProductName: string;
@@ -1172,7 +1172,7 @@ constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
   FMciErrorNo := MciErrNo;
   FMciErrorMsg := GetMciErrorMessage(MciErrNo);
-  inherited Create(LoadStr(Ident) + AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
+  inherited Create(LoadStr(Ident)+ AnsiLineBreak + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
@@ -1311,7 +1311,7 @@ begin
       begin
         Result.TrackType := ttAudio;
         TrackList[I].TrackType := ttAudio;
-      end
+      end  
       else
         TrackList[I].TrackType := ttOther;
     end;

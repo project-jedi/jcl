@@ -1,25 +1,27 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL) extension                                    }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is ProjAnalyzerFrm.pas.                                    }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: July 22, 2001                                                 }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is ProjAnalyzerFrm.pas.                                                        }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit ProjAnalyzerFrm;
 
@@ -246,13 +248,13 @@ begin
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
-          with Items[R] do
-          begin
-            S := MakeCellStr(Caption, 0);
-            for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-              S := S + MakeCellStr(SubItems[C], C + 1);
-            AddLine;
-          end;
+        with Items[R] do
+        begin
+          S := MakeCellStr(Caption, 0);
+          for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
+            S := S + MakeCellStr(SubItems[C], C + 1);
+          AddLine;
+        end;
     finally
       Strings.EndUpdate;
     end;
@@ -275,9 +277,9 @@ begin
   FUnitsSum.Duplicates := dupIgnore;
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-    Settings.LoadInteger(JclTop, Top),
-    Settings.LoadInteger(JclWidth, Width),
-    Settings.LoadInteger(JclHeight, Height));
+            Settings.LoadInteger(JclTop, Top),
+            Settings.LoadInteger(JclWidth, Width),
+            Settings.LoadInteger(JclHeight, Height));
 
   FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
 
@@ -362,8 +364,8 @@ begin
       ShowDetails;
     pavSummary:
       ShowSummary;
-  else
-    ShowDfms;
+    else
+      ShowDfms;
   end;
 end;
 
@@ -460,10 +462,10 @@ begin
   FUnits[C].Group := ClassName;
   case ClassName1 of
     'B':
-    begin
-      Inc(FBssSize, Length);
-      Length := 0;
-    end;
+      begin
+        Inc(FBssSize, Length);
+        Length := 0;
+      end;
     'C':
       Inc(FCodeSize, Length);
     'D':
@@ -571,8 +573,7 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else
-  if Assigned(Application.MainForm) then
+  else if Assigned (Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;

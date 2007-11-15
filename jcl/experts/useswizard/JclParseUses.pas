@@ -19,8 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Robert Marquardt                                                                     }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -180,7 +181,7 @@ begin
   if P^ in ['A'..'Z', '_', 'a'..'z'] then
   begin
     PStart := P;
-
+    
     Inc(P);
     while P^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
       Inc(P);
@@ -242,7 +243,7 @@ begin
   FText := '';
   if AText = nil then
     Exit;
-
+    
   PStart := PChar(AText);
   P := PStart;
   if CheckKeyword(P, SUses) then
@@ -274,12 +275,12 @@ begin
         ',':
           Inc(P);
         ';':
-        begin
-          Inc(P);
-          Break;
-        end;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+          begin
+            Inc(P);
+            Break;
+          end;
+        else
+          raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
 
@@ -321,7 +322,7 @@ begin
       if P^ <> '''' then
         raise EUsesListError.CreateTrace(RsEInvalidUses);
       Inc(P);
-
+        
       while not (P^ in [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
@@ -335,8 +336,8 @@ begin
         Inc(P);
       ';':
         Break;
-    else
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -395,8 +396,8 @@ begin
         Inc(P);
       ';':
         Break;
-    else
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -456,13 +457,13 @@ begin
         ',':
           Inc(P);
         ';':
-        begin
-          System.Insert(Format(', %s', [UnitName]), FText, P - PChar(FText) + 1);
-          Result := IndexOf(UnitName);
-          Break;
-        end;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+          begin
+            System.Insert(Format(', %s', [UnitName]), FText, P - PChar(FText) + 1);
+            Result := IndexOf(UnitName);
+            Break;
+          end;
+        else
+          raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
   end;
@@ -521,8 +522,8 @@ begin
         Inc(P);
       ';':
         Break;
-    else
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -589,8 +590,8 @@ begin
       case P^ of
         ',':
           Inc(P);
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+        else
+          raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
     end;
   end;
@@ -656,12 +657,12 @@ begin
       // remove separator
       case P^ of
         ',', ';':
-        begin
-          DelPos := P - PChar(FText) + 1;
-          Delete(FText, DelPos, 1);
-        end;
-      else
-        raise EUsesListError.CreateTrace(RsEInvalidUses);
+          begin
+            DelPos := P - PChar(FText) + 1;
+            Delete(FText, DelPos, 1);
+          end;
+        else
+          raise EUsesListError.CreateTrace(RsEInvalidUses);
       end;
       // remove trailing spaces, if any
       PIdentifier := PChar(FText) + DelPos - 1;
@@ -696,14 +697,14 @@ begin
 
     case P^ of
       ',', ';':
-      begin
+        begin
           // make sure semicolon is the last separator in case the last unit is going to be removed
-        if (Index = Count - 1) and (I = Index - 1) then
-          P^ := ';';
-        Inc(P);
-      end;
-    else
-      raise EUsesListError.CreateTrace(RsEInvalidUses);
+          if (Index = Count - 1) and (I = Index - 1) then
+            P^ := ';';
+          Inc(P);
+        end;
+      else
+        raise EUsesListError.CreateTrace(RsEInvalidUses);
     end;
   end;
 end;
@@ -719,7 +720,7 @@ begin
 
   PStart := Text;
   P := PStart;
-
+  
   // check 'program' label
   SkipCommentsAndBlanks(P);
   if not CheckKeyword(P, SProgram) then

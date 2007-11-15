@@ -1,30 +1,30 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License");                                               }
-{ you may not use this file except in compliance with the License. You may   }
-{ obtain a copy of the License at http://www.mozilla.org/MPL/                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is JclOtaRepositoryReg.pas.                              }
-{                                                                            }
-{ The Initial Developer of the Original Code is Florent Ouchet               }
-{         <outchy att users dott sourceforge dott net>                       }
-{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.    }
-{                                                                            }
-{ Contributors:                                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date: $                                                    }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOtaRepositoryReg.pas.                                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{         <outchy att users dott sourceforge dott net>                                             }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclOtaRepositoryReg;
 
@@ -105,10 +105,10 @@ begin
 
   for Index := 0 to PersonalityServices.PersonalityCount - 1 do
     if SameText(PersonalityServices.Personalities[Index], PersonalityName) then
-    begin
-      Result := True;
-      Break;
-    end;
+  begin
+    Result := True;
+    Break;
+  end;
 end;
 {$ELSE BDS}
 begin
@@ -172,8 +172,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -235,7 +235,7 @@ var
   SourceExtension, SourceTemplate, SourceContent, SourceFileName: string;
   OTAServices: IOTAServices;
 begin
-  Supports(BorlandIDEServices, IOTAServices, OTAServices);
+  Supports(BorlandIDEServices,IOTAServices,OTAServices);
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
@@ -244,32 +244,32 @@ begin
 
   case Params.Language of
     bpDelphi32:
-    begin
-      FormExtension := JclBorDesignerFormExtension[Params.Designer];
-      FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
-      HeaderExtension := '';
-      HeaderTemplate := '';
-      SourceExtension := SourceExtensionPAS;
-      SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
-    end;
+      begin
+        FormExtension := JclBorDesignerFormExtension[Params.Designer];
+        FormTemplate := TemplatePath + DelphiTemplate + FormExtension;
+        HeaderExtension := '';
+        HeaderTemplate := '';
+        SourceExtension := SourceExtensionPAS;
+        SourceTemplate := TemplatePath + DelphiTemplate + SourceExtension;
+      end;
     bpBCBuilder32:
-    begin
-      FormExtension := JclBorDesignerFormExtension[Params.Designer];
-      FormTemplate := TemplatePath + BCBTemplate + FormExtension;
-      HeaderExtension := SourceExtensionH;
-      HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
-      SourceExtension := SourceExtensionCPP;
-      SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
-    end;
+      begin
+        FormExtension := JclBorDesignerFormExtension[Params.Designer];
+        FormTemplate := TemplatePath + BCBTemplate + FormExtension;
+        HeaderExtension := SourceExtensionH;
+        HeaderTemplate := TemplatePath + BCBTemplate + HeaderExtension;
+        SourceExtension := SourceExtensionCPP;
+        SourceTemplate := TemplatePath + BCBTemplate + SourceExtension;
+      end;
   else
-  begin
-    FormExtension := '';
-    FormTemplate := '';
-    HeaderExtension := '';
-    HeaderTemplate := '';
-    SourceExtension := '';
-    SourceTemplate := '';
-  end;
+      begin
+        FormExtension := '';
+        FormTemplate := '';
+        HeaderExtension := '';
+        HeaderTemplate := '';
+        SourceExtension := '';
+        SourceTemplate := '';
+      end;
   end;
 
   FormTemplate := LoadTemplate(FormTemplate);

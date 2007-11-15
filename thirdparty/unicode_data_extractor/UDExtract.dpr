@@ -6,7 +6,13 @@ program UDExtract;
 // to a resource file. For usage see procedure PrintUsage.
 
 uses
-  Classes, SysUtils, JclUnicode;
+  Classes,
+  SysUtils,
+  JclSysUtils,
+  JclCompression,
+  BZip2,
+  ZLibh,
+  JclUnicode;
 
 type
   TDecomposition = record
@@ -119,8 +125,11 @@ var
   SourceFileName,
   SpecialCasingFileName,
   CaseFoldingFileName,
+  DerivedNormalizationPropsFileName,
   TargetFileName: string;
   Verbose: Boolean;
+  ZLibCompress: Boolean;
+  BZipCompress: Boolean;
 
   // array used to collect a decomposition before adding it to the decomposition table
   DecompTemp: array[0..63] of Cardinal;
@@ -132,12 +141,16 @@ var
   CCCs: array[Byte] of TRangeArray;
   // list of decomposition
   Decompositions: array of TDecomposition;
-  // array to hold the number equivalents for specific codes
+  // array to hold the number equivalents for specific codes (sorted by code)
   NumberCodes: array of TCodeIndex;
   // array of numbers used in NumberCodes
   Numbers: array of TNumber;
   // array for all case mappings (including 1 to many casing if a special casing source file was given)
   CaseMapping: array of TCase;
+  // array of compositions (somehow the same as Decompositions except sorted by decompositions and removed elements)
+  Compositions: array of TDecomposition;
+  // array of composition exception ranges
+  CompositionExceptions: array of TRange;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -507,6 +520,15 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure AddRangeToCompositionExclusions(Start, Stop: Cardinal);
+begin
+  SetLength(CompositionExceptions, Length(CompositionExceptions) + 1);
+  CompositionExceptions[High(CompositionExceptions)].Start := Start;
+  CompositionExceptions[High(CompositionExceptions)].Stop := Stop;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function FindOrAddCaseEntry(Code: Cardinal): Integer;
 
 // Used to look up the given code in the case mapping array. If no entry with the given code
@@ -780,7 +802,8 @@ begin
 
                 // If there is more than one code in the temporary decomposition
                 // array then add the character with its decomposition.
-                if DecompTempSize > 1 then
+                // (outchy) latest unicode data have aliases to link items having the same decompositions
+                //if DecompTempSize > 1 then
                   AddDecomposition(StartCode);
               end;
 
@@ -968,6 +991,61 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure ParseDerivedNormalizationProps;
+
+// parse DerivedNormalizationProps looking for composition exclusions
+
+var
+ Lines,
+ Line: TStringList;
+ I, SeparatorPos: Integer;
+ Start, Stop: Cardinal;
+
+begin
+  Lines := TStringList.Create;
+ try
+   Lines.LoadFromFile(DerivedNormalizationPropsFileName);
+   Line := TStringList.Create;
+   try
+     for I := 0 to Lines.Count - 1 do
+     begin
+       // Layout of one line is:
+       // <range>; <options> [;...] ; # <name>
+       SplitLine(Lines[I], Line);
+       // continue only if the line is not empty
+       if (Line.Count > 0) and (Length(Line[0]) > 1) then
+       begin
+         // the range currently being under consideration
+         SeparatorPos := Pos('..', Line[0]);
+         if SeparatorPos > 0 then
+         begin
+           Start := StrToInt('$' + Copy(Line[0], 1, SeparatorPos - 1));
+           Stop := StrToInt('$' + Copy(Line[0], SeparatorPos + 2, MaxInt));
+         end
+         else
+         begin
+           Start := StrToInt('$' + Line[0]);
+           Stop := Start;
+         end;
+         // first option is considered
+         if SameText(Line[1], 'Full_Composition_Exclusion') then
+           AddRangeToCompositionExclusions(Start, Stop);
+       end;
+       if not Verbose then
+         Write(Format(#13'  %d%% done', [Round(100 * I / Lines.Count)]));
+     end;
+   finally
+     Line.Free;
+   end;
+ finally
+   Lines.Free;
+ end;
+ if not Verbose then
+   Writeln;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function FindDecomposition(Code: Cardinal): Integer;
 
 var
@@ -1035,29 +1113,116 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function IsCompositionExcluded(Code: Cardinal): Boolean;
+
+// checks if composition is excluded to this code (decomposition cannot be recomposed)
+
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 0 to High(CompositionExceptions) do
+    with CompositionExceptions[I] do
+      if (Start <= Code) and (Code <= Stop) then
+      begin
+        Result := True;
+        Break;
+      end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function SortCompositions(Item1, Item2: Pointer): Integer;
+type
+  PDecomposition = ^TDecomposition;
+var
+  Decomposition1, Decomposition2: PDecomposition;
+  I, Len1, Len2, MinLen: Integer;
+begin
+  Decomposition1 := Item1;
+  Decomposition2 := Item2;
+  Len1 := Length(Decomposition1^.Decompositions);
+  Len2 := Length(Decomposition2^.Decompositions);
+  MinLen := Len1;
+  if MinLen > Len2 then
+    MinLen := Len2;
+
+  for I := 0 to MinLen - 1 do
+  begin
+    if Decomposition1^.Decompositions[I] > Decomposition2^.Decompositions[I] then
+    begin
+      Result := 1;
+      Exit;
+    end
+    else
+    if Decomposition1^.Decompositions[I] < Decomposition2^.Decompositions[I] then
+    begin
+      Result := -1;
+      Exit;
+    end;
+  end;
+  // if starts of two arrays are identical, sorting from longer to shorter (gives more
+  // chances to longer combinations at runtime
+  if Len1 < Len2 then
+    Result := 1
+  else
+  if Len1 > Len2 then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure CreateCompositions;
+
+// create composition list from decomposition list
+
+var
+  I, J: Integer;
+begin
+  // reduce reallocations
+  SetLength(Compositions, Length(Decompositions));
+
+  // eliminate exceptions
+  I := 0;
+  for J := 0 to High(Decompositions) do
+    if not IsCompositionExcluded(Decompositions[J].Code) then
+  begin
+    Compositions[I] := Decompositions[J];
+    Inc(I);
+  end;
+
+  // fix overhead
+  SetLength(Compositions, I);
+
+  SortDynArray(Pointer(Compositions), SizeOf(Compositions[0]), SortCompositions);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure CreateResourceScript;
 
 // creates the target file using the collected data
 
 var
-  Stream: TFileStream;
+  TextStream, ResourceStream, CompressedStream: TStream;
   CurrentLine: string;
-  
+
   //--------------- local functions -------------------------------------------
 
-  procedure WriteLine(S: string = '');
+  procedure WriteTextLine(S: string = '');
 
   // writes the given string as line into the resource script
 
   begin
     S := S + #13#10;
-    with Stream do
-      WriteBuffer(PChar(S)^, Length(S));
+    TextStream.WriteBuffer(PChar(S)^, Length(S));
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure WriteByte(Value: Byte);
+  procedure WriteTextByte(Value: Byte);
 
   // Buffers one byte of data (conversion to two-digit hex string is performed first)
   // and flushs out the current line if there are 32 values collected.
@@ -1066,32 +1231,30 @@ var
     CurrentLine := CurrentLine + Format('%.2x ', [Value]);
     if Length(CurrentLine) = 32 * 3 then
     begin
-      WriteLine('  ''' + Trim(CurrentLine) + '''');
+      WriteTextLine('  ''' + Trim(CurrentLine) + '''');
       CurrentLine := '';
     end;
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure WriteLong(Value: Cardinal);
-
-  // records four bytes of data by splitting the given value
-
-  var
-    Buffer: array[0..3] of Byte absolute Value;
+  procedure WriteResourceByte(Value: Byte);
 
   begin
-    // Buffer is actually not a variable but a different access method for Value
-    // in order to avoid shifts or ugly type casts.
-    WriteByte(Buffer[0]);
-    WriteByte(Buffer[1]);
-    WriteByte(Buffer[2]);
-    WriteByte(Buffer[3]);
+    ResourceStream.WriteBuffer(Value, SizeOf(Value));
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure WriteArray(Values: array of Cardinal);
+  procedure WriteResourceLong(Value: Cardinal);
+
+  begin
+    ResourceStream.WriteBuffer(Value, SizeOf(Value));
+  end;
+
+  //---------------------------------------------------------------------------
+
+  procedure WriteResourceArray(Values: array of Cardinal);
 
   // loops through Values and writes them into the target file
 
@@ -1099,18 +1262,51 @@ var
     I: Integer;
 
   begin
-    for I := 0 to High(Values) do
-      WriteLong(Values[I]);
+    for I := Low(Values) to High(Values) do
+      WriteResourceLong(Values[I]);
   end;
 
   //---------------------------------------------------------------------------
 
-  procedure FlushLine;
+  procedure CreateResource;
 
   begin
+    if ZLibCompress or BZipCompress then
+      CompressedStream := TMemoryStream.Create;
+    if ZLibCompress then
+      ResourceStream := TJclZLibCompressStream.Create(CompressedStream, 9)
+    else
+    if BZipCompress then
+      ResourceStream := TJclBZIP2CompressionStream.Create(CompressedStream, 9)
+    else
+      ResourceStream := TMemoryStream.Create;
+  end;
+
+  //---------------------------------------------------------------------------
+
+  procedure FlushResource;
+
+  var
+    Buffer: Byte;
+
+  begin
+    if ZLibCompress or BZipCompress then
+    begin
+      ResourceStream.Free;
+
+      ResourceStream := CompressedStream;
+    end;
+
+    ResourceStream.Seek(0, soFromBeginning);
+
+    while ResourceStream.Read(Buffer, SizeOf(Buffer)) = SizeOf(Buffer) do
+      WriteTextByte(Buffer);
+
+    ResourceStream.Free;
+
     if Length(CurrentLine) > 0 then
     begin
-      WriteLine('  ''' + Trim(CurrentLine) + '''');
+      WriteTextLine('  ''' + Trim(CurrentLine) + '''');
       CurrentLine := '';
     end;
   end;
@@ -1123,140 +1319,165 @@ var
 
 begin
   CurrentLine := '';
-  Stream := TFileStream.Create(TargetFileName, fmCreate);
+  TextStream := TFileStream.Create(TargetFileName, fmCreate);
   try
     // 1) template header
-    WriteLine('/' + StringOfChar('*', 100));
-    WriteLine;
-    WriteLine;
-    WriteLine('  ' + TargetFileName);
-    WriteLine;
-    WriteLine;
-    WriteLine('  Produced by UDExtract written by Dipl. Ing. Mike Lischke, public@lischke-online.de');
-    WriteLine;
-    WriteLine;
-    WriteLine(StringOfChar('*', 100) + '/');
-    WriteLine;
-    WriteLine;
+    WriteTextLine('/' + StringOfChar('*', 100));
+    WriteTextLine;
+    WriteTextLine;
+    WriteTextLine('  ' + TargetFileName);
+    WriteTextLine;
+    WriteTextLine;
+    WriteTextLine('  Produced by UDExtract written by Dipl. Ing. Mike Lischke, public@lischke-online.de');
+    WriteTextLine;
+    WriteTextLine;
+    WriteTextLine(StringOfChar('*', 100) + '/');
+    WriteTextLine;
+    WriteTextLine;
 
     // 2) category data
-    WriteLine('CATEGORIES UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
-    WriteLine('{');
-    // write out only used categories  
+    WriteTextLine('CATEGORIES UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
+    // write out only used categories
     for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
       if Assigned(Categories[Category]) then
       begin
         // a) record what category it is actually (the cast assumes there will never
         //    be more than 256 categories)
-        WriteByte(Ord(Category));
+        WriteResourceByte(Ord(Category));
         // b) tell how many ranges are assigned
-        WriteLong(Length(Categories[Category]));
+        WriteResourceLong(Length(Categories[Category]));
         // c) write start and stop code of each range
         for I := 0 to High(Categories[Category]) do
         begin
-          WriteLong(Categories[Category][I].Start);
-          WriteLong(Categories[Category][I].Stop);
+          WriteResourceLong(Categories[Category][I].Start);
+          WriteResourceLong(Categories[Category][I].Stop);
         end;
       end;
-      
-    FlushLine;
-    WriteLine('}');
-    WriteLine;
-    WriteLine;
+
+    FlushResource;
+    WriteTextLine('}');
+    WriteTextLine;
+    WriteTextLine;
 
     // 3) case mapping data
-    WriteLine('CASE UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
-    WriteLine('{');
+    WriteTextLine('CASE UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
     // record how many case mapping entries we have
-    WriteLong(Length(CaseMapping));
+    WriteResourceLong(Length(CaseMapping));
     for I := 0 to High(CaseMapping) do
       with CaseMapping[I] do
       begin
         // store every available case mapping, consider one-to-many mappings
         // a) write actual code point
-        WriteLong(Code);
+        WriteResourceLong(Code);
         // b) write lower case
-        WriteLong(Length(Fold));
-        WriteArray(Fold);
+        WriteResourceLong(Length(Fold));
+        WriteResourceArray(Fold);
         // c) write lower case
-        WriteLong(Length(Lower));
-        WriteArray(Lower);
+        WriteResourceLong(Length(Lower));
+        WriteResourceArray(Lower);
         // d) write title case
-        WriteLong(Length(Title));
-        WriteArray(Title);
+        WriteResourceLong(Length(Title));
+        WriteResourceArray(Title);
         // e) write upper case
-        WriteLong(Length(Upper));
-        WriteArray(Upper);
+        WriteResourceLong(Length(Upper));
+        WriteResourceArray(Upper);
       end;
-    FlushLine;
-    WriteLine('}');
-    WriteLine;
-    WriteLine;
+    FlushResource;
+    WriteTextLine('}');
+    WriteTextLine;
+    WriteTextLine;
 
     // 4) decomposition data
     // fully expand all decompositions before generating the output
     ExpandDecompositions;
-    WriteLine('DECOMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
-    WriteLine('{');
+    WriteTextLine('DECOMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
     // record how many decomposition entries we have
-    WriteLong(Length(Decompositions));
+    WriteResourceLong(Length(Decompositions));
     for I := 0 to High(Decompositions) do
       with Decompositions[I] do
       begin
-        WriteLong(Code);
-        WriteLong(Length(Decompositions));
-        WriteArray(Decompositions);
+        WriteResourceLong(Code);
+        WriteResourceLong(Length(Decompositions));
+        WriteResourceArray(Decompositions);
       end;
-    FlushLine;
-    WriteLine('}');
-    WriteLine;
-    WriteLine;
+    FlushResource;
+    WriteTextLine('}');
+    WriteTextLine;
+    WriteTextLine;
 
     // 5) canonical combining class data
-    WriteLine('COMBINING UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
-    WriteLine('{');
+    WriteTextLine('COMBINING UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
     for I := 0 to 255 do
       if Assigned(CCCs[I]) then
       begin
         // a) record which class is stored here
-        WriteLong(I);
+        WriteResourceLong(I);
         // b) tell how many ranges are assigned
-        WriteLong(Length(CCCs[I]));
+        WriteResourceLong(Length(CCCs[I]));
         // c) write start and stop code of each range
         for J := 0 to High(CCCs[I]) do
         begin
-          WriteLong(CCCs[I][J].Start);
-          WriteLong(CCCs[I][J].Stop);
+          WriteResourceLong(CCCs[I][J].Start);
+          WriteResourceLong(CCCs[I][J].Stop);
         end;
       end;
-      
-    FlushLine;
-    WriteLine('}');
-    WriteLine;
-    WriteLine;
+
+    FlushResource;
+    WriteTextLine('}');
+    WriteTextLine;
+    WriteTextLine;
 
     // 6) number data, this is actually two arrays, one which contains the numbers
-    //    and the second containing the mapping between a code and a number 
-    WriteLine('NUMBERS UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
-    WriteLine('{');
+    //    and the second containing the mapping between a code and a number
+    WriteTextLine('NUMBERS UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
     // first, write the number definitions (size, values)
-    WriteLong(Length(Numbers));
+    WriteResourceLong(Length(Numbers));
     for I := 0 to High(Numbers) do
     begin
-      WriteLong(Cardinal(Numbers[I].Numerator));
-      WriteLong(Cardinal(Numbers[I].Denominator));
+      WriteResourceLong(Cardinal(Numbers[I].Numerator));
+      WriteResourceLong(Cardinal(Numbers[I].Denominator));
     end;
     // second, write the number mappings (size, values)
-    WriteLong(Length(NumberCodes));
+    WriteResourceLong(Length(NumberCodes));
     for I := 0 to High(NumberCodes) do
     begin
-      WriteLong(NumberCodes[I].Code);
-      WriteLong(NumberCodes[I].Index);
+      WriteResourceLong(NumberCodes[I].Code);
+      WriteResourceLong(NumberCodes[I].Index);
     end;
-    FlushLine;
-    WriteLine('}');
+    FlushResource;
+    WriteTextLine('}');
+    WriteTextLine;
+    WriteTextLine;
+
+    // 7 ) composition data
+    // create composition data from decomposition data and exclusion list before generating the output
+    CreateCompositions;
+    WriteTextLine('COMPOSITION UNICODEDATA LOADONCALL MOVEABLE DISCARDABLE');
+    WriteTextLine('{');
+    CreateResource;
+    // first, write the number of compositions
+    WriteResourceLong(Length(Compositions));
+    for I := 0 to High(Compositions) do
+      with Compositions[I] do
+    begin
+      WriteResourceLong(Code);
+      WriteResourceLong(Length(Decompositions));
+      WriteResourceArray(Decompositions);
+    end;
+    FlushResource;
+    WriteTextLine('}');
   finally
-    Stream.Free;
+    TextStream.Free;
   end;
 end;
 
@@ -1267,16 +1488,20 @@ begin
   Writeln('Usage: UDExtract Source[.txt] Target[.rc] options');
   Writeln('  Path and extension are optional. Default extension for all source files');
   Writeln('  (including optional files) is ".txt".');
-  Writeln('  Source must be a Unicode data file (e.g. UnicodeData-3.0.1.txt)');
+  Writeln('  Source must be a Unicode data file (e.g. UnicodeData-5.0.0.txt)');
   Writeln('  and Target is a resource script.');
   Writeln;
   Writeln('  Options might have the following values (not case sensitive):');
   Writeln('    /?'#9#9'shows this screen');
   Writeln('    /c=filename'#9'specifies an optional file containing special casing');
-  Writeln('    '#9#9'properties (e.g. SpecialCasing-3.txt)');
+  Writeln('    '#9#9'properties (e.g. SpecialCasing-5.0.0.txt)');
   Writeln('    /f=filename'#9'specifies an optional file containing case fold');
-  Writeln('    '#9#9'mappings (e.g. CaseFolding-2.txt)');
+  Writeln('    '#9#9'mappings (e.g. CaseFolding-5.0.0.txt)');
+  WriteLn('    /d=filename'#9'specifies an optional file containing derived normalization');
+  WriteLn('    '#9#9'props (e.g. DerivedNormalizationProps-5.0.0.txt)');
   Writeln('    /v'#9#9'verbose mode; no warnings, errors etc. are shown, no user input is required');
+  WriteLn('    /z'#9#9'compress resource streams using zlib');
+  WriteLn('    /bz'#9#9'compress resource streams using bzip2');
   Writeln;
   Writeln('Press <enter> to continue...');
   Readln;
@@ -1311,38 +1536,55 @@ begin
       Halt(2);
     end
     else
-      if SameText(S, '/v') then
-        Verbose := True
+    if SameText(S, '/v') then
+      Verbose := True
+    else
+    if SameText(S, '/z') then
+      ZLibCompress := True
+    else
+    if SameText(S, '/bz') then
+      BZipCompress := True
+    else
+    if SameText(Copy(S, 1, 3), '/c=') then
+    begin
+      SpecialCasingFileName := Trim(Copy(S, 4, MaxInt));
+      if SpecialCasingFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(SpecialCasingFileName);
+        SpecialCasingFileName := Trim(AnsiExtractQuotedStr(Run, SpecialCasingFileName[1]));
+      end;
+      CheckExtension(SpecialCasingFileName, '.txt');
+    end
+    else
+    if SameText(Copy(S, 1, 3), '/f=') then
+    begin
+      CaseFoldingFileName := Trim(Copy(S, 4, MaxInt));
+      if CaseFoldingFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(CaseFoldingFileName);
+        CaseFoldingFileName := Trim(AnsiExtractQuotedStr(Run, CaseFoldingFileName[1]));
+      end;
+      CheckExtension(CaseFoldingFileName, '.txt');
+    end
+    else
+    if SameText(Copy(S, 1, 3), '/d=') then
+    begin
+      DerivedNormalizationPropsFileName := Trim(Copy(S, 4, MaxInt));
+      if DerivedNormalizationPropsFileName[1] in ['''', '"'] then
+      begin
+        Run := PChar(DerivedNormalizationPropsFileName);
+        DerivedNormalizationPropsFileName := Trim(AnsiExtractQuotedStr(Run, DerivedNormalizationPropsFileName[1]));
+      end;
+      CheckExtension(DerivedNormalizationPropsFileName, '.txt');
+    end
+    else
+    begin
+      PrintUsage;
+      if SameText(S, '/?') then
+        Halt(0)
       else
-        if SameText(Copy(S, 1, 3), '/c=') then
-        begin
-          SpecialCasingFileName := Trim(Copy(S, 4, MaxInt));
-          if SpecialCasingFileName[1] in ['''', '"'] then
-          begin
-            Run := PChar(SpecialCasingFileName);
-            SpecialCasingFileName := Trim(AnsiExtractQuotedStr(Run, SpecialCasingFileName[1]));
-          end;
-          CheckExtension(SpecialCasingFileName, '.txt');
-        end
-        else
-          if SameText(Copy(S, 1, 3), '/f=') then
-          begin
-            CaseFoldingFileName := Trim(Copy(S, 4, MaxInt));
-            if CaseFoldingFileName[1] in ['''', '"'] then
-            begin
-              Run := PChar(CaseFoldingFileName);
-              CaseFoldingFileName := Trim(AnsiExtractQuotedStr(Run, CaseFoldingFileName[1]));
-            end;
-            CheckExtension(CaseFoldingFileName, '.txt');
-          end
-          else
-          begin
-            PrintUsage;
-            if SameText(S, '/?') then
-              Halt(0)
-            else
-              Halt(2);
-          end;
+        Halt(2);
+    end;
   end;
 end;
 
@@ -1358,6 +1600,12 @@ begin
   else
   try
     ParseOptions;
+
+    if BZipCompress and not LoadBZip2 then
+    begin
+      WriteLn('failed to load bzip2 library');
+      Halt(1);
+    end;
 
     SourceFileName := Trim(ParamStr(1));
     CheckExtension(SourceFileName, '.txt');
@@ -1413,6 +1661,24 @@ begin
             Writeln('Reading case folding data from ' + CaseFoldingFileName + ':');
           end;
           ParseCaseFolding;
+        end;
+      end;
+
+      if Length(DerivedNormalizationPropsFileName) > 0 then
+      begin
+        if not FileExists(DerivedNormalizationPropsFileName) then
+        begin
+          WriteLn;
+          Warning(DerivedNormalizationPropsFileName + ' not found, ignoring derived normalization');
+        end
+        else
+        begin
+          if not Verbose then
+          begin
+            WriteLn;
+            WriteLn('Reading derived normalization props from ' + DerivedNormalizationPropsFileName + ':');
+          end;
+          ParseDerivedNormalizationProps;
         end;
       end;
 

@@ -25,8 +25,12 @@
 { Unit owner: Uwe Schuster                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnitVersioningProviders;
 
@@ -207,7 +211,7 @@ begin
   {$IFDEF MSWINDOWS}
   if not Result then
     Result := LoadFromDefaultSection(AModule);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}    
 end;
 
 function TJclUnitVersioningList.LoadFromDefaultResource(AModule: HMODULE): Boolean;
@@ -333,7 +337,7 @@ begin
   FInstance := Instance;
   FInfoList := TJclUnitVersioningList.Create;
   if FInfoList.Load(Instance) then
-    for I := 0 to FInfoList.Count - 1 do
+    for I := 0 to FInfoList.Count -1 do
       RegisterUnitVersion(Instance, FInfoList[I]^);
 end;
 
@@ -391,7 +395,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
-    );
+  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

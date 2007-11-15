@@ -3,8 +3,8 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="..\..\..\..\bin\JclSIMDTestBCBProject.exe"/>
-    <OBJFILES value="..\..\..\..\lib\c5\JclSIMDTestBCB.obj"/>
+    <PROJECT value="..\..\..\bin\JclSIMDTestBCBProject.exe"/>
+    <OBJFILES value="..\..\..\lib\c5\JclSIMDTestBCB.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>

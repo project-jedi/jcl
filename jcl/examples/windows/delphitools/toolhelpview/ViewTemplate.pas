@@ -90,8 +90,7 @@ end;
 
 procedure TViewForm.TextLabels1Execute(Sender: TObject);
 begin
-  with TextLabels1 do
-    Checked := not Checked;
+  with TextLabels1 do Checked := not Checked;
   UpdateTextLabels;
 end;
 

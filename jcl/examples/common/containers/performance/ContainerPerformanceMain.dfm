@@ -1,7 +1,6 @@
 object MainForm: TMainForm
   Left = 402
   Top = 120
-  AutoScroll = False
   Caption = 'Container Performance'
   ClientHeight = 294
   ClientWidth = 569
@@ -34,7 +33,8 @@ object MainForm: TMainForm
     Width = 569
     Height = 121
     Align = alBottom
-    DefaultColWidth = 100
+    ColCount = 6
+    DefaultColWidth = 90
     RowCount = 4
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine]
     TabOrder = 1
@@ -81,9 +81,13 @@ object MainForm: TMainForm
         Caption = 'THashedStringList'
         OnClick = mnHashedStringListClick
       end
-      object mnJclStrStrHashMap: TMenuItem
-        Caption = 'TJclStrStrHashMap'
-        OnClick = mnJclStrStrHashMapClick
+      object mnJclAnsiStrAnsiStrHashMap: TMenuItem
+        Caption = 'TJclAnsiStrAnsiStrHashMap'
+        OnClick = mnJclAnsiStrAnsiStrHashMapClick
+      end
+      object mnJclWideStrWideStrHashMap: TMenuItem
+        Caption = 'TJclWideStrWideStrHashMap'
+        OnClick = mnJclWideStrWideStrHashMapClick
       end
       object N2: TMenuItem
         Caption = '-'

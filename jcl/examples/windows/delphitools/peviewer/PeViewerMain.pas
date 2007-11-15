@@ -170,23 +170,23 @@ var
   MainForm: TMainForm;
 
 const
-  icoHeader = 0;
-  icoDirectory = 1;
-  icoImports = 2;
-  icoExports = 3;
-  icoResources = 4;
-  icoSection = 5;
-  icoSortAsc = 6;
-  icoSortDesc = 7;
-  icoDelayImport = 8;
-  icoBoundImport = 9;
-  icoLoadConfig = 10;
-  icoRelocation = 11;
-  icoDebug = 12;
-  icoFolderShut = 13;
-  icoFolderOpen = 14;
-  icoResItem = 15;
-  icoWarning = 16;
+  icoHeader      =  0;
+  icoDirectory   =  1;
+  icoImports     =  2;
+  icoExports     =  3;
+  icoResources   =  4;
+  icoSection     =  5;
+  icoSortAsc     =  6;
+  icoSortDesc    =  7;
+  icoDelayImport =  8;
+  icoBoundImport =  9;
+  icoLoadConfig  = 10;
+  icoRelocation  = 11;
+  icoDebug       = 12;
+  icoFolderShut  = 13;
+  icoFolderOpen  = 14;
+  icoResItem     = 15;
+  icoWarning     = 16;
 
 implementation
 
@@ -221,8 +221,7 @@ begin
   begin
     FileName := '';
     if Execute then
-      for I := 0 to Files.Count - 1 do
-        OpenFile(Files[I], False);
+      for I := 0 to Files.Count - 1 do OpenFile(Files[I], False);
   end;
 end;
 
@@ -246,18 +245,15 @@ begin
   begin
 //    GroupImports1.Checked := TPeDumpChild(ActiveMDIChild).GroupImports;
     StatusBar1.Panels[0].Text := TPeDumpChild(ActiveMDIChild).FileName;
-  end
-  else
+  end else
   if IsPeResChildActive then
   begin
     StatusBar1.Panels[0].Text := TPeResViewChild(ActiveMDIChild).PeImage.FileName;
-  end
-  else
+  end else
   if IsGenDefChildActive then
   begin
     StatusBar1.Panels[0].Text := TPeGenDefChild(ActiveMDIChild).FileName;
-  end
-  else
+  end else
     StatusBar1.Panels[0].Text := '';
 end;
 
@@ -305,22 +301,22 @@ begin
   if IsGenDefChildActive then
     TPeGenDefChild(ActiveMDIChild).SaveUnit
   else
-    with SaveDialog do
+  with SaveDialog do
+  begin
+    if IsPeDumpChildActive then
+      FileName := ChangeFileExt(TPeDumpChild(ActiveMDIChild).FileName, '.txt')
+    else
+      FileName := '';
+    if Execute then
     begin
-      if IsPeDumpChildActive then
-        FileName := ChangeFileExt(TPeDumpChild(ActiveMDIChild).FileName, '.txt')
-      else
-        FileName := '';
-      if Execute then
-      begin
-        SL := ActiveListViewToStrings;
-        try
-          SL.SaveToFile(FileName);
-        finally
-          SL.Free;
-        end;
+      SL := ActiveListViewToStrings;
+      try
+        SL.SaveToFile(FileName);
+      finally
+        SL.Free;
       end;
     end;
+  end;
 end;
 
 function TMainForm.IsWin32Help: Boolean;
@@ -347,14 +343,14 @@ end;
 procedure TMainForm.Copy1Update(Sender: TObject);
 begin
   TAction(Sender).Enabled := (Screen.ActiveControl is TListView) or
-    ((Screen.ActiveControl is TRichEdit) and ((Screen.ActiveControl as TRichEdit).SelLength > 0));
+   ((Screen.ActiveControl is TRichEdit) and ((Screen.ActiveControl as TRichEdit).SelLength > 0));
 end;
 
 procedure TMainForm.OpenLibrary1Update(Sender: TObject);
 begin
   OpenLibrary1.Enabled :=
-    (IsPeDumpChildActive and (TPeDumpChild(ActiveMDIChild).ActiveLibName <> '')) or
-    (IsSearchChildActive and (TPeSearchChild(ActiveMDIChild).ActiveLibName <> ''));
+  (IsPeDumpChildActive and (TPeDumpChild(ActiveMDIChild).ActiveLibName <> '')) or
+  (IsSearchChildActive and (TPeSearchChild(ActiveMDIChild).ActiveLibName <> ''));
 end;
 
 function TMainForm.ActiveListViewToStrings: TStrings;
@@ -564,7 +560,7 @@ begin
     FileName := PathGetLongName(ParamStr(I));
     if (FileName <> '') and not (FileName[1] in ['-', '/']) then
       OpenFile(FileName, False);
-  end;
+  end;    
 end;
 
 procedure TMainForm.WMDropFiles(var Message: TWMDropFiles);
@@ -577,7 +573,7 @@ begin
   begin
     if (DragQueryFile(Message.Drop, I, @FileName, SizeOf(FileName)) > 0) and
       IsValidPeFile(FileName) then
-      OpenFile(FileName, True);
+        OpenFile(FileName, True);
   end;
   DragFinish(Message.Drop);
   Message.Result := 0;
@@ -608,7 +604,7 @@ end;
 procedure TMainForm.SelectAll1Update(Sender: TObject);
 begin
   TAction(Sender).Enabled := (Screen.ActiveControl is TListView) or
-    (Screen.ActiveControl is TRichEdit);
+   (Screen.ActiveControl is TRichEdit);
 end;
 
 procedure TMainForm.Find1Update(Sender: TObject);

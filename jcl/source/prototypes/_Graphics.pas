@@ -32,14 +32,17 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
-{   Dejoy Den (dejoy)                                                                                        }
+{   Dejoy Den (dejoy)                                                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$IFDEF PROTOTYPE}
-// Last modified: $Date$
-{$ELSE ~PROTOTYPE}
-
+{$IFNDEF PROTOTYPE}
 {$IFDEF VCL}
 unit JclGraphics;
 {$ELSE VisualCLX}
@@ -194,8 +197,7 @@ type
     function Copy: TJclRegion;
     function Equals(CompareRegion: TJclRegion): Boolean;
     procedure Fill(Canvas: TCanvas);
-    procedure FillGradient(Canvas: TCanvas; ColorCount: Integer; StartColor, EndColor: TColor;
-      ADirection: TGradientDirection);
+    procedure FillGradient(Canvas: TCanvas; ColorCount: Integer; StartColor, EndColor: TColor; ADirection: TGradientDirection);
     procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
     procedure Invert(Canvas: TCanvas);
     procedure Offset(X, Y: Integer);
@@ -444,7 +446,7 @@ type
 
   TJclTransformation = class(TObject)
   public
-    function GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
+    function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
     procedure PrepareTransform; virtual; abstract;
     procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); virtual; abstract;
     procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); virtual; abstract;
@@ -462,7 +464,7 @@ type
     F: Integer;
   public
     constructor Create; virtual;
-    function GetTransformedBounds(const Src: TRect): TRect; override;
+    function  GetTransformedBounds(const Src: TRect): TRect; override;
     procedure PrepareTransform; override;
     procedure Transform(DstX, DstY: Integer; out SrcX, SrcY: Integer); override;
     procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); override;
@@ -523,7 +525,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: THandle = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
-function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect): TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect):TRect;
 {$ENDIF VCL}
 
 {$IFDEF Bitmap32}
@@ -603,16 +605,16 @@ type
 
   PContributor = ^TContributor;
   TContributor = record
-    Weight: Integer; // Pixel Weight
-    Pixel: Integer;  // Source Pixel
+   Weight: Integer; // Pixel Weight
+   Pixel: Integer;  // Source Pixel
   end;
 
   TContributors = array of TContributor;
 
   // list of source pixels contributing to a destination pixel
   TContributorEntry = record
-    N: Integer;
-    Contributors: TContributors;
+   N: Integer;
+   Contributors: TContributors;
   end;
 
   TContributorList = array of TContributorEntry;
@@ -879,7 +881,7 @@ end;
 
 const
   FilterList: array [TResamplingFilter] of TBitmapFilterFunction =
-    (
+   (
     BitmapBoxFilter,
     BitmapTriangleFilter,
     BitmapHermiteFilter,
@@ -887,7 +889,7 @@ const
     BitmapSplineFilter,
     BitmapLanczos3Filter,
     BitmapMitchellFilter
-    );
+   );
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
 var
@@ -1637,29 +1639,29 @@ var
   X, Y: Integer;
   Line1, Line2, Line: PJclByteArray;
 begin
-  Assert(Bitmap <> nil);
-  if Bitmap.PixelFormat <> pf24bit then
-    Bitmap.PixelFormat := pf24bit;
-  Antialias := TBitmap.Create;
-  with Bitmap do
-  begin
-    Antialias.PixelFormat := pf24bit;
-    Antialias.Width := Width div 2;
-    Antialias.Height := Height div 2;
-    for Y := 0 to Antialias.Height - 1 do
-    begin
-      Line1 := ScanLine[Y * 2];
-      Line2 := ScanLine[Y * 2 + 1];
-      Line := Antialias.ScanLine[Y];
-      for X := 0 to Antialias.Width - 1 do
-      begin
-        Line[X * 3] := (Integer(Line1[X * 6]) + Integer(Line2[X * 6]) +
-          Integer(Line1[X * 6 + 3]) + Integer(Line2[X * 6 + 3])) div 4;
-        Line[X * 3 + 1] := (Integer(Line1[X * 6 + 1]) + Integer(Line2[X * 6 + 1]) +
-          Integer(Line1[X * 6 + 3 + 1]) + Integer(Line2[X * 6 + 3 + 1])) div 4;
-        Line[X * 3 + 2] := (Integer(Line1[X * 6 + 2]) + Integer(Line2[X * 6 + 2]) +
-          Integer(Line1[X * 6 + 3 + 2]) + Integer(Line2[X * 6 + 3 + 2])) div 4;
-      end;
+ Assert(Bitmap <> nil);
+ if Bitmap.PixelFormat <> pf24bit then
+   Bitmap.PixelFormat := pf24bit;
+ Antialias := TBitmap.Create;
+ with Bitmap do
+ begin
+   Antialias.PixelFormat := pf24bit;
+   Antialias.Width := Width div 2;
+   Antialias.Height := Height div 2;
+   for Y := 0 to Antialias.Height - 1 do
+   begin
+     Line1 := ScanLine[Y * 2];
+     Line2 := ScanLine[Y * 2 + 1];
+     Line := Antialias.ScanLine[Y];
+     for X := 0 to Antialias.Width - 1 do
+     begin
+       Line[X * 3] := (Integer(Line1[X * 6]) + Integer(Line2[X * 6]) +
+         Integer(Line1[X * 6 + 3]) + Integer(Line2[X * 6 + 3])) div 4;
+       Line[X * 3 + 1] := (Integer(Line1[X * 6 + 1]) + Integer(Line2[X * 6 + 1]) +
+         Integer(Line1[X * 6 + 3 + 1]) + Integer(Line2[X * 6 + 3 + 1])) div 4;
+       Line[X * 3 + 2] := (Integer(Line1[X * 6 + 2]) + Integer(Line2[X * 6 + 2]) +
+         Integer(Line1[X * 6 + 3 + 2]) + Integer(Line2[X * 6 + 3 + 2])) div 4;
+     end;
     end;
   end;
   Result := Antialias;
@@ -1757,17 +1759,17 @@ var
   IconInfo: TIconInfo;
 begin
   with TBitmap.Create do
-    try
-      Assign(Bitmap);
-      if not Transparent then
-        TransparentColor := clNone;
-      IconInfo.fIcon := True;
-      IconInfo.hbmMask := MaskHandle;
-      IconInfo.hbmColor := Handle;
-      Icon.Handle := CreateIconIndirect(IconInfo);
-    finally
-      Free;
-    end;
+  try
+    Assign(Bitmap);
+    if not Transparent then
+      TransparentColor := clNone;
+    IconInfo.fIcon := True;
+    IconInfo.hbmMask := MaskHandle;
+    IconInfo.hbmColor := Handle;
+    Icon.Handle := CreateIconIndirect(IconInfo);
+  finally
+    Free;
+  end;
 end;
 
 const
@@ -1857,12 +1859,12 @@ var
   IconInfo: TIconInfo;
 begin
   if GetIconInfo(Icon, IconInfo) then
-    try
-      WriteIcon(Stream, IconInfo.hbmColor, IconInfo.hbmMask, WriteLength);
-    finally
-      DeleteObject(IconInfo.hbmColor);
-      DeleteObject(IconInfo.hbmMask);
-    end
+  try
+    WriteIcon(Stream, IconInfo.hbmColor, IconInfo.hbmMask, WriteLength);
+  finally
+    DeleteObject(IconInfo.hbmColor);
+    DeleteObject(IconInfo.hbmMask);
+  end
   else
     RaiseLastOSError;
 end;
@@ -2037,7 +2039,7 @@ begin
 
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X, Y] = RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
           begin
             Inc(X);
             if X = FBitmap.Width then
@@ -2046,7 +2048,7 @@ begin
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X, Y] <> RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
           begin
             Inc(X);
             if X = FBitmap.Width then
@@ -2060,7 +2062,7 @@ begin
         StartX := X;
         if RegionBitmapMode = rmExclude then
         begin
-          while FBitmap.Canvas.Pixels[X, Y] <> RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] <> RegionColor do
           begin
             if X = FBitmap.Width then
               Break;
@@ -2069,7 +2071,7 @@ begin
         end
         else
         begin
-          while FBitmap.Canvas.Pixels[X, Y] = RegionColor do
+          while FBitmap.Canvas.Pixels[X,Y] = RegionColor do
           begin
             if X = FBitmap.Width then
               Break;
@@ -2142,7 +2144,7 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
-function MapWindowRect(hWndFrom, hWndTo: THandle; ARect: TRect): TRect;
+function MapWindowRect(hWndFrom, hWndTo: THandle; ARect:TRect):TRect;
 begin
   MapWindowPoints(hWndFrom, hWndTo, ARect, 2);
   Result := ARect;
@@ -2173,7 +2175,7 @@ begin
   RGBKoef[1] := (GetGValue(EndColor) - StartRGB[1]) / ColorCount;
   RGBKoef[2] := (GetBValue(EndColor) - StartRGB[2]) / ColorCount;
   AreaWidth := ARect.Right - ARect.Left;
-  AreaHeight := ARect.Bottom - ARect.Top;
+  AreaHeight :=  ARect.Bottom - ARect.Top;
   case ADirection of
     gdHorizontal:
       RectOffset := AreaWidth / ColorCount;
@@ -2253,7 +2255,7 @@ var RectP: PRect;
 begin
   if (Index < 0) or (DWORD(Index) >= TRgnData(FData^).rdh.nCount) then
     raise EJclGraphicsError.CreateRes(@RsRegionDataOutOfBound);
-  RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect) * Index));
+  RectP := PRect(PChar(@TRgnData(FData^).Buffer) + (SizeOf(TRect)*Index));
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
 
@@ -2338,25 +2340,25 @@ constructor TJclRegion.CreateRegionInfo(RegionInfo: TJclRegionInfo);
 begin
   if RegionInfo = nil then
     raise EJclGraphicsError.CreateRes(@RsInvalidRegionInfo);
-  Create(ExtCreateRegion(nil, RegionInfo.FDataSize, TRgnData(RegionInfo.FData^)), True);
+  Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
 constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: THandle);
 var
   RectRegion: HRGN;
-  CurrentRegionInfo: TJclRegionInfo;
+  CurrentRegionInfo : TJclRegionInfo;
   SimpleRect: TRect;
-  Index: integer;
+  Index:integer;
 begin
   Create(CreateRectRgn(0, 0, 0, 0), True);
-  if (hWndFrom <> 0) or (hWndTo <> 0) then
+  if (hWndFrom <> 0) or (hWndTo <> 0 ) then
   begin
     CurrentRegionInfo := InitialRegion.GetRegionInfo;
     try
-      for Index := 0 to CurrentRegionInfo.Count - 1 do
+      for Index := 0 to CurrentRegionInfo.Count-1 do
       begin
         SimpleRect := CurrentRegionInfo.Rectangles[Index];
-        SimpleRect := MapWindowRect(hWndFrom, hWndTo, SimpleRect);
+        SimpleRect := MapWindowRect(hWndFrom,hWndTo,SimpleRect);
         RectRegion := CreateRectRgnIndirect(SimpleRect);
         if RectRegion <> 0 then
         begin
@@ -2374,7 +2376,7 @@ end;
 constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion;
   ControlFrom, ControlTo: TWinControl);
 begin
-  CreateMapWindow(InitialRegion, ControlFrom.Handle, ControlTo.Handle);
+  CreateMapWindow(InitialRegion,ControlFrom.Handle,ControlTo.Handle);
 end;
 
 destructor TJclRegion.Destroy;
@@ -2447,7 +2449,7 @@ end;
 procedure TJclRegion.FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
 begin
-  SelectClipRgn(Canvas.Handle, FHandle);
+  SelectClipRgn(Canvas.Handle,FHandle);
   {$IFDEF VisualCLX}JclQGraphics{$ELSE}JclGraphics{$ENDIF}.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
 end;
 
@@ -4744,17 +4746,17 @@ begin
   c2 := M.A[2, 1];
   c3 := M.A[2, 2];
 
-  M.A[0, 0] := _DET(b2, b3, c2, c3);
-  M.A[0, 1] := -_DET(a2, a3, c2, c3);
-  M.A[0, 2] := _DET(a2, a3, b2, b3);
+  M.A[0, 0]:=  _DET(b2, b3, c2, c3);
+  M.A[0, 1]:= -_DET(a2, a3, c2, c3);
+  M.A[0, 2]:=  _DET(a2, a3, b2, b3);
 
-  M.A[1, 0] := -_DET(b1, b3, c1, c3);
-  M.A[1, 1] := _DET(a1, a3, c1, c3);
-  M.A[1, 2] := -_DET(a1, a3, b1, b3);
+  M.A[1, 0]:= -_DET(b1, b3, c1, c3);
+  M.A[1, 1]:=  _DET(a1, a3, c1, c3);
+  M.A[1, 2]:= -_DET(a1, a3, b1, b3);
 
-  M.A[2, 0] := _DET(b1, b2, c1, c2);
-  M.A[2, 1] := -_DET(a1, a2, c1, c2);
-  M.A[2, 2] := _DET(a1, a2, b1, b2);
+  M.A[2, 0]:=  _DET(b1, b2, c1, c2);
+  M.A[2, 1]:= -_DET(a1, a2, c1, c2);
+  M.A[2, 2]:=  _DET(a1, a2, b1, b2);
 end;
 
 function Determinant(const M: TMatrix3d): Extended;
@@ -4849,9 +4851,9 @@ begin
   V3 := VectorTransform(Matrix, V3);
   V4 := VectorTransform(Matrix, V4);
 
-  Result.Left := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
-  Result.Right := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
-  Result.Top := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
+  Result.Left   := Round(Min(Min(V1[0], V2[0]), Min(V3[0], V4[0])) - 0.5);
+  Result.Right  := Round(Max(Max(V1[0], V2[0]), Max(V3[0], V4[0])) + 0.5);
+  Result.Top    := Round(Min(Min(V1[1], V2[1]), Min(V3[1], V4[1])) - 0.5);
   Result.Bottom := Round(Max(Max(V1[1], V2[1]), Max(V3[1], V4[1])) + 0.5);
 end;
 

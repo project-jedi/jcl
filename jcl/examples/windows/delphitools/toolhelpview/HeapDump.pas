@@ -139,8 +139,7 @@ begin
         if EntriesCount mod 200 = 0 then
         begin
           UpdateStatusLine;
-          if GetAsyncKeyState(VK_ESCAPE) and $8000 <> 0 then
-            Break;
+          if GetAsyncKeyState(VK_ESCAPE) and $8000 <> 0 then Break;
         end;
         Next := Heap32Next(HeapEntry);
       end;
@@ -200,12 +199,11 @@ begin
         AlphaSort;
         ItemFocused := Items[0];
         ItemFocused.Selected := True;
-      end
-      else
+      end else
       begin
         BuildHeapEntriesList(0);
         HeapEntryMemo.Lines.Clear;
-      end;
+      end;  
     finally
       Items.EndUpdate;
     end;
@@ -251,8 +249,7 @@ var
   I: Integer;
 begin
   with StatusBar do
-    for I := 0 to Panels.Count - 1 do
-      Panels[I].Width := Width div 4;
+    for I := 0 to Panels.Count - 1 do Panels[I].Width := Width div 4;
 end;
 
 procedure THeapDumpForm.ReadHeapEntry(Item: TListItem);
@@ -263,8 +260,7 @@ begin
   with HeapEntryMemo do {if DWORD(Item.SubItems.Objects[2]) <> LF32_FREE then}
   begin
     BlockSize := DWORD(Item.SubItems.Objects[1]);
-    if BlockSize > 32768 then
-      BlockSize := 32768;
+    if BlockSize > 32768 then BlockSize := 32768;
     GetMem(Buffer, BlockSize);
     Lines.BeginUpdate;
     try
@@ -277,10 +273,8 @@ begin
         while P < BufferEnd do
         begin
           case P^ of
-            #0:
-              P^ := '|';
-            #1..#31:
-              P^ := '.';
+            #0: P^ := '|';
+            #1..#31: P^ := '.';
           end;
           Inc(P);
         end;
@@ -323,15 +317,13 @@ end;
 procedure THeapDumpForm.HeapEntryListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  if Selected then
-    ReadHeapEntry(Item);
+  if Selected then ReadHeapEntry(Item);
 end;
 
 procedure THeapDumpForm.HeapListViewSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  if Selected then
-    BuildHeapEntriesList(DWORD(Item.Data));
+  if Selected then BuildHeapEntriesList(DWORD(Item.Data));
 end;
 
 procedure THeapDumpForm.BuildContent;

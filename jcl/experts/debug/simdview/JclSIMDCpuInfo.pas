@@ -21,8 +21,12 @@
 { located at http://jcl.sourceforge.net                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSIMDCpuInfo;
 
@@ -52,6 +56,10 @@ type
     CheckBoxSSE2: TCheckBox;
     CheckBoxSSE3: TCheckBox;
     ButtonClose: TButton;
+    CheckBoxSSSE3: TCheckBox;
+    CheckBoxSSE4A: TCheckBox;
+    CheckBoxSSE5: TCheckBox;
+    CheckBoxSSE4B: TCheckBox;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -72,8 +80,7 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else
-  if Assigned(Application.MainForm) then
+  else if Assigned (Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -89,9 +96,13 @@ begin
   CheckBox3DNow.Checked := CpuInfo._3DNow;
   CheckBoxEx3DNow.Checked := CpuInfo.Ex3DNow;
   CheckBox64Bits.Checked := CpuInfo.Is64Bits;
-  CheckBoxSSE1.Checked := CpuInfo.SSE >= 1;
-  CheckBoxSSE2.Checked := CpuInfo.SSE >= 2;
-  CheckBoxSSE3.Checked := CpuInfo.SSE >= 3;
+  CheckBoxSSE1.Checked := sse in CpuInfo.SSE;
+  CheckBoxSSE2.Checked := sse2 in CpuInfo.SSE;
+  CheckBoxSSE3.Checked := sse3 in CpuInfo.SSE;
+  CheckBoxSSSE3.Checked := ssse3 in CpuInfo.SSE;
+  CheckBoxSSE4A.Checked := sse4A in CpuInfo.SSE;
+  CheckBoxSSE4B.Checked := sse4B in CpuInfo.SSE;
+  CheckBoxSSE5.Checked := sse5 in CpuInfo.SSE;
   ShowModal;
 end;
 

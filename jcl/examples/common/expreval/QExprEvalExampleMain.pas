@@ -3,7 +3,7 @@ unit QExprEvalExampleMain;
 interface
 
 uses
-  Types, SysUtils, Classes,
+  Types, SysUtils, Classes, 
   QGraphics, QControls, QForms, QStdCtrls,
   JclExprEval;
 

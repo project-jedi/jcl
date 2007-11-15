@@ -17,11 +17,11 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
 unit ThreadExpertUnit;
 
 {$I jcl.inc}
@@ -101,7 +101,7 @@ uses
 
 const
   ThreadsStatusListViewFindPeriod = 2000;
-  ReadNameTimeout = 500;
+  ReadNameTimeout                 = 500;
 
 procedure Register;
 begin
@@ -141,8 +141,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -205,7 +205,7 @@ begin
         end;
     if F <> nil then
       with F do
-        for I := 0 to ControlCount - 1 do
+        for I := 0 to ControlCount -1 do
           if Controls[I] is TListView then
           begin
             FThreadsStatusListView := TListView(Controls[I]);
@@ -245,13 +245,13 @@ begin
     begin
       {Items.BeginUpdate;
       try}
-      for I := 0 to Items.Count - 1 do
-        if not UpdateItem(Items[I]) then
-          Break;
+        for I := 0 to Items.Count - 1 do
+          if not UpdateItem(Items[I]) then
+            Break;
       {finally
         Items.EndUpdate;
       end;}
-    end;
+    end;          
   except
     on ExceptionObj: TObject do
     begin
@@ -364,10 +364,10 @@ begin
       WAIT_OBJECT_0:
         Break;
       WAIT_OBJECT_0 + 1:
-      begin
-        Synchronize(UpdateRequest);
-        Sleep(30); // To prevent overload the IDE by many update requests
-      end;
+        begin
+          Synchronize(UpdateRequest);
+          Sleep(30); // To prevent overload the IDE by many update requests
+        end;
       WAIT_TIMEOUT:
         if FExpert.ProcessesCount > 0 then
         begin

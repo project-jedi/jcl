@@ -70,8 +70,7 @@ var
 begin
   if not FileExists(txtReportFile.Text) then
     ShowMessage('Report File does not exist.')
-  else
-  if not FileExists(txtMapFile.Text) then
+  else if not FileExists(txtMapFile.Text) then
     ShowMessage('Map File does not exist.')
   else
   begin
@@ -104,8 +103,7 @@ begin
       if (Copy(ls[i], 1, 3) = '---') then
         if lInStackList then
           Break
-        else
-        if Copy(ls[i + 1], 1, 10) = 'Stack list' then
+        else if Copy(ls[i+1], 1, 10) = 'Stack list' then
         begin
           lInStackList := True;
           Inc(i, 2);
@@ -139,7 +137,7 @@ begin
     begin
       if IncludeStartProcLineOffset and GetVALocationInfo(DWORD(Cardinal(Info.Address) -
         Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
-        StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
+          StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
       else
         StartProcOffsetStr := '';
       if IncludeAddressOffset then
@@ -147,7 +145,7 @@ begin
         if OffsetFromLineNumber >= 0 then
           OffsetStr := Format(' + $%x', [OffsetFromLineNumber])
         else
-          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber]);
+          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber])
       end;
       Result := Format(' %s.%s (Line %u, "%s"%s)%s', [UnitName, ProcedureName, LineNumber,
         SourceName, StartProcOffsetStr, OffsetStr]);

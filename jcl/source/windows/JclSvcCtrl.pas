@@ -28,11 +28,13 @@
 {                                                                                                  }
 { This unit contains routines and classes to control NT service                                    }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
 
 {$R+} { TODO : Why Rangecheck on here? }
 
@@ -58,7 +60,7 @@ uses
 // Service Types
 type
   TJclServiceType =
-    (stKernelDriver,        // SERVICE_KERNEL_DRIVER
+   (stKernelDriver,        // SERVICE_KERNEL_DRIVER
     stFileSystemDriver,    // SERVICE_FILE_SYSTEM_DRIVER
     stAdapter,             // SERVICE_ADAPTER
     stRecognizerDriver,    // SERVICE_RECOGNIZER_DRIVER
@@ -76,7 +78,7 @@ const
 // Service State
 type
   TJclServiceState =
-    (ssUnknown,         // Just fill the value 0
+   (ssUnknown,         // Just fill the value 0
     ssStopped,         // SERVICE_STOPPED
     ssStartPending,    // SERVICE_START_PENDING
     ssStopPending,     // SERVICE_STOP_PENDING
@@ -93,7 +95,7 @@ const
 // Start Type
 type
   TJclServiceStartType =
-    (sstBoot,      // SERVICE_BOOT_START
+   (sstBoot,      // SERVICE_BOOT_START
     sstSystem,    // SERVICE_SYSTEM_START
     sstAuto,      // SERVICE_AUTO_START
     sstDemand,    // SERVICE_DEMAND_START
@@ -102,7 +104,7 @@ type
 // Error control type
 type
   TJclServiceErrorControlType =
-    (ectIgnore,    // SSERVICE_ERROR_IGNORE
+   (ectIgnore,    // SSERVICE_ERROR_IGNORE
     ectNormal,    // SSERVICE_ERROR_NORMAL
     ectSevere,    // SSERVICE_ERROR_SEVERE
     ectCritical); // SERVICE_ERROR_CRITICAL
@@ -111,7 +113,7 @@ type
 // Controls Accepted
 type
   TJclServiceControlAccepted =
-    (caStop,          // SERVICE_ACCEPT_STOP
+   (caStop,          // SERVICE_ACCEPT_STOP
     caPauseContinue, // SERVICE_ACCEPT_PAUSE_CONTINUE
     caShutdown);     // SERVICE_ACCEPT_SHUTDOWN
 
@@ -120,7 +122,7 @@ type
 // Service sort type
 type
   TJclServiceSortOrderType =
-    (sotServiceName,
+   (sotServiceName,
     sotDisplayName,
     sotDescription,
     sotFileName,
@@ -151,7 +153,7 @@ const
 
 // Service description
 const
-  SERVICE_CONFIG_DESCRIPTION = 1;
+  SERVICE_CONFIG_DESCRIPTION     = 1;
   {$EXTERNALSYM SERVICE_CONFIG_DESCRIPTION}
   SERVICE_CONFIG_FAILURE_ACTIONS = 2;
   {$EXTERNALSYM SERVICE_CONFIG_FAILURE_ACTIONS}
@@ -194,7 +196,7 @@ type
     FWin32ExitCode: DWORD;
     FGroup: TJclServiceGroup;
     FControlsAccepted: TJclServiceControlAccepteds;
-    FCommitNeeded: Boolean;
+    FCommitNeeded:Boolean;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
     function GetDependentService(const Idx: Integer): TJclNtService;
@@ -346,9 +348,9 @@ type
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 
-function GetServiceStatusByName(const AServer, AServiceName: string): TJclServiceState;
-function StopServiceByName(const AServer, AServiceName: String): Boolean;
-function StartServiceByName(const AServer, AServiceName: String): Boolean;
+function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
+function StopServiceByName(const AServer, AServiceName: String):Boolean;
+function StartServiceByName(const AServer,AServiceName: String):Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -377,8 +379,8 @@ const
 
   ServiceTypeMapping: array [TJclServiceType] of DWORD =
     (SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER, SERVICE_ADAPTER,
-    SERVICE_RECOGNIZER_DRIVER, SERVICE_WIN32_OWN_PROCESS,
-    SERVICE_WIN32_SHARE_PROCESS, SERVICE_INTERACTIVE_PROCESS);
+     SERVICE_RECOGNIZER_DRIVER, SERVICE_WIN32_OWN_PROCESS,
+     SERVICE_WIN32_SHARE_PROCESS, SERVICE_INTERACTIVE_PROCESS);
 
   ServiceControlAcceptedMapping: array [TJclServiceControlAccepted] of DWORD =
     (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN);
@@ -416,20 +418,20 @@ var
   PSvcDesc: PServiceDescriptionA;
 begin
   if Assigned(SCManager.QueryServiceConfig2A) then
-    try
-      PSvcDesc := nil;
-      BytesNeeded := 4096;
-      repeat
-        ReallocMem(PSvcDesc, BytesNeeded);
-        Ret := SCManager.QueryServiceConfig2A(FHandle, SERVICE_CONFIG_DESCRIPTION,
-          PByte(PSvcDesc), BytesNeeded, BytesNeeded);
-      until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
-      Win32Check(Ret);
+  try
+    PSvcDesc := nil;
+    BytesNeeded := 4096;
+    repeat
+      ReallocMem(PSvcDesc, BytesNeeded);
+      Ret := SCManager.QueryServiceConfig2A(FHandle, SERVICE_CONFIG_DESCRIPTION,
+        PByte(PSvcDesc), BytesNeeded, BytesNeeded);
+    until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
+    Win32Check(Ret);
 
-      FDescription := PSvcDesc.lpDescription;
-    finally
-      FreeMem(PSvcDesc);
-    end;
+    FDescription := PSvcDesc.lpDescription;
+  finally
+    FreeMem(PSvcDesc);
+  end;
 end;
 
 function TJclNtService.GetActive: Boolean;
@@ -524,7 +526,7 @@ function TJclNtService.GetDependentByService(const Idx: Integer): TJclNtService;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
-  Result := TJclNtService(FDependentByServices.Items[Idx]);
+  Result := TJclNtService(FDependentByServices.Items[Idx])
 end;
 
 function TJclNtService.GetDependentByServiceCount: Integer;
@@ -578,18 +580,18 @@ procedure TJclNtService.UpdateConfig(const SvcConfig: TQueryServiceConfig);
     FDependentServices.Clear;
     FDependentGroups.Clear;
     if Assigned(P) then
-      while P^ <> #0 do
+    while P^ <> #0 do
+    begin
+      if P^ = SC_GROUP_IDENTIFIER then
       begin
-        if P^ = SC_GROUP_IDENTIFIER then
-        begin
-          SCManager.FindGroup(P + 1, SvcGrp);
-          FDependentGroups.Add(SvcGrp);
-        end
-        else
-        if SCManager.FindService(P, NtSvc) then
-          FDependentServices.Add(NtSvc);
-        Inc(P, StrLen(P) + 1);
-      end;
+        SCManager.FindGroup(P + 1, SvcGrp);
+        FDependentGroups.Add(SvcGrp);
+      end
+      else
+      if SCManager.FindService(P, NtSvc) then
+        FDependentServices.Add(NtSvc);
+      Inc(P, StrLen(P) + 1);
+    end;
   end;
 
 begin
@@ -666,9 +668,9 @@ var
   BytesNeeded: DWORD;
   PQrySvcCnfg: PQueryServiceConfig;
 begin
-  if not FCommitNeeded then
-    Exit;
-  FCommitNeeded := False;
+ if not FCommitNeeded then
+   Exit;
+ FCommitNeeded := False;
 
   Open(SERVICE_CHANGE_CONFIG or SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
@@ -732,7 +734,7 @@ begin
         PServiceArgVectors := nil
       else
       begin
-        GetMem(PServiceArgVectors, SizeOf(PChar) * Length(Args));
+        GetMem(PServiceArgVectors, SizeOf(PChar)*Length(Args));
         for I := 0 to Length(Args) - 1 do
           PStrArray(PServiceArgVectors)^[I] := PChar(Args[I]);
       end;
@@ -1020,7 +1022,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
       for I := 0 to ServicesReturned - 1 do
       begin
         NtSvc := TJclNtService.Create(Self, PEss^);
-        NtSvc.Refresh;
+        try
+          NtSvc.Refresh;
+        except
+          // trap invalid services
+        end;
         Inc(PEss);
       end;
     finally
@@ -1080,7 +1086,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     I: Integer;
   begin
     for I := 0 to GetServiceCount - 1 do
+    try
       GetService(I).Refresh;
+    except
+      // trap invalid services
+    end;
   end;
 
 begin
@@ -1331,75 +1341,75 @@ begin
       Include(Result, ACtrl);
 end;
 
-function GetServiceStatusByName(const AServer, AServiceName: string): TJclServiceState;
+function GetServiceStatusByName(const AServer,AServiceName:string):TJclServiceState;
 var
   ServiceHandle,
   SCMHandle: DWORD;
-  SCMAccess, Access: DWORD;
+  SCMAccess,Access:DWORD;
   ServiceStatus: TServiceStatus;
 begin
-  Result := ssUnknown;
+  Result:=ssUnknown;
 
-  SCMAccess := SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
-  Access := SERVICE_INTERROGATE or GENERIC_READ;
+  SCMAccess:=SC_MANAGER_CONNECT or SC_MANAGER_ENUMERATE_SERVICE or SC_MANAGER_QUERY_LOCK_STATUS;
+  Access:=SERVICE_INTERROGATE or GENERIC_READ;
 
-  SCMHandle := OpenSCManager(PChar(AServer), Nil, SCMAccess);
+  SCMHandle:= OpenSCManager(PChar(AServer), Nil, SCMAccess);
   if SCMHandle <> 0 then
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
+    if ServiceHandle <> 0 then
     try
-      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), Access);
-      if ServiceHandle <> 0 then
-        try
-          if QueryServiceStatus(ServiceHandle, ServiceStatus) then
-            Result := TJclServiceState(ServiceStatus.dwCurrentState);
-        finally
-          CloseServiceHandle(ServiceHandle);
-        end;
+      if QueryServiceStatus(ServiceHandle,ServiceStatus) then
+        Result:=TJclServiceState(ServiceStatus.dwCurrentState);
     finally
-      CloseServiceHandle(SCMHandle);
+      CloseServiceHandle(ServiceHandle);
     end;
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
 end;
 
-function StartServiceByName(const AServer, AServiceName: String): Boolean;
+function StartServiceByName(const AServer,AServiceName: String):Boolean;
 var
   ServiceHandle,
   SCMHandle: DWORD;
   p: PChar;
 begin
-  p := nil;
-  Result := False;
+  p:=nil;
+  Result:=False;
 
-  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
-    try
-      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), SERVICE_ALL_ACCESS);
-      if ServiceHandle <> 0 then
-        Result := StartService(ServiceHandle, 0, p);
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    if ServiceHandle <> 0 then
+      Result:=StartService(ServiceHandle,0,p);
 
-      CloseServiceHandle(ServiceHandle);
-    finally
-      CloseServiceHandle(SCMHandle);
-    end;
+    CloseServiceHandle(ServiceHandle);
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
 end;
 
-function StopServiceByName(const AServer, AServiceName: String): Boolean;
+function StopServiceByName(const AServer, AServiceName: String):Boolean;
 var
   ServiceHandle,
   SCMHandle: DWORD;
   SS: _Service_Status;
 begin
-  Result := False;
+  Result:=False;
 
-  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
-    try
-      ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), SERVICE_ALL_ACCESS);
-      if ServiceHandle <> 0 then
-        Result := ControlService(ServiceHandle, SERVICE_CONTROL_STOP, SS);
+  try
+    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    if ServiceHandle <> 0 then
+      Result:=ControlService(ServiceHandle,SERVICE_CONTROL_STOP,SS);
 
-      CloseServiceHandle(ServiceHandle);
-    finally
-      CloseServiceHandle(SCMHandle);
-    end;
+    CloseServiceHandle(ServiceHandle);
+  finally
+    CloseServiceHandle(SCMHandle);
+  end;
 end;
 
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;

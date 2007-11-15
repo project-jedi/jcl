@@ -30,8 +30,12 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit Jcl8087;
 
@@ -93,11 +97,11 @@ asm
         {$IFDEF FPC}
         SUB     ESP, $2
         {$ELSE}
-  SUB     ESP, type WORD
+        SUB     ESP, TYPE WORD
         {$ENDIF FPC}
-  FSTCW[ESP]
-  FWAIT
-  POP AX
+        FSTCW   [ESP]
+        FWAIT
+        POP AX
 end;
 
 function Get8087Infinity: T8087Infinity;
@@ -117,12 +121,12 @@ end;
 
 function Get8087StatusWord(ClearExceptions: Boolean): Word; assembler;
 asm
-  TEST    AX, AX                // if ClearExceptions then
-  JE      @@NoClearExceptions
-  FSTSW   AX                    //   get status word (clears exceptions)
-  RET
-  @@NoClearExceptions:                  // else
-  FNSTSW  AX                    //   get status word (without clearing exceptions)
+        TEST    AX, AX                // if ClearExceptions then
+        JE      @@NoClearExceptions
+        FSTSW   AX                    //   get status word (clears exceptions)
+        RET
+@@NoClearExceptions:                  // else
+        FNSTSW  AX                    //   get status word (without clearing exceptions)
 end;
 
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
@@ -154,33 +158,33 @@ end;
 
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
-  FNCLEX
+        FNCLEX
         {$IFDEF FPC}
         SUB     ESP, $2
         {$ELSE}
-  SUB     ESP, type WORD
+        SUB     ESP, TYPE WORD
         {$ENDIF FPC}
-  FSTCW[ESP]
-  XCHG[ESP], AX
-  FLDCW[ESP]
+        FSTCW   [ESP]
+        XCHG    [ESP], AX
+        FLDCW   [ESP]
         {$IFDEF FPC}
         ADD     ESP, $2
         {$ELSE}
-  ADD     ESP, type WORD
+        ADD     ESP, TYPE WORD
         {$ENDIF FPC}
 end;
 
 function ClearPending8087Exceptions: T8087Exceptions;
 asm
-  FNSTSW  AX
-  and     AX, X87ExceptBits
-  FNCLEX
+        FNSTSW  AX
+        AND     AX, X87ExceptBits
+        FNCLEX
 end;
 
 function GetPending8087Exceptions: T8087Exceptions;
 asm
-  FNSTSW  AX
-  and     AX, X87ExceptBits
+        FNSTSW  AX
+        AND     AX, X87ExceptBits
 end;
 
 function GetMasked8087Exceptions: T8087Exceptions;
@@ -188,39 +192,39 @@ asm
         {$IFDEF FPC}
         SUB     ESP, $2
         {$ELSE}
-  SUB     ESP, type WORD
+        SUB     ESP, TYPE WORD
         {$ENDIF FPC}
-  FSTCW[ESP]
-  FWAIT
-  POP     AX
-  and     AX, X87ExceptBits
+        FSTCW   [ESP]
+        FWAIT
+        POP     AX
+        AND     AX, X87ExceptBits
 end;
 
 function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 asm
-  TEST    DL, DL             // if ClearBefore then
-  JZ      @1
-  FNCLEX                     // clear pending exceptions
-  @1:
+        TEST    DL, DL             // if ClearBefore then
+        JZ      @1
+        FNCLEX                     // clear pending exceptions
+@1:
         {$IFDEF FPC}
         SUB     ESP, $2
         {$ELSE}
-  SUB     ESP, type WORD
+        SUB     ESP, TYPE WORD
         {$ENDIF FPC}
-  FSTCW[ESP]
-  FWAIT
-  and     AX, X87ExceptBits  // mask exception mask bits 0..5
-  MOV     DX, [ESP]
-  and     WORD PTR [ESP], not X87ExceptBits
-  or      [ESP], AX
-  FLDCW[ESP]
+        FSTCW   [ESP]
+        FWAIT
+        AND     AX, X87ExceptBits  // mask exception mask bits 0..5
+        MOV     DX, [ESP]
+        AND     WORD PTR [ESP], NOT X87ExceptBits
+        OR      [ESP], AX
+        FLDCW   [ESP]
         {$IFDEF FPC}
         ADD     ESP, $2
         {$ELSE}
-  ADD     ESP, type WORD
+        ADD     ESP, TYPE WORD
         {$ENDIF FPC}
-  MOV     AX, DX
-  and     AX, X87ExceptBits
+        MOV     AX, DX
+        AND     AX, X87ExceptBits
 end;
 
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;

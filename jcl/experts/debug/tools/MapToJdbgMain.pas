@@ -20,8 +20,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date$                            }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -104,8 +105,7 @@ begin
     ExeFileName := ParamStr(2);
     if (MapFileName <> '') and (ExeFileName <> '') then
     begin
-      if not InsertDebugDataIntoExecutableFile(ExeFileName, MapFileName, LinkerBugUnit,
-        MapFileSize, JclDebugDataSize, LineNumberErrors) then
+      if not InsertDebugDataIntoExecutableFile(ExeFileName, MapFileName, LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors) then
         ExitCode := 1;
       Application.ShowMainForm := False;
       Application.Terminate;

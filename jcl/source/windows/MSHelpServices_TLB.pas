@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit MSHelpServices_TLB;
 
 // ************************************************************************ //
@@ -56,7 +64,7 @@ unit MSHelpServices_TLB;
 interface
 
 uses ActiveX, Classes;
-
+  
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
@@ -446,8 +454,8 @@ type
     function Get_Location: WideString; safecall;
     function Get_Rank: Integer; safecall;
     function Get_Attributes: IHxAttributeList; safecall;
-    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString;
-      out pRank: Integer); safecall;
+    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString; 
+                      out pRank: Integer); safecall;
     function GetProperty(propid: HxTopicPropId): OleVariant; safecall;
     procedure SetProperty(propid: HxTopicPropId; var_: OleVariant); safecall;
     function HasAttribute(const Name: WideString; const Value: WideString): WordBool; safecall;
@@ -472,8 +480,8 @@ type
     property Location: WideString readonly dispid 68099;
     property Rank: Integer readonly dispid 68100;
     property Attributes: IHxAttributeList readonly dispid 68101;
-    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString;
-      out pRank: Integer); dispid 68102;
+    procedure GetInfo(out pTitle: WideString; out pURL: WideString; out pLocation: WideString; 
+                      out pRank: Integer); dispid 68102;
     function GetProperty(propid: HxTopicPropId): OleVariant; dispid 68103;
     procedure SetProperty(propid: HxTopicPropId; var_: OleVariant); dispid 68104;
     function HasAttribute(const Name: WideString; const Value: WideString): WordBool; dispid 68105;
@@ -568,24 +576,24 @@ type
 // *********************************************************************//
   IHxRegister = interface(IDispatch)
     ['{314111BC-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString;
-      const bstrDescription: WideString); safecall;
+    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString; 
+                                const bstrDescription: WideString); safecall;
     function IsNamespace(const bstrNamespace: WideString): WordBool; safecall;
     function GetCollection(const bstrNamespace: WideString): WideString; safecall;
     function GetDescription(const bstrNamespace: WideString): WideString; safecall;
     procedure RemoveNamespace(const bstrNamespace: WideString); safecall;
-    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer; const bstrHelpFile: WideString); safecall;
-    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString;
-      const bstrPath: WideString): Integer; safecall;
-    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer); safecall;
-    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer; const bstrHxs: WideString;
-      const bstrHxi: WideString; const bstrHxq: WideString;
-      const bstrHxr: WideString; lHxsMediaId: Integer;
-      lHxqMediaId: Integer; lHxrMediaId: Integer;
-      lSampleMediaId: Integer); safecall;
+    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                               LangId: Integer; const bstrHelpFile: WideString); safecall;
+    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString; 
+                           const bstrPath: WideString): Integer; safecall;
+    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                             LangId: Integer); safecall;
+    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString; 
+                                  LangId: Integer; const bstrHxs: WideString; 
+                                  const bstrHxi: WideString; const bstrHxq: WideString; 
+                                  const bstrHxr: WideString; lHxsMediaId: Integer; 
+                                  lHxqMediaId: Integer; lHxrMediaId: Integer; 
+                                  lSampleMediaId: Integer); safecall;
   end;
 
 // *********************************************************************//
@@ -595,24 +603,24 @@ type
 // *********************************************************************//
   IHxRegisterDisp = dispinterface
     ['{314111BC-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString;
-      const bstrDescription: WideString); dispid 66817;
+    procedure RegisterNamespace(const bstrNamespace: WideString; const bstrCollection: WideString; 
+                                const bstrDescription: WideString); dispid 66817;
     function IsNamespace(const bstrNamespace: WideString): WordBool; dispid 66818;
     function GetCollection(const bstrNamespace: WideString): WideString; dispid 66830;
     function GetDescription(const bstrNamespace: WideString): WideString; dispid 66829;
     procedure RemoveNamespace(const bstrNamespace: WideString); dispid 66819;
-    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer; const bstrHelpFile: WideString); dispid 66822;
-    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString;
-      const bstrPath: WideString): Integer; dispid 66823;
-    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer); dispid 66825;
-    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString;
-      LangId: Integer; const bstrHxs: WideString;
-      const bstrHxi: WideString; const bstrHxq: WideString;
-      const bstrHxr: WideString; lHxsMediaId: Integer;
-      lHxqMediaId: Integer; lHxrMediaId: Integer;
-      lSampleMediaId: Integer); dispid 66831;
+    procedure RegisterHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                               LangId: Integer; const bstrHelpFile: WideString); dispid 66822;
+    function RegisterMedia(const bstrNamespace: WideString; const bstrFriendly: WideString; 
+                           const bstrPath: WideString): Integer; dispid 66823;
+    procedure RemoveHelpFile(const bstrNamespace: WideString; const bstrId: WideString; 
+                             LangId: Integer); dispid 66825;
+    procedure RegisterHelpFileSet(const bstrNamespace: WideString; const bstrId: WideString; 
+                                  LangId: Integer; const bstrHxs: WideString; 
+                                  const bstrHxi: WideString; const bstrHxq: WideString; 
+                                  const bstrHxr: WideString; lHxsMediaId: Integer; 
+                                  lHxqMediaId: Integer; lHxrMediaId: Integer; 
+                                  lSampleMediaId: Integer); dispid 66831;
   end;
   {$EXTERNALSYM IHxRegisterDisp}
 
@@ -668,16 +676,15 @@ type
   IHxSession = interface(IDispatch)
     ['{31411192-A502-11D2-BBCA-00C04F8EC294}']
     procedure Initialize(const NameSpace: WideString; options: Integer); safecall;
-    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer;
-      const FilterMoniker: WideString): IHxTopicList; safecall;
-    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString;
-      options: Integer; const FilterMoniker: WideString): IHxTopic; safecall;
-    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString;
-      options: Integer; const FilterMoniker: WideString): WideString; safecall;
-    function GetNavigationInterface(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString; var refiid: TGUID): IDispatch; safecall;
-    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch;
-      safecall;
+    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer; 
+                   const FilterMoniker: WideString): IHxTopicList; safecall;
+    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString; 
+                           options: Integer; const FilterMoniker: WideString): IHxTopic; safecall;
+    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString; 
+                         options: Integer; const FilterMoniker: WideString): WideString; safecall;
+    function GetNavigationInterface(const NavDataMoniker: WideString; 
+                                    const FilterMoniker: WideString; var refiid: TGUID): IDispatch; safecall;
+    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch; safecall;
     function GetQueryObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IHxQuery; safecall;
     function Get_Collection: IHxCollection; safecall;
     function Get_LangId: Smallint; safecall;
@@ -695,17 +702,15 @@ type
   IHxSessionDisp = dispinterface
     ['{31411192-A502-11D2-BBCA-00C04F8EC294}']
     procedure Initialize(const NameSpace: WideString; options: Integer); dispid 65792;
-    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer;
-      const FilterMoniker: WideString): IHxTopicList; dispid 65793;
-    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString;
-      options: Integer; const FilterMoniker: WideString): IHxTopic; dispid 65794;
-    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString;
-      options: Integer; const FilterMoniker: WideString): WideString; dispid 65795;
-    function GetNavigationInterface(const NavDataMoniker: WideString;
-      const FilterMoniker: WideString; var refiid: {??TGUID}OleVariant): IDispatch;
-      dispid 65796;
-    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch;
-      dispid 65797;
+    function Query(const keywords: WideString; const NavDataMoniker: WideString; options: Integer; 
+                   const FilterMoniker: WideString): IHxTopicList; dispid 65793;
+    function QueryForTopic(const keywords: WideString; const NavDataMoniker: WideString; 
+                           options: Integer; const FilterMoniker: WideString): IHxTopic; dispid 65794;
+    function QueryForUrl(const keywords: WideString; const NavDataMoniker: WideString; 
+                         options: Integer; const FilterMoniker: WideString): WideString; dispid 65795;
+    function GetNavigationInterface(const NavDataMoniker: WideString; 
+                                    const FilterMoniker: WideString; var refiid: {??TGUID}OleVariant): IDispatch; dispid 65796;
+    function GetNavigationObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IDispatch; dispid 65797;
     function GetQueryObject(const NavDataMoniker: WideString; const FilterMoniker: WideString): IHxQuery; dispid 65798;
     property Collection: IHxCollection readonly dispid 65799;
     property LangId: Smallint dispid 65803;
@@ -1087,8 +1092,8 @@ type
 // *********************************************************************//
   IHxSampleCollection = interface(IDispatch)
     ['{314111E6-A502-11D2-BBCA-00C04F8EC294}']
-    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString;
-      const bstrSFLName: WideString): IHxSample; safecall;
+    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString; 
+                             const bstrSFLName: WideString): IHxSample; safecall;
   end;
 
 // *********************************************************************//
@@ -1098,8 +1103,8 @@ type
 // *********************************************************************//
   IHxSampleCollectionDisp = dispinterface
     ['{314111E6-A502-11D2-BBCA-00C04F8EC294}']
-    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString;
-      const bstrSFLName: WideString): IHxSample; dispid 72448;
+    function GetSampleFromId(const bstrTopicUrl: WideString; const bstrId: WideString; 
+                             const bstrSFLName: WideString): IHxSample; dispid 72448;
   end;
   {$EXTERNALSYM IHxSampleCollectionDisp}
 
@@ -1116,8 +1121,8 @@ type
     function Get_ProjectFileExt: WideString; safecall;
     function Get_FileCount: Integer; safecall;
     function GetFileNameAtIndex(index: Integer): WideString; safecall;
-    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString;
-      option: HxSampleFileCopyOption); safecall;
+    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString; 
+                              option: HxSampleFileCopyOption); safecall;
     function ChooseDirectory(const bstrDefaultDir: WideString; const bstrTitle: WideString): WideString; safecall;
     function GetFileTextAtIndex(index: Integer): WideString; safecall;
     property SampleId: WideString read Get_SampleId;
@@ -1140,8 +1145,8 @@ type
     property ProjectFileExt: WideString readonly dispid 72707;
     property FileCount: Integer readonly dispid 72709;
     function GetFileNameAtIndex(index: Integer): WideString; dispid 72710;
-    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString;
-      option: HxSampleFileCopyOption); dispid 72711;
+    procedure CopyFileAtIndex(index: Integer; const bstrDest: WideString; 
+                              option: HxSampleFileCopyOption); dispid 72711;
     function ChooseDirectory(const bstrDefaultDir: WideString; const bstrTitle: WideString): WideString; dispid 72713;
     function GetFileTextAtIndex(index: Integer): WideString; dispid 72714;
   end;
@@ -1155,8 +1160,7 @@ type
   IHxRegistryWalker = interface(IDispatch)
     ['{314111EF-A502-11D2-BBCA-00C04F8EC294}']
     function Get_RegisteredNamespaceList(const bstrStart: WideString): IHxRegNamespaceList; safecall;
-    property RegisteredNamespaceList[const bstrStart: WideString]: IHxRegNamespaceList
-      read Get_RegisteredNamespaceList;
+    property RegisteredNamespaceList[const bstrStart: WideString]: IHxRegNamespaceList read Get_RegisteredNamespaceList;
   end;
 
 // *********************************************************************//
@@ -1234,8 +1238,7 @@ type
 // *********************************************************************//
   IEnumHxRegNamespace = interface(IUnknown)
     ['{314111F5-A502-11D2-BBCA-00C04F8EC294}']
-    function Next(celt: LongWord; out ppIHxRegNamespace: IHxRegNamespace;
-      out pceltFetched: LongWord): HResult; stdcall;
+    function Next(celt: LongWord; out ppIHxRegNamespace: IHxRegNamespace; out pceltFetched: LongWord): HResult; stdcall;
     function Reset: HResult; stdcall;
     function Skip(celt: LongWord): HResult; stdcall;
     function Clone(out ppEnum: IEnumHxRegNamespace): HResult; stdcall;
@@ -1409,13 +1412,13 @@ type
 // *********************************************************************//
   IHxPlugIn = interface(IDispatch)
     ['{314111DA-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString; const bstrNamespace: WideString;
-      const bstrHxt: WideString; const bstrHxa: WideString;
-      options: Integer); safecall;
-    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString; const bstrNamespace: WideString;
-      const bstrHxt: WideString; const bstrHxa: WideString); safecall;
+    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString; 
+                                 const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                                 const bstrHxt: WideString; const bstrHxa: WideString; 
+                                 options: Integer); safecall;
+    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString; 
+                               const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                               const bstrHxt: WideString; const bstrHxa: WideString); safecall;
   end;
 
 // *********************************************************************//
@@ -1425,13 +1428,13 @@ type
 // *********************************************************************//
   IHxPlugInDisp = dispinterface
     ['{314111DA-A502-11D2-BBCA-00C04F8EC294}']
-    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString; const bstrNamespace: WideString;
-      const bstrHxt: WideString; const bstrHxa: WideString;
-      options: Integer); dispid 66304;
-    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString;
-      const bstrProductHxt: WideString; const bstrNamespace: WideString;
-      const bstrHxt: WideString; const bstrHxa: WideString); dispid 66305;
+    procedure RegisterHelpPlugIn(const bstrProductNamespace: WideString; 
+                                 const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                                 const bstrHxt: WideString; const bstrHxa: WideString; 
+                                 options: Integer); dispid 66304;
+    procedure RemoveHelpPlugIn(const bstrProductNamespace: WideString; 
+                               const bstrProductHxt: WideString; const bstrNamespace: WideString; 
+                               const bstrHxt: WideString; const bstrHxa: WideString); dispid 66305;
   end;
   {$EXTERNALSYM IHxPlugInDisp}
 

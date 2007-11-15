@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit mscorlib_TLB;
 
 // ************************************************************************ //
@@ -5088,8 +5096,7 @@ type
 // *********************************************************************//
   ISerializableDisp = dispinterface
     ['{D0EEAA62-3D30-3EE2-B896-A2F34DDA47D8}']
-    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant);
-      dispid 1610743808;
+    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant); dispid 1610743808;
   end;
   {$EXTERNALSYM ISerializableDisp}
 
@@ -5139,8 +5146,7 @@ type
     property StackTrace: WideString readonly dispid 1610743814;
     property HelpLink: WideString readonly dispid 1610743815;
     property Source: WideString readonly dispid 1610743817;
-    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant);
-      dispid 1610743819;
+    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant); dispid 1610743819;
     property InnerException: _Exception readonly dispid 1610743820;
     property TargetSite: _MethodBase readonly dispid 1610743821;
   end;
@@ -5183,8 +5189,7 @@ type
 // *********************************************************************//
   IFormattableDisp = dispinterface
     ['{9A604EE7-E630-3DED-9444-BAAE247075AB}']
-    property ToString[const format: WideString;
-      const formatProvider: IFormatProvider]: WideString readonly dispid 1610743808;
+    property ToString[const format: WideString; const formatProvider: IFormatProvider]: WideString readonly dispid 1610743808;
   end;
   {$EXTERNALSYM IFormattableDisp}
 
@@ -5299,8 +5304,7 @@ type
     function GetType: _Type; dispid 1610743811;
     function GetInvocationList: {??PSafeArray}OleVariant; dispid 1610743812;
     function Clone: OleVariant; dispid 1610743813;
-    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant);
-      dispid 1610743814;
+    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant); dispid 1610743814;
     function DynamicInvoke(args: {??PSafeArray}OleVariant): OleVariant; dispid 1610743815;
     property Method: _MethodInfo readonly dispid 1610743816;
     property Target: OleVariant readonly dispid 1610743817;
@@ -5544,67 +5548,65 @@ type
     procedure remove_AssemblyResolve(const value: _ResolveEventHandler); safecall;
     procedure add_UnhandledException(const value: _UnhandledExceptionEventHandler); safecall;
     procedure remove_UnhandledException(const value: _UnhandledExceptionEventHandler); safecall;
-    function DefineDynamicAssembly(const name: _AssemblyName; access: AssemblyBuilderAccess): _AssemblyBuilder;
-      safecall;
-    function DefineDynamicAssembly_2(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_3(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const Evidence: _Evidence): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_4(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_5(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_6(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_7(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_8(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
-    function DefineDynamicAssembly_9(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet;
-      IsSynchronized: WordBool): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly(const name: _AssemblyName; access: AssemblyBuilderAccess): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_2(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_3(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const Evidence: _Evidence): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_4(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_5(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_6(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_7(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_8(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; safecall;
+    function DefineDynamicAssembly_9(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet; 
+                                     IsSynchronized: WordBool): _AssemblyBuilder; safecall;
     function CreateInstance(const AssemblyName: WideString; const typeName: WideString): _ObjectHandle; safecall;
     function CreateInstanceFrom(const assemblyFile: WideString; const typeName: WideString): _ObjectHandle; safecall;
-    function CreateInstance_2(const AssemblyName: WideString; const typeName: WideString;
-      activationAttributes: PSafeArray): _ObjectHandle; safecall;
-    function CreateInstanceFrom_2(const assemblyFile: WideString; const typeName: WideString;
-      activationAttributes: PSafeArray): _ObjectHandle; safecall;
-    function CreateInstance_3(const AssemblyName: WideString; const typeName: WideString;
-      ignoreCase: WordBool; bindingAttr: BindingFlags;
-      const Binder: _Binder; args: PSafeArray; const culture: _CultureInfo;
-      activationAttributes: PSafeArray; const securityAttributes: _Evidence): _ObjectHandle;
-      safecall;
-    function CreateInstanceFrom_3(const assemblyFile: WideString; const typeName: WideString;
-      ignoreCase: WordBool; bindingAttr: BindingFlags;
-      const Binder: _Binder; args: PSafeArray;
-      const culture: _CultureInfo; activationAttributes: PSafeArray;
-      const securityAttributes: _Evidence): _ObjectHandle; safecall;
+    function CreateInstance_2(const AssemblyName: WideString; const typeName: WideString; 
+                              activationAttributes: PSafeArray): _ObjectHandle; safecall;
+    function CreateInstanceFrom_2(const assemblyFile: WideString; const typeName: WideString; 
+                                  activationAttributes: PSafeArray): _ObjectHandle; safecall;
+    function CreateInstance_3(const AssemblyName: WideString; const typeName: WideString; 
+                              ignoreCase: WordBool; bindingAttr: BindingFlags; 
+                              const Binder: _Binder; args: PSafeArray; const culture: _CultureInfo; 
+                              activationAttributes: PSafeArray; const securityAttributes: _Evidence): _ObjectHandle; safecall;
+    function CreateInstanceFrom_3(const assemblyFile: WideString; const typeName: WideString; 
+                                  ignoreCase: WordBool; bindingAttr: BindingFlags; 
+                                  const Binder: _Binder; args: PSafeArray; 
+                                  const culture: _CultureInfo; activationAttributes: PSafeArray; 
+                                  const securityAttributes: _Evidence): _ObjectHandle; safecall;
     function Load(const assemblyRef: _AssemblyName): _Assembly; safecall;
     function Load_2(const assemblyString: WideString): _Assembly; safecall;
     function Load_3(rawAssembly: PSafeArray): _Assembly; safecall;
     function Load_4(rawAssembly: PSafeArray; rawSymbolStore: PSafeArray): _Assembly; safecall;
-    function Load_5(rawAssembly: PSafeArray; rawSymbolStore: PSafeArray;
-      const securityEvidence: _Evidence): _Assembly; safecall;
+    function Load_5(rawAssembly: PSafeArray; rawSymbolStore: PSafeArray; 
+                    const securityEvidence: _Evidence): _Assembly; safecall;
     function Load_6(const assemblyRef: _AssemblyName; const assemblySecurity: _Evidence): _Assembly; safecall;
     function Load_7(const assemblyString: WideString; const assemblySecurity: _Evidence): _Assembly; safecall;
     function ExecuteAssembly(const assemblyFile: WideString; const assemblySecurity: _Evidence): Integer; safecall;
     function ExecuteAssembly_2(const assemblyFile: WideString): Integer; safecall;
-    function ExecuteAssembly_3(const assemblyFile: WideString; const assemblySecurity: _Evidence;
-      args: PSafeArray): Integer; safecall;
+    function ExecuteAssembly_3(const assemblyFile: WideString; const assemblySecurity: _Evidence; 
+                               args: PSafeArray): Integer; safecall;
     function Get_FriendlyName: WideString; safecall;
     function Get_BaseDirectory: WideString; safecall;
     function Get_RelativeSearchPath: WideString; safecall;
@@ -5659,75 +5661,68 @@ type
     procedure remove_AssemblyResolve(const value: _ResolveEventHandler); dispid 1610743826;
     procedure add_UnhandledException(const value: _UnhandledExceptionEventHandler); dispid 1610743827;
     procedure remove_UnhandledException(const value: _UnhandledExceptionEventHandler); dispid 1610743828;
-    function DefineDynamicAssembly(const name: _AssemblyName; access: AssemblyBuilderAccess): _AssemblyBuilder;
-      dispid 1610743829;
-    function DefineDynamicAssembly_2(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString): _AssemblyBuilder; dispid 1610743830;
-    function DefineDynamicAssembly_3(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const Evidence: _Evidence): _AssemblyBuilder; dispid 1610743831;
-    function DefineDynamicAssembly_4(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743832;
-    function DefineDynamicAssembly_5(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence): _AssemblyBuilder;
-      dispid 1610743833;
-    function DefineDynamicAssembly_6(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743834;
-    function DefineDynamicAssembly_7(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743835;
-    function DefineDynamicAssembly_8(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743836;
-    function DefineDynamicAssembly_9(const name: _AssemblyName; access: AssemblyBuilderAccess;
-      const dir: WideString; const Evidence: _Evidence;
-      const requiredPermissions: _PermissionSet;
-      const optionalPermissions: _PermissionSet;
-      const refusedPermissions: _PermissionSet;
-      IsSynchronized: WordBool): _AssemblyBuilder; dispid 1610743837;
-    function CreateInstance(const AssemblyName: WideString; const typeName: WideString): _ObjectHandle;
-      dispid 1610743838;
-    function CreateInstanceFrom(const assemblyFile: WideString; const typeName: WideString): _ObjectHandle;
-      dispid 1610743839;
-    function CreateInstance_2(const AssemblyName: WideString; const typeName: WideString;
-      activationAttributes: {??PSafeArray}OleVariant): _ObjectHandle; dispid 1610743840;
-    function CreateInstanceFrom_2(const assemblyFile: WideString; const typeName: WideString;
-      activationAttributes: {??PSafeArray}OleVariant): _ObjectHandle; dispid 1610743841;
-    function CreateInstance_3(const AssemblyName: WideString; const typeName: WideString;
-      ignoreCase: WordBool; bindingAttr: BindingFlags;
-      const Binder: _Binder; args: {??PSafeArray}OleVariant;
-      const culture: _CultureInfo;
-      activationAttributes: {??PSafeArray}OleVariant;
-      const securityAttributes: _Evidence): _ObjectHandle; dispid 1610743842;
-    function CreateInstanceFrom_3(const assemblyFile: WideString; const typeName: WideString;
-      ignoreCase: WordBool; bindingAttr: BindingFlags;
-      const Binder: _Binder; args: {??PSafeArray}OleVariant;
-      const culture: _CultureInfo;
-      activationAttributes: {??PSafeArray}OleVariant;
-      const securityAttributes: _Evidence): _ObjectHandle; dispid 1610743843;
+    function DefineDynamicAssembly(const name: _AssemblyName; access: AssemblyBuilderAccess): _AssemblyBuilder; dispid 1610743829;
+    function DefineDynamicAssembly_2(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString): _AssemblyBuilder; dispid 1610743830;
+    function DefineDynamicAssembly_3(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const Evidence: _Evidence): _AssemblyBuilder; dispid 1610743831;
+    function DefineDynamicAssembly_4(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743832;
+    function DefineDynamicAssembly_5(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence): _AssemblyBuilder; dispid 1610743833;
+    function DefineDynamicAssembly_6(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743834;
+    function DefineDynamicAssembly_7(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743835;
+    function DefineDynamicAssembly_8(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet): _AssemblyBuilder; dispid 1610743836;
+    function DefineDynamicAssembly_9(const name: _AssemblyName; access: AssemblyBuilderAccess; 
+                                     const dir: WideString; const Evidence: _Evidence; 
+                                     const requiredPermissions: _PermissionSet; 
+                                     const optionalPermissions: _PermissionSet; 
+                                     const refusedPermissions: _PermissionSet; 
+                                     IsSynchronized: WordBool): _AssemblyBuilder; dispid 1610743837;
+    function CreateInstance(const AssemblyName: WideString; const typeName: WideString): _ObjectHandle; dispid 1610743838;
+    function CreateInstanceFrom(const assemblyFile: WideString; const typeName: WideString): _ObjectHandle; dispid 1610743839;
+    function CreateInstance_2(const AssemblyName: WideString; const typeName: WideString; 
+                              activationAttributes: {??PSafeArray}OleVariant): _ObjectHandle; dispid 1610743840;
+    function CreateInstanceFrom_2(const assemblyFile: WideString; const typeName: WideString; 
+                                  activationAttributes: {??PSafeArray}OleVariant): _ObjectHandle; dispid 1610743841;
+    function CreateInstance_3(const AssemblyName: WideString; const typeName: WideString; 
+                              ignoreCase: WordBool; bindingAttr: BindingFlags; 
+                              const Binder: _Binder; args: {??PSafeArray}OleVariant; 
+                              const culture: _CultureInfo; 
+                              activationAttributes: {??PSafeArray}OleVariant; 
+                              const securityAttributes: _Evidence): _ObjectHandle; dispid 1610743842;
+    function CreateInstanceFrom_3(const assemblyFile: WideString; const typeName: WideString; 
+                                  ignoreCase: WordBool; bindingAttr: BindingFlags; 
+                                  const Binder: _Binder; args: {??PSafeArray}OleVariant; 
+                                  const culture: _CultureInfo; 
+                                  activationAttributes: {??PSafeArray}OleVariant; 
+                                  const securityAttributes: _Evidence): _ObjectHandle; dispid 1610743843;
     function Load(const assemblyRef: _AssemblyName): _Assembly; dispid 1610743844;
     function Load_2(const assemblyString: WideString): _Assembly; dispid 1610743845;
     function Load_3(rawAssembly: {??PSafeArray}OleVariant): _Assembly; dispid 1610743846;
-    function Load_4(rawAssembly: {??PSafeArray}OleVariant; rawSymbolStore: {??PSafeArray}OleVariant): _Assembly;
-      dispid 1610743847;
-    function Load_5(rawAssembly: {??PSafeArray}OleVariant;
-      rawSymbolStore: {??PSafeArray}OleVariant; const securityEvidence: _Evidence): _Assembly;
-      dispid 1610743848;
+    function Load_4(rawAssembly: {??PSafeArray}OleVariant; rawSymbolStore: {??PSafeArray}OleVariant): _Assembly; dispid 1610743847;
+    function Load_5(rawAssembly: {??PSafeArray}OleVariant; 
+                    rawSymbolStore: {??PSafeArray}OleVariant; const securityEvidence: _Evidence): _Assembly; dispid 1610743848;
     function Load_6(const assemblyRef: _AssemblyName; const assemblySecurity: _Evidence): _Assembly; dispid 1610743849;
     function Load_7(const assemblyString: WideString; const assemblySecurity: _Evidence): _Assembly; dispid 1610743850;
-    function ExecuteAssembly(const assemblyFile: WideString; const assemblySecurity: _Evidence): Integer;
-      dispid 1610743851;
+    function ExecuteAssembly(const assemblyFile: WideString; const assemblySecurity: _Evidence): Integer; dispid 1610743851;
     function ExecuteAssembly_2(const assemblyFile: WideString): Integer; dispid 1610743852;
-    function ExecuteAssembly_3(const assemblyFile: WideString; const assemblySecurity: _Evidence;
-      args: {??PSafeArray}OleVariant): Integer; dispid 1610743853;
+    function ExecuteAssembly_3(const assemblyFile: WideString; const assemblySecurity: _Evidence; 
+                               args: {??PSafeArray}OleVariant): Integer; dispid 1610743853;
     property FriendlyName: WideString readonly dispid 1610743854;
     property BaseDirectory: WideString readonly dispid 1610743855;
     property RelativeSearchPath: WideString readonly dispid 1610743856;
@@ -6285,15 +6280,15 @@ type
     function Equals(obj: OleVariant): WordBool; safecall;
     function GetHashCode: Integer; safecall;
     function GetType: _Type; safecall;
-    function BindToMethod(bindingAttr: BindingFlags; match: PSafeArray; var args: PSafeArray;
-      modifiers: PSafeArray; const culture: _CultureInfo; names: PSafeArray;
-      out state: OleVariant): _MethodBase; safecall;
-    function BindToField(bindingAttr: BindingFlags; match: PSafeArray; value: OleVariant;
-      const culture: _CultureInfo): _FieldInfo; safecall;
-    function SelectMethod(bindingAttr: BindingFlags; match: PSafeArray; types: PSafeArray;
-      modifiers: PSafeArray): _MethodBase; safecall;
-    function SelectProperty(bindingAttr: BindingFlags; match: PSafeArray; const returnType: _Type;
-      indexes: PSafeArray; modifiers: PSafeArray): _PropertyInfo; safecall;
+    function BindToMethod(bindingAttr: BindingFlags; match: PSafeArray; var args: PSafeArray; 
+                          modifiers: PSafeArray; const culture: _CultureInfo; names: PSafeArray; 
+                          out state: OleVariant): _MethodBase; safecall;
+    function BindToField(bindingAttr: BindingFlags; match: PSafeArray; value: OleVariant; 
+                         const culture: _CultureInfo): _FieldInfo; safecall;
+    function SelectMethod(bindingAttr: BindingFlags; match: PSafeArray; types: PSafeArray; 
+                          modifiers: PSafeArray): _MethodBase; safecall;
+    function SelectProperty(bindingAttr: BindingFlags; match: PSafeArray; const returnType: _Type; 
+                            indexes: PSafeArray; modifiers: PSafeArray): _PropertyInfo; safecall;
     function ChangeType(value: OleVariant; const Type_: _Type; const culture: _CultureInfo): OleVariant; safecall;
     procedure ReorderArgumentArray(var args: PSafeArray; state: OleVariant); safecall;
     property ToString: WideString read Get_ToString;
@@ -6310,20 +6305,18 @@ type
     function Equals(obj: OleVariant): WordBool; dispid 1610743809;
     function GetHashCode: Integer; dispid 1610743810;
     function GetType: _Type; dispid 1610743811;
-    function BindToMethod(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant;
-      var args: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant;
-      const culture: _CultureInfo; names: {??PSafeArray}OleVariant;
-      out state: OleVariant): _MethodBase; dispid 1610743812;
-    function BindToField(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant;
-      value: OleVariant; const culture: _CultureInfo): _FieldInfo; dispid 1610743813;
-    function SelectMethod(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodBase;
-      dispid 1610743814;
-    function SelectProperty(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant;
-      const returnType: _Type; indexes: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743815;
-    function ChangeType(value: OleVariant; const Type_: _Type; const culture: _CultureInfo): OleVariant;
-      dispid 1610743816;
+    function BindToMethod(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant; 
+                          var args: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant; 
+                          const culture: _CultureInfo; names: {??PSafeArray}OleVariant; 
+                          out state: OleVariant): _MethodBase; dispid 1610743812;
+    function BindToField(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant; 
+                         value: OleVariant; const culture: _CultureInfo): _FieldInfo; dispid 1610743813;
+    function SelectMethod(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant; 
+                          types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodBase; dispid 1610743814;
+    function SelectProperty(bindingAttr: BindingFlags; match: {??PSafeArray}OleVariant; 
+                            const returnType: _Type; indexes: {??PSafeArray}OleVariant; 
+                            modifiers: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743815;
+    function ChangeType(value: OleVariant; const Type_: _Type; const culture: _CultureInfo): OleVariant; dispid 1610743816;
     procedure ReorderArgumentArray(var args: {??PSafeArray}OleVariant; state: OleVariant); dispid 1610743817;
   end;
   {$EXTERNALSYM _BinderDisp}
@@ -6596,8 +6589,7 @@ type
 // *********************************************************************//
   ICustomFormatter = interface(IDispatch)
     ['{2B130940-CA5E-3406-8385-E259E68AB039}']
-    function format(const format: WideString; arg: OleVariant; const formatProvider: IFormatProvider): WideString;
-      safecall;
+    function format(const format: WideString; arg: OleVariant; const formatProvider: IFormatProvider): WideString; safecall;
   end;
 
 // *********************************************************************//
@@ -6607,8 +6599,7 @@ type
 // *********************************************************************//
   ICustomFormatterDisp = dispinterface
     ['{2B130940-CA5E-3406-8385-E259E68AB039}']
-    function format(const format: WideString; arg: OleVariant; const formatProvider: IFormatProvider): WideString;
-      dispid 1610743808;
+    function format(const format: WideString; arg: OleVariant; const formatProvider: IFormatProvider): WideString; dispid 1610743808;
   end;
   {$EXTERNALSYM ICustomFormatterDisp}
 
@@ -7129,8 +7120,7 @@ type
 // *********************************************************************//
   ICustomAttributeProviderDisp = dispinterface
     ['{B9B91146-D6C2-3A62-8159-C2D1794CDEB0}']
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743808;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743808;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743809;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743810;
   end;
@@ -7176,8 +7166,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
   end;
@@ -7190,22 +7179,22 @@ type
 // *********************************************************************//
   IReflect = interface(IDispatch)
     ['{AFBF15E5-C37C-11D2-B88E-00A0C9B471B8}']
-    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      types: PSafeArray; modifiers: PSafeArray): _MethodInfo; safecall;
+    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                       types: PSafeArray; modifiers: PSafeArray): _MethodInfo; safecall;
     function GetMethod_2(const name: WideString; bindingAttr: BindingFlags): _MethodInfo; safecall;
     function GetMethods(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetField(const name: WideString; bindingAttr: BindingFlags): _FieldInfo; safecall;
     function GetFields(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetProperty(const name: WideString; bindingAttr: BindingFlags): _PropertyInfo; safecall;
-    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags;
-      const Binder: _Binder; const returnType: _Type; types: PSafeArray;
-      modifiers: PSafeArray): _PropertyInfo; safecall;
+    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags; 
+                           const Binder: _Binder; const returnType: _Type; types: PSafeArray; 
+                           modifiers: PSafeArray): _PropertyInfo; safecall;
     function GetProperties(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetMember(const name: WideString; bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetMembers(bindingAttr: BindingFlags): PSafeArray; safecall;
-    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder;
-      Target: OleVariant; args: PSafeArray; modifiers: PSafeArray;
-      const culture: _CultureInfo; namedParameters: PSafeArray): OleVariant; safecall;
+    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder; 
+                          Target: OleVariant; args: PSafeArray; modifiers: PSafeArray; 
+                          const culture: _CultureInfo; namedParameters: PSafeArray): OleVariant; safecall;
     function Get_UnderlyingSystemType: _Type; safecall;
     property UnderlyingSystemType: _Type read Get_UnderlyingSystemType;
   end;
@@ -7217,25 +7206,23 @@ type
 // *********************************************************************//
   IReflectDisp = dispinterface
     ['{AFBF15E5-C37C-11D2-B88E-00A0C9B471B8}']
-    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodInfo;
-      dispid 1610743808;
+    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                       types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743808;
     function GetMethod_2(const name: WideString; bindingAttr: BindingFlags): _MethodInfo; dispid 1610743809;
     function GetMethods(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743810;
     function GetField(const name: WideString; bindingAttr: BindingFlags): _FieldInfo; dispid 1610743811;
     function GetFields(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743812;
     function GetProperty(const name: WideString; bindingAttr: BindingFlags): _PropertyInfo; dispid 1610743813;
-    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags;
-      const Binder: _Binder; const returnType: _Type;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo;
-      dispid 1610743814;
+    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags; 
+                           const Binder: _Binder; const returnType: _Type; 
+                           types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743814;
     function GetProperties(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743815;
     function GetMember(const name: WideString; bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetMembers(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743817;
-    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder;
-      Target: OleVariant; args: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant; const culture: _CultureInfo;
-      namedParameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743818;
+    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder; 
+                          Target: OleVariant; args: {??PSafeArray}OleVariant; 
+                          modifiers: {??PSafeArray}OleVariant; const culture: _CultureInfo; 
+                          namedParameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743818;
     property UnderlyingSystemType: _Type readonly dispid 1610743819;
   end;
   {$EXTERNALSYM IReflectDisp}
@@ -7278,46 +7265,46 @@ type
     function GetNestedType(const name: WideString; bindingAttr: BindingFlags): _Type; safecall;
     function GetMember(const name: WideString; Type_: MemberTypes; bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetDefaultMembers: PSafeArray; safecall;
-    function FindMembers(MemberType: MemberTypes; bindingAttr: BindingFlags;
-      const filter: _MemberFilter; filterCriteria: OleVariant): PSafeArray; safecall;
+    function FindMembers(MemberType: MemberTypes; bindingAttr: BindingFlags; 
+                         const filter: _MemberFilter; filterCriteria: OleVariant): PSafeArray; safecall;
     function GetElementType: _Type; safecall;
     function IsSubclassOf(const c: _Type): WordBool; safecall;
     function IsInstanceOfType(o: OleVariant): WordBool; safecall;
     function IsAssignableFrom(const c: _Type): WordBool; safecall;
     function GetInterfaceMap(const interfaceType: _Type): InterfaceMapping; safecall;
-    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      types: PSafeArray; modifiers: PSafeArray): _MethodInfo; safecall;
+    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                       types: PSafeArray; modifiers: PSafeArray): _MethodInfo; safecall;
     function GetMethod_2(const name: WideString; bindingAttr: BindingFlags): _MethodInfo; safecall;
     function GetMethods(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetField(const name: WideString; bindingAttr: BindingFlags): _FieldInfo; safecall;
     function GetFields(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetProperty(const name: WideString; bindingAttr: BindingFlags): _PropertyInfo; safecall;
-    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags;
-      const Binder: _Binder; const returnType: _Type; types: PSafeArray;
-      modifiers: PSafeArray): _PropertyInfo; safecall;
+    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags; 
+                           const Binder: _Binder; const returnType: _Type; types: PSafeArray; 
+                           modifiers: PSafeArray): _PropertyInfo; safecall;
     function GetProperties(bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetMember_2(const name: WideString; bindingAttr: BindingFlags): PSafeArray; safecall;
     function GetMembers(bindingAttr: BindingFlags): PSafeArray; safecall;
-    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder;
-      Target: OleVariant; args: PSafeArray; modifiers: PSafeArray;
-      const culture: _CultureInfo; namedParameters: PSafeArray): OleVariant; safecall;
+    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder; 
+                          Target: OleVariant; args: PSafeArray; modifiers: PSafeArray; 
+                          const culture: _CultureInfo; namedParameters: PSafeArray): OleVariant; safecall;
     function Get_UnderlyingSystemType: _Type; safecall;
-    function InvokeMember_2(const name: WideString; invokeAttr: BindingFlags;
-      const Binder: _Binder; Target: OleVariant; args: PSafeArray;
-      const culture: _CultureInfo): OleVariant; safecall;
-    function InvokeMember_3(const name: WideString; invokeAttr: BindingFlags;
-      const Binder: _Binder; Target: OleVariant; args: PSafeArray): OleVariant; safecall;
-    function GetConstructor(bindingAttr: BindingFlags; const Binder: _Binder;
-      callConvention: CallingConventions; types: PSafeArray;
-      modifiers: PSafeArray): _ConstructorInfo; safecall;
-    function GetConstructor_2(bindingAttr: BindingFlags; const Binder: _Binder; types: PSafeArray;
-      modifiers: PSafeArray): _ConstructorInfo; safecall;
+    function InvokeMember_2(const name: WideString; invokeAttr: BindingFlags; 
+                            const Binder: _Binder; Target: OleVariant; args: PSafeArray; 
+                            const culture: _CultureInfo): OleVariant; safecall;
+    function InvokeMember_3(const name: WideString; invokeAttr: BindingFlags; 
+                            const Binder: _Binder; Target: OleVariant; args: PSafeArray): OleVariant; safecall;
+    function GetConstructor(bindingAttr: BindingFlags; const Binder: _Binder; 
+                            callConvention: CallingConventions; types: PSafeArray; 
+                            modifiers: PSafeArray): _ConstructorInfo; safecall;
+    function GetConstructor_2(bindingAttr: BindingFlags; const Binder: _Binder; types: PSafeArray; 
+                              modifiers: PSafeArray): _ConstructorInfo; safecall;
     function GetConstructor_3(types: PSafeArray): _ConstructorInfo; safecall;
     function GetConstructors_2: PSafeArray; safecall;
     function Get_TypeInitializer: _ConstructorInfo; safecall;
-    function GetMethod_3(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      callConvention: CallingConventions; types: PSafeArray;
-      modifiers: PSafeArray): _MethodInfo; safecall;
+    function GetMethod_3(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                         callConvention: CallingConventions; types: PSafeArray; 
+                         modifiers: PSafeArray): _MethodInfo; safecall;
     function GetMethod_4(const name: WideString; types: PSafeArray; modifiers: PSafeArray): _MethodInfo; safecall;
     function GetMethod_5(const name: WideString; types: PSafeArray): _MethodInfo; safecall;
     function GetMethod_6(const name: WideString): _MethodInfo; safecall;
@@ -7326,10 +7313,9 @@ type
     function GetFields_2: PSafeArray; safecall;
     function GetInterface_2(const name: WideString): _Type; safecall;
     function GetEvent_2(const name: WideString): _EventInfo; safecall;
-    function GetProperty_3(const name: WideString; const returnType: _Type; types: PSafeArray;
-      modifiers: PSafeArray): _PropertyInfo; safecall;
-    function GetProperty_4(const name: WideString; const returnType: _Type; types: PSafeArray): _PropertyInfo;
-      safecall;
+    function GetProperty_3(const name: WideString; const returnType: _Type; types: PSafeArray; 
+                           modifiers: PSafeArray): _PropertyInfo; safecall;
+    function GetProperty_4(const name: WideString; const returnType: _Type; types: PSafeArray): _PropertyInfo; safecall;
     function GetProperty_5(const name: WideString; types: PSafeArray): _PropertyInfo; safecall;
     function GetProperty_6(const name: WideString; const returnType: _Type): _PropertyInfo; safecall;
     function GetProperty_7(const name: WideString): _PropertyInfo; safecall;
@@ -7435,8 +7421,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     property Guid: {??TGUID}OleVariant readonly dispid 1610743819;
@@ -7451,67 +7436,58 @@ type
     function GetConstructors(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743828;
     function GetInterface(const name: WideString; ignoreCase: WordBool): _Type; dispid 1610743829;
     function GetInterfaces: {??PSafeArray}OleVariant; dispid 1610743830;
-    function FindInterfaces(const filter: _TypeFilter; filterCriteria: OleVariant): {??PSafeArray}OleVariant;
-      dispid 1610743831;
+    function FindInterfaces(const filter: _TypeFilter; filterCriteria: OleVariant): {??PSafeArray}OleVariant; dispid 1610743831;
     function GetEvent(const name: WideString; bindingAttr: BindingFlags): _EventInfo; dispid 1610743832;
     function GetEvents: {??PSafeArray}OleVariant; dispid 1610743833;
     function GetEvents_2(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743834;
     function GetNestedTypes(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743835;
     function GetNestedType(const name: WideString; bindingAttr: BindingFlags): _Type; dispid 1610743836;
-    function GetMember(const name: WideString; Type_: MemberTypes;
-      bindingAttr: BindingFlags): {??PSafeArray}OleVariant;
-      dispid 1610743837;
+    function GetMember(const name: WideString; Type_: MemberTypes; bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743837;
     function GetDefaultMembers: {??PSafeArray}OleVariant; dispid 1610743838;
-    function FindMembers(MemberType: MemberTypes; bindingAttr: BindingFlags;
-      const filter: _MemberFilter; filterCriteria: OleVariant): {??PSafeArray}OleVariant;
-      dispid 1610743839;
+    function FindMembers(MemberType: MemberTypes; bindingAttr: BindingFlags; 
+                         const filter: _MemberFilter; filterCriteria: OleVariant): {??PSafeArray}OleVariant; dispid 1610743839;
     function GetElementType: _Type; dispid 1610743840;
     function IsSubclassOf(const c: _Type): WordBool; dispid 1610743841;
     function IsInstanceOfType(o: OleVariant): WordBool; dispid 1610743842;
     function IsAssignableFrom(const c: _Type): WordBool; dispid 1610743843;
     function GetInterfaceMap(const interfaceType: _Type): {??InterfaceMapping}OleVariant; dispid 1610743844;
-    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodInfo;
-      dispid 1610743845;
+    function GetMethod(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                       types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743845;
     function GetMethod_2(const name: WideString; bindingAttr: BindingFlags): _MethodInfo; dispid 1610743846;
     function GetMethods(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743847;
     function GetField(const name: WideString; bindingAttr: BindingFlags): _FieldInfo; dispid 1610743848;
     function GetFields(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743849;
     function GetProperty(const name: WideString; bindingAttr: BindingFlags): _PropertyInfo; dispid 1610743850;
-    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags;
-      const Binder: _Binder; const returnType: _Type;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo;
-      dispid 1610743851;
+    function GetProperty_2(const name: WideString; bindingAttr: BindingFlags; 
+                           const Binder: _Binder; const returnType: _Type; 
+                           types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743851;
     function GetProperties(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743852;
-    function GetMember_2(const name: WideString; bindingAttr: BindingFlags): {??PSafeArray}OleVariant;
-      dispid 1610743853;
+    function GetMember_2(const name: WideString; bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743853;
     function GetMembers(bindingAttr: BindingFlags): {??PSafeArray}OleVariant; dispid 1610743854;
-    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder;
-      Target: OleVariant; args: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant; const culture: _CultureInfo;
-      namedParameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743855;
+    function InvokeMember(const name: WideString; invokeAttr: BindingFlags; const Binder: _Binder; 
+                          Target: OleVariant; args: {??PSafeArray}OleVariant; 
+                          modifiers: {??PSafeArray}OleVariant; const culture: _CultureInfo; 
+                          namedParameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743855;
     property UnderlyingSystemType: _Type readonly dispid 1610743856;
-    function InvokeMember_2(const name: WideString; invokeAttr: BindingFlags;
-      const Binder: _Binder; Target: OleVariant;
-      args: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant;
-      dispid 1610743857;
-    function InvokeMember_3(const name: WideString; invokeAttr: BindingFlags;
-      const Binder: _Binder; Target: OleVariant;
-      args: {??PSafeArray}OleVariant): OleVariant; dispid 1610743858;
-    function GetConstructor(bindingAttr: BindingFlags; const Binder: _Binder;
-      callConvention: CallingConventions; types: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant): _ConstructorInfo; dispid 1610743859;
-    function GetConstructor_2(bindingAttr: BindingFlags; const Binder: _Binder;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _ConstructorInfo;
-      dispid 1610743860;
+    function InvokeMember_2(const name: WideString; invokeAttr: BindingFlags; 
+                            const Binder: _Binder; Target: OleVariant; 
+                            args: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743857;
+    function InvokeMember_3(const name: WideString; invokeAttr: BindingFlags; 
+                            const Binder: _Binder; Target: OleVariant; 
+                            args: {??PSafeArray}OleVariant): OleVariant; dispid 1610743858;
+    function GetConstructor(bindingAttr: BindingFlags; const Binder: _Binder; 
+                            callConvention: CallingConventions; types: {??PSafeArray}OleVariant; 
+                            modifiers: {??PSafeArray}OleVariant): _ConstructorInfo; dispid 1610743859;
+    function GetConstructor_2(bindingAttr: BindingFlags; const Binder: _Binder; 
+                              types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _ConstructorInfo; dispid 1610743860;
     function GetConstructor_3(types: {??PSafeArray}OleVariant): _ConstructorInfo; dispid 1610743861;
     function GetConstructors_2: {??PSafeArray}OleVariant; dispid 1610743862;
     property TypeInitializer: _ConstructorInfo readonly dispid 1610743863;
-    function GetMethod_3(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder;
-      callConvention: CallingConventions; types: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743864;
-    function GetMethod_4(const name: WideString; types: {??PSafeArray}OleVariant;
-      modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743865;
+    function GetMethod_3(const name: WideString; bindingAttr: BindingFlags; const Binder: _Binder; 
+                         callConvention: CallingConventions; types: {??PSafeArray}OleVariant; 
+                         modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743864;
+    function GetMethod_4(const name: WideString; types: {??PSafeArray}OleVariant; 
+                         modifiers: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743865;
     function GetMethod_5(const name: WideString; types: {??PSafeArray}OleVariant): _MethodInfo; dispid 1610743866;
     function GetMethod_6(const name: WideString): _MethodInfo; dispid 1610743867;
     function GetMethods_2: {??PSafeArray}OleVariant; dispid 1610743868;
@@ -7519,11 +7495,10 @@ type
     function GetFields_2: {??PSafeArray}OleVariant; dispid 1610743870;
     function GetInterface_2(const name: WideString): _Type; dispid 1610743871;
     function GetEvent_2(const name: WideString): _EventInfo; dispid 1610743872;
-    function GetProperty_3(const name: WideString; const returnType: _Type;
-      types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo;
-      dispid 1610743873;
-    function GetProperty_4(const name: WideString; const returnType: _Type;
-      types: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743874;
+    function GetProperty_3(const name: WideString; const returnType: _Type; 
+                           types: {??PSafeArray}OleVariant; modifiers: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743873;
+    function GetProperty_4(const name: WideString; const returnType: _Type; 
+                           types: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743874;
     function GetProperty_5(const name: WideString; types: {??PSafeArray}OleVariant): _PropertyInfo; dispid 1610743875;
     function GetProperty_6(const name: WideString; const returnType: _Type): _PropertyInfo; dispid 1610743876;
     function GetProperty_7(const name: WideString): _PropertyInfo; dispid 1610743877;
@@ -8709,8 +8684,7 @@ type
 // *********************************************************************//
   ISymbolBinder = interface(IDispatch)
     ['{20808ADC-CC01-3F3A-8F09-ED12940FC212}']
-    function GetReader(importer: Integer; const filename: WideString; const searchPath: WideString): ISymbolReader;
-      safecall;
+    function GetReader(importer: Integer; const filename: WideString; const searchPath: WideString): ISymbolReader; safecall;
   end;
 
 // *********************************************************************//
@@ -8720,8 +8694,7 @@ type
 // *********************************************************************//
   ISymbolBinderDisp = dispinterface
     ['{20808ADC-CC01-3F3A-8F09-ED12940FC212}']
-    function GetReader(importer: Integer; const filename: WideString; const searchPath: WideString): ISymbolReader;
-      dispid 1610743808;
+    function GetReader(importer: Integer; const filename: WideString; const searchPath: WideString): ISymbolReader; dispid 1610743808;
   end;
   {$EXTERNALSYM ISymbolBinderDisp}
 
@@ -8741,8 +8714,8 @@ type
     function FindClosestLine(line: Integer): Integer; safecall;
     function Get_HasEmbeddedSource: WordBool; safecall;
     function Get_SourceLength: Integer; safecall;
-    function GetSourceRange(startLine: Integer; startColumn: Integer; endLine: Integer;
-      endColumn: Integer): PSafeArray; safecall;
+    function GetSourceRange(startLine: Integer; startColumn: Integer; endLine: Integer; 
+                            endColumn: Integer): PSafeArray; safecall;
     property Url: WideString read Get_Url;
     property DocumentType: TGUID read Get_DocumentType;
     property Language: TGUID read Get_Language;
@@ -8768,8 +8741,8 @@ type
     function FindClosestLine(line: Integer): Integer; dispid 1610743814;
     property HasEmbeddedSource: WordBool readonly dispid 1610743815;
     property SourceLength: Integer readonly dispid 1610743816;
-    function GetSourceRange(startLine: Integer; startColumn: Integer; endLine: Integer;
-      endColumn: Integer): {??PSafeArray}OleVariant; dispid 1610743817;
+    function GetSourceRange(startLine: Integer; startColumn: Integer; endLine: Integer; 
+                            endColumn: Integer): {??PSafeArray}OleVariant; dispid 1610743817;
   end;
   {$EXTERNALSYM ISymbolDocumentDisp}
 
@@ -8805,8 +8778,8 @@ type
     ['{25C72EB0-E437-3F17-946D-3B72A3ACFF37}']
     function Get_Token: SymbolToken; safecall;
     function Get_SequencePointCount: Integer; safecall;
-    procedure GetSequencePoints(offsets: PSafeArray; documents: PSafeArray; lines: PSafeArray;
-      columns: PSafeArray; endLines: PSafeArray; endColumns: PSafeArray); safecall;
+    procedure GetSequencePoints(offsets: PSafeArray; documents: PSafeArray; lines: PSafeArray; 
+                                columns: PSafeArray; endLines: PSafeArray; endColumns: PSafeArray); safecall;
     function Get_RootScope: ISymbolScope; safecall;
     function GetScope(offset: Integer): ISymbolScope; safecall;
     function GetOffset(const document: ISymbolDocument; line: Integer; column: Integer): Integer; safecall;
@@ -8828,20 +8801,19 @@ type
     ['{25C72EB0-E437-3F17-946D-3B72A3ACFF37}']
     property Token: {??SymbolToken}OleVariant readonly dispid 1610743808;
     property SequencePointCount: Integer readonly dispid 1610743809;
-    procedure GetSequencePoints(offsets: {??PSafeArray}OleVariant;
-      documents: {??PSafeArray}OleVariant;
-      lines: {??PSafeArray}OleVariant; columns: {??PSafeArray}OleVariant;
-      endLines: {??PSafeArray}OleVariant;
-      endColumns: {??PSafeArray}OleVariant); dispid 1610743810;
+    procedure GetSequencePoints(offsets: {??PSafeArray}OleVariant; 
+                                documents: {??PSafeArray}OleVariant; 
+                                lines: {??PSafeArray}OleVariant; columns: {??PSafeArray}OleVariant; 
+                                endLines: {??PSafeArray}OleVariant; 
+                                endColumns: {??PSafeArray}OleVariant); dispid 1610743810;
     property RootScope: ISymbolScope readonly dispid 1610743811;
     function GetScope(offset: Integer): ISymbolScope; dispid 1610743812;
     function GetOffset(const document: ISymbolDocument; line: Integer; column: Integer): Integer; dispid 1610743813;
-    function GetRanges(const document: ISymbolDocument; line: Integer; column: Integer): {??PSafeArray}OleVariant;
-      dispid 1610743814;
+    function GetRanges(const document: ISymbolDocument; line: Integer; column: Integer): {??PSafeArray}OleVariant; dispid 1610743814;
     function GetParameters: {??PSafeArray}OleVariant; dispid 1610743815;
     function GetNamespace: ISymbolNamespace; dispid 1610743816;
-    function GetSourceStartEnd(docs: {??PSafeArray}OleVariant; lines: {??PSafeArray}OleVariant;
-      columns: {??PSafeArray}OleVariant): WordBool; dispid 1610743817;
+    function GetSourceStartEnd(docs: {??PSafeArray}OleVariant; lines: {??PSafeArray}OleVariant; 
+                               columns: {??PSafeArray}OleVariant): WordBool; dispid 1610743817;
   end;
   {$EXTERNALSYM ISymbolMethodDisp}
 
@@ -8878,16 +8850,16 @@ type
 // *********************************************************************//
   ISymbolReader = interface(IDispatch)
     ['{E809A5F1-D3D7-3144-9BEF-FE8AC0364699}']
-    function GetDocument(const Url: WideString; Language: TGUID; LanguageVendor: TGUID;
-      DocumentType: TGUID): ISymbolDocument; safecall;
+    function GetDocument(const Url: WideString; Language: TGUID; LanguageVendor: TGUID; 
+                         DocumentType: TGUID): ISymbolDocument; safecall;
     function GetDocuments: PSafeArray; safecall;
     function Get_UserEntryPoint: SymbolToken; safecall;
     function GetMethod(Method: SymbolToken): ISymbolMethod; safecall;
     function GetMethod_2(Method: SymbolToken; Version: Integer): ISymbolMethod; safecall;
     function GetVariables(parent: SymbolToken): PSafeArray; safecall;
     function GetGlobalVariables: PSafeArray; safecall;
-    function GetMethodFromDocumentPosition(const document: ISymbolDocument; line: Integer;
-      column: Integer): ISymbolMethod; safecall;
+    function GetMethodFromDocumentPosition(const document: ISymbolDocument; line: Integer; 
+                                           column: Integer): ISymbolMethod; safecall;
     function GetSymAttribute(parent: SymbolToken; const name: WideString): PSafeArray; safecall;
     function GetNamespaces: PSafeArray; safecall;
     property UserEntryPoint: SymbolToken read Get_UserEntryPoint;
@@ -8900,19 +8872,17 @@ type
 // *********************************************************************//
   ISymbolReaderDisp = dispinterface
     ['{E809A5F1-D3D7-3144-9BEF-FE8AC0364699}']
-    function GetDocument(const Url: WideString; Language: {??TGUID}OleVariant;
-      LanguageVendor: {??TGUID}OleVariant; DocumentType: {??TGUID}OleVariant): ISymbolDocument;
-      dispid 1610743808;
+    function GetDocument(const Url: WideString; Language: {??TGUID}OleVariant; 
+                         LanguageVendor: {??TGUID}OleVariant; DocumentType: {??TGUID}OleVariant): ISymbolDocument; dispid 1610743808;
     function GetDocuments: {??PSafeArray}OleVariant; dispid 1610743809;
     property UserEntryPoint: {??SymbolToken}OleVariant readonly dispid 1610743810;
     function GetMethod(Method: {??SymbolToken}OleVariant): ISymbolMethod; dispid 1610743811;
     function GetMethod_2(Method: {??SymbolToken}OleVariant; Version: Integer): ISymbolMethod; dispid 1610743812;
     function GetVariables(parent: {??SymbolToken}OleVariant): {??PSafeArray}OleVariant; dispid 1610743813;
     function GetGlobalVariables: {??PSafeArray}OleVariant; dispid 1610743814;
-    function GetMethodFromDocumentPosition(const document: ISymbolDocument; line: Integer;
-      column: Integer): ISymbolMethod; dispid 1610743815;
-    function GetSymAttribute(parent: {??SymbolToken}OleVariant; const name: WideString): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetMethodFromDocumentPosition(const document: ISymbolDocument; line: Integer; 
+                                           column: Integer): ISymbolMethod; dispid 1610743815;
+    function GetSymAttribute(parent: {??SymbolToken}OleVariant; const name: WideString): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetNamespaces: {??PSafeArray}OleVariant; dispid 1610743817;
   end;
   {$EXTERNALSYM ISymbolReaderDisp}
@@ -9007,38 +8977,38 @@ type
   ISymbolWriter = interface(IDispatch)
     ['{DA295A1B-C5BD-3B34-8ACD-1D7D334FFB7F}']
     procedure Initialize(emitter: Integer; const filename: WideString; fFullBuild: WordBool); safecall;
-    function DefineDocument(const Url: WideString; Language: TGUID; LanguageVendor: TGUID;
-      DocumentType: TGUID): ISymbolDocumentWriter; safecall;
+    function DefineDocument(const Url: WideString; Language: TGUID; LanguageVendor: TGUID; 
+                            DocumentType: TGUID): ISymbolDocumentWriter; safecall;
     procedure SetUserEntryPoint(entryMethod: SymbolToken); safecall;
     procedure OpenMethod(Method: SymbolToken); safecall;
     procedure CloseMethod; safecall;
-    procedure DefineSequencePoints(const document: ISymbolDocumentWriter; offsets: PSafeArray;
-      lines: PSafeArray; columns: PSafeArray; endLines: PSafeArray;
-      endColumns: PSafeArray); safecall;
+    procedure DefineSequencePoints(const document: ISymbolDocumentWriter; offsets: PSafeArray; 
+                                   lines: PSafeArray; columns: PSafeArray; endLines: PSafeArray; 
+                                   endColumns: PSafeArray); safecall;
     function OpenScope(StartOffset: Integer): Integer; safecall;
     procedure CloseScope(EndOffset: Integer); safecall;
     procedure SetScopeRange(scopeID: Integer; StartOffset: Integer; EndOffset: Integer); safecall;
-    procedure DefineLocalVariable(const name: WideString; Attributes: FieldAttributes;
-      signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer;
-      addr2: Integer; addr3: Integer; StartOffset: Integer;
-      EndOffset: Integer); safecall;
-    procedure DefineParameter(const name: WideString; Attributes: ParameterAttributes;
-      sequence: Integer; addrKind: SymAddressKind; addr1: Integer;
-      addr2: Integer; addr3: Integer); safecall;
-    procedure DefineField(parent: SymbolToken; const name: WideString; Attributes: FieldAttributes;
-      signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer;
-      addr2: Integer; addr3: Integer); safecall;
-    procedure DefineGlobalVariable(const name: WideString; Attributes: FieldAttributes;
-      signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer;
-      addr2: Integer; addr3: Integer); safecall;
+    procedure DefineLocalVariable(const name: WideString; Attributes: FieldAttributes; 
+                                  signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer; 
+                                  addr2: Integer; addr3: Integer; StartOffset: Integer; 
+                                  EndOffset: Integer); safecall;
+    procedure DefineParameter(const name: WideString; Attributes: ParameterAttributes; 
+                              sequence: Integer; addrKind: SymAddressKind; addr1: Integer; 
+                              addr2: Integer; addr3: Integer); safecall;
+    procedure DefineField(parent: SymbolToken; const name: WideString; Attributes: FieldAttributes; 
+                          signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer; 
+                          addr2: Integer; addr3: Integer); safecall;
+    procedure DefineGlobalVariable(const name: WideString; Attributes: FieldAttributes; 
+                                   signature: PSafeArray; addrKind: SymAddressKind; addr1: Integer; 
+                                   addr2: Integer; addr3: Integer); safecall;
     procedure Close; safecall;
     procedure SetSymAttribute(parent: SymbolToken; const name: WideString; data: PSafeArray); safecall;
     procedure OpenNamespace(const name: WideString); safecall;
     procedure CloseNamespace; safecall;
     procedure UsingNamespace(const FullName: WideString); safecall;
-    procedure SetMethodSourceRange(const startDoc: ISymbolDocumentWriter; startLine: Integer;
-      startColumn: Integer; const endDoc: ISymbolDocumentWriter;
-      endLine: Integer; endColumn: Integer); safecall;
+    procedure SetMethodSourceRange(const startDoc: ISymbolDocumentWriter; startLine: Integer; 
+                                   startColumn: Integer; const endDoc: ISymbolDocumentWriter; 
+                                   endLine: Integer; endColumn: Integer); safecall;
     procedure SetUnderlyingWriter(underlyingWriter: Integer); safecall;
   end;
 
@@ -9050,43 +9020,42 @@ type
   ISymbolWriterDisp = dispinterface
     ['{DA295A1B-C5BD-3B34-8ACD-1D7D334FFB7F}']
     procedure Initialize(emitter: Integer; const filename: WideString; fFullBuild: WordBool); dispid 1610743808;
-    function DefineDocument(const Url: WideString; Language: {??TGUID}OleVariant;
-      LanguageVendor: {??TGUID}OleVariant;
-      DocumentType: {??TGUID}OleVariant): ISymbolDocumentWriter; dispid 1610743809;
+    function DefineDocument(const Url: WideString; Language: {??TGUID}OleVariant; 
+                            LanguageVendor: {??TGUID}OleVariant; DocumentType: {??TGUID}OleVariant): ISymbolDocumentWriter; dispid 1610743809;
     procedure SetUserEntryPoint(entryMethod: {??SymbolToken}OleVariant); dispid 1610743810;
     procedure OpenMethod(Method: {??SymbolToken}OleVariant); dispid 1610743811;
     procedure CloseMethod; dispid 1610743812;
-    procedure DefineSequencePoints(const document: ISymbolDocumentWriter;
-      offsets: {??PSafeArray}OleVariant;
-      lines: {??PSafeArray}OleVariant;
-      columns: {??PSafeArray}OleVariant;
-      endLines: {??PSafeArray}OleVariant;
-      endColumns: {??PSafeArray}OleVariant); dispid 1610743813;
+    procedure DefineSequencePoints(const document: ISymbolDocumentWriter; 
+                                   offsets: {??PSafeArray}OleVariant; 
+                                   lines: {??PSafeArray}OleVariant; 
+                                   columns: {??PSafeArray}OleVariant; 
+                                   endLines: {??PSafeArray}OleVariant; 
+                                   endColumns: {??PSafeArray}OleVariant); dispid 1610743813;
     function OpenScope(StartOffset: Integer): Integer; dispid 1610743814;
     procedure CloseScope(EndOffset: Integer); dispid 1610743815;
     procedure SetScopeRange(scopeID: Integer; StartOffset: Integer; EndOffset: Integer); dispid 1610743816;
-    procedure DefineLocalVariable(const name: WideString; Attributes: FieldAttributes;
-      signature: {??PSafeArray}OleVariant; addrKind: SymAddressKind;
-      addr1: Integer; addr2: Integer; addr3: Integer;
-      StartOffset: Integer; EndOffset: Integer); dispid 1610743817;
-    procedure DefineParameter(const name: WideString; Attributes: ParameterAttributes;
-      sequence: Integer; addrKind: SymAddressKind; addr1: Integer;
-      addr2: Integer; addr3: Integer); dispid 1610743818;
-    procedure DefineField(parent: {??SymbolToken}OleVariant; const name: WideString;
-      Attributes: FieldAttributes; signature: {??PSafeArray}OleVariant;
-      addrKind: SymAddressKind; addr1: Integer; addr2: Integer; addr3: Integer); dispid 1610743819;
-    procedure DefineGlobalVariable(const name: WideString; Attributes: FieldAttributes;
-      signature: {??PSafeArray}OleVariant; addrKind: SymAddressKind;
-      addr1: Integer; addr2: Integer; addr3: Integer); dispid 1610743820;
+    procedure DefineLocalVariable(const name: WideString; Attributes: FieldAttributes; 
+                                  signature: {??PSafeArray}OleVariant; addrKind: SymAddressKind; 
+                                  addr1: Integer; addr2: Integer; addr3: Integer; 
+                                  StartOffset: Integer; EndOffset: Integer); dispid 1610743817;
+    procedure DefineParameter(const name: WideString; Attributes: ParameterAttributes; 
+                              sequence: Integer; addrKind: SymAddressKind; addr1: Integer; 
+                              addr2: Integer; addr3: Integer); dispid 1610743818;
+    procedure DefineField(parent: {??SymbolToken}OleVariant; const name: WideString; 
+                          Attributes: FieldAttributes; signature: {??PSafeArray}OleVariant; 
+                          addrKind: SymAddressKind; addr1: Integer; addr2: Integer; addr3: Integer); dispid 1610743819;
+    procedure DefineGlobalVariable(const name: WideString; Attributes: FieldAttributes; 
+                                   signature: {??PSafeArray}OleVariant; addrKind: SymAddressKind; 
+                                   addr1: Integer; addr2: Integer; addr3: Integer); dispid 1610743820;
     procedure Close; dispid 1610743821;
-    procedure SetSymAttribute(parent: {??SymbolToken}OleVariant; const name: WideString;
-      data: {??PSafeArray}OleVariant); dispid 1610743822;
+    procedure SetSymAttribute(parent: {??SymbolToken}OleVariant; const name: WideString; 
+                              data: {??PSafeArray}OleVariant); dispid 1610743822;
     procedure OpenNamespace(const name: WideString); dispid 1610743823;
     procedure CloseNamespace; dispid 1610743824;
     procedure UsingNamespace(const FullName: WideString); dispid 1610743825;
-    procedure SetMethodSourceRange(const startDoc: ISymbolDocumentWriter; startLine: Integer;
-      startColumn: Integer; const endDoc: ISymbolDocumentWriter;
-      endLine: Integer; endColumn: Integer); dispid 1610743826;
+    procedure SetMethodSourceRange(const startDoc: ISymbolDocumentWriter; startLine: Integer; 
+                                   startColumn: Integer; const endDoc: ISymbolDocumentWriter; 
+                                   endLine: Integer; endColumn: Integer); dispid 1610743826;
     procedure SetUnderlyingWriter(underlyingWriter: Integer); dispid 1610743827;
   end;
   {$EXTERNALSYM ISymbolWriterDisp}
@@ -9226,13 +9195,13 @@ type
     function GetSatelliteAssembly(const culture: _CultureInfo): _Assembly; safecall;
     function GetSatelliteAssembly_2(const culture: _CultureInfo; const Version: _Version): _Assembly; safecall;
     function LoadModule(const moduleName: WideString; rawModule: PSafeArray): _Module; safecall;
-    function LoadModule_2(const moduleName: WideString; rawModule: PSafeArray;
-      rawSymbolStore: PSafeArray): _Module; safecall;
+    function LoadModule_2(const moduleName: WideString; rawModule: PSafeArray; 
+                          rawSymbolStore: PSafeArray): _Module; safecall;
     function CreateInstance(const typeName: WideString): OleVariant; safecall;
     function CreateInstance_2(const typeName: WideString; ignoreCase: WordBool): OleVariant; safecall;
-    function CreateInstance_3(const typeName: WideString; ignoreCase: WordBool;
-      bindingAttr: BindingFlags; const Binder: _Binder; args: PSafeArray;
-      const culture: _CultureInfo; activationAttributes: PSafeArray): OleVariant; safecall;
+    function CreateInstance_3(const typeName: WideString; ignoreCase: WordBool; 
+                              bindingAttr: BindingFlags; const Binder: _Binder; args: PSafeArray; 
+                              const culture: _CultureInfo; activationAttributes: PSafeArray): OleVariant; safecall;
     function GetLoadedModules: PSafeArray; safecall;
     function GetLoadedModules_2(getResourceModules: WordBool): PSafeArray; safecall;
     function GetModules: PSafeArray; safecall;
@@ -9280,27 +9249,24 @@ type
     function GetManifestResourceInfo(const resourceName: WideString): _ManifestResourceInfo; dispid 1610743828;
     property Location: WideString readonly dispid 1610743829;
     property Evidence: _Evidence readonly dispid 1610743830;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743831;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743831;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743832;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743833;
-    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant);
-      dispid 1610743834;
+    procedure GetObjectData(const info: _SerializationInfo; Context: {??StreamingContext}OleVariant); dispid 1610743834;
     procedure add_ModuleResolve(const value: _ModuleResolveEventHandler); dispid 1610743835;
     procedure remove_ModuleResolve(const value: _ModuleResolveEventHandler); dispid 1610743836;
     function GetType_4(const name: WideString; throwOnError: WordBool; ignoreCase: WordBool): _Type; dispid 1610743837;
     function GetSatelliteAssembly(const culture: _CultureInfo): _Assembly; dispid 1610743838;
-    function GetSatelliteAssembly_2(const culture: _CultureInfo; const Version: _Version): _Assembly;
-      dispid 1610743839;
+    function GetSatelliteAssembly_2(const culture: _CultureInfo; const Version: _Version): _Assembly; dispid 1610743839;
     function LoadModule(const moduleName: WideString; rawModule: {??PSafeArray}OleVariant): _Module; dispid 1610743840;
-    function LoadModule_2(const moduleName: WideString; rawModule: {??PSafeArray}OleVariant;
-      rawSymbolStore: {??PSafeArray}OleVariant): _Module; dispid 1610743841;
+    function LoadModule_2(const moduleName: WideString; rawModule: {??PSafeArray}OleVariant; 
+                          rawSymbolStore: {??PSafeArray}OleVariant): _Module; dispid 1610743841;
     function CreateInstance(const typeName: WideString): OleVariant; dispid 1610743842;
     function CreateInstance_2(const typeName: WideString; ignoreCase: WordBool): OleVariant; dispid 1610743843;
-    function CreateInstance_3(const typeName: WideString; ignoreCase: WordBool;
-      bindingAttr: BindingFlags; const Binder: _Binder;
-      args: {??PSafeArray}OleVariant; const culture: _CultureInfo;
-      activationAttributes: {??PSafeArray}OleVariant): OleVariant; dispid 1610743844;
+    function CreateInstance_3(const typeName: WideString; ignoreCase: WordBool; 
+                              bindingAttr: BindingFlags; const Binder: _Binder; 
+                              args: {??PSafeArray}OleVariant; const culture: _CultureInfo; 
+                              activationAttributes: {??PSafeArray}OleVariant): OleVariant; dispid 1610743844;
     function GetLoadedModules: {??PSafeArray}OleVariant; dispid 1610743845;
     function GetLoadedModules_2(getResourceModules: WordBool): {??PSafeArray}OleVariant; dispid 1610743846;
     function GetModules: {??PSafeArray}OleVariant; dispid 1610743847;
@@ -9714,8 +9680,8 @@ type
     function Get_MethodHandle: RuntimeMethodHandle; safecall;
     function Get_Attributes: MethodAttributes; safecall;
     function Get_CallingConvention: CallingConventions; safecall;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
     function Get_IsPublic: WordBool; safecall;
     function Get_IsPrivate: WordBool; safecall;
     function Get_IsFamily: WordBool; safecall;
@@ -9768,8 +9734,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     function GetParameters: {??PSafeArray}OleVariant; dispid 1610743819;
@@ -9777,9 +9742,8 @@ type
     property MethodHandle: {??RuntimeMethodHandle}OleVariant readonly dispid 1610743821;
     property Attributes: MethodAttributes readonly dispid 1610743822;
     property CallingConvention: CallingConventions readonly dispid 1610743823;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant;
-      dispid 1610743824;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743824;
     property IsPublic: WordBool readonly dispid 1610743825;
     property IsPrivate: WordBool readonly dispid 1610743826;
     property IsFamily: WordBool readonly dispid 1610743827;
@@ -9820,8 +9784,8 @@ type
     function Get_MethodHandle: RuntimeMethodHandle; safecall;
     function Get_Attributes: MethodAttributes; safecall;
     function Get_CallingConvention: CallingConventions; safecall;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
     function Get_IsPublic: WordBool; safecall;
     function Get_IsPrivate: WordBool; safecall;
     function Get_IsFamily: WordBool; safecall;
@@ -9836,8 +9800,8 @@ type
     function Get_IsSpecialName: WordBool; safecall;
     function Get_IsConstructor: WordBool; safecall;
     function Invoke_3(obj: OleVariant; parameters: PSafeArray): OleVariant; safecall;
-    function Invoke_4(invokeAttr: BindingFlags; const Binder: _Binder; parameters: PSafeArray;
-      const culture: _CultureInfo): OleVariant; safecall;
+    function Invoke_4(invokeAttr: BindingFlags; const Binder: _Binder; parameters: PSafeArray; 
+                      const culture: _CultureInfo): OleVariant; safecall;
     function Invoke_5(parameters: PSafeArray): OleVariant; safecall;
     property ToString: WideString read Get_ToString;
     property MemberType: MemberTypes read Get_MemberType;
@@ -9877,8 +9841,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     function GetParameters: {??PSafeArray}OleVariant; dispid 1610743819;
@@ -9886,9 +9849,8 @@ type
     property MethodHandle: {??RuntimeMethodHandle}OleVariant readonly dispid 1610743821;
     property Attributes: MethodAttributes readonly dispid 1610743822;
     property CallingConvention: CallingConventions readonly dispid 1610743823;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant;
-      dispid 1610743824;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743824;
     property IsPublic: WordBool readonly dispid 1610743825;
     property IsPrivate: WordBool readonly dispid 1610743826;
     property IsFamily: WordBool readonly dispid 1610743827;
@@ -9903,9 +9865,8 @@ type
     property IsSpecialName: WordBool readonly dispid 1610743836;
     property IsConstructor: WordBool readonly dispid 1610743837;
     function Invoke_3(obj: OleVariant; parameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743838;
-    function Invoke_4(invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant;
-      dispid 1610743839;
+    function Invoke_4(invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743839;
     function Invoke_5(parameters: {??PSafeArray}OleVariant): OleVariant; dispid 1610743840;
   end;
   {$EXTERNALSYM _ConstructorInfoDisp}
@@ -9985,8 +9946,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     function GetAddMethod(nonPublic: WordBool): _MethodInfo; dispid 1610743819;
@@ -10025,8 +9985,8 @@ type
     function Get_FieldType: _Type; safecall;
     function GetValue(obj: OleVariant): OleVariant; safecall;
     function GetValueDirect(obj: OleVariant): OleVariant; safecall;
-    procedure SetValue(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags;
-      const Binder: _Binder; const culture: _CultureInfo); safecall;
+    procedure SetValue(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags; 
+                       const Binder: _Binder; const culture: _CultureInfo); safecall;
     procedure SetValueDirect(obj: OleVariant; value: OleVariant); safecall;
     function Get_FieldHandle: RuntimeFieldHandle; safecall;
     function Get_Attributes: FieldAttributes; safecall;
@@ -10080,15 +10040,14 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     property FieldType: _Type readonly dispid 1610743819;
     function GetValue(obj: OleVariant): OleVariant; dispid 1610743820;
     function GetValueDirect(obj: OleVariant): OleVariant; dispid 1610743821;
-    procedure SetValue(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags;
-      const Binder: _Binder; const culture: _CultureInfo); dispid 1610743822;
+    procedure SetValue(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags; 
+                       const Binder: _Binder; const culture: _CultureInfo); dispid 1610743822;
     procedure SetValueDirect(obj: OleVariant; value: OleVariant); dispid 1610743823;
     property FieldHandle: {??RuntimeFieldHandle}OleVariant readonly dispid 1610743824;
     property Attributes: FieldAttributes readonly dispid 1610743825;
@@ -10188,8 +10147,8 @@ type
     function Get_MethodHandle: RuntimeMethodHandle; safecall;
     function Get_Attributes: MethodAttributes; safecall;
     function Get_CallingConvention: CallingConventions; safecall;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
     function Get_IsPublic: WordBool; safecall;
     function Get_IsPrivate: WordBool; safecall;
     function Get_IsFamily: WordBool; safecall;
@@ -10247,8 +10206,7 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     function GetParameters: {??PSafeArray}OleVariant; dispid 1610743819;
@@ -10256,9 +10214,8 @@ type
     property MethodHandle: {??RuntimeMethodHandle}OleVariant readonly dispid 1610743821;
     property Attributes: MethodAttributes readonly dispid 1610743822;
     property CallingConvention: CallingConventions readonly dispid 1610743823;
-    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant;
-      dispid 1610743824;
+    function Invoke_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                      parameters: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743824;
     property IsPublic: WordBool readonly dispid 1610743825;
     property IsPrivate: WordBool readonly dispid 1610743826;
     property IsFamily: WordBool readonly dispid 1610743827;
@@ -10375,11 +10332,11 @@ type
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; safecall;
     function Get_PropertyType: _Type; safecall;
     function GetValue(obj: OleVariant; index: PSafeArray): OleVariant; safecall;
-    function GetValue_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      index: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
+    function GetValue_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                        index: PSafeArray; const culture: _CultureInfo): OleVariant; safecall;
     procedure SetValue(obj: OleVariant; value: OleVariant; index: PSafeArray); safecall;
-    procedure SetValue_2(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags;
-      const Binder: _Binder; index: PSafeArray; const culture: _CultureInfo); safecall;
+    procedure SetValue_2(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags; 
+                         const Binder: _Binder; index: PSafeArray; const culture: _CultureInfo); safecall;
     function GetAccessors(nonPublic: WordBool): PSafeArray; safecall;
     function GetGetMethod(nonPublic: WordBool): _MethodInfo; safecall;
     function GetSetMethod(nonPublic: WordBool): _MethodInfo; safecall;
@@ -10418,18 +10375,17 @@ type
     property name: WideString readonly dispid 1610743813;
     property DeclaringType: _Type readonly dispid 1610743814;
     property ReflectedType: _Type readonly dispid 1610743815;
-    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant;
-      dispid 1610743816;
+    function GetCustomAttributes(const attributeType: _Type; inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743816;
     function GetCustomAttributes_2(inherit: WordBool): {??PSafeArray}OleVariant; dispid 1610743817;
     function IsDefined(const attributeType: _Type; inherit: WordBool): WordBool; dispid 1610743818;
     property PropertyType: _Type readonly dispid 1610743819;
     function GetValue(obj: OleVariant; index: {??PSafeArray}OleVariant): OleVariant; dispid 1610743820;
-    function GetValue_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder;
-      index: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743821;
+    function GetValue_2(obj: OleVariant; invokeAttr: BindingFlags; const Binder: _Binder; 
+                        index: {??PSafeArray}OleVariant; const culture: _CultureInfo): OleVariant; dispid 1610743821;
     procedure SetValue(obj: OleVariant; value: OleVariant; index: {??PSafeArray}OleVariant); dispid 1610743822;
-    procedure SetValue_2(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags;
-      const Binder: _Binder; index: {??PSafeArray}OleVariant;
-      const culture: _CultureInfo); dispid 1610743823;
+    procedure SetValue_2(obj: OleVariant; value: OleVariant; invokeAttr: BindingFlags; 
+                         const Binder: _Binder; index: {??PSafeArray}OleVariant; 
+                         const culture: _CultureInfo); dispid 1610743823;
     function GetAccessors(nonPublic: WordBool): {??PSafeArray}OleVariant; dispid 1610743824;
     function GetGetMethod(nonPublic: WordBool): _MethodInfo; dispid 1610743825;
     function GetSetMethod(nonPublic: WordBool): _MethodInfo; dispid 1610743826;
@@ -10749,10 +10705,10 @@ type
 // *********************************************************************//
   ISerializationSurrogate = interface(IDispatch)
     ['{62339172-DBFA-337B-8AC8-053B241E06AB}']
-    procedure GetObjectData(obj: OleVariant; const info: _SerializationInfo;
-      Context: StreamingContext); safecall;
-    function SetObjectData(obj: OleVariant; const info: _SerializationInfo;
-      Context: StreamingContext; const selector: ISurrogateSelector): OleVariant; safecall;
+    procedure GetObjectData(obj: OleVariant; const info: _SerializationInfo; 
+                            Context: StreamingContext); safecall;
+    function SetObjectData(obj: OleVariant; const info: _SerializationInfo; 
+                           Context: StreamingContext; const selector: ISurrogateSelector): OleVariant; safecall;
   end;
 
 // *********************************************************************//
@@ -10762,11 +10718,11 @@ type
 // *********************************************************************//
   ISerializationSurrogateDisp = dispinterface
     ['{62339172-DBFA-337B-8AC8-053B241E06AB}']
-    procedure GetObjectData(obj: OleVariant; const info: _SerializationInfo;
-      Context: {??StreamingContext}OleVariant); dispid 1610743808;
-    function SetObjectData(obj: OleVariant; const info: _SerializationInfo;
-      Context: {??StreamingContext}OleVariant;
-      const selector: ISurrogateSelector): OleVariant; dispid 1610743809;
+    procedure GetObjectData(obj: OleVariant; const info: _SerializationInfo; 
+                            Context: {??StreamingContext}OleVariant); dispid 1610743808;
+    function SetObjectData(obj: OleVariant; const info: _SerializationInfo; 
+                           Context: {??StreamingContext}OleVariant; 
+                           const selector: ISurrogateSelector): OleVariant; dispid 1610743809;
   end;
   {$EXTERNALSYM ISerializationSurrogateDisp}
 
@@ -10778,8 +10734,8 @@ type
   ISurrogateSelector = interface(IDispatch)
     ['{7C66FF18-A1A5-3E19-857B-0E7B6A9E3F38}']
     procedure ChainSelector(const selector: ISurrogateSelector); safecall;
-    function GetSurrogate(const Type_: _Type; Context: StreamingContext;
-      out selector: ISurrogateSelector): ISerializationSurrogate; safecall;
+    function GetSurrogate(const Type_: _Type; Context: StreamingContext; 
+                          out selector: ISurrogateSelector): ISerializationSurrogate; safecall;
     function GetNextSelector: ISurrogateSelector; safecall;
   end;
 
@@ -10791,8 +10747,8 @@ type
   ISurrogateSelectorDisp = dispinterface
     ['{7C66FF18-A1A5-3E19-857B-0E7B6A9E3F38}']
     procedure ChainSelector(const selector: ISurrogateSelector); dispid 1610743808;
-    function GetSurrogate(const Type_: _Type; Context: {??StreamingContext}OleVariant;
-      out selector: ISurrogateSelector): ISerializationSurrogate; dispid 1610743809;
+    function GetSurrogate(const Type_: _Type; Context: {??StreamingContext}OleVariant; 
+                          out selector: ISurrogateSelector): ISerializationSurrogate; dispid 1610743809;
     function GetNextSelector: ISurrogateSelector; dispid 1610743810;
   end;
   {$EXTERNALSYM ISurrogateSelectorDisp}
@@ -11772,10 +11728,9 @@ type
     function Get_OutputBlockSize: Integer; safecall;
     function Get_CanTransformMultipleBlocks: WordBool; safecall;
     function Get_CanReuseTransform: WordBool; safecall;
-    function TransformBlock(inputBuffer: PSafeArray; inputOffset: Integer; inputCount: Integer;
-      outputBuffer: PSafeArray; outputOffset: Integer): Integer; safecall;
-    function TransformFinalBlock(inputBuffer: PSafeArray; inputOffset: Integer;
-      inputCount: Integer): PSafeArray; safecall;
+    function TransformBlock(inputBuffer: PSafeArray; inputOffset: Integer; inputCount: Integer; 
+                            outputBuffer: PSafeArray; outputOffset: Integer): Integer; safecall;
+    function TransformFinalBlock(inputBuffer: PSafeArray; inputOffset: Integer; inputCount: Integer): PSafeArray; safecall;
     property InputBlockSize: Integer read Get_InputBlockSize;
     property OutputBlockSize: Integer read Get_OutputBlockSize;
     property CanTransformMultipleBlocks: WordBool read Get_CanTransformMultipleBlocks;
@@ -11793,11 +11748,11 @@ type
     property OutputBlockSize: Integer readonly dispid 1610743809;
     property CanTransformMultipleBlocks: WordBool readonly dispid 1610743810;
     property CanReuseTransform: WordBool readonly dispid 1610743811;
-    function TransformBlock(inputBuffer: {??PSafeArray}OleVariant; inputOffset: Integer;
-      inputCount: Integer; outputBuffer: {??PSafeArray}OleVariant;
-      outputOffset: Integer): Integer; dispid 1610743812;
-    function TransformFinalBlock(inputBuffer: {??PSafeArray}OleVariant; inputOffset: Integer;
-      inputCount: Integer): {??PSafeArray}OleVariant; dispid 1610743813;
+    function TransformBlock(inputBuffer: {??PSafeArray}OleVariant; inputOffset: Integer; 
+                            inputCount: Integer; outputBuffer: {??PSafeArray}OleVariant; 
+                            outputOffset: Integer): Integer; dispid 1610743812;
+    function TransformFinalBlock(inputBuffer: {??PSafeArray}OleVariant; inputOffset: Integer; 
+                                 inputCount: Integer): {??PSafeArray}OleVariant; dispid 1610743813;
   end;
   {$EXTERNALSYM ICryptoTransformDisp}
 
@@ -14399,8 +14354,7 @@ type
 // *********************************************************************//
   IRegistrationServicesDisp = dispinterface
     ['{CCBD682C-73A5-4568-B8B0-C7007E11ABA2}']
-    function RegisterAssembly(const Assembly: _Assembly; flags: AssemblyRegistrationFlags): WordBool;
-      dispid 1610743808;
+    function RegisterAssembly(const Assembly: _Assembly; flags: AssemblyRegistrationFlags): WordBool; dispid 1610743808;
     function UnregisterAssembly(const Assembly: _Assembly): WordBool; dispid 1610743809;
     function GetRegistrableTypesInAssembly(const Assembly: _Assembly): {??PSafeArray}OleVariant; dispid 1610743810;
     function GetProgIdForType(const Type_: _Type): WideString; dispid 1610743811;
@@ -14418,8 +14372,8 @@ type
 // *********************************************************************//
   ITypeLibImporterNotifySink = interface(IUnknown)
     ['{F1C3BF76-C3E4-11D3-88E7-00902754C43A}']
-    function ReportEvent(eventKind: ImporterEventKind; eventCode: Integer;
-      const eventMsg: WideString): HResult; stdcall;
+    function ReportEvent(eventKind: ImporterEventKind; eventCode: Integer; 
+                         const eventMsg: WideString): HResult; stdcall;
     function ResolveRef(const typeLib: IUnknown; out pRetVal: _Assembly): HResult; stdcall;
   end;
 
@@ -14430,8 +14384,8 @@ type
 // *********************************************************************//
   ITypeLibExporterNotifySink = interface(IUnknown)
     ['{F1C3BF77-C3E4-11D3-88E7-00902754C43A}']
-    function ReportEvent(eventKind: ExporterEventKind; eventCode: Integer;
-      const eventMsg: WideString): HResult; stdcall;
+    function ReportEvent(eventKind: ExporterEventKind; eventCode: Integer; 
+                         const eventMsg: WideString): HResult; stdcall;
     function ResolveRef(const Assembly: _Assembly; out pRetVal: IUnknown): HResult; stdcall;
   end;
 
@@ -14442,24 +14396,24 @@ type
 // *********************************************************************//
   ITypeLibConverter = interface(IUnknown)
     ['{F1C3BF78-C3E4-11D3-88E7-00902754C43A}']
-    function ConvertTypeLibToAssembly(const typeLib: IUnknown; const asmFileName: WideString;
-      flags: TypeLibImporterFlags;
-      const notifySink: ITypeLibImporterNotifySink;
-      publicKey: PSafeArray; const keyPair: _StrongNameKeyPair;
-      const asmNamespace: WideString; const asmVersion: _Version;
-      out pRetVal: _AssemblyBuilder): HResult; stdcall;
-    function ConvertAssemblyToTypeLib(const Assembly: _Assembly; const typeLibName: WideString;
-      flags: TypeLibExporterFlags;
-      const notifySink: ITypeLibExporterNotifySink;
-      out pRetVal: IUnknown): HResult; stdcall;
-    function GetPrimaryInteropAssembly(G: TGUID; major: Integer; minor: Integer; lcid: Integer;
-      out asmName: WideString; out asmCodeBase: WideString;
-      out pRetVal: WordBool): HResult; stdcall;
-    function ConvertTypeLibToAssembly_2(const typeLib: IUnknown; const asmFileName: WideString;
-      flags: Integer;
-      const notifySink: ITypeLibImporterNotifySink;
-      publicKey: PSafeArray; const keyPair: _StrongNameKeyPair;
-      unsafeInterfaces: WordBool; out pRetVal: _AssemblyBuilder): HResult; stdcall;
+    function ConvertTypeLibToAssembly(const typeLib: IUnknown; const asmFileName: WideString; 
+                                      flags: TypeLibImporterFlags; 
+                                      const notifySink: ITypeLibImporterNotifySink; 
+                                      publicKey: PSafeArray; const keyPair: _StrongNameKeyPair; 
+                                      const asmNamespace: WideString; const asmVersion: _Version; 
+                                      out pRetVal: _AssemblyBuilder): HResult; stdcall;
+    function ConvertAssemblyToTypeLib(const Assembly: _Assembly; const typeLibName: WideString; 
+                                      flags: TypeLibExporterFlags; 
+                                      const notifySink: ITypeLibExporterNotifySink; 
+                                      out pRetVal: IUnknown): HResult; stdcall;
+    function GetPrimaryInteropAssembly(G: TGUID; major: Integer; minor: Integer; lcid: Integer; 
+                                       out asmName: WideString; out asmCodeBase: WideString; 
+                                       out pRetVal: WordBool): HResult; stdcall;
+    function ConvertTypeLibToAssembly_2(const typeLib: IUnknown; const asmFileName: WideString; 
+                                        flags: Integer; 
+                                        const notifySink: ITypeLibImporterNotifySink; 
+                                        publicKey: PSafeArray; const keyPair: _StrongNameKeyPair; 
+                                        unsafeInterfaces: WordBool; out pRetVal: _AssemblyBuilder): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -16653,8 +16607,8 @@ type
 // *********************************************************************//
   IServerResponseChannelSinkStack = interface(IDispatch)
     ['{9BE679A6-61FD-38FC-A7B2-89982D33338B}']
-    procedure AsyncProcessResponse(const msg: IMessage; const headers: ITransportHeaders;
-      const Stream: _Stream); safecall;
+    procedure AsyncProcessResponse(const msg: IMessage; const headers: ITransportHeaders; 
+                                   const Stream: _Stream); safecall;
     function GetResponseStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; safecall;
   end;
 
@@ -16665,8 +16619,8 @@ type
 // *********************************************************************//
   IServerResponseChannelSinkStackDisp = dispinterface
     ['{9BE679A6-61FD-38FC-A7B2-89982D33338B}']
-    procedure AsyncProcessResponse(const msg: IMessage; const headers: ITransportHeaders;
-      const Stream: _Stream); dispid 1610743808;
+    procedure AsyncProcessResponse(const msg: IMessage; const headers: ITransportHeaders; 
+                                   const Stream: _Stream); dispid 1610743808;
     function GetResponseStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743809;
   end;
   {$EXTERNALSYM IServerResponseChannelSinkStackDisp}
@@ -17018,8 +16972,8 @@ type
 // *********************************************************************//
   IChannelSender = interface(IDispatch)
     ['{10F1D605-E201-3145-B7AE-3AD746701986}']
-    function CreateMessageSink(const Url: WideString; remoteChannelData: OleVariant;
-      out objectURI: WideString): IMessageSink; safecall;
+    function CreateMessageSink(const Url: WideString; remoteChannelData: OleVariant; 
+                               out objectURI: WideString): IMessageSink; safecall;
   end;
 
 // *********************************************************************//
@@ -17029,8 +16983,8 @@ type
 // *********************************************************************//
   IChannelSenderDisp = dispinterface
     ['{10F1D605-E201-3145-B7AE-3AD746701986}']
-    function CreateMessageSink(const Url: WideString; remoteChannelData: OleVariant;
-      out objectURI: WideString): IMessageSink; dispid 1610743808;
+    function CreateMessageSink(const Url: WideString; remoteChannelData: OleVariant; 
+                               out objectURI: WideString): IMessageSink; dispid 1610743808;
   end;
   {$EXTERNALSYM IChannelSenderDisp}
 
@@ -17118,15 +17072,15 @@ type
 // *********************************************************************//
   IServerChannelSink = interface(IDispatch)
     ['{21B5F37B-BEF3-354C-8F84-0F9F0863F5C5}']
-    function ProcessMessage(const sinkStack: IServerChannelSinkStack; const requestMsg: IMessage;
-      const requestHeaders: ITransportHeaders; const requestStream: _Stream;
-      out responseMsg: IMessage; out responseHeaders: ITransportHeaders;
-      out responseStream: _Stream): ServerProcessing; safecall;
-    procedure AsyncProcessResponse(const sinkStack: IServerResponseChannelSinkStack;
-      state: OleVariant; const msg: IMessage;
-      const headers: ITransportHeaders; const Stream: _Stream); safecall;
-    function GetResponseStream(const sinkStack: IServerResponseChannelSinkStack; state: OleVariant;
-      const msg: IMessage; const headers: ITransportHeaders): _Stream; safecall;
+    function ProcessMessage(const sinkStack: IServerChannelSinkStack; const requestMsg: IMessage; 
+                            const requestHeaders: ITransportHeaders; const requestStream: _Stream; 
+                            out responseMsg: IMessage; out responseHeaders: ITransportHeaders; 
+                            out responseStream: _Stream): ServerProcessing; safecall;
+    procedure AsyncProcessResponse(const sinkStack: IServerResponseChannelSinkStack; 
+                                   state: OleVariant; const msg: IMessage; 
+                                   const headers: ITransportHeaders; const Stream: _Stream); safecall;
+    function GetResponseStream(const sinkStack: IServerResponseChannelSinkStack; state: OleVariant; 
+                               const msg: IMessage; const headers: ITransportHeaders): _Stream; safecall;
     function Get_NextChannelSink: IServerChannelSink; safecall;
     property NextChannelSink: IServerChannelSink read Get_NextChannelSink;
   end;
@@ -17138,15 +17092,15 @@ type
 // *********************************************************************//
   IServerChannelSinkDisp = dispinterface
     ['{21B5F37B-BEF3-354C-8F84-0F9F0863F5C5}']
-    function ProcessMessage(const sinkStack: IServerChannelSinkStack; const requestMsg: IMessage;
-      const requestHeaders: ITransportHeaders; const requestStream: _Stream;
-      out responseMsg: IMessage; out responseHeaders: ITransportHeaders;
-      out responseStream: _Stream): ServerProcessing; dispid 1610743808;
-    procedure AsyncProcessResponse(const sinkStack: IServerResponseChannelSinkStack;
-      state: OleVariant; const msg: IMessage;
-      const headers: ITransportHeaders; const Stream: _Stream); dispid 1610743809;
-    function GetResponseStream(const sinkStack: IServerResponseChannelSinkStack; state: OleVariant;
-      const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743810;
+    function ProcessMessage(const sinkStack: IServerChannelSinkStack; const requestMsg: IMessage; 
+                            const requestHeaders: ITransportHeaders; const requestStream: _Stream; 
+                            out responseMsg: IMessage; out responseHeaders: ITransportHeaders; 
+                            out responseStream: _Stream): ServerProcessing; dispid 1610743808;
+    procedure AsyncProcessResponse(const sinkStack: IServerResponseChannelSinkStack; 
+                                   state: OleVariant; const msg: IMessage; 
+                                   const headers: ITransportHeaders; const Stream: _Stream); dispid 1610743809;
+    function GetResponseStream(const sinkStack: IServerResponseChannelSinkStack; state: OleVariant; 
+                               const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743810;
     property NextChannelSink: IServerChannelSink readonly dispid 1610743811;
   end;
   {$EXTERNALSYM IServerChannelSinkDisp}
@@ -17334,8 +17288,8 @@ type
 // *********************************************************************//
   IClientChannelSinkProvider = interface(IDispatch)
     ['{3F8742C2-AC57-3440-A283-FE5FF4C75025}']
-    function CreateSink(const channel: IChannelSender; const Url: WideString;
-      remoteChannelData: OleVariant): IClientChannelSink; safecall;
+    function CreateSink(const channel: IChannelSender; const Url: WideString; 
+                        remoteChannelData: OleVariant): IClientChannelSink; safecall;
     function Get_Next: IClientChannelSinkProvider; safecall;
     procedure _Set_Next(const pRetVal: IClientChannelSinkProvider); safecall;
     property Next: IClientChannelSinkProvider read Get_Next;
@@ -17348,8 +17302,8 @@ type
 // *********************************************************************//
   IClientChannelSinkProviderDisp = dispinterface
     ['{3F8742C2-AC57-3440-A283-FE5FF4C75025}']
-    function CreateSink(const channel: IChannelSender; const Url: WideString;
-      remoteChannelData: OleVariant): IClientChannelSink; dispid 1610743808;
+    function CreateSink(const channel: IChannelSender; const Url: WideString; 
+                        remoteChannelData: OleVariant): IClientChannelSink; dispid 1610743808;
     property Next: IClientChannelSinkProvider readonly dispid 1610743809;
   end;
   {$EXTERNALSYM IClientChannelSinkProviderDisp}
@@ -17399,14 +17353,14 @@ type
 // *********************************************************************//
   IClientChannelSink = interface(IDispatch)
     ['{FF726320-6B92-3E6C-AAAC-F97063D0B142}']
-    procedure ProcessMessage(const msg: IMessage; const requestHeaders: ITransportHeaders;
-      const requestStream: _Stream; out responseHeaders: ITransportHeaders;
-      out responseStream: _Stream); safecall;
-    procedure AsyncProcessRequest(const sinkStack: IClientChannelSinkStack; const msg: IMessage;
-      const headers: ITransportHeaders; const Stream: _Stream); safecall;
-    procedure AsyncProcessResponse(const sinkStack: IClientResponseChannelSinkStack;
-      state: OleVariant; const headers: ITransportHeaders;
-      const Stream: _Stream); safecall;
+    procedure ProcessMessage(const msg: IMessage; const requestHeaders: ITransportHeaders; 
+                             const requestStream: _Stream; out responseHeaders: ITransportHeaders; 
+                             out responseStream: _Stream); safecall;
+    procedure AsyncProcessRequest(const sinkStack: IClientChannelSinkStack; const msg: IMessage; 
+                                  const headers: ITransportHeaders; const Stream: _Stream); safecall;
+    procedure AsyncProcessResponse(const sinkStack: IClientResponseChannelSinkStack; 
+                                   state: OleVariant; const headers: ITransportHeaders; 
+                                   const Stream: _Stream); safecall;
     function GetRequestStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; safecall;
     function Get_NextChannelSink: IClientChannelSink; safecall;
     property NextChannelSink: IClientChannelSink read Get_NextChannelSink;
@@ -17419,14 +17373,14 @@ type
 // *********************************************************************//
   IClientChannelSinkDisp = dispinterface
     ['{FF726320-6B92-3E6C-AAAC-F97063D0B142}']
-    procedure ProcessMessage(const msg: IMessage; const requestHeaders: ITransportHeaders;
-      const requestStream: _Stream; out responseHeaders: ITransportHeaders;
-      out responseStream: _Stream); dispid 1610743808;
-    procedure AsyncProcessRequest(const sinkStack: IClientChannelSinkStack; const msg: IMessage;
-      const headers: ITransportHeaders; const Stream: _Stream); dispid 1610743809;
-    procedure AsyncProcessResponse(const sinkStack: IClientResponseChannelSinkStack;
-      state: OleVariant; const headers: ITransportHeaders;
-      const Stream: _Stream); dispid 1610743810;
+    procedure ProcessMessage(const msg: IMessage; const requestHeaders: ITransportHeaders; 
+                             const requestStream: _Stream; out responseHeaders: ITransportHeaders; 
+                             out responseStream: _Stream); dispid 1610743808;
+    procedure AsyncProcessRequest(const sinkStack: IClientChannelSinkStack; const msg: IMessage; 
+                                  const headers: ITransportHeaders; const Stream: _Stream); dispid 1610743809;
+    procedure AsyncProcessResponse(const sinkStack: IClientResponseChannelSinkStack; 
+                                   state: OleVariant; const headers: ITransportHeaders; 
+                                   const Stream: _Stream); dispid 1610743810;
     function GetRequestStream(const msg: IMessage; const headers: ITransportHeaders): _Stream; dispid 1610743811;
     property NextChannelSink: IClientChannelSink readonly dispid 1610743812;
   end;
@@ -17675,8 +17629,7 @@ type
 // *********************************************************************//
   IContributeEnvoySinkDisp = dispinterface
     ['{124777B6-0308-3569-97E5-E6FE88EAE4EB}']
-    function GetEnvoySink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink;
-      dispid 1610743808;
+    function GetEnvoySink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
   {$EXTERNALSYM IContributeEnvoySinkDisp}
 
@@ -17697,8 +17650,7 @@ type
 // *********************************************************************//
   IContributeObjectSinkDisp = dispinterface
     ['{6A5D38BC-2789-3546-81A1-F10C0FB59366}']
-    function GetObjectSink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink;
-      dispid 1610743808;
+    function GetObjectSink(const obj: _MarshalByRefObject; const NextSink: IMessageSink): IMessageSink; dispid 1610743808;
   end;
   {$EXTERNALSYM IContributeObjectSinkDisp}
 
@@ -17852,10 +17804,9 @@ type
 // *********************************************************************//
   IRemotingFormatterDisp = dispinterface
     ['{AE1850FD-3596-3727-A242-2FC31C5A0312}']
-    function Deserialize(const serializationStream: _Stream; const handler: _HeaderHandler): OleVariant;
-      dispid 1610743808;
-    procedure Serialize(const serializationStream: _Stream; graph: OleVariant;
-      headers: {??PSafeArray}OleVariant); dispid 1610743809;
+    function Deserialize(const serializationStream: _Stream; const handler: _HeaderHandler): OleVariant; dispid 1610743808;
+    procedure Serialize(const serializationStream: _Stream; graph: OleVariant; 
+                        headers: {??PSafeArray}OleVariant); dispid 1610743809;
   end;
   {$EXTERNALSYM IRemotingFormatterDisp}
 
@@ -27074,11 +27025,9 @@ begin
   Result := CreateComObject(CLASS_CannotUnloadAppDomainException) as _CannotUnloadAppDomainException;
 end;
 
-class function CoCannotUnloadAppDomainException.CreateRemote(
-  const MachineName: string): _CannotUnloadAppDomainException;
+class function CoCannotUnloadAppDomainException.CreateRemote(const MachineName: string): _CannotUnloadAppDomainException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CannotUnloadAppDomainException) as
-    _CannotUnloadAppDomainException;
+  Result := CreateRemoteComObject(MachineName, CLASS_CannotUnloadAppDomainException) as _CannotUnloadAppDomainException;
 end;
 
 class function CoCharEnumerator.Create: _CharEnumerator;
@@ -27406,11 +27355,9 @@ begin
   Result := CreateComObject(CLASS_MulticastNotSupportedException) as _MulticastNotSupportedException;
 end;
 
-class function CoMulticastNotSupportedException.CreateRemote(
-  const MachineName: string): _MulticastNotSupportedException;
+class function CoMulticastNotSupportedException.CreateRemote(const MachineName: string): _MulticastNotSupportedException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_MulticastNotSupportedException) as
-    _MulticastNotSupportedException;
+  Result := CreateRemoteComObject(MachineName, CLASS_MulticastNotSupportedException) as _MulticastNotSupportedException;
 end;
 
 class function CoNonSerializedAttribute.Create: _NonSerializedAttribute;
@@ -27608,11 +27555,9 @@ begin
   Result := CreateComObject(CLASS_UnhandledExceptionEventHandler) as _UnhandledExceptionEventHandler;
 end;
 
-class function CoUnhandledExceptionEventHandler.CreateRemote(
-  const MachineName: string): _UnhandledExceptionEventHandler;
+class function CoUnhandledExceptionEventHandler.CreateRemote(const MachineName: string): _UnhandledExceptionEventHandler;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_UnhandledExceptionEventHandler) as
-    _UnhandledExceptionEventHandler;
+  Result := CreateRemoteComObject(MachineName, CLASS_UnhandledExceptionEventHandler) as _UnhandledExceptionEventHandler;
 end;
 
 class function CoVersion.Create: _Version;
@@ -27930,11 +27875,9 @@ begin
   Result := CreateComObject(CLASS_CaseInsensitiveHashCodeProvider) as _CaseInsensitiveHashCodeProvider;
 end;
 
-class function CoCaseInsensitiveHashCodeProvider.CreateRemote(
-  const MachineName: string): _CaseInsensitiveHashCodeProvider;
+class function CoCaseInsensitiveHashCodeProvider.CreateRemote(const MachineName: string): _CaseInsensitiveHashCodeProvider;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CaseInsensitiveHashCodeProvider) as
-    _CaseInsensitiveHashCodeProvider;
+  Result := CreateRemoteComObject(MachineName, CLASS_CaseInsensitiveHashCodeProvider) as _CaseInsensitiveHashCodeProvider;
 end;
 
 class function CoCollectionBase.Create: _CollectionBase;
@@ -28312,11 +28255,9 @@ begin
   Result := CreateComObject(CLASS_AssemblyConfigurationAttribute) as _AssemblyConfigurationAttribute;
 end;
 
-class function CoAssemblyConfigurationAttribute.CreateRemote(
-  const MachineName: string): _AssemblyConfigurationAttribute;
+class function CoAssemblyConfigurationAttribute.CreateRemote(const MachineName: string): _AssemblyConfigurationAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AssemblyConfigurationAttribute) as
-    _AssemblyConfigurationAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_AssemblyConfigurationAttribute) as _AssemblyConfigurationAttribute;
 end;
 
 class function CoAssemblyDefaultAliasAttribute.Create: _AssemblyDefaultAliasAttribute;
@@ -28334,11 +28275,9 @@ begin
   Result := CreateComObject(CLASS_AssemblyInformationalVersionAttribute) as _AssemblyInformationalVersionAttribute;
 end;
 
-class function CoAssemblyInformationalVersionAttribute.CreateRemote(
-  const MachineName: string): _AssemblyInformationalVersionAttribute;
+class function CoAssemblyInformationalVersionAttribute.CreateRemote(const MachineName: string): _AssemblyInformationalVersionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AssemblyInformationalVersionAttribute) as
-    _AssemblyInformationalVersionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_AssemblyInformationalVersionAttribute) as _AssemblyInformationalVersionAttribute;
 end;
 
 class function CoCustomAttributeFormatException.Create: _CustomAttributeFormatException;
@@ -28346,11 +28285,9 @@ begin
   Result := CreateComObject(CLASS_CustomAttributeFormatException) as _CustomAttributeFormatException;
 end;
 
-class function CoCustomAttributeFormatException.CreateRemote(
-  const MachineName: string): _CustomAttributeFormatException;
+class function CoCustomAttributeFormatException.CreateRemote(const MachineName: string): _CustomAttributeFormatException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CustomAttributeFormatException) as
-    _CustomAttributeFormatException;
+  Result := CreateRemoteComObject(MachineName, CLASS_CustomAttributeFormatException) as _CustomAttributeFormatException;
 end;
 
 class function CoMethodBase.Create: _MethodBase;
@@ -28408,11 +28345,9 @@ begin
   Result := CreateComObject(CLASS_InvalidFilterCriteriaException) as _InvalidFilterCriteriaException;
 end;
 
-class function CoInvalidFilterCriteriaException.CreateRemote(
-  const MachineName: string): _InvalidFilterCriteriaException;
+class function CoInvalidFilterCriteriaException.CreateRemote(const MachineName: string): _InvalidFilterCriteriaException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_InvalidFilterCriteriaException) as
-    _InvalidFilterCriteriaException;
+  Result := CreateRemoteComObject(MachineName, CLASS_InvalidFilterCriteriaException) as _InvalidFilterCriteriaException;
 end;
 
 class function CoManifestResourceInfo.Create: _ManifestResourceInfo;
@@ -28940,11 +28875,9 @@ begin
   Result := CreateComObject(CLASS_MissingManifestResourceException) as _MissingManifestResourceException;
 end;
 
-class function CoMissingManifestResourceException.CreateRemote(
-  const MachineName: string): _MissingManifestResourceException;
+class function CoMissingManifestResourceException.CreateRemote(const MachineName: string): _MissingManifestResourceException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_MissingManifestResourceException) as
-    _MissingManifestResourceException;
+  Result := CreateRemoteComObject(MachineName, CLASS_MissingManifestResourceException) as _MissingManifestResourceException;
 end;
 
 class function CoNeutralResourcesLanguageAttribute.Create: _NeutralResourcesLanguageAttribute;
@@ -28952,11 +28885,9 @@ begin
   Result := CreateComObject(CLASS_NeutralResourcesLanguageAttribute) as _NeutralResourcesLanguageAttribute;
 end;
 
-class function CoNeutralResourcesLanguageAttribute.CreateRemote(
-  const MachineName: string): _NeutralResourcesLanguageAttribute;
+class function CoNeutralResourcesLanguageAttribute.CreateRemote(const MachineName: string): _NeutralResourcesLanguageAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_NeutralResourcesLanguageAttribute) as
-    _NeutralResourcesLanguageAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_NeutralResourcesLanguageAttribute) as _NeutralResourcesLanguageAttribute;
 end;
 
 class function CoResourceManager.Create: _ResourceManager;
@@ -29004,11 +28935,9 @@ begin
   Result := CreateComObject(CLASS_SatelliteContractVersionAttribute) as _SatelliteContractVersionAttribute;
 end;
 
-class function CoSatelliteContractVersionAttribute.CreateRemote(
-  const MachineName: string): _SatelliteContractVersionAttribute;
+class function CoSatelliteContractVersionAttribute.CreateRemote(const MachineName: string): _SatelliteContractVersionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SatelliteContractVersionAttribute) as
-    _SatelliteContractVersionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_SatelliteContractVersionAttribute) as _SatelliteContractVersionAttribute;
 end;
 
 class function CoRegistry.Create: _Registry;
@@ -29056,11 +28985,9 @@ begin
   Result := CreateComObject(CLASS_AsymmetricKeyExchangeDeformatter) as _AsymmetricKeyExchangeDeformatter;
 end;
 
-class function CoAsymmetricKeyExchangeDeformatter.CreateRemote(
-  const MachineName: string): _AsymmetricKeyExchangeDeformatter;
+class function CoAsymmetricKeyExchangeDeformatter.CreateRemote(const MachineName: string): _AsymmetricKeyExchangeDeformatter;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricKeyExchangeDeformatter) as
-    _AsymmetricKeyExchangeDeformatter;
+  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricKeyExchangeDeformatter) as _AsymmetricKeyExchangeDeformatter;
 end;
 
 class function CoAsymmetricKeyExchangeFormatter.Create: _AsymmetricKeyExchangeFormatter;
@@ -29068,11 +28995,9 @@ begin
   Result := CreateComObject(CLASS_AsymmetricKeyExchangeFormatter) as _AsymmetricKeyExchangeFormatter;
 end;
 
-class function CoAsymmetricKeyExchangeFormatter.CreateRemote(
-  const MachineName: string): _AsymmetricKeyExchangeFormatter;
+class function CoAsymmetricKeyExchangeFormatter.CreateRemote(const MachineName: string): _AsymmetricKeyExchangeFormatter;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricKeyExchangeFormatter) as
-    _AsymmetricKeyExchangeFormatter;
+  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricKeyExchangeFormatter) as _AsymmetricKeyExchangeFormatter;
 end;
 
 class function CoAsymmetricSignatureDeformatter.Create: _AsymmetricSignatureDeformatter;
@@ -29080,11 +29005,9 @@ begin
   Result := CreateComObject(CLASS_AsymmetricSignatureDeformatter) as _AsymmetricSignatureDeformatter;
 end;
 
-class function CoAsymmetricSignatureDeformatter.CreateRemote(
-  const MachineName: string): _AsymmetricSignatureDeformatter;
+class function CoAsymmetricSignatureDeformatter.CreateRemote(const MachineName: string): _AsymmetricSignatureDeformatter;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricSignatureDeformatter) as
-    _AsymmetricSignatureDeformatter;
+  Result := CreateRemoteComObject(MachineName, CLASS_AsymmetricSignatureDeformatter) as _AsymmetricSignatureDeformatter;
 end;
 
 class function CoAsymmetricSignatureFormatter.Create: _AsymmetricSignatureFormatter;
@@ -29139,15 +29062,12 @@ end;
 
 class function CoCryptographicUnexpectedOperationException.Create: _CryptographicUnexpectedOperationException;
 begin
-  Result := CreateComObject(CLASS_CryptographicUnexpectedOperationException) as
-    _CryptographicUnexpectedOperationException;
+  Result := CreateComObject(CLASS_CryptographicUnexpectedOperationException) as _CryptographicUnexpectedOperationException;
 end;
 
-class function CoCryptographicUnexpectedOperationException.CreateRemote(
-  const MachineName: string): _CryptographicUnexpectedOperationException;
+class function CoCryptographicUnexpectedOperationException.CreateRemote(const MachineName: string): _CryptographicUnexpectedOperationException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CryptographicUnexpectedOperationException) as
-    _CryptographicUnexpectedOperationException;
+  Result := CreateRemoteComObject(MachineName, CLASS_CryptographicUnexpectedOperationException) as _CryptographicUnexpectedOperationException;
 end;
 
 class function CoCryptoAPITransform.Create: _CryptoAPITransform;
@@ -29455,11 +29375,9 @@ begin
   Result := CreateComObject(CLASS_RSAPKCS1KeyExchangeDeformatter) as _RSAPKCS1KeyExchangeDeformatter;
 end;
 
-class function CoRSAPKCS1KeyExchangeDeformatter.CreateRemote(
-  const MachineName: string): _RSAPKCS1KeyExchangeDeformatter;
+class function CoRSAPKCS1KeyExchangeDeformatter.CreateRemote(const MachineName: string): _RSAPKCS1KeyExchangeDeformatter;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_RSAPKCS1KeyExchangeDeformatter) as
-    _RSAPKCS1KeyExchangeDeformatter;
+  Result := CreateRemoteComObject(MachineName, CLASS_RSAPKCS1KeyExchangeDeformatter) as _RSAPKCS1KeyExchangeDeformatter;
 end;
 
 class function CoRSAPKCS1KeyExchangeFormatter.Create: _RSAPKCS1KeyExchangeFormatter;
@@ -29627,11 +29545,9 @@ begin
   Result := CreateComObject(CLASS_TripleDESCryptoServiceProvider) as _TripleDESCryptoServiceProvider;
 end;
 
-class function CoTripleDESCryptoServiceProvider.CreateRemote(
-  const MachineName: string): _TripleDESCryptoServiceProvider;
+class function CoTripleDESCryptoServiceProvider.CreateRemote(const MachineName: string): _TripleDESCryptoServiceProvider;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_TripleDESCryptoServiceProvider) as
-    _TripleDESCryptoServiceProvider;
+  Result := CreateRemoteComObject(MachineName, CLASS_TripleDESCryptoServiceProvider) as _TripleDESCryptoServiceProvider;
 end;
 
 class function CoAllMembershipCondition.Create: _AllMembershipCondition;
@@ -29659,11 +29575,9 @@ begin
   Result := CreateComObject(CLASS_ApplicationDirectoryMembershipCondition) as _ApplicationDirectoryMembershipCondition;
 end;
 
-class function CoApplicationDirectoryMembershipCondition.CreateRemote(
-  const MachineName: string): _ApplicationDirectoryMembershipCondition;
+class function CoApplicationDirectoryMembershipCondition.CreateRemote(const MachineName: string): _ApplicationDirectoryMembershipCondition;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ApplicationDirectoryMembershipCondition) as
-    _ApplicationDirectoryMembershipCondition;
+  Result := CreateRemoteComObject(MachineName, CLASS_ApplicationDirectoryMembershipCondition) as _ApplicationDirectoryMembershipCondition;
 end;
 
 class function CoCodeGroup.Create: _CodeGroup;
@@ -30001,11 +29915,9 @@ begin
   Result := CreateComObject(CLASS_ComUnregisterFunctionAttribute) as _ComUnregisterFunctionAttribute;
 end;
 
-class function CoComUnregisterFunctionAttribute.CreateRemote(
-  const MachineName: string): _ComUnregisterFunctionAttribute;
+class function CoComUnregisterFunctionAttribute.CreateRemote(const MachineName: string): _ComUnregisterFunctionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ComUnregisterFunctionAttribute) as
-    _ComUnregisterFunctionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_ComUnregisterFunctionAttribute) as _ComUnregisterFunctionAttribute;
 end;
 
 class function CoProgIdAttribute.Create: _ProgIdAttribute;
@@ -30213,11 +30125,9 @@ begin
   Result := CreateComObject(CLASS_PrimaryInteropAssemblyAttribute) as _PrimaryInteropAssemblyAttribute;
 end;
 
-class function CoPrimaryInteropAssemblyAttribute.CreateRemote(
-  const MachineName: string): _PrimaryInteropAssemblyAttribute;
+class function CoPrimaryInteropAssemblyAttribute.CreateRemote(const MachineName: string): _PrimaryInteropAssemblyAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_PrimaryInteropAssemblyAttribute) as
-    _PrimaryInteropAssemblyAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_PrimaryInteropAssemblyAttribute) as _PrimaryInteropAssemblyAttribute;
 end;
 
 class function CoCoClassAttribute.Create: _CoClassAttribute;
@@ -30345,11 +30255,9 @@ begin
   Result := CreateComObject(CLASS_InvalidOleVariantTypeException) as _InvalidOleVariantTypeException;
 end;
 
-class function CoInvalidOleVariantTypeException.CreateRemote(
-  const MachineName: string): _InvalidOleVariantTypeException;
+class function CoInvalidOleVariantTypeException.CreateRemote(const MachineName: string): _InvalidOleVariantTypeException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_InvalidOleVariantTypeException) as
-    _InvalidOleVariantTypeException;
+  Result := CreateRemoteComObject(MachineName, CLASS_InvalidOleVariantTypeException) as _InvalidOleVariantTypeException;
 end;
 
 class function CoMarshal.Create: _Marshal;
@@ -30397,11 +30305,9 @@ begin
   Result := CreateComObject(CLASS_SafeArrayRankMismatchException) as _SafeArrayRankMismatchException;
 end;
 
-class function CoSafeArrayRankMismatchException.CreateRemote(
-  const MachineName: string): _SafeArrayRankMismatchException;
+class function CoSafeArrayRankMismatchException.CreateRemote(const MachineName: string): _SafeArrayRankMismatchException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SafeArrayRankMismatchException) as
-    _SafeArrayRankMismatchException;
+  Result := CreateRemoteComObject(MachineName, CLASS_SafeArrayRankMismatchException) as _SafeArrayRankMismatchException;
 end;
 
 class function CoSafeArrayTypeMismatchException.Create: _SafeArrayTypeMismatchException;
@@ -30409,11 +30315,9 @@ begin
   Result := CreateComObject(CLASS_SafeArrayTypeMismatchException) as _SafeArrayTypeMismatchException;
 end;
 
-class function CoSafeArrayTypeMismatchException.CreateRemote(
-  const MachineName: string): _SafeArrayTypeMismatchException;
+class function CoSafeArrayTypeMismatchException.CreateRemote(const MachineName: string): _SafeArrayTypeMismatchException;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SafeArrayTypeMismatchException) as
-    _SafeArrayTypeMismatchException;
+  Result := CreateRemoteComObject(MachineName, CLASS_SafeArrayTypeMismatchException) as _SafeArrayTypeMismatchException;
 end;
 
 class function CoSEHException.Create: _SEHException;
@@ -30671,11 +30575,9 @@ begin
   Result := CreateComObject(CLASS_AccessedThroughPropertyAttribute) as _AccessedThroughPropertyAttribute;
 end;
 
-class function CoAccessedThroughPropertyAttribute.CreateRemote(
-  const MachineName: string): _AccessedThroughPropertyAttribute;
+class function CoAccessedThroughPropertyAttribute.CreateRemote(const MachineName: string): _AccessedThroughPropertyAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AccessedThroughPropertyAttribute) as
-    _AccessedThroughPropertyAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_AccessedThroughPropertyAttribute) as _AccessedThroughPropertyAttribute;
 end;
 
 class function CoCallConvCdecl.Create: _CallConvCdecl;
@@ -30773,11 +30675,9 @@ begin
   Result := CreateComObject(CLASS_CompilationRelaxationsAttribute) as _CompilationRelaxationsAttribute;
 end;
 
-class function CoCompilationRelaxationsAttribute.CreateRemote(
-  const MachineName: string): _CompilationRelaxationsAttribute;
+class function CoCompilationRelaxationsAttribute.CreateRemote(const MachineName: string): _CompilationRelaxationsAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_CompilationRelaxationsAttribute) as
-    _CompilationRelaxationsAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_CompilationRelaxationsAttribute) as _CompilationRelaxationsAttribute;
 end;
 
 class function CoCompilerGlobalScopeAttribute.Create: _CompilerGlobalScopeAttribute;
@@ -30975,11 +30875,9 @@ begin
   Result := CreateComObject(CLASS_EnvironmentPermissionAttribute) as _EnvironmentPermissionAttribute;
 end;
 
-class function CoEnvironmentPermissionAttribute.CreateRemote(
-  const MachineName: string): _EnvironmentPermissionAttribute;
+class function CoEnvironmentPermissionAttribute.CreateRemote(const MachineName: string): _EnvironmentPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_EnvironmentPermissionAttribute) as
-    _EnvironmentPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_EnvironmentPermissionAttribute) as _EnvironmentPermissionAttribute;
 end;
 
 class function CoFileDialogPermissionAttribute.Create: _FileDialogPermissionAttribute;
@@ -31057,11 +30955,9 @@ begin
   Result := CreateComObject(CLASS_ZoneIdentityPermissionAttribute) as _ZoneIdentityPermissionAttribute;
 end;
 
-class function CoZoneIdentityPermissionAttribute.CreateRemote(
-  const MachineName: string): _ZoneIdentityPermissionAttribute;
+class function CoZoneIdentityPermissionAttribute.CreateRemote(const MachineName: string): _ZoneIdentityPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_ZoneIdentityPermissionAttribute) as
-    _ZoneIdentityPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_ZoneIdentityPermissionAttribute) as _ZoneIdentityPermissionAttribute;
 end;
 
 class function CoStrongNameIdentityPermissionAttribute.Create: _StrongNameIdentityPermissionAttribute;
@@ -31069,11 +30965,9 @@ begin
   Result := CreateComObject(CLASS_StrongNameIdentityPermissionAttribute) as _StrongNameIdentityPermissionAttribute;
 end;
 
-class function CoStrongNameIdentityPermissionAttribute.CreateRemote(
-  const MachineName: string): _StrongNameIdentityPermissionAttribute;
+class function CoStrongNameIdentityPermissionAttribute.CreateRemote(const MachineName: string): _StrongNameIdentityPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_StrongNameIdentityPermissionAttribute) as
-    _StrongNameIdentityPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_StrongNameIdentityPermissionAttribute) as _StrongNameIdentityPermissionAttribute;
 end;
 
 class function CoSiteIdentityPermissionAttribute.Create: _SiteIdentityPermissionAttribute;
@@ -31081,11 +30975,9 @@ begin
   Result := CreateComObject(CLASS_SiteIdentityPermissionAttribute) as _SiteIdentityPermissionAttribute;
 end;
 
-class function CoSiteIdentityPermissionAttribute.CreateRemote(
-  const MachineName: string): _SiteIdentityPermissionAttribute;
+class function CoSiteIdentityPermissionAttribute.CreateRemote(const MachineName: string): _SiteIdentityPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SiteIdentityPermissionAttribute) as
-    _SiteIdentityPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_SiteIdentityPermissionAttribute) as _SiteIdentityPermissionAttribute;
 end;
 
 class function CoUrlIdentityPermissionAttribute.Create: _UrlIdentityPermissionAttribute;
@@ -31093,11 +30985,9 @@ begin
   Result := CreateComObject(CLASS_UrlIdentityPermissionAttribute) as _UrlIdentityPermissionAttribute;
 end;
 
-class function CoUrlIdentityPermissionAttribute.CreateRemote(
-  const MachineName: string): _UrlIdentityPermissionAttribute;
+class function CoUrlIdentityPermissionAttribute.CreateRemote(const MachineName: string): _UrlIdentityPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_UrlIdentityPermissionAttribute) as
-    _UrlIdentityPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_UrlIdentityPermissionAttribute) as _UrlIdentityPermissionAttribute;
 end;
 
 class function CoPublisherIdentityPermissionAttribute.Create: _PublisherIdentityPermissionAttribute;
@@ -31105,11 +30995,9 @@ begin
   Result := CreateComObject(CLASS_PublisherIdentityPermissionAttribute) as _PublisherIdentityPermissionAttribute;
 end;
 
-class function CoPublisherIdentityPermissionAttribute.CreateRemote(
-  const MachineName: string): _PublisherIdentityPermissionAttribute;
+class function CoPublisherIdentityPermissionAttribute.CreateRemote(const MachineName: string): _PublisherIdentityPermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_PublisherIdentityPermissionAttribute) as
-    _PublisherIdentityPermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_PublisherIdentityPermissionAttribute) as _PublisherIdentityPermissionAttribute;
 end;
 
 class function CoIsolatedStoragePermissionAttribute.Create: _IsolatedStoragePermissionAttribute;
@@ -31117,11 +31005,9 @@ begin
   Result := CreateComObject(CLASS_IsolatedStoragePermissionAttribute) as _IsolatedStoragePermissionAttribute;
 end;
 
-class function CoIsolatedStoragePermissionAttribute.CreateRemote(
-  const MachineName: string): _IsolatedStoragePermissionAttribute;
+class function CoIsolatedStoragePermissionAttribute.CreateRemote(const MachineName: string): _IsolatedStoragePermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_IsolatedStoragePermissionAttribute) as
-    _IsolatedStoragePermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_IsolatedStoragePermissionAttribute) as _IsolatedStoragePermissionAttribute;
 end;
 
 class function CoIsolatedStorageFilePermissionAttribute.Create: _IsolatedStorageFilePermissionAttribute;
@@ -31129,11 +31015,9 @@ begin
   Result := CreateComObject(CLASS_IsolatedStorageFilePermissionAttribute) as _IsolatedStorageFilePermissionAttribute;
 end;
 
-class function CoIsolatedStorageFilePermissionAttribute.CreateRemote(
-  const MachineName: string): _IsolatedStorageFilePermissionAttribute;
+class function CoIsolatedStorageFilePermissionAttribute.CreateRemote(const MachineName: string): _IsolatedStorageFilePermissionAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_IsolatedStorageFilePermissionAttribute) as
-    _IsolatedStorageFilePermissionAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_IsolatedStorageFilePermissionAttribute) as _IsolatedStorageFilePermissionAttribute;
 end;
 
 class function CoPermissionSetAttribute.Create: _PermissionSetAttribute;
@@ -31261,11 +31145,9 @@ begin
   Result := CreateComObject(CLASS_SuppressUnmanagedCodeSecurityAttribute) as _SuppressUnmanagedCodeSecurityAttribute;
 end;
 
-class function CoSuppressUnmanagedCodeSecurityAttribute.CreateRemote(
-  const MachineName: string): _SuppressUnmanagedCodeSecurityAttribute;
+class function CoSuppressUnmanagedCodeSecurityAttribute.CreateRemote(const MachineName: string): _SuppressUnmanagedCodeSecurityAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_SuppressUnmanagedCodeSecurityAttribute) as
-    _SuppressUnmanagedCodeSecurityAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_SuppressUnmanagedCodeSecurityAttribute) as _SuppressUnmanagedCodeSecurityAttribute;
 end;
 
 class function CoUnverifiableCodeAttribute.Create: _UnverifiableCodeAttribute;
@@ -31283,11 +31165,9 @@ begin
   Result := CreateComObject(CLASS_AllowPartiallyTrustedCallersAttribute) as _AllowPartiallyTrustedCallersAttribute;
 end;
 
-class function CoAllowPartiallyTrustedCallersAttribute.CreateRemote(
-  const MachineName: string): _AllowPartiallyTrustedCallersAttribute;
+class function CoAllowPartiallyTrustedCallersAttribute.CreateRemote(const MachineName: string): _AllowPartiallyTrustedCallersAttribute;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_AllowPartiallyTrustedCallersAttribute) as
-    _AllowPartiallyTrustedCallersAttribute;
+  Result := CreateRemoteComObject(MachineName, CLASS_AllowPartiallyTrustedCallersAttribute) as _AllowPartiallyTrustedCallersAttribute;
 end;
 
 class function CoSecurityException.Create: _SecurityException;
@@ -31515,11 +31395,9 @@ begin
   Result := CreateComObject(CLASS_BaseChannelObjectWithProperties) as _BaseChannelObjectWithProperties;
 end;
 
-class function CoBaseChannelObjectWithProperties.CreateRemote(
-  const MachineName: string): _BaseChannelObjectWithProperties;
+class function CoBaseChannelObjectWithProperties.CreateRemote(const MachineName: string): _BaseChannelObjectWithProperties;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_BaseChannelObjectWithProperties) as
-    _BaseChannelObjectWithProperties;
+  Result := CreateRemoteComObject(MachineName, CLASS_BaseChannelObjectWithProperties) as _BaseChannelObjectWithProperties;
 end;
 
 class function CoBaseChannelSinkWithProperties.Create: _BaseChannelSinkWithProperties;
@@ -31727,11 +31605,9 @@ begin
   Result := CreateComObject(CLASS_System_Runtime_Remoting_TypeEntry) as _System_Runtime_Remoting_TypeEntry;
 end;
 
-class function CoSystem_Runtime_Remoting_TypeEntry.CreateRemote(
-  const MachineName: string): _System_Runtime_Remoting_TypeEntry;
+class function CoSystem_Runtime_Remoting_TypeEntry.CreateRemote(const MachineName: string): _System_Runtime_Remoting_TypeEntry;
 begin
-  Result := CreateRemoteComObject(MachineName, CLASS_System_Runtime_Remoting_TypeEntry) as
-    _System_Runtime_Remoting_TypeEntry;
+  Result := CreateRemoteComObject(MachineName, CLASS_System_Runtime_Remoting_TypeEntry) as _System_Runtime_Remoting_TypeEntry;
 end;
 
 class function CoActivatedClientTypeEntry.Create: _ActivatedClientTypeEntry;

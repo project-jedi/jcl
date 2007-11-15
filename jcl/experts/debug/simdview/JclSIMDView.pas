@@ -21,13 +21,17 @@
 { located at http://jcl.sourceforge.net                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSIMDView;
 
 {$I jcl.inc}
-
+                     
 interface
 
 uses
@@ -81,14 +85,14 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TJclDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
     IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
     FThreadList: TList;
-    function FindProcessReference(AProcess: IOTAProcess): PProcessReference;
-    function FindThreadReference(AThread: IOTAThread): PThreadReference;
+    function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
+    function FindThreadReference(AThread:IOTAThread): PThreadReference;
   public
     constructor Create(AOwner: TJclSIMDWizard); reintroduce;
     destructor Destroy; override;
@@ -121,7 +125,8 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
 implementation
 
 uses
-  JclOtaConsts, JclOtaResources,
+  TypInfo,
+  JclOtaConsts, JclOtaResources, 
   JclSIMDUtils;
 
 procedure Register;
@@ -162,8 +167,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-  RegisterProc: TWizardRegisterProc;
-  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+    RegisterProc: TWizardRegisterProc;
+    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -208,7 +213,7 @@ end;
 procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   try
-    if CpuInfo.SSE = 0 then
+    if CpuInfo.SSE = [] then
       raise EJclExpertException.CreateTrace(RsNoSSE);
 
     if not Assigned(FForm) then
@@ -241,7 +246,7 @@ begin
   try
     AAction := Sender as TAction;
 
-    if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
+    if (CpuInfo.SSE <> []) or CPUInfo.MMX or CPUInfo._3DNow then
     begin
       AThread := nil;
       AProcess := nil;
@@ -369,6 +374,8 @@ function TJclSIMDWizard.GetSIMDString: string;
       Result := LeftValue + ',' + RightValue;
   end;
 
+var
+  SSESupport: TSSESupport;
 begin
   Result := '';
   with CpuInfo do
@@ -381,12 +388,9 @@ begin
       Result := Concat(Result, Rs3DNow);
     if Ex3DNow then
       Result := Concat(Result, RsEx3DNow);
-    if SSE >= 1 then
-      Result := Concat(Result, RsSSE1);
-    if SSE >= 2 then
-      Result := Concat(Result, RsSSE2);
-    if SSE >= 3 then
-      Result := Concat(Result, RsSSE3);
+    for SSESupport := Low(TSSESupport) to High(TSSESupport) do
+      if SSESupport in SSE then
+        Result := Concat(Result, GetEnumName(TypeInfo(TSSESupport), Integer(SSESupport)));
     if Is64Bits then
       Result := Result + ',' + RsLong;
   end;
@@ -563,8 +567,7 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP}
-  const {$ENDIF} ProcessModule: IOTAProcessModule);
+procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;

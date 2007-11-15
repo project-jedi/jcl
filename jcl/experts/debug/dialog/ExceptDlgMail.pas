@@ -1,27 +1,27 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License"); you may not use this file except in           }
-{ compliance with the License. You may obtain a copy of the License at       }
-{ http://www.mozilla.org/MPL/                                                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is ExceptDlg.pas.                                        }
-{                                                                            }
-{ The Initial Developer of the Original Code is Petr Vones.                  }
-{ Portions created by Petr Vones are Copyright (C) of Petr Vones.            }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date$      }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is ExceptDlg.pas.                                                              }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) of Petr Vones.                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit ExceptDlgMail;
 
@@ -52,7 +52,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-  private
+    private
     FDetailsVisible: Boolean;
     FThreadID: DWORD;
     FLastActiveControl: TWinControl;
@@ -130,8 +130,7 @@ begin
   Addr2 := Cardinal(List.Objects[Index2]);
   if Addr1 > Addr2 then
     Result := 1
-  else
-  if Addr1 < Addr2 then
+  else if Addr1 < Addr2 then
     Result := -1
   else
     Result := 0;
@@ -160,7 +159,7 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset = $86;
+  CallOffset      = $86;
   CallOffsetDebug = $94;
 type
   PCALLInstruction = ^TCALLInstruction;
@@ -183,11 +182,9 @@ var
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) +
-            Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) -
-            Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
       end;
     except
       Result := False;
@@ -243,20 +240,20 @@ end;
 procedure TExceptionDialogMail.SendBtnClick(Sender: TObject);
 begin
   with TJclEmail.Create do
+  try
+    ParentWnd := Application.Handle;
+    Recipients.Add('name@domain.ext');
+    Subject := 'email subject';
+    Body := ReportAsText;
+    SaveTaskWindows;
     try
-      ParentWnd := Application.Handle;
-      Recipients.Add('name@domain.ext');
-      Subject := 'email subject';
-      Body := ReportAsText;
-      SaveTaskWindows;
-      try
-        Send(True);
-      finally
-        RestoreTaskWindows;
-      end;
+      Send(True);
     finally
-      Free;
+      RestoreTaskWindows;
     end;
+  finally
+    Free;
+  end;
 end;
 
 //----------------------------------------------------------------------------
@@ -302,7 +299,7 @@ var
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
-
+ 
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
@@ -322,29 +319,36 @@ begin
     DetailsMemo.Lines.Add(Format(RsOSVersion, [GetWindowsVersionString, NtProductTypeString,
       Win32MajorVersion, Win32MinorVersion, Win32BuildNumber, Win32CSDVersion]));
     GetCpuInfo(CpuInfo);
-    with CpuInfo do
-    begin
-      ProcessorDetails := Format(RsProcessor, [Manufacturer, CpuName,
-        RoundFrequency(FrequencyInfo.NormFreq)]);
-      if not IsFDIVOK then
-        ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
-      if ExMMX then
-        ProcessorDetails := ProcessorDetails + ' MMXex'
-      else
-      if MMX then
-        ProcessorDetails := ProcessorDetails + ' MMX';
-      if SSE > 0 then
-        ProcessorDetails := Format('%s SSE%d', [ProcessorDetails, SSE]);
-      if Ex3DNow then
-        ProcessorDetails := ProcessorDetails + ' 3DNow!ex'
-      else
-      if _3DNow then
-        ProcessorDetails := ProcessorDetails + ' 3DNow!';
-      if Is64Bits then
-        ProcessorDetails := ProcessorDetails + ' 64 bits';
-      if DEPCapable then
-        ProcessorDetails := ProcessorDetails + ' DEP';
-    end;
+    ProcessorDetails := Format(RsProcessor, [CpuInfo.Manufacturer, CpuInfo.CpuName,
+      RoundFrequency(CpuInfo.FrequencyInfo.NormFreq)]);
+    if not CpuInfo.IsFDIVOK then
+      ProcessorDetails := ProcessorDetails + ' [FDIV Bug]';
+    if CpuInfo.ExMMX then
+      ProcessorDetails := ProcessorDetails + ' MMXex';
+    if CpuInfo.MMX then
+      ProcessorDetails := ProcessorDetails + ' MMX';
+    if sse in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE';
+    if sse2 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE2';
+    if sse3 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE3';
+    if ssse3 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSSE3';
+    if sse4A in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE4A';
+    if sse4B in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE4B';
+    if sse5 in CpuInfo.SSE then
+      ProcessorDetails := ProcessorDetails + ' SSE';
+    if CpuInfo.Ex3DNow then
+      ProcessorDetails := ProcessorDetails + ' 3DNow!ex';
+    if CpuInfo._3DNow then
+      ProcessorDetails := ProcessorDetails + ' 3DNow!';
+    if CpuInfo.Is64Bits then
+      ProcessorDetails := ProcessorDetails + ' 64 bits';
+    if CpuInfo.DEPCapable then
+      ProcessorDetails := ProcessorDetails + ' DEP';
     DetailsMemo.Lines.Add(ProcessorDetails);
     DetailsMemo.Lines.Add(Format(RsMemory, [GetTotalPhysicalMemory div 1024 div 1024,
       GetFreePhysicalMemory div 1024 div 1024]));
@@ -379,13 +383,13 @@ begin
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
           with TJclFileVersionInfo.Create(ModuleName) do
-            try
-              DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
-              if FileDescription <> '' then
-                DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
-            finally
-              Free;
-            end
+          try
+            DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
+            if FileDescription <> '' then
+              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
+          finally
+            Free;
+          end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
       end;
@@ -579,7 +583,7 @@ begin
     else
       Height := FNonDetailsHeight;
     Constraints.MinHeight := FNonDetailsHeight;
-    Constraints.MaxHeight := FNonDetailsHeight;
+    Constraints.MaxHeight := FNonDetailsHeight
   end;
   DetailsBtn.Caption := DetailsCaption;
   DetailsMemo.Enabled := Value;
@@ -635,7 +639,7 @@ begin
   if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
     TextLabel.ScrollBars := ssVertical
   else
-    TextLabel.ScrollBars := ssNone;
+    TextLabel.ScrollBars := ssNone;   
 end;
 
 //==================================================================================================

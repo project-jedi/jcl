@@ -40,8 +40,6 @@ object Form1: TForm1
     ViewStyle = vsReport
     OnColumnClick = FileListViewColumnClick
     OnDblClick = OpenwithNotepad1Click
-    ExplicitWidth = 909
-    ExplicitHeight = 343
   end
   object Panel1: TPanel
     Left = 0
@@ -50,7 +48,6 @@ object Form1: TForm1
     Height = 177
     Align = alTop
     TabOrder = 1
-    ExplicitWidth = 909
     object Label3: TLabel
       Left = 216
       Top = 58
@@ -144,8 +141,6 @@ object Form1: TForm1
     Panels = <>
     SimplePanel = True
     UseSystemFont = False
-    ExplicitTop = 520
-    ExplicitWidth = 909
   end
   object FilePopupMenu: TPopupMenu
     Left = 712

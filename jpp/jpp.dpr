@@ -20,7 +20,10 @@
 {    Portions created by Barry Kelly are Copyright (C) 2001                    }
 {    Barry Kelly. All Rights Reserved.                                         }
 {                                                                              }
-{    Contributors: Robert Rossmair, Peter Thörnqvist                           }
+{    Contributors:                                                             }
+{      Robert Rossmair,                                                        }
+{      Peter Thörnqvist,                                                       }
+{      Florent Ouchet                                                          }
 {                                                                              }
 {    Alternatively, the contents of this file may be used under the terms      }
 {    of the Lesser GNU Public License (the  "LGPL License"), in which case     }
@@ -36,7 +39,6 @@
 { **************************************************************************** }
 
 // Last modified: $Date$
-// For history, see end of file
 
 {$APPTYPE CONSOLE}
 program jpp;
@@ -55,6 +57,7 @@ uses
   Classes,
   TypInfo,
   JclFileUtils,
+  JclSysUtils,
   JppState in 'JppState.pas',
   JppParser in 'JppParser.pas',
   FindFileIter in 'FindFileIter.pas',
@@ -80,6 +83,7 @@ begin
     #10,
     'Options:'#10,
     '  -c'#9#9'Process conditional directives'#10,
+    '  -m'#9#9'Process macro directive'#10,
     '  -C'#9#9'Strip comments'#10,
     '  -fxxx'#9#9'Prefix xxx to filename'#10,
     '  -h, -?'#9'This help'#10,
@@ -99,7 +103,7 @@ begin
   Halt(2);
 end;
 
-procedure Process(AState: TJppState; const AOld, ANew: string);
+procedure Process(AState: TSimplePppState; const AOld, ANew: string);
 var
   parse: TJppParser;
   fsIn, fsOut: TStream;
@@ -164,7 +168,7 @@ end;
 
 procedure Params(ACommandLine: PChar);
 var
-  pppState: TJppState;
+  pppState: TSimplePppState;
   StripLength: Integer; // RR
   Prefix, ReplaceString: string; // RR
   N: Integer;
@@ -190,6 +194,7 @@ var
 
   var
     tmp: string;
+    i: Integer;
   begin
     cp := SkipWhite(cp);
 
@@ -211,11 +216,15 @@ var
         'i', 'I':
           begin
             cp := ReadStringDoubleQuotedMaybe(CheckOpt(cp + 1, poProcessIncludes), tmp);
-            pppState.ExcludedIncludes.CommaText := tmp;
+            for i := 0 to ListItemCount(tmp, DirSeparator) - 1 do
+              pppState.AddFileToExclusionList(ListGetItem(tmp, DirSeparator, i));
           end;
 
         'c':
           cp := CheckOpt(cp + 1, poProcessDefines);
+
+        'm':
+          cp := CheckOpt(cp + 1, poProcessMacros);
 
         'C':
           cp := CheckOpt(cp + 1, poStripComments);
@@ -224,7 +233,7 @@ var
           begin
             Inc(cp);
             cp := ReadStringDoubleQuotedMaybe(cp, tmp);
-            pppState.SearchPath.Add(ExpandUNCFileName(tmp));
+            pppState.AddToSearchPath(ExpandUNCFileName(tmp));
           end;
 
         'd':
@@ -310,7 +319,7 @@ begin
   pppState := nil;
   ReplaceStrings := nil;
   try
-    pppState := TJppState.Create;
+    pppState := TSimplePppState.Create;
     ReplaceStrings := TStringList.Create;
     repeat
       cp := HandleOptions(cp);
@@ -343,26 +352,4 @@ begin
     on e: Exception do
       Writeln(e.Message);
   end;
-
-// History:
-
-// Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
-// $Log$
-// Revision 1.9  2004/12/03 04:17:19  rrossmair
-// - "i" option changed to allow for excluding specified files from processing
-//
-// Revision 1.8  2004/08/23 16:42:35  rrossmair
-// added -r option
-//
-// Revision 1.7  2004/06/20 03:24:48  rrossmair
-// - orphaned line breaks problem fixed.
-//
-// Revision 1.6  2004/06/04 02:49:24  rrossmair
-// - bug fix: StripLength was eventually not initialized
-// - better error message formatting
-//
-// Revision 1.5  2004/04/18 06:25:07  rrossmair
-// extension change for processed file only when necessary
-//
-
 end.

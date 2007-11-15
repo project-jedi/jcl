@@ -21,6 +21,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
+{   Florent Ouchet (outchy)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -28,8 +29,12 @@
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclBase;
 
@@ -42,20 +47,25 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF CLR}
-  System.Reflection,
+  Classes, System.Reflection,
   {$ELSE}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$ENDIF CLR}
+  {$IFDEF SUPPORTS_GENERICS}
+  {$IFDEF CLR}
+  System.Collections.Generic,
+  {$ENDIF CLR}
+  {$ENDIF SUPPORTS_GENERICS}
   SysUtils;
 
 // Version
 const
-  JclVersionMajor = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor = 101;  // Fifth minor release since JCL 1.90
+  JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
+  JclVersionMinor   = 102;  // Fifth minor release since JCL 1.90
   JclVersionRelease = 0;    // 0: pre-release|beta/ 1: release
-  JclVersionBuild = 2647; // build number, days since march 1, 2000
+  JclVersionBuild   = 2726; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -152,6 +162,9 @@ procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = Int64;
+  {$IFNDEF COMPILER11_UP}
+  TBytes = array of Byte;
+  {$ENDIF ~COMPILER11_UP}
 
 {$IFDEF CLR}
 type
@@ -168,41 +181,43 @@ type
   PULargeInteger = ^TULargeInteger;
   TULargeInteger = record
     case Integer of
-      0:
-      (LowPart: LongWord;
-        HighPart: LongWord);
-      1:
-      (QuadPart: Int64);
+    0:
+     (LowPart: LongWord;
+      HighPart: LongWord);
+    1:
+     (QuadPart: Int64);
   end;
 {$ENDIF ~CLR}
 
 // Dynamic Array support
 type
-  TDynByteArray = array of Byte;
-  TDynShortIntArray = array of Shortint;
-  TDynWordArray = array of Word;
-  TDynSmallIntArray = array of Smallint;
-  TDynLongIntArray = array of Longint;
-  TDynInt64Array = array of Int64;
-  TDynCardinalArray = array of Cardinal;
-  TDynIntegerArray = array of Integer;
-  TDynExtendedArray = array of Extended;
-  TDynDoubleArray = array of Double;
-  TDynSingleArray = array of Single;
-  TDynFloatArray = array of Float;
+  TDynByteArray       = array of Byte;
+  TDynShortIntArray   = array of Shortint;
+  TDynWordArray       = array of Word;
+  TDynSmallIntArray   = array of Smallint;
+  TDynLongIntArray    = array of Longint;
+  TDynInt64Array      = array of Int64;
+  TDynCardinalArray   = array of Cardinal;
+  TDynIntegerArray    = array of Integer;
+  TDynExtendedArray   = array of Extended;
+  TDynDoubleArray     = array of Double;
+  TDynSingleArray     = array of Single;
+  TDynFloatArray      = array of Float;
   {$IFNDEF CLR}
-  TDynPointerArray = array of Pointer;
+  TDynPointerArray    = array of Pointer;
   {$ENDIF ~CLR}
-  TDynStringArray = array of string;
+  TDynStringArray     = array of string;
+  TDynAnsiStringArray = array of AnsiString;
+  TDynWideStringArray = array of WideString;
   TDynIInterfaceArray = array of IInterface;
-  TDynObjectArray = array of TObject;
+  TDynObjectArray     = array of TObject;
 
 // Cross-Platform Compatibility
 const
   // (rom) too basic for JclStrings
-  AnsiLineFeed = AnsiChar(#10);
+  AnsiLineFeed       = AnsiChar(#10);
   AnsiCarriageReturn = AnsiChar(#13);
-  AnsiCrLf = AnsiString(#13#10);
+  AnsiCrLf           = AnsiString(#13#10);
   {$IFDEF MSWINDOWS}
   AnsiLineBreak = AnsiCrLf;
   {$ENDIF MSWINDOWS}
@@ -210,17 +225,17 @@ const
   AnsiLineBreak = AnsiLineFeed;
   {$ENDIF UNIX}
 
-  AnsiSigns = ['-', '+'];
-  AnsiUppercaseLetters = ['A'..'Z'];
-  AnsiLowercaseLetters = ['a'..'z'];
-  AnsiLetters = ['A'..'Z', 'a'..'z'];
-  AnsiDecDigits = ['0'..'9'];
-  AnsiOctDigits = ['0'..'7'];
-  AnsiHexDigits = ['0'..'9', 'A'..'F', 'a'..'f'];
+  AnsiSigns                  = ['-', '+'];
+  AnsiUppercaseLetters       = ['A'..'Z'];
+  AnsiLowercaseLetters       = ['a'..'z'];
+  AnsiLetters                = ['A'..'Z', 'a'..'z'];
+  AnsiDecDigits              = ['0'..'9'];
+  AnsiOctDigits              = ['0'..'7'];
+  AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
   AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 
   AnsiHexPrefixPascal = AnsiString('$');
-  AnsiHexPrefixC = AnsiString('0x');
+  AnsiHexPrefixC      = AnsiString('0x');
 
   {$IFDEF BCB}
   AnsiHexPrefix = AnsiHexPrefixC;
@@ -237,19 +252,54 @@ procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
 
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFNDEF CLR}
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
+{$ENDIF ~CLR}
+procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer); overload; // Index: 0..n-1
+
 {$IFDEF CLR}
 function GetBytesEx(const Value): TBytes;
 procedure SetBytesEx(var Value; Bytes: TBytes);
 procedure SetIntegerSet(var DestSet: TIntegerSet; Value: UInt32); inline;
 
-function ByteArrayStringLen(Data: TBytes): Integer;
-function StringToByteArray(const S: string): TBytes;
-function ByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayStringLen(Data: TBytes): Integer;
+function StringToAnsiByteArray(const S: string): TBytes;
+function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
+
+type
+  TStringAnsiBufferStreamHelper = class helper for TStream
+  public
+    function WriteStringAnsiBuffer(const Buffer: string): Integer; overload;
+    function WriteStringAnsiBuffer(const Buffer: string; StrLen: Integer): Integer; overload;
+    function ReadStringAnsiBuffer(var Buffer: string; AnsiLen: Integer): Integer; overload;
+
+    function WriteStringAnsiBuffer(const Buffer: AnsiString): Integer; overload;
+    function WriteStringAnsiBuffer(const Buffer: AnsiString; StrLen: Integer): Integer; overload;
+    function ReadStringAnsiBuffer(var Buffer: AnsiString; AnsiLen: Integer): Integer; overload;
+  end;
+{$ENDIF CLR}
+
+{$IFNDEF CLR}
+function BytesOf(const Value: AnsiString): TBytes; overload;
+{$IFDEF COMPILER6_UP}
+function BytesOf(const Value: WideString): TBytes; overload;
+function BytesOf(const Value: WideChar): TBytes; overload;
+{$ENDIF COMPILER6_UP}
+function BytesOf(const Value: AnsiChar): TBytes; overload;
+function StringOf(const Bytes: array of Byte): AnsiString; overload;
+function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString; overload;
 {$ENDIF CLR}
 
 type
@@ -266,6 +316,27 @@ type
 
 function Addr64ToAddr32(const Value: TJclAddr64): TJclAddr32;
 function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
+
+{$IFDEF SUPPORTS_GENERICS}
+type
+  TEquatable<T: class> = class(TObject, IEquatable<T>, IEqualityComparer<T>)
+  public
+    { IEquatable<T> }
+    function Equals(Other: T): Boolean; overload;
+    { IEqualityComparer<T> }
+    function Equals(A, B: T): Boolean; overload;
+    function GetHashCode2(Obj: T): Integer;
+    function IEqualityComparer<T>.GetHashCode = GetHashCode2;
+  end;
+   
+  TJclBase<T> = class
+  public
+    type
+      TDynArray = array of T;
+  public
+    class procedure MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+  end;
+{$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -288,45 +359,247 @@ var
   I: Integer;
 begin
   if FromIndex < ToIndex then
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I]
-  else
+  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := nil
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := nil;
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := nil
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := nil;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
 {$ENDIF CLR}
+
+{$IFNDEF CLR}
+procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
 end;
 
-procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
+procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+
+procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF ~CLR}
+
+procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
 var
   I: Integer;
 begin
   if FromIndex < ToIndex then
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I]
-  else
+  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
-{$ELSE}
-begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-  { Keep reference counting working }
-  if FromIndex < ToIndex then
-    FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := ''
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := '';
+  end
   else
   if FromIndex > ToIndex then
-    FillChar(List[FromIndex + Count - 1], (FromIndex - ToIndex) * SizeOf(List[0]), 0);
-{$ENDIF CLR}
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := ''
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := '';
+  end;
 end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := ''
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := '';
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := ''
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := '';
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Keep reference counting working }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -334,16 +607,231 @@ var
   I: Integer;
 begin
   if FromIndex < ToIndex then
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I]
-  else
+  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := nil
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := nil;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := nil
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := nil;
+  end;
+end;
 {$ELSE}
 begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-{$ENDIF CLR}
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
 end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0.0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0.0;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -351,16 +839,173 @@ var
   I: Integer;
 begin
   if FromIndex < ToIndex then
-    for I := 0 to Count - 1 do
-      List[ToIndex + I] := List[FromIndex + I]
-  else
+  begin
     for I := Count - 1 downto 0 do
       List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end;
+end;
 {$ELSE}
 begin
-  Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
-{$ENDIF CLR}
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
 end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
+
+procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
+{$IFDEF CLR}
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+  begin
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (ToIndex - FromIndex) < Count then
+      // overlapped source and target
+      for I := 0 to ToIndex - FromIndex - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end
+  else
+  if FromIndex > ToIndex then
+  begin
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I];
+    if (FromIndex - ToIndex) < Count then
+      // overlapped source and target
+      for I := Count - FromIndex + ToIndex to Count - 1 do
+        List[FromIndex + I] := 0
+    else
+      // independant
+      for I := 0 to Count - 1 do
+        List[FromIndex + I] := 0;
+  end;
+end;
+{$ELSE}
+begin
+  if Count > 0 then
+  begin
+    Move(List[FromIndex], List[ToIndex], Count * SizeOf(List[0]));
+    { Clean array }
+    if FromIndex < ToIndex then
+    begin
+      if (ToIndex - FromIndex) < Count then
+        FillChar(List[FromIndex], (ToIndex - FromIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end
+    else
+    if FromIndex > ToIndex then
+    begin
+      if (FromIndex - ToIndex) < Count then
+        FillChar(List[ToIndex + Count], (FromIndex - ToIndex) * SizeOf(List[0]), 0)
+      else
+        FillChar(List[FromIndex], Count * SizeOf(List[0]), 0);
+    end;
+  end;
+end;
+{$ENDIF CLR}
 
 procedure MoveChar(const Source: string; FromIndex: Integer;
   var Dest: string; ToIndex, Count: Integer);
@@ -420,7 +1065,7 @@ begin
   DestSet := TIntegerSet(Value);
 end;
 
-function ByteArrayStringLen(Data: TBytes): Integer;
+function AnsiByteArrayStringLen(Data: TBytes): Integer;
 var
   I: Integer;
 begin
@@ -433,7 +1078,7 @@ begin
   Result := Length(Data);
 end;
 
-function StringToByteArray(const S: string): TBytes;
+function StringToAnsiByteArray(const S: string): TBytes;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -444,7 +1089,7 @@ begin
     Result[I] := Byte(AnsiS[I + 1]);
 end;
 
-function ByteArrayToString(const Data: TBytes; Count: Integer): string;
+function AnsiByteArrayToString(const Data: TBytes; Count: Integer): string;
 var
   I: Integer;
   AnsiS: AnsiString;
@@ -455,6 +1100,121 @@ begin
   for I := 0 to Length(AnsiS) - 1 do
     AnsiS[I + 1] := AnsiChar(Data[I]);
   Result := AnsiS; // convert to System.String
+end;
+
+// == { TStringAnsiBufferStreamHelper } ======================================
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: string; StrLen: Integer): Integer;
+begin
+  Result := WriteStringAnsiBuffer(Copy(Buffer, StrLen));
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: string): Integer;
+var
+  Bytes: TBytes;
+begin
+  Bytes := StringToAnsiByteArray(Buffer);
+  Result := Write(Bytes, Length(Bytes));
+end;
+
+function TStringAnsiBufferStreamHelper.ReadStringAnsiBuffer(var Buffer: string; AnsiLen: Integer): Integer;
+var
+  Bytes: TBytes;
+begin
+  if AnsiLen > 0 then
+  begin
+    SetLength(Bytes, AnsiLen);
+    Result := Read(Bytes, AnsiLen);
+    Buffer := AnsiByteArrayToString(Bytes, Result);
+  end
+  else
+  begin
+    Buffer := '';
+    Result := 0;
+  end;
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: AnsiString; StrLen: Integer): Integer;
+begin
+  Result := WriteStringAnsiBuffer(Copy(Buffer, StrLen));
+end;
+
+function TStringAnsiBufferStreamHelper.WriteStringAnsiBuffer(const Buffer: AnsiString): Integer;
+var
+  Bytes: TBytes;
+begin
+  Bytes := BytesOf(Buffer);
+  Result := Write(Bytes, Length(Bytes));
+end;
+
+function TStringAnsiBufferStreamHelper.ReadStringAnsiBuffer(var Buffer: AnsiString; AnsiLen: Integer): Integer;
+var
+  Bytes: TBytes;
+begin
+  if AnsiLen > 0 then
+  begin
+    SetLength(Bytes, AnsiLen);
+    Result := Read(Bytes, AnsiLen);
+    SetLength(Bytes, Result);
+    Buffer := StringOf(Bytes);
+  end
+  else
+  begin
+    Buffer := '';
+    Result := 0;
+  end;
+end;
+
+{$ELSE}
+
+function BytesOf(const Value: AnsiString): TBytes;
+begin
+  SetLength(Result, Length(Value));
+  if Value <> '' then
+    Move(Pointer(Value)^, Result[0], Length(Value));
+end;
+
+{$IFDEF COMPILER6_UP}
+function BytesOf(const Value: WideString): TBytes;
+begin
+  if Value <> '' then
+    Result := BytesOf(AnsiString(Value))
+  else
+    SetLength(Result, 0);
+end;
+
+function BytesOf(const Value: WideChar): TBytes;
+begin
+  Result := BytesOf(WideString(Value));
+end;
+{$ENDIF COMPILER6_UP}
+
+function BytesOf(const Value: AnsiChar): TBytes;
+begin
+  SetLength(Result, 1);
+  Result[0] := Byte(Value);
+end;
+
+function StringOf(const Bytes: array of Byte): AnsiString;
+begin
+  if Length(Bytes) > 0 then
+  begin
+    SetLength(Result, Length(Bytes));
+    Move(Bytes[0], Pointer(Result)^, Length(Bytes));
+  end
+  else
+    Result := '';
+end;
+
+function StringOf(const Bytes: Pointer; Size: Cardinal): AnsiString;
+begin
+  if (Bytes <> nil) and (Size > 0) then
+  begin
+    SetLength(Result, Size);
+    Move(Bytes^, Pointer(Result)^, Size);
+  end
+  else
+    Result := '';
 end;
 
 {$ENDIF CLR}
@@ -559,6 +1319,52 @@ end;
 {$IFDEF OVERFLOWCHECKS_ON}
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
+
+{$IFDEF SUPPORTS_GENERICS}
+//=== { TJclBase<T> } ========================================================
+
+class procedure TJclBase<T>.MoveArray(var List: TDynArray; FromIndex, ToIndex, Count: Integer);
+var
+  I: Integer;
+begin
+  if FromIndex < ToIndex then
+    for I := 0 to Count - 1 do
+      List[ToIndex + I] := List[FromIndex + I]
+  else
+    for I := Count - 1 downto 0 do
+      List[ToIndex + I] := List[FromIndex + I];
+end;
+
+//=== { TEquatable<T> } ======================================================
+
+function TEquatable<T>.Equals(Other: T): Boolean;
+begin
+  if Other = nil then
+    Result := False
+  else
+    Result := GetHashCode = Other.GetHashCode;
+end;
+
+function TEquatable<T>.Equals(A, B: T): Boolean;
+begin
+  if A = nil then
+    Result := B = nil
+  else
+  if B = nil then
+    Result := False
+  else
+    Result := A.GetHashCode = B.GetHashCode;
+end;
+
+function TEquatable<T>.GetHashCode2(Obj: T): Integer;
+begin
+  if Obj = nil then
+    Result := 0
+  else
+    Result := Obj.GetHashCode;
+end;
+
+{$ENDIF SUPPORTS_GENERICS}
 
 {$IFDEF UNITVERSIONING}
 initialization

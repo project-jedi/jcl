@@ -263,13 +263,11 @@ begin
     edtCapsLockState.Text := 'OFF';
 
   // BIOS
-  if IsWinNT then
-  begin
+  if IsWinNT then begin
     grpBIOS.Caption := ' BIOS (Currently only availabe under Windows 9x) ';
     edtBIOSDate.Text := DateToStr(GetBiosDate);
   end
-  else
-  begin
+  else begin
     edtBIOSName.Text := GetBIOSName;
     edtBIOSCopyright.Text := GetBiosCopyright;
     edtBIOSExtendedInfo.Text := GetBIOSExtendedInfo;

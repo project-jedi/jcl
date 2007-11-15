@@ -15,7 +15,6 @@ JclExprEval.pas
 JclMIDI.pas
 JclPCRE.pas
 JclSchedule.pas
-JclStreams.pas
 JclStrHashMap.pas
 JclStringLists.pas
 JclUnitVersioning.pas

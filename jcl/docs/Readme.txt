@@ -2,8 +2,8 @@
 
 JEDI Code Library
 Unstable 1.101
-Build 2647
-30-May-2007
+Build 2725
+17-August-2007
 
 --------------------------------------------------------------------------------
 
@@ -22,8 +22,8 @@ Getting involved in JCL development
 --------------------------------------------------------------------------------
 
 About this release
-JCL release 1.100 provides an updated support for all targets (including CodeGear
-Delphi 2007 for Win32 and CodeGear C++Builder 2007).
+JCL release 1.101 provides an updated support for all targets (including CodeGear
+RAD Studio 2007).
 
 As always, multiple bugs have been fixed; for detailed change logs, use the
 facilities of our Subversion repository at Sourceforge.net
@@ -31,25 +31,16 @@ http://sourceforge.net/projects/jcl/, see below.
 
 Head changes:
 
- - JclPeImage is significantly updated: it now supports 64-bit applications and
-   libraries.
- - JclDebug is significantly updated: .jdbg files contain informations about all
-   segments of code. A new option was added to limit exception handling to the
-   main thread of the application.
- - PCRE (http://www.pcre.org/) updated to version 7.0. PCRE code can be included
-   in the application not requiring "pcre.dll" anymore (experimental - read the
-   comments at the beginning of source\common\pcre.pas for details and
-   modifications to enable this feature).
- - JclMail : different file names can be specified for attachements
- - Collection of stream classes to make basic operations easier (getting random
-   data, multiplexing several streams, buffering an other stream, being notifyed
-   on changes, reading common data types, scoping a stream, delegating
-   read/write/seek operations.
- - Integration of the JCL help into the help system of Delphi 2005, BDS 2006,
-   Turbo Delphi and RAD Studio 2007.
- - New IDE expert to have TortoiseSVN (http://tortoisesvn.tigris.org/) and
-   TortoiseCVS (http://tortoisecvs.sourceforge.net/) commands integrated in all
-   supportted IDE.
+ - New functions to copy and move directories and to handle command line
+   parameters in JclFileUtils.
+ - A function for Vista detecting UAC in JclSysInfo.
+ - JclFont is introduced to initialize TFont object to standard system fonts.
+ - JclExprEval now supports operators: and, or, bor (bitwise), not, bnot (bitwise),
+   cmp, xor, bxor(bitwise), div, mod, shl, shr.
+ - 3 new stream classes: TJclSectoredStream (class to handle accesses to a sectored
+   storage), TJclCRC16Stream and TJclCRC32Stream (a CRC is added to each sector
+   preventing data corruption).
+ - Unicode support is updated to version 5.1.0.
 
 Important:
 
@@ -80,17 +71,14 @@ informations can be linked into binaries to become JCL debug data or be
 converted to .jdbg files. Once linked MAP files could be deleted. These options
 are subnodes of the "Packages" node.
 
-  For BDS 2006, the compiler introduced a new option to make the same packages
-available in C++, by checking the "Dual packages" option of the "Packages" node,
-you will be able to call functions of the JCL from C++ code.
+  For BDS 2006 and RAD Studio 2007, the compiler introduced a new option to make
+  the same packages available in C++, by checking the "Dual packages" option of
+  the "Packages" node, you will be able to call functions of the JCL from C++ code.
 
 .net Framework support:
 
-A subset of JCL units was worked over to support Delphi.Net (Delphi 2005
-& BDS 2006). The packages belong to the Jedi.Jcl namespace. The installer can
-generate these packages for Delphi 2005 and BDS 2006, it displays an other tab
-to configure options and directory. The installation process is similar to the
-native targets.
+  A subset of JCL units was worked over to support Delphi.Net (Delphi 2005, BDS 2006
+and RAD Studio 2007). The packages belong to the Jedi.Jcl namespace.
 
 --------------------------------------------------------------------------------
 
@@ -107,11 +95,12 @@ Only design-time support (only experts):
 Both supports (run time and design time):
  - Delphi version 5, 6, 7.
  - C++Builder version 5 & 6.
- - Delphi 2005 (Delphi Win32 and Delphi.net personalities).
- - Borland Developer Studio 2006 (Delphi Win32, C++Builder Win32, Delphi.net
-   and C#Builder personalities).
+ - Delphi 2005 (Delphi for Win32 and Delphi.net personalities).
+ - Borland Developer Studio 2006 (Delphi for Win32, C++Builder for Win32,
+   Delphi.net and C#Builder personalities).
  - Turbo Delphi (explorer and professional - cf Installation notes).
- - CodeGear RAD Studio 2007 (Delphi Win32 and C++Builder Win32 personalities).
+ - CodeGear RAD Studio 2007 (Delphi for Win32, C++Builder for Win32 and Delphi.net
+   personalities).
 
 --------------------------------------------------------------------------------
 
@@ -189,8 +178,9 @@ For each tool you want to install the JCL in, repeat the following steps:
  - For Delphi 2005: source\jcld9.inc
  - For Delphi.net 2005: source\jcld9.net.inc
  - For BDS 2006 (Delphi and C++Builder): source\jcld10.inc
- - For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc
  - For Delphi.net 2006: source\jcld10.net.inc
+ - For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc
+ - for Delphi.net 2007: source\jcld11.net.inc
 
 2. In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
 located in a subdirectory of the "packages" directory matching your version of

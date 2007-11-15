@@ -21,8 +21,12 @@
 { located at http://jcl.sourceforge.net                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSIMDViewForm;
 
@@ -39,7 +43,7 @@ uses
 type
   TJclSIMDViewFrm = class(TDockableForm)
     Splitter: TSplitter;
-    ListBoxRegs: TListBox;
+    ListBoxRegs: TListBox;           
     ListBoxMXCSR: TListBox;
     PopupMenuRegs: TPopupMenu;
     PopupMenuMXCSR: TPopupMenu;
@@ -166,7 +170,7 @@ begin
 
   FNbMMRegister := 0;
 
-  if CpuInfo.SSE = 0 then
+  if CpuInfo.SSE = [] then
     FNbXMMRegister := 0
   else
   if CpuInfo.Is64Bits then
@@ -180,7 +184,7 @@ begin
       ListBoxMXCSR.Items.Add('0');
   ListBoxRegs.Items.Clear;
 
-  SetLength(FRegisterChanged, NbMMRegister + NbXMMRegister);
+  SetLength(FRegisterChanged,NbMMRegister + NbXMMRegister);
   for J := 0 to NbMMRegister + NbXMMRegister - 1 do
   // MM registers (MMX) + XMM registers (SSE) + 1 cardinal (MXCSR)
     ListBoxRegs.Items.Add('');
@@ -219,7 +223,7 @@ end;}
 
 destructor TJclSIMDViewFrm.Destroy;
 begin
-  SetLength(FRegisterChanged, 0);
+  SetLength(FRegisterChanged,0);
   FDebuggerServices := nil;
 
   inherited Destroy;
@@ -264,7 +268,7 @@ begin
     else
       with Sender as TListBox do
       begin
-        AIndex := ItemAtPos(Point(X, Y), True);
+        AIndex := ItemAtPos(Point(X,Y),True);
         if (AIndex >= 0) and (AIndex < Items.Count) then
         begin
           with MXCSRBitsDescriptions[AIndex] do
@@ -280,7 +284,7 @@ begin
                   AText := SysUtils.Format('%s (%s)', [AText, RsRoundUp]);
                 3:
                   AText := SysUtils.Format('%s (%s)', [AText, RsRoundTowardZero]);
-              end;
+            end;
             if AText <> Hint then
             begin
               Hint := AText;
@@ -439,10 +443,10 @@ var
             Result := Result + ' ' + FormatValue(Value, Format);
           end;
         xt2QWords:
-        begin
-          Value.ValueQWord := AReg.MMRegister.QWords;
-          Result := FormatValue(Value, Format);
-        end;
+          begin
+            Value.ValueQWord := AReg.MMRegister.QWords;
+            Result := FormatValue(Value, Format);
+          end;
         xt4Singles:
           for I := High(AReg.MMRegister.Singles) downto Low(AReg.MMRegister.Singles) do
           begin
@@ -473,47 +477,47 @@ begin
 
   case AThread.State of
     tsStopped:
-    begin
-      if DebuggerServices.CurrentProcess.ThreadCount > 1 then
-        Caption := SysUtils.Format('%s Thread : %d', [SIMDCaption, AThread.GetOSThreadID])
-      else
-        Caption := SIMDCaption;
-
-      GetVectorContext(AThread, NewVectorFrame);
-
-      for Index := 0 to ListBoxMXCSR.Items.Count - 1 do
-        with ListBoxMXCSR, Items, MXCSRBitsDescriptions[Index] do
-        begin
-          NewBitValue := NewVectorFrame.MXCSR and AndMask;
-          OldBitValue := FVectorFrame.MXCSR and AndMask;
-          FMXCSRChanged[Index] := NewBitValue <> OldBitValue;
-          Strings[Index] := IntToStr(NewBitValue shr Shifting);
-        end;
-      ListBoxMXCSR.Invalidate;
-
-      for Index := 0 to NbMMRegister - 1 do
       begin
-        FRegisterChanged[Index] := ChangedFlag(NewVectorFrame.FPURegisters[Index].Data.MMRegister,
-          FVectorFrame.FPURegisters[Index].Data.MMRegister);
-        ListBoxRegs.Items.Strings[Index] := FormatReg(NewVectorFrame.FPURegisters[Index].Data, Index);
-      end;
+        if DebuggerServices.CurrentProcess.ThreadCount > 1 then
+          Caption := SysUtils.Format('%s Thread : %d', [SIMDCaption,AThread.GetOSThreadID])
+        else
+          Caption := SIMDCaption;
 
-      if FNbXMMRegister > 0 then
-      begin
-        for Index := 0 to FNbXMMRegister - 2 do
+        GetVectorContext(AThread,NewVectorFrame);
+
+        for Index := 0 to ListBoxMXCSR.Items.Count - 1 do
+          with ListBoxMXCSR, Items, MXCSRBitsDescriptions[Index] do
+          begin
+            NewBitValue := NewVectorFrame.MXCSR and AndMask;
+            OldBitValue := FVectorFrame.MXCSR and AndMask;
+            FMXCSRChanged[Index] := NewBitValue <> OldBitValue;
+            Strings[Index] := IntToStr(NewBitValue shr Shifting);
+          end;
+        ListBoxMXCSR.Invalidate;
+
+        for Index := 0 to NbMMRegister - 1 do
         begin
-          FRegisterChanged[Index + NbMMRegister] := ChangedFlag(NewVectorFrame.XMMRegisters.LongXMM[Index],
-            FVectorFrame.XMMRegisters.LongXMM[Index]);
-          ListBoxRegs.Items.Strings[Index + NbMMRegister] := FormatReg(NewVectorFrame.XMMRegisters.LongXMM[Index]);
+          FRegisterChanged[Index] := ChangedFlag(NewVectorFrame.FPURegisters[Index].Data.MMRegister,
+            FVectorFrame.FPURegisters[Index].Data.MMRegister);
+          ListBoxRegs.Items.Strings[Index] := FormatReg(NewVectorFrame.FPURegisters[Index].Data, Index);
         end;
 
-        FRegisterChanged[NbMMRegister + NbXMMRegister - 1] := NewVectorFrame.MXCSR <> FVectorFrame.MXCSR;
-        ListBoxRegs.Items.Strings[NbMMRegister + NbXMMRegister - 1] := IntToHex(NewVectorFrame.MXCSR, 8);
-      end;
-      ListBoxRegs.Invalidate;
+        if FNbXMMRegister > 0 then
+        begin
+          for Index := 0 to FNbXMMRegister - 2 do
+          begin
+            FRegisterChanged[Index + NbMMRegister] := ChangedFlag(NewVectorFrame.XMMRegisters.LongXMM[Index],
+              FVectorFrame.XMMRegisters.LongXMM[Index]);
+            ListBoxRegs.Items.Strings[Index + NbMMRegister] := FormatReg(NewVectorFrame.XMMRegisters.LongXMM[Index]);
+          end;
 
-      FVectorFrame := NewVectorFrame;
-    end;
+          FRegisterChanged[NbMMRegister + NbXMMRegister - 1] := NewVectorFrame.MXCSR <> FVectorFrame.MXCSR;
+          ListBoxRegs.Items.Strings[NbMMRegister + NbXMMRegister - 1] := IntToHex(NewVectorFrame.MXCSR, 8);
+        end;
+        ListBoxRegs.Invalidate;
+
+        FVectorFrame := NewVectorFrame;
+      end;
     tsRunnable:
       Caption := SysUtils.Format('%s <running>', [SIMDCaption]);
     tsBlocked:
@@ -523,7 +527,7 @@ end;
 
 procedure TJclSIMDViewFrm.SetThreadValues;
 begin
-  if not SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread, FVectorFrame) then
+  if not SetVectorContext(DebuggerServices.CurrentProcess.CurrentThread,FVectorFrame) then
     raise EJclExpertException.Create(RsECantUpdateThreadContext);
 end;
 
@@ -758,42 +762,41 @@ begin
   try
     AItemIndex := ListBoxRegs.ItemIndex;
     if AItemIndex >= 0 then
-      try
-        FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, Settings);
-        FModifyForm.Icon.Assign(Self.Icon);
+    try
+      FModifyForm := TJclSIMDModifyFrm.Create(Self, DebuggerServices, Settings);
+      FModifyForm.Icon.Assign(Self.Icon);
 
-        if AItemIndex < NbMMRegister then
+      if AItemIndex < NbMMRegister then
+      begin
+        FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
+        if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+          Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister ,FCpuInfo) then
         begin
-          FModifyForm.Caption := SysUtils.Format(RsModifyMM, [AItemIndex]);
-          if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-            Format, FVectorFrame.FPURegisters[AItemIndex].Data.MMRegister, FCpuInfo) then
-          begin
-            FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
-            FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
-            SetThreadValues;
-            GetThreadValues;
-            FRegisterChanged[AItemIndex] := True;
-            ListBoxRegs.Invalidate;
-          end;
-        end
-        else
-        begin
-          if CpuInfo.Is64Bits then
-            FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
-          else
-            FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
-          if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
-            Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
-          begin
-            SetThreadValues;
-            GetThreadValues;
-            FRegisterChanged[AItemIndex] := True;
-            ListBoxRegs.Invalidate;
-          end;
+          FVectorFrame.FPURegisters[AItemIndex].Data.Reserved := $FFFF;
+          FVectorFrame.FTW := FVectorFrame.FTW or (1 shl AItemIndex);
+          SetThreadValues;
+          GetThreadValues;
+          FRegisterChanged[AItemIndex] := True;
+          ListBoxRegs.Invalidate;
         end;
-      finally
-        FreeAndNil(FModifyForm);
+      end else
+      begin
+        if CpuInfo.Is64Bits then
+          FModifyForm.Caption := SysUtils.Format(RsModifyXMM2, [AItemIndex - NbMMRegister])
+        else
+          FModifyForm.Caption := SysUtils.Format(RsModifyXMM1, [AItemIndex - NbMMRegister]);
+        if FModifyForm.Execute(DebuggerServices.CurrentProcess.CurrentThread, Display,
+          Format, FVectorFrame.XMMRegisters.LongXMM[AItemIndex - NbMMRegister], FCpuInfo) then
+        begin
+          SetThreadValues;
+          GetThreadValues;
+          FRegisterChanged[AItemIndex] := True;
+          ListBoxRegs.Invalidate;
+        end;
       end;
+    finally
+      FreeAndNil(FModifyForm);
+    end;
   except
     on ExceptionObj: TObject do
     begin
@@ -911,15 +914,15 @@ begin
   try
     if ListBoxMXCSR.ItemIndex >= 0 then
       with MXCSRBitsDescriptions[ListBoxMXCSR.ItemIndex] do
-      begin
-        OldMXCSRValue := FVectorFrame.MXCSR;
-        BitValue := (Cardinal(FVectorFrame.MXCSR) and AndMask) shr Shifting;
-        Inc(BitValue);
-        FVectorFrame.MXCSR := (FVectorFrame.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
-        SetThreadValues;
-        FVectorFrame.MXCSR := OldMXCSRValue;
-        GetThreadValues;
-      end;
+    begin
+      OldMXCSRValue := FVectorFrame.MXCSR;
+      BitValue := (Cardinal(FVectorFrame.MXCSR) and AndMask) shr Shifting;
+      Inc(BitValue);
+      FVectorFrame.MXCSR := (FVectorFrame.MXCSR and (not AndMask)) or ((BitValue shl Shifting) and AndMask);
+      SetThreadValues;
+      FVectorFrame.MXCSR := OldMXCSRValue;
+      GetThreadValues;
+    end;
   except
     on ExceptionObj: TObject do
     begin

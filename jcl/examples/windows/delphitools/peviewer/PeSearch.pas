@@ -111,14 +111,10 @@ begin
     Caption := FunctionName;
     SubItems.Add(FileName);
     case Option of
-      seImports:
-        ImageIndex := icoImports;
-      seDelayImports:
-        ImageIndex := icoDelayImport;
-      seBoundImports:
-        ImageIndex := icoBoundImport;
-      seExports:
-        ImageIndex := icoExports;
+      seImports: ImageIndex := icoImports;
+      seDelayImports: ImageIndex := icoDelayImport;
+      seBoundImports: ImageIndex := icoBoundImport;
+      seExports: ImageIndex := icoExports;
     end;
   end;
   UpdateCounter;
@@ -134,10 +130,8 @@ var
   Options: TJclPeNameSearchOptions;
 begin
   Options := [];
-  if ExportCheckBox.Checked then
-    Include(Options, seExports);
-  if ImportCheckBox.Checked then
-    Options := Options + [seImports, seDelayImports, seBoundImports];
+  if ExportCheckBox.Checked then Include(Options, seExports);
+  if ImportCheckBox.Checked then Options := Options + [seImports, seDelayImports, seBoundImports];
   FSearchThread := TJclPeNameSearch.Create(Trim(FuncNameEdit.Text),
     PathEdit.Text, Options);
   FSearchThread.OnTerminate := SearchDone;
@@ -175,8 +169,7 @@ procedure TPeSearchChild.SelectDirBtnClick(Sender: TObject);
 var
   S: string;
 begin
-  if SelectDirectory('', '', S) then
-    PathEdit.Text := S;
+  if SelectDirectory('', '', S) then PathEdit.Text := S;
 end;
 
 procedure TPeSearchChild.ClearResults;

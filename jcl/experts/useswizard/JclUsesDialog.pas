@@ -19,8 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Robert Marquardt                                                                     }
-{ Last modified: $Date$                                                      }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -80,7 +81,7 @@ begin
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then
           with TreeViewChanges.Items.AddChild(Node, Format(RsUndeclIdent,
-              [UnitName, LineNumber, Identifier, UsesName])) do
+            [UnitName, LineNumber, Identifier, UsesName])) do
           begin
             ImageIndex := -1;
             SelectedIndex := -1;
@@ -88,8 +89,8 @@ begin
     case TWizardAction(FChangeList.Objects[I]) of
       waSkip:
         Node.ImageIndex := 0;
-    else
-      Node.ImageIndex := 1;
+      else
+        Node.ImageIndex := 1;
     end;
     Node.SelectedIndex := Node.ImageIndex;
 

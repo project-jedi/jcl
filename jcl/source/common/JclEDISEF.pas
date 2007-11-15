@@ -32,8 +32,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDISEF;
 
@@ -54,7 +58,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$ENDIF ~EDI_WEAK_PACKAGE_UNITS}
-  JclEDI;
+  JclBase, JclEDI;
 
 const
   SectionTag_VER = '.VER';
@@ -95,8 +99,8 @@ const
 
   EDISEFUserAttributeSet =
     [EDISEFUserAttributePeriod, EDISEFUserAttributeExclamationPoint,
-    EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
-    EDISEFUserAttributeAmpersand];
+     EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
+     EDISEFUserAttributeAmpersand];
 
 const
   // EDI SEF Text,Sets Constants
@@ -164,17 +168,14 @@ type
     procedure SetData(const Data: string);
     procedure SetParent(const Value: TEDISEFDataObject); virtual;
     property OwnerItemRef: TEDISEFDataObjectListItem read FOwnerItemRef write FOwnerItemRef;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
     procedure UpdateOwnerItemName;
-    {$IFDEF COMPILER6_UP} // Hide warnings in D5
-    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
-    {$ELSE}
-    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual;
-    {$ENDIF COMPILER6_UP}
+    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
   published
     property State: TEDIDataObjectDataState read FState;
     property Id: string read FId write SetId;
@@ -252,6 +253,7 @@ type
     FRepeatCount: Integer;
   protected
     procedure SetParent(const Value: TEDISEFDataObject); override;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -339,6 +341,7 @@ type
     FRequirementDesignator: string;
     FRepeatCount: Integer;
     FEDISEFTextSets: TEDISEFTextSets;
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -365,6 +368,8 @@ type
   end;
 
   TEDISEFSubElement = class(TEDISEFElement)
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -382,6 +387,8 @@ type
     FRepeatCount: Integer;
     FExtendedData: string;
     FEDISEFTextSets: TEDISEFTextSets;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -448,6 +455,8 @@ type
     FExtendedData: string;
     function GetOwnerLoopId: string;
     function GetParentLoopId: string;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -495,7 +504,7 @@ type
 
   published
     property UserAttribute: string read FUserAttribute write FUserAttribute;
-    property Position: Integer read FPosition write FPosition;
+    property Position: Integer read FPosition write FPosition;    
     property PositionIncrement: Integer read FPositionIncrement write FPositionIncrement;
     property ResetPositionInc: Boolean read FResetPositionInc write FResetPositionInc;
     property Ordinal: Integer read FOrdinal write FOrdinal;
@@ -520,6 +529,8 @@ type
     function GetParentLoopId: string;
     function GetParentSet: TEDISEFSet;
     function GetParentTable: TEDISEFTable;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -555,6 +566,8 @@ type
   TEDISEFTable = class(TEDISEFDataObjectGroup)
   private
     function GetSEFSet: TEDISEFSet;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -588,6 +601,8 @@ type
     FEDISEFTextSets: TEDISEFTextSets;
     function GetEDISEFTable(Index: Integer): TEDISEFTable;
     procedure BuildSegmentObjectListFromLoop(ObjectList: TObjectList; Loop: TEDISEFLoop);
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -646,6 +661,8 @@ type
     function GetEDISEFCodesList: TStrings;
     function GetEDISEFStd: TStrings;
     function GetEDISEFIni: TStrings;
+  protected
+    function CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject; override;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -945,7 +962,7 @@ begin
   K := StrSearch(SEFDelimiter_SemiColon, Data, 1);
   L := StrSearch(SEFDelimiter_Colon, Data, 1);
   M := StrSearch(SEFDelimiter_Comma, Data, 1);
-  N := StrSearch(SEFDelimiter_Comma, Data, M + 1);
+  N := StrSearch(SEFDelimiter_Comma, Data, M + 1); 
   P := Length(Data) + 1;
   // Parse Id using the closest delimiter
   O := P;
@@ -1133,8 +1150,8 @@ begin
   // Parse other attributes
   if J <> 0 then
   begin
-    Inc(J);
-    O := P;
+    Inc(J);                                       
+    O := P; 
     if K <> 0 then
       if O > K then
         O := K;
@@ -1540,7 +1557,7 @@ begin
     if (Segment.RequirementDesignator = '') or
       (Segment.RequirementDesignator = Value_Optional) then
       Result := Result + SEFDelimiter_Comma;
-    if Segment.MaximumUse >= Value_UndefinedMaximum then
+    if Segment.MaximumUse >= Value_UndefinedMaximum then    
       Result := Result + SEFDelimiter_Comma + Value_GreaterThanOne
     else
       Result := Result + SEFDelimiter_Comma + IntToStr(Segment.MaximumUse);
@@ -1552,7 +1569,7 @@ procedure ParseLoopDataOfSETSDefinition(Data: string; Loop: TEDISEFLoop;
 var
   I, J, K, L, M, N: Integer;
   SegmentData: string;
-  PositionIncrement: string;
+  PositionIncrement: string;  
   RepeatCount: Integer;
   LoopId, RepeatData: string;
   Segment: TEDISEFSegment;
@@ -1584,7 +1601,7 @@ begin
       if (N < I) and (N <> 0) then
         L := N;
       if L <> 0 then
-        PositionIncrement := Copy(Data, L, (I - L));
+        PositionIncrement := Copy(Data, L, (I - L));      
 
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
@@ -1631,7 +1648,7 @@ begin
         RepeatData := Value_One;
       RepeatCount := StrToInt(RepeatData);
       // Correct start position
-      K := N;
+      K := N;      
       // Validate end position
       N := StrSearch(SEFDelimiter_OpeningBrace, Data, K + 1);
       while (N <> 0) and (N < L) do // Detect nested repetition
@@ -1647,7 +1664,7 @@ begin
       NestedLoop := Loop.AddLoop;
       NestedLoop.SEFFile := SEFFile;
       NestedLoop.LoopId := LoopId;
-      NestedLoop.MaximumRepeat := RepeatCount;
+      NestedLoop.MaximumRepeat := RepeatCount;                
       NestedLoop.Data := RepeatData;
       NestedLoop.Disassemble;
       if NestedLoop.LoopId = '' then
@@ -1696,7 +1713,7 @@ begin
       if (N < I) and (N <> 0) then
         L := N;
       if L <> 0 then
-        PositionIncrement := Copy(Data, L, (I - L));
+        PositionIncrement := Copy(Data, L, (I - L));          
 
       SegmentData := Copy(Data, I + 1, (J - I) - 1);
       //
@@ -1826,7 +1843,7 @@ begin
       ExtractFromDataObjectGroup(DataObjectClass, RepeatingPattern, ObjectList);
     end;
     ListItem := ListItem.NextItem;
-  end;
+  end; 
 end;
 
 procedure ExtractFromDataObjectGroup(DataObjectClasses: array of TEDISEFDataObjectClass;
@@ -2431,12 +2448,10 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF COMPILER6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
 begin
-  Result := nil;
+  Result := CloneDataObject(NewParent);
 end;
-{$ENDIF ~COMPILER6_UP}
 
 function TEDISEFDataObject.GetData: string;
 begin
@@ -2654,6 +2669,11 @@ begin
   FRepeatCount := EDISEFElement.RepeatCount;
 end;
 
+function TEDISEFElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFElement.Clone(NewParent: TEDISEFDataObject): TEDISEFElement;
 begin
   Result := TEDISEFElement.Create(NewParent);
@@ -2708,7 +2728,7 @@ begin
     else
     if DataObject is TEDISEFSegment then
       Result := TEDISEFSegment(DataObject).GetTextSetsLocation;
-  end;
+  end; 
   if Result <> '' then
     Result := Result + '~' + IntToStr(FOrdinal);
 end;
@@ -2747,6 +2767,11 @@ end;
 function TEDISEFSubElement.Assemble: string;
 begin
   Result := inherited Assemble;
+end;
+
+function TEDISEFSubElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
 end;
 
 function TEDISEFSubElement.Clone(NewParent: TEDISEFDataObject): TEDISEFSubElement;
@@ -2835,6 +2860,11 @@ begin
   end;
 end;
 
+function TEDISEFCompositeElement.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFCompositeElement.Clone(NewParent: TEDISEFDataObject): TEDISEFCompositeElement;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -2887,7 +2917,7 @@ begin
     if TEDISEFRepeatingPattern(FParent).BaseParent is TEDISEFSegment then
       ParseCOMSDataOfSEGSDefinition(FData, Self, FSEFFile.COMS);
   end;
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;  
   AssignElementOrdinals;
 end;
 
@@ -2930,7 +2960,7 @@ begin
           Element.OutOfSequenceOrdinal := True;
         end;
       end;
-    end;
+    end; 
   finally
     ElementList.Free;
   end;
@@ -3096,6 +3126,11 @@ begin
   end;
 end;
 
+function TEDISEFSegment.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFSegment.Clone(NewParent: TEDISEFDataObject): TEDISEFSegment;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -3135,7 +3170,7 @@ begin
   else
   if (FParent is TEDISEFTable) or (FParent is TEDISEFLoop) then
     ParseSEGSDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;    
   AssignElementOrdinals;
 end;
 
@@ -3242,7 +3277,7 @@ begin
         CompositeElement := TEDISEFCompositeElement(ElementList[I]);
         CompositeElement.BindTextSets(FSEFFile.TEXTSETS);
       end;
-    end;
+    end; 
   finally
     ElementList.Free;
   end;
@@ -3352,7 +3387,7 @@ end;
 constructor TEDISEFLoop.Create(Parent: TEDISEFDataObject);
 begin
   inherited Create(Parent);
-  FMaximumRepeat := Value_UndefinedMaximum;
+  FMaximumRepeat := Value_UndefinedMaximum; 
 end;
 
 destructor TEDISEFLoop.Destroy;
@@ -3419,6 +3454,11 @@ begin
     Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result;
 end;
 
+function TEDISEFLoop.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFLoop.Clone(NewParent: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := nil;
@@ -3428,7 +3468,7 @@ procedure TEDISEFLoop.Disassemble;
 begin
   // FParent is TEDISEFTable
   ParseLoopDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;  
 end;
 
 function TEDISEFLoop.GetParentLoopId: string;
@@ -3585,6 +3625,11 @@ begin
   end;
 end;
 
+function TEDISEFTable.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFTable.Clone(NewParent: TEDISEFDataObject): TEDISEFTable;
 begin
   Result := nil;
@@ -3685,6 +3730,11 @@ begin
   end;
 end;
 
+function TEDISEFSet.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFSet.Clone(NewParent: TEDISEFDataObject): TEDISEFSet;
 begin
   Result := nil;
@@ -3694,7 +3744,7 @@ procedure TEDISEFSet.Disassemble;
 begin
   // FParent is TEDISEFFile
   ParseSetsDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;  
   // Assign segment ordinals that were not explicitly defined
   AssignSegmentOrdinals;
   // Assign segment positions
@@ -3705,7 +3755,7 @@ begin
   if Tables.Count = 3 then
   begin
     // (rom) make resourcestrings?
-    Table[0].Id := 'Heading';
+    Table[0].Id := 'Heading';             
     Table[1].Id := 'Detail';
     Table[2].Id := 'Summary';
   end;
@@ -3713,7 +3763,7 @@ end;
 
 function TEDISEFSet.GetEDISEFTable(Index: Integer): TEDISEFTable;
 begin
-  Result := TEDISEFTable(FEDISEFDataObjects[Index]);
+  Result := TEDISEFTable(FEDISEFDataObjects[Index])
 end;
 
 procedure TEDISEFSet.BuildSegmentObjectListFromLoop(ObjectList: TObjectList; Loop: TEDISEFLoop);
@@ -3728,7 +3778,7 @@ begin
     if ListItem.EDISEFDataObject is TEDISEFSegment then
     begin
       Segment := TEDISEFSegment(ListItem.EDISEFDataObject);
-      ObjectList.Add(Segment);
+      ObjectList.Add(Segment)
     end
     else
     if ListItem.EDISEFDataObject is TEDISEFLoop then
@@ -3821,7 +3871,7 @@ begin
       Segment := TEDISEFSegment(SegmentList[I]);
       Segment.BindTextSets(FSEFFile.TEXTSETS);
       Segment.BindElementTextSets;
-    end;
+    end; 
   finally
     SegmentList.Free;
   end;
@@ -3969,6 +4019,11 @@ begin
   FData := Result;
 end;
 
+function TEDISEFFile.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFFile.Clone(NewParent: TEDISEFDataObject): TEDISEFFile;
 begin
   Result := nil;
@@ -3978,7 +4033,7 @@ procedure TEDISEFFile.Disassemble;
 begin
   // Must parse file in reverse order to build specification from the dictionary values
   // .TEXT,SETS
-  ParseTextSets;
+  ParseTextSets;   
   // .CODES
   ParseCodes;
   // .ELMS
@@ -4013,14 +4068,22 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
+      {$IFDEF CLR}
+      EDIFileStream.ReadStringAnsiBuffer(FData, EDIFileStream.Size);
+      {$ELSE}
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
+      {$ENDIF CLR}
     finally
       EDIFileStream.Free;
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJclEDIError.Create(RsEDIError001);
+    {$ELSE}
     raise EJclEDIError.CreateRes(@RsEDIError001);
+    {$ENDIF CLR}
 end;
 
 procedure TEDISEFFile.ParseTextSets;
@@ -4093,7 +4156,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         CompositeElement := TEDISEFCompositeElement.Create(Self);
-        FEDISEFComs.Add(CompositeElement);
+        FEDISEFComs.Add(CompositeElement);        
         CompositeElement.Data := TempList[I];
         CompositeElement.SEFFile := Self;
         if CompositeElement.Data <> '' then
@@ -4126,7 +4189,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         Element := TEDISEFElement.Create(Self);
-        FEDISEFElms.Add(Element);
+        FEDISEFElms.Add(Element);        
         Element.Data := TempList[I];
         Element.SEFFile := Self;
         if Element.Data <> '' then
@@ -4182,7 +4245,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         Segment := TEDISEFSegment.Create(Self);
-        FEDISEFSegs.Add(Segment);
+        FEDISEFSegs.Add(Segment);        
         Segment.Data := TempList[I];
         Segment.SEFFile := Self;
         if Segment.Data <> '' then
@@ -4215,7 +4278,7 @@ begin
       for I := 0 to TempList.Count - 1 do
       begin
         TransactionSet := TEDISEFSet.Create(Self);
-        FEDISEFSets.Add(TransactionSet);
+        FEDISEFSets.Add(TransactionSet);        
         TransactionSet.Data := TempList[I];
         TransactionSet.SEFFile := Self;
         if TransactionSet.Data <> '' then
@@ -4273,7 +4336,7 @@ begin
     SearchResult := SearchResult + Length(SectionTag_VER);
     SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
-      FEDISEFVer := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1)
+      FEDISEFVer := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1)       
     else
       FEDISEFVer := Copy(FData, SearchResult + 1, (Length(FData) - SearchResult) - 2);
     if FEDISEFVer = '' then
@@ -4295,20 +4358,28 @@ begin
   begin
     EDIFileStream := TFileStream.Create(FFileName, fmCreate or fmShareDenyNone);
     try
+      {$IFDEF CLR}
+      EDIFileStream.WriteStringAnsiBuffer(FData);
+      {$ELSE}
       EDIFileStream.Write(Pointer(FData)^, Length(FData));
+      {$ENDIF CLR}
     finally
       EDIFileStream.Free;
     end;
   end
   else
+    {$IFDEF CLR}
+    raise EJclEDIError.Create(RsEDIError002);
+    {$ELSE}
     raise EJclEDIError.CreateRes(@RsEDIError002);
+    {$ENDIF CLR}
 end;
 
 procedure TEDISEFTable.Disassemble;
 begin
   // FParent is TEDISEFSet
   ParseTableDataOfSETSDefinition(FData, Self, FSEFFile);
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;  
 end;
 
 function TEDISEFFile.GetEDISEFCodesList: TStrings;
@@ -4372,6 +4443,11 @@ begin
   end;
 end;
 
+function TEDISEFRepeatingPattern.CloneDataObject(NewParent: TEDISEFDataObject): TEDISEFDataObject;
+begin
+  Result := Clone(NewParent);
+end;
+
 function TEDISEFRepeatingPattern.Clone(NewParent: TEDISEFDataObject): TEDISEFRepeatingPattern;
 var
   ListItem: TEDISEFDataObjectListItem;
@@ -4421,7 +4497,7 @@ begin
     if FBaseParent is TEDISEFSegment then
       InternalParseSEGSDataOfSEGSDefinition(FData, Self, FSEFFile);
   end;
-  UpdateOwnerItemName;
+  UpdateOwnerItemName;  
 end;
 
 procedure TEDISEFRepeatingPattern.SetParent(const Value: TEDISEFDataObject);
@@ -4539,48 +4615,30 @@ begin
   case FEDISEFWhereType of
     twSet:
       case FWhat[1] of
-        SEFTextSetsCode_Set0:
-          Result := SEFTextSetsCode_Set0_Desc;
-        SEFTextSetsCode_Set1:
-          Result := SEFTextSetsCode_Set1_Desc;
-        SEFTextSetsCode_Set2:
-          Result := SEFTextSetsCode_Set2_Desc;
-        SEFTextSetsCode_Set3:
-          Result := SEFTextSetsCode_Set3_Desc;
-        SEFTextSetsCode_Set4:
-          Result := SEFTextSetsCode_Set4_Desc;
-        SEFTextSetsCode_Set5:
-          Result := SEFTextSetsCode_Set5_Desc;
+        SEFTextSetsCode_Set0: Result := SEFTextSetsCode_Set0_Desc;
+        SEFTextSetsCode_Set1: Result := SEFTextSetsCode_Set1_Desc;
+        SEFTextSetsCode_Set2: Result := SEFTextSetsCode_Set2_Desc;
+        SEFTextSetsCode_Set3: Result := SEFTextSetsCode_Set3_Desc;
+        SEFTextSetsCode_Set4: Result := SEFTextSetsCode_Set4_Desc;
+        SEFTextSetsCode_Set5: Result := SEFTextSetsCode_Set5_Desc;
       end;
     twSegment:
       case FWhat[1] of
-        SEFTextSetsCode_Seg0:
-          Result := SEFTextSetsCode_Seg0_Desc;
-        SEFTextSetsCode_Seg1:
-          Result := SEFTextSetsCode_Seg1_Desc;
-        SEFTextSetsCode_Seg2:
-          Result := SEFTextSetsCode_Seg2_Desc;
-        SEFTextSetsCode_Seg3:
-          Result := SEFTextSetsCode_Seg3_Desc;
-        SEFTextSetsCode_Seg4:
-          Result := SEFTextSetsCode_Seg4_Desc;
-        SEFTextSetsCode_Seg5:
-          Result := SEFTextSetsCode_Seg5_Desc;
-        SEFTextSetsCode_Seg6:
-          Result := SEFTextSetsCode_Seg6_Desc;
-        SEFTextSetsCode_Seg7:
-          Result := SEFTextSetsCode_Seg7_Desc;
+        SEFTextSetsCode_Seg0: Result := SEFTextSetsCode_Seg0_Desc;
+        SEFTextSetsCode_Seg1: Result := SEFTextSetsCode_Seg1_Desc;
+        SEFTextSetsCode_Seg2: Result := SEFTextSetsCode_Seg2_Desc;
+        SEFTextSetsCode_Seg3: Result := SEFTextSetsCode_Seg3_Desc;
+        SEFTextSetsCode_Seg4: Result := SEFTextSetsCode_Seg4_Desc;
+        SEFTextSetsCode_Seg5: Result := SEFTextSetsCode_Seg5_Desc;
+        SEFTextSetsCode_Seg6: Result := SEFTextSetsCode_Seg6_Desc;
+        SEFTextSetsCode_Seg7: Result := SEFTextSetsCode_Seg7_Desc;
       end;
     twElementOrCompositeElement, twSubElement:
       case FWhat[1] of
-        SEFTextSetsCode_Elm0:
-          Result := SEFTextSetsCode_Elm0_Desc;
-        SEFTextSetsCode_Elm1:
-          Result := SEFTextSetsCode_Elm1_Desc;
-        SEFTextSetsCode_Elm2:
-          Result := SEFTextSetsCode_Elm2_Desc;
-        SEFTextSetsCode_Elm4:
-          Result := SEFTextSetsCode_Elm4_Desc;
+        SEFTextSetsCode_Elm0: Result := SEFTextSetsCode_Elm0_Desc;
+        SEFTextSetsCode_Elm1: Result := SEFTextSetsCode_Elm1_Desc;
+        SEFTextSetsCode_Elm2: Result := SEFTextSetsCode_Elm2_Desc;
+        SEFTextSetsCode_Elm4: Result := SEFTextSetsCode_Elm4_Desc;
       end;
   end;
 end;

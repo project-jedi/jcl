@@ -1,30 +1,30 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License");                                               }
-{ you may not use this file except in compliance with the License. You may   }
-{ obtain a copy of the License at http://www.mozilla.org/MPL/                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is JclOtaExcDlgFileFrame.pas.                            }
-{                                                                            }
-{ The Initial Developer of the Original Code is Florent Ouchet               }
-{         <outchy att users dott sourceforge dott net>                       }
-{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.    }
-{                                                                            }
-{ Contributors:                                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date: $                                                    }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOtaExcDlgFileFrame.pas.                                                  }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{         <outchy att users dott sourceforge dott net>                                             }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclOtaExcDlgFileFrame;
 
@@ -101,8 +101,8 @@ procedure TJclOtaExcDlgFilePage.ButtonFileBrowseClick(Sender: TObject);
   begin
     AFilter := SaveDialogFileName.Filter;
     if AFilter <> '' then
-      AFilter := StrEnsureSuffix('|', AFilter);
-    AFilter := Format('%s%s (*%s)|*%s', [AFilter, NewDescription, NewExtension, NewExtension]);
+      AFilter := StrEnsureSuffix('|',AFilter);
+    AFilter := Format('%s%s (*%s)|*%s',[AFilter, NewDescription, NewExtension, NewExtension]);
     SaveDialogFileName.Filter := AFilter;
   end;
 begin
@@ -118,12 +118,12 @@ begin
 
   if ComboBoxLanguage.ItemIndex > -1 then
     case SelectedLanguage of
-      bpDelphi32:
+      bpDelphi32 :
         SaveDialogFileName.FilterIndex := 2;
-      bpBCBuilder32:
+      bpBCBuilder32 :
         SaveDialogFileName.FilterIndex := 3;
-    else
-      SaveDialogFileName.FilterIndex := 1;
+      else
+        SaveDialogFileName.FilterIndex := 1;
     end
   else
     SaveDialogFileName.DefaultExt := '';
@@ -143,7 +143,7 @@ constructor TJclOtaExcDlgFilePage.Create(AOwner: TComponent;
 begin
   FParams := AParams;
   inherited Create(AOwner);
-
+  
   Caption := RsExcDlgFileOptions;
   LabelLanguage.Caption := RsLanguage;
   LabelFileName.Caption := RsFileName;
@@ -162,8 +162,8 @@ end;
 function TJclOtaExcDlgFilePage.GetSupportsNext: Boolean;
 begin
   Result := (ComboBoxLanguage.ItemIndex > -1) and (EditFormName.Text <> '') and (EditFormAncestor.Text <> '')
-    and ((SelectedLanguage = Params.ActivePersonality)
-    or (EditFileName.Text <> ''));
+    and (( SelectedLanguage = Params.ActivePersonality)
+         or (EditFileName.Text <> ''));
 end;
 
 procedure TJclOtaExcDlgFilePage.PageActivated(Direction: TJclWizardDirection);
@@ -177,11 +177,11 @@ begin
 
   for Language := Low(TJclBorPersonality) to High(TJclBorPersonality) do
     if Language in Params.Languages then
-    begin
-      ItemIndex := ComboBoxLanguage.Items.AddObject(JclBorPersonalityDescription[Language], TObject(Language));
-      if Language = Params.Language then
-        ComboBoxLanguage.ItemIndex := ItemIndex;
-    end;
+  begin
+    ItemIndex := ComboBoxLanguage.Items.AddObject(JclBorPersonalityDescription[Language], TObject(Language));
+    if Language = Params.Language then
+      ComboBoxLanguage.ItemIndex := ItemIndex;
+  end;
 
   EditFileName.Text := Params.FileName;
   EditFormName.Text := Params.FormName;

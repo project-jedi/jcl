@@ -1,28 +1,38 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JvSimpleXML.PAS, released on 2002-06-03.                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com].    }
+{ Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.                    }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Christophe Paris,                                                                              }
+{   Florent Ouchet (move from the JVCL to the JCL)                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains Xml parser and writter classes                                                }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSimpleXML.PAS, released on 2002-06-03
-
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
-All Rights Reserved.
-
-Contributor(s): Christophe Paris,
-                Florent Ouchet (move from the JVCL to the JCL).
-
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
-
-Known Issues: This component does not parse the !DOCTYPE tags but preserves them
------------------------------------------------------------------------------}
-// $Id$
+// Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 
 unit JclSimpleXml;
 
@@ -136,7 +146,7 @@ type
   public
     function GetSimpleXML: TJclSimpleXML;
     function SaveToString: string;
-    function FullName: string;
+    function FullName:string;
     property Parent: TJclSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
@@ -317,7 +327,7 @@ type
     property SimpleXML: TJclSimpleXML read GetSimpleXML;
     property Container: TJclSimpleXMLElems read FContainer write FContainer;
   published
-    function FullName: string; virtual;
+    function FullName: string;virtual;
     property Name: string read FName write SetName;
     property Parent: TJclSimpleXMLElem read FParent write FParent;
     property NameSpace: string read FNameSpace write FNameSpace;
@@ -363,7 +373,7 @@ type
     FVersion: string;
   public
     procedure Assign(Value: TJclSimpleXMLElem); override;
-
+    
     procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
     property Version: string read FVersion write FVersion;
@@ -829,7 +839,7 @@ var
   StringLength, ReadIndex, WriteIndex: Cardinal;
 
   procedure DecodeEntity(var S: string; StringLength: Cardinal;
-  var ReadIndex, WriteIndex: Cardinal);
+    var ReadIndex, WriteIndex: Cardinal);
   const
     cHexPrefix: array [Boolean] of string[1] = ('', '$');
   var
@@ -1274,40 +1284,24 @@ var
   function NibbleCharToNibble(const AChar: Char): Byte;
   begin
     case AChar of
-      '0':
-        Result := 0;
-      '1':
-        Result := 1;
-      '2':
-        Result := 2;
-      '3':
-        Result := 3;
-      '4':
-        Result := 4;
-      '5':
-        Result := 5;
-      '6':
-        Result := 6;
-      '7':
-        Result := 7;
-      '8':
-        Result := 8;
-      '9':
-        Result := 9;
-      'a', 'A':
-        Result := 10;
-      'b', 'B':
-        Result := 11;
-      'c', 'C':
-        Result := 12;
-      'd', 'D':
-        Result := 13;
-      'e', 'E':
-        Result := 14;
-      'f', 'F':
-        Result := 15;
-    else
-      Result := 16;
+      '0': Result := 0;
+      '1': Result := 1;
+      '2': Result := 2;
+      '3': Result := 3;
+      '4': Result := 4;
+      '5': Result := 5;
+      '6': Result := 6;
+      '7': Result := 7;
+      '8': Result := 8;
+      '9': Result := 9;
+      'a', 'A': Result := 10;
+      'b', 'B': Result := 11;
+      'c', 'C': Result := 12;
+      'd', 'D': Result := 13;
+      'e', 'E': Result := 14;
+      'f', 'F': Result := 15;
+      else
+        Result := 16;
     end;
   end;
 
@@ -1408,7 +1402,7 @@ begin
     Result := FSimpleXML;
 end;
 
-procedure TJclSimpleXMLElem.LoadFromString(const Value: string; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElem.LoadFromString(const Value: string; AParent : TJclSimpleXML);
 var
   Stream: TStringStream;
 begin
@@ -1420,7 +1414,7 @@ begin
   end;
 end;
 
-function TJclSimpleXMLElem.SaveToString(AParent: TJclSimpleXML): string;
+function TJclSimpleXMLElem.SaveToString(AParent : TJclSimpleXML): string;
 var
   Stream: TStringStream;
 begin
@@ -1723,7 +1717,7 @@ end;
 
 function TJclSimpleXMLElems.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML): string;
 type
-  TReadStatus = (rsWaitingTag, rsReadingTagKind, rsProcessingEndTag);
+  TReadStatus = (rsWaitingTag, rsReadingTagKind, rsProcessingEndTag); 
 var
   I, lStreamPos, Count: Integer;
   lPos: TReadStatus;
@@ -1761,91 +1755,91 @@ begin
 
       case lPos of
         rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
-        begin
-          case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-            begin
-              lContainsWhiteSpace := True;
-            end;
-            '<':
-            begin
-              lPos := rsReadingTagKind;
-              St := Ch;
-            end;
-          else
           begin
-                  //This is a text
-            lElem := TJclSimpleXMLElemText.Create(Parent);
-            if lTrimWhiteSpace then
-              Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
+            case Ch of
+              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+                begin
+                  lContainsWhiteSpace := True;
+                end;
+              '<':
+                begin
+                  lPos := rsReadingTagKind;
+                  St := Ch;
+                end;
             else
-              Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            lElem.LoadFromStream(Stream, AParent);
-            lStreamPos := Stream.Position;
-            CreateElems;
-            FElems.AddObject(lElem.Name, lElem);
-            Break;
+              begin
+                  //This is a text
+                lElem := TJclSimpleXMLElemText.Create(Parent);
+                if lTrimWhiteSpace then
+                  Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
+                else
+                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+                lElem.LoadFromStream(Stream, AParent);
+                lStreamPos := Stream.Position;
+                CreateElems;
+                FElems.AddObject(lElem.Name, lElem);
+                Break;
+              end;
+            end;
           end;
-          end;
-        end;
 
         rsReadingTagKind: //We are trying to determine the kind of the tag
-        begin
-          lElem := nil;
-          case Ch of
-            '/':
-              if St = '<' then
-              begin
-                lPos := rsProcessingEndTag;
-                St := '';
-              end
-              else
-              begin
-                lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                St := St + Ch;
-              end;
-
-            ' ', '>', ':': //This should be a classic tag
-            begin
-              lElem := TJclSimpleXMLElemClassic.Create(Parent);
-              St := St + Ch;
-            end;
-          else
           begin
-            if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
-              St := St + Ch;
-            if St = '<![CDATA[' then
-              lElem := TJclSimpleXMLElemCData.Create(Parent)
+            lElem := nil;
+            case Ch of
+              '/':
+                if St = '<' then
+                begin
+                  lPos := rsProcessingEndTag;
+                  St := '';
+                end
+                else
+                begin
+                  lElem := TJclSimpleXMLElemClassic.Create(Parent);
+                  St := St + Ch;
+                end;
+
+              ' ', '>', ':': //This should be a classic tag
+                begin
+                  lElem := TJclSimpleXMLElemClassic.Create(Parent);
+                  St := St + Ch;
+                end;
             else
-            if St = '<!--' then
-              lElem := TJclSimpleXMLElemComment.Create(Parent);
+              begin
+                if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+                  St := St + Ch;
+                if St = '<![CDATA[' then
+                  lElem := TJclSimpleXMLElemCData.Create(Parent)
+                else
+                if St = '<!--' then
+                  lElem := TJclSimpleXMLElemComment.Create(Parent);
                   //<?
-          end;
-          end;
+              end;
+            end;
 
-          if lElem <> nil then
-          begin
-            CreateElems;
-            Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            lElem.LoadFromStream(Stream, AParent);
-            lStreamPos := Stream.Position;
-            FElems.AddObject(lElem.Name, lElem);
-            Notify(lElem, opInsert);
-            St := '';
-            lPos := rsWaitingTag;
-            Break;
+            if lElem <> nil then
+            begin
+              CreateElems;
+              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+              lElem.LoadFromStream(Stream, AParent);
+              lStreamPos := Stream.Position;
+              FElems.AddObject(lElem.Name, lElem);
+              Notify(lElem, opInsert);
+              St := '';
+              lPos := rsWaitingTag;
+              Break;
+            end;
           end;
-        end;
 
         rsProcessingEndTag: //This is an end tag
           case Ch of
             '>':
-            begin
-              if Po <> '' then
-                Result := Po + ':' + St
-              else
-                Result := St;
-              Count := 0;
+              begin
+                if Po <> '' then
+                  Result := Po + ':' + St
+                else
+                  Result := St;
+                Count := 0;
 
                 // We have reached an end tag. If whitespace was found while
                 // waiting for the end tag, and the user told us to keep it
@@ -1854,25 +1848,25 @@ begin
                 // in the list. If we did not check this, we would create a
                 // text element for whitespace found between two adjacent end
                 // tags.  
-              if lContainsWhiteSpace and not lTrimWhiteSpace and
-                (not Assigned(FElems) or (FElems.Count = 0)) then
-              begin
-                lTempStreamPos := Stream.Position;
-                lElem := TJclSimpleXMLElemText.Create(Parent);
-                Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-                lElem.LoadFromStream(Stream, AParent);
-                CreateElems;
-                FElems.AddObject(lElem.Name, lElem);
-                Stream.Seek(lTempStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-              end;
+                if lContainsWhiteSpace and not lTrimWhiteSpace  and
+                   (not Assigned(FElems) or (FElems.Count=0))then
+                begin
+                  lTempStreamPos := Stream.Position;
+                  lElem := TJclSimpleXMLElemText.Create(Parent);
+                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+                  lElem.LoadFromStream(Stream, AParent);
+                  CreateElems;
+                  FElems.AddObject(lElem.Name, lElem);
+                  Stream.Seek(lTempStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+                end;
 
-              Break;
-            end;
+                Break;
+              end;
             ':':
-            begin
-              Po := St;
-              St := '';
-            end;
+              begin
+                Po := St;
+                St := '';
+              end;
           else
             St := St + Ch;
           end;
@@ -2232,37 +2226,37 @@ begin
 
       case lPos of
         ptWaiting: //We are waiting for a property
-        begin
-          case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-            begin
+          begin
+            case Ch of
+              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
+                begin
+                end;
+              'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
+                begin
+                  lName := Ch;
+                  lNameSpace := '';
+                  lPos := ptReadingName;
+                end;
+              '/', '>', '?':
+                begin
+                  Dec(lStreamPos);
+                  Count := 0;
+                  Break;
+                end;
+            else
+              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
             end;
-            'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
-            begin
-              lName := Ch;
-              lNameSpace := '';
-              lPos := ptReadingName;
-            end;
-            '/', '>', '?':
-            begin
-              Dec(lStreamPos);
-              Count := 0;
-              Break;
-            end;
-          else
-            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
           end;
-        end;
 
         ptReadingName: //We are reading a property name
           case Ch of
             'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
               lName := lName + Ch;
             ':':
-            begin
-              lNameSpace := lName;
-              lName := '';
-            end;
+              begin
+                lNameSpace := lName;
+                lName := '';
+              end;
             '=':
               lPos := ptStartingContent;
             ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
@@ -2276,11 +2270,11 @@ begin
             ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
               ; // ignore white space
             '''', '"':
-            begin
-              lPropStart := Ch;
-              lValue := '';
-              lPos := ptReadingValue;
-            end;
+              begin
+                lPropStart := Ch;
+                lValue := '';
+                lPos := ptReadingValue;
+              end;
           else
             FmtError(RsEInvalidXMLElementUnexpectedCharacte_, [Ch]);
           end;
@@ -2374,7 +2368,7 @@ end;
 function TJclSimpleXMLProp.SaveToString: string;
 var
   AEncoder: TJclSimpleXML;
-  tmp: string;
+  tmp:string;
 begin
   AEncoder := GetSimpleXML;
   tmp := FValue;
@@ -2460,64 +2454,64 @@ begin
           else
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [Ch]);
       else
-      begin
-        if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
         begin
-          if lPos = 2 then
-            Error(RsEInvalidXMLElementMalformedTagFoundn);
-          Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-          Properties.LoadFromStream(Stream);
-          lStreamPos := Stream.Position;
-          Break; //Re read buffer
-        end
-        else
-        begin
-          case Ch of
-            '>':
-            begin
-              lName := St;
+          if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
+          begin
+            if lPos = 2 then
+              Error(RsEInvalidXMLElementMalformedTagFoundn);
+            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+            Properties.LoadFromStream(Stream);
+            lStreamPos := Stream.Position;
+            Break; //Re read buffer
+          end
+          else
+          begin
+            case Ch of
+              '>':
+                begin
+                  lName := St;
                   //Load elements
-              Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-              St := Items.LoadFromStream(Stream, AParent);
-              if lNameSpace <> '' then
-              begin
-                if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
-                  FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-              end
-              else
-              if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
-                FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-              lStreamPos := Stream.Position;
+                  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+                  St := Items.LoadFromStream(Stream, AParent);
+                  if lNameSpace <> '' then
+                  begin
+                    if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  end
+                  else
+                    if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
                   //This might reduce speed, but this is for compatibility issues
-              if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
-              begin
-                lValue := Items[0].Value;
-                Items.Clear;
-              end;
+                  if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
+                  begin
+                    lValue := Items[0].Value;
+                    Items.Clear;
+                  end;
 
-              Count := 0;
-              Break;
+                  Count := 0;
+                  Break;
+                end;
+              '/':
+                begin
+                  lName := St;
+                  lPos := -1;
+                end;
+              ':':
+                begin
+                  lNameSpace := St;
+                  St := '';
+                end;
+            else
+              begin
+                St := St + Ch;
+                Inc(lPos);
+              end;
             end;
-            '/':
-            begin
-              lName := St;
-              lPos := -1;
-            end;
-            ':':
-            begin
-              lNameSpace := St;
-              St := '';
-            end;
-          else
-          begin
-            St := St + Ch;
-            Inc(lPos);
-          end;
           end;
         end;
-      end;
       end;
     end;
   until Count = 0;
@@ -2542,7 +2536,7 @@ var
   St, AName, tmp: string;
   LevelAdd: string;
 begin
-  if (NameSpace <> '') then
+  if(NameSpace <> '') then
   begin
     AName := NameSpace + ':' + Name;
   end
@@ -2554,7 +2548,7 @@ begin
   if Name <> '' then
   begin
     if GetSimpleXML <> nil then
-      GetSimpleXML.DoEncodeValue(AName);
+       GetSimpleXML.DoEncodeValue(AName);
     St := Level + '<' + AName;
 
     WriteStringToStream(Stream, St, Length(St));
@@ -2696,7 +2690,7 @@ procedure TJclSimpleXMLElemCData.LoadFromStream(const Stream: TStream; AParent: 
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
-  CS_STOP_CDATA = '         ]]>';
+  CS_STOP_CDATA =  '         ]]>';
 var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
@@ -2803,17 +2797,17 @@ begin
 
       case lBuf[I] of
         '<':
-        begin
+          begin
             //Quit text
-          Dec(lStreamPos);
-          Count := 0;
-          Break;
-        end;
+            Dec(lStreamPos);
+            Count := 0;
+            Break;
+          end;
       else
-      begin
-        Inc(StLength);
-        St[StLength] := lBuf[I];
-      end;
+        begin
+          Inc(StLength);
+          St[StLength] := lBuf[I];
+        end;
       end;
     end;
   until Count = 0;
@@ -3201,63 +3195,63 @@ begin
 
       case lPos of
         0: //We are waiting for a tag and thus avoiding spaces and any BOM
-        begin
-          case lBuf[I] of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
-            begin
+          begin
+            case lBuf[I] of
+              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
+                begin
+                end;
+              '<':
+                begin
+                  lPos := 1;
+                  St := lBuf[I];
+                end;
+            else
+              Error(RsEInvalidDocumentUnexpectedTextInFile);
             end;
-            '<':
-            begin
-              lPos := 1;
-              St := lBuf[I];
-            end;
-          else
-            Error(RsEInvalidDocumentUnexpectedTextInFile);
           end;
-        end;
         1: //We are trying to determine the kind of the tag
-        begin
-          lElem := nil;
-          lEnd := False;
-
-          if (St <> '<![CDATA') or not (AnsiChar(lBuf[I]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
-            St := St + lBuf[I];
-          if St = '<![CDATA[' then
-            lEnd := True
-          else
-          if St = '<!--' then
-            lElem := TJclSimpleXMLElemComment.Create(nil)
-          else
-          if St = '<?xml-stylesheet' then
-            lElem := TJclSimpleXMLElemSheet.Create(nil)
-          else
-          if St = '<?xml ' then
-            lElem := TJclSimpleXMLElemHeader.Create(nil)
-          else
-          if St = '<!DOCTYPE' then
-            lElem := TJclSimpleXMLElemDocType.Create(nil)
-          else
-          if (Length(St) > 1) and not (AnsiChar(St[2]) in ['!', '?']) then
-            lEnd := True;
-
-          if lEnd then
           begin
-            lStreamPos := lStreamPos - Length(St);
-            Count := 0;
-            Break;
-          end
-          else
-          if lElem <> nil then
-          begin
-            Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            lElem.LoadFromStream(Stream, AParent);
-            lStreamPos := Stream.Position;
-            FElems.AddObject(lElem.Name, lElem);
-            St := '';
-            lPos := 0;
-            Break;
+            lElem := nil;
+            lEnd := False;
+
+            if (St <> '<![CDATA') or not (AnsiChar(lBuf[I]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
+              St := St + lBuf[I];
+            if St = '<![CDATA[' then
+              lEnd := True
+            else
+            if St = '<!--' then
+              lElem := TJclSimpleXMLElemComment.Create(nil)
+            else
+            if St = '<?xml-stylesheet' then
+              lElem := TJclSimpleXMLElemSheet.Create(nil)
+            else
+            if St = '<?xml ' then
+              lElem := TJclSimpleXMLElemHeader.Create(nil)
+            else
+            if St = '<!DOCTYPE' then
+              lElem := TJclSimpleXMLElemDocType.Create(nil)
+            else
+            if (Length(St) > 1) and not (AnsiChar(St[2]) in ['!', '?']) then
+              lEnd := True;
+
+            if lEnd then
+            begin
+              lStreamPos := lStreamPos - Length(St);
+              Count := 0;
+              Break;
+            end
+            else
+            if lElem <> nil then
+            begin
+              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+              lElem.LoadFromStream(Stream, AParent);
+              lStreamPos := Stream.Position;
+              FElems.AddObject(lElem.Name, lElem);
+              St := '';
+              lPos := 0;
+              Break;
+            end;
           end;
-        end;
       end;
     end;
   until Count = 0;
@@ -3410,7 +3404,7 @@ begin
           Dest.vType := VarXML;
           TXMLVarData(Dest).XML := LXML;
           Result := True;
-        end;
+        end
       end;
     end;
 end;
@@ -3602,8 +3596,8 @@ begin
   FindHeader;
   Result := TJclSimpleXMLElemSheet.Create(nil);
   Result.Name := 'xml-stylesheet';
-  Result.Properties.Add('type', AType);
-  Result.Properties.Add('href', AHRef);
+  Result.Properties.Add('type',AType);
+  Result.Properties.Add('href',AHRef);
   FElems.AddObject('xml-stylesheet', Result);
 end;
 

@@ -56,6 +56,7 @@
     <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSimpleXml.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSchedule.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStreams.pas" Targets="JclDev" Formname="" Condition=""/>

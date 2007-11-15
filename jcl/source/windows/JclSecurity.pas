@@ -31,8 +31,12 @@
 { privileges.                                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSecurity;
 
@@ -84,6 +88,10 @@ procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
 // Computer Information
 function GetComputerSID(SID: PSID; cbSID: DWORD): Boolean;
 
+// Windows Vista/Server 2008 UAC (User Account Control)
+function IsUACEnabled: Boolean;
+function IsElevated: Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -104,7 +112,7 @@ uses
   {$ELSE}
   AccCtrl,
   {$ENDIF FPC}
-  JclResources, JclStrings, JclSysInfo, JclWin32;
+  JclRegistry, JclResources, JclStrings, JclSysInfo, JclWin32;
 
 //=== Access Control =========================================================
 
@@ -181,9 +189,9 @@ begin
         SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
         psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
-        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
-        RaiseLastOSError;
-      TokenInfo := PTokenGroups(AllocMem(Count));
+       (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+         RaiseLastOSError;
+      TokenInfo := PTokenGroups(AllocMem(Count));  
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       {$ENDIF FPC}
       for I := 0 to TokenInfo^.GroupCount - 1 do
@@ -288,7 +296,7 @@ var
 begin
   if IsWinNT then
   begin
-    Count := 0;
+    Count  := 0;
     LangID := LANG_USER_DEFAULT;
 
     // have the the API function determine the required string length
@@ -354,9 +362,11 @@ begin
   begin
     NameSize := 0;
     DomainSize := 0;
-    Win32Check(LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use));
-    SetLength(Name, NameSize);
-    SetLength(Domain, DomainSize);
+    LookupAccountSidA(nil, Sid, nil, NameSize, nil, DomainSize, Use);
+    if NameSize > 0 then
+      SetLength(Name, NameSize - 1);
+    if DomainSize > 0 then
+      SetLength(Domain, DomainSize - 1);
     Win32Check(LookupAccountSidA(nil, Sid, PAnsiChar(Name), NameSize, PAnsiChar(Domain), DomainSize, Use));
   end
   else
@@ -467,7 +477,7 @@ begin
 
   // Validate the binary SID.
   if not IsValidSid(ASid) then
-    raise EJclSecurityError.CreateRes(@RsInvalidSID);
+    Raise EJclSecurityError.CreateRes(@RsInvalidSID);
 
   // Get the identifier authority value from the SID.
   SidIdAuthority := GetSidIdentifierAuthority(ASid);
@@ -479,30 +489,30 @@ begin
   // S-SID_REVISION- + IdentifierAuthority- + subauthorities- + NULL
   SidSize := (15 + 12 + (12 * SubAuthorities) + 1) * SizeOf(CHAR);
 
-  SetLength(Result, SidSize + 1);
+  SetLength(Result, SidSize+1);
 
   // Add 'S' prefix and revision number to the string.
-  Result := Format('S-%u-', [SidRev]);
+  Result := Format('S-%u-',[SidRev]);
 
   // Add SID identifier authority to the string.
   if (SidIdAuthority^.Value[0] <> 0) or (SidIdAuthority^.Value[1] <> 0) then
     Result := Result + AnsiLowerCase(Format('0x%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x',
-      [USHORT(SidIdAuthority^.Value[0]),
-      USHORT(SidIdAuthority^.Value[1]),
-      USHORT(SidIdAuthority^.Value[2]),
-      USHORT(SidIdAuthority^.Value[3]),
-      USHORT(SidIdAuthority^.Value[4]),
-      USHORT(SidIdAuthority^.Value[5])]))
+        [USHORT(SidIdAuthority^.Value[0]),
+         USHORT(SidIdAuthority^.Value[1]),
+         USHORT(SidIdAuthority^.Value[2]),
+         USHORT(SidIdAuthority^.Value[3]),
+         USHORT(SidIdAuthority^.Value[4]),
+         USHORT(SidIdAuthority^.Value[5])]))
   else
     Result := Result + Format('%u',
-      [ULONG(SidIdAuthority^.Value[5]) +
-      ULONG(SidIdAuthority^.Value[4] shl 8) +
-      ULONG(SidIdAuthority^.Value[3] shl 16) +
-      ULONG(SidIdAuthority^.Value[2] shl 24)]);
+        [ULONG(SidIdAuthority^.Value[5])+
+         ULONG(SidIdAuthority^.Value[4] shl 8)+
+         ULONG(SidIdAuthority^.Value[3] shl 16)+
+         ULONG(SidIdAuthority^.Value[2] shl 24)]);
 
   // Add SID subauthorities to the string.
-  for Counter := 0 to SubAuthorities - 1 do
-    Result := Result + Format('-%u', [GetSidSubAuthority(ASid, Counter)^]);
+  for Counter := 0 to SubAuthorities-1 do
+    Result := Result + Format('-%u',[GetSidSubAuthority(ASid, Counter)^]);
 end;
 
 procedure StringToSID(const SIDString: String; SID: PSID; cbSID: DWORD);
@@ -512,7 +522,7 @@ var
   AuthorityValue, RequiredSize: DWORD;
   Authority: string;
 begin
-  if (Length(SIDString) <= 3) or (SIDString[1] <> 'S') or (SIDString[2] <> '-') then
+  if (Length (SIDString) <= 3) or (SIDString [1] <> 'S') or (SIDString [2] <> '-') then
     raise EJclSecurityError.CreateRes(@RsInvalidSID);
 
   RequiredSize := SizeOf(_SID) - SizeOf(DWORD); // _SID.Revision + _SID.SubAuthorityCount + _SID.IdentifierAuthority
@@ -552,7 +562,7 @@ begin
     ASID^.IdentifierAuthority.Value[2] := (AuthorityValue and $FF000000) shr 24;
     ASID^.IdentifierAuthority.Value[3] := (AuthorityValue and $00FF0000) shr 16;
     ASID^.IdentifierAuthority.Value[4] := (AuthorityValue and $0000FF00) shr 8;
-    ASID^.IdentifierAuthority.Value[5] := AuthorityValue and $000000FF;
+    ASID^.IdentifierAuthority.Value[5] :=  AuthorityValue and $000000FF;
   end;
 
   CurrentPos := TempPos + 1;
@@ -571,7 +581,11 @@ begin
     else
       Authority := Copy(SIDString, CurrentPos, TempPos - CurrentPos);
 
-    ASID^.SubAuthority[ASID^.SubAuthorityCount] := StrToInt(Authority);
+    {$R-}
+    ASID^.SubAuthority[ASID^.SubAuthorityCount] := StrToInt64(Authority);
+    {$IFDEF RANGECHECKS_ON}
+    {$R+}
+    {$ENDIF RANGECHECKS_ON}
     Inc(ASID^.SubAuthorityCount);
 
     CurrentPos := TempPos + 1;
@@ -580,7 +594,7 @@ end;
 
 //=== Computer Information ===================================================
 
-function LsaNTCheck(NTResult: Cardinal): Cardinal;
+function LsaNTCheck(NTResult: Cardinal) : Cardinal;
 var
   WinError: Cardinal;
 begin
@@ -601,7 +615,7 @@ var
 begin
   if IsWinNT then
   begin
-    ZeroMemory(@ObjectAttributes, SizeOf(ObjectAttributes));
+    ZeroMemory(@ObjectAttributes,SizeOf(ObjectAttributes));
 
     LsaNTCheck(LsaOpenPolicy(nil, // Use local system
       ObjectAttributes, //Object attributes.
@@ -611,7 +625,7 @@ begin
       LsaNTCheck(LsaQueryInformationPolicy(PolicyHandle, PolicyAccountDomainInformation,
         Pointer(Info)));
       try
-        Result := CopySid(cbSID, SID, Info^.DomainSid);
+        Result := CopySid(cbSID,SID,Info^.DomainSid);
       finally
         LsaFreeMemory(Info);
       end;
@@ -621,6 +635,47 @@ begin
   end
   else
     Result := False; // Win9x
+end;
+
+//=== Windows Vista/Server 2008 UAC (User Account Control) ===================
+
+function IsUACEnabled: Boolean;
+begin
+  Result := (IsWinVista or IsWinServer2008) and
+    RegReadBoolDef(HKLM, '\Software\Microsoft\Windows\CurrentVersion\Policies\System', 'EnableLUA', False);
+end;
+
+// source: Vista elevator from the Code Project
+function IsElevated: Boolean;
+const
+  TokenElevation = TTokenInformationClass(20);
+type
+  TOKEN_ELEVATION = record
+    TokenIsElevated: DWORD;
+  end;
+var
+  TokenHandle: THandle;
+  ResultLength: Cardinal;
+  ATokenElevation: TOKEN_ELEVATION;
+begin
+  if IsWinVista or IsWinServer2008 then
+  begin
+    if OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, TokenHandle) then
+    begin
+      try
+        if GetTokenInformation(TokenHandle, TokenElevation, @ATokenElevation, SizeOf(ATokenElevation), ResultLength) then
+          Result := ATokenElevation.TokenIsElevated <> 0
+        else
+          Result := False;
+      finally
+        CloseHandle(TokenHandle);
+      end;
+    end
+    else
+      Result := False;
+  end
+  else
+    Result := IsAdministrator;
 end;
 
 {$IFDEF UNITVERSIONING}

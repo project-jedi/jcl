@@ -18,9 +18,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date$                                                      }
-{ Revision: $Revision$                                                                       }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -309,7 +309,7 @@ begin
   Supports(BorlandIDEServices, INTAServices, NTAServices);
   if not Assigned(NTAServices) then
     raise EJclExpertException.CreateTrace(RsENoNTAServices);
-
+    
   TreeViewMenu.Images := NTAServices.ImageList;
   PopupMenuActions.Images := NTAServices.ImageList;
 

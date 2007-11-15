@@ -19,7 +19,11 @@
 {                                                                                                  }
 { Command line tool for inserting JCL debug data created from MAP files into executable files      }
 {                                                                                                  }
-{ Last modified: March 13, 2002                                                                    }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -88,7 +92,7 @@ begin
       for I := 0 to FilesList.Count - 1 do
       begin
         FileName := FilesList[I];
-        if ExtractFileExt(FileName) <> '.map' then
+        if not AnsiSameText(ExtractFileExt(FileName), '.map') then
           Continue;
         Write(#13#10, FilesList[I]);
         Result := False;

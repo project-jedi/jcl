@@ -25,8 +25,10 @@ uses
   JclQueues in '..\..\source\common\JclQueues.pas' ,
   JclResources in '..\..\source\common\JclResources.pas' ,
   JclRTTI in '..\..\source\common\JclRTTI.pas' ,
+  JclSortedMaps in '..\..\source\common\JclSortedMaps.pas' ,
   JclStacks in '..\..\source\common\JclStacks.pas' ,
   JclStatistics in '..\..\source\common\JclStatistics.pas' ,
+  JclStreams in '..\..\source\common\JclStreams.pas' ,
   JclStrings in '..\..\source\common\JclStrings.pas' ,
   JclSysInfo in '..\..\source\common\JclSysInfo.pas' ,
   JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,
@@ -47,7 +49,7 @@ uses
 [assembly: AssemblyCulture('')]
 
 // MajorVersion.MinorVersion.BuildNumber.Revision
-[assembly: AssemblyVersion('1.101.0.2647')]
+[assembly: AssemblyVersion('1.102.0.2726')]
 
 // Package signature
 [assembly: AssemblyDelaySign(false)]

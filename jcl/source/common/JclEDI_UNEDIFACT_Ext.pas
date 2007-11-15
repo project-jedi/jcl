@@ -32,8 +32,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDI_UNEDIFACT_Ext;
 
@@ -119,7 +123,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDIMessage := AEDIMessage;
-  FEDISEFSet := SEFSet;
+  FEDISEFSet := SEFSet;  
   FEDIMessageSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -222,9 +226,9 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
-      raise EJclEDIError.CreateResFmt(@RsEDIError058,
+      raise EJclEDIError.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
-        IntToStr(DataSegment.GetIndexPositionFromParent)]);
+         IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.EDIDataObject[I].SpecPointer := SpecSegment.Elements[I];
     // ToDo: Assign SubElement Specs
   end;

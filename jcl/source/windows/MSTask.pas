@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 (*****************************************************************************
   This IDL-file has been converted by "the fIDLer".
   [written by -=Assarbad=- <oliver at assarbad dot net> Sept-2004] under MPL
@@ -391,8 +399,7 @@ type
     (*| Parameter(s) was/were [CPP]: {in} WORD iTrigger, {out} ITaskTrigger ** ppTrigger |*)
     function GetTriggerString(iTrigger: WORD; out ppwszTrigger: LPWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} WORD iTrigger, {out} LPWSTR * ppwszTrigger |*)
-    function GetRunTimes(pstBegin: PSystemTime; pstEnd: PSystemTime; var pCount: WORD;
-      out rgstTaskTimes: PSystemTime): HRESULT; stdcall;
+    function GetRunTimes(pstBegin: PSystemTime; pstEnd: PSystemTime; var pCount: WORD; out rgstTaskTimes: PSystemTime): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} const LPSYSTEMTIME pstBegin, {in} const LPSYSTEMTIME pstEnd, {in; out} WORD * pCount, {out} LPSYSTEMTIME * rgstTaskTimes |*)
     function GetNextRunTime(var pstNextRun: SYSTEMTIME): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in; out} SYSTEMTIME * pstNextRun |*)
@@ -549,8 +556,7 @@ type
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
     function Delete(pwszName: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName |*)
-    function NewWorkItem(pwszTaskName: LPCWSTR; const rclsid: TCLSID; const riid: TIID;
-      out ppUnk: IUnknown): HRESULT; stdcall;
+    function NewWorkItem(pwszTaskName: LPCWSTR; const rclsid: TCLSID; const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} REFCLSID rclsid, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
     function AddWorkItem(pwszTaskName: LPCWSTR; const pWorkItem: IScheduledWorkItem): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} IScheduledWorkItem * pWorkItem |*)
@@ -623,8 +629,7 @@ type
   IProvideTaskPage = interface(IUnknown)
     ['{4086658A-CBBB-11CF-B604-00C04FD8D565}']
 // Methods:
-    function GetPage(tpType: TTaskPage; fPersistChanges: BOOL; out phPage: HPROPSHEETPAGE): HRESULT;
-      stdcall; // OS: Changed TASKPAGE to TTaskPage
+    function GetPage(tpType: TTaskPage; fPersistChanges: BOOL; out phPage: HPROPSHEETPAGE): HRESULT; stdcall; // OS: Changed TASKPAGE to TTaskPage
     (*| Parameter(s) was/were [CPP]: {in} TASKPAGE tpType, {in} BOOL fPersistChanges, {out} HPROPSHEETPAGE * phPage |*)
   end;
 
@@ -648,3 +653,4 @@ const
 implementation
 
 end.
+

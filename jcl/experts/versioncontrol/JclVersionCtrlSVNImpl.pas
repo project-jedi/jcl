@@ -19,9 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date$                                                      }
-{ Revision: $Revision$                                                                       }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,7 +36,7 @@ uses
   VersionControlImpl;
 
 type
-  TJclVersionControlSVN = class(TJclVersionControlPlugin)
+  TJclVersionControlSVN = class (TJclVersionControlPlugin)
   private
     FTortoiseSVNProc: string;
   protected
@@ -83,11 +83,11 @@ const
   JclVersionCtrlSVNUnlockVerb = 'unlock';
   JclVersionCtrlSVNTortoiseDLL = 'TortoiseSVN.dll';
   JclVersionCtrlSVNDirectory1 = '.svn\';
-  JclVersionCtrlSVNDirectory2 = '_svn\';
+  JclVersionCtrlSVNDirectory2 = '_svn\';  
   JclVersionCtrlSVNEntryFile = 'entries';
 
   JclVersionCtrlSVNDirectories: array [0..1] of string =
-    (JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2);
+   ( JclVersionCtrlSVNDirectory1, JclVersionCtrlSVNDirectory2 ); 
 
 resourcestring
   RsVersionCtrlSVNName = 'subversion';
@@ -110,14 +110,14 @@ end;
 function TJclVersionControlSVN.ExecuteAction(const FileName: string;
   const Action: TJclVersionControlAction): Boolean;
   function CallTortoiseSVNProc(const ActionName: string;
-  const Param: string = ''): Boolean;
+    const Param: string = ''): Boolean;
   var
     StartupInfo: TStartupInfo;
     ProcessInfo: TProcessInformation;
     CurrentDir, CommandLine: string;
   begin
-    FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
-    FillChar(ProcessInfo, SizeOf(TProcessInformation), #0);
+    FillChar(StartupInfo,SizeOf(TStartupInfo),#0);
+    FillChar(ProcessInfo,SizeOf(TProcessInformation),#0);
     startupInfo.cb := SizeOf(TStartupInfo);
     startupInfo.dwFlags := STARTF_USESHOWWINDOW;
     startupInfo.wShowWindow := SW_SHOW;
@@ -147,7 +147,7 @@ begin
     vcaAdd,
     vcaAddSandbox:
       Result := CallTortoiseSVNProc(JclVersionCtrlSVNAddVerb);
-    vcaBlame:
+    vcaBlame :
       Result := CallTortoiseSVNProc(JclVersionCtrlSVNBlameVerb);
     vcaBranch,
     vcaBranchSandbox:
@@ -192,8 +192,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := CallTortoiseSVNProc(JclVersionCtrlSVNUnlockVerb);
-  else
-    Result := inherited ExecuteAction(FileName, Action);
+    else
+      Result := inherited ExecuteAction(FileName, Action);
   end;
 end;
 
@@ -267,11 +267,11 @@ begin
   Result := inherited GetSupportedActions;
   if Enabled then
     Result := Result + [vcaAdd, vcaAddSandbox, vcaBlame, vcaBranch,
-      vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox, vcaDiff,
-      vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox, vcaMerge,
-      vcaMergeSandbox, vcaRename, vcaRepoBrowser, vcaRevert, vcaRevertSandbox,
-      vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
-      vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
+    vcaBranchSandbox, vcaCheckOutSandbox, vcaCommit, vcaCommitSandbox, vcaDiff,
+    vcaGraph, vcaLog, vcaLogSandbox, vcaLock, vcaLockSandbox, vcaMerge,
+    vcaMergeSandbox, vcaRename, vcaRepoBrowser, vcaRevert, vcaRevertSandbox,
+    vcaStatus, vcaStatusSandbox, vcaTag, vcaTagSandBox, vcaUpdate,
+    vcaUpdateSandbox, vcaUpdateTo, vcaUpdateSandboxTo, vcaUnlock, vcaUnlockSandbox];
 end;
 
 function TJclVersionControlSVN.GetIcon(
@@ -280,7 +280,7 @@ var
   LibraryName: string;
 begin
   LibraryName := PathAddSeparator(ExtractFilePath(FTortoiseSVNProc)) + JclVersionCtrlSVNTortoiseDLL;
-
+  
   case Action of
     vcaAdd,
     vcaAddSandbox:
@@ -329,8 +329,8 @@ begin
     vcaUnlock,
     vcaUnlockSandbox:
       Result := Expert.CacheResourceIcon(LibraryName, 5153);
-  else
-    Result := inherited GetIcon(Action);
+    else
+      Result := inherited GetIcon(Action);
   end;
 
 end;
@@ -383,14 +383,14 @@ begin
     if Enabled then
       for IndexFileName := Length(FileName) downto 1 do
         if FileName[IndexFileName] = DirDelimiter then
-        begin
-          DirectoryName := Copy(FileName, 1, IndexFileName);
-          for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
-          begin
-            if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir]) then
-              SdBxNames.Add(DirectoryName);
-          end;
-        end;
+    begin
+      DirectoryName := Copy(FileName, 1, IndexFileName);
+      for IndexDir := Low(JclVersionCtrlSVNDirectories) to High(JclVersionCtrlSVNDirectories) do
+      begin
+        if DirectoryExists(DirectoryName + JclVersionCtrlSVNDirectories[IndexDir]) then
+          SdBxNames.Add(DirectoryName);
+      end;
+    end;
   finally
     SdBxNames.EndUpdate;
   end;
@@ -401,26 +401,26 @@ end;
 
 initialization
 
-  try
-    TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSVN);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.RegisterPluginClass(TJclVersionControlSVN);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 finalization
 
-  try
-    TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlSVN);
-  except
-    on ExceptionObj: TObject do
-    begin
-      JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
-    end;
+try
+  TJclVersionControlExpert.UnregisterPluginClass(TJclVersionControlSVN);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+    raise;
   end;
+end;
 
 end.

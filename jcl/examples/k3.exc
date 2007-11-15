@@ -46,3 +46,4 @@ common/rtti/RTTIExample.dpr
 common/textreader/TextReaderExample.dpr
 common/unitversioning/UnitVersioningTest.dpr
 common/unitversioning/UnitVersioningTestDLL.dpr
+ExtraRequirements.exc

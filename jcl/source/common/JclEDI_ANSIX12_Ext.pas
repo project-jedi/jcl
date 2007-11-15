@@ -32,8 +32,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDI_ANSIX12_Ext;
 
@@ -115,7 +119,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDITransactionSet := TransactionSet;
-  FEDISEFSet := SEFSet;
+  FEDISEFSet := SEFSet; 
   FEDITransactionSetSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -218,9 +222,13 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
+      {$IFDEF CLR}
+      raise EJclEDIError.CreateFmt(RsEDIError058,
+      {$ELSE}
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
+      {$ENDIF CLR}
         [IntToStr(I), DataSegment.SegmentId,
-        IntToStr(DataSegment.GetIndexPositionFromParent)]);
+         IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];
   end;
 end;

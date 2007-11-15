@@ -114,10 +114,8 @@ begin
   Result := not Modified;
   if not Result then
     case MessBox(RsSaveImage, MB_ICONEXCLAMATION or MB_YESNOCANCEL) of
-      ID_YES:
-        Result := SaveFile;
-      ID_NO:
-        Result := True;
+      ID_YES: Result := SaveFile;
+      ID_NO: Result := True;
     else
       Result := False;
     end;
@@ -127,8 +125,7 @@ procedure TMainForm.CompressPicture;
 var
   Ratio: Integer;
 begin
-  with RatioComboBox do
-    Ratio := Integer(Items.Objects[ItemIndex]);
+  with RatioComboBox do Ratio := Integer(Items.Objects[ItemIndex]);
   FJpegImage.Grayscale := (ColorComboBox.ItemIndex = 0);
   FJpegImage.CompressionQuality := Ratio;
   FJpegImage.Assign(FOriginalPicture.Graphic);
@@ -180,7 +177,7 @@ end;
 
 procedure TMainForm.UpdatePicture;
 var
-  MemStream: TMemoryStream;
+  MemStream : TMemoryStream;
 begin
   Screen.Cursor := crHourGlass;
   try
@@ -242,7 +239,7 @@ begin
     FFileName := '';
     UpdatePicture;
     FModified := True;
-  end;
+  end;  
 end;
 
 procedure TMainForm.Paste1Update(Sender: TObject);

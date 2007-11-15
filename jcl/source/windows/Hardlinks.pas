@@ -38,8 +38,12 @@
 {  2000.                                                                                           }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit Hardlinks;
 
@@ -70,10 +74,8 @@ uses
 // Well, we did not decide yet ;) - bind to either address, depending on whether
 // the API could be found.
 type
-  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-    stdcall;
-  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
-    stdcall;
+  TFNCreateHardLinkW = function(szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;  stdcall; 
+  TFNCreateHardLinkA = function(szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;  stdcall; 
 var
   CreateHardLinkW: TFNCreateHardLinkW = nil;
   CreateHardLinkA: TFNCreateHardLinkA = nil;
@@ -85,7 +87,7 @@ var
 implementation
 
 const
-  szNtDll = 'NTDLL.DLL'; // Import native APIs from this DLL
+  szNtDll           = 'NTDLL.DLL'; // Import native APIs from this DLL
   szCreateHardLinkA = 'CreateHardLinkA';
   szCreateHardLinkW = 'CreateHardLinkW';
 
@@ -146,9 +148,9 @@ type
   IO_STATUS_BLOCK = record
     case integer of
       0:
-      (Status: NTSTATUS);
+       (Status: NTSTATUS);
       1:
-      (Pointer: Pointer;
+       (Pointer: Pointer;
         Information: ULONG); // 'Information' does not belong to the union!
   end;
   PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
@@ -169,7 +171,7 @@ type
 // Constants
 // =================================================================
 const
-  FileLinkInformation = 11;
+  FileLinkInformation          = 11;
   FILE_SYNCHRONOUS_IO_NONALERT = $00000020; // All operations on the file are
                                             // performed synchronously. Waits
                                             // in the system to synchronize I/O
@@ -180,32 +182,32 @@ const
                                             // If this flag is set, the
                                             // DesiredAccess SYNCHRONIZE flag also
                                             // must be set.
-  FILE_OPEN_FOR_BACKUP_INTENT = $00004000; // The file is being opened for backup
+  FILE_OPEN_FOR_BACKUP_INTENT  = $00004000; // The file is being opened for backup
                                             // intent, hence, the system should
                                             // check for certain access rights
                                             // and grant the caller the appropriate
                                             // accesses to the file before checking
                                             // the input DesiredAccess against the
                                             // file's security descriptor.
-  FILE_OPEN_REPARSE_POINT = $00200000;
-  DELETE = $00010000;
-  SYNCHRONIZE = $00100000;
-  STATUS_SUCCESS = NTSTATUS(0);
-  OBJ_CASE_INSENSITIVE = $00000040;
-  SYMBOLIC_LINK_QUERY = $00000001;
+  FILE_OPEN_REPARSE_POINT      = $00200000;
+  DELETE                       = $00010000;
+  SYNCHRONIZE                  = $00100000;
+  STATUS_SUCCESS               = NTSTATUS(0);
+  OBJ_CASE_INSENSITIVE         = $00000040;
+  SYMBOLIC_LINK_QUERY          = $00000001;
 
   // Should be defined, but isn't
-  HEAP_ZERO_MEMORY = $00000008;
+  HEAP_ZERO_MEMORY             = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH = 0;
-  UNC_PATH = 1;
-  ABSOLUTE_DRIVE_PATH = 2;
-  RELATIVE_DRIVE_PATH = 3;
-  ABSOLUTE_PATH = 4;
-  RELATIVE_PATH = 5;
-  DEVICE_PATH = 6;
-  UNC_DOT_PATH = 7;
+  INVALID_PATH                 = 0;
+  UNC_PATH                     = 1;
+  ABSOLUTE_DRIVE_PATH          = 2;
+  RELATIVE_DRIVE_PATH          = 3;
+  ABSOLUTE_PATH                = 4;
+  RELATIVE_PATH                = 5;
+  DEVICE_PATH                  = 6;
+  UNC_DOT_PATH                 = 7;
 
 // =================================================================
 // Function prototypes
@@ -360,7 +362,7 @@ end;
 
  ******************************************************************************)
 function
-MyCreateHardLinkW // ... otherwise this one
+  MyCreateHardLinkW // ... otherwise this one
   (szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 const
 // Mask for any DOS style drive path in object manager notation
@@ -575,7 +577,7 @@ end;
  ******************************************************************************)
 
 function
-MyCreateHardLinkA // ... otherwise this one
+  MyCreateHardLinkA // ... otherwise this one
   (szLinkName, szLinkTarget: PAnsiChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 var
   usLinkName: UNICODE_STRING;
@@ -589,36 +591,36 @@ begin
   hHeap := NtpGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
+  try
+    if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
     try
-      if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
-        try
       // Call the Unicode version
-          Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
-        finally
-      // free the allocated buffer
-          RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
-        end;
+      Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
     finally
-    // free the allocate buffer
-      RtlFreeHeap(hHeap, 0, usLinkName.Buffer);
+      // free the allocated buffer
+      RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
     end;
+  finally
+    // free the allocate buffer
+    RtlFreeHeap(hHeap, 0, usLinkName.Buffer);
+  end;
 end;
 
 const
 // Names of the functions to import
   szRtlCreateUnicodeStringFromAsciiz = 'RtlCreateUnicodeStringFromAsciiz';
-  szZwClose = 'ZwClose';
-  szZwSetInformationFile = 'ZwSetInformationFile';
-  szRtlPrefixUnicodeString = 'RtlPrefixUnicodeString';
-  szZwOpenSymbolicLinkObject = 'ZwOpenSymbolicLinkObject';
-  szZwQuerySymbolicLinkObject = 'ZwQuerySymbolicLinkObject';
-  szZwOpenFile = 'ZwOpenFile';
-  szRtlAllocateHeap = 'RtlAllocateHeap';
-  szRtlFreeHeap = 'RtlFreeHeap';
-  szRtlDosPathNameToNtPathName_U = 'RtlDosPathNameToNtPathName_U';
-  szRtlInitUnicodeString = 'RtlInitUnicodeString';
-  szRtlDetermineDosPathNameType_U = 'RtlDetermineDosPathNameType_U';
-  szRtlNtStatusToDosError = 'RtlNtStatusToDosError';
+  szZwClose                          = 'ZwClose';
+  szZwSetInformationFile             = 'ZwSetInformationFile';
+  szRtlPrefixUnicodeString           = 'RtlPrefixUnicodeString';
+  szZwOpenSymbolicLinkObject         = 'ZwOpenSymbolicLinkObject';
+  szZwQuerySymbolicLinkObject        = 'ZwQuerySymbolicLinkObject';
+  szZwOpenFile                       = 'ZwOpenFile';
+  szRtlAllocateHeap                  = 'RtlAllocateHeap';
+  szRtlFreeHeap                      = 'RtlFreeHeap';
+  szRtlDosPathNameToNtPathName_U     = 'RtlDosPathNameToNtPathName_U';
+  szRtlInitUnicodeString             = 'RtlInitUnicodeString';
+  szRtlDetermineDosPathNameType_U    = 'RtlDetermineDosPathNameType_U';
+  szRtlNtStatusToDosError            = 'RtlNtStatusToDosError';
 
 var
   hKernel32: THandle = 0;
@@ -638,42 +640,44 @@ initialization
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
-    hNtDll := GetModuleHandle(szNtDll);
-    if hNtDll <> 0 then
-    begin
+  hNtDll := GetModuleHandle(szNtDll);
+  if hNtDll <> 0 then
+  begin
     // Get all the function addresses
-      @RtlCreateUnicodeStringFromAsciiz := GetProcAddress(hNtDll, szRtlCreateUnicodeStringFromAsciiz);
-      @ZwClose := GetProcAddress(hNtDll, szZwClose);
-      @ZwSetInformationFile := GetProcAddress(hNtDll, szZwSetInformationFile);
-      @RtlPrefixUnicodeString := GetProcAddress(hNtDll, szRtlPrefixUnicodeString);
-      @ZwOpenSymbolicLinkObject := GetProcAddress(hNtDll, szZwOpenSymbolicLinkObject);
-      @ZwQuerySymbolicLinkObject := GetProcAddress(hNtDll, szZwQuerySymbolicLinkObject);
-      @ZwOpenFile := GetProcAddress(hNtDll, szZwOpenFile);
-      @RtlAllocateHeap := GetProcAddress(hNtDll, szRtlAllocateHeap);
-      @RtlFreeHeap := GetProcAddress(hNtDll, szRtlFreeHeap);
-      @RtlDosPathNameToNtPathName_U := GetProcAddress(hNtDll, szRtlDosPathNameToNtPathName_U);
-      @RtlInitUnicodeString := GetProcAddress(hNtDll, szRtlInitUnicodeString);
-      @RtlDetermineDosPathNameType_U := GetProcAddress(hNtDll, szRtlDetermineDosPathNameType_U);
-      @RtlNtStatusToDosError := GetProcAddress(hNtDll, szRtlNtStatusToDosError);
+    @RtlCreateUnicodeStringFromAsciiz := GetProcAddress(hNtDll, szRtlCreateUnicodeStringFromAsciiz);
+    @ZwClose := GetProcAddress(hNtDll, szZwClose);
+    @ZwSetInformationFile := GetProcAddress(hNtDll, szZwSetInformationFile);
+    @RtlPrefixUnicodeString := GetProcAddress(hNtDll, szRtlPrefixUnicodeString);
+    @ZwOpenSymbolicLinkObject := GetProcAddress(hNtDll, szZwOpenSymbolicLinkObject);
+    @ZwQuerySymbolicLinkObject := GetProcAddress(hNtDll, szZwQuerySymbolicLinkObject);
+    @ZwOpenFile := GetProcAddress(hNtDll, szZwOpenFile);
+    @RtlAllocateHeap := GetProcAddress(hNtDll, szRtlAllocateHeap);
+    @RtlFreeHeap := GetProcAddress(hNtDll, szRtlFreeHeap);
+    @RtlDosPathNameToNtPathName_U := GetProcAddress(hNtDll, szRtlDosPathNameToNtPathName_U);
+    @RtlInitUnicodeString := GetProcAddress(hNtDll, szRtlInitUnicodeString);
+    @RtlDetermineDosPathNameType_U := GetProcAddress(hNtDll, szRtlDetermineDosPathNameType_U);
+    @RtlNtStatusToDosError := GetProcAddress(hNtDll, szRtlNtStatusToDosError);
     // Check whether we could retrieve all of them
-      bRtdlFunctionsLoaded := // Update the "loaded" status
-        Assigned(@RtlCreateUnicodeStringFromAsciiz) and
-        Assigned(@ZwClose) and
-        Assigned(@ZwSetInformationFile) and
-        Assigned(@RtlPrefixUnicodeString) and
-        Assigned(@ZwOpenSymbolicLinkObject) and
-        Assigned(@ZwQuerySymbolicLinkObject) and
-        Assigned(@ZwOpenFile) and
-        Assigned(@RtlAllocateHeap) and
-        Assigned(@RtlFreeHeap) and
-        Assigned(@RtlDosPathNameToNtPathName_U) and
-        Assigned(@RtlInitUnicodeString) and
-        Assigned(@RtlDetermineDosPathNameType_U) and
-        Assigned(@RtlNtStatusToDosError);
-    end;
+    bRtdlFunctionsLoaded := // Update the "loaded" status
+      Assigned(@RtlCreateUnicodeStringFromAsciiz) and
+      Assigned(@ZwClose) and
+      Assigned(@ZwSetInformationFile) and
+      Assigned(@RtlPrefixUnicodeString) and
+      Assigned(@ZwOpenSymbolicLinkObject) and
+      Assigned(@ZwQuerySymbolicLinkObject) and
+      Assigned(@ZwOpenFile) and
+      Assigned(@RtlAllocateHeap) and
+      Assigned(@RtlFreeHeap) and
+      Assigned(@RtlDosPathNameToNtPathName_U) and
+      Assigned(@RtlInitUnicodeString) and
+      Assigned(@RtlDetermineDosPathNameType_U) and
+      Assigned(@RtlNtStatusToDosError);
+  end;
 
     @CreateHardLinkA := @MyCreateHardLinkA;
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
 
+
 end.
+

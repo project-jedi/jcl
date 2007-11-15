@@ -29,8 +29,12 @@
 {                                                                                                  }
 { Header conversion of pcre.h                                                                      }
 {                                                                                                  }
-{ Unit owner: Peter Thornqvist                                                                     }
-{ Last modified: $Date$                          }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -238,11 +242,8 @@ type
     req_char: PChar;
     code: array [0..0] of Char;}
   end;
-  {$EXTERNALSYM real_pcre}
   TPCRE = real_pcre;
-  {$EXTERNALSYM TPCRE}
   PPCRE = ^TPCRE;
-  {$EXTERNALSYM PPCRE}
 
   real_pcre_extra = record
     {options: PChar;
@@ -254,11 +255,8 @@ type
     tables: PChar;          (* Pointer to character tables *)
     match_limit_recursion: Cardinal; (* Max recursive calls to match() *)
   end;
-  {$EXTERNALSYM real_pcre_extra}
   TPCREExtra = real_pcre_extra;
-  {$EXTERNALSYM TPCREExtra}
   PPCREExtra = ^TPCREExtra;
-  {$EXTERNALSYM PPCREExtra}
 
   pcre_callout_block = record
     version: Integer;           (* Identifies version of block *)
@@ -277,7 +275,6 @@ type
     next_item_length: Integer;  (* Length of next item in the pattern *)
   (* ------------------------------------------------------------------ *)
   end;
-  {$EXTERNALSYM pcre_callout_block}
 
   pcre_malloc_callback = function(Size: Integer): Pointer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
   {$EXTERNALSYM pcre_malloc_callback}
@@ -852,11 +849,10 @@ begin
   {$ELSE ~PCRE_STATICLINK}
   if not Assigned(pcre_malloc_func) then
     LoadPCRE;
-
+  
   if Assigned(pcre_malloc_func) then
     pcre_malloc_func^ := Value
-  else
-  if Assigned(LibNotLoadedHandler) then
+  else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -899,8 +895,7 @@ begin
 
   if Assigned(pcre_free_func) then
     pcre_free_func^ := Value
-  else
-  if Assigned(LibNotLoadedHandler) then
+  else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -920,7 +915,7 @@ begin
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_free_func^;
+    Result := pcre_free_func^
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
@@ -943,8 +938,7 @@ begin
 
   if Assigned(pcre_stack_malloc_func) then
     pcre_stack_malloc_func^ := Value
-  else
-  if Assigned(LibNotLoadedHandler) then
+  else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -987,8 +981,7 @@ begin
 
   if Assigned(pcre_stack_free_func) then
     pcre_stack_free_func^ := Value
-  else
-  if Assigned(LibNotLoadedHandler) then
+  else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -1031,8 +1024,7 @@ begin
 
   if Assigned(pcre_callout_func) then
     pcre_callout_func^ := Value
-  else
-  if Assigned(LibNotLoadedHandler) then
+  else if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -1210,3 +1202,4 @@ function pcre_version; external libpcremodulename name PCREVersionExportName;
 {$ENDIF PCRE_LINKDLL}
 
 end.
+

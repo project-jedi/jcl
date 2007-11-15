@@ -31,7 +31,7 @@ uses
   JclQGraphics,
   {$ENDIF VisualCLX}
   {$IFDEF HasShellCtrls}
-    {$WARN UNIT_PLATFORM OFF}
+    {$WARN UNIT_PLATFORM OFF} 
   ShellCtrls,
   {$ENDIF HasShellCtrls}
   JclFileUtils;
@@ -139,7 +139,7 @@ var
 
 {$IFDEF MSWINDOWS}
 type
-  TWMDropFilesCallback = procedure(const FileName: string) of object;
+  TWMDropFilesCallback = procedure (const FileName: string) of object;
 
 procedure ProcessWMDropFiles(var Msg: TWMDropFiles; Callback: TWMDropFilesCallback; DropPoint: PPoint = nil); overload;
 var
@@ -201,23 +201,23 @@ begin
     WatchSubTree := False;
     OnChange := ShellChange;
     NotifyFilters := [
-      nfFileNameChange,
-      nfDirNameChange,
+        nfFileNameChange,
+        nfDirNameChange,
         //nfSizeChange,
-      nfWriteChange,
-      nfSecurityChange];
+        nfWriteChange,
+        nfSecurityChange];
   end;
   {$ENDIF HasShellCtrls}
   {$IFDEF VCL}
   DragAcceptFiles(Handle, True);
   {$ENDIF VCL}
   if ParamCount > 0 then
-    with OpenDialog do
-    begin
-      FileName := ParamStr(1);
-      InitialDir := ExtractFileDir(FileName);
-      LoadFile(FileName);
-    end;
+  with OpenDialog do
+  begin
+    FileName := ParamStr(1);
+    InitialDir := ExtractFileDir(FileName);
+    LoadFile(FileName);
+  end;
 end;
 
 {$IFDEF VCL}
@@ -331,8 +331,8 @@ begin
   with OriginalImage.Picture do
     if (Graphic = nil) {$IFDEF VCL} or (Graphic is TMetafile) {$ENDIF} then
       Exit;
-  W := StretchedPage.Width - 2;
-  H := StretchedPage.Height - 2;
+  W := StretchedPage.Width-2;
+  H := StretchedPage.Height-2;
   if FPreserveAspectRatio then
     with OriginalImage.Picture.Graphic do
     begin
@@ -379,14 +379,14 @@ end;
 procedure TStretchDemoForm.PrevFile(Sender: TObject);
 begin
   if FileListIndex > 0 then
-    FileListIndex := FileListIndex - 1;
+    FileListIndex  := FileListIndex - 1;
   LoadSelected;
 end;
 
 procedure TStretchDemoForm.NextFile(Sender: TObject);
 begin
   if FileListIndex < FileListView.Items.Count - 1 then
-    FileListIndex := FileListIndex + 1;
+    FileListIndex  := FileListIndex + 1;
   LoadSelected;
 end;
 
@@ -419,15 +419,15 @@ const
 begin
   case Key of
     Key_Prior:
-    begin
-      PrevFile(Self);
-      Key := 0;
-    end;
+      begin
+        PrevFile(Self);
+        Key := 0;
+      end;
     Key_Next:
-    begin
-      NextFile(Self);
-      Key := 0;
-    end;
+      begin
+        NextFile(Self);
+        Key := 0;
+      end;
   end;
 end;
 

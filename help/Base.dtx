@@ -98,40 +98,8 @@ Description:
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
-@@EJclError.CreateResRecFmt
-Summary:
-  Creates an instance of EJclError with a message loaded from the application's resource and then formatted.
-Description:
-  Creates an instance of EJclError with a message loaded from the application's
-  resource and then formatted with additional information. The message is specified
-  using the ResStringRec parameter and is used as:
-  resourcestring
-    RsMyResource = 'Oops, an error occurred with code %u';
-  raise EJclError.CreateResRecFmt(@RsMyResource, [GetLastError]);
-Parameters:
-  ResStringRec - Pointer to a resource string. See the example above.
-  Args - Array of value used to format the message string with. See the Format function for more information on how to use these parameters (internally Format is used to do the formatting so the semantics are identical).
-See also:
-  CreateResRec
-Donator:
-  Marcel van Brakel
---------------------------------------------------------------------------------
-@@EJclError.CreateResRec
-Summary:
-  Creates an instance of EJclError with a simple message loaded from the application's resource.
-Description:
-  Creates an instance of EJclError with a simple message loaded from the application's
-  resource. The message is specified using the ResStringRec parameter and is used as:
-  resourcestring
-    RsMyResource = 'Oops, an error occurred';
-  raise EJclError.CreateResRec(@RsMyResource);
-Parameters
-  ResStringRec - Pointer to a resource string. See the example above.
-See also:
-  CreateResRecFmt
-Donator:
-  Marcel van Brakel
---------------------------------------------------------------------------------
+
+
 @@EJclInternalError
 <GROUP BaseServices.ErrorHandling>
 Summary:
@@ -203,21 +171,7 @@ See also:
 Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
-@@EJclWin32Error.CreateResRec
-Summary:
-  Instantiates an instance of EJclWin32Error with a string loaded from the application's resource.
-Description:
-  CreateRes instantiates an EJclWin32Error exception class. ResStringRec is a pointer
-  to a message which is loaded from the application's resource.
-Parameters:
-  ResStringRec - ResStringRec is a pointer to a resource string.
-See also:
-  Create
-  CreateFmt
-  CreateRes
-Donator:
-  Marcel van Brakel
---------------------------------------------------------------------------------
+
 @@EJclWin32Error.LastError
 Summary:
   Contains the LastError.
@@ -592,38 +546,9 @@ Description:
 Donator:
   Petr Vones
 --------------------------------------------------------------------------------
-@@TObjectList.Clear
-Summary:
-  Deletes all items from the list.
-Description:
-  Clear empties the list, frees the memory used to store the Objects array, and
-  sets Count and Capacity to 0. If OwnsObjects is True, Clear also frees the objects
-  in the list.
-Donator:
-  Petr Vones
---------------------------------------------------------------------------------
-@@TObjectList.Create
-Summary:
-  Creates an instance of TObjectList
-Description:
-  Creates an instance of TObjectList and initializes the OwnsObjects property.
-Parameters:
-  AOwnsObjects - Initial value for the OwnsObjects property.
-Donator:
-  Petr Vones
---------------------------------------------------------------------------------
-@@TObjectList.OwnsObjects
-Summary:
-  Determines whether the class owns it's items.
-Description:
-  The OwnsObjects property determines whether the class owns the objects it stores.
-  If set to True, clearing the list through the Clear method will free all objects
-  in addition to removing them from the list. If set to False, clearing the list
-  through the Clear method merely removes the items from the list but does not free
-  the objects.
-Donator:
-  Petr Vones
---------------------------------------------------------------------------------
+
+
+
 @@RaiseLastOSError
 <GROUP BaseServices.Compatibility>
 Summary:

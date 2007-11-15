@@ -1,35 +1,37 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License"); you may not use this file except in           }
-{ compliance with the License. You may obtain a copy of the License at       }
-{ http://www.mozilla.org/MPL/                                                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is jcl.inc                                               }
-{                                                                            }
-{ The Initial Developer of the Original Code is Marcel van Brakel.           }
-{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. }
-{                                                                            }
-{ Contributors:                                                              }
-{   Marcel van Brakel                                                        }
-{   Matthias Thoma (mthoma)                                                  }
-{   Petr Vones                                                               }
-{   Robert Marquardt (marquardt)                                             }
-{   Robert Rossmair (rrossmair)                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ This include file defines various JCL specific defines. The more generic   }
-{ defines are defined in the jedi.inc file which is shared with the JEDI VCL.}
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{  The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License");}
+{  you may not use this file except in compliance with the License. You may obtain a copy of the   }
+{  License at http://www.mozilla.org/MPL/                                                          }
+{                                                                                                  }
+{  Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF  }
+{  ANY KIND, either express or implied. See the License for the specific language governing rights }
+{  and limitations under the License.                                                              }
+{                                                                                                  }
+{ The Original Code is jcl.inc                                                                     }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel.                       }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{   Marcel van Brakel                                                                              }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones                                                                                     }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This include file defines various JCL specific defines. The more generic defines are defined in  }
+{ the jedi.inc file which is shared with the JEDI VCL.                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {$B-} // Boolean shortcut evaluation
 {$H+} // Long strings
@@ -57,6 +59,11 @@ ALERT_jedi_inc_incompatible
       {$I jcld10.net.inc}
       {$DEFINE JCL_CONFIGURED}
     {$ENDIF BDS4}
+    {----------------------------}
+    {$IFDEF BDS5}
+      {$I jcld11.net.inc}
+      {$DEFINE JCL_CONFIGURED}
+    {$ENDIF BDS5}
     {----------------------------}
   {$ELSE ~CLR}
     {----------------------------}
@@ -217,6 +224,38 @@ ALERT_jedi_inc_incompatible
   {$DEFINE BZIP2_EXPORT_CDECL}
 {$ENDIF BZIP2_LINKONREQUEST}
 
+{$IFDEF UNICODE_RAW_DATA}
+  {$UNDEF UNICODE_ZLIB_DATA}
+  {$UNDEF UNICODE_BZIP2_DATA}
+{$ENDIF UNICODE_RAW_DATA}
+
+{$IFDEF UNICODE_ZLIB_DATA}
+  {$UNDEF UNICODE_RAW_DATA}
+  {$UNDEF UNICODE_BZIP2_DATA}
+{$ENDIF UNICODE_ZLIB_DATA}
+
+{$IFNDEF UNICODE_ZLIB_DATA}
+  {$IFNDEF UNICODE_BZIP2_DATA}
+    {$DEFINE UNICODE_RAW_DATA}
+  {$ENDIF ~UNICODE_BZIP2_DATA}
+{$ENDIF ~UNICODE_ZLIB_DATA}
+
+{$IFDEF CONTAINER_ANSISTR}
+  {$UNDEF CONTAINER_WIDESTR}
+  {$UNDEF CONTAINER_NOSTR}
+{$ENDIF CONTAINER_ANSISTR}
+
+{$IFDEF CONTAINER_WIDESTR}
+  {$UNDEF CONTAINER_NOSTR}
+{$ENDIF CONTAINER_WIDESTR}
+
+{$IFNDEF CONTAINER_ANSISTR}
+  {$IFNDEF CONTAINER_WIDESTR}
+    {$IFNDEF CONTAINER_NOSTR}
+      {$DEFINE CONTAINER_ANSISTR}
+    {$ENDIF ~CONTAINER_NOSTR}
+  {$ENDIF ~CONTAINER_WIDESTR}
+{$ENDIF ~CONTAINER_ANSISTR}
 
 {$IFDEF SUPPORTS_UNSAFE_WARNINGS}
   {$WARN UNSAFE_TYPE OFF}

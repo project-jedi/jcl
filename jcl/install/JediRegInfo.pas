@@ -1,28 +1,34 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JediInfo.pas, released on 2006-02-26.
-
-The Initial Developer of the Original Code is Andreas Hausladen
-(Andreas dott Hausladen att gmx dott de)
-Portions created by Andreas Hausladen are Copyright (C) 2006 Andreas Hausladen.
-All Rights Reserved.
-
-Contributor(s): -
-
-You may retrieve the latest version of this file at the Project JEDI's JCL / JVCL
-home page, located at http://jcl.sourceforge.net / http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
+{**************************************************************************************************}
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License")  }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/MPL-1.1.html                                               }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either expressed or implied. See the License for the specific language governing       }
+{ rights and limitations under the License.                                                        }
+{                                                                                                  }
+{ The Original Code is: JediInfo.pas, released on 2006-02-26.                                      }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Andreas Hausladen                                  }
+{ (Andreas dott Hausladen att gmx dott de)                                                         }
+{ Portions created by Andreas Hausladen are Copyright (C) 2006 Andreas Hausladen.                  }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
+{ You may retrieve the latest version of this file at the Project JEDI's JCL / JVCL                }
+{ home page, located at http://jcl.sourceforge.net / http://jvcl.sourceforge.net                   }
+{                                                                                                  }
+{ Known Issues:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J-,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
@@ -33,7 +39,7 @@ unit JediRegInfo;
 interface
 
 uses
-  SysUtils, Classes;
+  Windows, SysUtils, Classes;
 
 type
   TJediInformation = record
@@ -47,20 +53,22 @@ type
   values into the registry key IdeRegKey\Jedi\ProjectName. Returns True if the
   values could be written. }
 function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
-  BplDir, RootDir: string): Boolean;
+  BplDir, RootDir: string; RootKey: HKEY = HKEY_CURRENT_USER): Boolean;
 
 { RemoveJediInformation() deletes the registry key IdeRegKey\Jedi\ProjectName.
   If there is no further subkeys to IdeRegKey\Jedi and no values in this key,
   the whole Jedi-key is deleted. }
-procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string);
+procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string;
+  RootKey: HKEY = HKEY_CURRENT_USER);
 
 { ReadJediInformation() reads the JEDI Information from the registry. Returns
   False if Version='' or DcpDir='' or BplDir='' or RootDir=''. }
 function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Version,
-  DcpDir, BplDir, RootDir: string): Boolean; overload;
+  DcpDir, BplDir, RootDir: string; RootKey: HKEY = HKEY_CURRENT_USER): Boolean; overload;
 
 { ReadJediInformation() reads the JEDI Information from the registry. }
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string): TJediInformation; overload;
+function ReadJediRegInformation(const IdeRegKey, ProjectName: string
+  ; RootKey: HKEY = HKEY_CURRENT_USER): TJediInformation; overload;
 
 { ParseVersionNumber() converts a version number 'major.minor.release.build' to
   cardinal like the JclBase JclVersion constant. If the VersionStr is invalid
@@ -70,7 +78,7 @@ function ParseVersionNumber(const VersionStr: string): Cardinal;
 implementation
 
 uses
-  Windows, Registry;
+  Registry;
 
 {$IFNDEF RTL140_UP}
 function ExcludeTrailingPathDelimiter(const Path: string): string;
@@ -83,7 +91,7 @@ end;
 {$ENDIF ~RTL140_UP}
 
 function InstallJediRegInformation(const IdeRegKey, ProjectName, Version, DcpDir,
-  BplDir, RootDir: string): Boolean;
+  BplDir, RootDir: string; RootKey: HKEY): Boolean;
 var
   Reg: TRegistry;
 begin
@@ -92,7 +100,7 @@ begin
   begin
     Reg := TRegistry.Create;
     try
-      Reg.RootKey := HKEY_CURRENT_USER;
+      Reg.RootKey := RootKey;
       if Reg.OpenKey(IdeRegKey + '\Jedi', True) then // do not localize
         Reg.CloseKey;
       if Reg.OpenKey(IdeRegKey + '\Jedi\' + ProjectName, True) then // do not localize
@@ -109,7 +117,7 @@ begin
   end;
 end;
 
-procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string);
+procedure RemoveJediRegInformation(const IdeRegKey, ProjectName: string; RootKey: HKEY);
 var
   Reg: TRegistry;
   Names: TStringList;
@@ -117,7 +125,7 @@ var
 begin
   Reg := TRegistry.Create;
   try
-    Reg.RootKey := HKEY_CURRENT_USER;
+    Reg.RootKey := RootKey;
 // (outchy) do not delete target settings
 //    Reg.DeleteKey(IdeRegKey + '\Jedi\' + ProjectName); // do not localize
 
@@ -173,7 +181,7 @@ begin
 end;
 
 function ReadJediRegInformation(const IdeRegKey, ProjectName: string; out Version,
-  DcpDir, BplDir, RootDir: string): Boolean; overload;
+  DcpDir, BplDir, RootDir: string; RootKey: HKEY): Boolean; overload;
 var
   Reg: TRegistry;
 begin
@@ -183,7 +191,7 @@ begin
   RootDir := '';
   Reg := TRegistry.Create;
   try
-    Reg.RootKey := HKEY_CURRENT_USER;
+    Reg.RootKey := RootKey;
     if Reg.OpenKeyReadOnly(IdeRegKey + '\Jedi\' + ProjectName) then // do not localize
     begin
       if Reg.ValueExists('Version') then // do not localize
@@ -201,10 +209,10 @@ begin
   Result := (Version <> '') and (DcpDir <> '') and (BplDir <> '') and (RootDir <> '');
 end;
 
-function ReadJediRegInformation(const IdeRegKey, ProjectName: string): TJediInformation;
+function ReadJediRegInformation(const IdeRegKey, ProjectName: string; RootKey: HKEY): TJediInformation;
 begin
   ReadJediRegInformation(IdeRegKey, ProjectName, Result.Version, Result.DcpDir,
-    Result.BplDir, Result.RootDir);
+    Result.BplDir, Result.RootDir, RootKey);
 end;
 
 function ParseVersionNumber(const VersionStr: string): Cardinal;

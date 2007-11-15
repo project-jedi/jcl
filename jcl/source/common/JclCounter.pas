@@ -28,8 +28,12 @@
 { This unit contains a high performance counter class which can be used for highly accurate timing }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCounter;
 
@@ -98,6 +102,15 @@ uses
   SysUtils,
   JclResources;
 
+procedure NoCounterError;
+begin
+  {$IFDEF CLR}
+  raise EJclCounterError.Create(RsNoCounter);
+  {$ELSE}
+  raise EJclCounterError.CreateRes(@RsNoCounter);
+  {$ENDIF CLR}
+end;
+
 constructor TJclCounter.Create(const Compensate: Boolean);
 const
   Iterations: Integer = 10000;
@@ -109,7 +122,7 @@ begin
 
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefore we have to divide by 10E5
@@ -124,7 +137,7 @@ begin
     // This allows the Stop method to compensate for it and return a more
     // accurate result. Thanks to John O'Harrow (john att elmcrest dott demon dott co dott uk)
     TmpOverhead := 0;
-    for Count := 0 to Iterations - 1 do
+    for Count := 0 to Iterations-1 do
     begin
       Start;
       Stop;
@@ -144,7 +157,7 @@ begin
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStart) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -156,7 +169,7 @@ function TJclCounter.Stop: Float;
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStop) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -174,7 +187,7 @@ var
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(TimeNow) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -187,12 +200,12 @@ procedure TJclCounter.Continue;
 var
   Overall: Float;
 begin
-  if not (FCounting) then
-  begin
-    Overall := FOverallElapsedTime;
-    Start;
-    FOverallElapsedTime := Overall;
-  end;
+   if not(FCounting) then
+   begin
+     Overall := FOverallElapsedTime;
+     Start;
+     FOverallElapsedTime := Overall;
+   end;
 end;
 
 procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);

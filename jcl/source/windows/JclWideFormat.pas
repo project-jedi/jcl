@@ -29,8 +29,12 @@
 { find it hard to document en masse.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 { TODO : Replacing the calls to MultiBytetoWideChar is all what's needed to make this crossplatform }
 { TODO : Fix Internal Error DBG1384 in BCB 6 compilation }
@@ -117,8 +121,7 @@ type
     Therefore, there are special stPrecDigit and stPrecStar modes that differ
     from stDigit and stStar by checking for and overriding the default Prec
     value when necessary. }
-  TState = (stError, stBeginAcc, stAcc, stPercent, stDigit, stPrecDigit, stStar, stPrecStar,
-    stColon, stDash, stDot, stFloat, stInt, stPointer, stString);
+  TState = (stError, stBeginAcc, stAcc, stPercent, stDigit, stPrecDigit, stStar, stPrecStar, stColon, stDash, stDot, stFloat, stInt, stPointer, stString);
   TCharClass = (ccOther, ccPercent, ccDigit, ccStar, ccColon, ccDash, ccDot, ccSpecF, ccSpecI, ccSpecP, ccSpecS);
 
   { The buffer is 64 bytes long. When converting a floating-point value, this
@@ -159,45 +162,30 @@ const
     {g}ccSpecF,   {h}ccOther, {i}ccOther, {j}ccOther, {k}ccOther, {l}ccOther,
     {m}ccSpecF,   {n}ccSpecF, {o}ccOther, {p}ccSpecP, {q}ccOther, {r}ccOther,
     {s}ccSpecS,   {t}ccOther, {u}ccSpecI, {v}ccOther, {w}ccOther, {x}ccSpecI
-    );
+  );
   { Given the previous state and the class of the current character, this table
     determines what the next state should be. }
-  StateTable: array [TState{old state}, TCharClass{new char}] of TState {new state} = (
+  StateTable: array [TState{old state}, TCharClass{new char}] of TState {new state}= (
     {             ccOther,    ccPercent,  ccDigit,     ccStar,     ccColon,    ccDash,     ccDot,      ccSpecF,    ccSpecI,    ccSpecP,    ccSpecS }
-    {stError}    (stBeginAcc, stPercent, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc,
-    stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
-    {stBeginAcc} (stAcc, stPercent, stAcc, stAcc, stAcc, stAcc, stAcc,
-    stAcc, stAcc, stAcc, stAcc),
-    {stAcc}      (stAcc, stPercent, stAcc, stAcc, stAcc, stAcc, stAcc,
-    stAcc, stAcc, stAcc, stAcc),
-    {stPercent}  (stError, stBeginAcc, stDigit, stStar, stError, stDash, stDot,
-    stFloat, stInt, stPointer, stString),
-    {stDigit}    (stError, stError, stDigit, stError, stColon, stError,
-    stDot, stFloat, stInt, stPointer, stString),
-    {stPrecDigit}(stError, stError, stPrecDigit, stError, stError, stError,
-    stError, stFloat, stInt, stPointer, stString),
-    {stStar}     (stError, stError, stError, stError, stColon, stError,
-    stDot, stFloat, stInt, stPointer, stString),
-    {stPrecStar} (stError, stError, stError, stError, stError, stError,
-    stError, stFloat, stInt, stPointer, stString),
-    {stColon}    (stError, stError, stDigit, stStar, stError, stDash, stDot,
-    stFloat, stInt, stPointer, stString),
-    {stDash}     (stError, stError, stDigit, stStar, stError, stError,
-    stDot, stFloat, stInt, stPointer, stString),
-    {stDot}      (stError, stError, stPrecDigit, stPrecStar, stError, stError,
-    stError, stFloat, stInt, stPointer, stString),
-    {stFloat}    (stBeginAcc, stPercent, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc,
-    stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
-    {stInt}      (stBeginAcc, stPercent, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc,
-    stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
-    {stPointer}  (stBeginAcc, stPercent, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc,
-    stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
-    {stString}   (stBeginAcc, stPercent, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc,
-    stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc)
-    );
+    {stError}    (stBeginAcc, stPercent,  stBeginAcc,  stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
+    {stBeginAcc} (stAcc,      stPercent,  stAcc,       stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc),
+    {stAcc}      (stAcc,      stPercent,  stAcc,       stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc,      stAcc),
+    {stPercent}  (stError,    stBeginAcc, stDigit,     stStar,     stError,    stDash,     stDot,      stFloat,    stInt,      stPointer,  stString),
+    {stDigit}    (stError,    stError,    stDigit,     stError,    stColon,    stError,    stDot,      stFloat,    stInt,      stPointer,  stString),
+    {stPrecDigit}(stError,    stError,    stPrecDigit, stError,    stError,    stError,    stError,    stFloat,    stInt,      stPointer,  stString),
+    {stStar}     (stError,    stError,    stError,     stError,    stColon,    stError,    stDot,      stFloat,    stInt,      stPointer,  stString),
+    {stPrecStar} (stError,    stError,    stError,     stError,    stError,    stError,    stError,    stFloat,    stInt,      stPointer,  stString),
+    {stColon}    (stError,    stError,    stDigit,     stStar,     stError,    stDash,     stDot,      stFloat,    stInt,      stPointer,  stString),
+    {stDash}     (stError,    stError,    stDigit,     stStar,     stError,    stError,    stDot,      stFloat,    stInt,      stPointer,  stString),
+    {stDot}      (stError,    stError,    stPrecDigit, stPrecStar, stError,    stError,    stError,    stFloat,    stInt,      stPointer,  stString),
+    {stFloat}    (stBeginAcc, stPercent,  stBeginAcc,  stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
+    {stInt}      (stBeginAcc, stPercent,  stBeginAcc,  stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
+    {stPointer}  (stBeginAcc, stPercent,  stBeginAcc,  stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc),
+    {stString}   (stBeginAcc, stPercent,  stBeginAcc,  stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc, stBeginAcc)
+  );
   { This table is used in converting an ordinal value to a string in either
     decimal or hexadecimal format. }
-  ConvertChars: array [0..$f] of WideChar = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
+  ConvertChars: array [0..$f] of WideChar = ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
 
 // Argument-prepration routines
 procedure FetchStarArgument(const Arg: PVarRec; const ArgIndex: Cardinal;
@@ -217,8 +205,7 @@ function PrepareString(const Format: WideString; const Buffer: PConversionBuffer
 
 // WideFormat support routines
 function EnsureStringLen(const NeededLen, CurrentLen: Cardinal; var S: WideString): Cardinal; forward;
-procedure CopyBuffer(var Dest: WideString; const CharCount: Cardinal; const Source: Pointer;
-  var ResultLen, DestIndex: Cardinal); forward;
+procedure CopyBuffer(var Dest: WideString; const CharCount: Cardinal; const Source: Pointer; var ResultLen, DestIndex: Cardinal); forward;
 function FillWideChar(var X; Count: Cardinal; const Value: WideChar): Cardinal; forward;
 
 { Error-reporting routines
@@ -234,13 +221,10 @@ function FillWideChar(var X; Count: Cardinal; const Value: WideChar): Cardinal; 
   detect which execution paths use variables and which don't, and that reduces
   the number of inaccurate compiler hints and warnings. }
 function FormatNoArgumentError(const ArgIndex: Cardinal): Exception; forward;
-function FormatNoArgumentErrorEx(const Format: WideString;
-  const FormatStart, FormatEnd, ArgIndex: Cardinal): Exception; forward;
+function FormatNoArgumentErrorEx(const Format: WideString; const FormatStart, FormatEnd, ArgIndex: Cardinal): Exception; forward;
 function FormatSyntaxError(const CharIndex: Cardinal): Exception; forward;
-function FormatBadArgumentTypeError(const VType: Byte; const ArgIndex: Cardinal;
-  const Allowed: TDelphiSet): Exception; forward;
-function FormatBadArgumentTypeErrorEx(const Format: WideString; const FormatStart, FormatEnd: Cardinal;
-  const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception; forward;
+function FormatBadArgumentTypeError(const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception; forward;
+function FormatBadArgumentTypeErrorEx(const Format: WideString; const FormatStart, FormatEnd: Cardinal; const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception; forward;
 
 // === WideFormat ==============================================================
 
@@ -298,143 +282,142 @@ begin
       stError:
         raise FormatSyntaxError(Src); // syntax error at index [Src]
       stBeginAcc:
-      begin
+        begin
           // Begin accumulating characters to copy to Result
-        P := @Format[Src];
-        CharCount := 1;
-      end;
+          P := @Format[Src];
+          CharCount := 1;
+        end;
       stAcc:
         Inc(CharCount);
       stPercent:
-      begin
-        if CharCount > 0 then
         begin
+          if CharCount > 0 then
+          begin
             // Copy accumulated characters into result
-          CopyBuffer(Result, CharCount, P, ResultLen, Dest);
-          CharCount := 0;
-        end;
+            CopyBuffer(Result, CharCount, P, ResultLen, Dest);
+            CharCount := 0;
+          end;
           // Prepare a new format string
-        Width := 0;
-        Prec := NoPrecision;
-        FormatStart := Src;
-        LeftAlign := False;
-      end;
+          Width := 0;
+          Prec := NoPrecision;
+          FormatStart := Src;
+          LeftAlign := False;
+        end;
       stDigit:
-      begin
+        begin
           // We read into Width, but we might actually be reading the ArgIndex
           // value. If that turns out to be the case, it gets addressed in the
           // stColon state below and Width is reset to its default value, 0.
-        Width := Width * 10 + Cardinal(Ord(C) - Ord('0'));
-      end;
+          Width := Width * 10 + Cardinal(Ord(C) - Ord('0'));
+        end;
       stPrecDigit:
-      begin
-        if Prec = NoPrecision then
-          Prec := 0;
-        Prec := Prec * 10 + Cardinal(Ord(C) - Ord('0'));
-      end;
+        begin
+          if Prec = NoPrecision then
+            Prec := 0;
+          Prec := Prec * 10 + Cardinal(Ord(C) - Ord('0'));
+        end;
       stStar, stPrecStar:
-      begin
-        if ArgIndex > Cardinal(High(Args)) then
-          raise FormatNoArgumentError(ArgIndex);
+        begin
+          if ArgIndex > Cardinal(High(Args)) then
+            raise FormatNoArgumentError(ArgIndex);
           // (Prec|Width) := Args[ArgIndex++]
-        Arg := @Args[ArgIndex];
-        if State = stStar then
-          FetchStarArgument(Arg, ArgIndex, Width)
-        else
-          FetchStarArgument(Arg, ArgIndex, Prec);
-        Inc(ArgIndex);
-      end;
+          Arg := @Args[ArgIndex];
+          if State = stStar then
+            FetchStarArgument(Arg, ArgIndex, Width)
+          else
+            FetchStarArgument(Arg, ArgIndex, Prec);
+          Inc(ArgIndex);
+        end;
       stColon:
-      begin
-        ArgIndex := Width;
-        Width := 0;
-      end;
+        begin
+          ArgIndex := Width;
+          Width := 0;
+        end;
       stDash:
         LeftAlign := True;
       stDot: ;
       stFloat, stInt, stPointer, stString:
-      begin
-        if ArgIndex > Cardinal(High(Args)) then
-          raise FormatNoArgumentErrorEx(Format, FormatStart, Src, ArgIndex);
-        Arg := @Args[ArgIndex];
-        case State of
-          stFloat:
-          begin
-            P := PrepareFloat(Format, C, Prec, @Buffer, FormatStart, Src, ArgIndex, Arg, AnsiCount);
-            CharCount := AnsiCount;
-            Wide := False;
-          end;
-          stInt:
-          begin
-            P := PrepareInt(Format, C, Prec, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
-            Wide := True;
-          end;
-          stPointer:
-          begin
-            P := PreparePointer(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
-            Wide := True;
-          end;
-        else {stString:}
         begin
-          Wide := Arg^.VType in [vtWideChar, vtPWideChar, vtBoolean, vtVariant, vtWideString];
-          case Arg^.VType of
-            vtVariant:
+          if ArgIndex > Cardinal(High(Args)) then
+            raise FormatNoArgumentErrorEx(Format, FormatStart, Src, ArgIndex);
+          Arg := @Args[ArgIndex];
+          case State of
+            stFloat:
+              begin
+                P := PrepareFloat(Format, C, Prec, @Buffer, FormatStart, Src, ArgIndex, Arg, AnsiCount);
+                CharCount := AnsiCount;
+                Wide := False;
+              end;
+            stInt:
+              begin
+                P := PrepareInt(Format, C, Prec, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
+                Wide := True;
+              end;
+            stPointer:
+              begin
+                P := PreparePointer(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
+                Wide := True;
+              end;
+          else {stString:}
             begin
-              TempWS := Arg^.VVariant^;
-              CharCount := Length(TempWS);
-              P := Pointer(TempWS);
-            end;
+              Wide := Arg^.VType in [vtWideChar, vtPWideChar, vtBoolean, vtVariant, vtWideString];
+              case Arg^.VType of
+                vtVariant:
+                  begin
+                    TempWS := Arg^.VVariant^;
+                    CharCount := Length(TempWS);
+                    P := Pointer(TempWS);
+                  end;
                 {$IFDEF FORMAT_EXTENSIONS}
-            vtBoolean:
-            begin
-              TempWS := BooleanToStr(Arg^.VBoolean);
-              CharCount := Length(TempWS);
-              P := Pointer(TempWS);
-            end;
+                vtBoolean:
+                  begin
+                    TempWS := BooleanToStr(Arg^.VBoolean);
+                    CharCount := Length(TempWS);
+                    P := Pointer(TempWS);
+                  end;
                 {$ENDIF FORMAT_EXTENSIONS}
-          else
-            P := PrepareString(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
-          end;
+              else
+                P := PrepareString(Format, @Buffer, FormatStart, Src, ArgIndex, Arg, CharCount);
+              end;
               // We want the length in WideChars, not AnsiChars; they aren't
               // necessarily the same.
-          if not Wide then
-          begin
-            AnsiCount := CharCount;
-            if CharCount > 0 then
-              CharCount := MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
-          end;
+              if not Wide then
+              begin
+                AnsiCount := CharCount;
+                if CharCount > 0 then
+                  CharCount := MultiByteToWideChar(DefaultCodePage, 0, P, AnsiCount, nil, 0);
+              end;
               // For strings, Prec can only truncate, never lengthen.
-          if Prec < CharCount then
-            CharCount := Prec;
-        end; // stString case
-        end; // case State
-        Inc(ArgIndex);
+              if Prec < CharCount then
+                CharCount := Prec;
+            end; // stString case
+          end; // case State
+          Inc(ArgIndex);
 
-        if Integer(Width) < 0 then
-          Width := 0;
-        if (Width = 0) and (CharCount = 0) then
-          continue;
+          if Integer(Width) < 0 then
+            Width := 0;
+          if (Width = 0) and (CharCount = 0) then continue;
 
           // This code prepares for the buffer-copying code.
-        MinWidth := CharCount;
-        if Width > MinWidth then
-          SpacesNeeded := Width - MinWidth
-        else
-          SpacesNeeded := 0;
-        ResultLen := EnsureStringLen(Pred(Dest + MinWidth + SpacesNeeded), ResultLen, Result);
+          MinWidth := CharCount;
+          if Width > MinWidth then
+            SpacesNeeded := Width - MinWidth
+          else
+            SpacesNeeded := 0;
+          ResultLen := EnsureStringLen(Pred(Dest + MinWidth + SpacesNeeded), ResultLen, Result);
 
           // This code fills the resultant buffer.
-        if (SpacesNeeded > 0) and not LeftAlign then
-          Inc(Dest, FillWideChar(Result[Dest], SpacesNeeded, WideSpace));
-        if Wide then
-          MoveWideChar(P^, Result[Dest], CharCount)
-        else
-          MultiByteToWideChar(DefaultCodePage, 0, P, Integer(AnsiCount), @Result[Dest], Integer(CharCount));
-        Inc(Dest, CharCount);
-        CharCount := 0;
-        if (SpacesNeeded > 0) and LeftAlign then
-          Inc(Dest, FillWideChar(Result[Dest], SpacesNeeded, WideSpace));
-      end; // case stFloat, stInt, stPointer, stString
+          if (SpacesNeeded > 0) and not LeftAlign then
+            Inc(Dest, FillWideChar(Result[Dest], SpacesNeeded, WideSpace));
+          if Wide then
+            MoveWideChar(P^, Result[Dest], CharCount)
+          else
+            MultiByteToWideChar(DefaultCodePage, 0, P, Integer(AnsiCount), @Result[Dest], Integer(CharCount));
+          Inc(Dest, CharCount);
+          CharCount := 0;
+          if (SpacesNeeded > 0) and LeftAlign then
+            Inc(Dest, FillWideChar(Result[Dest], SpacesNeeded, WideSpace));
+        end; // case stFloat, stInt, stPointer, stString
     end; // case C
   end; // for
   if CharCount > 0 then
@@ -457,13 +440,13 @@ function ModDiv32(const Dividend, Divisor: Cardinal; out Quotient: Cardinal): Ca
   Quotient := Dividend div Divisor;
   Result := Dividend mod Divisor; }
 asm
-  PUSH    ECX
-  MOV     ECX, EDX
-  xor     EDX, EDX
-  div     ECX
-  POP     ECX
-  MOV[ECX], EAX
-  MOV     EAX, EDX
+        PUSH    ECX
+        MOV     ECX, EDX
+        XOR     EDX, EDX
+        DIV     ECX
+        POP     ECX
+        MOV     [ECX], EAX
+        MOV     EAX, EDX
 end;
 
 function ConvertInt32(Value: Cardinal; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -487,26 +470,26 @@ function ModDiv64(var Dividend: Int64; const Divisor: Cardinal; out Quotient: In
   Quotient := Dividend div Divisor;
   Result := Dividend mod Divisor; }
 asm
-  PUSH    0 // prepare for second division
-  PUSH    EDX
+        PUSH    0 // prepare for second division
+        PUSH    EDX
 
-  PUSH    DWORD PTR [EAX] // save dividend
-  PUSH    DWORD PTR [EAX+4]
+        PUSH    DWORD PTR [EAX] // save dividend
+        PUSH    DWORD PTR [EAX+4]
 
-  PUSH    ECX // save quotient
+        PUSH    ECX // save quotient
 
-  PUSH    0 // prepare for first division
-  PUSH    EDX
-  MOV     EDX, [EAX+4]
-  MOV     EAX, [EAX]
-  CALL    System.@_lludiv
-  POP     ECX // restore quotient
-  MOV[ECX], EAX // store quotient
-  MOV[ECX+4], EDX
+        PUSH    0 // prepare for first division
+        PUSH    EDX
+        MOV     EDX, [EAX+4]
+        MOV     EAX, [EAX]
+        CALL    System.@_lludiv
+        POP     ECX // restore quotient
+        MOV     [ECX], EAX // store quotient
+        MOV     [ECX+4], EDX
 
-  POP     EDX // restore dividend
-  POP     EAX
-  CALL    System.@_llumod
+        POP     EDX // restore dividend
+        POP     EAX
+        CALL    System.@_llumod
 end;
 
 function ConvertInt64(Value: Int64; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -532,7 +515,7 @@ function GetPClassName(const Cls: TClass): PShortString;
   AnsiString.
   Result := JclSysUtils.GetVirtualMethod(Cls, vmtClassName div SizeOf(Pointer)); }
 asm
-  MOV     EAX, [EAX].vmtClassName
+        MOV     EAX, [EAX].vmtClassName
 end;
 {$ENDIF FORMAT_EXTENSIONS}
 
@@ -600,33 +583,33 @@ var
 begin
   case Arg.VType of
     vtExtended:
-    begin
-      ValueType := fvExtended;
-      FloatVal := Arg.VExtended;
-    end;
+      begin
+        ValueType := fvExtended;
+        FloatVal := Arg.VExtended;
+      end;
     vtCurrency:
-    begin
-      ValueType := fvCurrency;
-      FloatVal := Arg.VCurrency;
-    end;
+      begin
+        ValueType := fvCurrency;
+        FloatVal := Arg.VCurrency;
+      end;
     {$IFDEF FORMAT_EXTENSIONS}
     vtVariant:
-    begin
+      begin
         // We can't give FloatToText a pointer to a Variant, so we extract the
         // Variant's value and point to a temporary value instead.
-      if VarType(Arg.VVariant^) and varCurrency <> 0 then
-      begin
-        TempCurr := Arg.VVariant^;
-        FloatVal := @TempCurr;
-        ValueType := fvCurrency;
-      end
-      else
-      begin
-        TempExt := Arg.VVariant^;
-        FloatVal := @TempExt;
-        ValueType := fvExtended;
+        if VarType(Arg.VVariant^) and varCurrency <> 0 then
+        begin
+          TempCurr := Arg.VVariant^;
+          FloatVal := @TempCurr;
+          ValueType := fvCurrency;
+        end
+        else
+        begin
+          TempExt := Arg.VVariant^;
+          FloatVal := @TempExt;
+          ValueType := fvExtended;
+        end;
       end;
-    end;
     {$ENDIF FORMAT_EXTENSIONS}
   else
     raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedFloatTypes);
@@ -683,32 +666,32 @@ begin
     Base := 10;
   case Arg^.VType of
     vtInteger {$IFDEF FORMAT_EXTENSIONS}, vtVariant {$ENDIF}:
-    begin
+      begin
         {$IFDEF FORMAT_EXTENSIONS}
-      if Arg^.VType <> vtInteger then
-        Temp32 := Arg^.VVariant^
-      else
+        if Arg^.VType <> vtInteger then
+          Temp32 := Arg^.VVariant^
+        else
         {$ENDIF FORMAT_EXTENSIONS}
-        Temp32 := Cardinal(Arg^.VInteger);
+          Temp32 := Cardinal(Arg^.VInteger);
         // The value may be signed and negative, but the converter only
         // interprets unsigned values.
-      Neg := ((C = 'd') or (C = 'D')) and (Integer(Temp32) < 0);
-      if Neg then
-        SafeNegate32(Integer(Temp32));
-      Result := @Buffer[High(Buffer^)];
-      CharCount := ConvertInt32(Temp32, Base, Result);
-    end;
+        Neg := ((C = 'd') or (C = 'D')) and (Integer(Temp32) < 0);
+        if Neg then
+          SafeNegate32(Integer(Temp32));
+        Result := @Buffer[High(Buffer^)];
+        CharCount := ConvertInt32(Temp32, Base, Result);
+      end;
     vtInt64:
-    begin
-      Temp64 := Arg^.VInt64^;
+      begin
+        Temp64 := Arg^.VInt64^;
         // The value may be signed and negative, but the converter only
         // interprets unsigned values.
-      Neg := ((C = 'd') or (C = 'D')) and (Temp64 < 0);
-      if Neg then
-        SafeNegate64(Temp64);
-      Result := @Buffer[High(Buffer^)];
-      CharCount := ConvertInt64(Temp64, Base, Result);
-    end;
+        Neg := ((C = 'd') or (C = 'D')) and (Temp64 < 0);
+        if Neg then
+          SafeNegate64(Temp64);
+        Result := @Buffer[High(Buffer^)];
+        CharCount := ConvertInt64(Temp64, Base, Result);
+      end;
   else
     raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedIntegerTypes);
   end;
@@ -738,8 +721,7 @@ function PreparePointer(const Format: WideString; const Buffer: PConversionBuffe
 { The workings are similar to the integer-converting code above, but the pointer
   specifier accepts a few more types that make it worth writing separate code. }
 const
-  AllowedPointerTypes: TDelphiSet = [vtPointer{$IFDEF FORMAT_EXTENSIONS}, vtInterface, vtObject,
-    vtPChar, vtPWideChar{$ENDIF}];
+  AllowedPointerTypes: TDelphiSet = [vtPointer{$IFDEF FORMAT_EXTENSIONS}, vtInterface, vtObject, vtPChar, vtPWideChar{$ENDIF}];
 begin
   if Arg.VType in AllowedPointerTypes then
   begin
@@ -760,56 +742,55 @@ end;
 
 function PrepareString(const Format: WideString; const Buffer: PConversionBuffer;
   const FormatStart, Src, ArgIndex: Cardinal; const Arg: PVarRec;
-  out CharCount: Cardinal): Pointer;
+  out CharCount: Cardinal): Pointer; 
 { This routine does not handle ALL the argument types for the %s specifier. It
   does not handle Variant, and when FORMAT_EXTENSIONS is defined, it does not
   handle Boolean, either. Those types require use of a temporary WideString
   variable (TempWS), and if that were assigned here, then the pointer that this
   function returns would be invalidated when the string goes out of scope. }
 const
-  AllowedStringTypes: TDelphiSet = [vtChar, vtWideChar, vtString, vtPChar, vtPWideChar,
-    vtVariant, vtAnsiString, vtWideString{$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}];
+  AllowedStringTypes: TDelphiSet = [vtChar, vtWideChar, vtString, vtPChar, vtPWideChar, vtVariant, vtAnsiString, vtWideString{$IFDEF FORMAT_EXTENSIONS}, vtBoolean, vtClass{$ENDIF}];
 begin
   case Arg^.VType of
     vtChar, vtWideChar:
-    begin
-      Assert(@Arg^.VChar = @Arg^.VWideChar);
-      Result := @Arg^.VChar;
-      CharCount := 1;
-    end;
+      begin
+        Assert(@Arg^.VChar = @Arg^.VWideChar);
+        Result := @Arg^.VChar;
+        CharCount := 1;
+      end;
     vtString: // ShortString
-    begin
-      CharCount := Length(Arg^.VString^);
-      Result := @Arg^.VString^[1];
-    end;
+      begin
+        CharCount := Length(Arg^.VString^);
+        Result := @Arg^.VString^[1];
+      end;
     vtPChar:
-    begin
-      Result := Arg^.VPChar;
-      CharCount := StrLen(Result);
-    end;
+      begin
+        Result := Arg^.VPChar;
+        CharCount := StrLen(Result);
+      end;
     vtPWideChar:
-    begin
-      Result := Arg^.VPWideChar;
-      CharCount := StrLenW(Result);
-    end;
+      begin
+        Result := Arg^.VPWideChar;
+        CharCount := StrLenW(Result)
+      end;
     {$IFDEF FORMAT_EXTENSIONS}
     vtClass:
-    begin
-      Result := GetPClassName(Arg^.VClass);
-      CharCount := Length(PShortString(Result)^);
-      Inc(PAnsiChar(Result));
-    end;
+      begin
+        Result := GetPClassName(Arg^.VClass);
+        CharCount := Length(PShortString(Result)^);
+        Inc(PAnsiChar(Result));
+      end;
     {$ENDIF FORMAT_EXTENSIONS}
     vtAnsiString:
-    begin
-      Result := Arg^.VAnsiString;
-      CharCount := Length(AnsiString(Result));
-    end;
+      begin
+        Result := Arg^.VAnsiString;
+        CharCount := Length(AnsiString(Result));
+      end;
     vtWideString:
-    begin
-      Result := Arg^.VWideString;
-      CharCount := Length(WideString(Result));
-    end;
+      begin
+        Result := Arg^.VWideString;
+        CharCount := Length(WideString(Result))
+      end;
   else
     raise FormatBadArgumentTypeErrorEx(Format, FormatStart, Src, Arg.VType, ArgIndex, AllowedStringTypes);
   end;
@@ -833,8 +814,7 @@ begin
   // Assert(Cardinal(Length(S)) >= NeededLen);
 end;
 
-procedure CopyBuffer(var Dest: WideString; const CharCount: Cardinal; const Source: Pointer;
-  var ResultLen, DestIndex: Cardinal);
+procedure CopyBuffer(var Dest: WideString; const CharCount: Cardinal; const Source: Pointer; var ResultLen, DestIndex: Cardinal);
 begin
   ResultLen := EnsureStringLen(DestIndex + CharCount - 1, ResultLen, Dest);
   MoveWideChar(Source^, Dest[DestIndex], CharCount);
@@ -861,11 +841,9 @@ begin
   Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatNoArgument), [ArgIndex]);
 end;
 
-function FormatNoArgumentErrorEx(const Format: WideString;
-  const FormatStart, FormatEnd, ArgIndex: Cardinal): Exception;
+function FormatNoArgumentErrorEx(const Format: WideString; const FormatStart, FormatEnd, ArgIndex: Cardinal): Exception;
 begin
-  Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatNoArgumentEx),
-    [ArgIndex, Copy(Format, FormatStart, FormatStart - FormatEnd + 1)]);
+  Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatNoArgumentEx), [ArgIndex, Copy(Format, FormatStart, FormatStart - FormatEnd + 1)]);
 end;
 
 function FormatSyntaxError(const CharIndex: Cardinal): Exception;
@@ -878,7 +856,7 @@ const
     'Integer', 'Boolean', 'Char', 'Extended', 'ShortString', 'Pointer', 'PChar',
     'TObject', 'TClass', 'WideChar', 'PWideChar', 'AnsiString', 'Currency',
     'Variant', 'IUnknown', 'WideString', 'Int64'
-    );
+  );
 
 function GetTypeList(const Types: TDelphiSet): string;
 var
@@ -907,15 +885,13 @@ begin
   Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatBadArgumentType), [FoundType, ArgIndex, AllowedTypes]);
 end;
 
-function FormatBadArgumentTypeErrorEx(const Format: WideString; const FormatStart, FormatEnd: Cardinal;
-  const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception;
+function FormatBadArgumentTypeErrorEx(const Format: WideString; const FormatStart, FormatEnd: Cardinal; const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception;
 var
   FoundType, AllowedTypes: string;
 begin
   FoundType := VarRecTypes[VType];
   AllowedTypes := GetTypeList(Allowed);
-  Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatBadArgumentTypeEx),
-    [FoundType, ArgIndex, Copy(Format, FormatStart, FormatEnd - FormatStart + 1), AllowedTypes]);
+  Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatBadArgumentTypeEx), [FoundType, ArgIndex, Copy(Format, FormatStart, FormatEnd - FormatStart + 1), AllowedTypes]);
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -32,8 +32,12 @@
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclEDI_ANSIX12;
 
@@ -1444,7 +1448,7 @@ begin
     //
     // Verify the next record is a Transaction Set Header
     if (TSHSegmentId + FDelimiters.ED) <>
-      Copy(FData, StartPos, (Length(TSHSegmentId) + FDelimiters.EDLen)) then
+       Copy(FData, StartPos, (Length(TSHSegmentId) + FDelimiters.EDLen)) then
       Break;
   end;
   // Set the next start position
@@ -2031,7 +2035,7 @@ begin
   // Search for Interchange Control Header
   if ICHSegmentId = Copy(FData, StartPos, Length(ICHSegmentId)) then
   begin
-    if foVariableDelimiterDetection in FEDIFileOptions then
+    if foVariableDelimiterDetection in FEDIFileOptions then          
       if foUseAltDelimiterDetection in FEDIFileOptions then
         InternalAlternateDelimitersDetection(StartPos)
       else
@@ -2252,7 +2256,7 @@ begin
   begin
     SearchResult := StrSearch(FDelimiters.ED, FData, SearchResult);
     SearchResult := SearchResult + 1;
-  end;
+  end;                                                            
   FDelimiters.SS := Copy(FData, SearchResult, 1);
   if Copy(FData, SearchResult + 1, 2) = AnsiCrLf then
     FDelimiters.SD := Copy(FData, SearchResult + 1, 2)
@@ -2268,7 +2272,7 @@ begin
   FDelimiters.ED := Copy(FData, StartPos + Length(ICHSegmentId), 1);
   SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData, SearchResult);
   if SearchResult = 0 then
-    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1);
+    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1); 
   if Copy(FData, SearchResult - 2, 2) = AnsiCrLf then
   begin
     FDelimiters.SS := Copy(FData, SearchResult - 3, 1);
@@ -2682,7 +2686,7 @@ begin
   // Because the last element carries specification data and not the subelement separator
   // the subelement separator must be added as an additional element.
   Result := inherited Assemble;
-  Result := Copy(Result, 1, Length(Result) - 1) + FDelimiters.ED + FDelimiters.SS + FDelimiters.SD;
+  Result := Copy(Result, 1, Length(Result)-1) + FDelimiters.ED + FDelimiters.SS + FDelimiters.SD;
 end;
 
 procedure TEDIInterchangeControlSegmentISASpec.AssembleReservedData(ReservedData: TStrings);
@@ -2904,7 +2908,7 @@ begin
   begin
     EDIInterchangeControlSpec := TEDIInterchangeControlSpec(FEDIDataObjects[I]);
     if (EDIInterchangeControlSpec.StandardId = StandardId) and
-      (EDIInterchangeControlSpec.VersionId = VersionId) then
+       (EDIInterchangeControlSpec.VersionId = VersionId) then
       Result := EDIInterchangeControlSpec;
   end;
 end;
@@ -2914,7 +2918,7 @@ end;
 constructor TEDITransactionSetLoop.Create(Parent: TEDIDataObject);
 begin
   inherited Create(Parent);
-  FCreateObjectType := ediLoop;
+  FCreateObjectType := ediLoop;  
   FGroupIsParent := False;
   if Assigned(Parent) and (Parent is TEDITransactionSet) then
     FParentTransactionSet := TEDITransactionSet(Parent)
@@ -3239,7 +3243,7 @@ begin
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
       {$ENDIF CLR}
         [IntToStr(I), DataSegment.SegmentID,
-        IntToStr(DataSegment.GetIndexPositionFromParent)]);
+         IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Element[I];
   end;
 end;

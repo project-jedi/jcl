@@ -36,8 +36,12 @@
 { directly call the registry API they do not suffer from the resource overhead as TRegistry does.  }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclRegistry;
 
@@ -299,26 +303,19 @@ const
 function RootKeyName(const RootKey: THandle): string;
 begin
   case RootKey of
-    HKCR:
-      Result := RsHKCRLong;
-    HKCU:
-      Result := RsHKCULong;
-    HKLM:
-      Result := RsHKLMLong;
-    HKUS:
-      Result := RsHKUSLong;
-    HKPD:
-      Result := RsHKPDLong;
-    HKCC:
-      Result := RsHKCCLong;
-    HKDD:
-      Result := RsHKDDLong;
-  else
+    HKCR : Result := RsHKCRLong;
+    HKCU : Result := RsHKCULong;
+    HKLM : Result := RsHKLMLong;
+    HKUS : Result := RsHKUSLong;
+    HKPD : Result := RsHKPDLong;
+    HKCC : Result := RsHKCCLong;
+    HKDD : Result := RsHKDDLong;
+    else
     {$IFDEF DELPHICOMPILER}
-    Result := Format('$%.8x', [RootKey]);
+      Result := Format('$%.8x', [RootKey]);
     {$ENDIF DELPHICOMPILER}
     {$IFDEF BCB}
-    Result := Format('0x%.8x', [RootKey]);
+      Result := Format('0x%.8x', [RootKey]);
     {$ENDIF BCB}
   end;
 end;
@@ -374,7 +371,7 @@ type
   end;
 const
   RootKeys: array [0..13] of TRootKey =
-    (
+   (
     (Key: HKCR; Name: RsHKCRLong),
     (Key: HKCU; Name: RsHKCULong),
     (Key: HKLM; Name: RsHKLMLong),
@@ -389,7 +386,7 @@ const
     (Key: HKPD; Name: RsHKPDShort),
     (Key: HKCC; Name: RsHKCCShort),
     (Key: HKDD; Name: RsHKDDShort)
-    );
+   );
 var
   I: Integer;
 begin
@@ -474,18 +471,18 @@ begin
             Result := False;
       end
       else
-      if RaiseException then
-        ValueError(RootKey, Key, Name)
-      else
-        Result := False;
+        if RaiseException then
+          ValueError(RootKey, Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-  if RaiseException then
-    ReadError(RootKey, Key)
-  else
-    Result := False;
+    if RaiseException then
+      ReadError(RootKey, Key)
+    else
+      Result := False;
 end;
 
 function InternalGetString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
@@ -523,18 +520,18 @@ begin
         SetLength(RetValue, (DataSize - 1) div SizeOf(Char));
       end
       else
-      if RaiseException then
-        ValueError(RootKey, Key, Name)
-      else
-        Result := False;
+        if RaiseException then
+          ValueError(RootKey, Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-  if RaiseException then
-    ReadError(RootKey, Key)
-  else
-    Result := False;
+    if RaiseException then
+      ReadError(RootKey, Key)
+    else
+      Result := False;
 end;
 
 function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
@@ -576,18 +573,18 @@ begin
         SetLength(RetValue, (DataSize - 1) div SizeOf(WideChar));
       end
       else
-      if RaiseException then
-        ValueError(RootKey, Key, Name)
-      else
-        Result := False;
+        if RaiseException then
+          ValueError(RootKey, Key, Name)
+        else
+          Result := False;
     finally
       RegCloseKey(RegKey);
     end
   else
-  if RaiseException then
-    ReadError(RootKey, Key)
-  else
-    Result := False;
+    if RaiseException then
+      ReadError(RootKey, Key)
+    else
+      Result := False;
 end;
 
 procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: string;
@@ -600,7 +597,7 @@ begin
   if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
       if RegSetValueEx(RegKey, PChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
-        WriteError(RootKey, Key);
+      WriteError(RootKey, Key);
     finally
       RegCloseKey(RegKey);
     end
@@ -674,7 +671,7 @@ begin
     if NumSubKeys <> 0 then
       for I := NumSubKeys - 1 downto 0 do
       begin
-        Size := MaxSubKeyLen + 1;
+        Size := MaxSubKeyLen+1;
         SetLength(KeyName, Size);
         RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
         SetLength(KeyName, StrLen(PChar(KeyName)));
@@ -842,7 +839,7 @@ begin
   begin
     FillChar(Data[0], SizeOf(Data), 0);
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
-      SizeOf(Data), DataType, @Data, DataSize, RaiseException);
+       SizeOf(Data), DataType, @Data, DataSize, RaiseException);
     // REG_BINARY is implicitly unsigned if DataSize < 8
     if DataType = REG_DWORD then
       // DWORDs get sign extended
@@ -1146,7 +1143,7 @@ begin
 end;
 
 function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings;
-  RaiseException: Boolean): Boolean;
+  RaiseException: Boolean): Boolean; 
 var
   S: WideString;
 begin
@@ -1409,8 +1406,7 @@ begin
   RegWriteWideString(RootKey, Key, Name, REG_SZ, Value);
 end;
 
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
-  Value: WideString);
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString);
 begin
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
     if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
@@ -1581,11 +1577,11 @@ begin
       if RegQueryInfoKey(RegKey, nil, nil, nil,
         @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
       begin
-        SetLength(KeyName, MaxSubKeyLen + 1);
+        SetLength(KeyName, MaxSubKeyLen+1);
         if NumSubKeys <> 0 then
-          for I := 0 to NumSubKeys - 1 do
+          for I := 0 to NumSubKeys-1 do
           begin
-            Size := MaxSubKeyLen + 1;
+            Size := MaxSubKeyLen+1;
             RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
             List.Add(PChar(KeyName));
           end;
@@ -1650,7 +1646,7 @@ begin
     // Save Number of strings
     RegWriteInteger(RootKey, SubKey, cItems, Items.Count);
     for I := 1 to Items.Count do
-      RegWriteString(RootKey, SubKey, IntToStr(I), Items[I - 1]);
+      RegWriteString(RootKey, SubKey, IntToStr(I), Items[I-1]);
     Result := True;
   end;
 end;
@@ -1727,3 +1723,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

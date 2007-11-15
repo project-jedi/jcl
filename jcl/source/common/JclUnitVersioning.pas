@@ -24,8 +24,12 @@
 { It also works with units in DLLs.                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date$
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnitVersioning;
 
@@ -420,7 +424,7 @@ begin
       FModules.Delete(I);
       Break;
     end;
-  for I := 0 to FProviders.Count - 1 do
+  for I := 0 to FProviders.Count -1 do
     TCustomUnitVersioningProvider(FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
 end;
 
@@ -779,7 +783,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
-    );
+  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -788,3 +792,4 @@ finalization
   FinalizeUnitVersioning;
 
 end.
+

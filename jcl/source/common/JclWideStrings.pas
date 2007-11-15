@@ -1,35 +1,42 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: WStrUtils.PAS, released on 2004-01-25.
-
-The Initial Developers of the Original Code are Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
-and Mike Lischke (WideQuotedStr & WideExtractQuotedStr from Unicode.pas).
-
-All Rights Reserved.
-
-Contributors:
-  Robert Marquardt (marquardt)
-  Robert Rossmair (rrossmair)
-  ZENsan
-  Florent Ouchet (outchy)
-
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
-
-This is a lightweight Unicode unit. For more features use JclUnicode.
-
-Known Issues:
------------------------------------------------------------------------------}
-
-// Last modified: $Date$
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is WStrUtils.PAS, released on 2004-01-25.                                      }
+{                                                                                                  }
+{ The Initial Developers of the Original Code are:                                                 }
+{   - Andreas Hausladen <Andreas dott Hausladen att gmx dott de>                                   }
+{   - Mike Lischke (WideQuotedStr & WideExtractQuotedStr from Unicode.pas)                         }
+{ Portions created by Andreas Hausladen are Copyright (C) of Andreas Hausladen.                    }
+{ All rights reserved.                                                                             }
+{ Portions created by Mike Lischke are Copyright (C) of Mike Lischke. All rights reserved.         }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   ZENsan                                                                                         }
+{   Florent Ouchet (outchy)                                                                        }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This is a lightweight Unicode unit. For more features use JclUnicode.                            }
+{                                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date::                                                                         $ }
+{ Revision:      $Rev::                                                                          $ }
+{ Author:        $Author::                                                                       $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclWideStrings;
 
@@ -69,10 +76,10 @@ const
 
 type
   TWideFileOptionsType =
-    (
+   (
     foAnsiFile,  // loads/writes an ANSI file
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
-    );
+   );
   TWideFileOptions = set of TWideFileOptionsType;
 
   TSearchFlag = (
@@ -81,7 +88,7 @@ type
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
-    );
+  );
   TSearchFlags = set of TSearchFlag;
 
   TWStrings = class;
@@ -652,21 +659,21 @@ end;
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
-  PUSH    ESI
-  PUSH    EDI
-  MOV     ESI, EAX
-  MOV     EDI, ESI
-  xor     EAX, EAX // clear high order byte to be able to use 32bit operand below
-  @@1:
-  LODSW
-  or      EAX, EAX
-  JZ      @@2
-  XCHG    AL, AH
-  STOSW
-  JMP     @@1
-  @@2:
-  POP     EDI
-  POP     ESI
+       PUSH    ESI
+       PUSH    EDI
+       MOV     ESI, EAX
+       MOV     EDI, ESI
+       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
+@@1:
+       LODSW
+       OR      EAX, EAX
+       JZ      @@2
+       XCHG    AL, AH
+       STOSW
+       JMP     @@1
+@@2:
+       POP     EDI
+       POP     ESI
 end;
 
 function StrNScanW(const Str1, Str2: PWideChar): Integer;
@@ -723,17 +730,17 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
-  TEST    EAX, EAX
-  JZ      @@Exit        // get out if the string is nil or StrLen is 0
-  JCXZ    @@Exit
-  @@Loop:
-  CMP[EAX], DX     // this unrolled loop is actually faster on modern processors
-  JE      @@Exit        // than REP SCASW
-  ADD     EAX, 2
-  DEC     ECX
-  JNZ     @@Loop
-  xor     EAX, EAX
-  @@Exit:
+       TEST    EAX, EAX
+       JZ      @@Exit        // get out if the string is nil or StrLen is 0
+       JCXZ    @@Exit
+@@Loop:
+       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
+       JE      @@Exit        // than REP SCASW
+       ADD     EAX, 2
+       DEC     ECX
+       JNZ     @@Loop
+       XOR     EAX, EAX
+@@Exit:
 end;
 
 function StrBufSizeW(const Str: PWideChar): Cardinal;
@@ -762,19 +769,19 @@ end;
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
 // copies characters from a Pascal-style string into a null-terminated wide string
 asm
-  PUSH EDI
-  PUSH ESI
-  MOV EDI, EAX
-  MOV ESI, EDX
-  MOV EDX, EAX
-  xor AX, AX
-  @@1:   LODSB
-  STOSW
-  DEC ECX
-  JNZ @@1
-  MOV EAX, EDX
-  POP ESI
-  POP EDI
+       PUSH EDI
+       PUSH ESI
+       MOV EDI, EAX
+       MOV ESI, EDX
+       MOV EDX, EAX
+       XOR AX, AX
+@@1:   LODSB
+       STOSW
+       DEC ECX
+       JNZ @@1
+       MOV EAX, EDX
+       POP ESI
+       POP EDI
 end;
 
 //=== WideString functions ===================================================
@@ -1230,7 +1237,7 @@ procedure TWStrings.DefineProperties(Filer: TFiler);
     begin
       Result := True;
       if Filer.Ancestor is TWStrings then
-        Result := not Equals(TWStrings(Filer.Ancestor));
+        Result := not Equals(TWStrings(Filer.Ancestor))
     end
     else
       Result := Count > 0;
@@ -1743,7 +1750,7 @@ var
 begin
   Writer.WriteListBegin;
   for I := 0 to Count - 1 do
-    Writer.WriteWideString(GetP(I)^);
+     Writer.WriteWideString(GetP(I)^);
   Writer.WriteListEnd;
 end;
 
