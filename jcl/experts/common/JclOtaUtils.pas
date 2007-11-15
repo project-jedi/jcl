@@ -69,7 +69,7 @@ type
 //  - notifier callback functions
 //  - ... (non exhaustive list)
 
-  EJclExpertException = class (Exception)
+  EJclExpertException = class(Exception)
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;
@@ -82,7 +82,7 @@ type
   {$ENDIF MSWINDOWS}
   end;
 
-  TJclOTASettings = class (TObject)
+  TJclOTASettings = class(TObject)
   private
     FKeyName: string;
     FBaseKeyName: string;
@@ -107,7 +107,7 @@ type
   // between this unit and the JclOtaConfigurationForm unit.
   IJclOTAOptionsCallback = interface;
 
-  TJclOTAAddPageFunc = procedure (AControl: TControl; PageName: string;
+  TJclOTAAddPageFunc = procedure(AControl: TControl; PageName: string;
     Expert: IJclOTAOptionsCallback) of object;
 
   IJclOTAOptionsCallback = interface
@@ -151,7 +151,7 @@ type
     destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    
+
     function FindExecutableName(const MapFileName, OutputDirectory: string;
       var ExecutableFileName: string): Boolean;
     function GetDrcFileName(const Project: IOTAProject): string;
@@ -245,10 +245,10 @@ begin
   try
     Result := nil;
     if Assigned(GlobalActionList) then
-      for Index := 0 to GlobalActionList.Count-1 do
+      for Index := 0 to GlobalActionList.Count - 1 do
       begin
         TestAction := TCustomAction(GlobalActionList.Items[Index]);
-        if (CompareText(Name,TestAction.Name) = 0) then
+        if (CompareText(Name, TestAction.Name) = 0) then
           Result := TestAction;
       end;
     {$IFNDEF COMPILER6_UP}
@@ -282,16 +282,21 @@ function PersonalityTextToId(const PersonalityText: string): TJclBorPersonality;
 begin
   if SameText(PersonalityText, sDelphiPersonality) then
     Result := bpDelphi32
-  else if SameText(PersonalityText, sDelphiDotNetPersonality) then
+  else
+  if SameText(PersonalityText, sDelphiDotNetPersonality) then
     Result := bpDelphiNet32
-  else if SameText(PersonalityText, sCBuilderPersonality) then
+  else
+  if SameText(PersonalityText, sCBuilderPersonality) then
     Result := bpBCBuilder32
-  else if SameText(PersonalityText, sCSharpPersonality) then
+  else
+  if SameText(PersonalityText, sCSharpPersonality) then
     Result := bpCSBuilder32
-  else if SameText(PersonalityText, sVBPersonality) then
+  else
+  if SameText(PersonalityText, sVBPersonality) then
     Result := bpVisualBasic32
   {$IFDEF COMPILER10_UP}
-  else if SameText(PersonalityText, sDesignPersonality) then
+  else
+  if SameText(PersonalityText, sDesignPersonality) then
     Result := bpDesign
   {$ENDIF COMPILER10_UP}
   else
@@ -325,12 +330,12 @@ var
 begin
   inherited Create;
 
-  Supports(BorlandIDEServices,IOTAServices,OTAServices);
+  Supports(BorlandIDEServices, IOTAServices, OTAServices);
   if not Assigned(OTAServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
   FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
-  
+
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
 
@@ -405,7 +410,7 @@ class function TJclOTAExpertBase.ConfigurationDialog(
   StartName: string): Boolean;
 var
   OptionsForm: TJclOtaOptionsForm;
-  Index: Integer;
+  Index:       Integer;
 begin
   OptionsForm := TJclOtaOptionsForm.Create(nil);
   try
@@ -531,7 +536,7 @@ begin
   end;
 end;
 
-procedure TJclOTAExpertBase.AddConfigurationPages(  
+procedure TJclOTAExpertBase.AddConfigurationPages(
   AddPageFunc: TJclOTAAddPageFunc);
 begin
   // AddPageFunc uses '\' as a separator in PageName to build a tree
@@ -565,7 +570,7 @@ begin
   RegisterSplashScreen;
   RegisterAboutBox;
   {$ENDIF BDS}
-  
+
   Supports(BorlandIDEServices, IOTAServices, FServices);
   if not Assigned(FServices) then
     raise EJclExpertException.CreateTrace(RsENoIDEServices);
@@ -673,7 +678,7 @@ function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
 begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
-    
+
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
@@ -715,7 +720,7 @@ begin
   if not Assigned(Project) then
     raise EJclExpertException.CreateTrace(RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
 
   if IsPackage(Project) then
   begin
@@ -740,7 +745,8 @@ begin
   Result := SubstitutePath(Trim(Result));
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
-  else if not PathIsAbsolute(Result) then
+  else
+  if not PathIsAbsolute(Result) then
     Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
@@ -749,7 +755,7 @@ function TJclOTAExpertBase.GetActivePersonality: TJclBorPersonality;
 var
   PersonalityText: string;
   {$IFDEF COMPILER9_UP}
-  CurrentProject: IOTAProject;
+  CurrentProject:  IOTAProject;
   {$ENDIF COMPILER9_UP}
 {$ENDIF BDS}
 begin
@@ -775,7 +781,7 @@ end;
 function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
   AModule: IOTAModule;
-  I: Integer;
+  I:       Integer;
 begin
   for I := 0 to OTAModuleServices.ModuleCount - 1 do
   begin
@@ -920,14 +926,14 @@ begin
         begin
           for Index := 0 to SourceNode.Items.Count - 1 do
             if AnsiSameText(SourceNode.Items.Item[0].Name, 'Source') then
-          begin
-            NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
-            if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
             begin
-              Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
-              Break;
+              NameProp := SourceNode.Items.Item[0].Properties.ItemNamed['Name'];
+              if Assigned(NameProp) and AnsiSameText(NameProp.Value, 'MainSource') then
+              begin
+                Result := AnsiSameText(ExtractFileExt(SourceNode.Items.Item[0].Value), SourceExtensionDelphiPackage);
+                Break;
+              end;
             end;
-          end;
         end;
       end;
     finally
@@ -1017,7 +1023,7 @@ begin
       Result := StringReplace(Result, Format('$(%s)', [Name]),
         FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
     end;
-  While Pos('\\', Result) > 0 do
+  while Pos('\\', Result) > 0 do
     Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
 end;
 
@@ -1050,7 +1056,7 @@ procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
 begin
   if Action.Name <> '' then
     ActionSettings.SaveInteger(Action.Name, Action.ShortCut);
-    
+
   if Assigned(GlobalActionList) then
   begin
     GlobalActionList.Remove(Action);
@@ -1081,7 +1087,7 @@ procedure TJclOTAExpertBase.RegisterCommands;
 var
   JclIcon: TIcon;
   Category: string;
-  Index: Integer;
+  Index:   Integer;
   IDEMenuItem, ToolsMenuItem: TMenuItem;
 begin
   if not Assigned(ConfigurationAction) then
@@ -1110,7 +1116,7 @@ begin
     ConfigurationAction.ActionList := NTAServices.ActionList;
     RegisterAction(ConfigurationAction);
   end;
-  
+
   if not Assigned(ConfigurationMenuItem) then
   begin
     IDEMenuItem := NTAServices.MainMenu.Items;
@@ -1187,7 +1193,7 @@ end;
 {$IFDEF BDS}
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
-  AboutBoxIndex: Integer = -1;
+  AboutBoxIndex:    Integer = -1;
   SplashScreenInitialized: Boolean = False;
 
 procedure RegisterAboutBox;
@@ -1196,13 +1202,13 @@ var
 begin
   if AboutBoxIndex = -1 then
   begin
-    Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
+    Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices);
     if not Assigned(AboutBoxServices) then
       raise EJclExpertException.CreateTrace(RsENoAboutServices);
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
       raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription, 
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription,
       ProductImage, False, RsAboutLicenceStatus);
   end;
 end;
@@ -1239,25 +1245,25 @@ end;
 
 initialization
 
-Classes.RegisterClass(TJclWizardForm);
-Classes.RegisterClass(TJclWizardFrame);
+  Classes.RegisterClass(TJclWizardForm);
+  Classes.RegisterClass(TJclWizardFrame);
 
 finalization
 
-try
+  try
   {$IFDEF BDS}
-  UnregisterAboutBox;
+    UnregisterAboutBox;
   {$ENDIF BDS}
-  FreeAndNil(GlobalActionList);
-  FreeAndNil(GlobalActionSettings);
-  FreeAndNil(GlobalExpertList);
-except
-  on ExceptionObj: TObject do
-  begin
-    JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
+    FreeAndNil(GlobalActionList);
+    FreeAndNil(GlobalActionSettings);
+    FreeAndNil(GlobalExpertList);
+  except
+    on ExceptionObj: TObject do
+    begin
+      JclExpertShowExceptionDialog(ExceptionObj);
+      raise;
+    end;
   end;
-end;
 
 //=== Helper routines ========================================================
 

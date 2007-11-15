@@ -29,7 +29,7 @@ uses
 
 const
   ResultFormat = '%.1f ms';
-  MsecsPerDay = 24 * 60 * 60 * 1000;
+  MsecsPerDay  = 24 * 60 * 60 * 1000;
 
 {$IFNDEF RTL140_UP}
 const
@@ -42,7 +42,7 @@ var
 procedure TestList(Results: TStrings);
 var
   List: TList;
-  I: Integer;
+  I:    Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -77,8 +77,8 @@ end;
 procedure TestJclArrayList(Results: TStrings);
 var
   List: IJclList;
-  It: IJclIterator;
-  I: Integer;
+  It:   IJclIterator;
+  I:    Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -120,8 +120,8 @@ end;
 procedure TestJclLinkedList(Results: TStrings);
 var
   List: IJclList;
-  I: Integer;
-  It: IJclIterator;
+  I:    Integer;
+  It:   IJclIterator;
   Start: TDateTime;
 begin
   Randomize;
@@ -159,7 +159,7 @@ end;
 procedure TestJclVector(Results: TStrings);
 var
   List: IJclList;
-  I: Integer;
+  I:    Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -232,7 +232,7 @@ end;
 procedure TestJclHashMap(Results: TStrings);
 var
   Map: IJclMap;
-  I: Integer;
+  I:   Integer;
   Start: TDateTime;
 begin
   Randomize;
@@ -299,7 +299,7 @@ end;
 procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
 var
   Map: IJclAnsiStrAnsiStrMap;
-  I: Integer;
+  I:   Integer;
   Res: string;
   Start: TDateTime;
 begin
@@ -326,7 +326,7 @@ end;
 procedure TestJclWideStrWideStrHashMap(Results: TStrings);
 var
   Map: IJclWideStrWideStrMap;
-  I: Integer;
+  I:   Integer;
   Res: string;
   Start: TDateTime;
 begin

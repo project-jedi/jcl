@@ -143,7 +143,7 @@ type
 const
   { strings to form a unique name for file mapping and optex objects }
   JclAIPrefix = 'Jcl';
-  JclAIOptex = '_Otx';
+  JclAIOptex  = '_Otx';
   JclAIMapping = '_Map';
 
   { window message used for communication between instances }
@@ -242,7 +242,7 @@ var
   function EnumWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
   var
     PID: DWORD;
-    C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
+    C:   array [0..Length(ClassNameOfTApplication) + 1] of Char;
   begin
     GetWindowThreadProcessId(Wnd, @PID);
     if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, SizeOf(C)) > 0) and
@@ -348,7 +348,7 @@ var
   Msg: TMessage;
 
   function EnumWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
-  begin 
+  begin
     with Message^ do
       SendNotifyMessage(Wnd, Msg, WParam, LParam);
     Result := True;

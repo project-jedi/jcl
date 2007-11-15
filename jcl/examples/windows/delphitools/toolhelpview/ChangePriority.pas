@@ -65,7 +65,7 @@ procedure TChangePriorityDlg.SetProcessID(const Value: DWORD);
 var
   Handle: THandle;
   Priority: DWORD;
-  I: Integer;
+  I:      Integer;
 begin
   FProcessID := Value;
   Handle := OpenProcess(PROCESS_ALL_ACCESS{PROCESS_QUERY_INFORMATION}, False, FProcessID);
@@ -73,9 +73,11 @@ begin
   begin
     Priority := GetPriorityClass(Handle);
     CloseHandle(Handle);
-  end else Priority := 0;
+  end
+  else Priority := 0;
   I := PriorityRadioGroup.Items.IndexOfObject(Pointer(Priority));
-  if I = -1 then I := 1;
+  if I = -1 then
+    I := 1;
   PriorityRadioGroup.ItemIndex := I;
 end;
 
@@ -96,15 +98,17 @@ procedure TChangePriorityDlg.OKBtnClick(Sender: TObject);
 var
   Handle: THandle;
   Priority: DWORD;
-  Res: Boolean;
+  Res:    Boolean;
 begin
-  with PriorityRadioGroup do Priority := DWORD(Items.Objects[ItemIndex]);
+  with PriorityRadioGroup do
+    Priority := DWORD(Items.Objects[ItemIndex]);
   Handle := OpenProcess(PROCESS_ALL_ACCESS{PROCESS_SET_INFORMATION}, False, FProcessID);
   if Handle <> 0 then
   begin
     Res := SetPriorityClass(Handle, Priority);
     CloseHandle(Handle);
-  end else Res := False;
+  end
+  else Res := False;
   if Res then
     ModalResult := mrOk
   else

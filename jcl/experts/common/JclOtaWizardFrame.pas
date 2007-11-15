@@ -33,7 +33,7 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs;
 
 type
@@ -89,4 +89,3 @@ begin
 end;
 
 end.
-

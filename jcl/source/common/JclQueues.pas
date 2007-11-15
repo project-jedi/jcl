@@ -85,7 +85,8 @@ type
 
 
   TJclAnsiStrQueue = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrQueue)
   private
     FElements: JclBase.TDynAnsiStringArray;
@@ -114,7 +115,8 @@ type
 
 
   TJclWideStrQueue = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrEqualityComparer,
     IJclWideStrQueue)
   private
     FElements: JclBase.TDynWideStringArray;
@@ -150,7 +152,8 @@ type
 
 
   TJclSingleQueue = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer,
+    IJclSingleEqualityComparer,
     IJclSingleQueue)
   private
     FElements: JclBase.TDynSingleArray;
@@ -179,7 +182,8 @@ type
 
 
   TJclDoubleQueue = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer,
+    IJclDoubleEqualityComparer,
     IJclDoubleQueue)
   private
     FElements: JclBase.TDynDoubleArray;
@@ -208,7 +212,8 @@ type
 
 
   TJclExtendedQueue = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer,
+    IJclExtendedEqualityComparer,
     IJclExtendedQueue)
   private
     FElements: JclBase.TDynExtendedArray;
@@ -502,7 +507,7 @@ end;
 procedure TJclIntfQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntfQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfQueue then
@@ -529,16 +534,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeObject(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeObject(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -554,19 +559,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AInterface) then
     begin
-      if ItemsEqual(FElements[I], AInterface) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -586,19 +591,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := nil;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := nil;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -612,7 +617,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -626,16 +631,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AInterface;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AInterface;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -649,7 +654,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -663,12 +668,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -684,35 +689,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -726,10 +731,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -757,7 +762,7 @@ end;
 procedure TJclAnsiStrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclAnsiStrQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclAnsiStrQueue then
@@ -784,16 +789,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeString(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeString(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -809,19 +814,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AString) then
     begin
-      if ItemsEqual(FElements[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -841,19 +846,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := '';
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := '';
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -867,7 +872,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -881,16 +886,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AString;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AString;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -904,7 +909,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -918,12 +923,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -939,35 +944,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -981,10 +986,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1012,7 +1017,7 @@ end;
 procedure TJclWideStrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclWideStrQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclWideStrQueue then
@@ -1039,16 +1044,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeString(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeString(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1064,19 +1069,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AString) then
     begin
-      if ItemsEqual(FElements[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1096,19 +1101,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := '';
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := '';
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1122,7 +1127,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1136,16 +1141,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AString;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AString;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1159,7 +1164,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1173,12 +1178,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1194,35 +1199,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1236,10 +1241,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1267,7 +1272,7 @@ end;
 procedure TJclSingleQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclSingleQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSingleQueue then
@@ -1294,16 +1299,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeSingle(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeSingle(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1319,19 +1324,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1351,19 +1356,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0.0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0.0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1377,7 +1382,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1391,16 +1396,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1414,7 +1419,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1428,12 +1433,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1449,35 +1454,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1491,10 +1496,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1522,7 +1527,7 @@ end;
 procedure TJclDoubleQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclDoubleQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclDoubleQueue then
@@ -1549,16 +1554,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeDouble(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeDouble(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1574,19 +1579,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1606,19 +1611,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0.0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0.0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1632,7 +1637,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1646,16 +1651,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1669,7 +1674,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1683,12 +1688,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1704,35 +1709,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1746,10 +1751,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1777,7 +1782,7 @@ end;
 procedure TJclExtendedQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclExtendedQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclExtendedQueue then
@@ -1804,16 +1809,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeExtended(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeExtended(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1829,19 +1834,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1861,19 +1866,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0.0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0.0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1887,7 +1892,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1901,16 +1906,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1924,7 +1929,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1938,12 +1943,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1959,35 +1964,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2001,10 +2006,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2032,7 +2037,7 @@ end;
 procedure TJclIntegerQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntegerQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntegerQueue then
@@ -2059,16 +2064,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeInteger(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeInteger(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2084,19 +2089,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2116,19 +2121,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2142,7 +2147,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2156,16 +2161,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2179,7 +2184,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2193,12 +2198,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2214,35 +2219,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2256,10 +2261,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2287,7 +2292,7 @@ end;
 procedure TJclCardinalQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclCardinalQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclCardinalQueue then
@@ -2314,16 +2319,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeCardinal(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeCardinal(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2339,19 +2344,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2371,19 +2376,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2397,7 +2402,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2411,16 +2416,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2434,7 +2439,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2448,12 +2453,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2469,35 +2474,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2511,10 +2516,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2542,7 +2547,7 @@ end;
 procedure TJclInt64Queue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclInt64Queue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclInt64Queue then
@@ -2569,16 +2574,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeInt64(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeInt64(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2594,19 +2599,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AValue) then
     begin
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2626,19 +2631,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := 0;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := 0;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2652,7 +2657,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2666,16 +2671,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AValue;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AValue;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2689,7 +2694,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2703,12 +2708,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2724,35 +2729,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2766,10 +2771,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2798,7 +2803,7 @@ end;
 procedure TJclPtrQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclPtrQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclPtrQueue then
@@ -2825,16 +2830,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreePointer(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreePointer(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2850,19 +2855,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], APtr) then
     begin
-      if ItemsEqual(FElements[I], APtr) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2882,19 +2887,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := nil;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := nil;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2908,7 +2913,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2922,16 +2927,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := APtr;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := APtr;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2945,7 +2950,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2959,12 +2964,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2980,35 +2985,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3022,10 +3027,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3054,7 +3059,7 @@ end;
 procedure TJclQueue.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclQueue;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclQueue then
@@ -3081,16 +3086,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-     I := FHead;
-     while I <> FTail do
-     begin
-       FreeObject(FElements[I]);
-       Inc(I);
-       if I = FCapacity then
-         I := 0;
-     end;
-     FHead := 0;
-     FTail := 0;
+  I := FHead;
+  while I <> FTail do
+  begin
+    FreeObject(FElements[I]);
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
+  FHead := 0;
+  FTail := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3106,19 +3111,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    I := FHead;
-    while I <> FTail do
+  Result := False;
+  I := FHead;
+  while I <> FTail do
+  begin
+    if ItemsEqual(FElements[I], AObject) then
     begin
-      if ItemsEqual(FElements[I], AObject) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Inc(I);
-      if I = FCapacity then
-        I := 0;
+      Result := True;
+      Break;
     end;
+    Inc(I);
+    if I = FCapacity then
+      I := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3138,19 +3143,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-    begin
-      Result := FElements[FHead];
-      FElements[FHead] := nil;
-      Inc(FHead);
-      if FHead = FCapacity then
-        FHead := 0;
-      AutoPack;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+  begin
+    Result := FElements[FHead];
+    FElements[FHead] := nil;
+    Inc(FHead);
+    if FHead = FCapacity then
+      FHead := 0;
+    AutoPack;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3164,7 +3169,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FTail = FHead;
+  Result := FTail = FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3178,16 +3183,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
-      AutoGrow;
-    Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
-    if Result then
-    begin
-      FElements[FTail] := AObject;
-      Inc(FTail);
-      if FTail = FCapacity then
-        FTail := 0;
-    end;
+  if (FTail = (FHead - 1)) or (FTail = (FHead + FCapacity - 1)) then
+    AutoGrow;
+  Result := (FTail <> (FHead - 1)) and (FTail <> (FHead + FCapacity - 1));
+  if Result then
+  begin
+    FElements[FTail] := AObject;
+    Inc(FTail);
+    if FTail = FCapacity then
+      FTail := 0;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3201,7 +3206,7 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    SetCapacity(Size + 1);
+  SetCapacity(Size + 1);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3215,12 +3220,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FTail <> FHead then
-      Result := FElements[FHead]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FTail <> FHead then
+    Result := FElements[FHead]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3236,35 +3241,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < 1 then
-      raise EJclIllegalQueueCapacityError.Create;
-    if Value <= Size then
-      raise EJclOutOfBoundsError.Create;
+  if Value < 1 then
+    raise EJclIllegalQueueCapacityError.Create;
+  if Value <= Size then
+    raise EJclOutOfBoundsError.Create;
 
-    if FHead > FTail then // looped
-    begin
-      NewHead := FHead + Value - FCapacity;
-      if Value > FCapacity then
+  if FHead > FTail then // looped
+  begin
+    NewHead := FHead + Value - FCapacity;
+    if Value > FCapacity then
         // growing
-        SetLength(FElements, Value);
-      JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
-      if FCapacity > Value then
-        // packing
-        SetLength(FElements, Value);
-      FHead := NewHead;
-    end
-    else
-    begin
-      // unlooped
-      if Value < FCapacity then
-      begin
-        JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
-        Dec(FTail, FHead);
-        FHead := 0;
-      end;
       SetLength(FElements, Value);
+    JclBase.MoveArray(FElements, FHead, NewHead, FCapacity - FHead);
+    if FCapacity > Value then
+        // packing
+      SetLength(FElements, Value);
+    FHead := NewHead;
+  end
+  else
+  begin
+      // unlooped
+    if Value < FCapacity then
+    begin
+      JclBase.MoveArray(FElements, FHead, 0, FTail - FHead);
+      Dec(FTail, FHead);
+      FHead := 0;
     end;
-    inherited SetCapacity(Value);
+    SetLength(FElements, Value);
+  end;
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3278,10 +3283,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if FHead > FTail then
-      Result := FCapacity - FHead + FTail  // looped
-    else
-      Result := FTail - FHead;
+  if FHead > FTail then
+    Result := FCapacity - FHead + FTail  // looped
+  else
+    Result := FTail - FHead;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;

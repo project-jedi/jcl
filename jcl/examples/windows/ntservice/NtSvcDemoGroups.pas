@@ -28,15 +28,15 @@ implementation
 class function TfrmServiceGroups.Execute(const NtSvc: TJclNtService): TJclNtService;
 begin
   with TfrmServiceGroups.Create(nil) do
-  try
-    ShowGroups(NtSvc);
+    try
+      ShowGroups(NtSvc);
 
-    m_SelectedSvc := nil;
-    ShowModal;
-    Result := m_SelectedSvc;
-  finally
-    Free;
-  end;
+      m_SelectedSvc := nil;
+      ShowModal;
+      Result := m_SelectedSvc;
+    finally
+      Free;
+    end;
 end;
 
 procedure TfrmServiceGroups.ShowGroups(const NtSvc: TJclNtService);
@@ -47,21 +47,22 @@ var
   CurNtSvc: TJclNtService;
 begin
   with NtSvc.SCManager do
-  for GrpIdx:=0 to GroupCount-1 do
-  begin
-    CurGrp  := Groups[GrpIdx];
-
-    if CurGrp.Name = '' then Continue;
-
-    GrpNode := treeServices.Items.AddChildObject(nil, CurGrp.Name, CurGrp);
-    for SvcIdx:=0 to CurGrp.ServiceCount-1 do
+    for GrpIdx := 0 to GroupCount - 1 do
     begin
-      CurNtSvc := CurGrp.Services[SvcIdx];
-      SvcNode  := treeServices.Items.AddChildObject(GrpNode, CurNtSvc.ServiceName, CurNtSvc);
-      if NtSvc = CurNtSvc then
-        treeServices.Selected := SvcNode;
+      CurGrp := Groups[GrpIdx];
+
+      if CurGrp.Name = '' then
+        Continue;
+
+      GrpNode := treeServices.Items.AddChildObject(nil, CurGrp.Name, CurGrp);
+      for SvcIdx := 0 to CurGrp.ServiceCount - 1 do
+      begin
+        CurNtSvc := CurGrp.Services[SvcIdx];
+        SvcNode := treeServices.Items.AddChildObject(GrpNode, CurNtSvc.ServiceName, CurNtSvc);
+        if NtSvc = CurNtSvc then
+          treeServices.Selected := SvcNode;
+      end;
     end;
-  end;
 end;
 
 procedure TfrmServiceGroups.treeServicesDblClick(Sender: TObject);

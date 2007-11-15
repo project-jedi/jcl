@@ -355,7 +355,7 @@ end;
 // EnumXXX functions helper thread variables
 threadvar
   ProcessedLocaleInfoList: TStrings;
-  ProcessedLocalesList: TJclLocalesList;
+  ProcessedLocalesList:    TJclLocalesList;
 
 //=== { TJclLocaleInfo } =====================================================
 
@@ -455,7 +455,7 @@ function TJclLocaleInfo.GetCalendarStringInfo(Calendar: CALID; InfoType: Integer
 var
   Buffer: Pointer;
   BufferSize: Integer;
-  Ret: DWORD;
+  Ret:    DWORD;
 begin
   Result := '';
   InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]);
@@ -536,7 +536,7 @@ type
   end;
 const
   CharsetTable: array [1..10] of TCharsetEntry =
-   (
+    (
     (CodePage: 1252; Charset: ANSI_CHARSET),
     (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
     (CodePage: 1251; Charset: RUSSIAN_CHARSET),
@@ -545,9 +545,9 @@ const
     (CodePage: 1255; Charset: HEBREW_CHARSET),
     (CodePage: 1256; Charset: ARABIC_CHARSET),
     (CodePage: 1257; Charset: BALTIC_CHARSET),
-    (CodePage:  874; Charset: THAI_CHARSET),
-    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-   );
+    (CodePage: 874; Charset: THAI_CHARSET),
+    (CodePage: 932; Charset: SHIFTJIS_CHARSET)
+    );
 var
   I, CpANSI: Integer;
 begin
@@ -605,7 +605,7 @@ end;
 function TJclLocaleInfo.GetStringInfo(InfoType: Integer): string;
 var
   Res: Integer;
-  W: PWideChar;
+  W:   PWideChar;
 begin
   InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]);
   Res := GetLocaleInfoA(FLocaleID, InfoType, nil, 0);
@@ -1041,11 +1041,11 @@ end;
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
   with TJclLocalesList.Create(lkInstalled) do
-  try
-    FillStrings(Strings, InfoType);
-  finally
-    Free;
-  end;
+    try
+      FillStrings(Strings, InfoType);
+    finally
+      Free;
+    end;
 end;
 
 {$IFDEF UNITVERSIONING}

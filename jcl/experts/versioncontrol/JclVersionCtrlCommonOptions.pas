@@ -309,7 +309,7 @@ begin
   Supports(BorlandIDEServices, INTAServices, NTAServices);
   if not Assigned(NTAServices) then
     raise EJclExpertException.CreateTrace(RsENoNTAServices);
-    
+
   TreeViewMenu.Images := NTAServices.ImageList;
   PopupMenuActions.Images := NTAServices.ImageList;
 
@@ -361,8 +361,8 @@ function TJclVersionCtrlOptionsFrame.GetMenuTree: TStrings;
 var
   ATreeNode, BTreeNode: TTreeNode;
   ItemName: string;
-  AAction: TCustomAction;
-  Index: Integer;
+  AAction:  TCustomAction;
+  Index:    Integer;
 begin
   FMenuTree.Clear;
   ATreeNode := TreeViewMenu.Items.GetFirstNode;
@@ -484,7 +484,7 @@ var
   ATreeNode, BTreeNode: TTreeNode;
   Index, IndexB: Integer;
   Item, ItemName: string;
-  AAction: Integer;
+  AAction:       Integer;
   ControlAction: TCustomAction;
 begin
   TreeViewMenu.Items.Clear;

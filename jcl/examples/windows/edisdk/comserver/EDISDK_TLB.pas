@@ -125,15 +125,15 @@ type
 // *********************************************************************//
   IEDICOMDelimiters = interface(IDispatch)
     ['{A0181BBD-2F88-4FDC-9752-8303519D2D62}']
-    function  Get_SD: WideString; safecall;
+    function Get_SD: WideString; safecall;
     procedure Set_SD(const Value: WideString); safecall;
-    function  Get_ED: WideString; safecall;
+    function Get_ED: WideString; safecall;
     procedure Set_ED(const Value: WideString); safecall;
-    function  Get_SS: WideString; safecall;
+    function Get_SS: WideString; safecall;
     procedure Set_SS(const Value: WideString); safecall;
-    function  Get_SDLen: Integer; safecall;
-    function  Get_EDLen: Integer; safecall;
-    function  Get_SSLen: Integer; safecall;
+    function Get_SDLen: Integer; safecall;
+    function Get_EDLen: Integer; safecall;
+    function Get_SSLen: Integer; safecall;
     property SD: WideString read Get_SD write Set_SD;
     property ED: WideString read Get_ED write Set_ED;
     property SS: WideString read Get_SS write Set_SS;
@@ -164,13 +164,13 @@ type
 // *********************************************************************//
   IEDICOMDataObject = interface(IDispatch)
     ['{C7037767-05C8-4C6F-8201-655A6B5A4CF4}']
-    function  Assemble: WideString; safecall;
+    function Assemble: WideString; safecall;
     procedure Disassemble; safecall;
-    function  Get_State: Integer; safecall;
-    function  Get_Data: WideString; safecall;
+    function Get_State: Integer; safecall;
+    function Get_Data: WideString; safecall;
     procedure Set_Data(const Value: WideString); safecall;
-    function  Get_DataLength: Integer; safecall;
-    function  Get_Delimiters: IEDICOMDelimiters; safecall;
+    function Get_DataLength: Integer; safecall;
+    function Get_Delimiters: IEDICOMDelimiters; safecall;
     property State: Integer read Get_State;
     property Data: WideString read Get_Data write Set_Data;
     property DataLength: Integer read Get_DataLength;
@@ -184,7 +184,7 @@ type
 // *********************************************************************//
   IEDICOMDataObjectDisp = dispinterface
     ['{C7037767-05C8-4C6F-8201-655A6B5A4CF4}']
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -208,7 +208,7 @@ type
 // *********************************************************************//
   IEDICOMDataObjectGroupDisp = dispinterface
     ['{AEADBE04-6D1C-493E-BE6B-51E96BAD3680}']
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -232,7 +232,7 @@ type
 // *********************************************************************//
   IEDICOMElementDisp = dispinterface
     ['{E4ED3376-38AA-423C-9160-AAD190ACCB35}']
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -247,16 +247,16 @@ type
 // *********************************************************************//
   IEDICOMSegment = interface(IEDICOMDataObjectGroup)
     ['{467C692E-C22F-44B5-ACDB-C7A337B68675}']
-    function  Get_Element(Index: Integer): IEDICOMElement; safecall;
-    function  Get_SegmentId: WideString; safecall;
+    function Get_Element(Index: Integer): IEDICOMElement; safecall;
+    function Get_SegmentId: WideString; safecall;
     procedure Set_SegmentId(const Value: WideString); safecall;
-    function  AddElement: Integer; safecall;
-    function  InsertElement(InsertIndex: Integer): Integer; safecall;
+    function AddElement: Integer; safecall;
+    function InsertElement(InsertIndex: Integer): Integer; safecall;
     procedure DeleteElement(Index: Integer); safecall;
-    function  AddElements(Count: Integer): Integer; safecall;
-    function  InsertElements(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function AddElements(Count: Integer): Integer; safecall;
+    function InsertElements(InsertIndex: Integer; Count: Integer): Integer; safecall;
     procedure DeleteElements; safecall;
-    function  Get_ElementCount: Integer; safecall;
+    function Get_ElementCount: Integer; safecall;
     property Element[Index: Integer]: IEDICOMElement read Get_Element;
     property SegmentId: WideString read Get_SegmentId write Set_SegmentId;
     property ElementCount: Integer read Get_ElementCount;
@@ -271,14 +271,14 @@ type
     ['{467C692E-C22F-44B5-ACDB-C7A337B68675}']
     property Element[Index: Integer]: IEDICOMElement readonly dispid 401;
     property SegmentId: WideString dispid 402;
-    function  AddElement: Integer; dispid 403;
-    function  InsertElement(InsertIndex: Integer): Integer; dispid 404;
+    function AddElement: Integer; dispid 403;
+    function InsertElement(InsertIndex: Integer): Integer; dispid 404;
     procedure DeleteElement(Index: Integer); dispid 405;
-    function  AddElements(Count: Integer): Integer; dispid 406;
-    function  InsertElements(InsertIndex: Integer; Count: Integer): Integer; dispid 407;
+    function AddElements(Count: Integer): Integer; dispid 406;
+    function InsertElements(InsertIndex: Integer; Count: Integer): Integer; dispid 407;
     procedure DeleteElements; dispid 408;
     property ElementCount: Integer readonly dispid 409;
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -293,16 +293,16 @@ type
 // *********************************************************************//
   IEDICOMTransactionSet = interface(IEDICOMDataObjectGroup)
     ['{B2300104-4FF0-40A3-ABED-29E2A36C1844}']
-    function  Get_SegmentST: IEDICOMSegment; safecall;
-    function  Get_SegmentSE: IEDICOMSegment; safecall;
-    function  Get_Segment(Index: Integer): IEDICOMSegment; safecall;
-    function  AddSegment: Integer; safecall;
-    function  InsertSegment(InsertIndex: Integer): Integer; safecall;
+    function Get_SegmentST: IEDICOMSegment; safecall;
+    function Get_SegmentSE: IEDICOMSegment; safecall;
+    function Get_Segment(Index: Integer): IEDICOMSegment; safecall;
+    function AddSegment: Integer; safecall;
+    function InsertSegment(InsertIndex: Integer): Integer; safecall;
     procedure DeleteSegment(Index: Integer); safecall;
-    function  AddSegments(Count: Integer): Integer; safecall;
-    function  InsertSegments(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function AddSegments(Count: Integer): Integer; safecall;
+    function InsertSegments(InsertIndex: Integer; Count: Integer): Integer; safecall;
     procedure DeleteSegments; safecall;
-    function  Get_SegmentCount: Integer; safecall;
+    function Get_SegmentCount: Integer; safecall;
     property SegmentST: IEDICOMSegment read Get_SegmentST;
     property SegmentSE: IEDICOMSegment read Get_SegmentSE;
     property Segment[Index: Integer]: IEDICOMSegment read Get_Segment;
@@ -319,14 +319,14 @@ type
     property SegmentST: IEDICOMSegment readonly dispid 401;
     property SegmentSE: IEDICOMSegment readonly dispid 402;
     property Segment[Index: Integer]: IEDICOMSegment readonly dispid 403;
-    function  AddSegment: Integer; dispid 404;
-    function  InsertSegment(InsertIndex: Integer): Integer; dispid 405;
+    function AddSegment: Integer; dispid 404;
+    function InsertSegment(InsertIndex: Integer): Integer; dispid 405;
     procedure DeleteSegment(Index: Integer); dispid 406;
-    function  AddSegments(Count: Integer): Integer; dispid 407;
-    function  InsertSegments(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
+    function AddSegments(Count: Integer): Integer; dispid 407;
+    function InsertSegments(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
     procedure DeleteSegments; dispid 409;
     property SegmentCount: Integer readonly dispid 410;
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -341,16 +341,16 @@ type
 // *********************************************************************//
   IEDICOMFunctionalGroup = interface(IEDICOMDataObjectGroup)
     ['{C2FDB4EF-6252-4E67-BAD4-E7200B9CEA31}']
-    function  Get_SegmentGS: IEDICOMSegment; safecall;
-    function  Get_SegmentGE: IEDICOMSegment; safecall;
-    function  Get_TransactionSet(Index: Integer): IEDICOMTransactionSet; safecall;
-    function  AddTransactionSet: Integer; safecall;
-    function  InsertTransactionSet(InsertIndex: Integer): Integer; safecall;
+    function Get_SegmentGS: IEDICOMSegment; safecall;
+    function Get_SegmentGE: IEDICOMSegment; safecall;
+    function Get_TransactionSet(Index: Integer): IEDICOMTransactionSet; safecall;
+    function AddTransactionSet: Integer; safecall;
+    function InsertTransactionSet(InsertIndex: Integer): Integer; safecall;
     procedure DeleteTransactionSet(Index: Integer); safecall;
-    function  AddTransactionSets(Count: Integer): Integer; safecall;
-    function  InsertTransactionSets(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function AddTransactionSets(Count: Integer): Integer; safecall;
+    function InsertTransactionSets(InsertIndex: Integer; Count: Integer): Integer; safecall;
     procedure DeleteTransactionSets; safecall;
-    function  Get_TransactionSetCount: Integer; safecall;
+    function Get_TransactionSetCount: Integer; safecall;
     property SegmentGS: IEDICOMSegment read Get_SegmentGS;
     property SegmentGE: IEDICOMSegment read Get_SegmentGE;
     property TransactionSet[Index: Integer]: IEDICOMTransactionSet read Get_TransactionSet;
@@ -367,14 +367,14 @@ type
     property SegmentGS: IEDICOMSegment readonly dispid 401;
     property SegmentGE: IEDICOMSegment readonly dispid 402;
     property TransactionSet[Index: Integer]: IEDICOMTransactionSet readonly dispid 403;
-    function  AddTransactionSet: Integer; dispid 404;
-    function  InsertTransactionSet(InsertIndex: Integer): Integer; dispid 405;
+    function AddTransactionSet: Integer; dispid 404;
+    function InsertTransactionSet(InsertIndex: Integer): Integer; dispid 405;
     procedure DeleteTransactionSet(Index: Integer); dispid 406;
-    function  AddTransactionSets(Count: Integer): Integer; dispid 407;
-    function  InsertTransactionSets(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
+    function AddTransactionSets(Count: Integer): Integer; dispid 407;
+    function InsertTransactionSets(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
     procedure DeleteTransactionSets; dispid 409;
     property TransactionSetCount: Integer readonly dispid 410;
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -389,17 +389,17 @@ type
 // *********************************************************************//
   IEDICOMInterchangeControl = interface(IEDICOMDataObjectGroup)
     ['{B7FF3E84-8D1E-44F5-BC6A-578881CF7B5A}']
-    function  Get_SegmentISA: IEDICOMSegment; safecall;
-    function  Get_SegmentIEA: IEDICOMSegment; safecall;
-    function  Get_FunctionalGroup(Index: Integer): IEDICOMFunctionalGroup; safecall;
-    function  AddFunctionalGroup: Integer; safecall;
-    function  InsertFunctionalGroup(InsertIndex: Integer): Integer; safecall;
+    function Get_SegmentISA: IEDICOMSegment; safecall;
+    function Get_SegmentIEA: IEDICOMSegment; safecall;
+    function Get_FunctionalGroup(Index: Integer): IEDICOMFunctionalGroup; safecall;
+    function AddFunctionalGroup: Integer; safecall;
+    function InsertFunctionalGroup(InsertIndex: Integer): Integer; safecall;
     procedure DeleteFunctionalGroup(Index: Integer); safecall;
-    function  AddFunctionalGroups(InsertIndex: Integer): Integer; safecall;
-    function  InsertFunctionalGroups(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function AddFunctionalGroups(InsertIndex: Integer): Integer; safecall;
+    function InsertFunctionalGroups(InsertIndex: Integer; Count: Integer): Integer; safecall;
     procedure DeleteFunctionalGroups; safecall;
     procedure SetDelimiters(const SD: WideString; const ED: WideString; const SS: WideString); safecall;
-    function  Get_FunctionalGroupCount: Integer; safecall;
+    function Get_FunctionalGroupCount: Integer; safecall;
     property SegmentISA: IEDICOMSegment read Get_SegmentISA;
     property SegmentIEA: IEDICOMSegment read Get_SegmentIEA;
     property FunctionalGroup[Index: Integer]: IEDICOMFunctionalGroup read Get_FunctionalGroup;
@@ -416,15 +416,15 @@ type
     property SegmentISA: IEDICOMSegment readonly dispid 401;
     property SegmentIEA: IEDICOMSegment readonly dispid 402;
     property FunctionalGroup[Index: Integer]: IEDICOMFunctionalGroup readonly dispid 403;
-    function  AddFunctionalGroup: Integer; dispid 404;
-    function  InsertFunctionalGroup(InsertIndex: Integer): Integer; dispid 405;
+    function AddFunctionalGroup: Integer; dispid 404;
+    function InsertFunctionalGroup(InsertIndex: Integer): Integer; dispid 405;
     procedure DeleteFunctionalGroup(Index: Integer); dispid 406;
-    function  AddFunctionalGroups(InsertIndex: Integer): Integer; dispid 407;
-    function  InsertFunctionalGroups(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
+    function AddFunctionalGroups(InsertIndex: Integer): Integer; dispid 407;
+    function InsertFunctionalGroups(InsertIndex: Integer; Count: Integer): Integer; dispid 408;
     procedure DeleteFunctionalGroups; dispid 409;
     procedure SetDelimiters(const SD: WideString; const ED: WideString; const SS: WideString); dispid 410;
     property FunctionalGroupCount: Integer readonly dispid 411;
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;
@@ -443,18 +443,18 @@ type
     procedure ReLoadFromFile; safecall;
     procedure SaveToFile; safecall;
     procedure SaveAsToFile(const FileName: WideString); safecall;
-    function  Get_FileName: WideString; safecall;
+    function Get_FileName: WideString; safecall;
     procedure Set_FileName(const Value: WideString); safecall;
-    function  Get_Interchange(Index: Integer): IEDICOMInterchangeControl; safecall;
-    function  Get_Options: Byte; safecall;
+    function Get_Interchange(Index: Integer): IEDICOMInterchangeControl; safecall;
+    function Get_Options: Byte; safecall;
     procedure Set_Options(Value: Byte); safecall;
-    function  AddInterchange: Integer; safecall;
-    function  InsertInterchange(InsertIndex: Integer): Integer; safecall;
+    function AddInterchange: Integer; safecall;
+    function InsertInterchange(InsertIndex: Integer): Integer; safecall;
     procedure DeleteInterchange(Index: Integer); safecall;
-    function  AddInterchanges(Count: Integer): Integer; safecall;
-    function  InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer; safecall;
+    function AddInterchanges(Count: Integer): Integer; safecall;
+    function InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer; safecall;
     procedure DeleteInterchanges; safecall;
-    function  Get_InterchangeCount: Integer; safecall;
+    function Get_InterchangeCount: Integer; safecall;
     property FileName: WideString read Get_FileName write Set_FileName;
     property Interchange[Index: Integer]: IEDICOMInterchangeControl read Get_Interchange;
     property Options: Byte read Get_Options write Set_Options;
@@ -475,14 +475,14 @@ type
     property FileName: WideString dispid 405;
     property Interchange[Index: Integer]: IEDICOMInterchangeControl readonly dispid 406;
     property Options: Byte dispid 407;
-    function  AddInterchange: Integer; dispid 408;
-    function  InsertInterchange(InsertIndex: Integer): Integer; dispid 409;
+    function AddInterchange: Integer; dispid 408;
+    function InsertInterchange(InsertIndex: Integer): Integer; dispid 409;
     procedure DeleteInterchange(Index: Integer); dispid 410;
-    function  AddInterchanges(Count: Integer): Integer; dispid 411;
-    function  InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer; dispid 412;
+    function AddInterchanges(Count: Integer): Integer; dispid 411;
+    function InsertInterchanges(InsertIndex: Integer; Count: Integer): Integer; dispid 412;
     procedure DeleteInterchanges; dispid 413;
     property InterchangeCount: Integer readonly dispid 414;
-    function  Assemble: WideString; dispid 201;
+    function Assemble: WideString; dispid 201;
     procedure Disassemble; dispid 202;
     property State: Integer readonly dispid 203;
     property Data: WideString dispid 205;

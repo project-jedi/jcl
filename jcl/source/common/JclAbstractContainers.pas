@@ -672,9 +672,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewContainer := CreateEmptyContainer;
-    AssignDataTo(NewContainer);
-    Result := NewContainer;
+  NewContainer := CreateEmptyContainer;
+  AssignDataTo(NewContainer);
+  Result := NewContainer;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -746,9 +746,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewContainer := CreateEmptyContainer;
-    AssignDataTo(NewContainer);
-    Result := NewContainer;
+  NewContainer := CreateEmptyContainer;
+  AssignDataTo(NewContainer);
+  Result := NewContainer;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -848,7 +848,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyIterator;
+  Result := CreateEmptyIterator;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -867,7 +867,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyIterator;
+  Result := CreateEmptyIterator;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1018,8 +1018,8 @@ begin
   case FEncoding of
     weUCS2:
       //if FCaseSensitive then
-        for I := 1 to Length(AString) do
-          Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
+      for I := 1 to Length(AString) do
+        Inc(Result, Ord(AString[I]) * (I - 1) * 65536)
       //else
       //  for I := 1 to Length(AString) do
       //    Inc(Result, Ord(AString[I]) * (I - 1) * 65536); // TODO: case folding
@@ -1534,4 +1534,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

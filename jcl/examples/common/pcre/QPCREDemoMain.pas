@@ -47,7 +47,7 @@ type
     procedure Match;
     function GetUIOptions: TJclAnsiRegExOptions;
     procedure UpdateUIOptions;
-    procedure LoadFromFile(const Filename:string);
+    procedure LoadFromFile(const Filename: string);
   protected
     //procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
   public
@@ -140,7 +140,8 @@ procedure TfrmMain.UpdateUIOptions;
 var
   Options: TJclAnsiRegExOptions;
 begin
-  if RE = nil then Exit;
+  if RE = nil then
+    Exit;
   Options := RE.Options;
   chkIgnoreCase.Checked := roIgnoreCase in Options;
   chkMultiLine.Checked := roMultiLine in Options;
@@ -173,4 +174,3 @@ begin
 end;
 
 end.
-

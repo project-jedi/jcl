@@ -90,7 +90,7 @@ type
     property Item: Pointer read GetItem;
   end;
 
-  IMultiSafeGuard = interface (IInterface)
+  IMultiSafeGuard = interface(IInterface)
     function AddItem(Item: Pointer): Pointer;
     procedure FreeItem(Index: Integer);
     function GetCount: Integer;
@@ -164,7 +164,7 @@ function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUn
 
 // Dynamic array sort and search routines
 type
-  TDynArraySortCompare = function (Item1, Item2: Pointer): Integer;
+  TDynArraySortCompare = function(Item1, Item2: Pointer): Integer;
 
 procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
 // Usage: SortDynArray(Array, SizeOf(Array[0]), SortFunction);
@@ -508,7 +508,7 @@ type
 
 {$IFNDEF CLR}
 type
-  TJclSimpleLog = class (TObject)
+  TJclSimpleLog = class(TObject)
   private
     FLogFileHandle: Integer;
     FLogFileName: string;
@@ -533,12 +533,12 @@ type
   end;
 
 // Procedure to initialize the SimpleLog Variable
-procedure InitSimpleLog (const ALogFileName: string = '');
+procedure InitSimpleLog(const ALogFileName: string = '');
 
 // Global Variable to make it easier for an application wide log handling.
 // Must be initialized with InitSimpleLog before using
 var
-  SimpleLog : TJclSimpleLog;
+  SimpleLog: TJclSimpleLog;
 
 {$ENDIF ~CLR}
 
@@ -622,15 +622,15 @@ type
 const
   cThisUsedFlag = 2;
   cPrevFreeFlag = 1;
-  cFillerFlag   = Integer($80000000);
-  cFlags        = cThisUsedFlag or cPrevFreeFlag or cFillerFlag;
+  cFillerFlag = Integer($80000000);
+  cFlags = cThisUsedFlag or cPrevFreeFlag or cFillerFlag;
 
 function SizeOfMem(const APointer: Pointer): Integer;
 var
   U: PUsed;
 begin
   if IsMemoryManagerSet then
-    Result:= -1
+    Result := -1
   else
   begin
     Result := 0;
@@ -672,14 +672,14 @@ begin
     // (outchy) VirtualProtect for DEP issues
     Result := VirtualProtect(BaseAddress, Size, PAGE_EXECUTE_READWRITE, OldProtect);
     if Result then
-    try
-      Move(Buffer^, BaseAddress^, Size);
-      WrittenBytes := Size;
-      if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
-        FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
-    finally
-      VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
-    end;
+      try
+        Move(Buffer^, BaseAddress^, Size);
+        WrittenBytes := Size;
+        if OldProtect in [PAGE_EXECUTE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE, PAGE_EXECUTE_WRITECOPY] then
+          FlushInstructionCache(GetCurrentProcess, BaseAddress, Size);
+      finally
+        VirtualProtect(BaseAddress, Size, OldProtect, Dummy);
+      end;
   end;
   Result := WrittenBytes = Size;
 end;
@@ -946,12 +946,12 @@ begin
 
   if (GetWindowsVersion in [wvUnknown..wvWinNT4]) and
     ((Name = '') or (Pos('\', Name) > 0)) then
-      raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
+    raise ESharedMemError.CreateResFmt(@RsInvalidMMFName, [Name]);
 
   {$IFDEF THREADSAFE}
   HandleListAccess := GetAccessToHandleList;
   {$ENDIF THREADSAFE}
-  
+
   // search for same name
   Iterate := MMFHandleList;
   while Iterate <> nil do
@@ -972,10 +972,10 @@ begin
   begin
     if Size = 0 then
       raise ESharedMemError.CreateResFmt(@RsInvalidMMFEmpty, [Name]);
-      
+
     Protect := PAGE_READWRITE;
     if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
-       (DesiredAccess = FILE_MAP_COPY) then
+      (DesiredAccess = FILE_MAP_COPY) then
       Protect := PAGE_WRITECOPY;
 
     FileMappingHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, Protect,
@@ -1037,7 +1037,7 @@ begin
   if (SharedGetMem(Result, Name, Size, DesiredAccess) <> ERROR_ALREADY_EXISTS) and
     ((DesiredAccess and (FILE_MAP_WRITE or FILE_MAP_COPY)) <> 0) and
     (Size > 0) and (Result <> nil) then
-      FillChar(Pointer(Result)^, Size, 0);
+    FillChar(Pointer(Result)^, Size, 0);
 end;
 
 function SharedFreeMem(var p{: Pointer}): Boolean;
@@ -1234,23 +1234,23 @@ var
           JPtr := ArrayItemPointer(J);
           case ElementSize of
             SizeOf(Byte):
-              begin
-                T := PByte(IPtr)^;
-                PByte(IPtr)^ := PByte(JPtr)^;
-                PByte(JPtr)^ := T;
-              end;
+            begin
+              T := PByte(IPtr)^;
+              PByte(IPtr)^ := PByte(JPtr)^;
+              PByte(JPtr)^ := T;
+            end;
             SizeOf(Word):
-              begin
-                T := PWord(IPtr)^;
-                PWord(IPtr)^ := PWord(JPtr)^;
-                PWord(JPtr)^ := T;
-              end;
+            begin
+              T := PWord(IPtr)^;
+              PWord(IPtr)^ := PWord(JPtr)^;
+              PWord(JPtr)^ := T;
+            end;
             SizeOf(Integer):
-              begin
-                T := PInteger(IPtr)^;
-                PInteger(IPtr)^ := PInteger(JPtr)^;
-                PInteger(JPtr)^ := T;
-              end;
+            begin
+              T := PInteger(IPtr)^;
+              PInteger(IPtr)^ := PInteger(JPtr)^;
+              PInteger(JPtr)^ := T;
+            end;
           else
             Move(IPtr^, TempBuf[0], ElementSize);
             Move(JPtr^, IPtr^, ElementSize);
@@ -1437,7 +1437,7 @@ begin
         end;
         TObject(List[I]).Free;
         if (not (List is TComponentList))
-          and ((not(List is TObjectList)) or not TObjectList(List).OwnsObjects) then
+          and ((not (List is TObjectList)) or not TObjectList(List).OwnsObjects) then
           List[I] := nil;
       end;
     end;
@@ -1657,7 +1657,7 @@ begin
   repeat
     TablePointer := PLongint(Longint(AClass) + I)^;
     if (TablePointer <> 0) and (TablePointer >= BeginVMT) and
-       (TablePointer < EndVMT) then
+      (TablePointer < EndVMT) then
       EndVMT := Longint(TablePointer);
     Inc(I, SizeOf(Pointer));
   until I >= vmtClassName;
@@ -1686,66 +1686,66 @@ type
 
 function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        TEST    EAX, EAX
-        JE      @@Exit
-        MOVZX   EAX, WORD PTR [EAX]
-@@Exit:
+         MOV     EAX, [EAX].VMTDYNAMICTABLE
+         TEST    EAX, EAX
+         JE      @@EXIT
+         MOVZX   EAX, WORD PTR [EAX]
+         @@EXIT:
 end;
 
 function GetDynamicIndexList(AClass: TClass): PDynamicIndexList; assembler;
 asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        ADD     EAX, 2
+         MOV     EAX, [EAX].VMTDYNAMICTABLE
+         ADD     EAX, 2
 end;
 
 function GetDynamicAddressList(AClass: TClass): PDynamicAddressList; assembler;
 asm
-        MOV     EAX, [EAX].vmtDynamicTable
-        MOVZX   EDX, Word ptr [EAX]
-        ADD     EAX, EDX
-        ADD     EAX, EDX
-        ADD     EAX, 2
+         MOV     EAX, [EAX].VMTDYNAMICTABLE
+         MOVZX   EDX, WORD PTR [EAX]
+         ADD     EAX, EDX
+         ADD     EAX, EDX
+         ADD     EAX, 2
 end;
 
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean; assembler;
-// Mainly copied from System.GetDynaMethod
+// MAINLY COPIED FROM SYSTEM.GETDYNAMETHOD
 asm
-        { ->    EAX     vmt of class            }
-        {       DX      dynamic method index    }
+        { ->    EAX     VMT OF CLASS            }
+        {       DX      DYNAMIC METHOD INDEX    }
 
-        PUSH    EDI
-        XCHG    EAX, EDX
-        JMP     @@HaveVMT
-@@OuterLoop:
-        MOV     EDX, [EDX]
-@@HaveVMT:
-        MOV     EDI, [EDX].vmtDynamicTable
-        TEST    EDI, EDI
-        JE      @@Parent
-        MOVZX   ECX, WORD PTR [EDI]
-        PUSH    ECX
-        ADD     EDI,2
-        REPNE   SCASW
-        JE      @@Found
-        POP     ECX
-@@Parent:
-        MOV     EDX,[EDX].vmtParent
-        TEST    EDX,EDX
-        JNE     @@OuterLoop
-        MOV     EAX, 0
-        JMP     @@Exit
-@@Found:
-        POP     EAX
-        MOV     EAX, 1
-@@Exit:
-        POP     EDI
+         PUSH    EDI
+         XCHG    EAX, EDX
+         JMP     @@HAVEVMT
+         @@OUTERLOOP:
+         MOV     EDX, [EDX]
+         @@HAVEVMT:
+         MOV     EDI, [EDX].VMTDYNAMICTABLE
+         TEST    EDI, EDI
+         JE      @@PARENT
+         MOVZX   ECX, WORD PTR [EDI]
+         PUSH    ECX
+         ADD     EDI,2
+         REPNE   SCASW
+         JE      @@FOUND
+         POP     ECX
+         @@PARENT:
+         MOV     EDX,[EDX].VMTPARENT
+         TEST    EDX,EDX
+         JNE     @@OUTERLOOP
+         MOV     EAX, 0
+         JMP     @@EXIT
+         @@FOUND:
+         POP     EAX
+         MOV     EAX, 1
+         @@EXIT:
+         POP     EDI
 end;
 
 {$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
-        CALL    System.@FindDynaClass
+         CALL    SYSTEM.@FINDDYNACLASS
 end;
 {$ENDIF ~FPC}
 
@@ -1753,17 +1753,17 @@ end;
 
 function GetInitTable(AClass: TClass): PTypeInfo; assembler;
 asm
-        MOV     EAX, [EAX].vmtInitTable
+         MOV     EAX, [EAX].VMTINITTABLE
 end;
 
 function GetFieldTable(AClass: TClass): PFieldTable; assembler;
 asm
-        MOV     EAX, [EAX].vmtFieldTable
+         MOV     EAX, [EAX].VMTFIELDTABLE
 end;
 
 function GetMethodTable(AClass: TClass): PMethodTable; assembler;
 asm
-        MOV     EAX, [EAX].vmtMethodTable
+         MOV     EAX, [EAX].VMTMETHODTABLE
 end;
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
@@ -1792,38 +1792,38 @@ end;
 
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
-        MOV     EAX, [EAX].vmtParent
-        TEST    EAX, EAX
-        JE      @@Exit
-        MOV     EAX, [EAX]
-@@Exit:
+         MOV     EAX, [EAX].VMTPARENT
+         TEST    EAX, EAX
+         JE      @@EXIT
+         MOV     EAX, [EAX]
+         @@EXIT:
 end;
 
 {$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean; assembler;
 asm
-        CMP     Address, Address.vmtSelfPtr
-        JNZ     @False
-        MOV     Result, True
-        JMP     @Exit
-@False:
-        MOV     Result, False
-@Exit:
+         CMP     ADDRESS, ADDRESS.VMTSELFPTR
+         JNZ     @FALSE
+         MOV     RESULT, TRUE
+         JMP     @EXIT
+         @FALSE:
+         MOV     RESULT, FALSE
+         @EXIT:
 end;
 {$ENDIF ~FPC}
 
 {$IFNDEF FPC}
 function IsObject(Address: Pointer): Boolean; assembler;
 asm
-// or IsClass(Pointer(Address^));
-        MOV     EAX, [Address]
-        CMP     EAX, EAX.vmtSelfPtr
-        JNZ     @False
-        MOV     Result, True
-        JMP     @Exit
-@False:
-        MOV     Result, False
-@Exit:
+// OR ISCLASS(POINTER(ADDRESS^));
+         MOV     EAX, [ADDRESS]
+         CMP     EAX, EAX.VMTSELFPTR
+         JNZ     @FALSE
+         MOV     RESULT, TRUE
+         JMP     @EXIT
+         @FALSE:
+         MOV     RESULT, FALSE
+         @EXIT:
 end;
 {$ENDIF ~FPC}
 
@@ -2190,7 +2190,7 @@ const
   MaxResultLen = 64 + 63 + 1; // max. digits + max. group separators + sign
 var
   Remainder: Int64;
-  I, N: Integer;
+  I, N:      Integer;
   Chars, Digits: Cardinal;
   LoopFinished, HasSign, SpacePadding: Boolean;
 begin
@@ -2244,7 +2244,7 @@ begin
   end;
 
   FirstDigitPos := I + 1;
-  
+
   if HasSign then
     Result[I] := SignChar(Value)
   else
@@ -2298,7 +2298,7 @@ end;
 function TJclNumericFormat.StrToInt(const Value: string): Int64;
 var
   I, N: Integer;
-  C: Char;
+  C:    Char;
 begin
   Result := 0;
   N := 0;
@@ -2333,8 +2333,8 @@ begin
           InvalidDigit(C);
       end
       else
-        if C = DigitBlockSeparator then
-          Continue
+      if C = DigitBlockSeparator then
+        Continue
       else
         InvalidDigit(C);
     end;
@@ -2402,22 +2402,22 @@ begin
   EndPos := OutPos;
   for BufPos := 1 to Length(RawOutput) do
   begin
-    if OutPos >= Length(Result)-2 then
+    if OutPos >= Length(Result) - 2 then
       SetLength(Result, Length(Result) + Delta);
     C := RawOutput[BufPos];
     case C of
       AnsiCarriageReturn:
         OutPos := LfPos;
       AnsiLineFeed:
-        begin
-          OutPos := EndPos;
-          Result[OutPos] := AnsiCarriageReturn;
-          Inc(OutPos);
-          Result[OutPos] := C;
-          Inc(OutPos);
-          EndPos := OutPos;
-          LfPos := OutPos;
-        end;
+      begin
+        OutPos := EndPos;
+        Result[OutPos] := AnsiCarriageReturn;
+        Inc(OutPos);
+        Result[OutPos] := C;
+        Inc(OutPos);
+        EndPos := OutPos;
+        LfPos := OutPos;
+      end;
     else
       Result[OutPos] := C;
       Inc(OutPos);
@@ -2453,19 +2453,19 @@ var
     Buffer[PipeBytesRead] := #0;
     TempOutput := TempOutput + Buffer;
     if Assigned(OutputLineCallback) then
-    repeat
-      CR := Pos(AnsiCarriageReturn, TempOutput);
-      if CR = Length(TempOutput) then
-        CR := 0;        // line feed at CR + 1 might be missing
-      LF := Pos(AnsiLineFeed, TempOutput);
-      if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
-        LF := CR;       // accept CR as line end
-      if LF > 0 then
-      begin
-        ProcessLine(LF);
-        Delete(TempOutput, 1, LF);
-      end;
-    until LF = 0;
+      repeat
+        CR := Pos(AnsiCarriageReturn, TempOutput);
+        if CR = Length(TempOutput) then
+          CR := 0;        // line feed at CR + 1 might be missing
+        LF := Pos(AnsiLineFeed, TempOutput);
+        if (CR > 0) and ((LF > CR + 1) or (LF = 0)) then
+          LF := CR;       // accept CR as line end
+        if LF > 0 then
+        begin
+          ProcessLine(LF);
+          Delete(TempOutput, 1, LF);
+        end;
+      until LF = 0;
   end;
 
 {$IFDEF MSWINDOWS}
@@ -2505,7 +2505,7 @@ begin
       TerminateProcess(ProcessInfo.hProcess, Cardinal(ABORT_EXIT_CODE));
     if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
       not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-        Result := $FFFFFFFF;
+      Result := $FFFFFFFF;
     CloseHandle(ProcessInfo.hThread);
     CloseHandle(ProcessInfo.hProcess);
   end
@@ -2535,10 +2535,10 @@ begin
       // (shouldn't happen, but you never know)
       ProcessLine(Length(TempOutput))
     else
-      if RawOutput then
-        Output := Output + TempOutput
-      else
-        Output := Output + MuteCRTerminatedLines(TempOutput);
+    if RawOutput then
+      Output := Output + TempOutput
+    else
+      Output := Output + MuteCRTerminatedLines(TempOutput);
 end;
 
 { TODO -cHelp :
@@ -2734,11 +2734,11 @@ end;
 //=== Conversion Utilities ===================================================
 
 const
-  DefaultTrueBoolStr  = 'True';  // DO NOT LOCALIZE
+  DefaultTrueBoolStr = 'True';  // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
-  DefaultYesBoolStr   = 'Yes';   // DO NOT LOCALIZE
-  DefaultNoBoolStr    = 'No';    // DO NOT LOCALIZE
+  DefaultYesBoolStr = 'Yes';   // DO NOT LOCALIZE
+  DefaultNoBoolStr  = 'No';    // DO NOT LOCALIZE
 
 function StrToBoolean(const S: string): Boolean;
 var
@@ -2809,7 +2809,7 @@ begin
   {$ELSE}
   Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
     [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
-     GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
+    GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
   {$ENDIF CLR}
 end;
 
@@ -2882,7 +2882,7 @@ procedure ListIncludeItems(var List: string; const Separator, Items: string);
 var
   StrList, NewItems: TStringList;
   Index: Integer;
-  Item: string;
+  Item:  string;
 begin
   StrList := TStringList.Create;
   try
@@ -3165,7 +3165,7 @@ begin
       SL.Text := Text;
       for I := 0 to SL.Count - 1 do
       begin
-        S := DateTimeToStr(Now)+' : '+StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
+        S := DateTimeToStr(Now) + ' : ' + StringOfChar(' ', Indent) + StrEnsureSuffix(AnsiCrLf, TrimRight(SL[I]));
         FileWrite(FLogFileHandle, Pointer(S)^, Length(S));
       end;
     finally
@@ -3194,7 +3194,7 @@ begin
   Write(StrRepeat('=', SeparatorLen));
 end;
 
-procedure InitSimpleLog (const ALogFileName: string = '');
+procedure InitSimpleLog(const ALogFileName: string = '');
 begin
   if Assigned(SimpleLog) then
     FreeAndNil(SimpleLog);

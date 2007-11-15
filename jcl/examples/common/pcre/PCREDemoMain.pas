@@ -48,7 +48,7 @@ type
     procedure Match;
     function GetUIOptions: TJclAnsiRegExOptions;
     procedure UpdateUIOptions;
-    procedure LoadFromFile(const Filename:string);
+    procedure LoadFromFile(const Filename: string);
   protected
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
   public
@@ -143,7 +143,8 @@ procedure TfrmMain.UpdateUIOptions;
 var
   Options: TJclAnsiRegExOptions;
 begin
-  if RE = nil then Exit;
+  if RE = nil then
+    Exit;
   Options := RE.Options;
   chkIgnoreCase.Checked := roIgnoreCase in Options;
   chkMultiLine.Checked := roMultiLine in Options;
@@ -176,18 +177,18 @@ end;
 
 procedure TfrmMain.WMDropFiles(var Message: TWMDropFiles);
 var
-  i:integer;
-  buf:array [0..MAX_PATH] of char;
+  i: integer;
+  buf: array [0..MAX_PATH] of char;
 begin
   i := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);
   if i > 0 then
-  try
-    DragQueryFile(Message.Drop, 0, buf, sizeof(buf));
-    if FileExists(buf) then
-     LoadFromFile(buf);
-  finally
-    DragFinish(Message.Drop);
-  end;
+    try
+      DragQueryFile(Message.Drop, 0, buf, sizeof(buf));
+      if FileExists(buf) then
+        LoadFromFile(buf);
+    finally
+      DragFinish(Message.Drop);
+    end;
 end;
 
 procedure TfrmMain.LoadFromFile(const Filename: string);
@@ -197,4 +198,3 @@ begin
 end;
 
 end.
-

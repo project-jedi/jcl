@@ -65,7 +65,7 @@ uses
 procedure TJclOtaActionConfigureFrame.ButtonRestoreClick(Sender: TObject);
 var
   AListItem: TListItem;
-  AAction: TAction;
+  AAction:   TAction;
 begin
   AListItem := ListViewActions.Selected;
   if Assigned(AListItem) then

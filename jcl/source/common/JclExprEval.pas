@@ -358,7 +358,7 @@ type
     et254, // 'þ' #$FE 254
     et255, // 'ÿ' #$FF 255
     etInvalid // invalid token type
-  );
+    );
 
   TExprLexer = class(TObject)
   protected
@@ -1172,17 +1172,17 @@ begin
     etIdentifier:
       Result := CompileIdentFactor;
     etLParen:
-      begin
-        Result := CompileExprLevel0(True);
-        if Lexer.CurrTok <> etRParen then
-          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
-        Lexer.NextTok;
-      end;
+    begin
+      Result := CompileExprLevel0(True);
+      if Lexer.CurrTok <> etRParen then
+        raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
+      Lexer.NextTok;
+    end;
     etNumber:
-      begin
-        Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
-        Lexer.NextTok;
-      end;
+    begin
+      Result := NodeFactory.LoadConst64(Lexer.TokenAsNumber);
+      Lexer.NextTok;
+    end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
@@ -1312,7 +1312,8 @@ begin
       etIdentifier: // or, xor, bor, bxor
         if AnsiSameText(Lexer.TokenAsString, 'or') then
         begin
-          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel2(True) <> 0) or (Result <> 0) then
+ // prevent boolean optimisations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1357,7 +1358,8 @@ begin
         else
         if AnsiSameText(Lexer.TokenAsString, 'and') then
         begin
-          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then // prevent boolean optimisations, EvalTerm must be called
+          if (EvalExprLevel3(True) <> 0) and (Result <> 0) then
+ // prevent boolean optimisations, EvalTerm must be called
             Result := 1.0
           else
             Result := 0.0;
@@ -1412,17 +1414,17 @@ begin
     etIdentifier:
       Result := EvalIdentFactor;
     etLParen:
-      begin
-        Result := EvalExprLevel0(True);
-        if Lexer.CurrTok <> etRParen then
-          raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
-        Lexer.NextTok;
-      end;
+    begin
+      Result := EvalExprLevel0(True);
+      if Lexer.CurrTok <> etRParen then
+        raise EJclExprEvalError.CreateRes(@RsExprEvalRParenExpected);
+      Lexer.NextTok;
+    end;
     etNumber:
-      begin
-        Result := Lexer.TokenAsNumber;
-        Lexer.NextTok;
-      end;
+    begin
+      Result := Lexer.TokenAsNumber;
+      Lexer.NextTok;
+    end;
   else
     raise EJclExprEvalError.CreateRes(@RsExprEvalFactorExpected);
   end;
@@ -1470,7 +1472,7 @@ end;
 procedure TExprSimpleLexer.NextTok;
 const
   CharToTokenMap: array [Char] of TExprToken =
-  (
+    (
     {#0..#31}
     etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
     etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid, etInvalid,
@@ -1540,7 +1542,7 @@ const
     {#244} et244, {#245} et245, {#246} et246, {#247} et247,
     {#248} et248, {#249} et249, {#250} et250, {#251} et251,
     {#252} et252, {#253} et253, {#254} et254, {#255} et255
-  );
+    );
 var
   { register variable optimization }
   cp: PChar;
@@ -1557,75 +1559,75 @@ begin
     #0:
       FCurrTok := etEof;
     'a'..'z', 'A'..'Z', '_':
-      begin
-        start := cp;
+    begin
+      start := cp;
+      Inc(cp);
+      while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
         Inc(cp);
-        while cp^ in ['0'..'9', 'a'..'z', 'A'..'Z', '_'] do
-          Inc(cp);
-        SetString(FTokenAsString, start, cp - start);
-        FCurrTok := etIdentifier;
-      end;
+      SetString(FTokenAsString, start, cp - start);
+      FCurrTok := etIdentifier;
+    end;
     '0'..'9':
-      begin
-        start := cp;
+    begin
+      start := cp;
 
         { read in integer part of mantissa }
-        while cp^ in ['0'..'9'] do
-          Inc(cp);
+      while cp^ in ['0'..'9'] do
+        Inc(cp);
 
         { check for and read in fraction part of mantissa }
-        if (cp^ = '.') or (cp^ = DecimalSeparator) then
-        begin
+      if (cp^ = '.') or (cp^ = DecimalSeparator) then
+      begin
+        Inc(cp);
+        while cp^ in ['0'..'9'] do
           Inc(cp);
-          while cp^ in ['0'..'9'] do
-            Inc(cp);
-        end;
+      end;
 
         { check for and read in exponent }
-        if cp^ in ['e', 'E'] then
-        begin
+      if cp^ in ['e', 'E'] then
+      begin
+        Inc(cp);
+        if cp^ in ['+', '-'] then
           Inc(cp);
-          if cp^ in ['+', '-'] then
-            Inc(cp);
-          while cp^ in ['0'..'9'] do
-            Inc(cp);
-        end;
+        while cp^ in ['0'..'9'] do
+          Inc(cp);
+      end;
 
         { evaluate number }
-        SetString(FTokenAsString, start, cp - start);
-        FTokenAsNumber := StrToFloat(FTokenAsString);
+      SetString(FTokenAsString, start, cp - start);
+      FTokenAsNumber := StrToFloat(FTokenAsString);
 
-        FCurrTok := etNumber;
-      end;
+      FCurrTok := etNumber;
+    end;
     '<':
-      begin
-        Inc(cp);
-        case cp^ of
-          '=':
-            begin
-              FCurrTok := etLessEqual;
-              Inc(cp);
-            end;
-          '>':
-            begin
-              FCurrTok := etNotEqual;
-              Inc(cp);
-            end;
-        else
-          FCurrTok := etLessThan;
-        end;
-      end;
-    '>':
-      begin
-        Inc(cp);
-        if cp^ = '=' then
+    begin
+      Inc(cp);
+      case cp^ of
+        '=':
         begin
-          FCurrTok := etGreaterEqual;
+          FCurrTok := etLessEqual;
           Inc(cp);
-        end
-        else
-          FCurrTok := etGreaterThan;
+        end;
+        '>':
+        begin
+          FCurrTok := etNotEqual;
+          Inc(cp);
+        end;
+      else
+        FCurrTok := etLessThan;
       end;
+    end;
+    '>':
+    begin
+      Inc(cp);
+      if cp^ = '=' then
+      begin
+        FCurrTok := etGreaterEqual;
+        Inc(cp);
+      end
+      else
+        FCurrTok := etGreaterThan;
+    end;
   else
     { map character to token }
     FCurrTok := CharToTokenMap[cp^];
@@ -2305,7 +2307,7 @@ end;
 
 procedure TExprNegateVmOp.Execute;
 begin
-  FOutput := - FInput^;
+  FOutput := -FInput^;
 end;
 
 //=== { TExprLogicalNotVmOp } ================================================
@@ -2606,12 +2608,12 @@ begin
     Result := TExprVirtMachOp(FCodeList[FCodeList.Count - 1]).FOutput;
   end
   else
-    begin
-      if (FConstList.Count = 1) then
-        Result := TExprVirtMachOp(FConstList[0]).FOutput
-      else
-        Result := 0;
-    end;
+  begin
+    if (FConstList.Count = 1) then
+      Result := TExprVirtMachOp(FConstList[0]).FOutput
+    else
+      Result := 0;
+  end;
 end;
 
 procedure TExprVirtMach.Add(AOp: TExprVirtMachOp);
@@ -4264,7 +4266,7 @@ end;
 function TExpressionCompiler.Compile(const AExpr: string): TCompiledExpression;
 var
   Ice: TInternalCompiledExpression;
-  Vm: TExprVirtMach;
+  Vm:  TExprVirtMach;
   Parser: TExprCompileParser;
   Lexer: TExprSimpleLexer;
   NodeFactory: TExprVirtMachNodeFactory;
@@ -4321,8 +4323,8 @@ type
 function IterateFindIce(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
 var
   PIfr: PIceFindResult;
-  Ice: TInternalCompiledExpression;
-  Ce: TCompiledExpression;
+  Ice:  TInternalCompiledExpression;
+  Ce:   TCompiledExpression;
 begin
   PIfr := AUserData;
   Ice := APtr;
@@ -4335,7 +4337,8 @@ begin
     PIfr^.Ice := Ice;
     PIfr^.Expr := AStr;
     Result := False;
-  end else
+  end
+  else
     Result := True;
 end;
 

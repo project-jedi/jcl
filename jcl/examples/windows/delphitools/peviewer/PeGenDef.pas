@@ -87,7 +87,7 @@ uses PeViewerMain, JclFileUtils, ToolsUtils, JclSysUtils;
 {$R *.DFM}
 
 const
-  nfDecoratedName   = $01;
+  nfDecoratedName = $01;
   nfAnsiUnicodePair = $02;
 
 function PascalizeName(const Name: string): string;
@@ -96,7 +96,7 @@ const
   StripLeadingChars = ['_'];
   ValidChars = ValidLeadingChars + ['0'..'9'];
   InvalidCharReplacement = '_';
-  StopChar = '@';
+  StopChar   = '@';
 var
   I: Integer;
   C: Char;
@@ -113,7 +113,8 @@ begin
       else
       if not (C in StripLeadingChars) then
         Break; // probably MS C++ or Borland name decoration
-    end else
+    end
+    else
     begin
       if C in ValidChars then
         Result := Result + C

@@ -56,7 +56,8 @@ uses
 type
 
   TJclIntfArraySet = class(TJclIntfArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer, IJclIntfComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
+    IJclIntfComparer,
     IJclIntfCollection, IJclIntfList, IJclIntfArray, IJclIntfSet)
   private
     function BinarySearch(const AInterface: IInterface): Integer;
@@ -79,7 +80,8 @@ type
 
 
   TJclAnsiStrArraySet = class(TJclAnsiStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray, IJclAnsiStrSet)
   private
     function BinarySearch(const AString: AnsiString): Integer;
@@ -102,7 +104,8 @@ type
 
 
   TJclWideStrArraySet = class(TJclWideStrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray, IJclWideStrSet)
   private
     function BinarySearch(const AString: WideString): Integer;
@@ -132,7 +135,8 @@ type
 
 
   TJclSingleArraySet = class(TJclSingleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer,
+    IJclSingleEqualityComparer, IJclSingleComparer,
     IJclSingleCollection, IJclSingleList, IJclSingleArray, IJclSingleSet)
   private
     function BinarySearch(const AValue: Single): Integer;
@@ -155,7 +159,8 @@ type
 
 
   TJclDoubleArraySet = class(TJclDoubleArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer,
+    IJclDoubleEqualityComparer, IJclDoubleComparer,
     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray, IJclDoubleSet)
   private
     function BinarySearch(const AValue: Double): Integer;
@@ -178,7 +183,8 @@ type
 
 
   TJclExtendedArraySet = class(TJclExtendedArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer,
+    IJclExtendedEqualityComparer, IJclExtendedComparer,
     IJclExtendedCollection, IJclExtendedList, IJclExtendedArray, IJclExtendedSet)
   private
     function BinarySearch(const AValue: Extended): Integer;
@@ -211,7 +217,8 @@ type
 
 
   TJclIntegerArraySet = class(TJclIntegerArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer, IJclIntegerComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclIntegerEqualityComparer, IJclIntegerComparer,
     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray, IJclIntegerSet)
   private
     function BinarySearch(AValue: Integer): Integer;
@@ -234,7 +241,8 @@ type
 
 
   TJclCardinalArraySet = class(TJclCardinalArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer, IJclCardinalComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclCardinalEqualityComparer, IJclCardinalComparer,
     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray, IJclCardinalSet)
   private
     function BinarySearch(AValue: Cardinal): Integer;
@@ -257,7 +265,8 @@ type
 
 
   TJclInt64ArraySet = class(TJclInt64ArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer, IJclInt64Comparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclInt64EqualityComparer, IJclInt64Comparer,
     IJclInt64Collection, IJclInt64List, IJclInt64Array, IJclInt64Set)
   private
     function BinarySearch(const AValue: Int64): Integer;
@@ -281,7 +290,8 @@ type
   {$IFNDEF CLR}
 
   TJclPtrArraySet = class(TJclPtrArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer, IJclPtrComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
+    IJclPtrComparer,
     IJclPtrCollection, IJclPtrList, IJclPtrArray, IJclPtrSet)
   private
     function BinarySearch(APtr: Pointer): Integer;
@@ -305,7 +315,8 @@ type
 
 
   TJclArraySet = class(TJclArrayList, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer, IJclComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner,
+    IJclEqualityComparer, IJclComparer,
     IJclCollection, IJclList, IJclArray, IJclSet)
   private
     function BinarySearch(AObject: TObject): Integer;
@@ -429,17 +440,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if Result then
+  begin
+    Idx := BinarySearch(AInterface);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetObject(Idx), AInterface) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AInterface);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetObject(Idx), AInterface) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AInterface);
-    end;
+      Result := inherited Insert(Idx + 1, AInterface);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -455,12 +466,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -477,25 +488,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetObject(CompPos), AInterface);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetObject(CompPos), AInterface);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -511,11 +522,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AInterface);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetObject(Idx), AInterface)
-    else
-      Result := False;
+  Idx := BinarySearch(AInterface);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetObject(Idx), AInterface)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -560,17 +571,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    Idx := BinarySearch(AString);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AString);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AString);
-    end;
+      Result := inherited Insert(Idx + 1, AString);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -586,12 +597,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -608,25 +619,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetString(CompPos), AString);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetString(CompPos), AString);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -642,11 +653,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AString);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetString(Idx), AString)
-    else
-      Result := False;
+  Idx := BinarySearch(AString);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetString(Idx), AString)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -691,17 +702,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    Idx := BinarySearch(AString);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AString);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetString(Idx), AString) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AString);
-    end;
+      Result := inherited Insert(Idx + 1, AString);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -717,12 +728,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -739,25 +750,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetString(CompPos), AString);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetString(CompPos), AString);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -773,11 +784,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AString);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetString(Idx), AString)
-    else
-      Result := False;
+  Idx := BinarySearch(AString);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetString(Idx), AString)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -822,17 +833,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -848,12 +859,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -870,25 +881,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -904,11 +915,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -953,17 +964,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -979,12 +990,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1001,25 +1012,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1035,11 +1046,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1084,17 +1095,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1110,12 +1121,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1132,25 +1143,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1166,11 +1177,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1215,17 +1226,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1241,12 +1252,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1263,25 +1274,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1297,11 +1308,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1346,17 +1357,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1372,12 +1383,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1394,25 +1405,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1428,11 +1439,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1477,17 +1488,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    Idx := BinarySearch(AValue);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AValue);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetValue(Idx), AValue) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AValue);
-    end;
+      Result := inherited Insert(Idx + 1, AValue);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1503,12 +1514,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1525,25 +1536,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetValue(CompPos), AValue);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetValue(CompPos), AValue);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1559,11 +1570,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AValue);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetValue(Idx), AValue)
-    else
-      Result := False;
+  Idx := BinarySearch(AValue);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetValue(Idx), AValue)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1609,17 +1620,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if Result then
+  begin
+    Idx := BinarySearch(APtr);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetPtr(Idx), APtr) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(APtr);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetPtr(Idx), APtr) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, APtr);
-    end;
+      Result := inherited Insert(Idx + 1, APtr);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1635,12 +1646,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1657,25 +1668,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetPtr(CompPos), APtr);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetPtr(CompPos), APtr);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1691,11 +1702,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(APtr);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetPtr(Idx), APtr)
-    else
-      Result := False;
+  Idx := BinarySearch(APtr);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetPtr(Idx), APtr)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1741,17 +1752,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if Result then
+  begin
+    Idx := BinarySearch(AObject);
+    if Idx >= 0 then
+      Result := not ItemsEqual(GetObject(Idx), AObject) or CheckDuplicate
+    else
+      Result := True;
     if Result then
-    begin
-      Idx := BinarySearch(AObject);
-      if Idx >= 0 then
-        Result := not ItemsEqual(GetObject(Idx), AObject) or CheckDuplicate
-      else
-        Result := True;
-      if Result then
-        Result := inherited Insert(Idx + 1, AObject);
-    end;
+      Result := inherited Insert(Idx + 1, AObject);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1767,12 +1778,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1789,25 +1800,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := Size - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ItemsCompare(GetObject(CompPos), AObject);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := ItemsCompare(GetObject(CompPos), AObject);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1823,11 +1834,11 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Idx := BinarySearch(AObject);
-    if Idx >= 0 then
-      Result := ItemsEqual(GetObject(Idx), AObject)
-    else
-      Result := False;
+  Idx := BinarySearch(AObject);
+  if Idx >= 0 then
+    Result := ItemsEqual(GetObject(Idx), AObject)
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2101,4 +2112,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

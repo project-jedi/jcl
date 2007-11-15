@@ -31,7 +31,7 @@
 unit JclSIMDView;
 
 {$I jcl.inc}
-                     
+
 interface
 
 uses
@@ -85,14 +85,14 @@ type
     property DebuggerServices: IOTADebuggerServices read FDebuggerServices;
   end;
 
-  TJclDebuggerNotifier = class(TNotifierObject,IOTADebuggerNotifier,
+  TJclDebuggerNotifier = class(TNotifierObject, IOTADebuggerNotifier,
     IOTAProcessNotifier, IOTAThreadNotifier)
   private
     FOwner: TJclSIMDWizard;
     FProcessList: TList;
     FThreadList: TList;
-    function FindProcessReference(AProcess:IOTAProcess): PProcessReference;
-    function FindThreadReference(AThread:IOTAThread): PThreadReference;
+    function FindProcessReference(AProcess: IOTAProcess): PProcessReference;
+    function FindThreadReference(AThread: IOTAThread): PThreadReference;
   public
     constructor Create(AOwner: TJclSIMDWizard); reintroduce;
     destructor Destroy; override;
@@ -126,7 +126,7 @@ implementation
 
 uses
   TypInfo,
-  JclOtaConsts, JclOtaResources, 
+  JclOtaConsts, JclOtaResources,
   JclSIMDUtils;
 
 procedure Register;
@@ -167,8 +167,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -240,8 +240,8 @@ end;
 procedure TJclSIMDWizard.SIMDActionUpdate(Sender: TObject);
 var
   AProcess: IOTAProcess;
-  AThread: IOTAThread;
-  AAction: TAction;
+  AThread:  IOTAThread;
+  AAction:  TAction;
 begin
   try
     AAction := Sender as TAction;
@@ -567,7 +567,8 @@ begin
 
 end;
 
-procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP} const {$ENDIF} ProcessModule: IOTAProcessModule);
+procedure TJclDebuggerNotifier.ProcessModuleDestroyed({$IFDEF RTL170_UP}
+  const {$ENDIF} ProcessModule: IOTAProcessModule);
 begin
 
 end;

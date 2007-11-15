@@ -62,10 +62,10 @@ uses
 
 // Version
 const
-  JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 102;  // Fifth minor release since JCL 1.90
+  JclVersionMajor = 1;    // 0=pre-release|beta/1, 2, ...=final
+  JclVersionMinor = 102;  // Fifth minor release since JCL 1.90
   JclVersionRelease = 0;    // 0: pre-release|beta/ 1: release
-  JclVersionBuild   = 2726; // build number, days since march 1, 2000
+  JclVersionBuild = 2726; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -181,43 +181,43 @@ type
   PULargeInteger = ^TULargeInteger;
   TULargeInteger = record
     case Integer of
-    0:
-     (LowPart: LongWord;
-      HighPart: LongWord);
-    1:
-     (QuadPart: Int64);
+      0:
+      (LowPart: LongWord;
+        HighPart: LongWord);
+      1:
+      (QuadPart: Int64);
   end;
 {$ENDIF ~CLR}
 
 // Dynamic Array support
 type
-  TDynByteArray       = array of Byte;
-  TDynShortIntArray   = array of Shortint;
-  TDynWordArray       = array of Word;
-  TDynSmallIntArray   = array of Smallint;
-  TDynLongIntArray    = array of Longint;
-  TDynInt64Array      = array of Int64;
-  TDynCardinalArray   = array of Cardinal;
-  TDynIntegerArray    = array of Integer;
-  TDynExtendedArray   = array of Extended;
-  TDynDoubleArray     = array of Double;
-  TDynSingleArray     = array of Single;
-  TDynFloatArray      = array of Float;
+  TDynByteArray = array of Byte;
+  TDynShortIntArray = array of Shortint;
+  TDynWordArray = array of Word;
+  TDynSmallIntArray = array of Smallint;
+  TDynLongIntArray = array of Longint;
+  TDynInt64Array = array of Int64;
+  TDynCardinalArray = array of Cardinal;
+  TDynIntegerArray = array of Integer;
+  TDynExtendedArray = array of Extended;
+  TDynDoubleArray = array of Double;
+  TDynSingleArray = array of Single;
+  TDynFloatArray = array of Float;
   {$IFNDEF CLR}
-  TDynPointerArray    = array of Pointer;
+  TDynPointerArray = array of Pointer;
   {$ENDIF ~CLR}
-  TDynStringArray     = array of string;
+  TDynStringArray = array of string;
   TDynAnsiStringArray = array of AnsiString;
   TDynWideStringArray = array of WideString;
   TDynIInterfaceArray = array of IInterface;
-  TDynObjectArray     = array of TObject;
+  TDynObjectArray = array of TObject;
 
 // Cross-Platform Compatibility
 const
   // (rom) too basic for JclStrings
-  AnsiLineFeed       = AnsiChar(#10);
+  AnsiLineFeed = AnsiChar(#10);
   AnsiCarriageReturn = AnsiChar(#13);
-  AnsiCrLf           = AnsiString(#13#10);
+  AnsiCrLf = AnsiString(#13#10);
   {$IFDEF MSWINDOWS}
   AnsiLineBreak = AnsiCrLf;
   {$ENDIF MSWINDOWS}
@@ -225,17 +225,17 @@ const
   AnsiLineBreak = AnsiLineFeed;
   {$ENDIF UNIX}
 
-  AnsiSigns                  = ['-', '+'];
-  AnsiUppercaseLetters       = ['A'..'Z'];
-  AnsiLowercaseLetters       = ['a'..'z'];
-  AnsiLetters                = ['A'..'Z', 'a'..'z'];
-  AnsiDecDigits              = ['0'..'9'];
-  AnsiOctDigits              = ['0'..'7'];
-  AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
+  AnsiSigns = ['-', '+'];
+  AnsiUppercaseLetters = ['A'..'Z'];
+  AnsiLowercaseLetters = ['a'..'z'];
+  AnsiLetters = ['A'..'Z', 'a'..'z'];
+  AnsiDecDigits = ['0'..'9'];
+  AnsiOctDigits = ['0'..'7'];
+  AnsiHexDigits = ['0'..'9', 'A'..'F', 'a'..'f'];
   AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
 
   AnsiHexPrefixPascal = AnsiString('$');
-  AnsiHexPrefixC      = AnsiString('0x');
+  AnsiHexPrefixC = AnsiString('0x');
 
   {$IFDEF BCB}
   AnsiHexPrefix = AnsiHexPrefixC;

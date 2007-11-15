@@ -75,13 +75,13 @@ type
   TArrayOfColor32 = array of TColor32;
 
   { Blending Function Prototypes }
-  TCombineReg  = function(X, Y, W: TColor32): TColor32;
-  TCombineMem  = procedure(F: TColor32; var B: TColor32; W: TColor32);
-  TBlendReg    = function(F, B: TColor32): TColor32;
-  TBlendMem    = procedure(F: TColor32; var B: TColor32);
-  TBlendRegEx  = function(F, B, M: TColor32): TColor32;
-  TBlendMemEx  = procedure(F: TColor32; var B: TColor32; M: TColor32);
-  TBlendLine   = procedure(Src, Dst: PColor32; Count: Integer);
+  TCombineReg = function(X, Y, W: TColor32): TColor32;
+  TCombineMem = procedure(F: TColor32; var B: TColor32; W: TColor32);
+  TBlendReg = function(F, B: TColor32): TColor32;
+  TBlendMem = procedure(F: TColor32; var B: TColor32);
+  TBlendRegEx = function(F, B, M: TColor32): TColor32;
+  TBlendMemEx = procedure(F: TColor32; var B: TColor32; M: TColor32);
+  TBlendLine = procedure(Src, Dst: PColor32; Count: Integer);
   TBlendLineEx = procedure(Src, Dst: PColor32; Count: Integer; M: TColor32);
 
   { Auxiliary structure to support TColor manipulation }
@@ -121,30 +121,30 @@ type
 
 const
   { Some predefined color constants }
-  clBlack32     = TColor32($FF000000);
-  clDimGray32   = TColor32($FF3F3F3F);
-  clGray32      = TColor32($FF7F7F7F);
+  clBlack32 = TColor32($FF000000);
+  clDimGray32 = TColor32($FF3F3F3F);
+  clGray32 = TColor32($FF7F7F7F);
   clLightGray32 = TColor32($FFBFBFBF);
-  clWhite32     = TColor32($FFFFFFFF);
-  clMaroon32    = TColor32($FF7F0000);
-  clGreen32     = TColor32($FF007F00);
-  clOlive32     = TColor32($FF7F7F00);
-  clNavy32      = TColor32($FF00007F);
-  clPurple32    = TColor32($FF7F007F);
-  clTeal32      = TColor32($FF007F7F);
-  clRed32       = TColor32($FFFF0000);
-  clLime32      = TColor32($FF00FF00);
-  clYellow32    = TColor32($FFFFFF00);
-  clBlue32      = TColor32($FF0000FF);
-  clFuchsia32   = TColor32($FFFF00FF);
-  clAqua32      = TColor32($FF00FFFF);
+  clWhite32 = TColor32($FFFFFFFF);
+  clMaroon32 = TColor32($FF7F0000);
+  clGreen32 = TColor32($FF007F00);
+  clOlive32 = TColor32($FF7F7F00);
+  clNavy32 = TColor32($FF00007F);
+  clPurple32 = TColor32($FF7F007F);
+  clTeal32 = TColor32($FF007F7F);
+  clRed32 = TColor32($FFFF0000);
+  clLime32 = TColor32($FF00FF00);
+  clYellow32 = TColor32($FFFFFF00);
+  clBlue32 = TColor32($FF0000FF);
+  clFuchsia32 = TColor32($FFFF00FF);
+  clAqua32 = TColor32($FF00FFFF);
 
   { Some semi-transparent color constants }
-  clTrWhite32   = TColor32($7FFFFFFF);
-  clTrBlack32   = TColor32($7F000000);
-  clTrRed32     = TColor32($7FFF0000);
-  clTrGreen32   = TColor32($7F00FF00);
-  clTrBlue32    = TColor32($7F0000FF);
+  clTrWhite32 = TColor32($7FFFFFFF);
+  clTrBlack32 = TColor32($7F000000);
+  clTrRed32 = TColor32($7FFF0000);
+  clTrGreen32 = TColor32($7F00FF00);
+  clTrBlue32 = TColor32($7F0000FF);
 
 procedure EMMS;
 
@@ -378,9 +378,9 @@ type
 
 const
   { Component masks }
-  _R   = TColor32($00FF0000);
-  _G   = TColor32($0000FF00);
-  _B   = TColor32($000000FF);
+  _R = TColor32($00FF0000);
+  _G = TColor32($0000FF00);
+  _B = TColor32($000000FF);
   _RGB = TColor32($00FFFFFF);
   Bias = $00800080;
 
@@ -397,7 +397,7 @@ end;
 procedure GDIError;
 var
   ErrorCode: Integer;
-  Buf: array [0..255] of Char;
+  Buf:       array [0..255] of Char;
 begin
   ErrorCode := GetLastError;
   if (ErrorCode <> 0) and (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
@@ -409,7 +409,8 @@ end;
 
 function GDICheck(Value: Integer): Integer;
 begin
-  if Value = 0 then GDIError;
+  if Value = 0 then
+    GDIError;
   Result := Value;
 end;
 
@@ -436,8 +437,8 @@ function ColorSwap(WinColor: TColor): TColor32;
 end;}
 begin
   Result := $FF000000 or                        // A component
-    TColor32((WinColor and $0000FF) shl  16) or // R component
-    TColor32( WinColor and $00FF00) or          // G component
+    TColor32((WinColor and $0000FF) shl 16) or // R component
+    TColor32(WinColor and $00FF00) or          // G component
     TColor32((WinColor and $FF0000) shr 16);    // B component
 end;
 
@@ -503,23 +504,24 @@ begin
   if W = 0 then
     Result := Y        //May be if W <= 0 ???
   else
-  if W = $FF then Result := X //May be if W >= $FF ??? Or if W > $FF ???
+  if W = $FF then
+    Result := X //May be if W >= $FF ??? Or if W > $FF ???
   else
   begin
     Result :=
       (((((X shr 8 {00Xa00Xg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
-        Bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
+      Bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
       (((((X {00Xr00Xb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + Bias) and
-        $FF00FF00 {P100P200}) shr 8 {00Pr00Pb}) {PaPrPgPb};
+      $FF00FF00 {P100P200}) shr 8 {00Pr00Pb}) {PaPrPgPb};
 
     W := W xor $FF; // W := 1 - W;
     //W := $100 - W; // May be so ???
 
     Result := Result {PaPrPgPb} + (
       (((((Y shr 8 {00Ya00Yg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
-        Bias) and $FF00FF00 {P100P200}) {Qa00Qg00} or
+      Bias) and $FF00FF00 {P100P200}) {Qa00Qg00} or
       (((((Y {00Yr00Yb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + Bias) and
-        $FF00FF00 {P100P200}) shr 8 {00Qr00Qb}) {QaQrQgQb}
+      $FF00FF00 {P100P200}) shr 8 {00Qr00Qb}) {QaQrQgQb}
       ) {ZaZrZgZb};
   end;
 end;
@@ -613,84 +615,84 @@ end;
 
 procedure _BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
-  // EAX <- Src
-  // EDX <- Dst
-  // ECX <- Count
+  // EAX <- SRC
+  // EDX <- DST
+  // ECX <- COUNT
 
-  // test the counter for zero or negativity
-        TEST    ECX, ECX
-        JS      @4
+  // TEST THE COUNTER FOR ZERO OR NEGATIVITY
+         TEST    ECX, ECX
+         JS      @4
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        MOV     ESI, EAX        // ESI <- Src
-        MOV     EDI, EDX        // EDI <- Dst
+         MOV     ESI, EAX        // ESI <- SRC
+         MOV     EDI, EDX        // EDI <- DST
 
-  // loop start
-@1:     MOV     EAX, [ESI]
-        TEST    EAX, $FF000000
-        JZ      @3              // complete transparency, proceed to next point
+  // LOOP START
+         @1:     MOV     EAX, [ESI]
+         TEST    EAX, $FF000000
+         JZ      @3              // COMPLETE TRANSPARENCY, PROCEED TO NEXT POINT
 
-        PUSH    ECX             // store counter
+         PUSH    ECX             // STORE COUNTER
 
-  // Get weight W = Fa * M
-        MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
-        SHR     ECX, 24         // ECX  <-  00 00 00 Fa
+  // GET WEIGHT W = FA * M
+         MOV     ECX, EAX        // ECX  <-  FA FR FG FB
+         SHR     ECX, 24         // ECX  <-  00 00 00 FA
 
-  // Test Fa = 255 ?
-        CMP     ECX, $FF
-        JZ      @2
+  // TEST FA = 255 ?
+         CMP     ECX, $FF
+         JZ      @2
 
   // P = W * F
-        MOV     EBX, EAX         // EBX  <-  Fa Fr Fg Fb
-        AND     EAX, $00FF00FF   // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $FF00FF00   // EBX  <-  Fa 00 Fg 00
-        IMUL    EAX, ECX         // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8           // EBX  <-  00 Fa 00 Fg
-        IMUL    EBX, ECX         // EBX  <-  Pa ** Pg **
-        ADD     EAX, Bias
-        AND     EAX, $FF00FF00   // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8           // EAX  <-  00 Pr ** Pb
-        ADD     EBX, Bias
-        AND     EBX, $FF00FF00   // EBX  <-  Pa 00 Pg 00
-        OR      EAX, EBX         // EAX  <-  Pa Pr Pg Pb
+         MOV     EBX, EAX         // EBX  <-  FA FR FG FB
+         AND     EAX, $00FF00FF   // EAX  <-  00 FR 00 FB
+         AND     EBX, $FF00FF00   // EBX  <-  FA 00 FG 00
+         IMUL    EAX, ECX         // EAX  <-  PR ** PB **
+         SHR     EBX, 8           // EBX  <-  00 FA 00 FG
+         IMUL    EBX, ECX         // EBX  <-  PA ** PG **
+         ADD     EAX, BIAS
+         AND     EAX, $FF00FF00   // EAX  <-  PR 00 PB 00
+         SHR     EAX, 8           // EAX  <-  00 PR ** PB
+         ADD     EBX, BIAS
+         AND     EBX, $FF00FF00   // EBX  <-  PA 00 PG 00
+         OR      EAX, EBX         // EAX  <-  PA PR PG PB
 
   // W = 1 - W; Q = W * B
-        MOV     EDX, [EDI]
-        XOR     ECX, $000000FF   // ECX  <-  1 - ECX
-        MOV     EBX, EDX         // EBX  <-  Ba Br Bg Bb
-        AND     EDX, $00FF00FF   // ESI  <-  00 Br 00 Bb
-        AND     EBX, $FF00FF00   // EBX  <-  Ba 00 Bg 00
-        IMUL    EDX, ECX         // ESI  <-  Qr ** Qb **
-        SHR     EBX, 8           // EBX  <-  00 Ba 00 Bg
-        IMUL    EBX, ECX         // EBX  <-  Qa ** Qg **
-        ADD     EDX, Bias
-        AND     EDX, $FF00FF00   // ESI  <-  Qr 00 Qb 00
-        SHR     EDX, 8           // ESI  <-  00 Qr ** Qb
-        ADD     EBX, Bias
-        AND     EBX, $FF00FF00   // EBX  <-  Qa 00 Qg 00
-        OR      EBX, EDX         // EBX  <-  Qa Qr Qg Qb
+         MOV     EDX, [EDI]
+         XOR     ECX, $000000FF   // ECX  <-  1 - ECX
+         MOV     EBX, EDX         // EBX  <-  BA BR BG BB
+         AND     EDX, $00FF00FF   // ESI  <-  00 BR 00 BB
+         AND     EBX, $FF00FF00   // EBX  <-  BA 00 BG 00
+         IMUL    EDX, ECX         // ESI  <-  QR ** QB **
+         SHR     EBX, 8           // EBX  <-  00 BA 00 BG
+         IMUL    EBX, ECX         // EBX  <-  QA ** QG **
+         ADD     EDX, BIAS
+         AND     EDX, $FF00FF00   // ESI  <-  QR 00 QB 00
+         SHR     EDX, 8           // ESI  <-  00 QR ** QB
+         ADD     EBX, BIAS
+         AND     EBX, $FF00FF00   // EBX  <-  QA 00 QG 00
+         OR      EBX, EDX         // EBX  <-  QA QR QG QB
 
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  Za Zr Zg Zb
-@2:     MOV     [EDI], EAX
+  // Z = P + Q (ASSUMING NO OVERFLOW AT EACH BYTE)
+         ADD     EAX, EBX        // EAX  <-  ZA ZR ZG ZB
+         @2:     MOV[EDI], EAX
 
-        POP     ECX             // restore counter
+         POP     ECX             // RESTORE COUNTER
 
-@3:     ADD     ESI, 4
-        ADD     EDI, 4
+         @3:     ADD     ESI, 4
+         ADD     EDI, 4
 
-  // loop end
-        DEC     ECX
-        JNZ     @1
+  // LOOP END
+         DEC     ECX
+         JNZ     @1
 
-        POP     EDI
-        POP     ESI
-        POP     EBX
+         POP     EDI
+         POP     ESI
+         POP     EBX
 
-@4:     RET
+         @4:     RET
 end;
 
 procedure _BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32);
@@ -708,8 +710,8 @@ end;
 
 var
   AlphaTable: Pointer;
-  bias_ptr: Pointer;
-  alpha_ptr: Pointer;
+  bias_ptr:   Pointer;
+  alpha_ptr:  Pointer;
 
 procedure GenAlphaTable;
 var
@@ -742,34 +744,34 @@ end;
 procedure EMMS;
 begin
   if MMX_ACTIVE then
-  asm
-          db      $0F, $77               // EMMS
-  end;
+    asm
+             DB      $0F, $77               // EMMS
+    end;
 end;
 
 function M_CombineReg(X, Y, W: TColor32): TColor32; assembler;
 asm
-  // EAX - Color X
-  // EDX - Color Y
-  // ECX - Weight of X [0..255]
-  // Result := W * (X - Y) + Y
+  // EAX - COLOR X
+  // EDX - COLOR Y
+  // ECX - WEIGHT OF X [0..255]
+  // RESULT := W * (X - Y) + Y
 
-        db $0F, $EF, $C0           // PXOR      MM0, MM0
-        db $0F, $6E, $C8           // MOVD      MM1, EAX
-        SHL       ECX, 3
-        db $0F, $6E, $D2           // MOVD      MM2, EDX
-        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
-        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
-        ADD       ECX, alpha_ptr
-        db $0F, $F9, $CA           // PSUBW     MM1, MM2
-        db $0F, $D5, $09           // PMULLW    MM1, [ECX]
-        db $0F, $71, $F2,$08       // PSLLW     MM2, 8
-        MOV       ECX, bias_ptr
-        db $0F, $FD, $11           // PADDW     MM2, [ECX]
-        db $0F, $FD, $CA           // PADDW     MM1, MM2
-        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
-        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
-        db $0F, $7E, $C8           // MOVD      EAX, MM1
+         DB      $0F, $EF, $C0           // PXOR      MM0, MM0
+         DB      $0F, $6E, $C8           // MOVD      MM1, EAX
+         SHL       ECX, 3
+         DB      $0F, $6E, $D2           // MOVD      MM2, EDX
+         DB      $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+         DB      $0F, $60, $D0           // PUNPCKLBW MM2, MM0
+         ADD       ECX, ALPHA_PTR
+         DB      $0F, $F9, $CA           // PSUBW     MM1, MM2
+         DB      $0F, $D5, $09           // PMULLW    MM1, [ECX]
+         DB      $0F, $71, $F2,$08       // PSLLW     MM2, 8
+         MOV       ECX, BIAS_PTR
+         DB      $0F, $FD, $11           // PADDW     MM2, [ECX]
+         DB      $0F, $FD, $CA           // PADDW     MM1, MM2
+         DB      $0F, $71, $D1, $08      // PSRLW     MM1, 8
+         DB      $0F, $67, $C8           // PACKUSWB  MM1, MM0
+         DB      $0F, $7E, $C8           // MOVD      EAX, MM1
 end;
 
 procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
@@ -790,28 +792,28 @@ end;
 
 function M_BlendReg(F, B: TColor32): TColor32; assembler;
 asm
-  // blend foreground color (F) to a background color (B),
-  // using alpha channel value of F
+  // BLEND FOREGROUND COLOR (F) TO A BACKGROUND COLOR (B),
+  // USING ALPHA CHANNEL VALUE OF F
   // EAX <- F
   // EDX <- B
-  // Result := Fa * (Frgb - Brgb) + Brgb
-        db $0F, $EF, $DB           // PXOR      MM3, MM3
-        db $0F, $6E, $C0           // MOVD      MM0, EAX
-        db $0F, $6E, $D2           // MOVD      MM2, EDX
-        db $0F, $60, $C3           // PUNPCKLBW MM0, MM3
-        MOV     ECX, bias_ptr
-        db $0F, $60, $D3           // PUNPCKLBW MM2, MM3
-        db $0F, $6F, $C8           // MOVQ      MM1, MM0
-        db $0F, $69, $C9           // PUNPCKHWD MM1, MM1
-        db $0F, $F9, $C2           // PSUBW     MM0, MM2
-        db $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
-        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
-        db $0F, $D5, $C1           // PMULLW    MM0, MM1
-        db $0F, $FD, $11           // PADDW     MM2, [ECX]
-        db $0F, $FD, $D0           // PADDW     MM2, MM0
-        db $0F, $71, $D2, $08      // PSRLW     MM2, 8
-        db $0F, $67, $D3           // PACKUSWB  MM2, MM3
-        db $0F, $7E, $D0           // MOVD      EAX, MM2
+  // RESULT := FA * (FRGB - BRGB) + BRGB
+         DB      $0F, $EF, $DB           // PXOR      MM3, MM3
+         DB      $0F, $6E, $C0           // MOVD      MM0, EAX
+         DB      $0F, $6E, $D2           // MOVD      MM2, EDX
+         DB      $0F, $60, $C3           // PUNPCKLBW MM0, MM3
+         MOV     ECX, BIAS_PTR
+         DB      $0F, $60, $D3           // PUNPCKLBW MM2, MM3
+         DB      $0F, $6F, $C8           // MOVQ      MM1, MM0
+         DB      $0F, $69, $C9           // PUNPCKHWD MM1, MM1
+         DB      $0F, $F9, $C2           // PSUBW     MM0, MM2
+         DB      $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
+         DB      $0F, $71, $F2, $08      // PSLLW     MM2, 8
+         DB      $0F, $D5, $C1           // PMULLW    MM0, MM1
+         DB      $0F, $FD, $11           // PADDW     MM2, [ECX]
+         DB      $0F, $FD, $D0           // PADDW     MM2, MM0
+         DB      $0F, $71, $D2, $08      // PSRLW     MM2, 8
+         DB      $0F, $67, $D3           // PACKUSWB  MM2, MM3
+         DB      $0F, $7E, $D0           // MOVD      EAX, MM2
 end;
 
 procedure M_BlendMem(F: TColor32; var B: TColor32);
@@ -831,38 +833,38 @@ end;
 
 function M_BlendRegEx(F, B, M: TColor32): TColor32; assembler;
 asm
-  // blend foreground color (F) to a background color (B),
-  // using alpha channel value of F
+  // BLEND FOREGROUND COLOR (F) TO A BACKGROUND COLOR (B),
+  // USING ALPHA CHANNEL VALUE OF F
   // EAX <- F
   // EDX <- B
   // ECX <- M
-  // Result := M * Fa * (Frgb - Brgb) + Brgb
-        PUSH      EBX
-        MOV       EBX, EAX
-        SHR       EBX, 24
-        IMUL      ECX, EBX
-        SHR       ECX, 8
-        JZ        @1
+  // RESULT := M * FA * (FRGB - BRGB) + BRGB
+         PUSH      EBX
+         MOV       EBX, EAX
+         SHR       EBX, 24
+         IMUL      ECX, EBX
+         SHR       ECX, 8
+         JZ        @1
 
-        db $0F, $EF, $C0           // PXOR      MM0, MM0
-        db $0F, $6E, $C8           // MOVD      MM1, EAX
-        SHL       ECX, 3
-        db $0F, $6E, $D2           // MOVD      MM2, EDX
-        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
-        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
-        ADD       ECX, alpha_ptr
-        db $0F, $F9, $CA           // PSUBW     MM1, MM2
-        db $0F, $D5, $09           // PMULLW    MM1, [ECX]
-        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
-        MOV       ECX, bias_ptr
-        db $0F, $FD, $11           // PADDW     MM2, [ECX]
-        db $0F, $FD, $CA           // PADDW     MM1, MM2
-        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
-        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
-        db $0F, $7E, $C8           // MOVD      EAX, MM1
+         DB      $0F, $EF, $C0           // PXOR      MM0, MM0
+         DB      $0F, $6E, $C8           // MOVD      MM1, EAX
+         SHL       ECX, 3
+         DB      $0F, $6E, $D2           // MOVD      MM2, EDX
+         DB      $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+         DB      $0F, $60, $D0           // PUNPCKLBW MM2, MM0
+         ADD       ECX, ALPHA_PTR
+         DB      $0F, $F9, $CA           // PSUBW     MM1, MM2
+         DB      $0F, $D5, $09           // PMULLW    MM1, [ECX]
+         DB      $0F, $71, $F2, $08      // PSLLW     MM2, 8
+         MOV       ECX, BIAS_PTR
+         DB      $0F, $FD, $11           // PADDW     MM2, [ECX]
+         DB      $0F, $FD, $CA           // PADDW     MM1, MM2
+         DB      $0F, $71, $D1, $08      // PSRLW     MM1, 8
+         DB      $0F, $67, $C8           // PACKUSWB  MM1, MM0
+         DB      $0F, $7E, $C8           // MOVD      EAX, MM1
 
-@1:     MOV       EAX, EDX
-        POP       EBX
+         @1:     MOV       EAX, EDX
+         POP       EBX
 end;
 
 procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
@@ -885,120 +887,120 @@ end;
 
 procedure M_BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
-  // EAX <- Src
-  // EDX <- Dst
-  // ECX <- Count
+  // EAX <- SRC
+  // EDX <- DST
+  // ECX <- COUNT
 
-  // test the counter for zero or negativity
-        TEST      ECX, ECX
-        JS        @4
+  // TEST THE COUNTER FOR ZERO OR NEGATIVITY
+         TEST      ECX, ECX
+         JS        @4
 
-        PUSH      ESI
-        PUSH      EDI
+         PUSH      ESI
+         PUSH      EDI
 
-        MOV       ESI, EAX        // ESI <- Src
-        MOV       EDI, EDX        // EDI <- Dst
+         MOV       ESI, EAX        // ESI <- SRC
+         MOV       EDI, EDX        // EDI <- DST
 
-  // loop start
-@1:     MOV       EAX, [ESI]
-        TEST      EAX, $FF000000
-        JZ        @3              // complete transparency, proceed to next point
-        CMP       EAX, $FF000000
-        JNC       @2              // opaque pixel, copy without blending
+  // LOOP START
+         @1:     MOV       EAX, [ESI]
+         TEST      EAX, $FF000000
+         JZ        @3              // COMPLETE TRANSPARENCY, PROCEED TO NEXT POINT
+         CMP       EAX, $FF000000
+         JNC       @2              // OPAQUE PIXEL, COPY WITHOUT BLENDING
 
-  // blend
-        db $0F, $EF, $DB           // PXOR      MM3, MM3
-        db $0F, $6E, $C0           // MOVD      MM0, EAX
-        db $0F, $6E, $17           // MOVD      MM2, [EDI]
-        db $0F, $60, $C3           // PUNPCKLBW MM0, MM3
-        MOV       EAX, bias_ptr
-        db $0F, $60, $D3           // PUNPCKLBW MM2, MM3
-        db $0F, $6F, $C8           // MOVQ      MM1, MM0
-        db $0F, $69, $C9           // PUNPCKHWD MM1, MM1
-        db $0F, $F9, $C2           // PSUBW     MM0, MM2
-        db $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
-        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
-        db $0F, $D5, $C1           // PMULLW    MM0, MM1
-        db $0F, $FD, $10           // PADDW     MM2, [EAX]
-        db $0F, $FD, $D0           // PADDW     MM2, MM0
-        db $0F, $71, $D2, $08      // PSRLW     MM2, 8
-        db $0F, $67, $D3           // PACKUSWB  MM2, MM3
-        db $0F, $7E, $D0           // MOVD      EAX, MM2
+  // BLEND
+         DB $0F, $EF, $DB           // PXOR      MM3, MM3
+         DB      $0F, $6E, $C0           // MOVD      MM0, EAX
+         DB      $0F, $6E, $17           // MOVD      MM2, [EDI]
+         DB      $0F, $60, $C3           // PUNPCKLBW MM0, MM3
+         MOV       EAX, BIAS_PTR
+         DB      $0F, $60, $D3           // PUNPCKLBW MM2, MM3
+         DB      $0F, $6F, $C8           // MOVQ      MM1, MM0
+         DB      $0F, $69, $C9           // PUNPCKHWD MM1, MM1
+         DB      $0F, $F9, $C2           // PSUBW     MM0, MM2
+         DB      $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
+         DB      $0F, $71, $F2, $08      // PSLLW     MM2, 8
+         DB      $0F, $D5, $C1           // PMULLW    MM0, MM1
+         DB      $0F, $FD, $10           // PADDW     MM2, [EAX]
+         DB      $0F, $FD, $D0           // PADDW     MM2, MM0
+         DB      $0F, $71, $D2, $08      // PSRLW     MM2, 8
+         DB      $0F, $67, $D3           // PACKUSWB  MM2, MM3
+         DB      $0F, $7E, $D0           // MOVD      EAX, MM2
 
-@2:     MOV       [EDI], EAX
+         @2:     MOV[EDI], EAX
 
-@3:     ADD       ESI, 4
-        ADD       EDI, 4
+         @3:     ADD       ESI, 4
+         ADD       EDI, 4
 
-  // loop end
-        DEC       ECX
-        JNZ       @1
+  // LOOP END
+         DEC       ECX
+         JNZ       @1
 
-        POP       EDI
-        POP       ESI
+         POP       EDI
+         POP       ESI
 
-@4:     RET
+         @4:     RET
 end;
 
 procedure M_BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32); assembler;
 asm
-  // EAX <- Src
-  // EDX <- Dst
-  // ECX <- Count
+  // EAX <- SRC
+  // EDX <- DST
+  // ECX <- COUNT
 
-  // test the counter for zero or negativity
-        TEST      ECX, ECX
-        JS        @4
+  // TEST THE COUNTER FOR ZERO OR NEGATIVITY
+         TEST      ECX, ECX
+         JS        @4
 
-        PUSH      ESI
-        PUSH      EDI
-        PUSH      EBX
+         PUSH      ESI
+         PUSH      EDI
+         PUSH      EBX
 
-        MOV       ESI, EAX        // ESI <- Src
-        MOV       EDI, EDX        // EDI <- Dst
-        MOV       EDX, M          // EDX <- Master Alpha
+         MOV       ESI, EAX        // ESI <- SRC
+         MOV       EDI, EDX        // EDI <- DST
+         MOV       EDX, M          // EDX <- MASTER ALPHA
 
-  // loop start
-@1:     MOV       EAX, [ESI]
-        TEST      EAX, $FF000000
-        JZ        @3              // complete transparency, proceed to next point
-        MOV       EBX, EAX
-        SHR       EBX, 24
-        IMUL      EBX, EDX
-        SHR       EBX, 8
-        JZ        @3              // complete transparency, proceed to next point
+  // LOOP START
+         @1:     MOV       EAX, [ESI]
+         TEST      EAX, $FF000000
+         JZ        @3              // COMPLETE TRANSPARENCY, PROCEED TO NEXT POINT
+         MOV       EBX, EAX
+         SHR       EBX, 24
+         IMUL      EBX, EDX
+         SHR       EBX, 8
+         JZ        @3              // COMPLETE TRANSPARENCY, PROCEED TO NEXT POINT
 
-  // blend
-        db $0F, $EF, $C0           // PXOR      MM0, MM0
-        db $0F, $6E, $C8           // MOVD      MM1, EAX
-        SHL       EBX, 3
-        db $0F, $6E, $17           // MOVD      MM2, [EDI]
-        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
-        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
-        ADD       EBX, alpha_ptr
-        db $0F, $F9, $CA           // PSUBW     MM1, MM2
-        db $0F, $D5, $0B           // PMULLW    MM1, [EBX]
-        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
-        MOV       EBX, bias_ptr
-        db $0F, $FD, $13           // PADDW     MM2, [EBX]
-        db $0F, $FD, $CA           // PADDW     MM1, MM2
-        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
-        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
-        db $0F, $7E, $C8           // MOVD      EAX, MM1
+  // BLEND
+         DB $0F, $EF, $C0           // PXOR      MM0, MM0
+         DB      $0F, $6E, $C8           // MOVD      MM1, EAX
+         SHL       EBX, 3
+         DB      $0F, $6E, $17           // MOVD      MM2, [EDI]
+         DB      $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+         DB      $0F, $60, $D0           // PUNPCKLBW MM2, MM0
+         ADD       EBX, ALPHA_PTR
+         DB      $0F, $F9, $CA           // PSUBW     MM1, MM2
+         DB      $0F, $D5, $0B           // PMULLW    MM1, [EBX]
+         DB      $0F, $71, $F2, $08      // PSLLW     MM2, 8
+         MOV       EBX, BIAS_PTR
+         DB      $0F, $FD, $13           // PADDW     MM2, [EBX]
+         DB      $0F, $FD, $CA           // PADDW     MM1, MM2
+         DB      $0F, $71, $D1, $08      // PSRLW     MM1, 8
+         DB      $0F, $67, $C8           // PACKUSWB  MM1, MM0
+         DB      $0F, $7E, $C8           // MOVD      EAX, MM1
 
-@2:     MOV       [EDI], EAX
+         @2:     MOV[EDI], EAX
 
-@3:     ADD       ESI, 4
-        ADD       EDI, 4
+         @3:     ADD       ESI, 4
+         ADD       EDI, 4
 
-  // loop end
-        DEC       ECX
-        JNZ       @1
+  // LOOP END
+         DEC       ECX
+         JNZ       @1
 
-        POP       EBX
-        POP       EDI
-        POP       ESI
-@4:
+         POP       EBX
+         POP       EDI
+         POP       ESI
+         @4:
 end;
 
 { MMX Detection and linking }
@@ -1489,8 +1491,8 @@ procedure CIED65ToCIED50(var X, Y, Z: Extended);
 var
   Xn, Yn, Zn: Extended;
 begin
-  Xn :=  1.0479 * X + 0.0299 * Y - 0.0502 * Z;
-  Yn :=  0.0296 * X + 0.9904 * Y - 0.0171 * Z;
+  Xn := 1.0479 * X + 0.0299 * Y - 0.0502 * Z;
+  Yn := 0.0296 * X + 0.9904 * Y - 0.0171 * Z;
   Zn := -0.0092 * X + 0.0151 * Y + 0.7519 * Z;
   X := Xn;
   Y := Yn;
@@ -1548,47 +1550,47 @@ var
 begin
   case BitsPerSample of
     8:
+    begin
+      SourcePtr := Source;
+      TargetPtr := Target;
+      Count := Count div 4;
+      for I := 0 to Count - 1 do
       begin
-        SourcePtr := Source;
-        TargetPtr := Target;
-        Count := Count div 4;
-        for I := 0 to Count - 1 do
-        begin
-          K := SourcePtr.K;
-          R := 255 - (SourcePtr.C - MulDiv(SourcePtr.C, K, 255) + K);
-          G := 255 - (SourcePtr.M - MulDiv(SourcePtr.M, K, 255) + K);
-          B := 255 - (SourcePtr.Y - MulDiv(SourcePtr.Y, K, 255) + K);
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
-          Inc(TargetPtr);
-          Inc(SourcePtr);
-        end;
+        K := SourcePtr.K;
+        R := 255 - (SourcePtr.C - MulDiv(SourcePtr.C, K, 255) + K);
+        G := 255 - (SourcePtr.M - MulDiv(SourcePtr.M, K, 255) + K);
+        B := 255 - (SourcePtr.Y - MulDiv(SourcePtr.Y, K, 255) + K);
+        TargetPtr^ := Max(0, Min(255, Byte(B)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(G)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(R)));
+        Inc(TargetPtr);
+        Inc(SourcePtr);
       end;
+    end;
     16:
+    begin
+      SourcePtr16 := Source;
+      TargetPtr := Target;
+      Count := Count div 4;
+      for I := 0 to Count - 1 do
       begin
-        SourcePtr16 := Source;
-        TargetPtr := Target;
-        Count := Count div 4;
-        for I := 0 to Count - 1 do
-        begin
-          K := SourcePtr16.K;
-          R := 255 - (SourcePtr16.C - MulDiv(SourcePtr16.C, K, 65535) + K) shr 8;
-          G := 255 - (SourcePtr16.M - MulDiv(SourcePtr16.M, K, 65535) + K) shr 8;
-          B := 255 - (SourcePtr16.Y - MulDiv(SourcePtr16.Y, K, 65535) + K) shr 8;
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
-          Inc(TargetPtr);
-          Inc(SourcePtr16);
-        end;
+        K := SourcePtr16.K;
+        R := 255 - (SourcePtr16.C - MulDiv(SourcePtr16.C, K, 65535) + K) shr 8;
+        G := 255 - (SourcePtr16.M - MulDiv(SourcePtr16.M, K, 65535) + K) shr 8;
+        B := 255 - (SourcePtr16.Y - MulDiv(SourcePtr16.Y, K, 65535) + K) shr 8;
+        TargetPtr^ := Max(0, Min(255, Byte(B)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(G)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(R)));
+        Inc(TargetPtr);
+        Inc(SourcePtr16);
       end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+    end;
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1599,62 +1601,62 @@ var
   R, G, B: Integer;
   C8, M8, Y8, K8: PByte;
   C16, M16, Y16, K16: PWord;
-  I: Integer;
+  I:       Integer;
   TargetPtr: PByte;
 begin
   case BitsPerSample of
     8:
+    begin
+      C8 := C;
+      M8 := M;
+      Y8 := Y;
+      K8 := K;
+      TargetPtr := Target;
+      Count := Count div 4;
+      for I := 0 to Count - 1 do
       begin
-        C8 := C;
-        M8 := M;
-        Y8 := Y;
-        K8 := K;
-        TargetPtr := Target;
-        Count := Count div 4;
-        for I := 0 to Count - 1 do
-        begin
-          R := 255 - (C8^ - MulDiv(C8^, K8^, 255) + K8^);
-          G := 255 - (M8^ - MulDiv(M8^, K8^, 255) + K8^);
-          B := 255 - (Y8^ - MulDiv(Y8^, K8^, 255) + K8^);
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
-          Inc(TargetPtr);
-          Inc(C8);
-          Inc(M8);
-          Inc(Y8);
-          Inc(K8);
-        end;
+        R := 255 - (C8^ - MulDiv(C8^, K8^, 255) + K8^);
+        G := 255 - (M8^ - MulDiv(M8^, K8^, 255) + K8^);
+        B := 255 - (Y8^ - MulDiv(Y8^, K8^, 255) + K8^);
+        TargetPtr^ := Max(0, Min(255, Byte(B)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(G)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(R)));
+        Inc(TargetPtr);
+        Inc(C8);
+        Inc(M8);
+        Inc(Y8);
+        Inc(K8);
       end;
+    end;
     16:
+    begin
+      C16 := C;
+      M16 := M;
+      Y16 := Y;
+      K16 := K;
+      TargetPtr := Target;
+      Count := Count div 4;
+      for I := 0 to Count - 1 do
       begin
-        C16 := C;
-        M16 := M;
-        Y16 := Y;
-        K16 := K;
-        TargetPtr := Target;
-        Count := Count div 4;
-        for I := 0 to Count - 1 do
-        begin
-          R := 255 - (C16^ - MulDiv(C16^, K16^, 65535) + K16^) shr 8;
-          G := 255 - (M16^ - MulDiv(M16^, K16^, 65535) + K16^) shr 8;
-          B := 255 - (Y16^ - MulDiv(Y16^, K16^, 65535) + K16^) shr 8;
-          TargetPtr^ := Max(0, Min(255, Byte(B)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(G)));
-          Inc(TargetPtr);
-          TargetPtr^ := Max(0, Min(255, Byte(R)));
-          Inc(TargetPtr);
-          Inc(C16);
-          Inc(M16);
-          Inc(Y16);
-          Inc(K16);
-        end;
+        R := 255 - (C16^ - MulDiv(C16^, K16^, 65535) + K16^) shr 8;
+        G := 255 - (M16^ - MulDiv(M16^, K16^, 65535) + K16^) shr 8;
+        B := 255 - (Y16^ - MulDiv(Y16^, K16^, 65535) + K16^) shr 8;
+        TargetPtr^ := Max(0, Min(255, Byte(B)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(G)));
+        Inc(TargetPtr);
+        TargetPtr^ := Max(0, Min(255, Byte(R)));
+        Inc(TargetPtr);
+        Inc(C16);
+        Inc(M16);
+        Inc(Y16);
+        Inc(K16);
       end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+    end;
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1715,9 +1717,9 @@ begin
     end;
 
     // once we have CIE XYZ it is easy (yet quite expensive) to calculate RGB values from this
-    FinalR := Round(255.0 * ( 2.998 * X - 1.458 * Y - 0.541 * Z));
+    FinalR := Round(255.0 * (2.998 * X - 1.458 * Y - 0.541 * Z));
     FinalG := Round(255.0 * (-0.952 * X + 1.893 * Y + 0.059 * Z));
-    FinalB := Round(255.0 * ( 0.099 * X - 0.198 * Y + 1.099 * Z));
+    FinalB := Round(255.0 * (0.099 * X - 0.198 * Y + 1.099 * Z));
 
     TargetPtr^ := Max(0, Min(255, Byte(FinalB)));
     Inc(TargetPtr);
@@ -1786,9 +1788,9 @@ begin
     end;
 
     // once we have CIE XYZ it is easy (yet quite expensive) to calculate RGB values from this
-    FinalR := Round(255.0 * ( 2.998 * X - 1.458 * Y - 0.541 * Z));
+    FinalR := Round(255.0 * (2.998 * X - 1.458 * Y - 0.541 * Z));
     FinalG := Round(255.0 * (-0.952 * X + 1.893 * Y + 0.059 * Z));
-    FinalB := Round(255.0 * ( 0.099 * X - 0.198 * Y + 1.099 * Z));
+    FinalB := Round(255.0 * (0.099 * X - 0.198 * Y + 1.099 * Z));
 
     TargetPtr^ := Max(0, Min(255, Byte(FinalB)));
     Inc(TargetPtr);
@@ -1806,42 +1808,42 @@ end;
 procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   SourceRun16: PRGBWord;
-  SourceRun8: PRGB;
-  TargetRun: PBGR;
+  SourceRun8:  PRGB;
+  TargetRun:   PBGR;
 begin
   Count := Count div 3;
   // usually only 8 bit samples are used but Photoshop allows for 16 bit samples
   case BitsPerSample of
     8:
+    begin
+      SourceRun8 := Source;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        SourceRun8 := Source;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun.R := SourceRun8.R;
-          TargetRun.G := SourceRun8.G;
-          TargetRun.B := SourceRun8.B;
-          Inc(SourceRun8);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun.R := SourceRun8.R;
+        TargetRun.G := SourceRun8.G;
+        TargetRun.B := SourceRun8.B;
+        Inc(SourceRun8);
+        Inc(TargetRun);
+        Dec(Count);
       end;
+    end;
     16:
+    begin
+      SourceRun16 := Source;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        SourceRun16 := Source;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun.R := SourceRun16.R shr 8;
-          TargetRun.G := SourceRun16.G shr 8;
-          TargetRun.B := SourceRun16.B shr 8;
-          Inc(SourceRun16);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun.R := SourceRun16.R shr 8;
+        TargetRun.G := SourceRun16.G shr 8;
+        TargetRun.B := SourceRun16.B shr 8;
+        Inc(SourceRun16);
+        Inc(TargetRun);
+        Dec(Count);
       end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+    end;
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1851,53 +1853,53 @@ procedure RGBToBGR(const R, G, B, Target: Pointer; const BitsPerSample: Byte; Co
 var
   R8, G8, B8: PByte;
   R16, G16, B16: PWord;
-  TargetRun: PByte;
+  TargetRun:  PByte;
 begin
   Count := Count div 3;
   // usually only 8 bits samples are used but Photoshop allows 16 bits samples too
   case BitsPerSample of
     8:
+    begin
+      R8 := R;
+      G8 := G;
+      B8 := B;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        R8 := R;
-        G8 := G;
-        B8 := B;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun^ := B8^;
-          Inc(B8);
-          Inc(TargetRun);
-          TargetRun^ := G8^;
-          Inc(G8);
-          Inc(TargetRun);
-          TargetRun^ := R8^;
-          Inc(R8);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun^ := B8^;
+        Inc(B8);
+        Inc(TargetRun);
+        TargetRun^ := G8^;
+        Inc(G8);
+        Inc(TargetRun);
+        TargetRun^ := R8^;
+        Inc(R8);
+        Inc(TargetRun);
+        Dec(Count);
       end;
+    end;
     16:
+    begin
+      R16 := R;
+      G16 := G;
+      B16 := B;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        R16 := R;
-        G16 := G;
-        B16 := B;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun^ := B16^ shr 8;
-          Inc(B16);
-          Inc(TargetRun);
-          TargetRun^ := G16^ shr 8;
-          Inc(G16);
-          Inc(TargetRun);
-          TargetRun^ := R16^ shr 8;
-          Inc(R16);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun^ := B16^ shr 8;
+        Inc(B16);
+        Inc(TargetRun);
+        TargetRun^ := G16^ shr 8;
+        Inc(G16);
+        Inc(TargetRun);
+        TargetRun^ := R16^ shr 8;
+        Inc(R16);
+        Inc(TargetRun);
+        Dec(Count);
       end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+    end;
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1907,44 +1909,44 @@ end;
 procedure RGBAToBGRA(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal);
 var
   SourceRun16: PRGBAWord;
-  SourceRun8: PRGBA;
-  TargetRun: PBGRA;
+  SourceRun8:  PRGBA;
+  TargetRun:   PBGRA;
 begin
   Count := Count div 4;
   // usually only 8 bit samples are used but Photoshop allows for 16 bit samples
   case BitsPerSample of
     8:
+    begin
+      SourceRun8 := Source;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        SourceRun8 := Source;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun.R := SourceRun8.R;
-          TargetRun.G := SourceRun8.G;
-          TargetRun.B := SourceRun8.B;
-          TargetRun.A := SourceRun8.A;
-          Inc(SourceRun8);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun.R := SourceRun8.R;
+        TargetRun.G := SourceRun8.G;
+        TargetRun.B := SourceRun8.B;
+        TargetRun.A := SourceRun8.A;
+        Inc(SourceRun8);
+        Inc(TargetRun);
+        Dec(Count);
       end;
+    end;
     16:
+    begin
+      SourceRun16 := Source;
+      TargetRun := Target;
+      while Count > 0 do
       begin
-        SourceRun16 := Source;
-        TargetRun := Target;
-        while Count > 0 do
-        begin
-          TargetRun.R := SourceRun16.B shr 8;
-          TargetRun.G := SourceRun16.G shr 8;
-          TargetRun.B := SourceRun16.R shr 8;
-          TargetRun.A := SourceRun16.A shr 8;
-          Inc(SourceRun16);
-          Inc(TargetRun);
-          Dec(Count);
-        end;
+        TargetRun.R := SourceRun16.B shr 8;
+        TargetRun.G := SourceRun16.G shr 8;
+        TargetRun.B := SourceRun16.R shr 8;
+        TargetRun.A := SourceRun16.A shr 8;
+        Inc(SourceRun16);
+        Inc(TargetRun);
+        Dec(Count);
       end;
-    else
-      raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
+    end;
+  else
+    raise EColorConversionError.CreateResFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
 
@@ -1953,18 +1955,18 @@ var
   Temp: TColorRec;
 begin
   Temp.Value := ColorToRGB(Color);
-  Red   := (Temp.R / High(Temp.R));
+  Red := (Temp.R / High(Temp.R));
   Green := (Temp.G / High(Temp.G));
-  Blue  := (Temp.B / High(Temp.B));
+  Blue := (Temp.B / High(Temp.B));
 end;
 
 function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
 var
   Temp: TColorRec;
 begin
-  Temp.R := Round(Red   * High(Temp.R));
+  Temp.R := Round(Red * High(Temp.R));
   Temp.G := Round(Green * High(Temp.G));
-  Temp.B := Round(Blue  * High(Temp.B));
+  Temp.B := Round(Blue * High(Temp.B));
   Temp.Flag := 0;
   Result := Temp.Value;
 end;
@@ -2020,9 +2022,9 @@ end;
 
 function Intensity(const R, G, B: Single): Single;
 const
-  RFactor =  61 / 256;
+  RFactor = 61 / 256;
   GFactor = 174 / 256;
-  BFactor =  21 / 256;
+  BFactor = 21 / 256;
 begin
   Result := RFactor * R + GFactor * G + BFactor * B;
 end;
@@ -2062,7 +2064,7 @@ var
     else
       Result := M1;
   end;
-    
+
 begin
   if S = 0 then
   begin
@@ -2079,7 +2081,7 @@ begin
     M1 := 2 * L - M2;
     R := HueToColorValue(H + 1 / 3);
     G := HueToColorValue(H);
-    B := HueToColorValue(H - 1 / 3)
+    B := HueToColorValue(H - 1 / 3);
   end;
 end;
 
@@ -2114,7 +2116,7 @@ begin
   if Cmax = Cmin then
   begin
     H := 0;
-    S := 0
+    S := 0;
   end
   else
   begin
@@ -2213,7 +2215,7 @@ var
   R, G, B: Integer;              // input RGB values
   H, L, S: Integer;
   Cmax, Cmin: Byte;              // max and min RGB values
-  Rdelta,Gdelta,Bdelta: Integer; // intermediate value: % of spread from max
+  Rdelta, Gdelta, Bdelta: Integer; // intermediate value: % of spread from max
 begin
   // get R, G, and B out of DWORD
   R := TInternalRGB(RGBColor).R;
@@ -2244,7 +2246,7 @@ begin
   begin                           // chromatic case
     // saturation
     if L <= (HLSMAX div 2) then
-      S := (((Cmax - Cmin) * HLSMAX) + ((Cmax + Cmin) div 2))  div  (Cmax + Cmin)
+      S := (((Cmax - Cmin) * HLSMAX) + ((Cmax + Cmin) div 2)) div (Cmax + Cmin)
     else
       S := (((Cmax - Cmin) * HLSMAX) + ((2 * RGBMAX - Cmax - Cmin) div 2)) div (2 * RGBMAX - Cmax - Cmin);
 
@@ -2280,7 +2282,7 @@ begin
 
   // return r,g, or b value from this tridrant
   if Hue < (HLSMAX div 6) then
-    Result := (M1 + (((M2 - M1)  *  Hue + (HLSMAX div 12)) div (HLSMAX div 6)))
+    Result := (M1 + (((M2 - M1) * Hue + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
   if Hue < (HLSMAX div 2) then
     Result := M2
@@ -2298,14 +2300,15 @@ var
 begin
   if Saturation = 0 then         // achromatic case
   begin
-    R :=(Luminance * RGBMAX) div HLSMAX;
+    R := (Luminance * RGBMAX) div HLSMAX;
     G := R;
     B := R;
     if Hue <> UNDEFINED then
     begin
       // ERROR
-    end
-  end else
+    end;
+  end
+  else
   begin                          // chromatic case
     // set up magic numbers
     if (Luminance <= (HLSMAX div 2)) then
@@ -2318,7 +2321,7 @@ begin
     G := (HueToRGB(Magic1, Magic2, Hue) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
     B := (HueToRGB(Magic1, Magic2, Hue - (HLSMAX div 3)) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
   end;
-  Result :=  RGB(R, G, B);
+  Result := RGB(R, G, B);
 end;
 
 {$IFDEF VCL}
@@ -2329,12 +2332,12 @@ type
 var
   I, RGB: Integer;
   ColorTable: PRGBQuadArray;
-  Count: Integer;
+  Count:  Integer;
 begin
-  Count := High(Colors)-Low(Colors)+1;
+  Count := High(Colors) - Low(Colors) + 1;
   GetMem(ColorTable, Count * SizeOf(TRGBQuad));
   try
-    for I := 0 to Count-1 do
+    for I := 0 to Count - 1 do
       with ColorTable^[I] do
       begin
         RGB := ColorToRGB(Colors[I]);
@@ -2367,11 +2370,11 @@ const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
 var
   Bitmap: HBitmap;
-  Brush: HBrush;
+  Brush:  HBrush;
   SaveTextColor, SaveBkColor: TColorRef;
   LastPos: TPoint;
-  R: TRect;
-  DC: HDC;
+  R:      TRect;
+  DC:     HDC;
 begin
   DC := Canvas.Handle;
   GetCurrentPositionEx(DC, @LastPos);
@@ -2408,7 +2411,7 @@ function ShortenString(const DC: HDC; const S: WideString; const Width: Integer;
   EllipsisWidth: Integer): WideString;
 var
   Size: TSize;
-  Len: Integer;
+  Len:  Integer;
   L, H, N, W: Integer;
 begin
   Len := Length(S);

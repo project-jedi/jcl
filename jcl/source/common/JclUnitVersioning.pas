@@ -234,7 +234,7 @@ end;
 function TUnitVersion.DateTime: TDateTime;
 var
   Ps: Integer;
-  S: string;
+  S:  string;
   Error: Integer;
   Year, Month, Day, Hour, Minute, Second: Word;
   TimeSep: Char;
@@ -424,7 +424,7 @@ begin
       FModules.Delete(I);
       Break;
     end;
-  for I := 0 to FProviders.Count -1 do
+  for I := 0 to FProviders.Count - 1 do
     TCustomUnitVersioningProvider(FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
 end;
 
@@ -573,13 +573,13 @@ var
   {$IFDEF MSWINDOWS}
   SysInfo: TSystemInfo;
   MemInfo: TMemoryBasicInformation;
-  pid: THandle;
+  pid:     THandle;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   pid: __pid_t;
   {$ENDIF LINUX}
   Requested, Allocated: PNPARecord;
-  Pages: Integer;
+  Pages:   Integer;
   PageSize: Cardinal;
   MaximumApplicationAddress: Pointer;
 begin
@@ -707,7 +707,7 @@ type
 var
   UnitVersioningOwner: Boolean = False;
   GlobalUnitVersioning: TUnitVersioning = nil;
-  UnitVersioningNPA: PUnitVersioning = nil;
+  UnitVersioningNPA:   PUnitVersioning = nil;
 
 function GetUnitVersioning: TUnitVersioning;
 var
@@ -783,7 +783,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JCL\common';
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -792,4 +792,3 @@ finalization
   FinalizeUnitVersioning;
 
 end.
-

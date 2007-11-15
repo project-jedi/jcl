@@ -249,7 +249,7 @@ begin
       else
       begin
         // Check to see if the sections have changed
-        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S-1]);
+        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S - 1]);
         if SegmentSpec.Section <> PrevSegmentSpec.Section then
         begin
           // Create new table for new section
@@ -360,7 +360,7 @@ procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(ElementSpec: TED
   SEFElement: TEDISEFElement);
 var
   Location: string;
-  Data: string;
+  Data:     string;
 begin
   Location := SEFElement.GetTextSetsLocation;
   Data := ElementSpec.Notes;

@@ -13,7 +13,7 @@
 { The Original Code is JclComplex.pas.                                                             }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Alexei Koudinov. Portions created by               }
-{ Alexei Koudinov are Copyright (C) of Alexei Koudinov. All Rights Reserved.                       }                         
+{ Alexei Koudinov are Copyright (C) of Alexei Koudinov. All Rights Reserved.                       }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
@@ -21,7 +21,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Matthias Thoma  (mthoma)                                                                       }
-{   Petr Vones (pvones)                                                                            }        
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -87,7 +87,7 @@ type
     function CoreDiv(const First, Second: TRectCoord): TRectCoord;
     function CoreMul(const First, Second: TRectCoord): TRectCoord;
     function CoreSub(const First, Second: TRectCoord): TRectCoord;
-    function CoreLn (const LnValue: TRectCoord): TRectCoord;
+    function CoreLn(const LnValue: TRectCoord): TRectCoord;
     function CoreExp(const ExpValue: TRectCoord): TRectCoord;
     function CorePwr(First, Second, Polar: TRectCoord): TRectCoord;
     function CoreIntPwr(First: TRectCoord; const Polar: TRectCoord; const Pwr: Integer): TRectCoord;
@@ -257,19 +257,19 @@ function Coordinates(const cX, cY: Float; CoordType: TComplexKind): TCoords;
 begin
   case CoordType of
     crRectangular:
-      begin
-        Result.X := cX;
-        Result.Y := cY;
-        Result.R := 0.0;
-        Result.Theta := 0.0;
-      end;
+    begin
+      Result.X := cX;
+      Result.Y := cY;
+      Result.R := 0.0;
+      Result.Theta := 0.0;
+    end;
     crPolar:
-      begin
-        Result.X := 0.0;
-        Result.Y := 0.0;
-        Result.R := cX;
-        Result.Theta := cY;
-      end;
+    begin
+      Result.X := 0.0;
+      Result.Y := 0.0;
+      Result.R := cX;
+      Result.Theta := cY;
+    end;
   end;
 end;
 
@@ -306,10 +306,10 @@ begin
   MiscalcComplex;
   case ComplexType of
     crPolar:
-      begin
-        FCoord.X := FCoord.R * Cos(FCoord.Theta);
-        FCoord.Y := FCoord.R * Sin(FCoord.Theta);
-      end;
+    begin
+      FCoord.X := FCoord.R * Cos(FCoord.Theta);
+      FCoord.Y := FCoord.R * Sin(FCoord.Theta);
+    end;
     crRectangular:
       if FCoord.X = 0.0 then
       begin
@@ -1396,7 +1396,7 @@ end;
 function TJclComplex.CoreApproxLnGamma(const Value: TRectCoord): TRectCoord;
 const
   C: array [1..8] of Float =
-   (1.0 / 12.0, -1.0 / 360.0, 1.0 / 1260.0, -1.0 / 1680.0,
+    (1.0 / 12.0, -1.0 / 360.0, 1.0 / 1260.0, -1.0 / 1680.0,
     1.0 / 1188.0, -691.0 / 360360.0, 1.0 / 156.0, -3617.0 / 122400.0);
 var
   I: Integer;
@@ -1498,10 +1498,10 @@ begin
   if LNZ.X > 75.0 then
     Result := RectInfinity
   else
-    if LNZ.X < -200.0 then
-      Result := RectZero
-    else
-      Result := CoreExp(LNZ);
+  if LNZ.X < -200.0 then
+    Result := RectZero
+  else
+    Result := CoreExp(LNZ);
 end;
 
 function TJclComplex.CGamma: TJclComplex;

@@ -114,7 +114,8 @@ type
   TJclAnsiStrIntfEntryArray = array of TJclAnsiStrIntfEntry;
 
   TJclAnsiStrIntfSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclAnsiStrIntfMap, IJclAnsiStrIntfSortedMap)
   private
     FEntries: TJclAnsiStrIntfEntryArray;
@@ -165,7 +166,8 @@ type
   TJclIntfAnsiStrEntryArray = array of TJclIntfAnsiStrEntry;
 
   TJclIntfAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclIntfAnsiStrMap, IJclIntfAnsiStrSortedMap)
   private
     FEntries: TJclIntfAnsiStrEntryArray;
@@ -216,7 +218,8 @@ type
   TJclAnsiStrAnsiStrEntryArray = array of TJclAnsiStrAnsiStrEntry;
 
   TJclAnsiStrAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap, IJclAnsiStrAnsiStrSortedMap)
   private
     FEntries: TJclAnsiStrAnsiStrEntryArray;
@@ -267,7 +270,8 @@ type
   TJclWideStrIntfEntryArray = array of TJclWideStrIntfEntry;
 
   TJclWideStrIntfSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclWideStrIntfMap, IJclWideStrIntfSortedMap)
   private
     FEntries: TJclWideStrIntfEntryArray;
@@ -318,7 +322,8 @@ type
   TJclIntfWideStrEntryArray = array of TJclIntfWideStrEntry;
 
   TJclIntfWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclIntfWideStrMap, IJclIntfWideStrSortedMap)
   private
     FEntries: TJclIntfWideStrEntryArray;
@@ -369,7 +374,8 @@ type
   TJclWideStrWideStrEntryArray = array of TJclWideStrWideStrEntry;
 
   TJclWideStrWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclWideStrWideStrMap, IJclWideStrWideStrSortedMap)
   private
     FEntries: TJclWideStrWideStrEntryArray;
@@ -1575,7 +1581,8 @@ type
   TJclAnsiStrEntryArray = array of TJclAnsiStrEntry;
 
   TJclAnsiStrSortedMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap, IJclAnsiStrSortedMap)
   private
     FEntries: TJclAnsiStrEntryArray;
@@ -1630,7 +1637,8 @@ type
   TJclWideStrEntryArray = array of TJclWideStrEntry;
 
   TJclWideStrSortedMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap, IJclWideStrSortedMap)
   private
     FEntries: TJclWideStrEntryArray;
@@ -2320,25 +2328,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2354,13 +2362,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2376,8 +2384,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2393,9 +2401,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -2423,23 +2431,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2453,12 +2461,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2488,12 +2496,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2504,25 +2513,25 @@ end;
 function TJclIntfIntfSortedMap.HeadMap(const ToKey: IInterface): IJclIntfIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfIntfSortedMap;
+  NewMap:  TJclIntfIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2536,7 +2545,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2553,18 +2562,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2591,9 +2600,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2607,12 +2616,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2699,14 +2708,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2722,30 +2731,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2761,18 +2770,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2786,13 +2795,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2814,22 +2823,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2846,22 +2855,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2877,9 +2886,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2937,25 +2946,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2971,13 +2980,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2993,8 +3002,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3010,9 +3019,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -3040,23 +3049,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3070,12 +3079,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3105,12 +3114,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3121,25 +3131,25 @@ end;
 function TJclAnsiStrIntfSortedMap.HeadMap(const ToKey: AnsiString): IJclAnsiStrIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclAnsiStrIntfSortedMap;
+  NewMap:  TJclAnsiStrIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3153,7 +3163,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3170,18 +3180,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3202,9 +3212,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3218,12 +3228,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3310,14 +3320,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3333,30 +3343,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3372,18 +3382,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3397,13 +3407,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3425,22 +3435,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3457,22 +3467,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3488,9 +3498,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3548,25 +3558,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3582,13 +3592,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3604,8 +3614,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3621,9 +3631,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -3651,23 +3661,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3681,12 +3691,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3714,12 +3724,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := '';
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := '';
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3730,25 +3741,25 @@ end;
 function TJclIntfAnsiStrSortedMap.HeadMap(const ToKey: IInterface): IJclIntfAnsiStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfAnsiStrSortedMap;
+  NewMap:  TJclIntfAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3762,7 +3773,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3779,18 +3790,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3817,9 +3828,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3833,12 +3844,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3925,14 +3936,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3948,30 +3959,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, '') <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, '') <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3987,18 +3998,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4012,13 +4023,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4040,22 +4051,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4072,22 +4083,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4103,9 +4114,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclAnsiStrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4157,25 +4168,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4191,13 +4202,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4213,8 +4224,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4230,9 +4241,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -4260,23 +4271,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4290,12 +4301,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4325,12 +4336,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := '';
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := '';
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4341,25 +4353,25 @@ end;
 function TJclAnsiStrAnsiStrSortedMap.HeadMap(const ToKey: AnsiString): IJclAnsiStrAnsiStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclAnsiStrAnsiStrSortedMap;
+  NewMap:  TJclAnsiStrAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4373,7 +4385,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4390,18 +4402,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4422,9 +4434,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4438,12 +4450,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4530,14 +4542,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4553,30 +4565,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, '') <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, '') <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4592,18 +4604,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4617,13 +4629,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4645,22 +4657,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4677,22 +4689,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4708,9 +4720,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclAnsiStrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4762,25 +4774,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4796,13 +4808,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4818,8 +4830,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4835,9 +4847,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -4865,23 +4877,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4895,12 +4907,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4930,12 +4942,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4946,25 +4959,25 @@ end;
 function TJclWideStrIntfSortedMap.HeadMap(const ToKey: WideString): IJclWideStrIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclWideStrIntfSortedMap;
+  NewMap:  TJclWideStrIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4978,7 +4991,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4995,18 +5008,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5027,9 +5040,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclWideStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5043,12 +5056,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5135,14 +5148,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5158,30 +5171,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5197,18 +5210,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5222,13 +5235,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5250,22 +5263,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5282,22 +5295,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclWideStrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5313,9 +5326,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5373,25 +5386,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5407,13 +5420,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5429,8 +5442,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5446,9 +5459,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -5476,23 +5489,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5506,12 +5519,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5539,12 +5552,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := '';
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := '';
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5555,25 +5569,25 @@ end;
 function TJclIntfWideStrSortedMap.HeadMap(const ToKey: IInterface): IJclIntfWideStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfWideStrSortedMap;
+  NewMap:  TJclIntfWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5587,7 +5601,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5604,18 +5618,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5642,9 +5656,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5658,12 +5672,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5750,14 +5764,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5773,30 +5787,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, '') <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, '') <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5812,18 +5826,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5837,13 +5851,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5865,22 +5879,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5897,22 +5911,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5928,9 +5942,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclWideStrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5982,25 +5996,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6016,13 +6030,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6038,8 +6052,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6055,9 +6069,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -6085,23 +6099,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6115,12 +6129,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6149,12 +6163,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := '';
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := '';
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6165,25 +6180,25 @@ end;
 function TJclWideStrWideStrSortedMap.HeadMap(const ToKey: WideString): IJclWideStrWideStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclWideStrWideStrSortedMap;
+  NewMap:  TJclWideStrWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6197,7 +6212,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6214,18 +6229,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6246,9 +6261,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclWideStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6262,12 +6277,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6354,14 +6369,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6377,30 +6392,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, '') <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, '') <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6416,18 +6431,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := '';
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6441,13 +6456,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6469,22 +6484,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6501,22 +6516,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclWideStrWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6532,9 +6547,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclWideStrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6586,25 +6601,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6620,13 +6635,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6642,8 +6657,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6659,9 +6674,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -6689,23 +6704,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6719,12 +6734,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6754,12 +6769,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6770,25 +6786,25 @@ end;
 function TJclSingleIntfSortedMap.HeadMap(const ToKey: Single): IJclSingleIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclSingleIntfSortedMap;
+  NewMap:  TJclSingleIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6802,7 +6818,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6819,18 +6835,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6851,9 +6867,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclSingleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6867,12 +6883,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6959,14 +6975,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6982,30 +6998,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7021,18 +7037,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7046,13 +7062,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7074,22 +7090,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7106,22 +7122,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclSingleIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7137,9 +7153,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7197,25 +7213,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7231,13 +7247,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7253,8 +7269,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7270,9 +7286,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -7300,23 +7316,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7330,12 +7346,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7365,12 +7381,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7381,25 +7398,25 @@ end;
 function TJclIntfSingleSortedMap.HeadMap(const ToKey: IInterface): IJclIntfSingleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfSingleSortedMap;
+  NewMap:  TJclIntfSingleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7413,7 +7430,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7430,18 +7447,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7468,9 +7485,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7484,12 +7501,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7576,14 +7593,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7599,30 +7616,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7638,18 +7655,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7663,13 +7680,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7691,22 +7708,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7723,22 +7740,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7754,9 +7771,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclSingleArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7808,25 +7825,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7842,13 +7859,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7864,8 +7881,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7881,9 +7898,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -7911,23 +7928,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7941,12 +7958,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7976,12 +7993,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7992,25 +8010,25 @@ end;
 function TJclSingleSingleSortedMap.HeadMap(const ToKey: Single): IJclSingleSingleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclSingleSingleSortedMap;
+  NewMap:  TJclSingleSingleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8024,7 +8042,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8041,18 +8059,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8073,9 +8091,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclSingleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8089,12 +8107,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8181,14 +8199,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8204,30 +8222,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8243,18 +8261,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8268,13 +8286,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8296,22 +8314,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8328,22 +8346,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclSingleSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8359,9 +8377,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclSingleArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8413,25 +8431,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8447,13 +8465,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8469,8 +8487,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8486,9 +8504,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -8516,23 +8534,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8546,12 +8564,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8581,12 +8599,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8597,25 +8616,25 @@ end;
 function TJclDoubleIntfSortedMap.HeadMap(const ToKey: Double): IJclDoubleIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclDoubleIntfSortedMap;
+  NewMap:  TJclDoubleIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8629,7 +8648,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8646,18 +8665,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8678,9 +8697,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclDoubleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8694,12 +8713,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8786,14 +8805,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8809,30 +8828,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8848,18 +8867,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8873,13 +8892,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8901,22 +8920,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8933,22 +8952,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclDoubleIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8964,9 +8983,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9024,25 +9043,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9058,13 +9077,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9080,8 +9099,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9097,9 +9116,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -9127,23 +9146,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9157,12 +9176,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9192,12 +9211,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9208,25 +9228,25 @@ end;
 function TJclIntfDoubleSortedMap.HeadMap(const ToKey: IInterface): IJclIntfDoubleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfDoubleSortedMap;
+  NewMap:  TJclIntfDoubleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9240,7 +9260,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9257,18 +9277,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9295,9 +9315,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9311,12 +9331,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9403,14 +9423,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9426,30 +9446,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9465,18 +9485,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9490,13 +9510,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9518,22 +9538,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9550,22 +9570,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9581,9 +9601,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclDoubleArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9635,25 +9655,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9669,13 +9689,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9691,8 +9711,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9708,9 +9728,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -9738,23 +9758,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9768,12 +9788,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9803,12 +9823,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9819,25 +9840,25 @@ end;
 function TJclDoubleDoubleSortedMap.HeadMap(const ToKey: Double): IJclDoubleDoubleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclDoubleDoubleSortedMap;
+  NewMap:  TJclDoubleDoubleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9851,7 +9872,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9868,18 +9889,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9900,9 +9921,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclDoubleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9916,12 +9937,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10008,14 +10029,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10031,30 +10052,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10070,18 +10091,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10095,13 +10116,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10123,22 +10144,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10155,22 +10176,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclDoubleDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10186,9 +10207,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclDoubleArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10240,25 +10261,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10274,13 +10295,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10296,8 +10317,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10313,9 +10334,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -10343,23 +10364,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10373,12 +10394,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10408,12 +10429,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10424,25 +10446,25 @@ end;
 function TJclExtendedIntfSortedMap.HeadMap(const ToKey: Extended): IJclExtendedIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclExtendedIntfSortedMap;
+  NewMap:  TJclExtendedIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10456,7 +10478,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10473,18 +10495,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10505,9 +10527,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclExtendedArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10521,12 +10543,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10613,14 +10635,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10636,30 +10658,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10675,18 +10697,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10700,13 +10722,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10728,22 +10750,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10760,22 +10782,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclExtendedIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10791,9 +10813,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10851,25 +10873,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10885,13 +10907,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10907,8 +10929,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10924,9 +10946,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -10954,23 +10976,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10984,12 +11006,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11019,12 +11041,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11035,25 +11058,25 @@ end;
 function TJclIntfExtendedSortedMap.HeadMap(const ToKey: IInterface): IJclIntfExtendedSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfExtendedSortedMap;
+  NewMap:  TJclIntfExtendedSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11067,7 +11090,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11084,18 +11107,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11122,9 +11145,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11138,12 +11161,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11230,14 +11253,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11253,30 +11276,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11292,18 +11315,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11317,13 +11340,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11345,22 +11368,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11377,22 +11400,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11408,9 +11431,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclExtendedArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11462,25 +11485,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11496,13 +11519,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11518,8 +11541,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11535,9 +11558,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -11565,23 +11588,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11595,12 +11618,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11630,12 +11653,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0.0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0.0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11646,25 +11670,25 @@ end;
 function TJclExtendedExtendedSortedMap.HeadMap(const ToKey: Extended): IJclExtendedExtendedSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclExtendedExtendedSortedMap;
+  NewMap:  TJclExtendedExtendedSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11678,7 +11702,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11695,18 +11719,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11727,9 +11751,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclExtendedArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11743,12 +11767,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11835,14 +11859,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11858,30 +11882,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, 0.0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11897,18 +11921,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0.0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11922,13 +11946,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11950,22 +11974,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11982,22 +12006,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclExtendedExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12013,9 +12037,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclExtendedArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12067,25 +12091,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12101,13 +12125,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12123,8 +12147,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12140,9 +12164,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -12170,23 +12194,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12200,12 +12224,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12235,12 +12259,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12251,25 +12276,25 @@ end;
 function TJclIntegerIntfSortedMap.HeadMap(ToKey: Integer): IJclIntegerIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntegerIntfSortedMap;
+  NewMap:  TJclIntegerIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12283,7 +12308,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12300,18 +12325,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12332,9 +12357,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntegerArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12348,12 +12373,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12440,14 +12465,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12463,30 +12488,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12502,18 +12527,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12527,13 +12552,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12555,22 +12580,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12587,22 +12612,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntegerIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12618,9 +12643,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12678,25 +12703,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12712,13 +12737,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12734,8 +12759,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12751,9 +12776,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -12781,23 +12806,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12811,12 +12836,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12846,12 +12871,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12862,25 +12888,25 @@ end;
 function TJclIntfIntegerSortedMap.HeadMap(const ToKey: IInterface): IJclIntfIntegerSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfIntegerSortedMap;
+  NewMap:  TJclIntfIntegerSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12894,7 +12920,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12911,18 +12937,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12949,9 +12975,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12965,12 +12991,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13057,14 +13083,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13080,30 +13106,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13119,18 +13145,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13144,13 +13170,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13172,22 +13198,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13204,22 +13230,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13235,9 +13261,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntegerArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13289,25 +13315,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13323,13 +13349,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13345,8 +13371,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13362,9 +13388,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -13392,23 +13418,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13422,12 +13448,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13457,12 +13483,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13473,25 +13500,25 @@ end;
 function TJclIntegerIntegerSortedMap.HeadMap(ToKey: Integer): IJclIntegerIntegerSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntegerIntegerSortedMap;
+  NewMap:  TJclIntegerIntegerSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13505,7 +13532,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13522,18 +13549,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13554,9 +13581,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntegerArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13570,12 +13597,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13662,14 +13689,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13685,30 +13712,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13724,18 +13751,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13749,13 +13776,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13777,22 +13804,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13809,22 +13836,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntegerIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13840,9 +13867,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntegerArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13894,25 +13921,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13928,13 +13955,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13950,8 +13977,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13967,9 +13994,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -13997,23 +14024,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14027,12 +14054,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14062,12 +14089,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14078,25 +14106,25 @@ end;
 function TJclCardinalIntfSortedMap.HeadMap(ToKey: Cardinal): IJclCardinalIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclCardinalIntfSortedMap;
+  NewMap:  TJclCardinalIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14110,7 +14138,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14127,18 +14155,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14159,9 +14187,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclCardinalArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14175,12 +14203,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14267,14 +14295,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14290,30 +14318,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14329,18 +14357,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14354,13 +14382,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14382,22 +14410,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14414,22 +14442,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclCardinalIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14445,9 +14473,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14505,25 +14533,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14539,13 +14567,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14561,8 +14589,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14578,9 +14606,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -14608,23 +14636,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14638,12 +14666,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14673,12 +14701,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14689,25 +14718,25 @@ end;
 function TJclIntfCardinalSortedMap.HeadMap(const ToKey: IInterface): IJclIntfCardinalSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfCardinalSortedMap;
+  NewMap:  TJclIntfCardinalSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14721,7 +14750,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14738,18 +14767,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14776,9 +14805,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14792,12 +14821,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14884,14 +14913,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14907,30 +14936,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14946,18 +14975,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14971,13 +15000,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14999,22 +15028,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15031,22 +15060,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15062,9 +15091,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclCardinalArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15116,25 +15145,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15150,13 +15179,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15172,8 +15201,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15189,9 +15218,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -15219,23 +15248,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15249,12 +15278,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15284,12 +15313,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15300,25 +15330,25 @@ end;
 function TJclCardinalCardinalSortedMap.HeadMap(ToKey: Cardinal): IJclCardinalCardinalSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclCardinalCardinalSortedMap;
+  NewMap:  TJclCardinalCardinalSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15332,7 +15362,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15349,18 +15379,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15381,9 +15411,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclCardinalArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15397,12 +15427,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15489,14 +15519,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15512,30 +15542,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15551,18 +15581,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15576,13 +15606,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15604,22 +15634,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15636,22 +15666,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclCardinalCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15667,9 +15697,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclCardinalArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15721,25 +15751,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15755,13 +15785,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15777,8 +15807,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15794,9 +15824,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -15824,23 +15854,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15854,12 +15884,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15889,12 +15919,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15905,25 +15936,25 @@ end;
 function TJclInt64IntfSortedMap.HeadMap(const ToKey: Int64): IJclInt64IntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclInt64IntfSortedMap;
+  NewMap:  TJclInt64IntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15937,7 +15968,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15954,18 +15985,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15986,9 +16017,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclInt64ArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16002,12 +16033,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16094,14 +16125,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16117,30 +16148,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16156,18 +16187,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16181,13 +16212,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16209,22 +16240,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16241,22 +16272,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclInt64IntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16272,9 +16303,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16332,25 +16363,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16366,13 +16397,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16388,8 +16419,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16405,9 +16436,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -16435,23 +16466,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16465,12 +16496,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16498,12 +16529,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16514,25 +16546,25 @@ end;
 function TJclIntfInt64SortedMap.HeadMap(const ToKey: IInterface): IJclIntfInt64SortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfInt64SortedMap;
+  NewMap:  TJclIntfInt64SortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16546,7 +16578,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16563,18 +16595,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16601,9 +16633,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16617,12 +16649,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16709,14 +16741,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16732,30 +16764,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16771,18 +16803,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16796,13 +16828,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16824,22 +16856,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16856,22 +16888,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfInt64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16887,9 +16919,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclInt64ArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16941,25 +16973,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16975,13 +17007,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16997,8 +17029,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17014,9 +17046,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -17044,23 +17076,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17074,12 +17106,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17109,12 +17141,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := 0;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := 0;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17125,25 +17158,25 @@ end;
 function TJclInt64Int64SortedMap.HeadMap(const ToKey: Int64): IJclInt64Int64SortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclInt64Int64SortedMap;
+  NewMap:  TJclInt64Int64SortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17157,7 +17190,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17174,18 +17207,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17206,9 +17239,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclInt64ArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17222,12 +17255,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17314,14 +17347,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17337,30 +17370,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, 0) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17376,18 +17409,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := 0;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17401,13 +17434,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17429,22 +17462,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17461,22 +17494,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclInt64Int64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17492,9 +17525,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclInt64ArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17547,25 +17580,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17581,13 +17614,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17603,8 +17636,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17620,9 +17653,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -17650,23 +17683,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17680,12 +17713,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17715,12 +17748,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17731,25 +17765,25 @@ end;
 function TJclPtrIntfSortedMap.HeadMap(ToKey: Pointer): IJclPtrIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclPtrIntfSortedMap;
+  NewMap:  TJclPtrIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17763,7 +17797,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17780,18 +17814,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17812,9 +17846,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclPtrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17828,12 +17862,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17920,14 +17954,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17943,30 +17977,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17982,18 +18016,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18007,13 +18041,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18035,22 +18069,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18067,22 +18101,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclPtrIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18098,9 +18132,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclIntfArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18158,25 +18192,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18192,13 +18226,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18214,8 +18248,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18231,9 +18265,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -18261,23 +18295,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18291,12 +18325,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18326,12 +18360,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18342,25 +18377,25 @@ end;
 function TJclIntfPtrSortedMap.HeadMap(const ToKey: IInterface): IJclIntfPtrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfPtrSortedMap;
+  NewMap:  TJclIntfPtrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18374,7 +18409,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18391,18 +18426,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18429,9 +18464,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18445,12 +18480,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18537,14 +18572,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18560,30 +18595,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18599,18 +18634,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18624,13 +18659,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18652,22 +18687,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18684,22 +18719,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18715,9 +18750,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclPtrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18769,25 +18804,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18803,13 +18838,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18825,8 +18860,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18842,9 +18877,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -18872,23 +18907,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18902,12 +18937,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18937,12 +18972,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18953,25 +18989,25 @@ end;
 function TJclPtrPtrSortedMap.HeadMap(ToKey: Pointer): IJclPtrPtrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclPtrPtrSortedMap;
+  NewMap:  TJclPtrPtrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18985,7 +19021,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19002,18 +19038,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19034,9 +19070,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclPtrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19050,12 +19086,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19142,14 +19178,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19165,30 +19201,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19204,18 +19240,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19229,13 +19265,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19257,22 +19293,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19289,22 +19325,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclPtrPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19320,9 +19356,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArrayList.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclPtrArrayList.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19376,25 +19412,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19410,13 +19446,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19432,8 +19468,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19449,9 +19485,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -19479,23 +19515,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19509,12 +19545,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19556,12 +19592,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19572,25 +19609,25 @@ end;
 function TJclIntfSortedMap.HeadMap(const ToKey: IInterface): IJclIntfSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntfSortedMap;
+  NewMap:  TJclIntfSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntfSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19604,7 +19641,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19621,18 +19658,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19659,9 +19696,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntfArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19675,12 +19712,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19767,14 +19804,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19790,30 +19827,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19829,18 +19866,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19854,13 +19891,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19882,22 +19919,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19914,22 +19951,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntfSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntfSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19945,9 +19982,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20006,25 +20043,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20040,13 +20077,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20062,8 +20099,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20079,9 +20116,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -20109,23 +20146,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20139,12 +20176,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20186,12 +20223,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20202,25 +20240,25 @@ end;
 function TJclAnsiStrSortedMap.HeadMap(const ToKey: AnsiString): IJclAnsiStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclAnsiStrSortedMap;
+  NewMap:  TJclAnsiStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20234,7 +20272,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20251,18 +20289,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20283,9 +20321,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20299,12 +20337,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20391,14 +20429,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20414,30 +20452,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20453,18 +20491,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20478,13 +20516,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20506,22 +20544,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20538,22 +20576,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclAnsiStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20569,9 +20607,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20630,25 +20668,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20664,13 +20702,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20686,8 +20724,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20703,9 +20741,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -20733,23 +20771,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20763,12 +20801,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20810,12 +20848,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20826,25 +20865,25 @@ end;
 function TJclWideStrSortedMap.HeadMap(const ToKey: WideString): IJclWideStrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclWideStrSortedMap;
+  NewMap:  TJclWideStrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20858,7 +20897,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20875,18 +20914,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := '';
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20907,9 +20946,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclWideStrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20923,12 +20962,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21015,14 +21054,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21038,30 +21077,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, '') <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21077,18 +21116,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21102,13 +21141,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21130,22 +21169,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21162,22 +21201,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclWideStrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21193,9 +21232,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21254,25 +21293,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21288,13 +21327,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21310,8 +21349,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21327,9 +21366,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -21357,23 +21396,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21387,12 +21426,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21434,12 +21473,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21450,25 +21490,25 @@ end;
 function TJclSingleSortedMap.HeadMap(const ToKey: Single): IJclSingleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclSingleSortedMap;
+  NewMap:  TJclSingleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclSingleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21482,7 +21522,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21499,18 +21539,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21531,9 +21571,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclSingleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21547,12 +21587,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21639,14 +21679,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21662,30 +21702,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21701,18 +21741,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21726,13 +21766,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21754,22 +21794,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21786,22 +21826,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSingleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclSingleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21817,9 +21857,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21878,25 +21918,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21912,13 +21952,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21934,8 +21974,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21951,9 +21991,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -21981,23 +22021,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22011,12 +22051,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22058,12 +22098,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22074,25 +22115,25 @@ end;
 function TJclDoubleSortedMap.HeadMap(const ToKey: Double): IJclDoubleSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclDoubleSortedMap;
+  NewMap:  TJclDoubleSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22106,7 +22147,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22123,18 +22164,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22155,9 +22196,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclDoubleArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22171,12 +22212,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22263,14 +22304,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22286,30 +22327,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22325,18 +22366,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22350,13 +22391,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22378,22 +22419,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22410,22 +22451,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclDoubleSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22441,9 +22482,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22502,25 +22543,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22536,13 +22577,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22558,8 +22599,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22575,9 +22616,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -22605,23 +22646,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22635,12 +22676,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22682,12 +22723,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22698,25 +22740,25 @@ end;
 function TJclExtendedSortedMap.HeadMap(const ToKey: Extended): IJclExtendedSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclExtendedSortedMap;
+  NewMap:  TJclExtendedSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22730,7 +22772,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22747,18 +22789,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0.0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22779,9 +22821,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclExtendedArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22795,12 +22837,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22887,14 +22929,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22910,30 +22952,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0.0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22949,18 +22991,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22974,13 +23016,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23002,22 +23044,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23034,22 +23076,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclExtendedSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23065,9 +23107,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23126,25 +23168,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23160,13 +23202,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23182,8 +23224,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23199,9 +23241,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -23229,23 +23271,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23259,12 +23301,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23306,12 +23348,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23322,25 +23365,25 @@ end;
 function TJclIntegerSortedMap.HeadMap(ToKey: Integer): IJclIntegerSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclIntegerSortedMap;
+  NewMap:  TJclIntegerSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23354,7 +23397,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23371,18 +23414,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23403,9 +23446,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclIntegerArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23419,12 +23462,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23511,14 +23554,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23534,30 +23577,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23573,18 +23616,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23598,13 +23641,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23626,22 +23669,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23658,22 +23701,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclIntegerSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23689,9 +23732,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23750,25 +23793,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23784,13 +23827,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23806,8 +23849,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23823,9 +23866,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -23853,23 +23896,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23883,12 +23926,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23930,12 +23973,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23946,25 +23990,25 @@ end;
 function TJclCardinalSortedMap.HeadMap(ToKey: Cardinal): IJclCardinalSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclCardinalSortedMap;
+  NewMap:  TJclCardinalSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23978,7 +24022,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23995,18 +24039,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24027,9 +24071,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclCardinalArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24043,12 +24087,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24135,14 +24179,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24158,30 +24202,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24197,18 +24241,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24222,13 +24266,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24250,22 +24294,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24282,22 +24326,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclCardinalSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24313,9 +24357,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24374,25 +24418,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24408,13 +24452,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24430,8 +24474,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24447,9 +24491,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -24477,23 +24521,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24507,12 +24551,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24554,12 +24598,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24570,25 +24615,25 @@ end;
 function TJclInt64SortedMap.HeadMap(const ToKey: Int64): IJclInt64SortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclInt64SortedMap;
+  NewMap:  TJclInt64SortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64SortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclInt64SortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24602,7 +24647,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24619,18 +24664,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := 0;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24651,9 +24696,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclInt64ArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24667,12 +24712,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24759,14 +24804,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24782,30 +24827,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, 0) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24821,18 +24866,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24846,13 +24891,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24874,22 +24919,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclInt64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24906,22 +24951,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclInt64SortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclInt64SortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24937,9 +24982,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24999,25 +25044,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25033,13 +25078,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25055,8 +25100,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25072,9 +25117,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -25102,23 +25147,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25132,12 +25177,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25179,12 +25224,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25195,25 +25241,25 @@ end;
 function TJclPtrSortedMap.HeadMap(ToKey: Pointer): IJclPtrSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclPtrSortedMap;
+  NewMap:  TJclPtrSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclPtrSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25227,7 +25273,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25244,18 +25290,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25276,9 +25322,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclPtrArraySet.Create(FSize);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25292,12 +25338,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25384,14 +25430,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25407,30 +25453,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25446,18 +25492,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25471,13 +25517,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25499,22 +25545,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25531,22 +25577,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclPtrSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclPtrSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25562,9 +25608,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25625,25 +25671,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    LoPos := 0;
-    HiPos := FSize - 1;
-    CompPos := (HiPos + LoPos) div 2;
-    while HiPos >= LoPos do
+  LoPos := 0;
+  HiPos := FSize - 1;
+  CompPos := (HiPos + LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := KeysCompare(FEntries[CompPos].Key, Key);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
     begin
-      Comp := KeysCompare(FEntries[CompPos].Key, Key);
-      if Comp < 0 then
-        LoPos := CompPos + 1
-      else
-      if Comp > 0 then
-        HiPos := CompPos - 1
-      else
-      begin
-        HiPos := CompPos;
-        LoPos := CompPos + 1;
-      end;
-      CompPos := (HiPos + LoPos) div 2;
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
     end;
-    Result := HiPos;
+    CompPos := (HiPos + LoPos) div 2;
+  end;
+  Result := HiPos;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25659,13 +25705,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for Index := 0 to FSize - 1 do
-    begin
-      FreeKey(FEntries[Index].Key);
-      FreeValue(FEntries[Index].Value);
-    end;
-    FSize := 0;
-    AutoPack;
+  for Index := 0 to FSize - 1 do
+  begin
+    FreeKey(FEntries[Index].Key);
+    FreeValue(FEntries[Index].Value);
+  end;
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25681,8 +25727,8 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
+  Index := BinarySearch(Key);
+  Result := (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25698,9 +25744,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Result := False;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := True;
       Break;
@@ -25728,23 +25774,23 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  It := AMap.KeySet.First;
+  Index := 0;
+  while It.HasNext do
+  begin
+    if Index >= FSize then
       Exit;
-    if FSize <> AMap.Size then
+    AKey := It.Next;
+    if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
       Exit;
-    It := AMap.KeySet.First;
-    Index := 0;
-    while It.HasNext do
-    begin
-      if Index >= FSize then
-        Exit;
-      AKey := It.Next;
-      if ValuesCompare(AMap.GetValue(AKey), FEntries[Index].Value) <> 0 then
-        Exit;
-      Inc(Index);
-    end;
-    Result := True;
+    Inc(Index);
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25758,12 +25804,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[0].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[0].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25817,12 +25863,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    Result := nil;
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-      Result := FEntries[Index].Value
-    else if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Index := BinarySearch(Key);
+  Result := nil;
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    Result := FEntries[Index].Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25833,25 +25880,25 @@ end;
 function TJclSortedMap.HeadMap(ToKey: TObject): IJclSortedMap;
 var
   ToIndex: Integer;
-  NewMap: TJclSortedMap;
+  NewMap:  TJclSortedMap;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSortedMap;
-    ToIndex := BinarySearch(ToKey);
-    if ToIndex >= 0 then
+  NewMap := CreateEmptyContainer as TJclSortedMap;
+  ToIndex := BinarySearch(ToKey);
+  if ToIndex >= 0 then
+  begin
+    NewMap.SetCapacity(ToIndex + 1);
+    NewMap.FSize := ToIndex + 1;
+    while ToIndex >= 0 do
     begin
-      NewMap.SetCapacity(ToIndex + 1);
-      NewMap.FSize := ToIndex + 1;
-      while ToIndex >= 0 do
-      begin
-        NewMap.FEntries[ToIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25865,7 +25912,7 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FSize = 0;
+  Result := FSize = 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25882,18 +25929,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for Index := 0 to FSize - 1 do
-      if ValuesCompare(FEntries[Index].Value, Value) = 0 then
+  Found := False;
+  Result := nil;
+  for Index := 0 to FSize - 1 do
+    if ValuesCompare(FEntries[Index].Value, Value) = 0 then
     begin
       Result := FEntries[Index].Key;
       Found := True;
       Break;
     end;
 
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25920,9 +25967,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArraySet.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Key);
+  Result := TJclArraySet.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Key);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25936,12 +25983,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FEntries[FSize - 1].Key
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FEntries[FSize - 1].Key
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -26028,14 +26075,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26051,30 +26098,30 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
-    begin
-      Index := BinarySearch(Key);
+  if FAllowDefaultElements or ((KeysCompare(Key, nil) <> 0) and (ValuesCompare(Value, nil) <> 0)) then
+  begin
+    Index := BinarySearch(Key);
 
-      if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+    begin
+      FreeValue(FEntries[Index].Value);
+      FEntries[Index].Value := Value;
+    end
+    else
+    begin
+      if FSize = FCapacity then
+        AutoGrow;
+      if FSize < FCapacity then
       begin
-        FreeValue(FEntries[Index].Value);
+        Inc(Index);
+        if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
+          MoveArray(Index, Index + 1, FSize - Index);
+        FEntries[Index].Key := Key;
         FEntries[Index].Value := Value;
-      end
-      else
-      begin
-        if FSize = FCapacity then
-          AutoGrow;
-        if FSize < FCapacity then
-        begin
-          Inc(Index);
-          if (Index < FSize) and (KeysCompare(FEntries[Index].Key, Key) <> 0) then
-            MoveArray(Index, Index + 1, FSize - Index);
-          FEntries[Index].Key := Key;
-          FEntries[Index].Value := Value;
-          Inc(FSize);
-        end;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26090,18 +26137,18 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Index := BinarySearch(Key);
-    if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
-    begin
-      Result := FreeValue(FEntries[Index].Value);
-      FreeKey(FEntries[Index].Key);
-      if Index < (FSize - 1) then
-        MoveArray(Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      Result := nil;
+  Index := BinarySearch(Key);
+  if (Index >= 0) and (KeysCompare(FEntries[Index].Key, Key) = 0) then
+  begin
+    Result := FreeValue(FEntries[Index].Value);
+    FreeKey(FEntries[Index].Key);
+    if Index < (FSize - 1) then
+      MoveArray(Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26115,13 +26162,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize <= Value then
-    begin
-      SetLength(FEntries, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize <= Value then
+  begin
+    SetLength(FEntries, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26143,22 +26190,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    ToIndex := BinarySearch(ToKey);
-    if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  NewMap := CreateEmptyContainer as TJclSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  ToIndex := BinarySearch(ToKey);
+  if (FromIndex >= 0) and (FromIndex <= ToIndex) then
+  begin
+    NewMap.SetCapacity(ToIndex - FromIndex + 1);
+    NewMap.FSize := ToIndex - FromIndex + 1;
+    while ToIndex >= FromIndex do
     begin
-      NewMap.SetCapacity(ToIndex - FromIndex + 1);
-      NewMap.FSize := ToIndex - FromIndex + 1;
-      while ToIndex >= FromIndex do
-      begin
-        NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
-        Dec(ToIndex);
-      end;
+      NewMap.FEntries[ToIndex - FromIndex] := FEntries[ToIndex];
+      Dec(ToIndex);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -26175,22 +26222,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    NewMap := CreateEmptyContainer as TJclSortedMap;
-    FromIndex := BinarySearch(FromKey);
-    if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
-      Inc(FromIndex);
-    if (FromIndex >= 0) and (FromIndex < FSize) then
+  NewMap := CreateEmptyContainer as TJclSortedMap;
+  FromIndex := BinarySearch(FromKey);
+  if (FromIndex = -1) or (KeysCompare(FEntries[FromIndex].Key, FromKey) < 0) then
+    Inc(FromIndex);
+  if (FromIndex >= 0) and (FromIndex < FSize) then
+  begin
+    NewMap.SetCapacity(FSize - FromIndex);
+    NewMap.FSize := FSize - FromIndex;
+    Index := FromIndex;
+    while Index < FSize do
     begin
-      NewMap.SetCapacity(FSize - FromIndex);
-      NewMap.FSize := FSize - FromIndex;
-      Index := FromIndex;
-      while Index < FSize do
-      begin
-        NewMap.FEntries[Index - FromIndex] := FEntries[Index];
-        Inc(Index);
-      end;
+      NewMap.FEntries[Index - FromIndex] := FEntries[Index];
+      Inc(Index);
     end;
-    Result := NewMap;
+  end;
+  Result := NewMap;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -26206,9 +26253,9 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for Index := 0 to FSize - 1 do
-      Result.Add(FEntries[Index].Value);
+  Result := TJclArrayList.Create(FSize, False);
+  for Index := 0 to FSize - 1 do
+    Result.Add(FEntries[Index].Value);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;

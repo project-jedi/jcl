@@ -73,15 +73,15 @@ type
 
 type
   IJclClrAppDomain = mscorlib_TLB._AppDomain;
-  IJclClrEvidence  = mscorlib_TLB._Evidence;
-  IJclClrAssembly  = mscorlib_TLB._Assembly;
-  IJclClrMethod    = mscorlib_TLB._MethodInfo;
+  IJclClrEvidence = mscorlib_TLB._Evidence;
+  IJclClrAssembly = mscorlib_TLB._Assembly;
+  IJclClrMethod = mscorlib_TLB._MethodInfo;
 
 type
   TJclClrHostFlavor = (hfServer, hfWorkStation);
 
   TJclClrHostLoaderFlag =
-   (hlOptSingleDomain,
+    (hlOptSingleDomain,
     hlOptMultiDomain,
     hlOptMultiDomainHost,
     hlSafeMode,
@@ -90,7 +90,7 @@ type
 
 type
   EJclClrException = class(SysUtils.Exception);
-  
+
   TJclClrAppDomain = class;
   TJclClrAppDomainSetup = class;
   TJclClrAssembly = class;
@@ -106,7 +106,7 @@ type
     function GetCurrentAppDomain: IJclClrAppDomain;
   protected
     function AddAppDomain(const AppDomain: TJclClrAppDomain): Integer;
-    function RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer; 
+    function RemoveAppDomain(const AppDomain: TJclClrAppDomain): Integer;
   public
     constructor Create(const ClrVer: WideString = '';
       const Flavor: TJclClrHostFlavor = hfWorkStation;
@@ -246,21 +246,21 @@ type
   {$EXTERNALSYM HDOMAINENUM}
 
 const
-  STARTUP_CONCURRENT_GC                         = $1;
-  STARTUP_LOADER_OPTIMIZATION_MASK              = $3 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
+  STARTUP_CONCURRENT_GC = $1;
+  STARTUP_LOADER_OPTIMIZATION_MASK = $3 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN = $1 shl 1;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN = $2 shl 1;
   STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST = $3 shl 1;
-  STARTUP_LOADER_SAFEMODE                       = $10;
-  STARTUP_LOADER_SETPREFERENCE                  = $100;
+  STARTUP_LOADER_SAFEMODE = $10;
+  STARTUP_LOADER_SETPREFERENCE = $100;
 
-  RUNTIME_INFO_UPGRADE_VERSION         = $01;
-  RUNTIME_INFO_REQUEST_IA64            = $02;
-  RUNTIME_INFO_REQUEST_AMD64           = $04;
-  RUNTIME_INFO_REQUEST_X86             = $08;
-  RUNTIME_INFO_DONT_RETURN_DIRECTORY   = $10;
-  RUNTIME_INFO_DONT_RETURN_VERSION     = $20;
-  RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG  = $40;
+  RUNTIME_INFO_UPGRADE_VERSION = $01;
+  RUNTIME_INFO_REQUEST_IA64 = $02;
+  RUNTIME_INFO_REQUEST_AMD64 = $04;
+  RUNTIME_INFO_REQUEST_X86  = $08;
+  RUNTIME_INFO_DONT_RETURN_DIRECTORY = $10;
+  RUNTIME_INFO_DONT_RETURN_VERSION = $20;
+  RUNTIME_INFO_DONT_SHOW_ERROR_DIALOG = $40;
 
 function GetCORSystemDirectory(pbuffer: PWideChar; const cchBuffer: DWORD;
   var dwLength: DWORD): HRESULT; stdcall;
@@ -327,9 +327,9 @@ type
   {$EXTERNALSYM CLSID_RESOLUTION_FLAGS}
 
 const
-  CLSID_RESOLUTION_DEFAULT	  = $0;
+  CLSID_RESOLUTION_DEFAULT = $0;
   {$EXTERNALSYM CLSID_RESOLUTION_DEFAULT}
-	CLSID_RESOLUTION_REGISTERED	= $1;
+  CLSID_RESOLUTION_REGISTERED = $1;
   {$EXTERNALSYM CLSID_RESOLUTION_REGISTERED}
 
 function GetRequestedRuntimeVersionForCLSID(rclsid: TGuid; pVersion: PWideChar;
@@ -423,7 +423,8 @@ begin
 
   if LeftBuild < RightBuild then
     Result := -1
-  else if LeftBuild > RightBuild then
+  else
+  if LeftBuild > RightBuild then
     Result := 1
   else
     Result := 0;
@@ -457,9 +458,9 @@ function GetCORSystemDirectory;
 begin
   GetProcedureAddress(_GetCORSystemDirectory, mscoree_dll, 'GetCORSystemDirectory');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORSystemDirectory]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETCORSYSTEMDIRECTORY]
   end;
 end;
 
@@ -470,9 +471,9 @@ function GetCORVersion;
 begin
   GetProcedureAddress(_GetCORVersion, mscoree_dll, 'GetCORVersion');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORVersion]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETCORVERSION]
   end;
 end;
 
@@ -483,9 +484,9 @@ function GetFileVersion;
 begin
   GetProcedureAddress(_GetFileVersion, mscoree_dll, 'GetFileVersion');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetFileVersion]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETFILEVERSION]
   end;
 end;
 
@@ -496,9 +497,9 @@ function GetCORRequiredVersion;
 begin
   GetProcedureAddress(_GetCORRequiredVersion, mscoree_dll, 'GetCORRequiredVersion');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCORRequiredVersion]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETCORREQUIREDVERSION]
   end;
 end;
 
@@ -509,9 +510,9 @@ function GetRequestedRuntimeInfo;
 begin
   GetProcedureAddress(_GetRequestedRuntimeInfo, mscoree_dll, 'GetRequestedRuntimeInfo');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeInfo]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETREQUESTEDRUNTIMEINFO]
   end;
 end;
 
@@ -522,9 +523,9 @@ function GetRequestedRuntimeVersion;
 begin
   GetProcedureAddress(_GetRequestedRuntimeVersion, mscoree_dll, 'GetRequestedRuntimeVersion');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeVersion]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETREQUESTEDRUNTIMEVERSION]
   end;
 end;
 
@@ -535,9 +536,9 @@ function CorBindToRuntimeHost;
 begin
   GetProcedureAddress(_CorBindToRuntimeHost, mscoree_dll, 'CorBindToRuntimeHost');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeHost]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORBINDTORUNTIMEHOST]
   end;
 end;
 
@@ -548,9 +549,9 @@ function CorBindToRuntimeEx;
 begin
   GetProcedureAddress(_CorBindToRuntimeEx, mscoree_dll, 'CorBindToRuntimeEx');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeEx]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORBINDTORUNTIMEEX]
   end;
 end;
 
@@ -561,9 +562,9 @@ function CorBindToRuntimeByCfg;
 begin
   GetProcedureAddress(_CorBindToRuntimeByCfg, mscoree_dll, 'CorBindToRuntimeByCfg');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntimeByCfg]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORBINDTORUNTIMEBYCFG]
   end;
 end;
 
@@ -574,9 +575,9 @@ function CorBindToRuntime;
 begin
   GetProcedureAddress(_CorBindToRuntime, mscoree_dll, 'CorBindToRuntime');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToRuntime]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORBINDTORUNTIME]
   end;
 end;
 
@@ -587,9 +588,9 @@ function CorBindToCurrentRuntime;
 begin
   GetProcedureAddress(_CorBindToCurrentRuntime, mscoree_dll, 'CorBindToCurrentRuntime');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorBindToCurrentRuntime]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORBINDTOCURRENTRUNTIME]
   end;
 end;
 
@@ -600,9 +601,9 @@ function ClrCreateManagedInstance;
 begin
   GetProcedureAddress(_ClrCreateManagedInstance, mscoree_dll, 'ClrCreateManagedInstance');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_ClrCreateManagedInstance]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CLRCREATEMANAGEDINSTANCE]
   end;
 end;
 
@@ -613,9 +614,9 @@ procedure CorMarkThreadInThreadPool;
 begin
   GetProcedureAddress(_CorMarkThreadInThreadPool, mscoree_dll, 'CorMarkThreadInThreadPool');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorMarkThreadInThreadPool]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CORMARKTHREADINTHREADPOOL]
   end;
 end;
 
@@ -626,9 +627,9 @@ function RunDll32ShimW;
 begin
   GetProcedureAddress(_RunDll32ShimW, mscoree_dll, 'RunDll32ShimW');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_RunDll32ShimW]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_RUNDLL32SHIMW]
   end;
 end;
 
@@ -639,9 +640,9 @@ function LoadLibraryShim;
 begin
   GetProcedureAddress(_LoadLibraryShim, mscoree_dll, 'LoadLibraryShim');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_LoadLibraryShim]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_LOADLIBRARYSHIM]
   end;
 end;
 
@@ -652,9 +653,9 @@ function CallFunctionShim;
 begin
   GetProcedureAddress(_CallFunctionShim, mscoree_dll, 'CallFunctionShim');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CallFunctionShim]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_CALLFUNCTIONSHIM]
   end;
 end;
 
@@ -665,9 +666,9 @@ function GetRealProcAddress;
 begin
   GetProcedureAddress(_GetRealProcAddress, mscoree_dll, 'GetRealProcAddress');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRealProcAddress]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETREALPROCADDRESS]
   end;
 end;
 
@@ -678,9 +679,9 @@ procedure CorExitProcess;
 begin
   GetProcedureAddress(_CorExitProcess, mscoree_dll, 'CorExitProcess');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_CorExitProcess]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_COREXITPROCESS]
   end;
 end;
 
@@ -692,9 +693,9 @@ function GetRequestedRuntimeVersionForCLSID;
 begin
   GetProcedureAddress(_GetRequestedRuntimeVersionForCL, mscoree_dll, 'GetRequestedRuntimeVersionForCLSID');
   asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetRequestedRuntimeVersionForCL]
+           MOV     ESP, EBP
+           POP     EBP
+           JMP     [_GETREQUESTEDRUNTIMEVERSIONFORCL]
   end;
 end;
 
@@ -712,7 +713,7 @@ constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHo
 const
   ClrHostFlavorNames: array [TJclClrHostFlavor] of WideString = ('srv', 'wks');
   ClrHostLoaderFlagValues: array [TJclClrHostLoaderFlag] of DWORD =
-   (STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN,
+    (STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN,
     STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST,
     STARTUP_LOADER_SAFEMODE,
@@ -742,7 +743,7 @@ end;
 procedure TJclClrHost.EnumAppDomains;
 var
   hEnum: Pointer;
-  Unk: IUnknown;
+  Unk:   IUnknown;
 begin
   if Assigned(FAppDomains) then
     FAppDomains.Clear
@@ -763,7 +764,7 @@ function TJclClrHost.FindAppDomain(const Intf: IJclClrAppDomain;
 var
   I: Integer;
 begin
-  for I := 0 to AppDomainCount-1 do
+  for I := 0 to AppDomainCount - 1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface = Intf then
@@ -781,7 +782,7 @@ function TJclClrHost.FindAppDomain(const Name: WideString;
 var
   I: Integer;
 begin
-  for I := 0 to AppDomainCount-1 do
+  for I := 0 to AppDomainCount - 1 do
   begin
     Ret := AppDomains[I];
     if Ret.DefaultInterface.FriendlyName = Name then
@@ -844,11 +845,11 @@ begin
   PathOk := False;
   for Index := Length(SystemDirectory) - 1 downto 1 do
     if SystemDirectory[Index] = WideDirDelimiter then
-  begin
-    SetLength(SystemDirectory, Index);
-    PathOk := True;
-    Break;
-  end;
+    begin
+      SetLength(SystemDirectory, Index);
+      PathOk := True;
+      Break;
+    end;
 
   if PathOk then
   begin
@@ -1054,7 +1055,7 @@ var
   RawAssembly, RawSymbolStore: Variant;
 begin
   Assert(Assigned(RawAssemblyStream));
-  RawAssembly := VarArrayCreate([0, RawAssemblyStream.Size-1], varByte);
+  RawAssembly := VarArrayCreate([0, RawAssemblyStream.Size - 1], varByte);
   try
     try
       RawAssemblyStream.Read(VarArrayLock(RawAssembly)^, RawAssemblyStream.Size);
@@ -1066,7 +1067,7 @@ begin
       Result := TJclClrAssembly.Create(DefaultInterface.Load_3(PSafeArray(TVarData(RawAssembly).VArray)))
     else
     begin
-      RawSymbolStore := VarArrayCreate([0, RawSymbolStoreStream.Size-1], varByte);
+      RawSymbolStore := VarArrayCreate([0, RawSymbolStoreStream.Size - 1], varByte);
       try
         try
           RawSymbolStoreStream.Read(VarArrayLock(RawSymbolStore)^, RawSymbolStoreStream.Size);

@@ -26,7 +26,7 @@
 unit JclDebugIdeImpl;
 
 {$I jcl.inc}
-                              
+
 interface
 
 uses
@@ -152,8 +152,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -406,39 +406,39 @@ begin
   if FBuildError or (Length(FResultInfo) = 0) then
     Exit;
   with TJclDebugResultForm.Create(Application, Settings) do
-  try
-    for I := 0 to Length(FResultInfo) - 1 do
-      with ResultListView.Items.Add, FResultInfo[I] do
-      begin
-        Caption := ProjectName;
-        if Success then
+    try
+      for I := 0 to Length(FResultInfo) - 1 do
+        with ResultListView.Items.Add, FResultInfo[I] do
         begin
-          SubItems.Add(IntToStr(MapFileSize));
-          SubItems.Add(IntToStr(JclDebugDataSize));
-          SubItems.Add(Format('%3.1f', [JclDebugDataSize * 100 / MapFileSize]));
-          SubItems.Add(ExecutableFileName);
-          SubItems.Add(LinkerBugUnit);
-          if LineNumberErrors > 0 then
-            SubItems.Add(IntToStr(LineNumberErrors))
+          Caption := ProjectName;
+          if Success then
+          begin
+            SubItems.Add(IntToStr(MapFileSize));
+            SubItems.Add(IntToStr(JclDebugDataSize));
+            SubItems.Add(Format('%3.1f', [JclDebugDataSize * 100 / MapFileSize]));
+            SubItems.Add(ExecutableFileName);
+            SubItems.Add(LinkerBugUnit);
+            if LineNumberErrors > 0 then
+              SubItems.Add(IntToStr(LineNumberErrors))
+            else
+              SubItems.Add('');
+            ImageIndex := 0;
+          end
           else
+          begin
             SubItems.Add('');
-          ImageIndex := 0;
-        end
-        else
-        begin
-          SubItems.Add('');
-          SubItems.Add('');
-          SubItems.Add('');
-          SubItems.Add(ExecutableFileName);
-          SubItems.Add(LinkerBugUnit);
-          SubItems.Add('');
-          ImageIndex := 1;
+            SubItems.Add('');
+            SubItems.Add('');
+            SubItems.Add(ExecutableFileName);
+            SubItems.Add(LinkerBugUnit);
+            SubItems.Add('');
+            ImageIndex := 1;
+          end;
         end;
-      end;
-    ShowModal;
-  finally
-    Free;
-  end;
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 procedure TJclDebugExtension.EndStoreResults;
@@ -552,7 +552,7 @@ begin
         System.Break;
       end;
   if not Assigned(FInsertDataItem.Parent) then
-     raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
+    raise EJclExpertException.CreateTrace(RsEInsertDataMenuItemNotInserted);
 
   FSaveBuildProject := nil;
   with IDEActionList do
@@ -564,7 +564,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildProject) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAction);
+    raise EJclExpertException.CreateTrace(RsENoBuildAction);
 
   FSaveBuildAllProjects := nil;
   with IDEActionList do
@@ -576,7 +576,7 @@ begin
         Break;
       end;
   if not Assigned(FSaveBuildProject) then
-     raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
+    raise EJclExpertException.CreateTrace(RsENoBuildAllAction);
 end;
 
 procedure TJclDebugExtension.UnregisterCommands;

@@ -32,7 +32,7 @@ unit JediGUIProfiles;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JediInstall, StdCtrls, ComCtrls;
 
 type

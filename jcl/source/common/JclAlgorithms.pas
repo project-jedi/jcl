@@ -168,7 +168,7 @@ function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
 // CountObject algorithms
 function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer; overload;
-  function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
+function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
   const AString: AnsiString; AComparator: TAnsiStrCompare): Integer; overload;
 function CountObject(const First: IJclWideStrIterator; Count: Integer;
   const AString: WideString; AComparator: TWideStrCompare): Integer; overload;
@@ -1623,7 +1623,7 @@ procedure QuickSort(const AList: IJclIntfList; L, R: Integer;
   AComparator: TIntfCompare);
 var
   I, J, P: Integer;
-  Obj: IInterface;
+  Obj:     IInterface;
 begin
   repeat
     I := L;
@@ -1658,7 +1658,7 @@ procedure QuickSort(const AList: IJclAnsiStrList; L, R: Integer;
   AComparator: TAnsiStrCompare);
 var
   I, J, P: Integer;
-  Obj: AnsiString;
+  Obj:     AnsiString;
 begin
   repeat
     I := L;
@@ -1693,7 +1693,7 @@ procedure QuickSort(const AList: IJclWideStrList; L, R: Integer;
   AComparator: TWideStrCompare);
 var
   I, J, P: Integer;
-  Obj: WideString;
+  Obj:     WideString;
 begin
   repeat
     I := L;
@@ -1727,7 +1727,7 @@ end;
 procedure QuickSort(const AList: IJclSingleList; L, R: Integer; AComparator: TSingleCompare);
 var
   I, J, P: Integer;
-  Obj: Single;
+  Obj:     Single;
 begin
   repeat
     I := L;
@@ -1761,7 +1761,7 @@ end;
 procedure QuickSort(const AList: IJclDoubleList; L, R: Integer; AComparator: TDoubleCompare);
 var
   I, J, P: Integer;
-  Obj: Double;
+  Obj:     Double;
 begin
   repeat
     I := L;
@@ -1795,7 +1795,7 @@ end;
 procedure QuickSort(const AList: IJclExtendedList; L, R: Integer; AComparator: TExtendedCompare);
 var
   I, J, P: Integer;
-  Obj: Extended;
+  Obj:     Extended;
 begin
   repeat
     I := L;
@@ -1829,7 +1829,7 @@ end;
 procedure QuickSort(const AList: IJclIntegerList; L, R: Integer; AComparator: TIntegerCompare);
 var
   I, J, P: Integer;
-  Obj: Integer;
+  Obj:     Integer;
 begin
   repeat
     I := L;
@@ -1863,7 +1863,7 @@ end;
 procedure QuickSort(const AList: IJclCardinalList; L, R: Integer; AComparator: TCardinalCompare);
 var
   I, J, P: Integer;
-  Obj: Cardinal;
+  Obj:     Cardinal;
 begin
   repeat
     I := L;
@@ -1897,7 +1897,7 @@ end;
 procedure QuickSort(const AList: IJclInt64List; L, R: Integer; AComparator: TInt64Compare);
 var
   I, J, P: Integer;
-  Obj: Int64;
+  Obj:     Int64;
 begin
   repeat
     I := L;
@@ -1932,7 +1932,7 @@ end;
 procedure QuickSort(const AList: IJclPtrList; L, R: Integer; AComparator: TPtrCompare);
 var
   I, J, P: Integer;
-  Obj: Pointer;
+  Obj:     Pointer;
 begin
   repeat
     I := L;
@@ -1967,7 +1967,7 @@ end;
 procedure QuickSort(const AList: IJclList; L, R: Integer; AComparator: TCompare);
 var
   I, J, P: Integer;
-  Obj: TObject;
+  Obj:     TObject;
 begin
   repeat
     I := L;
@@ -2207,4 +2207,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

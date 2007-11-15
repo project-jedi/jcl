@@ -53,7 +53,7 @@ type
   TJclScheduledTaskStatus = (tsUnknown, tsReady, tsRunning, tsNotScheduled, tsHasNotRun);
 
   TJclScheduledTaskFlag =
-   (tfInteractive, tfDeleteWhenDone, tfDisabled, tfStartOnlyIfIdle,
+    (tfInteractive, tfDeleteWhenDone, tfDisabled, tfStartOnlyIfIdle,
     tfKillOnIdleEndl, tfDontStartIfOnBatteries, tfKillIfGoingOnBatteries,
     tfRunOnlyIfDocked, tfHidden, tfRunIfConnectedToInternet,
     tfRestartOnIdleResume, tfSystemRequired, tfRunOnlyIfLoggedOn);
@@ -184,7 +184,8 @@ type
     property ErrorRetryCount: Word read GetErrorRetryCount write SetErrorRetryCount;
     property ErrorRetryInterval: Word read GetErrorRetryInterval write SetErrorRetryInterval;
     property ExitCode: DWORD read GetExitCode;
-    property OwnerData: TStream read GetData write SetData;  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
+    property OwnerData: TStream read GetData write SetData;
+  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
     property IdleMinutes: Word read GetIdleMinutes;
     property DeadlineMinutes: Word read GetDeadlineMinutes;
     property MostRecentRunTime: Windows.TSystemTime read GetMostRecentRunTime;
@@ -239,7 +240,7 @@ uses
 
 const
   TaskFlagMapping: array [TJclScheduledTaskFlag] of DWORD =
-   (TASK_FLAG_INTERACTIVE, TASK_FLAG_DELETE_WHEN_DONE, TASK_FLAG_DISABLED,
+    (TASK_FLAG_INTERACTIVE, TASK_FLAG_DELETE_WHEN_DONE, TASK_FLAG_DISABLED,
     TASK_FLAG_START_ONLY_IF_IDLE, TASK_FLAG_KILL_ON_IDLE_END,
     TASK_FLAG_DONT_START_IF_ON_BATTERIES, TASK_FLAG_KILL_IF_GOING_ON_BATTERIES,
     TASK_FLAG_RUN_ONLY_IF_DOCKED, TASK_FLAG_HIDDEN,
@@ -289,12 +290,12 @@ class function TJclTaskSchedule.IsRunning: Boolean;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      Refresh;
-      Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
-    finally
-      Free;
-    end;
+      try
+        Refresh;
+        Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -310,8 +311,8 @@ class procedure TJclTaskSchedule.Start;
   var
     AppName: array [0..MAX_PATH] of Char;
     FilePart: PChar;
-    si: TStartupInfo;
-    pi: TProcessInformation;
+    si:      TStartupInfo;
+    pi:      TProcessInformation;
   begin
     Win32Check(SearchPath(nil, 'mstask.exe', nil, MAX_PATH, AppName, FilePart) > 0);
 
@@ -328,13 +329,13 @@ class procedure TJclTaskSchedule.Start;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      Refresh;
-      if FindService('Schedule', NtSvc) then
-        NtSvc.Start;
-    finally
-      Free;
-    end;
+      try
+        Refresh;
+        if FindService('Schedule', NtSvc) then
+          NtSvc.Start;
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -354,7 +355,7 @@ class procedure TJclTaskSchedule.Stop;
     begin
       hProcess := OpenProcess(PROCESS_TERMINATE, False,
         GetWindowThreadProcessId(
-          FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
+        FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
       Win32Check(hProcess <> 0);
       Win32Check(TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
       Win32Check(CloseHandle(hProcess));
@@ -366,12 +367,12 @@ class procedure TJclTaskSchedule.Stop;
     NtSvc: TJclNtService;
   begin
     with TJclSCManager.Create do
-    try
-      if FindService('Schedule', NtSvc) then
-        NtSvc.Stop;
-    finally
-      Free;
-    end;
+      try
+        if FindService('Schedule', NtSvc) then
+          NtSvc.Stop;
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -418,8 +419,8 @@ end;
 function TJclTaskSchedule.Add(const TaskName: WideString): TJclScheduledTask;
 var
   TaskClsId: TCLSID;
-  TaskIid: TIID;
-  spUnk: IUnknown;
+  TaskIid:   TIID;
+  spUnk:     IUnknown;
 begin
   TaskClsId := CLSID_CTask;
   TaskIid := IID_ITask;
@@ -438,7 +439,7 @@ end;
 
 function TJclTaskSchedule.Remove(const TaskName: WideString): Integer;
 begin
-  for Result := 0 to TaskCount-1 do
+  for Result := 0 to TaskCount - 1 do
     if WideCompareText(Tasks[Result].TaskName, TaskName) = 0 then
     begin
       Delete(Result);
@@ -449,7 +450,7 @@ end;
 
 function TJclTaskSchedule.Remove(const TaskIntf: ITask): Integer;
 begin
-  for Result := 0 to TaskCount-1 do
+  for Result := 0 to TaskCount - 1 do
     if Tasks[Result].Task = TaskIntf then
     begin
       Delete(Result);
@@ -694,7 +695,7 @@ begin
     OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, @EndSysTime, Count, TaskTimes));
   try
     SetLength(Result, Count);
-    for I := 0 to Count-1 do
+    for I := 0 to Count - 1 do
     begin
       Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
       Inc(TaskTimes);
@@ -746,11 +747,11 @@ end;
 function TJclScheduledWorkItem.GetFlags: TJclScheduledTaskFlags;
 var
   AFlags: DWORD;
-  AFlag: TJclScheduledTaskFlag;
+  AFlag:  TJclScheduledTaskFlag;
 begin
   OleCheck(FScheduledWorkItem.GetFlags(AFlags));
   Result := [];
-  for AFlag:=Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
+  for AFlag := Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
     if (AFlags and TaskFlagMapping[AFlag]) = TaskFlagMapping[AFlag] then
       Include(Result, AFlag);
 end;
@@ -758,10 +759,10 @@ end;
 procedure TJclScheduledWorkItem.SetFlags(const Value: TJclScheduledTaskFlags);
 var
   AFlags: DWORD;
-  AFlag: TJclScheduledTaskFlag;
+  AFlag:  TJclScheduledTaskFlag;
 begin
   AFlags := 0;
-  for AFlag:=Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
+  for AFlag := Low(TJclScheduledTaskFlag) to High(TJclScheduledTaskFlag) do
     if AFlag in Value then
       AFlags := AFlags or TaskFlagMapping[AFlag];
   OleCheck(FScheduledWorkItem.SetFlags(AFlags));
@@ -770,7 +771,7 @@ end;
 function TJclScheduledWorkItem.GetData: TStream;
 var
   Count: Word;
-  Buf: PByte;
+  Buf:   PByte;
 begin
   FData.Clear;
   Buf := nil;
@@ -800,11 +801,11 @@ begin
 
   FTriggers.Clear;
   if Count > 0 then
-  for I:=0 to Count-1 do
-  begin
-    OleCheck(FScheduledWorkItem.GetTrigger(I, ATrigger));
-    FTriggers.Add(ATrigger);
-  end;
+    for I := 0 to Count - 1 do
+    begin
+      OleCheck(FScheduledWorkItem.GetTrigger(I, ATrigger));
+      FTriggers.Add(ATrigger);
+    end;
 end;
 
 function TJclScheduledWorkItem.GetTriggerCount: Integer;

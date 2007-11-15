@@ -119,7 +119,8 @@ type
 
 
   TJclAnsiStrHashSet = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrCollection, IJclAnsiStrSet)
   private
     FMap: IJclAnsiStrMap;
@@ -180,7 +181,8 @@ type
 
 
   TJclWideStrHashSet = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrEqualityComparer,
     IJclWideStrCollection, IJclWideStrSet)
   private
     FMap: IJclWideStrMap;
@@ -874,9 +876,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AInterface);
-    if Result then
-      FMap.PutValue(AInterface, RefUnique);
+  Result := not FMap.ContainsKey(AInterface);
+  if Result then
+    FMap.PutValue(AInterface, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -892,13 +894,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -931,13 +933,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -959,20 +961,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1061,14 +1063,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1084,14 +1086,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1177,9 +1179,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AString);
-    if Result then
-      FMap.PutValue(AString, RefUnique);
+  Result := not FMap.ContainsKey(AString);
+  if Result then
+    FMap.PutValue(AString, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1195,13 +1197,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1234,13 +1236,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1262,20 +1264,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1374,14 +1376,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1397,14 +1399,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1500,9 +1502,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AString);
-    if Result then
-      FMap.PutValue(AString, RefUnique);
+  Result := not FMap.ContainsKey(AString);
+  if Result then
+    FMap.PutValue(AString, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1518,13 +1520,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1557,13 +1559,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1585,20 +1587,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1699,14 +1701,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1722,14 +1724,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1825,9 +1827,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1843,13 +1845,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1882,13 +1884,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1910,20 +1912,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2017,14 +2019,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2040,14 +2042,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2138,9 +2140,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2156,13 +2158,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2195,13 +2197,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2223,20 +2225,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2330,14 +2332,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2353,14 +2355,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2451,9 +2453,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2469,13 +2471,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2508,13 +2510,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2536,20 +2538,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2645,14 +2647,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2668,14 +2670,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2766,9 +2768,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2784,13 +2786,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2823,13 +2825,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2851,20 +2853,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2956,14 +2958,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2979,14 +2981,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3073,9 +3075,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3091,13 +3093,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3130,13 +3132,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3158,20 +3160,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3263,14 +3265,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3286,14 +3288,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3380,9 +3382,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3398,13 +3400,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3437,13 +3439,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3465,20 +3467,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3570,14 +3572,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3593,14 +3595,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3688,9 +3690,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AValue);
-    if Result then
-      FMap.PutValue(AValue, RefUnique);
+  Result := not FMap.ContainsKey(AValue);
+  if Result then
+    FMap.PutValue(AValue, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3706,13 +3708,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3745,13 +3747,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3773,20 +3775,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3878,14 +3880,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3901,14 +3903,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3996,9 +3998,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := not FMap.ContainsKey(AObject);
-    if Result then
-      FMap.PutValue(AObject, RefUnique);
+  Result := not FMap.ContainsKey(AObject);
+  if Result then
+    FMap.PutValue(AObject, RefUnique);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4014,13 +4016,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4053,13 +4055,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := FMap.ContainsKey(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := FMap.ContainsKey(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4081,20 +4083,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FMap.Size <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ItemsEqual(ItMap.Next, It.Next) then
+    begin
+      Result := False;
       Exit;
-    if FMap.Size <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ItemsEqual(ItMap.Next, It.Next) then
-      begin
-        Result := False;
-        Exit;
-      end;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4194,14 +4196,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ARefUnique := RefUnique;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ARefUnique := RefUnique;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := (FMap.Remove(It.Next) = ARefUnique) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4217,14 +4219,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    ItMap := FMap.KeySet.First;
-    while ItMap.HasNext do
-      if not ACollection.Contains(ItMap.Next) then
-        ItMap.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  ItMap := FMap.KeySet.First;
+  while ItMap.HasNext do
+    if not ACollection.Contains(ItMap.Next) then
+      ItMap.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4711,4 +4713,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

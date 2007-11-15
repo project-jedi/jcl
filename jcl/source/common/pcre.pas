@@ -63,9 +63,9 @@ const
   {$EXTERNALSYM MAX_PATTERN_LENGTH}
   MAX_QUANTIFY_REPEAT = $10000;
   {$EXTERNALSYM MAX_QUANTIFY_REPEAT}
-  MAX_CAPTURE_COUNT = $FFFF;
+  MAX_CAPTURE_COUNT  = $FFFF;
   {$EXTERNALSYM MAX_CAPTURE_COUNT}
-  MAX_NESTING_DEPTH = 200;
+  MAX_NESTING_DEPTH  = 200;
   {$EXTERNALSYM MAX_NESTING_DEPTH}
 
 const
@@ -849,10 +849,11 @@ begin
   {$ELSE ~PCRE_STATICLINK}
   if not Assigned(pcre_malloc_func) then
     LoadPCRE;
-  
+
   if Assigned(pcre_malloc_func) then
     pcre_malloc_func^ := Value
-  else if Assigned(LibNotLoadedHandler) then
+  else
+  if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -895,7 +896,8 @@ begin
 
   if Assigned(pcre_free_func) then
     pcre_free_func^ := Value
-  else if Assigned(LibNotLoadedHandler) then
+  else
+  if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -915,7 +917,7 @@ begin
       LibNotLoadedHandler;
   end
   else
-    Result := pcre_free_func^
+    Result := pcre_free_func^;
   {$ENDIF ~PCRE_STATICLINK}
 end;
 
@@ -938,7 +940,8 @@ begin
 
   if Assigned(pcre_stack_malloc_func) then
     pcre_stack_malloc_func^ := Value
-  else if Assigned(LibNotLoadedHandler) then
+  else
+  if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -981,7 +984,8 @@ begin
 
   if Assigned(pcre_stack_free_func) then
     pcre_stack_free_func^ := Value
-  else if Assigned(LibNotLoadedHandler) then
+  else
+  if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -1024,7 +1028,8 @@ begin
 
   if Assigned(pcre_callout_func) then
     pcre_callout_func^ := Value
-  else if Assigned(LibNotLoadedHandler) then
+  else
+  if Assigned(LibNotLoadedHandler) then
     LibNotLoadedHandler;
   {$ENDIF ~PCRE_STATICLINK}
 end;
@@ -1202,4 +1207,3 @@ function pcre_version; external libpcremodulename name PCREVersionExportName;
 {$ENDIF PCRE_LINKDLL}
 
 end.
-

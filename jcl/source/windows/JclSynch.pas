@@ -144,7 +144,8 @@ type
 
   TJclEvent = class(TJclDispatcherObject)
   public
-    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Manual, Signaled: Boolean; const Name: string);
+    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Manual, Signaled: Boolean;
+      const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Pulse: Boolean;
     function ResetEvent: Boolean;
@@ -160,13 +161,15 @@ type
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Cancel: Boolean;
     function SetTimer(const DueTime: Int64; Period: Longint; Resume: Boolean): Boolean;
-    function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
+    function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine;
+      Arg: Pointer): Boolean;
   end;
   {$ENDIF ~CLR}
 
   TJclSemaphore = class(TJclDispatcherObject)
   public
-    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Initial, Maximum: Longint; const Name: string);
+    constructor Create({$IFNDEF CLR}SecAttr: PSecurityAttributes;{$ENDIF} Initial, Maximum: Longint;
+      const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
     function Release(ReleaseCount: Longint): Boolean;
     function ReleasePrev(ReleaseCount: Longint; var PrevCount: Longint): Boolean;
@@ -415,83 +418,83 @@ end;
 
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
-        ADD     EAX, EDX
+         MOV     ECX, EAX
+         MOV     EAX, EDX
+         LOCK    XADD [ECX], EAX
+         ADD     EAX, EDX
 end;
 
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
 asm
-        XCHG    EAX, ECX
-        LOCK CMPXCHG [ECX], EDX
+         XCHG    EAX, ECX
+         LOCK    CMPXCHG [ECX], EDX
 end;
 
 function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer;
 asm
-        XCHG    EAX, ECX
-        LOCK CMPXCHG [ECX], EDX
+         XCHG    EAX, ECX
+         LOCK    CMPXCHG [ECX], EDX
 end;
 
 function LockedDec(var Target: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, -1
-        LOCK XADD [ECX], EAX
-        DEC     EAX
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         LOCK    XADD [ECX], EAX
+         DEC     EAX
 end;
 
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XCHG [ECX], EAX
+         MOV     ECX, EAX
+         MOV     EAX, EDX
+         LOCK    XCHG [ECX], EAX
 end;
 
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
+         MOV     ECX, EAX
+         MOV     EAX, EDX
+         LOCK    XADD [ECX], EAX
 end;
 
 function LockedExchangeDec(var Target: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, -1
-        LOCK XADD [ECX], EAX
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         LOCK    XADD [ECX], EAX
 end;
 
 function LockedExchangeInc(var Target: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, 1
-        LOCK XADD [ECX], EAX
+         MOV     ECX, EAX
+         MOV     EAX, 1
+         LOCK    XADD [ECX], EAX
 end;
 
 function LockedExchangeSub(var Target: Integer; Value: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        NEG     EDX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
+         MOV     ECX, EAX
+         NEG     EDX
+         MOV     EAX, EDX
+         LOCK    XADD [ECX], EAX
 end;
 
 function LockedInc(var Target: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        MOV     EAX, 1
-        LOCK XADD [ECX], EAX
-        INC     EAX
+         MOV     ECX, EAX
+         MOV     EAX, 1
+         LOCK    XADD [ECX], EAX
+         INC     EAX
 end;
 
 function LockedSub(var Target: Integer; Value: Integer): Integer;
 asm
-        MOV     ECX, EAX
-        NEG     EDX
-        MOV     EAX, EDX
-        LOCK XADD [ECX], EAX
-        ADD     EAX, EDX
+         MOV     ECX, EAX
+         NEG     EDX
+         MOV     EAX, EDX
+         LOCK    XADD [ECX], EAX
+         ADD     EAX, EDX
 end;
 
 {$ENDIF CLR}
@@ -964,7 +967,7 @@ begin
     if FSharedInfo^.ThreadId = ThreadId then
     begin
       // We already owned it, increase ownership count
-      Inc(FSharedInfo^.RecursionCount)
+      Inc(FSharedInfo^.RecursionCount);
     end
     else
     begin
@@ -1081,7 +1084,7 @@ end;
 procedure TJclMultiReadExclusiveWrite.BeginRead;
 var
   ThreadId: Longword;
-  Index: Integer;
+  Index:    Integer;
   MustWait: Boolean;
 begin
   MustWait := False;
@@ -1128,7 +1131,7 @@ end;
 procedure TJclMultiReadExclusiveWrite.BeginWrite;
 var
   ThreadId: Longword;
-  Index: Integer;
+  Index:    Integer;
   MustWait: Boolean;
 begin
   MustWait := False;
@@ -1210,7 +1213,7 @@ end;
 procedure TJclMultiReadExclusiveWrite.Release;
 var
   ThreadId: Longword;
-  Index: Integer;
+  Index:    Integer;
   WasReading: Boolean;
 begin
   ThreadId := GetCurrentThreadId;
@@ -1276,17 +1279,17 @@ begin
   end;
   case ToRelease of
     mpReaders:
-      begin
-        FState := FWaitingReaders;
-        FWaitingReaders := 0;
-        FSemReaders.Release(FState);
-      end;
+    begin
+      FState := FWaitingReaders;
+      FWaitingReaders := 0;
+      FSemReaders.Release(FState);
+    end;
     mpWriters:
-      begin
-        FState := -1;
-        Dec(FWaitingWriters);
-        FSemWriters.Release(1);
-      end;
+    begin
+      FState := -1;
+      Dec(FWaitingWriters);
+      FSemWriters.Release(1);
+    end;
     mpEqual:
       // no waiters
   end;
@@ -1373,7 +1376,7 @@ begin
     FMetSect^.Event := Windows.CreateEvent(nil, False, False, nil)
   else
   begin
-    FullName :=  'JCL_MSECT_EVT_' + Name;
+    FullName := 'JCL_MSECT_EVT_' + Name;
     if OpenOnly then
       FMetSect^.Event := Windows.OpenEvent(0, False, PChar(FullName))
     else
@@ -1390,14 +1393,16 @@ var
 begin
   Result := False;
   if Name = '' then
-    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
+    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+      0, SizeOf(TMetSectSharedInfo), nil)
   else
   begin
     FullName := 'JCL_MSECT_MMF_' + Name;
     if OpenOnly then
       FMetSect^.FileMap := Windows.OpenFileMapping(0, False, PChar(FullName))
     else
-      FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
+      FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+        0, SizeOf(TMetSectSharedInfo), PChar(FullName));
   end;
   if FMetSect^.FileMap <> 0 then
   begin
@@ -1406,7 +1411,8 @@ begin
     if FMetSect^.SharedInfo <> nil then
     begin
       if LastError = ERROR_ALREADY_EXISTS then
-        while not FMetSect^.SharedInfo^.Initialized do Sleep(0)
+        while not FMetSect^.SharedInfo^.Initialized do
+          Sleep(0)
       else
       begin
         FMetSect^.SharedInfo^.SpinLock := 0;
@@ -1507,8 +1513,8 @@ end;
 { TODO: RTLD version }
 
 type
- TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
-     Len: Longint; ResLen: PLongint): Longint; stdcall;
+  TNtQueryProc = function(Handle: THandle; InfoClass: Byte; Info: Pointer;
+    Len: Longint; ResLen: PLongint): Longint; stdcall;
 
 var
   _QueryEvent: TNtQueryProc = nil;

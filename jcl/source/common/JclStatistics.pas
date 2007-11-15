@@ -208,7 +208,7 @@ begin
   if not ((R = 0) or (R = N)) then
   begin
     if R > N div 2 then
-    R := N - R;
+      R := N - R;
     K := 2;
     try
       for I := N - R + 1 to N do
@@ -254,7 +254,7 @@ end;
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
   I, N: Integer;
-  Max: Float;
+  Max:  Float;
 begin
   Result := 0;
   N := GetDynLengthNotNull(B);
@@ -294,7 +294,7 @@ begin
   // We need to sort the values first
   SortedList := Copy(X);
   // type cast to Pointer for the sake of FPC
-  SortDynArray(Pointer(SortedList), SizeOf(Float),DynArrayCompareFloat);
+  SortDynArray(Pointer(SortedList), SizeOf(Float), DynArrayCompareFloat);
 
   // and call the median function afterwards
   Result := Median(SortedList);
@@ -315,7 +315,7 @@ end;
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 var
   I, N: Integer;
-  Min: Float;
+  Min:  Float;
 begin
   Result := 0;
   N := GetDynLengthNotNull(B);
@@ -330,7 +330,7 @@ end;
 
 function Permutation(N, R: Cardinal): Float;
 var
-  I : Integer;
+  I: Integer;
 begin
   if (N = 0) or (R > N) or (N > MaxFactorial) then
   begin
@@ -353,16 +353,16 @@ function Combinations(N, R: Cardinal): Float;
 begin
   Result := Factorial(R);
   if IsFloatZero(Result) then
-   Result := -1.0
+    Result := -1.0
   else
-   Result := Permutation(N, R) / Result;
+    Result := Permutation(N, R) / Result;
 end;
 
 { TODO -cDoc : donator: Fred Hovey, contributor: Robert Rossmair }
 function SumOfSquares(const X: TDynFloatArray): Float;
 var
   I, N: Integer;
-  Sum: Float;
+  Sum:  Float;
 begin
   N := GetSampleSize(X);
   Result := Sqr(X[0]);
@@ -405,7 +405,7 @@ var
   N: Integer;
 begin
   N := GetSampleSize(X, 2);
-  Result := SumOfSquares(X) / (N - 1)
+  Result := SumOfSquares(X) / (N - 1);
 end;
 
 { TODO -cDoc : Contributors: Fred Hovey, Robert Rossmair }
@@ -426,7 +426,7 @@ begin
   if N < 2 then
     InvalidSampleSize(N);
   //Variance := (SumSq / (N - 1)) - Sqr(Sum / (N - 1)) => WRONG!!!!
-  Variance := (SumSq - Sum * Sum / N) / (N - 1)
+  Variance := (SumSq - Sum * Sum / N) / (N - 1);
 end;
 
 { TODO -cDoc : Donator: Fred Hovey, contributor: Robert Rossmair }
@@ -504,7 +504,7 @@ end;
 function ChiSquare(const X: TDynFloatArray): Float;  { TODO -cDoc : ChiSquare }
 var
   I, N: Integer;
-  Sum: Float;
+  Sum:  Float;
 begin
   N := GetDynLengthNotNull(X);
   Result := Sqr(X[0]);

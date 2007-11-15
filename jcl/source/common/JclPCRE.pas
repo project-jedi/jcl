@@ -54,11 +54,11 @@ uses
   Classes, SysUtils, JclBase;
 
 const
-  JCL_PCRE_CALLOUT_NOERROR      = 0;
+  JCL_PCRE_CALLOUT_NOERROR = 0;
   JCL_PCRE_CALLOUT_FAILCONTINUE = 1;
 
-  JCL_PCRE_ERROR_CALLOUTERROR   = -998;
-  JCL_PCRE_ERROR_STUDYFAILED    = -999;
+  JCL_PCRE_ERROR_CALLOUTERROR = -998;
+  JCL_PCRE_ERROR_STUDYFAILED  = -999;
 
 type
   TJclAnsiRegEx = class;
@@ -85,7 +85,7 @@ type
     LastPos: Integer;
   end;
 
-  TJclAnsiRegExCallout = procedure (Sender: TJclAnsiRegEx;
+  TJclAnsiRegExCallout = procedure(Sender: TJclAnsiRegEx;
     Index, MatchStart, SubjectPos, LastCapture, PatternPos, NextItemLength: Integer;
     var ErrorCode: Integer) of object;
   TPCRECalloutIndex = 0 .. 255;
@@ -194,7 +194,7 @@ end;
 
 function JclPCRECallout(var callout_block: pcre_callout_block): Integer; {$IFDEF PCRE_EXPORT_CDECL} cdecl; {$ENDIF PCRE_EXPORT_CDECL}
 begin
-   Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
+  Result := TJclAnsiRegEx(callout_block.callout_data).CalloutHandler(callout_block);
 end;
 
 function PCRECheck(Value: Integer): Boolean;
@@ -202,7 +202,8 @@ var
   PErr: PResStringRec;
 begin
   Result := Value >= 0;
-  if Result then Exit;
+  if Result then
+    Exit;
 
   case Value of
     PCRE_ERROR_NOMATCH:
@@ -278,7 +279,7 @@ function TJclAnsiRegEx.Compile(const Pattern: AnsiString; Study: Boolean;
   UserLocale: Boolean = False): Boolean;
 var
   ErrMsgPtr: PChar;
-  Tables: PChar;
+  Tables:    PChar;
 begin
   if UserLocale then
   begin
@@ -292,7 +293,8 @@ begin
   if FPattern = '' then
     raise EPCREError.CreateRes(@RsErrNull, PCRE_ERROR_NULL);
 
-  if Assigned(FCode) then CallPCREFree(FCode);
+  if Assigned(FCode) then
+    CallPCREFree(FCode);
   FCode := pcre_compile2(PChar(FPattern), GetAPIOptions(False),
     @FErrorCode, @ErrMsgPtr, @FErrorOffset, Tables);
   Inc(FErrorOffset);
@@ -302,7 +304,8 @@ begin
   begin
     if Study then
     begin
-      if Assigned(FExtra) then CallPCREFree(FExtra);
+      if Assigned(FExtra) then
+        CallPCREFree(FExtra);
       FExtra := pcre_study(FCode, 0, @ErrMsgPtr);
       Result := Assigned(FExtra) or (not Assigned(ErrMsgPtr));
       if not Result then
@@ -331,15 +334,15 @@ const
     roPartial, roDfaShortest, roDfaRestart, roDfaFirstLine, roDupNames,
     roNewLineCR, roNewLineLF, roNewLineCRLF, roNewLineAny }
   cDesignOptions: array [TJclAnsiRegExOption] of Integer =
-   (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
+    (PCRE_CASELESS, PCRE_MULTILINE, PCRE_DOTALL, PCRE_EXTENDED, PCRE_ANCHORED,
     PCRE_DOLLAR_ENDONLY, PCRE_EXTRA, 0, 0, PCRE_UNGREEDY, 0, PCRE_UTF8,
     PCRE_NO_AUTO_CAPTURE, PCRE_NO_UTF8_CHECK, PCRE_AUTO_CALLOUT, 0, 0, 0, 0,
     PCRE_DUPNAMES, PCRE_NEWLINE_CR, PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF,
     PCRE_NEWLINE_ANY);
   cRunOptions: array [TJclAnsiRegExOption] of Integer =
-   (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
-   PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
-   PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
+    (0, 0, 0, 0, 0, 0, 0, PCRE_NOTBOL, PCRE_NOTEOL, 0, PCRE_NOTEMPTY, 0, 0,
+    PCRE_NO_UTF8_CHECK, 0, PCRE_PARTIAL, 0, 0, 0, 0, PCRE_NEWLINE_CR,
+    PCRE_NEWLINE_LF, PCRE_NEWLINE_CRLF, PCRE_NEWLINE_ANY);
 var
   I: TJclAnsiRegExOption;
 begin
@@ -371,11 +374,11 @@ begin
     begin
       CaptureIndex := Integer(FChangedCaptures[Index]);
       Range := GetCaptureRange(CaptureIndex);
-      
+
       Result := Result +
-        Copy(FSubject, Pos, Range.FirstPos - Pos) + 
+        Copy(FSubject, Pos, Range.FirstPos - Pos) +
         FResultValues[CaptureIndex];
-        
+
       Pos := Range.LastPos + 1;
     end;
     if Pos <= Length(FSubject) then
@@ -417,7 +420,7 @@ begin
     begin
       if not Assigned(FChangedCaptures) then
         FChangedCaptures := TList.Create;
-        
+
       // Always resize to the max length to avoid repeated allocations.
       FChangedCaptures.Capacity := FCaptureCount;
       SetLength(FResultValues, FCaptureCount);
@@ -502,9 +505,9 @@ end;
 function TJclAnsiRegEx.Match(const Subject: AnsiString; StartOffset: Cardinal = 1): Boolean;
 var
   LocalExtra: real_pcre_extra;
-  Extra: Pointer;
-  WorkSpace: array [0 .. 19] of Integer;
-  ExecRslt: Integer;
+  Extra:      Pointer;
+  WorkSpace:  array [0 .. 19] of Integer;
+  ExecRslt:   Integer;
 begin
   if Assigned(FOnCallout) then
   begin
@@ -584,11 +587,14 @@ function StrReplaceRegEx(const Subject, Pattern: AnsiString; Args: array of cons
   begin
     // TODO: Any other type?
     case TVarRec(Args[Index]).VType of
-      vtString: Result := TVarRec(Args[Index]).VString^;
-      vtPChar: Result := TVarRec(Args[Index]).VPChar;
-      vtAnsiString: Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
-      else
-        raise EConvertError.Create(SInvalidFormat);
+      vtString:
+        Result := TVarRec(Args[Index]).VString^;
+      vtPChar:
+        Result := TVarRec(Args[Index]).VPChar;
+      vtAnsiString:
+        Result := AnsiString(TVarRec(Args[Index]).VAnsiString);
+    else
+      raise EConvertError.Create(SInvalidFormat);
     end;
   end;
 
@@ -658,4 +664,3 @@ finalization
   UnloadPCRE;
 
 end.
-

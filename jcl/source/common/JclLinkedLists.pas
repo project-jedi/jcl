@@ -113,7 +113,8 @@ type
   end;
 
   TJclAnsiStrLinkedList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrCollection, IJclAnsiStrList)
   private
     FStart: TJclAnsiStrLinkedListItem;
@@ -163,7 +164,8 @@ type
   end;
 
   TJclWideStrLinkedList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
     IJclWideStrCollection, IJclWideStrList)
   private
     FStart: TJclWideStrLinkedListItem;
@@ -821,10 +823,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -838,10 +840,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -857,38 +859,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AInterface, nil);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AInterface, nil);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AInterface);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AInterface);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AInterface);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclIntfLinkedListItem.Create;
-          NewCursor.Value := AInterface;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AInterface);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclIntfLinkedListItem.Create;
+        NewCursor.Value := AInterface;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -922,14 +924,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -949,14 +951,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -978,19 +980,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := nil;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := nil;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1004,9 +1006,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := nil;
-    FCursor.Value := AInterface;
+  CheckValid;
+  FCursor.Value := nil;
+  FCursor.Value := AInterface;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1098,10 +1100,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1115,10 +1117,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1134,38 +1136,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, '');
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, '');
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AString);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AString);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AString);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclAnsiStrLinkedListItem.Create;
-          NewCursor.Value := AString;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AString);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclAnsiStrLinkedListItem.Create;
+        NewCursor.Value := AString;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1199,14 +1201,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := '';
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1226,14 +1228,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := '';
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1255,19 +1257,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := '';
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := '';
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1281,9 +1283,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := '';
-    FCursor.Value := AString;
+  CheckValid;
+  FCursor.Value := '';
+  FCursor.Value := AString;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1375,10 +1377,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1392,10 +1394,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1411,38 +1413,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, '');
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AString, '');
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AString);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AString);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AString);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclWideStrLinkedListItem.Create;
-          NewCursor.Value := AString;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AString);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclWideStrLinkedListItem.Create;
+        NewCursor.Value := AString;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1476,14 +1478,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := '';
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1503,14 +1505,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := '';
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := '';
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1532,19 +1534,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := '';
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := '';
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1558,9 +1560,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := '';
-    FCursor.Value := AString;
+  CheckValid;
+  FCursor.Value := '';
+  FCursor.Value := AString;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1652,10 +1654,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1669,10 +1671,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1688,38 +1690,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclSingleLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclSingleLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1753,14 +1755,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1780,14 +1782,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1809,19 +1811,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0.0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0.0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1835,9 +1837,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0.0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0.0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1929,10 +1931,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1946,10 +1948,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1965,38 +1967,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclDoubleLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclDoubleLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2030,14 +2032,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2057,14 +2059,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2086,19 +2088,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0.0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0.0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2112,9 +2114,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0.0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0.0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2206,10 +2208,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2223,10 +2225,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2242,38 +2244,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0.0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclExtendedLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclExtendedLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2307,14 +2309,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2334,14 +2336,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0.0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0.0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2363,19 +2365,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0.0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0.0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2389,9 +2391,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0.0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0.0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2483,10 +2485,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2500,10 +2502,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2519,38 +2521,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclIntegerLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclIntegerLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2584,14 +2586,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2611,14 +2613,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2640,19 +2642,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2666,9 +2668,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2760,10 +2762,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2777,10 +2779,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2796,38 +2798,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclCardinalLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclCardinalLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2861,14 +2863,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2888,14 +2890,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2917,19 +2919,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2943,9 +2945,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3037,10 +3039,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3054,10 +3056,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3073,38 +3075,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, 0);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclInt64LinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclInt64LinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3138,14 +3140,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3165,14 +3167,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := 0;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := 0;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3194,19 +3196,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := 0;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := 0;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3220,9 +3222,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := 0;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := 0;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3315,10 +3317,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3332,10 +3334,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3351,38 +3353,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, nil);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AValue, nil);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AValue);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AValue);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AValue);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclPtrLinkedListItem.Create;
-          NewCursor.Value := AValue;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AValue);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclPtrLinkedListItem.Create;
+        NewCursor.Value := AValue;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3416,14 +3418,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3443,14 +3445,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3472,19 +3474,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      FCursor.Value := nil;
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    FCursor.Value := nil;
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3498,9 +3500,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    FCursor.Value := nil;
-    FCursor.Value := AValue;
+  CheckValid;
+  FCursor.Value := nil;
+  FCursor.Value := AValue;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3593,10 +3595,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3610,10 +3612,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := (FCursor <> nil) and (FCursor.Next <> nil)
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := (FCursor <> nil) and (FCursor.Next <> nil)
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3629,38 +3631,38 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := FCursor <> nil;
+  CheckValid;
+  Result := FCursor <> nil;
+  if Result then
+  begin
+    Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AObject, nil);
     if Result then
     begin
-      Result := FOwnList.AllowDefaultElements or not FEqualityComparer.ItemsEqual(AObject, nil);
-      if Result then
-      begin
-        case FOwnList.Duplicates of
-          dupIgnore:
-            Result := not FOwnList.Contains(AObject);
-          dupAccept:
-            Result := True;
-          dupError:
-            begin
-              Result := FOwnList.Contains(AObject);
-              if not Result then
-                raise EJclDuplicateElementError.Create;
-            end;
-        end;
-        if Result then
+      case FOwnList.Duplicates of
+        dupIgnore:
+          Result := not FOwnList.Contains(AObject);
+        dupAccept:
+          Result := True;
+        dupError:
         begin
-          NewCursor := TJclLinkedListItem.Create;
-          NewCursor.Value := AObject;
-          NewCursor.Next := FCursor;
-          NewCursor.Previous := FCursor.Previous;
-          if FCursor.Previous <> nil then
-            FCursor.Previous.Next := NewCursor;
-          FCursor.Previous := NewCursor;
-          FCursor := NewCursor;
+          Result := FOwnList.Contains(AObject);
+          if not Result then
+            raise EJclDuplicateElementError.Create;
         end;
       end;
+      if Result then
+      begin
+        NewCursor := TJclLinkedListItem.Create;
+        NewCursor.Value := AObject;
+        NewCursor.Next := FCursor;
+        NewCursor.Previous := FCursor.Previous;
+        if FCursor.Previous <> nil then
+          FCursor.Previous.Next := NewCursor;
+        FCursor.Previous := NewCursor;
+        FCursor := NewCursor;
+      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3694,14 +3696,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Next
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Next
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3721,14 +3723,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid and (FCursor <> nil) then
-      FCursor := FCursor.Previous
-    else
-      Valid := True;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-      Result := nil;
+  if Valid and (FCursor <> nil) then
+    FCursor := FCursor.Previous
+  else
+    Valid := True;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+    Result := nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3750,19 +3752,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    if FCursor <> nil then
-    begin
-      (FownList as IJclObjectOwner).FreeObject(FCursor.Value);
-      if FCursor.Next <> nil then
-        FCursor.Next.Previous := FCursor.Previous;
-      if FCursor.Previous <> nil then
-        FCursor.Previous.Next := FCursor.Next;
-      OldCursor := FCursor;
-      FCursor := FCursor.Next;
-      OldCursor.Free;
-    end;
+  CheckValid;
+  Valid := False;
+  if FCursor <> nil then
+  begin
+    (FownList as IJclObjectOwner).FreeObject(FCursor.Value);
+    if FCursor.Next <> nil then
+      FCursor.Next.Previous := FCursor.Previous;
+    if FCursor.Previous <> nil then
+      FCursor.Previous.Next := FCursor.Next;
+    OldCursor := FCursor;
+    FCursor := FCursor.Next;
+    OldCursor.Free;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3776,9 +3778,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    (FownList as IJclObjectOwner).FreeObject(FCursor.Value);
-    FCursor.Value := AObject;
+  CheckValid;
+  (FownList as IJclObjectOwner).FreeObject(FCursor.Value);
+  FCursor.Value := AObject;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4093,41 +4095,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AInterface, NewItem.Value) then
         begin
-          if ItemsEqual(AInterface, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclIntfLinkedListItem.Create;
-        NewItem.Value := AInterface;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclIntfLinkedListItem.Create;
+      NewItem.Value := AInterface;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4146,51 +4148,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclIntfLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclIntfLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4218,19 +4220,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeObject(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeObject(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4246,17 +4248,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AInterface) then
     begin
-      if ItemsEqual(Current.Value, AInterface) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4272,13 +4274,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4300,33 +4302,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) and (Index < FSize) then
+  Result := nil;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeObject(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeObject(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4342,20 +4344,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4383,18 +4385,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4410,15 +4412,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AInterface) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AInterface) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4434,66 +4436,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AInterface, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclIntfLinkedListItem.Create;
+      NewItem.Value := AInterface;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AInterface, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclIntfLinkedListItem.Create;
-        NewItem.Value := AInterface;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4512,52 +4514,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclIntfLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclIntfLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclIntfLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -4583,62 +4629,18 @@ begin
           begin
             NewItem := TJclIntfLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclIntfLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4664,19 +4666,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AInterface) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AInterface) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4692,29 +4694,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AInterface) then
     begin
-      if ItemsEqual(Current.Value, AInterface) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeObject(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeObject(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4730,12 +4732,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4751,14 +4753,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4775,40 +4777,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AInterface, Current.Value) then
         begin
-          if ItemsEqual(AInterface, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeObject(Current.Value);
-            Current.Value := AInterface;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeObject(Current.Value);
+          Current.Value := AInterface;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4829,19 +4831,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclIntfList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclIntfList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4875,41 +4877,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AString, NewItem.Value) then
         begin
-          if ItemsEqual(AString, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclAnsiStrLinkedListItem.Create;
-        NewItem.Value := AString;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclAnsiStrLinkedListItem.Create;
+      NewItem.Value := AString;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4928,51 +4930,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclAnsiStrLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclAnsiStrLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5000,19 +5002,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeString(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeString(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5028,17 +5030,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AString) then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5054,13 +5056,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5082,33 +5084,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) and (Index < FSize) then
+  Result := '';
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeString(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeString(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5124,20 +5126,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5165,18 +5167,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5192,15 +5194,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5216,66 +5218,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AString, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclAnsiStrLinkedListItem.Create;
+      NewItem.Value := AString;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AString, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclAnsiStrLinkedListItem.Create;
-        NewItem.Value := AString;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5294,52 +5296,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclAnsiStrLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclAnsiStrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclAnsiStrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -5365,62 +5411,18 @@ begin
           begin
             NewItem := TJclAnsiStrLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclAnsiStrLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5446,19 +5448,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5474,29 +5476,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AString) then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeString(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeString(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5512,12 +5514,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5533,14 +5535,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5557,40 +5559,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AString, Current.Value) then
         begin
-          if ItemsEqual(AString, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeString(Current.Value);
-            Current.Value := AString;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeString(Current.Value);
+          Current.Value := AString;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5611,19 +5613,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclAnsiStrList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclAnsiStrList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5657,41 +5659,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AString, NewItem.Value) then
         begin
-          if ItemsEqual(AString, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclWideStrLinkedListItem.Create;
-        NewItem.Value := AString;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclWideStrLinkedListItem.Create;
+      NewItem.Value := AString;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5710,51 +5712,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclWideStrLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclWideStrLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5782,19 +5784,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeString(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeString(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5810,17 +5812,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AString) then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5836,13 +5838,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5864,33 +5866,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) and (Index < FSize) then
+  Result := '';
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeString(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeString(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5906,20 +5908,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5947,18 +5949,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5974,15 +5976,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5998,66 +6000,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AString, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclWideStrLinkedListItem.Create;
+      NewItem.Value := AString;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AString, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclWideStrLinkedListItem.Create;
-        NewItem.Value := AString;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6076,52 +6078,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclWideStrLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclWideStrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclWideStrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -6147,62 +6193,18 @@ begin
           begin
             NewItem := TJclWideStrLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclWideStrLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6228,19 +6230,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AString) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6256,29 +6258,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AString) then
     begin
-      if ItemsEqual(Current.Value, AString) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeString(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeString(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6294,12 +6296,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6315,14 +6317,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6339,40 +6341,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AString, Current.Value) then
         begin
-          if ItemsEqual(AString, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeString(Current.Value);
-            Current.Value := AString;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeString(Current.Value);
+          Current.Value := AString;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6393,19 +6395,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclWideStrList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclWideStrList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6439,41 +6441,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclSingleLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclSingleLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6492,51 +6494,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclSingleLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclSingleLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6564,19 +6566,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeSingle(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeSingle(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6592,17 +6594,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6618,13 +6620,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6646,33 +6648,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0.0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeSingle(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeSingle(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6688,20 +6690,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6729,18 +6731,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6756,15 +6758,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6780,66 +6782,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclSingleLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclSingleLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6858,52 +6860,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclSingleLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclSingleLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclSingleLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -6929,62 +6975,18 @@ begin
           begin
             NewItem := TJclSingleLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclSingleLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7010,19 +7012,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7038,29 +7040,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeSingle(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeSingle(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7076,12 +7078,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7097,14 +7099,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7121,40 +7123,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeSingle(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeSingle(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7175,19 +7177,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclSingleList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclSingleList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7221,41 +7223,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclDoubleLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclDoubleLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7274,51 +7276,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclDoubleLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclDoubleLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7346,19 +7348,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeDouble(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeDouble(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7374,17 +7376,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7400,13 +7402,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7428,33 +7430,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0.0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeDouble(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeDouble(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7470,20 +7472,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7511,18 +7513,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7538,15 +7540,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7562,66 +7564,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclDoubleLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclDoubleLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7640,52 +7642,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclDoubleLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclDoubleLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclDoubleLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -7711,62 +7757,18 @@ begin
           begin
             NewItem := TJclDoubleLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclDoubleLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7792,19 +7794,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7820,29 +7822,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeDouble(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeDouble(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7858,12 +7860,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7879,14 +7881,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7903,40 +7905,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeDouble(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeDouble(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7957,19 +7959,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclDoubleList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclDoubleList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8003,41 +8005,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclExtendedLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclExtendedLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8056,51 +8058,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclExtendedLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclExtendedLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8128,19 +8130,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeExtended(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeExtended(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8156,17 +8158,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8182,13 +8184,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8210,33 +8212,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0.0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeExtended(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeExtended(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8252,20 +8254,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8293,18 +8295,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8320,15 +8322,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8344,66 +8346,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclExtendedLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclExtendedLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8422,52 +8424,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclExtendedLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclExtendedLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclExtendedLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -8493,62 +8539,18 @@ begin
           begin
             NewItem := TJclExtendedLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclExtendedLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8574,19 +8576,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8602,29 +8604,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeExtended(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeExtended(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8640,12 +8642,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8661,14 +8663,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8685,40 +8687,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeExtended(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeExtended(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8739,19 +8741,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclExtendedList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclExtendedList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8785,41 +8787,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclIntegerLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclIntegerLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8838,51 +8840,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclIntegerLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclIntegerLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8910,19 +8912,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeInteger(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeInteger(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8938,17 +8940,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8964,13 +8966,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8992,33 +8994,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeInteger(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeInteger(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9034,20 +9036,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9075,18 +9077,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9102,15 +9104,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9126,66 +9128,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclIntegerLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclIntegerLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9204,52 +9206,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclIntegerLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclIntegerLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclIntegerLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -9275,62 +9321,18 @@ begin
           begin
             NewItem := TJclIntegerLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclIntegerLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9356,19 +9358,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9384,29 +9386,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeInteger(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeInteger(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9422,12 +9424,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9443,14 +9445,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9467,40 +9469,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeInteger(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeInteger(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9521,19 +9523,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclIntegerList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclIntegerList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9567,41 +9569,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclCardinalLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclCardinalLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9620,51 +9622,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclCardinalLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclCardinalLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9692,19 +9694,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeCardinal(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeCardinal(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9720,17 +9722,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9746,13 +9748,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9774,33 +9776,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeCardinal(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeCardinal(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9816,20 +9818,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9857,18 +9859,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9884,15 +9886,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9908,66 +9910,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclCardinalLinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclCardinalLinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9986,52 +9988,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclCardinalLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclCardinalLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclCardinalLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -10057,62 +10103,18 @@ begin
           begin
             NewItem := TJclCardinalLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclCardinalLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10138,19 +10140,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10166,29 +10168,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeCardinal(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeCardinal(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10204,12 +10206,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10225,14 +10227,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10249,40 +10251,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeCardinal(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeCardinal(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10303,19 +10305,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclCardinalList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclCardinalList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10349,41 +10351,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AValue, NewItem.Value) then
         begin
-          if ItemsEqual(AValue, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclInt64LinkedListItem.Create;
-        NewItem.Value := AValue;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclInt64LinkedListItem.Create;
+      NewItem.Value := AValue;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10402,51 +10404,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclInt64LinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclInt64LinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10474,19 +10476,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeInt64(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeInt64(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10502,17 +10504,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10528,13 +10530,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10556,33 +10558,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) and (Index < FSize) then
+  Result := 0;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeInt64(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeInt64(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10598,20 +10600,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10639,18 +10641,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10666,15 +10668,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10690,66 +10692,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AValue, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclInt64LinkedListItem.Create;
+      NewItem.Value := AValue;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclInt64LinkedListItem.Create;
-        NewItem.Value := AValue;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10768,52 +10770,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclInt64LinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclInt64LinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclInt64LinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -10839,62 +10885,18 @@ begin
           begin
             NewItem := TJclInt64LinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclInt64LinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10920,19 +10922,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AValue) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10948,29 +10950,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AValue) then
     begin
-      if ItemsEqual(Current.Value, AValue) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeInt64(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeInt64(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10986,12 +10988,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11007,14 +11009,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11031,40 +11033,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AValue, Current.Value) then
         begin
-          if ItemsEqual(AValue, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeInt64(Current.Value);
-            Current.Value := AValue;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeInt64(Current.Value);
+          Current.Value := AValue;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11085,19 +11087,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclInt64List;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclInt64List;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11132,41 +11134,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(APtr, NewItem.Value) then
         begin
-          if ItemsEqual(APtr, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclPtrLinkedListItem.Create;
-        NewItem.Value := APtr;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclPtrLinkedListItem.Create;
+      NewItem.Value := APtr;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11185,51 +11187,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclPtrLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclPtrLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11257,19 +11259,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreePointer(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreePointer(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11285,17 +11287,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, APtr) then
     begin
-      if ItemsEqual(Current.Value, APtr) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11311,13 +11313,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11339,33 +11341,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) and (Index < FSize) then
+  Result := nil;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreePointer(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreePointer(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11381,20 +11383,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11422,18 +11424,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11449,15 +11451,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11473,66 +11475,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(APtr, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclPtrLinkedListItem.Create;
+      NewItem.Value := APtr;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(APtr, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclPtrLinkedListItem.Create;
-        NewItem.Value := APtr;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11551,52 +11553,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclPtrLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclPtrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclPtrLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -11622,62 +11668,18 @@ begin
           begin
             NewItem := TJclPtrLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclPtrLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11703,19 +11705,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, APtr) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11731,29 +11733,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, APtr) then
     begin
-      if ItemsEqual(Current.Value, APtr) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreePointer(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreePointer(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11769,12 +11771,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11790,14 +11792,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11814,40 +11816,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(APtr, Current.Value) then
         begin
-          if ItemsEqual(APtr, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreePointer(Current.Value);
-            Current.Value := APtr;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreePointer(Current.Value);
+          Current.Value := APtr;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11868,19 +11870,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclPtrList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclPtrList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11915,41 +11917,41 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
-    if Result then
+  Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := FStart;
+      while NewItem <> nil do
       begin
-        NewItem := FStart;
-        while NewItem <> nil do
+        if ItemsEqual(AObject, NewItem.Value) then
         begin
-          if ItemsEqual(AObject, NewItem.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-          NewItem := NewItem.Next;
+          Result := CheckDuplicate;
+          Break;
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclLinkedListItem.Create;
-        NewItem.Value := AObject;
-        if FStart <> nil then
-        begin
-          NewItem.Next := nil;
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-        end
-        else
-        begin
-          FStart := NewItem;
-          FEnd := NewItem;
-        end;
-        Inc(FSize);
+        NewItem := NewItem.Next;
       end;
     end;
+    if Result then
+    begin
+      NewItem := TJclLinkedListItem.Create;
+      NewItem.Value := AObject;
+      if FStart <> nil then
+      begin
+        NewItem.Next := nil;
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+      end
+      else
+      begin
+        FStart := NewItem;
+        FEnd := NewItem;
+      end;
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11968,51 +11970,51 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
     begin
-      Item := It.Next;
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-      if AddItem then
+      if FDuplicates <> dupAccept then
       begin
-        if FDuplicates <> dupAccept then
+        NewItem := FStart;
+        while NewItem <> nil do
         begin
-          NewItem := FStart;
-          while NewItem <> nil do
+          if ItemsEqual(Item, NewItem.Value) then
           begin
-            if ItemsEqual(Item, NewItem.Value) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
-            NewItem := NewItem.Next;
+            AddItem := CheckDuplicate;
+            Break;
           end;
-        end;
-        if AddItem then
-        begin
-          NewItem := TJclLinkedListItem.Create;
-          NewItem.Value := Item;
-          if FStart <> nil then
-          begin
-            NewItem.Next := nil;
-            NewItem.Previous := FEnd;
-            FEnd.Next := NewItem;
-            FEnd := NewItem;
-          end
-          else
-          begin
-            FStart := NewItem;
-            FEnd := NewItem;
-          end;
-          Inc(FSize);
+          NewItem := NewItem.Next;
         end;
       end;
-      Result := AddItem and Result;
+      if AddItem then
+      begin
+        NewItem := TJclLinkedListItem.Create;
+        NewItem.Value := Item;
+        if FStart <> nil then
+        begin
+          NewItem.Next := nil;
+          NewItem.Previous := FEnd;
+          FEnd.Next := NewItem;
+          FEnd := NewItem;
+        end
+        else
+        begin
+          FStart := NewItem;
+          FEnd := NewItem;
+        end;
+        Inc(FSize);
+      end;
     end;
+    Result := AddItem and Result;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12040,19 +12042,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    while Current <> nil do
-    begin
-      FreeObject(Current.Value);
-      Old := Current;
-      Current := Current.Next;
-      Old.Free;
-    end;
-    FSize := 0;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    FreeObject(Current.Value);
+    Old := Current;
+    Current := Current.Next;
+    Old.Free;
+  end;
+  FSize := 0;
 
     //Daniele Teti 27/12/2004
-    FStart := nil;
-    FEnd := nil;
+  FStart := nil;
+  FEnd := nil;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12068,17 +12070,17 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AObject) then
     begin
-      if ItemsEqual(Current.Value, AObject) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Current := Current.Next;
+      Result := True;
+      Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12094,13 +12096,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12122,33 +12124,33 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) and (Index < FSize) then
+  Result := nil;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Current := FStart;
+    while Current <> nil do
     begin
-      Current := FStart;
-      while Current <> nil do
+      if Index = 0 then
       begin
-        if Index = 0 then
-        begin
-          if Current.Previous <> nil then
-            Current.Previous.Next := Current.Next
-          else
-            FStart := Current.Next;
-          if Current.Next <> nil then
-            Current.Next.Previous := Current.Previous
-          else
-            FEnd := Current.Previous;
-          Result := FreeObject(Current.Value);
-          Current.Free;
-          Dec(FSize);
-          Break;
-        end;
-        Dec(Index);
-        Current := Current.Next;
+        if Current.Previous <> nil then
+          Current.Previous.Next := Current.Next
+        else
+          FStart := Current.Next;
+        if Current.Next <> nil then
+          Current.Next.Previous := Current.Previous
+        else
+          FEnd := Current.Previous;
+        Result := FreeObject(Current.Value);
+        Current.Free;
+        Dec(FSize);
+        Break;
       end;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+      Dec(Index);
+      Current := Current.Next;
+    end;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12164,20 +12166,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext and It.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext and It.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12205,18 +12207,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Current := FStart;
-    while (Current <> nil) and (Index > 0) do
-    begin
-      Current := Current.Next;
-      Dec(Index);
-    end;
-    if Current <> nil then
-      Result := Current.Value
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  Current := FStart;
+  while (Current <> nil) and (Index > 0) do
+  begin
+    Current := Current.Next;
+    Dec(Index);
+  end;
+  if Current <> nil then
+    Result := Current.Value
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12232,15 +12234,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Current := FStart;
-    Result := 0;
-    while (Current <> nil) and not ItemsEqual(Current.Value, AObject) do
-    begin
-      Inc(Result);
-      Current := Current.Next;
-    end;
-    if Current = nil then
-      Result := -1;
+  Current := FStart;
+  Result := 0;
+  while (Current <> nil) and not ItemsEqual(Current.Value, AObject) do
+  begin
+    Inc(Result);
+    Current := Current.Next;
+  end;
+  if Current = nil then
+    Result := -1;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12256,66 +12258,66 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if ItemsEqual(AObject, Current.Value) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+        Current := Current.Next;
+      end;
+    end;
     if Result then
     begin
-      if FDuplicates <> dupAccept then
+      NewItem := TJclLinkedListItem.Create;
+      NewItem.Value := AObject;
+      if Index = 0 then
+      begin
+        NewItem.Next := FStart;
+        if FStart <> nil then
+          FStart.Previous := NewItem;
+        FStart := NewItem;
+        if FSize = 0 then
+          FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
+      if Index = FSize then
+      begin
+        NewItem.Previous := FEnd;
+        FEnd.Next := NewItem;
+        FEnd := NewItem;
+        Inc(FSize);
+      end
+      else
       begin
         Current := FStart;
-        while Current <> nil do
+        while (Current <> nil) and (Index > 0) do
         begin
-          if ItemsEqual(AObject, Current.Value) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
           Current := Current.Next;
+          Dec(Index);
         end;
-      end;
-      if Result then
-      begin
-        NewItem := TJclLinkedListItem.Create;
-        NewItem.Value := AObject;
-        if Index = 0 then
+        if Current <> nil then
         begin
-          NewItem.Next := FStart;
-          if FStart <> nil then
-            FStart.Previous := NewItem;
-          FStart := NewItem;
-          if FSize = 0 then
-            FEnd := NewItem;
+          NewItem.Next := Current;
+          NewItem.Previous := Current.Previous;
+          if Current.Previous <> nil then
+            Current.Previous.Next := NewItem;
+          Current.Previous := NewItem;
           Inc(FSize);
-        end
-        else
-        if Index = FSize then
-        begin
-          NewItem.Previous := FEnd;
-          FEnd.Next := NewItem;
-          FEnd := NewItem;
-          Inc(FSize);
-        end
-        else
-        begin
-          Current := FStart;
-          while (Current <> nil) and (Index > 0) do
-          begin
-            Current := Current.Next;
-            Dec(Index);
-          end;
-          if Current <> nil then
-          begin
-            NewItem.Next := Current;
-            NewItem.Previous := Current.Previous;
-            if Current.Previous <> nil then
-              Current.Previous.Next := NewItem;
-            Current.Previous := NewItem;
-            Inc(FSize);
-          end;
         end;
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12334,52 +12336,96 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    if Index = 0 then
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  if Index = 0 then
+  begin
+    It := ACollection.Last;
+    while It.HasPrevious do
     begin
-      It := ACollection.Last;
-      while It.HasPrevious do
+      Item := It.Previous;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
       begin
-        Item := It.Previous;
-        AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-        if AddItem then
+        if FDuplicates <> dupAccept then
         begin
-          if FDuplicates <> dupAccept then
+          Test := FStart;
+          while Test <> nil do
           begin
-            Test := FStart;
-            while Test <> nil do
+            if ItemsEqual(Item, Test.Value) then
             begin
-              if ItemsEqual(Item, Test.Value) then
-              begin
-                Result := CheckDuplicate;
-                Break;
-              end;
-              Test := Test.Next;
+              Result := CheckDuplicate;
+              Break;
             end;
-          end;
-          if AddItem then
-          begin
-            NewItem := TJclLinkedListItem.Create;
-            NewItem.Value := Item;
-            NewItem.Next := FStart;
-            if FStart <> nil then
-              FStart.Previous := NewItem;
-            FStart := NewItem;
-            if FSize = 0 then
-              FEnd := NewItem;
-            Inc(FSize);
+            Test := Test.Next;
           end;
         end;
-        Result := Result and AddItem;
+        if AddItem then
+        begin
+          NewItem := TJclLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Next := FStart;
+          if FStart <> nil then
+            FStart.Previous := NewItem;
+          FStart := NewItem;
+          if FSize = 0 then
+            FEnd := NewItem;
+          Inc(FSize);
+        end;
       end;
-    end
-    else
-    if Index = Size then
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  if Index = Size then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+    begin
+      Item := It.Next;
+      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+      if AddItem then
+      begin
+        if FDuplicates <> dupAccept then
+        begin
+          Test := FStart;
+          while Test <> nil do
+          begin
+            if ItemsEqual(Item, Test.Value) then
+            begin
+              Result := CheckDuplicate;
+              Break;
+            end;
+            Test := Test.Next;
+          end;
+        end;
+        if AddItem then
+        begin
+          NewItem := TJclLinkedListItem.Create;
+          NewItem.Value := Item;
+          NewItem.Previous := FEnd;
+          if FEnd <> nil then
+            FEnd.Next := NewItem;
+          FEnd := NewItem;
+          Inc(FSize);
+        end;
+      end;
+      Result := Result and AddItem;
+    end;
+  end
+  else
+  begin
+    Current := FStart;
+    while (Current <> nil) and (Index > 0) do
+    begin
+      Current := Current.Next;
+      Dec(Index);
+    end;
+    if Current <> nil then
     begin
       It := ACollection.First;
       while It.HasNext do
@@ -12405,62 +12451,18 @@ begin
           begin
             NewItem := TJclLinkedListItem.Create;
             NewItem.Value := Item;
-            NewItem.Previous := FEnd;
-            if FEnd <> nil then
-              FEnd.Next := NewItem;
-            FEnd := NewItem;
+            NewItem.Next := Current;
+            NewItem.Previous := Current.Previous;
+            if Current.Previous <> nil then
+              Current.Previous.Next := NewItem;
+            Current.Previous := NewItem;
             Inc(FSize);
           end;
         end;
         Result := Result and AddItem;
       end;
-    end
-    else
-    begin
-      Current := FStart;
-      while (Current <> nil) and (Index > 0) do
-      begin
-        Current := Current.Next;
-        Dec(Index);
-      end;
-      if Current <> nil then
-      begin
-        It := ACollection.First;
-        while It.HasNext do
-        begin
-          Item := It.Next;
-          AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
-          if AddItem then
-          begin
-            if FDuplicates <> dupAccept then
-            begin
-              Test := FStart;
-              while Test <> nil do
-              begin
-                if ItemsEqual(Item, Test.Value) then
-                begin
-                  Result := CheckDuplicate;
-                  Break;
-                end;
-                Test := Test.Next;
-              end;
-            end;
-            if AddItem then
-            begin
-              NewItem := TJclLinkedListItem.Create;
-              NewItem.Value := Item;
-              NewItem.Next := Current;
-              NewItem.Previous := Current.Previous;
-              if Current.Previous <> nil then
-                Current.Previous.Next := NewItem;
-              Current.Previous := NewItem;
-              Inc(FSize);
-            end;
-          end;
-          Result := Result and AddItem;
-        end;
-      end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12486,19 +12488,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    if FEnd <> nil then
+  Result := -1;
+  if FEnd <> nil then
+  begin
+    Current := FEnd;
+    Result := FSize - 1;
+    while (Current <> nil) and not ItemsEqual(Current.Value, AObject) do
     begin
-      Current := FEnd;
-      Result := FSize - 1;
-      while (Current <> nil) and not ItemsEqual(Current.Value, AObject) do
-      begin
-        Dec(Result);
-        Current := Current.Previous;
-      end;
-      if Current = nil then
-        Result := -1;
+      Dec(Result);
+      Current := Current.Previous;
     end;
+    if Current = nil then
+      Result := -1;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12514,29 +12516,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FStart;
-    while Current <> nil do
+  Result := False;
+  Current := FStart;
+  while Current <> nil do
+  begin
+    if ItemsEqual(Current.Value, AObject) then
     begin
-      if ItemsEqual(Current.Value, AObject) then
-      begin
-        if Current.Previous <> nil then
-          Current.Previous.Next := Current.Next
-        else
-          FStart := Current.Next;
-        if Current.Next <> nil then
-          Current.Next.Previous := Current.Previous
-        else
-          FEnd := Current.Previous;
-        FreeObject(Current.Value);
-        Current.Free;
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-      Current := Current.Next;
+      if Current.Previous <> nil then
+        Current.Previous.Next := Current.Next
+      else
+        FStart := Current.Next;
+      if Current.Next <> nil then
+        Current.Next.Previous := Current.Previous
+      else
+        FEnd := Current.Previous;
+      FreeObject(Current.Value);
+      Current.Free;
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
     end;
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12552,12 +12554,12 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12573,14 +12575,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12597,40 +12599,40 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AObject, nil);
-    if ReplaceItem then
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
     begin
-      if FDuplicates <> dupAccept then
+      Current := FStart;
+      while Current <> nil do
       begin
-        Current := FStart;
-        while Current <> nil do
+        if ItemsEqual(AObject, Current.Value) then
         begin
-          if ItemsEqual(AObject, Current.Value) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-          Current := Current.Next;
+          ReplaceItem := CheckDuplicate;
+          Break;
         end;
-      end;
-      if ReplaceItem then
-      begin
-        Current := FStart;
-        while Current <> nil do
-        begin
-          if Index = 0 then
-          begin
-            FreeObject(Current.Value);
-            Current.Value := AObject;
-            Break;
-          end;
-          Dec(Index);
-          Current := Current.Next;
-        end;
+        Current := Current.Next;
       end;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+    if ReplaceItem then
+    begin
+      Current := FStart;
+      while Current <> nil do
+      begin
+        if Index = 0 then
+        begin
+          FreeObject(Current.Value);
+          Current.Value := AObject;
+          Break;
+        end;
+        Dec(Index);
+        Current := Current.Next;
+      end;
+    end;
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12651,19 +12653,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := CreateEmptyContainer as IJclList;
-    Current := FStart;
-    while (Current <> nil) and (First > 0) do
-    begin
-      Dec(First);
-      Current := Current.Next;
-    end;
-    while (Current <> nil) and (Count > 0) do
-    begin
-      Result.Add(Current.Value);
-      Dec(Count);
-      Current := Current.Next;
-    end;
+  Result := CreateEmptyContainer as IJclList;
+  Current := FStart;
+  while (Current <> nil) and (First > 0) do
+  begin
+    Dec(First);
+    Current := Current.Next;
+  end;
+  while (Current <> nil) and (Count > 0) do
+  begin
+    Result.Add(Current.Value);
+    Dec(Count);
+    Current := Current.Next;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13532,4 +13534,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

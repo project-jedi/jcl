@@ -10,7 +10,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls, Spin,
-  JclMath, JclMidi;
+  JclMath, JclMIDI;
 
 type
   TTuningDialog = class(TForm)
@@ -52,9 +52,9 @@ implementation
 
 const
   HalftonesPerOctave = 12;
-  MiddleA            = 440.0; // Hertz
-  MidiMiddleA        = 69;    // A3 = 440 Hertz
-  Digits = 6;
+  MiddleA = 440.0; // Hertz
+  MidiMiddleA = 69;    // A3 = 440 Hertz
+  Digits  = 6;
   MIDIFreqMax = 127.99993896;
   FreqHertzMin = 8.17579892;
   FreqHertzMax = 13289.70346552;

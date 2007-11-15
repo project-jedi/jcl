@@ -111,7 +111,7 @@ var
   wServer, wUsername, wFullname,
   wPassword, wDescription, wHomedir, wScript: WideString;
   Details: USER_INFO_2;
-  Err: NET_API_STATUS;
+  Err:     NET_API_STATUS;
   ParmErr: DWORD;
 begin
   wServer := Server;
@@ -169,7 +169,7 @@ function CreateGlobalGroup(const Server, Groupname, Description: string): Boolea
 var
   wServer, wGroupname, wDescription: WideString;
   Details: GROUP_INFO_1;
-  Err: NET_API_STATUS;
+  Err:     NET_API_STATUS;
   ParmErr: DWORD;
 begin
   wServer := Server;
@@ -188,7 +188,7 @@ function CreateLocalGroup(const Server, Groupname, Description: string): Boolean
 var
   wServer, wGroupname, wDescription: WideString;
   Details: LOCALGROUP_INFO_1;
-  Err: NET_API_STATUS;
+  Err:     NET_API_STATUS;
   ParmErr: DWORD;
 begin
   wServer := Server;
@@ -221,7 +221,7 @@ var
   Buffer: PByte;
   Details: PLocalGroupInfo0;
   EntriesRead, TotalEntries: Cardinal;
-  I: Integer;
+  I:   Integer;
 begin
   wServername := Server;
   Err := RtdlNetLocalGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
@@ -253,7 +253,7 @@ var
   Buffer: PByte;
   Details: PGroupInfo0;
   EntriesRead, TotalEntries: Cardinal;
-  I: Integer;
+  I:   Integer;
 begin
   wServername := Server;
   Err := RtdlNetGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
@@ -380,7 +380,7 @@ var
   sia: Windows.SID_IDENTIFIER_AUTHORITY;
   rd1, rd2: DWORD;
   ridCount: Integer;
-  sd: PSID;
+  sd:  PSID;
   AccountNameLen, DomainNameLen: DWORD;
   SidNameUse: SID_NAME_USE;
 begin
@@ -401,21 +401,21 @@ begin
     ridCount := 2;
   end;
   if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0, 0, 0, 0, 0, sd) then
-  try
-    AccountNameLen := 0;
-    DomainNameLen := 0;
-    if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, SidNameUse) then
-      SetLength(Result, AccountNamelen);
+    try
+      AccountNameLen := 0;
+      DomainNameLen := 0;
+      if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+        nil, DomainNameLen, SidNameUse) then
+        SetLength(Result, AccountNamelen);
 
-    if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, sidNameUse) then
-      StrResetLength(Result)
-    else
-      RaiseLastOSError;
-  finally
-    FreeSID(sd);
-  end;
+      if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
+        nil, DomainNameLen, sidNameUse) then
+        StrResetLength(Result)
+      else
+        RaiseLastOSError;
+    finally
+      FreeSID(sd);
+    end;
 end;
 
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);

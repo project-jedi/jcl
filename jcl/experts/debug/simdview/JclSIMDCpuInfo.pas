@@ -80,7 +80,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;

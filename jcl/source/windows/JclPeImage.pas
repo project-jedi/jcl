@@ -52,7 +52,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils, TypInfo, Contnrs,
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
-  
+
 type
   // Smart name compare function
   TJclSmartCompOption = (scSimpleCompare, scIgnoreCase);
@@ -216,7 +216,8 @@ type
     destructor Destroy; override;
     procedure CheckImports(PeImageCache: TJclPeImagesCache = nil);
     function MakeBorlandImportTableForMappedImage: Boolean;
-    function SmartFindName(const CompareName, LibName: string; Options: TJclSmartCompOptions = []): TJclPeImportFuncItem;
+    function SmartFindName(const CompareName, LibName: string;
+      Options: TJclSmartCompOptions = []): TJclPeImportFuncItem;
     procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean = False);
     procedure SortList(SortType: TJclPeImportLibSort);
     procedure TryGetNamesForOrdinalImports;
@@ -232,7 +233,7 @@ type
   end;
 
   // Export section related classes
-  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded,  esAddrOrFwd, esSection);
+  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded, esAddrOrFwd, esSection);
 
   TJclPeExportFuncList = class;
 
@@ -513,7 +514,7 @@ type
     procedure ReadHeader;
   public
     constructor Create(AImage: TJclPeImage);
-    property HasMetadata: Boolean read GetHasMetadata; 
+    property HasMetadata: Boolean read GetHasMetadata;
     property Header: TImageCor20Header read FHeader;
     property VersionString: string read GetVersionString;
     property Image: TJclPeImage read FImage;
@@ -574,7 +575,7 @@ type
     JclLoadConfig_Reserved1,
     JclLoadConfig_EditList,
     JclLoadConfig_Reserved           { TODO : extend to the new fields? }
-  );
+    );
 
   TJclPeFileProperties = record
     Size: DWORD;
@@ -810,9 +811,9 @@ type
   TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
   TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
 
-  TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage;
+  TJclPeNameSearchNotifyEvent = procedure(Sender: TObject; PeImage: TJclPeImage;
     var Process: Boolean) of object;
-  TJclPeNameSearchFoundEvent = procedure (Sender: TObject; const FileName: TFileName;
+  TJclPeNameSearchFoundEvent = procedure(Sender: TObject; const FileName: TFileName;
     const FunctionName: string; Option: TJclPeNameSearchOption) of object;
 
   TJclPeNameSearch = class(TThread)
@@ -1096,12 +1097,12 @@ uses
 const
   MANIFESTExtension = '.manifest';
 
-  PackageInfoResName    = 'PACKAGEINFO';
-  DescriptionResName    = 'DESCRIPTION';
+  PackageInfoResName = 'PACKAGEINFO';
+  DescriptionResName = 'DESCRIPTION';
   PackageOptionsResName = 'PACKAGEOPTIONS';
-  DVclAlResName         = 'DVCLAL';
+  DVclAlResName      = 'DVCLAL';
 
-  DebugSectionName    = '.debug';
+  DebugSectionName = '.debug';
   ReadOnlySectionName = '.rdata';
 
   BinaryExtensionPackage = '.bpl';
@@ -1336,7 +1337,7 @@ begin
   Result := CompareStr(TJclPeImportFuncItem(Item1).ImportLib.Name,
     TJclPeImportFuncItem(Item2).ImportLib.Name);
   if Result = 0 then
-    Result := TJclPeImportFuncItem(Item1).Ordinal -  TJclPeImportFuncItem(Item2).Ordinal;
+    Result := TJclPeImportFuncItem(Item1).Ordinal - TJclPeImportFuncItem(Item2).Ordinal;
 end;
 
 function ImportSortByOrdinalDESC(Item1, Item2: Pointer): Integer;
@@ -1348,9 +1349,9 @@ function GetImportSortFunction(SortType: TJclPeImportSort; Descending: Boolean):
 const
   SortFunctions: array [TJclPeImportSort, Boolean] of TListSortCompare =
     ((ImportSortByName, ImportSortByNameDESC),
-     (ImportSortByOrdinal, ImportSortByOrdinalDESC),
-     (ImportSortByHint, ImportSortByHintDESC),
-     (ImportSortByDll, ImportSortByDllDESC)
+    (ImportSortByOrdinal, ImportSortByOrdinalDESC),
+    (ImportSortByHint, ImportSortByHintDESC),
+    (ImportSortByDll, ImportSortByDllDESC)
     );
 begin
   Result := SortFunctions[SortType, Descending];
@@ -1476,7 +1477,7 @@ procedure TJclPeImportLibItem.CreateList;
     Thunk32: PImageThunkData32;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
-    Name: PChar;
+    Name:    PChar;
   begin
     Thunk32 := PImageThunkData32(FThunk);
     while Thunk32^.Function_ <> 0 do
@@ -1488,17 +1489,17 @@ procedure TJclPeImportLibItem.CreateList;
       begin
         case ImportKind of
           ikImport, ikBoundImport:
-            begin
-              OrdinalName := PImageImportByName(Image.RvaToVa(Thunk32^.AddressOfData));
-              Hint := OrdinalName.Hint;
-              Name := OrdinalName.Name;
-            end;
+          begin
+            OrdinalName := PImageImportByName(Image.RvaToVa(Thunk32^.AddressOfData));
+            Hint := OrdinalName.Hint;
+            Name := OrdinalName.Name;
+          end;
           ikDelayImport:
-            begin
-              OrdinalName := PImageImportByName(Image.RvaToVaEx(Thunk32^.AddressOfData));
-              Hint := OrdinalName.Hint;
-              Name := OrdinalName.Name;
-            end;
+          begin
+            OrdinalName := PImageImportByName(Image.RvaToVaEx(Thunk32^.AddressOfData));
+            Hint := OrdinalName.Hint;
+            Name := OrdinalName.Name;
+          end;
         end;
       end
       else
@@ -1514,7 +1515,7 @@ procedure TJclPeImportLibItem.CreateList;
     Thunk64: PImageThunkData64;
     OrdinalName: PImageImportByName;
     Ordinal, Hint: Word;
-    Name: PChar;
+    Name:    PChar;
   begin
     Thunk64 := PImageThunkData64(FThunk);
     while Thunk64^.Function_ <> 0 do
@@ -1526,17 +1527,17 @@ procedure TJclPeImportLibItem.CreateList;
       begin
         case ImportKind of
           ikImport, ikBoundImport:
-            begin
-              OrdinalName := PImageImportByName(Image.RvaToVa(Thunk64^.AddressOfData));
-              Hint := OrdinalName.Hint;
-              Name := OrdinalName.Name;
-            end;
+          begin
+            OrdinalName := PImageImportByName(Image.RvaToVa(Thunk64^.AddressOfData));
+            Hint := OrdinalName.Hint;
+            Name := OrdinalName.Name;
+          end;
           ikDelayImport:
-            begin
-              OrdinalName := PImageImportByName(Image.RvaToVaEx(Thunk64^.AddressOfData));
-              Hint := OrdinalName.Hint;
-              Name := OrdinalName.Name;
-            end;
+          begin
+            OrdinalName := PImageImportByName(Image.RvaToVaEx(Thunk64^.AddressOfData));
+            Hint := OrdinalName.Hint;
+            Name := OrdinalName.Name;
+          end;
         end;
       end
       else
@@ -1750,7 +1751,8 @@ begin
           Thunk := RvaToVa(ImportDesc^.Union.Characteristics);
           FLinkerProducer := lrMicrosoft;
         end;
-        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport, PAnsiChar(RvaToVa(ImportDesc^.Name)), Thunk);
+        LibItem := TJclPeImportLibItem.Create(Image, ImportDesc, ikImport,
+          PAnsiChar(RvaToVa(ImportDesc^.Name)), Thunk);
         Add(LibItem);
         FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
         Inc(ImportDesc);
@@ -1852,19 +1854,19 @@ begin
           TableSize := (FileImage.ImportList[I].Count + 1);
           case Image.Target of
             taWin32:
-              begin
-                TableSize := TableSize * SizeOf(TImageThunkData32);
-                GetMem(FParallelImportTable[I], TableSize);
-                System.Move(FileImage.ImportList[I].ThunkData32^, FParallelImportTable[I]^, TableSize);
-                Items[I].SetThunk(FParallelImportTable[I]);
-              end;
+            begin
+              TableSize := TableSize * SizeOf(TImageThunkData32);
+              GetMem(FParallelImportTable[I], TableSize);
+              System.Move(FileImage.ImportList[I].ThunkData32^, FParallelImportTable[I]^, TableSize);
+              Items[I].SetThunk(FParallelImportTable[I]);
+            end;
             taWin64:
-              begin
-                TableSize := TableSize * SizeOf(TImageThunkData64);
-                GetMem(FParallelImportTable[I], TableSize);
-                System.Move(FileImage.ImportList[I].ThunkData64^, FParallelImportTable[I]^, TableSize);
-                Items[I].SetThunk(FParallelImportTable[I]);
-              end;
+            begin
+              TableSize := TableSize * SizeOf(TImageThunkData64);
+              GetMem(FParallelImportTable[I], TableSize);
+              System.Move(FileImage.ImportList[I].ThunkData64^, FParallelImportTable[I]^, TableSize);
+              Items[I].SetThunk(FParallelImportTable[I]);
+            end;
           end;
         end;
       end;
@@ -2051,7 +2053,8 @@ begin
   if Length(FForwardedDotPos) = 0 then
     Result := ''
   else
-    Result := AnsiLowerCase(Copy(FForwardedName, 1, Length(FForwardedName) - Length(FForwardedDotPos) - 1)) + BinaryExtensionLibrary;
+    Result := AnsiLowerCase(Copy(FForwardedName, 1, Length(FForwardedName) - Length(FForwardedDotPos) - 1)) +
+      BinaryExtensionLibrary;
 end;
 
 function TJclPeExportFuncItem.GetIsExportedVariable: Boolean;
@@ -2149,7 +2152,8 @@ end;
 
 function ExportSortByAddrOrFwd(Item1, Item2: Pointer): Integer;
 begin
-  Result := CompareStr(TJclPeExportFuncItem(Item1).AddressOrForwardStr, TJclPeExportFuncItem(Item2).AddressOrForwardStr);
+  Result := CompareStr(TJclPeExportFuncItem(Item1).AddressOrForwardStr,
+    TJclPeExportFuncItem(Item2).AddressOrForwardStr);
 end;
 
 function ExportSortByAddrOrFwdDESC(Item1, Item2: Pointer): Integer;
@@ -2438,12 +2442,12 @@ procedure TJclPeExportFuncList.SortList(SortType: TJclPeExportSort; Descending: 
 const
   SortFunctions: array [TJclPeExportSort, Boolean] of TListSortCompare =
     ((ExportSortByName, ExportSortByNameDESC),
-     (ExportSortByOrdinal, ExportSortByOrdinalDESC),
-     (ExportSortByHint, ExportSortByHintDESC),
-     (ExportSortByAddress, ExportSortByAddressDESC),
-     (ExportSortByForwarded, ExportSortByForwardedDESC),
-     (ExportSortByAddrOrFwd, ExportSortByAddrOrFwdDESC),
-     (ExportSortBySection, ExportSortBySectionDESC)
+    (ExportSortByOrdinal, ExportSortByOrdinalDESC),
+    (ExportSortByHint, ExportSortByHintDESC),
+    (ExportSortByAddress, ExportSortByAddressDESC),
+    (ExportSortByForwarded, ExportSortByForwardedDESC),
+    (ExportSortByAddrOrFwd, ExportSortByAddrOrFwdDESC),
+    (ExportSortBySection, ExportSortBySectionDESC)
     );
 begin
   if not FSorted or (SortType <> FLastSortType) or (Descending <> FLastSortDescending) then
@@ -2597,7 +2601,7 @@ begin
     if FEntry^.Name < Cardinal(High(TJclPeResourceKind)) then
       Result := TJclPeResourceKind(FEntry^.Name)
     else
-      Result := rtUserDefined
+      Result := rtUserDefined;
   end;
 end;
 
@@ -2644,7 +2648,7 @@ procedure TJclPeResourceList.CreateList(AParentItem: TJclPeResourceItem);
 var
   Entry: PImageResourceDirectoryEntry;
   DirItem: TJclPeResourceItem;
-  I: Integer;
+  I:     Integer;
 begin
   if FDirectory = nil then
     Exit;
@@ -2762,7 +2766,7 @@ begin
         FManifestContent.LoadFromStream(ResStream);
       finally
         ResStream.Free;
-      end;    
+      end;
     end;
   end;
   Result := FManifestContent;
@@ -2832,7 +2836,7 @@ end;
 procedure TJclPeRelocList.CreateList;
 var
   Chunk: PImageBaseRelocation;
-  Item: TJclPeRelocEntry;
+  Item:  TJclPeRelocEntry;
   RelocCount: Integer;
 begin
   with Image do
@@ -2946,9 +2950,9 @@ end;
 procedure TJclPeCertificateList.CreateList;
 var
   Directory: TImageDataDirectory;
-  CertPtr: PChar;
+  CertPtr:   PChar;
   TotalSize: Integer;
-  Item: TJclPeCertificate;
+  Item:      TJclPeCertificate;
 begin
   Directory := Image.Directories[IMAGE_DIRECTORY_ENTRY_SECURITY];
   if Directory.VirtualAddress = 0 then
@@ -3050,7 +3054,7 @@ procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
   end;
 
   procedure AttachLoadedModule64;
-   var
+  var
     NtHeaders: PImageNtHeaders64;
   begin
     NtHeaders := PeMapImgNtHeaders64(Pointer(Handle));
@@ -3101,7 +3105,7 @@ begin
     CheckNotAttached;
     if CheckSumMappedFile(FLoadedImage.MappedAddress, FLoadedImage.SizeOfImage,
       C, Result) = nil then
-        RaiseLastOSError;
+      RaiseLastOSError;
   end
   else
     Result := 0;
@@ -3230,14 +3234,14 @@ function TJclPeImage.GetCertificateList: TJclPeCertificateList;
 begin
   if FCertificateList = nil then
     FCertificateList := TJclPeCertificateList.Create(Self);
-  Result := FCertificateList;   
+  Result := FCertificateList;
 end;
 
 function TJclPeImage.GetCLRHeader: TJclPeCLRHeader;
 begin
   if FCLRHeader = nil then
     FCLRHeader := TJclPeCLRHeader.Create(Self);
-  Result := FCLRHeader;  
+  Result := FCLRHeader;
 end;
 
 function TJclPeImage.GetDebugList: TJclPeDebugList;
@@ -3267,7 +3271,7 @@ begin
     else
       Result.VirtualAddress := 0;
       Result.Size := 0;
-    end
+    end;
   end
   else
   begin
@@ -3369,7 +3373,7 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
       IMAGE_FILE_MACHINE_M32R:
         Result := RsPeMACHINE_M32R;       // M32R little-endian
       IMAGE_FILE_MACHINE_CEE:
-        Result := RsPeMACHINE_CEE;       
+        Result := RsPeMACHINE_CEE;
     else
       Result := Format('[%.8x]', [Value]);
     end;
@@ -3426,7 +3430,8 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
       JclPeHeader_FileAlignment:
         Result := IntToHex(OptionalHeader.FileAlignment, 8);
       JclPeHeader_OperatingSystemVersion:
-        Result := FormatVersionString(OptionalHeader.MajorOperatingSystemVersion, OptionalHeader.MinorOperatingSystemVersion);
+        Result := FormatVersionString(OptionalHeader.MajorOperatingSystemVersion,
+          OptionalHeader.MinorOperatingSystemVersion);
       JclPeHeader_ImageVersion:
         Result := FormatVersionString(OptionalHeader.MajorImageVersion, OptionalHeader.MinorImageVersion);
       JclPeHeader_SubsystemVersion:
@@ -3487,7 +3492,8 @@ function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
       JclPeHeader_FileAlignment:
         Result := IntToHex(OptionalHeader.FileAlignment, 8);
       JclPeHeader_OperatingSystemVersion:
-        Result := FormatVersionString(OptionalHeader.MajorOperatingSystemVersion, OptionalHeader.MinorOperatingSystemVersion);
+        Result := FormatVersionString(OptionalHeader.MajorOperatingSystemVersion,
+          OptionalHeader.MinorOperatingSystemVersion);
       JclPeHeader_ImageVersion:
         Result := FormatVersionString(OptionalHeader.MajorImageVersion, OptionalHeader.MinorImageVersion);
       JclPeHeader_SubsystemVersion:
@@ -3921,7 +3927,7 @@ begin
 end;
 
 function TJclPeImage.IsSystemImage: Boolean;
-begin       
+begin
   Result := StatusOK and FLoadedImage.fSystemImage;
 end;
 
@@ -4126,7 +4132,7 @@ const
     (Mask: IMAGE_SCN_CNT_UNINITIALIZED_DATA; InfoChar: 'U'),
     (Mask: IMAGE_SCN_MEM_SHARED; InfoChar: 'S'),
     (Mask: IMAGE_SCN_MEM_DISCARDABLE; InfoChar: 'D')
-  );
+    );
 var
   I: Integer;
 begin
@@ -4145,7 +4151,7 @@ end;
 
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
 begin
-  Result := TimeDateStamp / SecsPerDay + UnixTimeStart
+  Result := TimeDateStamp / SecsPerDay + UnixTimeStart;
 end;
 
 procedure TJclPeImage.TryGetNamesForOrdinalImports;
@@ -4376,7 +4382,7 @@ begin
     Strings.LoadFromStream(TempStream);
   finally
     TempStream.Free;
-  end;    
+  end;
 end;
 
 function TJclPeBorForm.GetDisplayName: string;
@@ -4440,8 +4446,8 @@ var
     FilerSignature: array [1..4] of Char = 'TPF0';
   var
     SourceStream: TJclPeResourceRawStream;
-    Reader: TReader;
-    FormFlags: TFilerFlags;
+    Reader:       TReader;
+    FormFlags:    TFilerFlags;
     FormPosition: Integer;
     ClassName, FormName: string;
   begin
@@ -4591,7 +4597,7 @@ begin
     begin
       ImportName := ExtractFileName(FileName);
       CheckName;
-    end;  
+    end;
   end;
   Result := FPackageCompilerVersion;
 end;
@@ -4657,7 +4663,7 @@ var
     SearchResult: Integer;
     ImportList: TJclPeImportList;
     ExportList: TJclPeExportFuncList;
-    I: Integer;
+    I:  Integer;
   begin
     SearchResult := FindFirst(DirName, faArchive + faReadOnly, Se);
     try
@@ -4752,8 +4758,8 @@ end;
 function InternalGetNtHeaders32(const FileName: TFileName; var NtHeaders): Boolean;
 var
   FileHandle: THandle;
-  Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
+  Mapping:    TJclFileMapping;
+  View:       TJclFileMappingView;
   HeadersPtr: PImageNtHeaders32;
 begin
   Result := False;
@@ -4797,8 +4803,8 @@ end;
 function PeGetNtHeaders64(const FileName: TFileName; var NtHeaders: TImageNtHeaders64): Boolean;
 var
   FileHandle: THandle;
-  Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
+  Mapping:    TJclFileMapping;
+  View:       TJclFileMappingView;
   HeadersPtr: PImageNtHeaders64;
 begin
   Result := False;
@@ -4856,55 +4862,55 @@ begin
         ExportsImage.ExportList.PrepareForFastNameSearch;
         case PEImage.Target of
           taWin32:
+          begin
+            Thunk32 := ImportItem.ThunkData32;
+            ImageBase32 := PeImage.OptionalHeader32.ImageBase;
+            while Thunk32^.Function_ <> 0 do
             begin
-              Thunk32 := ImportItem.ThunkData32;
-              ImageBase32 := PeImage.OptionalHeader32.ImageBase;
-              while Thunk32^.Function_ <> 0 do
+              if Thunk32^.Ordinal and IMAGE_ORDINAL_FLAG32 = 0 then
               begin
-                if Thunk32^.Ordinal and IMAGE_ORDINAL_FLAG32 = 0 then
-                begin
-                  case ImportItem.ImportKind of
-                    ikImport:
-                      OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData));
-                    ikDelayImport:
-                      OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData - ImageBase32));
-                  else
-                    OrdinalName := nil;
-                  end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
-                  if ExportItem <> nil then
-                    OrdinalName.Hint := ExportItem.Hint
-                  else
-                    OrdinalName.Hint := 0;
+                case ImportItem.ImportKind of
+                  ikImport:
+                    OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData));
+                  ikDelayImport:
+                    OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk32^.AddressOfData - ImageBase32));
+                else
+                  OrdinalName := nil;
                 end;
-                Inc(Thunk32);
+                ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
+                if ExportItem <> nil then
+                  OrdinalName.Hint := ExportItem.Hint
+                else
+                  OrdinalName.Hint := 0;
               end;
+              Inc(Thunk32);
             end;
+          end;
           taWin64:
+          begin
+            Thunk64 := ImportItem.ThunkData64;
+            ImageBase64 := PeImage.OptionalHeader64.ImageBase;
+            while Thunk64^.Function_ <> 0 do
             begin
-              Thunk64 := ImportItem.ThunkData64;
-              ImageBase64 := PeImage.OptionalHeader64.ImageBase;
-              while Thunk64^.Function_ <> 0 do
+              if Thunk64^.Ordinal and IMAGE_ORDINAL_FLAG64 = 0 then
               begin
-                if Thunk64^.Ordinal and IMAGE_ORDINAL_FLAG64 = 0 then
-                begin
-                  case ImportItem.ImportKind of
-                    ikImport:
-                      OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData));
-                    ikDelayImport:
-                      OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData - ImageBase64));
-                  else
-                    OrdinalName := nil;
-                  end;
-                  ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
-                  if ExportItem <> nil then
-                    OrdinalName.Hint := ExportItem.Hint
-                  else
-                    OrdinalName.Hint := 0;
+                case ImportItem.ImportKind of
+                  ikImport:
+                    OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData));
+                  ikDelayImport:
+                    OrdinalName := PImageImportByName(PeImage.RvaToVa(Thunk64^.AddressOfData - ImageBase64));
+                else
+                  OrdinalName := nil;
                 end;
-                Inc(Thunk64);
+                ExportItem := ExportsImage.ExportList.ItemFromName[PChar(@OrdinalName.Name)];
+                if ExportItem <> nil then
+                  OrdinalName.Hint := ExportItem.Hint
+                else
+                  OrdinalName.Hint := 0;
               end;
+              Inc(Thunk64);
             end;
+          end;
         end;
       end;
     finally
@@ -4982,7 +4988,7 @@ end;
 function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
 var
   Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
+  View:    TJclFileMappingView;
   Headers: PImageNtHeaders32; // works with 64-bit binaries too
                               // only the optional field differs
 begin
@@ -5189,11 +5195,11 @@ end;
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := VerifyCheckSum;
-  finally
-    Free;
-  end;
+    try
+      Result := VerifyCheckSum;
+    finally
+      Free;
+    end;
 end;
 
 function PeClearCheckSum(const FileName: TFileName): Boolean;
@@ -5217,7 +5223,7 @@ function PeClearCheckSum(const FileName: TFileName): Boolean;
   end;
 var
   Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
+  View:    TJclFileMappingView;
 begin
   Mapping := TJclFileMapping.Create(FileName, fmOpenReadWrite, '', PAGE_READWRITE, 0, nil);
   try
@@ -5251,11 +5257,11 @@ function PeDoesExportFunction(const FileName: TFileName; const FunctionName: str
   Options: TJclSmartCompOptions): Boolean;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK and Assigned(ExportList.SmartFindName(FunctionName, Options));
-  finally
-    Free;
-  end;
+    try
+      Result := StatusOK and Assigned(ExportList.SmartFindName(FunctionName, Options));
+    finally
+      Free;
+    end;
 end;
 
 function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
@@ -5264,25 +5270,25 @@ var
   ExportItem: TJclPeExportFuncItem;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      ExportItem := ExportList.SmartFindName(FunctionName, Options);
-      if ExportItem <> nil then
+    try
+      Result := StatusOK;
+      if Result then
       begin
-        Result := ExportItem.IsForwarded;
-        ForwardedName := ExportItem.ForwardedName;
-      end
-      else
-      begin
-        Result := False;
-        ForwardedName := '';
+        ExportItem := ExportList.SmartFindName(FunctionName, Options);
+        if ExportItem <> nil then
+        begin
+          Result := ExportItem.IsForwarded;
+          ForwardedName := ExportItem.ForwardedName;
+        end
+        else
+        begin
+          Result := False;
+          ForwardedName := '';
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
@@ -5297,17 +5303,17 @@ function PeDoesImportFunction(const FileName: TFileName; const FunctionName: str
   const LibraryName: string; Options: TJclSmartCompOptions): Boolean;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-      with ImportList do
-      begin
-        TryGetNamesForOrdinalImports;
-        Result := SmartFindName(FunctionName, LibraryName, Options) <> nil;
-      end;
-  finally
-    Free;
-  end;
+    try
+      Result := StatusOK;
+      if Result then
+        with ImportList do
+        begin
+          TryGetNamesForOrdinalImports;
+          Result := SmartFindName(FunctionName, LibraryName, Options) <> nil;
+        end;
+    finally
+      Free;
+    end;
 end;
 
 function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
@@ -5316,20 +5322,20 @@ var
   SL: TStringList;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      SL := InternalImportedLibraries(FileName, Recursive, False, nil);
-      try
-        Result := SL.IndexOf(LibraryName) > -1;
-      finally
-        SL.Free;
+    try
+      Result := StatusOK;
+      if Result then
+      begin
+        SL := InternalImportedLibraries(FileName, Recursive, False, nil);
+        try
+          Result := SL.IndexOf(LibraryName) > -1;
+        finally
+          SL.Free;
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
@@ -5338,20 +5344,20 @@ var
   SL: TStringList;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      SL := InternalImportedLibraries(FileName, Recursive, FullPathName, nil);
-      try
-        LibrariesList.Assign(SL);
-      finally
-        SL.Free;
+    try
+      Result := StatusOK;
+      if Result then
+      begin
+        SL := InternalImportedLibraries(FileName, Recursive, FullPathName, nil);
+        try
+          LibrariesList.Assign(SL);
+        finally
+          SL.Free;
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
@@ -5417,22 +5423,22 @@ var
   I: Integer;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      FunctionsList.BeginUpdate;
-      try
-        with ExportList do
-          for I := 0 to Count - 1 do
-            FunctionsList.Add(Items[I].Name);
-      finally
-        FunctionsList.EndUpdate;
+    try
+      Result := StatusOK;
+      if Result then
+      begin
+        FunctionsList.BeginUpdate;
+        try
+          with ExportList do
+            for I := 0 to Count - 1 do
+              FunctionsList.Add(Items[I].Name);
+        finally
+          FunctionsList.EndUpdate;
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeExportedVariables(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
@@ -5440,35 +5446,35 @@ var
   I: Integer;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      FunctionsList.BeginUpdate;
-      try
-        with ExportList do
-          for I := 0 to Count - 1 do
-            with Items[I] do
-              if IsExportedVariable then
-                FunctionsList.AddObject(Name, Pointer(Address));
-      finally
-        FunctionsList.EndUpdate;
+    try
+      Result := StatusOK;
+      if Result then
+      begin
+        FunctionsList.BeginUpdate;
+        try
+          with ExportList do
+            for I := 0 to Count - 1 do
+              with Items[I] do
+                if IsExportedVariable then
+                  FunctionsList.AddObject(Name, Pointer(Address));
+        finally
+          FunctionsList.EndUpdate;
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeResourceKindNames(const FileName: TFileName; ResourceType: TJclPeResourceKind;
   const NamesList: TStrings): Boolean;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK and ResourceList.ListResourceNames(ResourceType, NamesList);
-  finally
-    Free;
-  end;
+    try
+      Result := StatusOK and ResourceList.ListResourceNames(ResourceType, NamesList);
+    finally
+      Free;
+    end;
 end;
 
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
@@ -5519,9 +5525,9 @@ function PeFindMissingImports(const FileName: TFileName; MissingImportsList: TSt
 var
   Cache: TJclPeImagesCache;
   FileImage, LibImage: TJclPeImage;
-  L, I: Integer;
+  L, I:  Integer;
   LibItem: TJclPeImportLibItem;
-  List: TStringList;
+  List:  TStringList;
 begin
   Result := False;
   List := nil;
@@ -5561,7 +5567,7 @@ var
   Cache: TJclPeImagesCache;
   LibImage: TJclPeImage;
   I, SepPos: Integer;
-  List: TStringList;
+  List:  TStringList;
   S, LibName, ImportName: string;
 begin
   List := nil;
@@ -5621,7 +5627,7 @@ begin
   Result := PImageNtHeaders32(TJclAddr(BaseAddress) + DWORD(PImageDosHeader(BaseAddress)^._lfanew));
   if IsBadReadPtr(Result, SizeOf(TImageNtHeaders32)) or
     (Result^.Signature <> IMAGE_NT_SIGNATURE) then
-      Result := nil
+    Result := nil;
 end;
 
 function PeMapImgNtHeaders64(const BaseAddress: Pointer): PImageNtHeaders64;
@@ -5635,7 +5641,7 @@ begin
   Result := PImageNtHeaders64(TJclAddr(BaseAddress) + DWORD(PImageDosHeader(BaseAddress)^._lfanew));
   if IsBadReadPtr(Result, SizeOf(TImageNtHeaders64)) or
     (Result^.Signature <> IMAGE_NT_SIGNATURE) then
-      Result := nil
+    Result := nil;
 end;
 
 function PeMapImgSize(const BaseAddress: Pointer): DWORD;
@@ -5673,7 +5679,7 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
   function PeMapImgLibraryName32(const BaseAddress: Pointer): string;
   var
     NtHeaders: PImageNtHeaders32;
-    DataDir: TImageDataDirectory;
+    DataDir:   TImageDataDirectory;
     ExportDir: PImageExportDirectory;
   begin
     Result := '';
@@ -5691,7 +5697,7 @@ function PeMapImgLibraryName(const BaseAddress: Pointer): string;
   function PeMapImgLibraryName64(const BaseAddress: Pointer): string;
   var
     NtHeaders: PImageNtHeaders64;
-    DataDir: TImageDataDirectory;
+    DataDir:   TImageDataDirectory;
     ExportDir: PImageExportDirectory;
   begin
     Result := '';
@@ -5771,8 +5777,8 @@ function PeMapImgFindSection32(NtHeaders: PImageNtHeaders32;
   const SectionName: string): PImageSectionHeader;
 var
   Header: PImageSectionHeader;
-  I: Integer;
-  P: PChar;
+  I:      Integer;
+  P:      PChar;
 begin
   Result := nil;
   if NtHeaders <> nil then
@@ -5795,8 +5801,8 @@ function PeMapImgFindSection64(NtHeaders: PImageNtHeaders64;
   const SectionName: string): PImageSectionHeader;
 var
   Header: PImageSectionHeader;
-  I: Integer;
-  P: PChar;
+  I:      Integer;
+  P:      PChar;
 begin
   Result := nil;
   if NtHeaders <> nil then
@@ -5818,7 +5824,7 @@ end;
 function PeMapImgFindSectionFromModule(const BaseAddress: Pointer;
   const SectionName: string): PImageSectionHeader;
   function PeMapImgFindSectionFromModule32(const BaseAddress: Pointer;
-    const SectionName: string): PImageSectionHeader;
+  const SectionName: string): PImageSectionHeader;
   var
     NtHeaders32: PImageNtHeaders32;
   begin
@@ -5828,7 +5834,7 @@ function PeMapImgFindSectionFromModule(const BaseAddress: Pointer;
       Result := PeMapImgFindSection32(NtHeaders32, SectionName);
   end;
   function PeMapImgFindSectionFromModule64(const BaseAddress: Pointer;
-    const SectionName: string): PImageSectionHeader;
+  const SectionName: string): PImageSectionHeader;
   var
     NtHeaders64: PImageNtHeaders64;
   begin
@@ -5854,25 +5860,25 @@ var
   I: Integer;
 begin
   with TJclPeImage.Create(True) do
-  try
-    AttachLoadedModule(Module);
-    Result := StatusOK;
-    if Result then
-    begin
-      VariablesList.BeginUpdate;
-      try
-        with ExportList do
-          for I := 0 to Count - 1 do
-            with Items[I] do
-              if IsExportedVariable then
-                VariablesList.AddObject(Name, MappedAddress);
-      finally
-        VariablesList.EndUpdate;
+    try
+      AttachLoadedModule(Module);
+      Result := StatusOK;
+      if Result then
+      begin
+        VariablesList.BeginUpdate;
+        try
+          with ExportList do
+            for I := 0 to Count - 1 do
+              with Items[I] do
+                if IsExportedVariable then
+                  VariablesList.AddObject(Name, MappedAddress);
+        finally
+          VariablesList.EndUpdate;
+        end;
       end;
+    finally
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 function PeMapImgResolvePackageThunk(Address: Pointer): Pointer;
@@ -5902,17 +5908,17 @@ var
 begin
   Result := nil;
   with TJclPeImage.Create(True) do
-  try
-    AttachLoadedModule(Module);
-    if StatusOK then
-    begin
-      ResItem := ResourceList.FindResource(ResourceType, PChar(ResourceName));
-      if (ResItem <> nil) and ResItem.IsDirectory then
-        Result := ResItem.List[0].RawEntryData;
-    end;  
-  finally
-    Free;
-  end;
+    try
+      AttachLoadedModule(Module);
+      if StatusOK then
+      begin
+        ResItem := ResourceList.FindResource(ResourceType, PChar(ResourceName));
+        if (ResItem <> nil) and ResItem.IsDirectory then
+          Result := ResItem.List[0].RawEntryData;
+      end;
+    finally
+      Free;
+    end;
 end;
 
 //=== { TJclPeSectionStream } ================================================
@@ -5933,19 +5939,19 @@ begin
   FInstance := Instance;
   case PeMapImgTarget(Pointer(Instance)) of
     taWin32:
-      begin
-        NtHeaders32 := PeMapImgNtHeaders32(Pointer(Instance));
-        if NtHeaders32 = nil then
-          raise EJclPeImageError.CreateRes(@RsPeNotPE);
-        Header := PeMapImgFindSection32(NtHeaders32, ASectionName);
-      end;
+    begin
+      NtHeaders32 := PeMapImgNtHeaders32(Pointer(Instance));
+      if NtHeaders32 = nil then
+        raise EJclPeImageError.CreateRes(@RsPeNotPE);
+      Header := PeMapImgFindSection32(NtHeaders32, ASectionName);
+    end;
     taWin64:
-      begin
-        NtHeaders64 := PeMapImgNtHeaders64(Pointer(Instance));
-        if NtHeaders64 = nil then
-          raise EJclPeImageError.CreateRes(@RsPeNotPE);
-        Header := PeMapImgFindSection64(NtHeaders64, ASectionName);
-      end;
+    begin
+      NtHeaders64 := PeMapImgNtHeaders64(Pointer(Instance));
+      if NtHeaders64 = nil then
+        raise EJclPeImageError.CreateRes(@RsPeNotPE);
+      Header := PeMapImgFindSection64(NtHeaders64, ASectionName);
+    end;
     //toUnknown:
   else
     raise EJclPeImageError.CreateRes(@RsPeUnknownTarget);
@@ -6098,7 +6104,7 @@ var
   NtHeader32: PImageNtHeaders32;
   ImportDir: TImageDataDirectory;
   ImportDesc: PImageImportDescriptor;
-  CurrName: PChar;
+  CurrName:  PChar;
   ImportEntry32: PImageThunkData32;
   FoundProc: Boolean;
   WrittenBytes: Cardinal;
@@ -6218,8 +6224,8 @@ function PeDbgImgLibraryName32(ProcessHandle: THandle; BaseAddress: TJclAddr32;
   var Name: string): Boolean;
 var
   NtHeaders32: TImageNtHeaders32;
-  DataDir: TImageDataDirectory;
-  ExportDir: TImageExportDirectory;
+  DataDir:     TImageDataDirectory;
+  ExportDir:   TImageExportDirectory;
 begin
   Name := '';
 
@@ -6326,26 +6332,26 @@ var
         '@':
           case (NameP + 1)^ of
             #0:
-              begin
-                Description.Kind := skVTable;
-                Break;
-              end;
+            begin
+              Description.Kind := skVTable;
+              Break;
+            end;
             '$':
+            begin
+              if (NameP + 2)^ = 'b' then
               begin
-                if (NameP + 2)^ = 'b' then
-                begin
-                  case (NameP + 3)^ of
-                    'c':
-                      Description.Kind := skConstructor;
-                    'd':
-                      Description.Kind := skDestructor;
-                  end;
-                  Inc(NameP, 6);
-                end
-                else
-                  Description.Kind := skFunction;
-                Break; // no parameters unmangling yet
-              end;
+                case (NameP + 3)^ of
+                  'c':
+                    Description.Kind := skConstructor;
+                  'd':
+                    Description.Kind := skDestructor;
+                end;
+                Inc(NameP, 6);
+              end
+              else
+                Description.Kind := skFunction;
+              Break; // no parameters unmangling yet
+            end;
           else
             MarkQualifier;
             NameU^ := '.';
@@ -6353,10 +6359,10 @@ var
             Inc(NameP);
           end;
         '$':
-          begin
-            Description.Kind := skFunction;
-            Break; // no parameters unmangling yet
-          end;
+        begin
+          Description.Kind := skFunction;
+          Break; // no parameters unmangling yet
+        end;
       else
         Break;
       end;
@@ -6409,7 +6415,7 @@ end;
 function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult;
 var
   Description: TJclBorUmDescription;
-  BasePos: Integer;
+  BasePos:     Integer;
 begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
@@ -6418,7 +6424,7 @@ function PeBorUnmangleName(const Name: string): string;
 var
   Unmangled: string;
   Description: TJclBorUmDescription;
-  BasePos: Integer;
+  BasePos:   Integer;
 begin
   if PeBorUnmangleName(Name, Unmangled, Description, BasePos) = urOk then
     Result := Unmangled
@@ -6447,17 +6453,17 @@ begin
     urOk:
       Result := umBorland;
     urMicrosoft:
+    begin
+      SetLength(Unmangled, 2048);
+      Res := UnDecorateSymbolName(PChar(Name), PChar(Unmangled), 2048, UNDNAME_NAME_ONLY);
+      if Res > 0 then
       begin
-        SetLength(Unmangled, 2048);
-        Res := UnDecorateSymbolName(PChar(Name), PChar(Unmangled), 2048, UNDNAME_NAME_ONLY);
-        if Res > 0 then
-        begin
-          StrResetLength(Unmangled);
-          Result := umMicrosoft;
-        end
-        else
-          Unmangled := '';
-      end;
+        StrResetLength(Unmangled);
+        Result := umMicrosoft;
+      end
+      else
+        Unmangled := '';
+    end;
   end;
   if Result = umNotMangled then
     Unmangled := Name;

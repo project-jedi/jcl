@@ -46,15 +46,15 @@ type
   TJclMMRegister = packed record
     case TJclMMContentType of
       mt8Bytes:
-        (Bytes: array [0..7] of Byte;);
+      (Bytes: array [0..7] of Byte;);
       mt4Words:
-        (Words: array [0..3] of Word;);
+      (Words: array [0..3] of Word;);
       mt2DWords:
-        (DWords: array [0..1] of Cardinal;);
+      (DWords: array [0..1] of Cardinal;);
       mt1QWord:
-        (QWords: Int64;);
+      (QWords: Int64;);
       mt2Singles:
-        (Singles: array [0..1] of Single;);
+      (Singles: array [0..1] of Single;);
   end;
 
   TJclFPUContentType = (ftExtended, ftMM);
@@ -62,10 +62,10 @@ type
   TJclFPUData = packed record
     case TJclFPUContentType of
       ftExtended:
-        (FloatValue: Extended;);
+      (FloatValue: Extended;);
       ftMM:
-        (MMRegister: TJclMMRegister;
-         Reserved: Word;);
+      (MMRegister: TJclMMRegister;
+        Reserved: Word;);
   end;
 
   TJclFPURegister = packed record
@@ -80,17 +80,17 @@ type
   TJclXMMRegister = packed record
     case TJclXMMContentType of
       xt16Bytes:
-        (Bytes: array [0..15] of Byte;);
+      (Bytes: array [0..15] of Byte;);
       xt8Words:
-        (Words: array [0..7] of Word;);
+      (Words: array [0..7] of Word;);
       xt4DWords:
-        (DWords: array [0..3] of Cardinal;);
+      (DWords: array [0..3] of Cardinal;);
       xt2QWords:
-        (QWords: array [0..1] of Int64;);
+      (QWords: array [0..1] of Int64;);
       xt4Singles:
-        (Singles: array [0..3] of Single;);
+      (Singles: array [0..3] of Single;);
       xt2Doubles:
-        (Doubles: array [0..1] of Double;);
+      (Doubles: array [0..1] of Double;);
   end;
 
   TJclProcessorSize = (ps32Bits, ps64Bits);
@@ -98,10 +98,10 @@ type
   TJclXMMRegisters = packed record
     case TJclProcessorSize of
       ps32Bits:
-        (LegacyXMM: array [0..7] of TJclXMMRegister;
-         LegacyReserved: array [0..127] of Byte;);
+      (LegacyXMM: array [0..7] of TJclXMMRegister;
+        LegacyReserved: array [0..127] of Byte;);
       ps64Bits:
-        (LongXMM: array [0..15] of TJclXMMRegister;);
+      (LongXMM: array [0..15] of TJclXMMRegister;);
   end;
 
   //TJclRoundingControl = (rcRoundToNearest,   //=0
@@ -146,39 +146,39 @@ type
 
 const
   MXCSRBitsDescriptions: array [TMXCSRRange] of TBitDescription =
-   (
-    (AndMask: MXCSR_IE;  Shifting: 0;  ShortName: RsVectorIE;  LongName: RsVectorIEText),
-    (AndMask: MXCSR_DE;  Shifting: 1;  ShortName: RsVectorDE;  LongName: RsVectorDEText),
-    (AndMask: MXCSR_ZE;  Shifting: 2;  ShortName: RsVectorZE;  LongName: RsVectorZEText),
-    (AndMask: MXCSR_OE;  Shifting: 3;  ShortName: RsVectorOE;  LongName: RsVectorOEText),
-    (AndMask: MXCSR_UE;  Shifting: 4;  ShortName: RsVectorUE;  LongName: RsVectorUEText),
-    (AndMask: MXCSR_PE;  Shifting: 5;  ShortName: RsVectorPE;  LongName: RsVectorPEText),
-    (AndMask: MXCSR_DAZ; Shifting: 6;  ShortName: RsVectorDAZ; LongName: RsVectorDAZText),
-    (AndMask: MXCSR_IM;  Shifting: 7;  ShortName: RsVectorIM;  LongName: RsVectorIMText),
-    (AndMask: MXCSR_DM;  Shifting: 8;  ShortName: RsVectorDM;  LongName: RsVectorDMText),
-    (AndMask: MXCSR_ZM;  Shifting: 9;  ShortName: RsVectorZM;  LongName: RsVectorZMText),
-    (AndMask: MXCSR_OM;  Shifting: 10; ShortName: RsVectorOM;  LongName: RsVectorOMText),
-    (AndMask: MXCSR_UM;  Shifting: 11; ShortName: RsVectorUM;  LongName: RsVectorUMText),
-    (AndMask: MXCSR_PM;  Shifting: 12; ShortName: RsVectorPM;  LongName: RsVectorPMText),
-    (AndMask: MXCSR_RC;  Shifting: 13; ShortName: RsVectorRC;  LongName: RsVectorRCText),
-    (AndMask: MXCSR_FZ;  Shifting: 15; ShortName: RsVectorFZ;  LongName: RsVectorFZText)
-   );
+    (
+    (AndMask: MXCSR_IE; Shifting: 0; ShortName: RsVectorIE; LongName: RsVectorIEText),
+    (AndMask: MXCSR_DE; Shifting: 1; ShortName: RsVectorDE; LongName: RsVectorDEText),
+    (AndMask: MXCSR_ZE; Shifting: 2; ShortName: RsVectorZE; LongName: RsVectorZEText),
+    (AndMask: MXCSR_OE; Shifting: 3; ShortName: RsVectorOE; LongName: RsVectorOEText),
+    (AndMask: MXCSR_UE; Shifting: 4; ShortName: RsVectorUE; LongName: RsVectorUEText),
+    (AndMask: MXCSR_PE; Shifting: 5; ShortName: RsVectorPE; LongName: RsVectorPEText),
+    (AndMask: MXCSR_DAZ; Shifting: 6; ShortName: RsVectorDAZ; LongName: RsVectorDAZText),
+    (AndMask: MXCSR_IM; Shifting: 7; ShortName: RsVectorIM; LongName: RsVectorIMText),
+    (AndMask: MXCSR_DM; Shifting: 8; ShortName: RsVectorDM; LongName: RsVectorDMText),
+    (AndMask: MXCSR_ZM; Shifting: 9; ShortName: RsVectorZM; LongName: RsVectorZMText),
+    (AndMask: MXCSR_OM; Shifting: 10; ShortName: RsVectorOM; LongName: RsVectorOMText),
+    (AndMask: MXCSR_UM; Shifting: 11; ShortName: RsVectorUM; LongName: RsVectorUMText),
+    (AndMask: MXCSR_PM; Shifting: 12; ShortName: RsVectorPM; LongName: RsVectorPMText),
+    (AndMask: MXCSR_RC; Shifting: 13; ShortName: RsVectorRC; LongName: RsVectorRCText),
+    (AndMask: MXCSR_FZ; Shifting: 15; ShortName: RsVectorFZ; LongName: RsVectorFZText)
+    );
 
 type
   TJclSIMDValue = packed record
     case Display: TJclXMMContentType of
       xt16Bytes:
-        (ValueByte: Byte;);
+      (ValueByte: Byte;);
       xt8Words:
-        (ValueWord: Word;);
+      (ValueWord: Word;);
       xt4DWords:
-        (ValueDWord: Cardinal;);
+      (ValueDWord: Cardinal;);
       xt2QWords:
-        (ValueQWord: Int64;);
+      (ValueQWord: Int64;);
       xt4Singles:
-        (ValueSingle: Single;);
+      (ValueSingle: Single;);
       xt2Doubles:
-        (ValueDouble: Double;);
+      (ValueDouble: Double;);
   end;
 
   TJclSIMDFormat = (sfBinary, sfSigned, sfUnsigned, sfHexa);
@@ -234,7 +234,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Shortint(Value.ValueByte));
@@ -257,7 +257,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToStr(Byte(Value.ValueByte));
@@ -280,7 +280,7 @@ const
 begin
   if not (Value.Display in [xt16Bytes, xt8Words, xt4DWords, XT2QWords]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt16Bytes:
       Result := IntToHex(Value.ValueByte, Width[xt16Bytes]);
@@ -299,7 +299,7 @@ function FormatFloat(Value: TJclSIMDValue): string;
 begin
   if not (Value.Display in [xt4Singles, xt2Doubles]) then
     raise EJclExpertException.CreateTrace(RsEBadRegisterDisplay);
-    
+
   case Value.Display of
     xt4Singles:
       Result := FloatToStr(Value.ValueSingle);
@@ -341,7 +341,7 @@ end;
 function ParseBinary(StringValue: string; var Value: TJclSIMDValue): Boolean;
 var
   TestValue: Int64;
-  Index: Integer;
+  Index:     Integer;
 begin
   TestValue := 0;
   Result := False;
@@ -448,7 +448,7 @@ end;
 function ParseHexa(StringValue: string; var Value: TJclSIMDValue): Boolean;
 var
   TestValue: Int64;
-  Index: Integer;
+  Index:     Integer;
 begin
   TestValue := 0;
   Result := False;
@@ -554,15 +554,15 @@ var
   LocalString: string;
   RegisterPosition: Integer;
   DataPosition: Integer;
-  DataType: string;
-  Index: Integer;
+  DataType:    string;
+  Index:       Integer;
   RegisterIndex: Integer;
-  DataIndex: Integer;
-  ErrorCode: Integer;
+  DataIndex:   Integer;
+  ErrorCode:   Integer;
   NumberOfXMMRegister: Integer;
-  AValue: TJclSIMDValue;
-  ValueStr: string;
-  OldLength: Integer;
+  AValue:      TJclSIMDValue;
+  ValueStr:    string;
+  OldLength:   Integer;
 begin
   if Is64Bits then
     NumberOfXMMRegister := 16
@@ -783,19 +783,19 @@ begin
   begin
     VectorContext.MXCSR := OTAXMMRegs.MXCSR;
     VectorContext.MXCSRMask := $FFFFFFFF;
-    Move(OTAXMMRegs,VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
+    Move(OTAXMMRegs, VectorContext.XMMRegisters, SizeOf(TOTAXMMReg) * 8);
     OTAThreadContext := AThread.OTAThreadContext;
     VectorContext.FCW := OTAThreadContext.FloatSave.ControlWord;
     VectorContext.FSW := OTAThreadContext.FloatSave.StatusWord;
     VectorContext.FTW := OTAThreadContext.FloatSave.TagWord;
-    Move(OTAThreadContext.FloatSave.RegisterArea[00],VectorContext.FPURegisters[0],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[10],VectorContext.FPURegisters[1],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[20],VectorContext.FPURegisters[2],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[30],VectorContext.FPURegisters[3],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[40],VectorContext.FPURegisters[4],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[50],VectorContext.FPURegisters[5],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[60],VectorContext.FPURegisters[6],SizeOf(Extended));
-    Move(OTAThreadContext.FloatSave.RegisterArea[70],VectorContext.FPURegisters[7],SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[00], VectorContext.FPURegisters[0], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[10], VectorContext.FPURegisters[1], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[20], VectorContext.FPURegisters[2], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[30], VectorContext.FPURegisters[3], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[40], VectorContext.FPURegisters[4], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[50], VectorContext.FPURegisters[5], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[60], VectorContext.FPURegisters[6], SizeOf(Extended));
+    Move(OTAThreadContext.FloatSave.RegisterArea[70], VectorContext.FPURegisters[7], SizeOf(Extended));
   end;
 end;
 {$ELSE COMPILER9_UP}
@@ -830,7 +830,7 @@ begin
   Result := True;
   try
     OTAXMMRegs.MXCSR := VectorContext.MXCSR;
-    Move(VectorContext.XMMRegisters,OTAXMMRegs,SizeOf(TOTAXMMReg) * 8);
+    Move(VectorContext.XMMRegisters, OTAXMMRegs, SizeOf(TOTAXMMReg) * 8);
     AThread.SetOTAXMMRegisters(OTAXMMRegs);
   except
     Result := False;
@@ -889,4 +889,3 @@ end;
 {$ENDIF COMPILER9_UP}
 
 end.
-

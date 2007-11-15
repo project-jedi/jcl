@@ -52,7 +52,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
-    private
+  private
     FDetailsVisible: Boolean;
     FThreadID: DWORD;
     FLastActiveControl: TWinControl;
@@ -105,10 +105,10 @@ resourcestring
   RsModulesList = 'List of loaded modules:';
   RsOSVersion = 'System   : %s %s, Version: %d.%d, Build: %x, "%s"';
   RsProcessor = 'Processor: %s, %s, %d MHz';
-  RsMemory = 'Memory: %d; free %d';
+  RsMemory   = 'Memory: %d; free %d';
   RsScreenRes = 'Display  : %dx%d pixels, %d bpp';
   RsActiveControl = 'Active Controls hierarchy:';
-  RsThread = 'Thread: %s';
+  RsThread   = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
 
 
@@ -130,7 +130,8 @@ begin
   Addr2 := Cardinal(List.Objects[Index2]);
   if Addr1 > Addr2 then
     Result := 1
-  else if Addr1 < Addr2 then
+  else
+  if Addr1 < Addr2 then
     Result := -1
   else
     Result := 0;
@@ -159,7 +160,7 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset      = $86;
+  CallOffset = $86;
   CallOffsetDebug = $94;
 type
   PCALLInstruction = ^TCALLInstruction;
@@ -170,8 +171,8 @@ type
 var
   TApplicationHandleExceptionAddr, SysUtilsShowExceptionAddr: Pointer;
   CALLInstruction: TCALLInstruction;
-  CallAddress: Pointer;
-  WrittenBytes: Cardinal;
+  CallAddress:     Pointer;
+  WrittenBytes:    Cardinal;
 
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
@@ -182,9 +183,11 @@ var
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) +
+            Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) -
+            Integer(CallAddress) - SizeOf(CALLInstruction);
       end;
     except
       Result := False;
@@ -240,20 +243,20 @@ end;
 procedure TExceptionDialogMail.SendBtnClick(Sender: TObject);
 begin
   with TJclEmail.Create do
-  try
-    ParentWnd := Application.Handle;
-    Recipients.Add('name@domain.ext');
-    Subject := 'email subject';
-    Body := ReportAsText;
-    SaveTaskWindows;
     try
-      Send(True);
+      ParentWnd := Application.Handle;
+      Recipients.Add('name@domain.ext');
+      Subject := 'email subject';
+      Body := ReportAsText;
+      SaveTaskWindows;
+      try
+        Send(True);
+      finally
+        RestoreTaskWindows;
+      end;
     finally
-      RestoreTaskWindows;
+      Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
 //----------------------------------------------------------------------------
@@ -289,17 +292,17 @@ end;
 procedure TExceptionDialogMail.CreateReport;
 var
   SL: TStringList;
-  I: Integer;
+  I:  Integer;
   ModuleName: TFileName;
   NtHeaders32: PImageNtHeaders32;
   NtHeaders64: PImageNtHeaders64;
   ModuleBase: Cardinal;
   ImageBaseStr: string;
-  C: TWinControl;
+  C:  TWinControl;
   CpuInfo: TCpuInfo;
   ProcessorDetails: string;
   StackList: TJclStackInfoList;
- 
+
   PETarget: TJclPeTarget;
 begin
   SL := TStringList.Create;
@@ -383,13 +386,13 @@ begin
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
           with TJclFileVersionInfo.Create(ModuleName) do
-          try
-            DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
-            if FileDescription <> '' then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
-          finally
-            Free;
-          end
+            try
+              DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
+              if FileDescription <> '' then
+                DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
+            finally
+              Free;
+            end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
       end;
@@ -583,7 +586,7 @@ begin
     else
       Height := FNonDetailsHeight;
     Constraints.MinHeight := FNonDetailsHeight;
-    Constraints.MaxHeight := FNonDetailsHeight
+    Constraints.MaxHeight := FNonDetailsHeight;
   end;
   DetailsBtn.Caption := DetailsCaption;
   DetailsMemo.Enabled := Value;
@@ -639,7 +642,7 @@ begin
   if TextLabel.Lines.Count * Canvas.TextHeight('Wg') > TextLabel.ClientHeight then
     TextLabel.ScrollBars := ssVertical
   else
-    TextLabel.ScrollBars := ssNone;   
+    TextLabel.ScrollBars := ssNone;
 end;
 
 //==================================================================================================

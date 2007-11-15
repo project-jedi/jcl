@@ -112,8 +112,10 @@ begin
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_DIGITAL', Pointer(MIXERLINE_COMPONENTTYPE_SRC_DIGITAL));
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_LINE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_LINE));
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER', Pointer(MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER));
-  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC', Pointer(MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER',
+    Pointer(MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER));
+  FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC',
+    Pointer(MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC));
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE', Pointer(MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE));
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER', Pointer(MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER));
   FComponentTypes.AddObject('MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT', Pointer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT));
@@ -333,7 +335,7 @@ var
   List: TStringList;
   I, D: Integer;
   Node: TTreeNode;
-  C: Char;
+  C:    Char;
 begin
   List := TStringList.Create;
   MixerDetailListView.Items.BeginUpdate;
@@ -343,14 +345,19 @@ begin
       Node := MixerTreeView.Items[I];
       UpdateMixerDetails(TObject(Node.Data));
       case Node.Level of
-        0: C := ' ';
-        1: C := '=';
-        2: C := '+';
-        3: C := '-';
+        0:
+          C := ' ';
+        1:
+          C := '=';
+        2:
+          C := '+';
+        3:
+          C := '-';
       else
         C := '!';
       end;
-      List.Add(Format('%*s%s %s', [Node.Level * 2, '', Node.Text, StringOfChar(C, 119 - Node.Level * 2 - Length(Node.Text))]));
+      List.Add(Format('%*s%s %s', [Node.Level * 2, '', Node.Text, StringOfChar(C, 119 -
+        Node.Level * 2 - Length(Node.Text))]));
       with MixerDetailListView.Items do
         for D := 0 to Count - 1 do
         begin
@@ -403,7 +410,8 @@ procedure TMainForm.UpdateMixerDetails(MixerObject: TObject);
       DisplayName := ComponentString;
       if DisplayName = '' then
         DisplayName := Format('(%.8x)', [LineInfo.dwComponentType]);
-      AddLine('Component type', Format('%s [%s]', [DisplayName, ComponentTypeConstToString(LineInfo.dwComponentType)]));
+      AddLine('Component type', Format('%s [%s]', [DisplayName, ComponentTypeConstToString(
+        LineInfo.dwComponentType)]));
       AddLine('ID', IntToHex(ID, 8));
       AddLine('Channels', IntToStr(LineInfo.cChannels));
       AddLine('Connections', IntToStr(LineInfo.cConnections));
@@ -426,7 +434,8 @@ procedure TMainForm.UpdateMixerDetails(MixerObject: TObject);
     with LineControl do
     begin
       AddLine('ID', IntToHex(ControlInfo.dwControlID, 8));
-      AddLine('Control type', Format('%.8x [%s]', [ControlInfo.dwControlType, ControlTypeConstToString(ControlInfo.dwControlType)]));
+      AddLine('Control type', Format('%.8x [%s]', [ControlInfo.dwControlType,
+        ControlTypeConstToString(ControlInfo.dwControlType)]));
       AddLine('Disabled', BooleanToStr(IsDisabled));
       AddLine('List', BooleanToStr(IsList));
       AddLine('Multiple', BooleanToStr(IsMultiple));

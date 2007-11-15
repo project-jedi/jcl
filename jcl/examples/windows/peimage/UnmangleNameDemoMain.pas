@@ -41,12 +41,12 @@ uses
 // Demonstrates creating custom resource item classes
 
 type
-  TJclPeResourceStringItem = class (TJclPeResourceItem)
+  TJclPeResourceStringItem = class(TJclPeResourceItem)
   public
     function GetItemIDString(const ItemID: Word): string;
   end;
 
-  TJclDemoPeBorImage = class (TJclPeBorImage)
+  TJclDemoPeBorImage = class(TJclPeBorImage)
   protected
     function ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
       AParentItem: TJclPeResourceItem): TJclPeResourceItem; override;
@@ -78,7 +78,8 @@ begin
         Exit;
       end;
       Inc(P, Len);
-    end else
+    end
+    else
       Inc(P);
     Inc(Cnt);
   end;
@@ -160,9 +161,9 @@ procedure TForm1.ListView1Data(Sender: TObject; Item: TListItem);
 var
   Unmangled, OriginalName, S, SectionName: string;
   Descr: TJclBorUmDescription;
-  Res: TJclBorUmResult;
-  TI: PTypeInfo;
-  TD: PTypeData;
+  Res:   TJclBorUmResult;
+  TI:    PTypeInfo;
+  TD:    PTypeData;
   ResString: PResStringRec;
 begin
   with Item do
@@ -173,36 +174,39 @@ begin
     begin
       Caption := Unmangled;
       S := Copy(GetEnumName(TypeInfo(TJclBorUmSymbolKind), Integer(Descr.Kind)), 3, 255);
-      if smQualified in Descr.Modifiers then S := S + ' [Q]';
-      if smLinkProc in Descr.Modifiers then S := S + ' [L]';
+      if smQualified in Descr.Modifiers then
+        S := S + ' [Q]';
+      if smLinkProc in Descr.Modifiers then
+        S := S + ' [L]';
       SubItems.Add(S);
       case Descr.Kind of
         skRTTI:
-          begin
-            TI := BorImage.ExportList[Index].MappedAddress;
-            SubItems.Add(Copy(GetEnumName(TypeInfo(TTypeKind), Integer(TI^.Kind)), 3, 255));
-            SubItems.Add(TI^.Name);
-            TD := GetTypeData(TI);
-            case TI^.Kind of
-              tkInterface:
-                SubItems.Add(GUIDToString(TD^.Guid));
-              tkMethod:
-                SubItems.Add(GetEnumName(TypeInfo(TMethodKind), Integer(TD^.MethodKind)));
-            end;
+        begin
+          TI := BorImage.ExportList[Index].MappedAddress;
+          SubItems.Add(Copy(GetEnumName(TypeInfo(TTypeKind), Integer(TI^.Kind)), 3, 255));
+          SubItems.Add(TI^.Name);
+          TD := GetTypeData(TI);
+          case TI^.Kind of
+            tkInterface:
+              SubItems.Add(GUIDToString(TD^.Guid));
+            tkMethod:
+              SubItems.Add(GetEnumName(TypeInfo(TMethodKind), Integer(TD^.MethodKind)));
           end;
+        end;
         skData:
-          begin
-            SectionName := BorImage.ExportList[Index].SectionName;
-            SubItems.Add(SectionName);
-            if (smQualified in Descr.Modifiers) and (SectionName = 'CODE') then
-            begin // Exported data in CODE section are resourcestrings
-              ResString := BorImage.ExportList[Index].MappedAddress;
-              SubItems.Add(Format('ResString ID: %d', [ResString^.Identifier]));
-              SubItems.Add(TJclDemoPeBorImage(BorImage).ResourceStringValue(ResString^.Identifier));
-            end;
+        begin
+          SectionName := BorImage.ExportList[Index].SectionName;
+          SubItems.Add(SectionName);
+          if (smQualified in Descr.Modifiers) and (SectionName = 'CODE') then
+          begin // Exported data in CODE section are resourcestrings
+            ResString := BorImage.ExportList[Index].MappedAddress;
+            SubItems.Add(Format('ResString ID: %d', [ResString^.Identifier]));
+            SubItems.Add(TJclDemoPeBorImage(BorImage).ResourceStringValue(ResString^.Identifier));
           end;
+        end;
       end;
-    end else
+    end
+    else
     begin // Not mangled or Microsoft compiler
       PeUnmangleName(OriginalName, Unmangled);
       Caption := Unmangled;

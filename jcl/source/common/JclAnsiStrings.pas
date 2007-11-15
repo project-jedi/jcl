@@ -77,43 +77,43 @@ uses
 
 const
   // Misc. often used character definitions
-  AnsiNull           = AnsiChar(#0);
-  AnsiSoh            = AnsiChar(#1);
-  AnsiStx            = AnsiChar(#2);
-  AnsiEtx            = AnsiChar(#3);
-  AnsiEot            = AnsiChar(#4);
-  AnsiEnq            = AnsiChar(#5);
-  AnsiAck            = AnsiChar(#6);
-  AnsiBell           = AnsiChar(#7);
-  AnsiBackspace      = AnsiChar(#8);
-  AnsiTab            = AnsiChar(#9);
-  AnsiLineFeed       = JclBase.AnsiLineFeed;
-  AnsiVerticalTab    = AnsiChar(#11);
-  AnsiFormFeed       = AnsiChar(#12);
+  AnsiNull = AnsiChar(#0);
+  AnsiSoh = AnsiChar(#1);
+  AnsiStx = AnsiChar(#2);
+  AnsiEtx = AnsiChar(#3);
+  AnsiEot = AnsiChar(#4);
+  AnsiEnq = AnsiChar(#5);
+  AnsiAck = AnsiChar(#6);
+  AnsiBell = AnsiChar(#7);
+  AnsiBackspace = AnsiChar(#8);
+  AnsiTab = AnsiChar(#9);
+  AnsiLineFeed = JclBase.AnsiLineFeed;
+  AnsiVerticalTab = AnsiChar(#11);
+  AnsiFormFeed = AnsiChar(#12);
   AnsiCarriageReturn = JclBase.AnsiCarriageReturn;
-  AnsiCrLf           = JclBase.AnsiCrLf;
-  AnsiSo             = AnsiChar(#14);
-  AnsiSi             = AnsiChar(#15);
-  AnsiDle            = AnsiChar(#16);
-  AnsiDc1            = AnsiChar(#17);
-  AnsiDc2            = AnsiChar(#18);
-  AnsiDc3            = AnsiChar(#19);
-  AnsiDc4            = AnsiChar(#20);
-  AnsiNak            = AnsiChar(#21);
-  AnsiSyn            = AnsiChar(#22);
-  AnsiEtb            = AnsiChar(#23);
-  AnsiCan            = AnsiChar(#24);
-  AnsiEm             = AnsiChar(#25);
-  AnsiEndOfFile      = AnsiChar(#26);
-  AnsiEscape         = AnsiChar(#27);
-  AnsiFs             = AnsiChar(#28);
-  AnsiGs             = AnsiChar(#29);
-  AnsiRs             = AnsiChar(#30);
-  AnsiUs             = AnsiChar(#31);
-  AnsiSpace          = AnsiChar(' ');
-  AnsiComma          = AnsiChar(',');
-  AnsiBackslash      = AnsiChar('\');
-  AnsiForwardSlash   = AnsiChar('/');
+  AnsiCrLf = JclBase.AnsiCrLf;
+  AnsiSo = AnsiChar(#14);
+  AnsiSi = AnsiChar(#15);
+  AnsiDle = AnsiChar(#16);
+  AnsiDc1 = AnsiChar(#17);
+  AnsiDc2 = AnsiChar(#18);
+  AnsiDc3 = AnsiChar(#19);
+  AnsiDc4 = AnsiChar(#20);
+  AnsiNak = AnsiChar(#21);
+  AnsiSyn = AnsiChar(#22);
+  AnsiEtb = AnsiChar(#23);
+  AnsiCan = AnsiChar(#24);
+  AnsiEm = AnsiChar(#25);
+  AnsiEndOfFile = AnsiChar(#26);
+  AnsiEscape = AnsiChar(#27);
+  AnsiFs = AnsiChar(#28);
+  AnsiGs = AnsiChar(#29);
+  AnsiRs = AnsiChar(#30);
+  AnsiUs = AnsiChar(#31);
+  AnsiSpace = AnsiChar(' ');
+  AnsiComma = AnsiChar(',');
+  AnsiBackslash = AnsiChar('\');
+  AnsiForwardSlash = AnsiChar('/');
 
   AnsiDoubleQuote = AnsiChar('"');
   AnsiSingleQuote = AnsiChar('''');
@@ -122,28 +122,28 @@ const
 
 // Misc. character sets
 
-  AnsiWhiteSpace             = [AnsiTab, AnsiLineFeed, AnsiVerticalTab,
+  AnsiWhiteSpace = [AnsiTab, AnsiLineFeed, AnsiVerticalTab,
     AnsiFormFeed, AnsiCarriageReturn, AnsiSpace];
-  AnsiSigns                  = ['-', '+'];
-  AnsiUppercaseLetters       = JclBase.AnsiUppercaseLetters;
-  AnsiLowercaseLetters       = JclBase.AnsiLowercaseLetters;
-  AnsiLetters                = JclBase.AnsiLetters;
-  AnsiDecDigits              = JclBase.AnsiDecDigits;
-  AnsiOctDigits              = JclBase.AnsiOctDigits;
-  AnsiHexDigits              = JclBase.AnsiHexDigits;
+  AnsiSigns = ['-', '+'];
+  AnsiUppercaseLetters = JclBase.AnsiUppercaseLetters;
+  AnsiLowercaseLetters = JclBase.AnsiLowercaseLetters;
+  AnsiLetters = JclBase.AnsiLetters;
+  AnsiDecDigits = JclBase.AnsiDecDigits;
+  AnsiOctDigits = JclBase.AnsiOctDigits;
+  AnsiHexDigits = JclBase.AnsiHexDigits;
   AnsiValidIdentifierLetters = JclBase.AnsiValidIdentifierLetters;
 
 const
   // CharType return values
-  C1_UPPER  = $0001; // Uppercase
-  C1_LOWER  = $0002; // Lowercase
-  C1_DIGIT  = $0004; // Decimal digits
-  C1_SPACE  = $0008; // Space characters
-  C1_PUNCT  = $0010; // Punctuation
-  C1_CNTRL  = $0020; // Control characters
-  C1_BLANK  = $0040; // Blank characters
+  C1_UPPER = $0001; // Uppercase
+  C1_LOWER = $0002; // Lowercase
+  C1_DIGIT = $0004; // Decimal digits
+  C1_SPACE = $0008; // Space characters
+  C1_PUNCT = $0010; // Punctuation
+  C1_CNTRL = $0020; // Control characters
+  C1_BLANK = $0040; // Blank characters
   C1_XDIGIT = $0080; // Hexadecimal digits
-  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
+  C1_ALPHA = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
   {$IFDEF MSWINDOWS}
   {$IFDEF SUPPORTS_EXTSYM}
@@ -397,15 +397,15 @@ type
 
 const
   {$IFNDEF CLR}
-  AnsiStrRecSize  = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
+  AnsiStrRecSize = SizeOf(TAnsiStrRec);     // size of the AnsiString header rec
   {$ENDIF ~CLR}
-  AnsiCharCount   = Ord(High(AnsiChar)) + 1; // # of chars in one set
-  AnsiLoOffset    = AnsiCharCount * 0;       // offset to lower case chars
-  AnsiUpOffset    = AnsiCharCount * 1;       // offset to upper case chars
-  AnsiReOffset    = AnsiCharCount * 2;       // offset to reverse case chars
-  AnsiAlOffset    = 12;                      // offset to AllocSize in StrRec
-  AnsiRfOffset    = 8;                       // offset to RefCount in StrRec
-  AnsiLnOffset    = 4;                       // offset to Length in StrRec
+  AnsiCharCount  = Ord(High(AnsiChar)) + 1; // # of chars in one set
+  AnsiLoOffset   = AnsiCharCount * 0;       // offset to lower case chars
+  AnsiUpOffset   = AnsiCharCount * 1;       // offset to upper case chars
+  AnsiReOffset   = AnsiCharCount * 2;       // offset to reverse case chars
+  AnsiAlOffset   = 12;                      // offset to AllocSize in StrRec
+  AnsiRfOffset   = 8;                       // offset to RefCount in StrRec
+  AnsiLnOffset   = 4;                       // offset to Length in StrRec
   AnsiCaseMapSize = AnsiCharCount * 3;       // # of chars is a table
 
 var
@@ -548,96 +548,96 @@ end;
 {$ELSE}
 procedure StrCase(var Str: AnsiString; const Offset: Integer); register; assembler;
 asm
-        // make sure that the string is not null
+        // MAKE SURE THAT THE STRING IS NOT NULL
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@STRISNULL
 
-        // create unique string if this one is ref-counted
+        // CREATE UNIQUE STRING IF THIS ONE IS REF-COUNTED
 
-        PUSH    EDX
-        CALL    UniqueString
-        POP     EDX
+         PUSH    EDX
+         CALL    UNIQUESTRING
+         POP     EDX
 
-        // make sure that the new string is not null
+        // MAKE SURE THAT THE NEW STRING IS NOT NULL
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@STRISNULL
 
-        // get the length, and prepare the counter
+        // GET THE LENGTH, AND PREPARE THE COUNTER
 
-        MOV     ECX, [EAX - AnsiStrRecSize].TAnsiStrRec.Length
-        DEC     ECX
-        JS      @@StrIsNull
+         MOV     ECX, [EAX - ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         DEC     ECX
+         JS      @@STRISNULL
 
-        // ebx will hold the case map, esi pointer to Str
+        // EBX WILL HOLD THE CASE MAP, ESI POINTER TO STR
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        // load case map and prepare variables }
+        // LOAD CASE MAP AND PREPARE VARIABLES }
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+        LEA     EBX, [EBX][ANSICASEMAP + EDX]
         {$ELSE}
-        LEA     EBX, [AnsiCaseMap + EDX]
+         LEA     EBX, [ANSICASEMAP + EDX]
         {$ENDIF PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
+         MOV     ESI, EAX
+         XOR     EDX, EDX
+         XOR     EAX, EAX
 
-@@NextChar:
-        // get current char from the AnsiString
+         @@NEXTCHAR:
+        // GET CURRENT CHAR FROM THE ANSISTRING
 
-        MOV     DL, [ESI]
+         MOV     DL, [ESI]
 
-        // get corresponding char from the case map
+        // GET CORRESPONDING CHAR FROM THE CASE MAP
 
-        MOV     AL, [EBX + EDX]
+         MOV     AL, [EBX + EDX]
 
-        // store it back in the string
+        // STORE IT BACK IN THE STRING
 
-        MOV     [ESI], AL
+         MOV     [ESI], AL
 
-        // update the loop counter and check the end of stirng
+        // UPDATE THE LOOP COUNTER AND CHECK THE END OF STIRNG
 
-        DEC     ECX
-        JL      @@Done
+         DEC     ECX
+         JL      @@DONE
 
-        // do the same thing with next 3 chars
+        // DO THE SAME THING WITH NEXT 3 CHARS
 
-        MOV     DL, [ESI + 1]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 1], AL
+         MOV     DL, [ESI + 1]
+         MOV     AL, [EBX + EDX]
+         MOV     [ESI + 1], AL
 
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 2]
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
+         DEC     ECX
+         JL      @@DONE
+         MOV     DL, [ESI + 2]
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 2], AL
 
-        DEC     ECX
-        JL      @@Done
-        MOV     DL, [ESI + 3]
-        MOV     AL, [EBX + EDX]
-        MOV     [ESI + 3], AL
+         DEC     ECX
+         JL      @@DONE
+         MOV     DL, [ESI + 3]
+         MOV     AL, [EBX + EDX]
+         MOV     [ESI + 3], AL
 
-        // point AnsiString to next 4 chars
+        // POINT ANSISTRING TO NEXT 4 CHARS
 
-        ADD     ESI, 4
+         ADD     ESI, 4
 
-        // update the loop counter and check the end of stirng
+        // UPDATE THE LOOP COUNTER AND CHECK THE END OF STIRNG
 
-        DEC     ECX
-        JGE     @@NextChar
+         DEC     ECX
+         JGE     @@NEXTCHAR
 
-@@Done:
-        POP     EDI
-        POP     ESI
-        POP     EBX
+         @@DONE:
+         POP     EDI
+         POP     ESI
+         POP     EBX
 
-@@StrIsNull:
+         @@STRISNULL:
 end;
 {$ENDIF CLR}
 
@@ -648,88 +648,88 @@ end;
 
 procedure StrCaseBuff(S: PAnsiChar; const Offset: Integer); register; assembler;
 asm
-        // make sure the string is not null
+        // MAKE SURE THE STRING IS NOT NULL
 
-        TEST    EAX, EAX
-        JZ      @@StrIsNull
+         TEST    EAX, EAX
+         JZ      @@STRISNULL
 
-        // ebx will hold the case map, esi pointer to Str
+        // EBX WILL HOLD THE CASE MAP, ESI POINTER TO STR
 
-        PUSH    EBX
-        PUSH    ESI
+         PUSH    EBX
+         PUSH    ESI
 
-        // load case map and prepare variables
+        // LOAD CASE MAP AND PREPARE VARIABLES
 
         {$IFDEF PIC}
-        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+        LEA     EBX, [EBX][ANSICASEMAP + EDX]
         {$ELSE}
-        LEA     EBX, [AnsiCaseMap + EDX]
+         LEA     EBX, [ANSICASEMAP + EDX]
         {$ENDIF PIC}
-        MOV     ESI, EAX
-        XOR     EDX, EDX
-        XOR     EAX, EAX
+         MOV     ESI, EAX
+         XOR     EDX, EDX
+         XOR     EAX, EAX
 
-@@NextChar:
-        // get current char from the string
+         @@NEXTCHAR:
+        // GET CURRENT CHAR FROM THE STRING
 
-        MOV     DL, [ESI]
+         MOV     DL, [ESI]
 
-        // check for null char
+        // CHECK FOR NULL CHAR
 
-        TEST    DL, DL
-        JZ      @@Done
+         TEST    DL, DL
+         JZ      @@DONE
 
-        // get corresponding char from the case map
+        // GET CORRESPONDING CHAR FROM THE CASE MAP
 
-        MOV     AL, [EBX + EDX]
+         MOV     AL, [EBX + EDX]
 
-        // store it back in the string
+        // STORE IT BACK IN THE STRING
 
-        MOV     [ESI], AL
+         MOV     [ESI], AL
 
-        // do the same thing with next 3 chars
+        // DO THE SAME THING WITH NEXT 3 CHARS
 
-        MOV     DL, [ESI + 1]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 1], AL
+         MOV     DL, [ESI + 1]
+         TEST    DL, DL
+         JZ      @@DONE
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 1], AL
 
-        MOV     DL, [ESI + 2]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 2], AL
+         MOV     DL, [ESI + 2]
+         TEST    DL, DL
+         JZ      @@DONE
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 2], AL
 
-        MOV     DL, [ESI + 3]
-        TEST    DL, DL
-        JZ      @@Done
-        MOV     AL, [EBX+EDX]
-        MOV     [ESI + 3], AL
+         MOV     DL, [ESI + 3]
+         TEST    DL, DL
+         JZ      @@DONE
+         MOV     AL, [EBX+EDX]
+         MOV     [ESI + 3], AL
 
-        // point string to next 4 chars
+        // POINT STRING TO NEXT 4 CHARS
 
-        ADD     ESI, 4
-        JMP     @@NextChar
+         ADD     ESI, 4
+         JMP     @@NEXTCHAR
 
-@@Done:
-        POP     ESI
-        POP     EBX
+         @@DONE:
+         POP     ESI
+         POP     EBX
 
-@@StrIsNull:
+         @@STRISNULL:
 end;
 
 function StrEndW(Str: PWideChar): PWideChar; assembler;
-// returns a pointer to the end of a null terminated string
-// stolen from JclUnicode
+// RETURNS A POINTER TO THE END OF A NULL TERMINATED STRING
+// STOLEN FROM JCLUNICODE
 asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       LEA     EAX, [EDI - 2]
-       MOV     EDI, EDX
+         MOV     EDX, EDI
+         MOV     EDI, EAX
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         LEA     EAX, [EDI - 2]
+         MOV     EDI, EDX
 end;
 {$ENDIF ~CLR}
 
@@ -1088,12 +1088,12 @@ begin
   StrCase(S, AnsiLoOffset);
 end;
 {$ELSE}
-assembler;
+  assembler;
 asm
-        // StrCase(S, AnsiLoOffset)
+        // STRCASE(S, ANSILOOFFSET)
 
-        XOR     EDX, EDX         // MOV     EDX, LoOffset
-        JMP     StrCase
+         XOR     EDX, EDX         // MOV     EDX, LOOFFSET
+         JMP     STRCASE
 end;
 {$ENDIF PIC}
 
@@ -1104,11 +1104,11 @@ begin
   StrCaseBuff(S, AnsiLoOffset);
 end;
 {$ELSE}
-assembler;
+  assembler;
 asm
-        // StrCaseBuff(S, LoOffset)
-        XOR     EDX, EDX                // MOV     EDX, LoOffset
-        JMP     StrCaseBuff
+        // STRCASEBUFF(S, LOOFFSET)
+         XOR     EDX, EDX                // MOV     EDX, LOOFFSET
+         JMP     STRCASEBUFF
 end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
@@ -1226,7 +1226,7 @@ end;
 {$ELSE}
 var
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1264,7 +1264,7 @@ end;
 {$ELSE}
 var
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len:   Integer;
 begin
   Len := Length(S);
   SetLength(Result, Len);
@@ -1344,8 +1344,8 @@ end;
 {$ELSE}
 var
   Count: Integer;
-  LenS: Integer;
-  P: PAnsiChar;
+  LenS:  Integer;
+  P:     PAnsiChar;
 begin
   Result := '';
   LenS := Length(S);
@@ -1560,7 +1560,7 @@ end;
 {$ELSE}
 var
   P1, P2: PAnsiChar;
-  C: AnsiChar;
+  C:      AnsiChar;
 begin
   UniqueString(S);
   P1 := PAnsiChar(S);
@@ -1588,7 +1588,7 @@ var
   LenS: Integer;
   {$ELSE}
   Source, Dest: PAnsiChar;
-  Index, Len: Integer;
+  Index, Len:   Integer;
   {$ENDIF CLR}
 begin
   Result := '';
@@ -1684,7 +1684,7 @@ var
   Index: Integer;
   C, L, N: Integer;
   BL, BH: Byte;
-  S: AnsiString;
+  S:     AnsiString;
 begin
   Result := '';
   if Source <> '' then
@@ -1792,9 +1792,9 @@ begin
 end;
 {$ELSE}
 asm
-        // StrCase(Str, AnsiUpOffset)
-        MOV     EDX, AnsiUpOffset
-        JMP     StrCase
+        // STRCASE(STR, ANSIUPOFFSET)
+         MOV     EDX, ANSIUPOFFSET
+         JMP     STRCASE
 end;
 {$ENDIF PIC}
 
@@ -1806,9 +1806,9 @@ begin
 end;
 {$ELSE}
 asm
-        // StrCaseBuff(S, UpOffset)
-        MOV     EDX, AnsiUpOffset
-        JMP     StrCaseBuff
+        // STRCASEBUFF(S, UPOFFSET)
+         MOV     EDX, ANSIUPOFFSET
+         JMP     STRCASEBUFF
 end;
 {$ENDIF PIC}
 {$ENDIF ~CLR}
@@ -1868,12 +1868,12 @@ var
 begin
   case StrRefCount(S) of
     -1, 0:
-      { nothing } ;
-     1:
-       begin
-         Finalize(S);
-         Pointer(S) := nil;
-       end;
+      { nothing };
+    1:
+    begin
+      Finalize(S);
+      Pointer(S) := nil;
+    end;
   else
     Pointer(Foo) := Pointer(S);
   end;
@@ -1881,29 +1881,29 @@ end;
 
 function StrLen(S: PAnsiChar): Integer; assembler;
 asm
-        TEST    EAX, EAX
-        JZ      @@EXIT
+         TEST    EAX, EAX
+         JZ      @@EXIT
 
-        PUSH    EBX
-        MOV     EDX, EAX                 // save pointer
-@L1:    MOV     EBX, [EAX]               // read 4 bytes
-        ADD     EAX, 4                   // increment pointer
-        LEA     ECX, [EBX-$01010101]     // subtract 1 from each byte
-        NOT     EBX                      // invert all bytes
-        AND     ECX, EBX                 // and these two
-        AND     ECX, $80808080           // test all sign bits
-        JZ      @L1                      // no zero bytes, continue loop
-        TEST    ECX, $00008080           // test first two bytes
-        JZ      @L2
-        SHL     ECX, 16                  // not in the first 2 bytes
-        SUB     EAX, 2
-@L2:    SHL     ECX, 9                   // use carry flag to avoid a branch
-        SBB     EAX, EDX                 // compute length
-        POP     EBX
+         PUSH    EBX
+         MOV     EDX, EAX                 // SAVE POINTER
+         @L1:    MOV     EBX, [EAX]               // READ 4 BYTES
+         ADD     EAX, 4                   // INCREMENT POINTER
+         LEA     ECX, [EBX-$01010101]     // SUBTRACT 1 FROM EACH BYTE
+         NOT     EBX                      // INVERT ALL BYTES
+         AND     ECX, EBX                 // AND THESE TWO
+         AND     ECX, $80808080           // TEST ALL SIGN BITS
+         JZ      @L1                      // NO ZERO BYTES, CONTINUE LOOP
+         TEST    ECX, $00008080           // TEST FIRST TWO BYTES
+         JZ      @L2
+         SHL     ECX, 16                  // NOT IN THE FIRST 2 BYTES
+         SUB     EAX, 2
+         @L2:    SHL     ECX, 9                   // USE CARRY FLAG TO AVOID A BRANCH
+         SBB     EAX, EDX                 // COMPUTE LENGTH
+         POP     EBX
 
-        JZ      @@EXIT                   // Az: SBB sets zero flag
-        DEC     EAX                      // do not include null terminator
-@@EXIT:
+         JZ      @@EXIT                   // AZ: SBB SETS ZERO FLAG
+         DEC     EAX                      // DO NOT INCLUDE NULL TERMINATOR
+         @@EXIT:
 end;
 
 function StrLength(const S: AnsiString): Longint;
@@ -2015,141 +2015,141 @@ function _StrCompare(const S1, S2: AnsiString): Integer; assembler;
 function StrCompare(const S1, S2: AnsiString): Integer; assembler;
 {$ENDIF PIC}
 asm
-        // check if pointers are equal
+        // CHECK IF POINTERS ARE EQUAL
 
-        CMP     EAX, EDX
-        JE      @@Equal
+         CMP     EAX, EDX
+         JE      @@EQUAL
 
-        // if S1 is nil return - Length(S2)
+        // IF S1 IS NIL RETURN - LENGTH(S2)
 
-        TEST    EAX, EAX
-        JZ      @@Str1Null
+         TEST    EAX, EAX
+         JZ      @@STR1NULL
 
-        // if S2 is nil return  Length(S1)
+        // IF S2 IS NIL RETURN  LENGTH(S1)
 
-        TEST    EDX, EDX
-        JZ      @@Str2Null
+         TEST    EDX, EDX
+         JZ      @@STR2NULL
 
-        // EBX will hold case map, ESI S1, EDI S2
+        // EBX WILL HOLD CASE MAP, ESI S1, EDI S2
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        // move AnsiString pointers
+        // MOVE ANSISTRING POINTERS
 
-        MOV     ESI, EAX
-        MOV     EDI, EDX
+         MOV     ESI, EAX
+         MOV     EDI, EDX
 
-        // get the length of strings
+        // GET THE LENGTH OF STRINGS
 
-        MOV     EAX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     EDX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
+         MOV     EAX, [ESI-ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         MOV     EDX, [EDI-ANSISTRRECSIZE].TANSISTRREC.LENGTH
 
-        // exit if Length(S1) <> Length(S2)
+        // EXIT IF LENGTH(S1) <> LENGTH(S2)
 
-        CMP     EAX, EDX
-        JNE     @@MissMatch
+         CMP     EAX, EDX
+         JNE     @@MISSMATCH
 
-        // check the length just in case
+        // CHECK THE LENGTH JUST IN CASE
 
-        DEC     EDX
-        JS      @@InvalidStr
+         DEC     EDX
+         JS      @@INVALIDSTR
 
-        DEC     EAX
-        JS      @@InvalidStr
+         DEC     EAX
+         JS      @@INVALIDSTR
 
-        // load case map
+        // LOAD CASE MAP
 
-        LEA     EBX, AnsiCaseMap
+         LEA     EBX, ANSICASEMAP
 
-        // make ECX our loop counter
+        // MAKE ECX OUR LOOP COUNTER
 
-        MOV     ECX, EAX
+         MOV     ECX, EAX
 
-        // clear working regs
+        // CLEAR WORKING REGS
 
-        XOR     EAX, EAX
-        XOR     EDX, EDX
+         XOR     EAX, EAX
+         XOR     EDX, EDX
 
-        // get last chars
+        // GET LAST CHARS
 
-        MOV     AL, [ESI+ECX]
-        MOV     DL, [EDI+ECX]
+         MOV     AL, [ESI+ECX]
+         MOV     DL, [EDI+ECX]
 
-        // lower case them
+        // LOWER CASE THEM
 
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
+         MOV     AL, [EBX+EAX]
+         MOV     DL, [EBX+EDX]
 
-        // compare them
+        // COMPARE THEM
 
-        CMP     AL, DL
-        JNE     @@MissMatch
+         CMP     AL, DL
+         JNE     @@MISSMATCH
 
-        // if there was only 1 char then exit
+        // IF THERE WAS ONLY 1 CHAR THEN EXIT
 
-        JECXZ   @@Match
+         JECXZ   @@MATCH
 
-@@NextChar:
-        // case sensitive compare of strings
+         @@NEXTCHAR:
+        // CASE SENSITIVE COMPARE OF STRINGS
 
-        REPE    CMPSB
-        JE      @@Match
+         REPE    CMPSB
+         JE      @@MATCH
 
-        // if there was a missmatch try case insensitive compare, get the chars
+        // IF THERE WAS A MISSMATCH TRY CASE INSENSITIVE COMPARE, GET THE CHARS
 
-        MOV     AL, [ESI-1]
-        MOV     DL, [EDI-1]
+         MOV     AL, [ESI-1]
+         MOV     DL, [EDI-1]
 
-        // lowercase and compare them, if equal then continue
+        // LOWERCASE AND COMPARE THEM, IF EQUAL THEN CONTINUE
 
-        MOV     AL, [EBX+EAX]
-        MOV     DL, [EBX+EDX]
-        CMP     AL, DL
-        JE      @@NextChar
+         MOV     AL, [EBX+EAX]
+         MOV     DL, [EBX+EDX]
+         CMP     AL, DL
+         JE      @@NEXTCHAR
 
-        // if we make it here then strings don't match,  return the difference
+        // IF WE MAKE IT HERE THEN STRINGS DON'T MATCH,  RETURN THE DIFFERENCE
 
-@@MissMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         @@MISSMATCH:
+         SUB     EAX, EDX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@Match:
-        // match, return 0
+         @@MATCH:
+        // MATCH, RETURN 0
 
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@InvalidStr:
-        XOR     EAX, EAX
-        DEC     EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         @@INVALIDSTR:
+         XOR     EAX, EAX
+         DEC     EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@Str1Null:
-        // return = - Length(Str2);
+         @@STR1NULL:
+        // RETURN = - LENGTH(STR2);
 
-        MOV     EDX, [EDX-AnsiStrRecSize].TAnsiStrRec.Length
-        SUB     EAX, EDX
-        RET
+         MOV     EDX, [EDX-ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         SUB     EAX, EDX
+         RET
 
-@@Str2Null:
-        // return = Length(Str2);
+         @@STR2NULL:
+        // RETURN = LENGTH(STR2);
 
-        MOV     EAX, [EAX-AnsiStrRecSize].TAnsiStrRec.Length
-        RET
+         MOV     EAX, [EAX-ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         RET
 
-@@Equal:
-        XOR     EAX, EAX
+         @@EQUAL:
+         XOR     EAX, EAX
 end;
 {$ENDIF CLR}
 
@@ -2161,95 +2161,95 @@ end;
 {$ELSE}
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer; assembler;
 asm
-        TEST    EAX, EAX
-        JZ      @@Str1Null
+         TEST    EAX, EAX
+         JZ      @@STR1NULL
 
-        TEST    EDX, EDX
-        JZ      @@StrNull
+         TEST    EDX, EDX
+         JZ      @@STRNULL
 
-        DEC     ECX
-        JS      @@StrNull
+         DEC     ECX
+         JS      @@STRNULL
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        MOV     EBX, Count
-        DEC     EBX
-        JS      @@NoWork
+         MOV     EBX, COUNT
+         DEC     EBX
+         JS      @@NOWORK
 
-        MOV     ESI, EAX
-        MOV     EDI, EDX
+         MOV     ESI, EAX
+         MOV     EDI, EDX
 
-        MOV     EDX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+         MOV     EDX, [ESI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
 
-        // # of chars in S1 - (Index - 1)
-        SUB     EDX, ECX
-        JLE     @@NoWork
+        // # OF CHARS IN S1 - (INDEX - 1)
+         SUB     EDX, ECX
+         JLE     @@NOWORK
 
-        // # of chars in S1 - (Count - 1)
-        SUB     EDX, EBX
-        JLE     @@NoWork
+        // # OF CHARS IN S1 - (COUNT - 1)
+         SUB     EDX, EBX
+         JLE     @@NOWORK
 
-        // move to index'th char
-        ADD     ESI, ECX
+        // MOVE TO INDEX'TH CHAR
+         ADD     ESI, ECX
 
-        MOV     ECX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        DEC     ECX
-        JS      @@NoWork
+         MOV     ECX, [EDI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         DEC     ECX
+         JS      @@NOWORK
 
-        // if Length(S2) > Count then ECX := Count else ECX := Length(S2)
+        // IF LENGTH(S2) > COUNT THEN ECX := COUNT ELSE ECX := LENGTH(S2)
 
-        CMP     ECX, EBX
-        JLE     @@Skip1
-        MOV     ECX, EBX
+         CMP     ECX, EBX
+         JLE     @@SKIP1
+         MOV     ECX, EBX
 
-@@Skip1:
-        XOR     EAX, EAX
-        XOR     EDX, EDX
+         @@SKIP1:
+         XOR     EAX, EAX
+         XOR     EDX, EDX
 
-@@Loop:
-        MOV     AL, [ESI]
-        INC     ESI
-        MOV     DL, [EDI]
-        INC     EDI
+         @@LOOP:
+         MOV     AL, [ESI]
+         INC     ESI
+         MOV     DL, [EDI]
+         INC     EDI
 
-        CMP     AL, DL
-        JNE     @@MisMatch
+         CMP     AL, DL
+         JNE     @@MISMATCH
 
-        DEC     ECX
-        JGE     @@Loop
+         DEC     ECX
+         JGE     @@LOOP
 
-@@Match:
-        XOR     EAX, EAX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@MATCH:
+         XOR     EAX, EAX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@EXIT
 
-@@MisMatch:
-        SUB     EAX, EDX
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@MISMATCH:
+         SUB     EAX, EDX
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@EXIT
 
-@@NoWork:
-        MOV     EAX, -2
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        JMP     @@Exit
+         @@NOWORK:
+         MOV     EAX, -2
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         JMP     @@EXIT
 
-@@Str1Null:
-        MOV     EAX, 0
-        TEST    EDX, EDX
-        JZ      @@Exit
+         @@STR1NULL:
+         MOV     EAX, 0
+         TEST    EDX, EDX
+         JZ      @@EXIT
 
-@@StrNull:
-        MOV     EAX, -1
+         @@STRNULL:
+         MOV     EAX, -1
 
-@@Exit:
+         @@EXIT:
 end;
 {$ENDIF CLR}
 
@@ -2292,174 +2292,174 @@ end;
 {$ELSE}
 function StrFind(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 const
-   SearchChar: Byte = 0;
-   NumberOfChars: Integer = 0;
+  SearchChar: Byte = 0;
+  NumberOfChars: Integer = 0;
 asm
-        // if SubStr = '' then  Return := 0;
+        // IF SUBSTR = '' THEN  RETURN := 0;
 
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
+         TEST    EAX, EAX
+         JZ      @@SUBSTRISNULL
 
-        // if Str = '' then  Return := 0;
+        // IF STR = '' THEN  RETURN := 0;
 
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
+         TEST    EDX, EDX
+         JZ      @@STRISNULL
 
-        // Index := Index - 1; if Index < 0 then Return := 0;
+        // INDEX := INDEX - 1; IF INDEX < 0 THEN RETURN := 0;
 
-        DEC     ECX
-        JL      @@IndexIsSmall
+         DEC     ECX
+         JL      @@INDEXISSMALL
 
-        // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and - # of chars in Substr to compare
+        // EBX WILL HOLD THE CASE TABLE, ESI POINTER TO STR, EDI POINTER
+        // TO SUBSTR AND - # OF CHARS IN SUBSTR TO COMPARE
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
 
-        // set the string pointers
+        // SET THE STRING POINTERS
 
-        MOV     ESI, EDX
-        MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDI, EAX
 
-        // save the Index in EDX
+        // SAVE THE INDEX IN EDX
 
-        MOV     EDX, ECX
+         MOV     EDX, ECX
 
-        // temporary get the length of Substr and Str
+        // TEMPORARY GET THE LENGTH OF SUBSTR AND STR
 
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+         MOV     EBX, [EDI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         MOV     ECX, [ESI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
 
-        // save the address of Str to compute the result
+        // SAVE THE ADDRESS OF STR TO COMPUTE THE RESULT
 
-        PUSH    ESI
+         PUSH    ESI
 
-        // dec the length of Substr because the first char is brought out of it
+        // DEC THE LENGTH OF SUBSTR BECAUSE THE FIRST CHAR IS BROUGHT OUT OF IT
 
-        DEC     EBX
-        JS      @@NotFound
+         DEC     EBX
+         JS      @@NOTFOUND
 
-        // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
+        // #POSITIONS IN STR TO LOOK AT = LENGTH(STR) - LENGTH(SUBSTR) - INDEX - 2
 
-        SUB     ECX, EBX
-        JLE     @@NotFound
+         SUB     ECX, EBX
+         JLE     @@NOTFOUND
 
-        SUB     ECX, EDX
-        JLE     @@NotFound
+         SUB     ECX, EDX
+         JLE     @@NOTFOUND
 
-        // # of chars in Substr to compare
+        // # OF CHARS IN SUBSTR TO COMPARE
 
-        MOV     NumberOfChars, EBX
+         MOV     NUMBEROFCHARS, EBX
 
-        // point Str to Index'th char
+        // POINT STR TO INDEX'TH CHAR
 
-        ADD     ESI, EDX
+         ADD     ESI, EDX
 
-        // load case map into EBX, and clear EAX
+        // LOAD CASE MAP INTO EBX, AND CLEAR EAX
 
-        LEA     EBX, AnsiCaseMap
-        XOR     EAX, EAX
-        XOR     EDX, EDX
+         LEA     EBX, ANSICASEMAP
+         XOR     EAX, EAX
+         XOR     EDX, EDX
 
-        // bring the first char out of the Substr and point Substr to the next char
+        // BRING THE FIRST CHAR OUT OF THE SUBSTR AND POINT SUBSTR TO THE NEXT CHAR
 
-        MOV     DL, [EDI]
-        INC     EDI
+         MOV     DL, [EDI]
+         INC     EDI
 
-        // lower case it
+        // LOWER CASE IT
 
-        MOV     DL, [EBX + EDX]
-        MOV     SearchChar, DL
+         MOV     DL, [EBX + EDX]
+         MOV     SEARCHCHAR, DL
 
-        JMP     @@Find
+         JMP     @@FIND
 
-@@FindNext:
+         @@FINDNEXT:
 
-        // update the loop counter and check the end of AnsiString.
-        // if we reached the end, Substr was not found.
+        // UPDATE THE LOOP COUNTER AND CHECK THE END OF ANSISTRING.
+        // IF WE REACHED THE END, SUBSTR WAS NOT FOUND.
 
-        DEC     ECX
-        JL      @@NotFound
+         DEC     ECX
+         JL      @@NOTFOUND
 
-@@Find:
+         @@FIND:
 
-        // get current char from the AnsiString, and point Str to the next one
+        // GET CURRENT CHAR FROM THE ANSISTRING, AND POINT STR TO THE NEXT ONE
 
-        MOV     AL, [ESI]
-        INC     ESI
+         MOV     AL, [ESI]
+         INC     ESI
 
 
-        // lower case current char
+        // LOWER CASE CURRENT CHAR
 
-        MOV     AL, [EBX + EAX]
+         MOV     AL, [EBX + EAX]
 
-        // does current char match primary search char? if not, go back to the main loop
+        // DOES CURRENT CHAR MATCH PRIMARY SEARCH CHAR? IF NOT, GO BACK TO THE MAIN LOOP
 
-        CMP     AL, SearchChar
-        JNE     @@FindNext
+         CMP     AL, SEARCHCHAR
+         JNE     @@FINDNEXT
 
-@@Compare:
+         @@COMPARE:
 
-        // # of chars in Substr to compare
+        // # OF CHARS IN SUBSTR TO COMPARE
 
-        MOV     EDX, NumberOfChars
+         MOV     EDX, NUMBEROFCHARS
 
-@@CompareNext:
+         @@COMPARENEXT:
 
-        // dec loop counter and check if we reached the end. If yes then we found it
+        // DEC LOOP COUNTER AND CHECK IF WE REACHED THE END. IF YES THEN WE FOUND IT
 
-        DEC     EDX
-        JL      @@Found
+         DEC     EDX
+         JL      @@FOUND
 
-        // get the chars from Str and Substr, if they are equal then continue comparing
+        // GET THE CHARS FROM STR AND SUBSTR, IF THEY ARE EQUAL THEN CONTINUE COMPARING
 
-        MOV     AL, [ESI + EDX]
-        CMP     AL, [EDI + EDX]
-        JE      @@CompareNext
+         MOV     AL, [ESI + EDX]
+         CMP     AL, [EDI + EDX]
+         JE      @@COMPARENEXT
 
-        // otherwise try the reverse case. If they still don't match go back to the Find loop
+        // OTHERWISE TRY THE REVERSE CASE. IF THEY STILL DON'T MATCH GO BACK TO THE FIND LOOP
 
-        MOV     AL, [EBX + EAX + AnsiReOffset]
-        CMP     AL, [EDI + EDX]
-        JNE     @@FindNext
+         MOV     AL, [EBX + EAX + ANSIREOFFSET]
+         CMP     AL, [EDI + EDX]
+         JNE     @@FINDNEXT
 
-        // if they matched, continue comparing
+        // IF THEY MATCHED, CONTINUE COMPARING
 
-        JMP     @@CompareNext
+         JMP     @@COMPARENEXT
 
-@@Found:
-        // we found it, calculate the result
+         @@FOUND:
+        // WE FOUND IT, CALCULATE THE RESULT
 
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
+         MOV     EAX, ESI
+         POP     ESI
+         SUB     EAX, ESI
 
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@NotFound:
+         @@NOTFOUND:
 
-        // not found it, clear the result
+        // NOT FOUND IT, CLEAR THE RESULT
 
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     ESI
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@IndexIsSmall:
-@@StrIsNull:
+         @@INDEXISSMALL:
+         @@STRISNULL:
 
-        // clear the result
+        // CLEAR THE RESULT
 
-        XOR     EAX, EAX
+         XOR     EAX, EAX
 
-@@SubstrIsNull:
-@@Exit:
+         @@SUBSTRISNULL:
+         @@EXIT:
 end;
 {$ENDIF CLR}
 
@@ -2530,178 +2530,178 @@ end;
 {$IFNDEF CLR}
 function StrMatch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 asm
-        // make sure that strings are not null
+        // MAKE SURE THAT STRINGS ARE NOT NULL
 
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
+         TEST    EAX, EAX
+         JZ      @@SUBSTRISNULL
 
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
+         TEST    EDX, EDX
+         JZ      @@STRISNULL
 
-        // limit index to satisfy 1 <= index, and dec it
+        // LIMIT INDEX TO SATISFY 1 <= INDEX, AND DEC IT
 
-        DEC     ECX
-        JL      @@IndexIsSmall
+         DEC     ECX
+         JL      @@INDEXISSMALL
 
-        // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and EBP # of chars in Substr to compare
+        // EBX WILL HOLD THE CASE TABLE, ESI POINTER TO STR, EDI POINTER
+        // TO SUBSTR AND EBP # OF CHARS IN SUBSTR TO COMPARE
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
+         PUSH    EBP
 
-        // set the AnsiString pointers
+        // SET THE ANSISTRING POINTERS
 
-        MOV     ESI, EDX
-        MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDI, EAX
 
-        // save the Index in EDX
+        // SAVE THE INDEX IN EDX
 
-        MOV     EDX, ECX
+         MOV     EDX, ECX
 
-        // save the address of Str to compute the result
+        // SAVE THE ADDRESS OF STR TO COMPUTE THE RESULT
 
-        PUSH    ESI
+         PUSH    ESI
 
-        // temporary get the length of Substr and Str
+        // TEMPORARY GET THE LENGTH OF SUBSTR AND STR
 
-        MOV     EBX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
+         MOV     EBX, [EDI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         MOV     ECX, [ESI - ANSISTRRECSIZE].TANSISTRREC.LENGTH
 
-        // dec the length of Substr because the first char is brought out of it
+        // DEC THE LENGTH OF SUBSTR BECAUSE THE FIRST CHAR IS BROUGHT OUT OF IT
 
-        DEC     EBX
-        JS      @@NotFound
+         DEC     EBX
+         JS      @@NOTFOUND
 
-        // #positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
+        // #POSITIONS IN STR TO LOOK AT = LENGTH(STR) - LENGTH(SUBSTR) - INDEX - 2
 
-        SUB     ECX, EBX
-        JLE     @@NotFound
+         SUB     ECX, EBX
+         JLE     @@NOTFOUND
 
-        SUB     ECX, EDX
-        JLE     @@NotFound
+         SUB     ECX, EDX
+         JLE     @@NOTFOUND
 
-        // # of chars in Substr to compare
+        // # OF CHARS IN SUBSTR TO COMPARE
 
-        MOV     EBP, EBX
+         MOV     EBP, EBX
 
-        // point Str to Index'th char
+        // POINT STR TO INDEX'TH CHAR
 
-        ADD     ESI, EDX
+         ADD     ESI, EDX
 
-        // load case map into EBX, and clear EAX & ECX
+        // LOAD CASE MAP INTO EBX, AND CLEAR EAX & ECX
 
-        LEA     EBX, AnsiCaseMap
-        XOR     EAX, EAX
-        XOR     ECX, ECX
+         LEA     EBX, ANSICASEMAP
+         XOR     EAX, EAX
+         XOR     ECX, ECX
 
-        // bring the first char out of the Substr and point Substr to the next char
+        // BRING THE FIRST CHAR OUT OF THE SUBSTR AND POINT SUBSTR TO THE NEXT CHAR
 
-        MOV     CL, [EDI]
-        INC     EDI
+         MOV     CL, [EDI]
+         INC     EDI
 
-        // lower case it
+        // LOWER CASE IT
 
-        MOV     CL, [EBX + ECX]
+         MOV     CL, [EBX + ECX]
 
-@@FindNext:
+         @@FINDNEXT:
 
-        // get the current char from Str into al
+        // GET THE CURRENT CHAR FROM STR INTO AL
 
-        MOV     AL, [ESI]
-        INC     ESI
+         MOV     AL, [ESI]
+         INC     ESI
 
-        // check the end of AnsiString
+        // CHECK THE END OF ANSISTRING
 
-        TEST    AL, AL
-        JZ      @@NotFound
+         TEST    AL, AL
+         JZ      @@NOTFOUND
 
 
-        CMP     CL, '*'    // Wild Card?
-        JE      @@Compare
+         CMP     CL, '*'    // WILD CARD?
+         JE      @@COMPARE
 
-        CMP     CL, '?'    // Wild Card?
-        JE      @@Compare
+         CMP     CL, '?'    // WILD CARD?
+         JE      @@COMPARE
 
-        // lower case current char
+        // LOWER CASE CURRENT CHAR
 
-        MOV     AL, [EBX + EAX]
+         MOV     AL, [EBX + EAX]
 
-        // check if the current char matches the primary search char,
-        // if not continue searching
+        // CHECK IF THE CURRENT CHAR MATCHES THE PRIMARY SEARCH CHAR,
+        // IF NOT CONTINUE SEARCHING
 
-        CMP     AL, CL
-        JNE     @@FindNext
+         CMP     AL, CL
+         JNE     @@FINDNEXT
 
-@@Compare:
+         @@COMPARE:
 
-        // # of chars in Substr to compare }
+        // # OF CHARS IN SUBSTR TO COMPARE }
 
-        MOV     EDX, EBP
+         MOV     EDX, EBP
 
-@@CompareNext:
+         @@COMPARENEXT:
 
-        // dec loop counter and check if we reached the end. If yes then we found it
+        // DEC LOOP COUNTER AND CHECK IF WE REACHED THE END. IF YES THEN WE FOUND IT
 
-        DEC     EDX
-        JL      @@Found
+         DEC     EDX
+         JL      @@FOUND
 
-        // get the chars from Str and Substr, if they are equal then continue comparing
+        // GET THE CHARS FROM STR AND SUBSTR, IF THEY ARE EQUAL THEN CONTINUE COMPARING
 
-        MOV     AL, [EDI + EDX]               // char from  Substr
+         MOV     AL, [EDI + EDX]               // CHAR FROM  SUBSTR
 
-        CMP     AL, '*'                     // wild card?
-        JE      @@CompareNext
+         CMP     AL, '*'                     // WILD CARD?
+         JE      @@COMPARENEXT
 
-        CMP     AL, '?'                     // wild card?
-        JE      @@CompareNext
+         CMP     AL, '?'                     // WILD CARD?
+         JE      @@COMPARENEXT
 
-        CMP     AL, [ESI + EDX]               // equal to PAnsiChar(Str)^ ?
-        JE      @@CompareNext
+         CMP     AL, [ESI + EDX]               // EQUAL TO PANSICHAR(STR)^ ?
+         JE      @@COMPARENEXT
 
-        MOV     AL, [EBX + EAX + AnsiReOffset]  // reverse case?
-        CMP     AL, [ESI + EDX]
-        JNE     @@FindNext                  // if still no, go back to the main loop
+         MOV     AL, [EBX + EAX + ANSIREOFFSET]  // REVERSE CASE?
+         CMP     AL, [ESI + EDX]
+         JNE     @@FINDNEXT                  // IF STILL NO, GO BACK TO THE MAIN LOOP
 
-        // if they matched, continue comparing
+        // IF THEY MATCHED, CONTINUE COMPARING
 
-        JMP     @@CompareNext
+         JMP     @@COMPARENEXT
 
-@@Found:
-        // we found it, calculate the result
+         @@FOUND:
+        // WE FOUND IT, CALCULATE THE RESULT
 
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
+         MOV     EAX, ESI
+         POP     ESI
+         SUB     EAX, ESI
 
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@NotFound:
+         @@NOTFOUND:
 
-        // not found it, clear the result
+        // NOT FOUND IT, CLEAR THE RESULT
 
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     ESI
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@IndexIsSmall:
-@@StrIsNull:
+         @@INDEXISSMALL:
+         @@STRISNULL:
 
-        // clear the result
+        // CLEAR THE RESULT
 
-        XOR     EAX, EAX
+         XOR     EAX, EAX
 
-@@SubstrIsNull:
-@@Exit:
+         @@SUBSTRISNULL:
+         @@EXIT:
 end;
 
 // Derived from "Like" by Michael Winter
@@ -2733,82 +2733,82 @@ begin
     repeat
       case PatternPtr^ of
         #0:
-          begin
-            Result := StringPtr^ = #0;
-            if Result or (StringRes = nil) or (PatternRes = nil) then
-              Exit;
+        begin
+          Result := StringPtr^ = #0;
+          if Result or (StringRes = nil) or (PatternRes = nil) then
+            Exit;
 
-            StringPtr := StringRes;
-            PatternPtr := PatternRes;
-            Break;
-          end;
+          StringPtr := StringRes;
+          PatternPtr := PatternRes;
+          Break;
+        end;
         '*':
-          begin
-            Inc(PatternPtr);
-            PatternRes := PatternPtr;
-            Break;
-          end;
+        begin
+          Inc(PatternPtr);
+          PatternRes := PatternPtr;
+          Break;
+        end;
         '?':
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            Inc(StringPtr);
-            Inc(PatternPtr);
-          end;
+        begin
+          if StringPtr^ = #0 then
+            Exit;
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      else
+      begin
+        if StringPtr^ = #0 then
+          Exit;
+        if StringPtr^ <> PatternPtr^ then
+        begin
+          if (StringRes = nil) or (PatternRes = nil) then
+            Exit;
+          StringPtr := StringRes;
+          PatternPtr := PatternRes;
+          Break;
+        end
         else
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            if StringPtr^ <> PatternPtr^ then
-            begin
-              if (StringRes = nil) or (PatternRes = nil) then
-                Exit;
-              StringPtr := StringRes;
-              PatternPtr := PatternRes;
-              Break;
-            end
-            else
-            begin
-              Inc(StringPtr);
-              Inc(PatternPtr);
-            end;
-          end;
+        begin
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      end;
       end;
     until False;
 
     repeat
       case PatternPtr^ of
         #0:
-          begin
-            Result := True;
-            Exit;
-          end;
+        begin
+          Result := True;
+          Exit;
+        end;
         '*':
-          begin
-            Inc(PatternPtr);
-            PatternRes := PatternPtr;
-          end;
+        begin
+          Inc(PatternPtr);
+          PatternRes := PatternPtr;
+        end;
         '?':
-          begin
-            if StringPtr^ = #0 then
-              Exit;
-            Inc(StringPtr);
-            Inc(PatternPtr);
-          end;
-        else
-          begin
-            repeat
-              if StringPtr^ = #0 then
-                Exit;
-              if StringPtr^ = PatternPtr^ then
-                Break;
-              Inc(StringPtr);
-            until False;
-            Inc(StringPtr);
-            StringRes := StringPtr;
-            Inc(PatternPtr);
+        begin
+          if StringPtr^ = #0 then
+            Exit;
+          Inc(StringPtr);
+          Inc(PatternPtr);
+        end;
+      else
+      begin
+        repeat
+          if StringPtr^ = #0 then
+            Exit;
+          if StringPtr^ = PatternPtr^ then
             Break;
-          end;
+          Inc(StringPtr);
+        until False;
+        Inc(StringPtr);
+        StringRes := StringPtr;
+        Inc(PatternPtr);
+        Break;
+      end;
       end;
     until False;
   until False;
@@ -2896,158 +2896,158 @@ end;
 {$ELSE}
 function StrSearch(const Substr, S: AnsiString; const Index: Integer): Integer; assembler;
 asm
-        // make sure that strings are not null
+        // MAKE SURE THAT STRINGS ARE NOT NULL
 
-        TEST    EAX, EAX
-        JZ      @@SubstrIsNull
+         TEST    EAX, EAX
+         JZ      @@SUBSTRISNULL
 
-        TEST    EDX, EDX
-        JZ      @@StrIsNull
+         TEST    EDX, EDX
+         JZ      @@STRISNULL
 
-        // limit index to satisfy 1 <= index, and dec it
+        // LIMIT INDEX TO SATISFY 1 <= INDEX, AND DEC IT
 
-        DEC     ECX
-        JL      @@IndexIsSmall
+         DEC     ECX
+         JL      @@INDEXISSMALL
 
-        // ebp will hold # of chars in Substr to compare, esi pointer to Str,
-        // edi pointer to Substr, ebx primary search char
+        // EBP WILL HOLD # OF CHARS IN SUBSTR TO COMPARE, ESI POINTER TO STR,
+        // EDI POINTER TO SUBSTR, EBX PRIMARY SEARCH CHAR
 
-        PUSH    EBX
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBP
+         PUSH    EBX
+         PUSH    ESI
+         PUSH    EDI
+         PUSH    EBP
 
-        // set the AnsiString pointers
+        // SET THE ANSISTRING POINTERS
 
-        MOV     ESI, EDX
-        MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDI, EAX
 
-        // save the (Index - 1) in edx
+        // SAVE THE (INDEX - 1) IN EDX
 
-        MOV     EDX, ECX
+         MOV     EDX, ECX
 
-        // save the address of Str to compute the result
+        // SAVE THE ADDRESS OF STR TO COMPUTE THE RESULT
 
-        PUSH    ESI
+         PUSH    ESI
 
-        // temporary get the length of Substr and Str
+        // TEMPORARY GET THE LENGTH OF SUBSTR AND STR
 
-        MOV     EBX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     ECX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
+         MOV     EBX, [EDI-ANSISTRRECSIZE].TANSISTRREC.LENGTH
+         MOV     ECX, [ESI-ANSISTRRECSIZE].TANSISTRREC.LENGTH
 
-        // dec the length of Substr because the first char is brought out of it
+        // DEC THE LENGTH OF SUBSTR BECAUSE THE FIRST CHAR IS BROUGHT OUT OF IT
 
-        DEC     EBX
-        JS      @@NotFound
+         DEC     EBX
+         JS      @@NOTFOUND
 
-        // # of positions in Str to look at = Length(Str) - Length(Substr) - Index - 2
+        // # OF POSITIONS IN STR TO LOOK AT = LENGTH(STR) - LENGTH(SUBSTR) - INDEX - 2
 
-        SUB     ECX, EBX
-        JLE     @@NotFound
+         SUB     ECX, EBX
+         JLE     @@NOTFOUND
 
-        SUB     ECX, EDX
-        JLE     @@NotFound
+         SUB     ECX, EDX
+         JLE     @@NOTFOUND
 
-        // point Str to Index'th char
+        // POINT STR TO INDEX'TH CHAR
 
-        ADD     ESI, EDX
+         ADD     ESI, EDX
 
-        // # of chars in Substr to compare
+        // # OF CHARS IN SUBSTR TO COMPARE
 
-        MOV     EBP, EBX
+         MOV     EBP, EBX
 
-        // clear EAX & ECX (working regs)
+        // CLEAR EAX & ECX (WORKING REGS)
 
-        XOR     EAX, EAX
-        XOR     EBX, EBX
+         XOR     EAX, EAX
+         XOR     EBX, EBX
 
-        // bring the first char out of the Substr, and
-        // point Substr to the next char
+        // BRING THE FIRST CHAR OUT OF THE SUBSTR, AND
+        // POINT SUBSTR TO THE NEXT CHAR
 
-        MOV     BL, [EDI]
-        INC     EDI
+         MOV     BL, [EDI]
+         INC     EDI
 
-        // jump into the loop
+        // JUMP INTO THE LOOP
 
-        JMP     @@Find
+         JMP     @@FIND
 
-@@FindNext:
+         @@FINDNEXT:
 
-        // update the loop counter and check the end of AnsiString.
-        // if we reached the end, Substr was not found.
+        // UPDATE THE LOOP COUNTER AND CHECK THE END OF ANSISTRING.
+        // IF WE REACHED THE END, SUBSTR WAS NOT FOUND.
 
-        DEC     ECX
-        JL      @@NotFound
+         DEC     ECX
+         JL      @@NOTFOUND
 
-@@Find:
+         @@FIND:
 
-        // get current char from the AnsiString, and /point Str to the next one.
-        MOV     AL, [ESI]
-        INC     ESI
+        // GET CURRENT CHAR FROM THE ANSISTRING, AND /POINT STR TO THE NEXT ONE.
+         MOV     AL, [ESI]
+         INC     ESI
 
-        // does current char match primary search char? if not, go back to the main loop
+        // DOES CURRENT CHAR MATCH PRIMARY SEARCH CHAR? IF NOT, GO BACK TO THE MAIN LOOP
 
-        CMP     AL, BL
-        JNE     @@FindNext
+         CMP     AL, BL
+         JNE     @@FINDNEXT
 
-        // otherwise compare SubStr
+        // OTHERWISE COMPARE SUBSTR
 
-@@Compare:
+         @@COMPARE:
 
-        // move # of char to compare into edx, edx will be our compare loop counter.
+        // MOVE # OF CHAR TO COMPARE INTO EDX, EDX WILL BE OUR COMPARE LOOP COUNTER.
 
-        MOV     EDX, EBP
+         MOV     EDX, EBP
 
-@@CompareNext:
+         @@COMPARENEXT:
 
-        // check if we reached the end of Substr. If yes we found it.
+        // CHECK IF WE REACHED THE END OF SUBSTR. IF YES WE FOUND IT.
 
-        DEC     EDX
-        JL      @@Found
+         DEC     EDX
+         JL      @@FOUND
 
-        // get last chars from Str and SubStr and compare them,
-        // if they don't match go back to out main loop.
+        // GET LAST CHARS FROM STR AND SUBSTR AND COMPARE THEM,
+        // IF THEY DON'T MATCH GO BACK TO OUT MAIN LOOP.
 
-        MOV     AL, [EDI+EDX]
-        CMP     AL, [ESI+EDX]
-        JNE     @@FindNext
+         MOV     AL, [EDI+EDX]
+         CMP     AL, [ESI+EDX]
+         JNE     @@FINDNEXT
 
-        // if they matched, continue comparing
+        // IF THEY MATCHED, CONTINUE COMPARING
 
-        JMP     @@CompareNext
+         JMP     @@COMPARENEXT
 
-@@Found:
-        // we found it, calculate the result and exit.
+         @@FOUND:
+        // WE FOUND IT, CALCULATE THE RESULT AND EXIT.
 
-        MOV     EAX, ESI
-        POP     ESI
-        SUB     EAX, ESI
+         MOV     EAX, ESI
+         POP     ESI
+         SUB     EAX, ESI
 
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@NotFound:
-        // not found it, clear result and exit.
+         @@NOTFOUND:
+        // NOT FOUND IT, CLEAR RESULT AND EXIT.
 
-        XOR     EAX, EAX
-        POP     ESI
-        POP     EBP
-        POP     EDI
-        POP     ESI
-        POP     EBX
-        RET
+         XOR     EAX, EAX
+         POP     ESI
+         POP     EBP
+         POP     EDI
+         POP     ESI
+         POP     EBX
+         RET
 
-@@IndexIsSmall:
-@@StrIsNull:
-        // clear result and exit.
+         @@INDEXISSMALL:
+         @@STRISNULL:
+        // CLEAR RESULT AND EXIT.
 
-        XOR     EAX, EAX
+         XOR     EAX, EAX
 
-@@SubstrIsNull:
-@@Exit:
+         @@SUBSTRISNULL:
+         @@EXIT:
 end;
 {$ENDIF CLR}
 
@@ -3247,7 +3247,7 @@ end;
 procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 var
   I, Count: Integer;
-  List: array of PAnsiChar;
+  List:     array of PAnsiChar;
 begin
   Assert(Dest <> nil);
   if Source <> nil then
@@ -3269,7 +3269,7 @@ end;
 procedure FreePCharVector(var Dest: PCharVector);
 var
   I, Count: Integer;
-  List: array of PAnsiChar;
+  List:     array of PAnsiChar;
 begin
   if Dest <> nil then
   begin
@@ -3744,7 +3744,7 @@ begin
       Result := Buf;
     end;
     {$ELSE}
-    FS.ReadBuffer(Result[1], Len);
+      FS.ReadBuffer(Result[1], Len);
     {$ENDIF CLR}
   finally
     FS.Free;
@@ -3768,7 +3768,7 @@ begin
     {$IFDEF CLR}
     FS.WriteBuffer(BytesOf(Contents), Len);
     {$ELSE}
-    FS.WriteBuffer(Contents[1], Len);
+      FS.WriteBuffer(Contents[1], Len);
     {$ENDIF CLR}
   finally
     FS.Free;
@@ -3798,7 +3798,7 @@ procedure StrTokens(const S: AnsiString; const List: TStrings);
 var
   Start: PAnsiChar;
   Token: AnsiString;
-  Done: Boolean;
+  Done:  Boolean;
 begin
   Assert(List <> nil);
   if List = nil then
@@ -3856,23 +3856,23 @@ begin
   begin
     case S^ of
       #0:
-        begin
-          if Start <> nil then
-            SetString(Word, Start, S - Start);
-          Result := True;
-          Exit;
-        end;
+      begin
+        if Start <> nil then
+          SetString(Word, Start, S - Start);
+        Result := True;
+        Exit;
+      end;
       AnsiSpace, AnsiLineFeed, AnsiCarriageReturn:
+      begin
+        if Start <> nil then
         begin
-          if Start <> nil then
-          begin
-            SetString(Word, Start, S - Start);
-            Exit;
-          end
-          else
-            while S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn] do
-              Inc(S);
-        end;
+          SetString(Word, Start, S - Start);
+          Exit;
+        end
+        else
+          while S^ in [AnsiSpace, AnsiLineFeed, AnsiCarriageReturn] do
+            Inc(S);
+      end;
     else
       if Start = nil then
         Start := S;

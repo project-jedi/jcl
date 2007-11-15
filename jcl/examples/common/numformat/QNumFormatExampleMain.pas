@@ -81,8 +81,8 @@ var
   Base: TNumericSystemBase;
   S, Mantissa: string;
   Exponent: Integer;
-  X: Extended;
-  C: TCaretPos;
+  X:    Extended;
+  C:    TCaretPos;
 begin
   if not Assigned(FNumFormat) then
     Exit;
@@ -116,7 +116,7 @@ end;
 
 procedure TMainForm.RandBtnClick(Sender: TObject);
 begin
-  ValueEdit.Text := FloatToStr(Power(Random * 4 -2, Random(400)));
+  ValueEdit.Text := FloatToStr(Power(Random * 4 - 2, Random(400)));
   EvalBtn.Enabled := False;
   Display;
 end;

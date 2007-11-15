@@ -161,16 +161,16 @@ uses
 
 const
   // Icon indexes
-  IcoUnchecked      = 0;
-  IcoChecked        = 1;
+  IcoUnchecked = 0;
+  IcoChecked   = 1;
   IcoRadioUnchecked = 2;
-  IcoRadioChecked   = 3;
-  IcoNotInstalled   = 4;
-  IcoFailed         = 5;
-  IcoInstalled      = 6;
+  IcoRadioChecked = 3;
+  IcoNotInstalled = 4;
+  IcoFailed    = 5;
+  IcoInstalled = 6;
 
   IconIndexes: array [Boolean {RadioButton}, Boolean {Checked}] of Integer =
-   ( (IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked) ); 
+    ((IcoUnchecked, IcoChecked), (IcoRadioUnchecked, IcoRadioChecked));
 
 type
   TNodeRec = record
@@ -189,9 +189,9 @@ type
   PDirectoryRec = ^TDirectoryRec;
 
 resourcestring
-  RsSelectPath      = 'Select path';
-  RsEnterValidPath  = '(Enter valid path)';
-  RsInvalidOption   = 'Invalid option: %d';
+  RsSelectPath = 'Select path';
+  RsEnterValidPath = '(Enter valid path)';
+  RsInvalidOption = 'Invalid option: %d';
   //RsDuplicateOption = 'Duplicate option: %s';
   //RsCannotFindNode  = 'Cannot find node for Id %d';
 
@@ -382,7 +382,7 @@ procedure TInstallFrame.DirectorySelectBtnClick(Sender: TObject);
 var
   Index: Integer;
   Button: TButton;
-  Edit: TEdit;
+  Edit:  TEdit;
   {$IFDEF VisualCLX}
     {$IFDEF COMPILER7_UP}
       {$DEFINE USE_WIDESTRING}
@@ -425,17 +425,19 @@ procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomViewControl; Item:
   Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage; 
   var DefaultDraw: Boolean);
 {$ELSE}
-procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; 
+procedure TInstallFrame.TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
   State: TCustomDrawState; var DefaultDraw: Boolean);
 {$ENDIF}
 begin
   case TTreeNode({$IFDEF VisualCLX}Item{$ELSE}Node{$ENDIF}).Level of
-    0: begin
+    0:
+    begin
          {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold, fsUnderline];
-       end;
-    1: begin
+    end;
+    1:
+    begin
          {$IFDEF VCL}Sender.{$ENDIF}Canvas.Font.Style := [fsBold];
-       end;
+    end;
   end;
 end;
 
@@ -487,11 +489,11 @@ var
 begin
   if not FInstalling then
     with TTreeView(Sender) do
-  begin
-    Node := GetNodeAt(X, Y);
-    if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
-      ToggleNodeChecked(Node);
-  end;
+    begin
+      Node := GetNodeAt(X, Y);
+      if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
+        ToggleNodeChecked(Node);
+    end;
 end;
 
 {$IFDEF VCL}
@@ -656,7 +658,8 @@ begin
   ADirectoryRec^.Button.Anchors := [akTop, akRight];
 
   ButtonWidth := 2 * ALabel.Height;
-  LabelRight := (ALabel.Width div 16) * 16 + 32 + ALabel.Left; // make edits aligned when label widths are nearly equals
+  LabelRight := (ALabel.Width div 16) * 16 + 32 + ALabel.Left;
+ // make edits aligned when label widths are nearly equals
 
   ADirectoryRec^.Edit.SetBounds(LabelRight, ControlTop,
     OptionsGroupBox.ClientWidth - LabelRight - ButtonWidth - 16,
@@ -849,5 +852,3 @@ begin
 end;
 
 end.
-
-

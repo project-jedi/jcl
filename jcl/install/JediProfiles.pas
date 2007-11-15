@@ -119,9 +119,9 @@ function TJediProfilesManager.CheckPrerequisites: Boolean;
 {$IFDEF MSWINDOWS}
 var
   InstallGUI: IJediInstallGUI;
-  Fork: Boolean;
+  Fork:       Boolean;
   Parameters: string;
-  Index: Integer;
+  Index:      Integer;
 {$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
@@ -136,7 +136,7 @@ begin
       InstallGUI := InstallCore.InstallGUI;
       if Assigned(InstallGUI) then
         Fork := InstallGUI.Dialog('Installation requires administrator privilege, do you want to run installer with' +
-                                  ' administrator rights?', dtConfirmation, [drYes, drNo]) = drYes
+          ' administrator rights?', dtConfirmation, [drYes, drNo]) = drYes
       else
         Fork := True;
       if Fork then
@@ -241,7 +241,7 @@ end;
 procedure TJediProfilesManager.LoadProfiles;
 var
   Index: Integer;
-  SID: PSID;
+  SID:   PSID;
   DataSize: Cardinal;
   Name, Domain, KeyName, SIDStr, ProfileDir: string;
   RegProfiles: TStrings;
@@ -254,29 +254,29 @@ begin
       try
         if RegGetKeyNames(HKLM, RegProfileListKey, RegProfiles) then
           for Index := 0 to RegProfiles.Count - 1 do
-        begin
-          KeyName := RegProfileListKey + '\' + RegProfiles.Strings[Index];
-          if RegReadBinaryEx(HKLM, KeyName, 'Sid', SID^, SECURITY_MAX_SID_SIZE, DataSize, False)
-            and RegReadAnsiStringEx(HKLM, KeyName, 'ProfileImagePath', ProfileDir, False) then
           begin
-            try
-              SIDStr := SIDToString(SID);
-              LookupAccountBySid(SID, Name, Domain);
-              if SameText(Domain, GetLocalComputerName) then
-              begin
-                SetLength(FProfiles, Length(FProfiles) + 1);
-                FProfiles[High(FProfiles)].UserName := Name;
-                FProfiles[High(FProfiles)].SID := SIDStr;
-                FProfiles[High(FProfiles)].LocalProfile := ProfileDir;
-                FProfiles[High(FProfiles)].UserKey := 0;
-                FProfiles[High(FProfiles)].CloseKey := False;
-                FProfiles[High(FProfiles)].UnloadKey := False;
-              end;
-            except
+            KeyName := RegProfileListKey + '\' + RegProfiles.Strings[Index];
+            if RegReadBinaryEx(HKLM, KeyName, 'Sid', SID^, SECURITY_MAX_SID_SIZE, DataSize, False)
+              and RegReadAnsiStringEx(HKLM, KeyName, 'ProfileImagePath', ProfileDir, False) then
+            begin
+              try
+                SIDStr := SIDToString(SID);
+                LookupAccountBySid(SID, Name, Domain);
+                if SameText(Domain, GetLocalComputerName) then
+                begin
+                  SetLength(FProfiles, Length(FProfiles) + 1);
+                  FProfiles[High(FProfiles)].UserName := Name;
+                  FProfiles[High(FProfiles)].SID := SIDStr;
+                  FProfiles[High(FProfiles)].LocalProfile := ProfileDir;
+                  FProfiles[High(FProfiles)].UserKey := 0;
+                  FProfiles[High(FProfiles)].CloseKey := False;
+                  FProfiles[High(FProfiles)].UnloadKey := False;
+                end;
+              except
               // trap deleted accounts
+              end;
             end;
           end;
-        end;
       finally
         FreeMem(SID);
       end;

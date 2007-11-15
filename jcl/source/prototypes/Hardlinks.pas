@@ -225,7 +225,7 @@ var
 implementation
 
 const
-  szNtDll           = 'NTDLL.DLL'; // Import native APIs from this DLL
+  szNtDll = 'NTDLL.DLL'; // Import native APIs from this DLL
 {$IFDEF PREFERAPI}
   szCreateHardLinkA = 'CreateHardLinkA';
   szCreateHardLinkW = 'CreateHardLinkW';
@@ -288,9 +288,9 @@ type
   IO_STATUS_BLOCK = record
     case integer of
       0:
-       (Status: NTSTATUS);
+      (Status: NTSTATUS);
       1:
-       (Pointer: Pointer;
+      (Pointer: Pointer;
         Information: ULONG); // 'Information' does not belong to the union!
   end;
   PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
@@ -311,7 +311,7 @@ type
 // Constants
 // =================================================================
 const
-  FileLinkInformation          = 11;
+  FileLinkInformation = 11;
   FILE_SYNCHRONOUS_IO_NONALERT = $00000020; // All operations on the file are
                                             // performed synchronously. Waits
                                             // in the system to synchronize I/O
@@ -322,32 +322,32 @@ const
                                             // If this flag is set, the
                                             // DesiredAccess SYNCHRONIZE flag also
                                             // must be set.
-  FILE_OPEN_FOR_BACKUP_INTENT  = $00004000; // The file is being opened for backup
+  FILE_OPEN_FOR_BACKUP_INTENT = $00004000; // The file is being opened for backup
                                             // intent, hence, the system should
                                             // check for certain access rights
                                             // and grant the caller the appropriate
                                             // accesses to the file before checking
                                             // the input DesiredAccess against the
                                             // file's security descriptor.
-  FILE_OPEN_REPARSE_POINT      = $00200000;
-  DELETE                       = $00010000;
-  SYNCHRONIZE                  = $00100000;
-  STATUS_SUCCESS               = NTSTATUS(0);
-  OBJ_CASE_INSENSITIVE         = $00000040;
-  SYMBOLIC_LINK_QUERY          = $00000001;
+  FILE_OPEN_REPARSE_POINT = $00200000;
+  DELETE = $00010000;
+  SYNCHRONIZE = $00100000;
+  STATUS_SUCCESS = NTSTATUS(0);
+  OBJ_CASE_INSENSITIVE = $00000040;
+  SYMBOLIC_LINK_QUERY = $00000001;
 
   // Should be defined, but isn't
-  HEAP_ZERO_MEMORY             = $00000008;
+  HEAP_ZERO_MEMORY = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH                 = 0;
-  UNC_PATH                     = 1;
-  ABSOLUTE_DRIVE_PATH          = 2;
-  RELATIVE_DRIVE_PATH          = 3;
-  ABSOLUTE_PATH                = 4;
-  RELATIVE_PATH                = 5;
-  DEVICE_PATH                  = 6;
-  UNC_DOT_PATH                 = 7;
+  INVALID_PATH = 0;
+  UNC_PATH     = 1;
+  ABSOLUTE_DRIVE_PATH = 2;
+  RELATIVE_DRIVE_PATH = 3;
+  ABSOLUTE_PATH = 4;
+  RELATIVE_PATH = 5;
+  DEVICE_PATH  = 6;
+  UNC_DOT_PATH = 7;
 
 // =================================================================
 // Function prototypes
@@ -455,14 +455,14 @@ var
 
 function NtpGetProcessHeap: Pointer; assembler;
 asm
-  // The structure offsets are now hardcoded to be able to remove otherwise
-  // obsolete structure definitions.
-//MOV    EAX, FS:[0]._TEB.Peb
-  MOV    EAX, FS:[$30]    // FS points to TEB/TIB which has a pointer to the PEB
-//MOV    EAX, [EAX]._PEB.ProcessHeap
-  MOV    EAX, [EAX+$18] // Get the process heap's handle
+  // THE STRUCTURE OFFSETS ARE NOW HARDCODED TO BE ABLE TO REMOVE OTHERWISE
+  // OBSOLETE STRUCTURE DEFINITIONS.
+//MOV    EAX, FS:[0]._TEB.PEB
+         MOV     EAX, FS:[$30]    // FS POINTS TO TEB/TIB WHICH HAS A POINTER TO THE PEB
+//MOV    EAX, [EAX]._PEB.PROCESSHEAP
+         MOV     EAX, [EAX+$18] // GET THE PROCESS HEAP'S HANDLE
 (*
-An alternative way to achieve exactly the same (at least in usermode) as above:
+AN ALTERNATIVE WAY TO ACHIEVE EXACTLY THE SAME (AT LEAST IN USERMODE) AS ABOVE:
   MOV    EAX, FS:$18
   MOV    EAX, [EAX+$30]
   MOV    EAX, [EAX+$18]
@@ -546,7 +546,7 @@ end;
  ******************************************************************************)
 function
 {$IFNDEF PREFERAPI}
-  CreateHardLinkW // This name is directly published if PREFERAPI is not defined
+CreateHardLinkW // This name is directly published if PREFERAPI is not defined
 {$ELSE PREFERAPI}
   MyCreateHardLinkW // ... otherwise this one
 {$ENDIF PREFERAPI}
@@ -572,7 +572,7 @@ var
   wcsNtName_LinkTarget, wcsFilePart_LinkTarget: PWideChar;
   oaMisc: OBJECT_ATTRIBUTES;
   IOStats: IO_STATUS_BLOCK;
-  hHeap: Pointer;
+  hHeap:  Pointer;
   NeededSize: DWORD;
   Status: NTSTATUS;
   hLinkTarget, hDrive: THandle;
@@ -767,7 +767,7 @@ end;
 
 function
 {$IFNDEF PREFERAPI}
-  CreateHardLinkA // This name is directly published if PREFERAPI is not defined
+CreateHardLinkA // This name is directly published if PREFERAPI is not defined
 {$ELSE PREFERAPI}
   MyCreateHardLinkA // ... otherwise this one
 {$ENDIF PREFERAPI}
@@ -775,7 +775,7 @@ function
 var
   usLinkName: UNICODE_STRING;
   usLinkTarget: UNICODE_STRING;
-  hHeap: Pointer;
+  hHeap:      Pointer;
 begin
   Result := False;
 {$IFDEF RTDL}
@@ -786,19 +786,19 @@ begin
   hHeap := NtpGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
-  try
-    if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
     try
+      if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
+        try
       // Call the Unicode version
-      Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
-    finally
+          Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
+        finally
       // free the allocated buffer
-      RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
-    end;
-  finally
+          RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
+        end;
+    finally
     // free the allocate buffer
-    RtlFreeHeap(hHeap, 0, usLinkName.Buffer);
-  end;
+      RtlFreeHeap(hHeap, 0, usLinkName.Buffer);
+    end;
 end;
 
 {$IFDEF RTDL}
@@ -888,4 +888,3 @@ initialization
 {$ENDIF ~JCL}
 
 end.
-

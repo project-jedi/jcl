@@ -43,85 +43,85 @@ uses
 type
   TJclOption = (
     joLibrary,
-      joDef,
-        joDefMath,
-        joDefDebug,
-        joDefEDI,
-        joDefPCRE,
-        joDefBZip2,
-        joDefUnicode,
-        joDefContainer,
-        joDefThreadSafe,
-        joDefDropObsoleteCode,
-        joDefUnitVersioning,
-        joDefMathPrecSingle,
-        joDefMathPrecDouble,
-        joDefMathPrecExtended,
-        joDefMathExtremeValues,
-        joDefHookDllExceptions,
-        joDefDebugNoBinary,
-        joDefDebugNoTD32,
-        joDefDebugNoMap,
-        joDefDebugNoExports,
-        joDefDebugNoSymbols,
-        joDefEDIWeakPackageUnits,
-        joDefPCREStaticLink,
-        joDefPCRELinkDLL,
-        joDefPCRELinkOnRequest,
-        joDefBZip2StaticLink,
-        joDefBZip2LinkDLL,
-        joDefBZip2LinkOnRequest,
-        joDefUnicodeSilentFailure,
-        joDefUnicodeRawData,
-        joDefUnicodeZLibData,
-        joDefUnicodeBZip2Data,
-        joDefContainerAnsiStr,
-        joDefContainerWideStr,
-        joDefContainerNoStr,
-      joEnvironment,
-        joEnvLibPath,
-        joEnvBrowsingPath,
-        joEnvDebugDCUPath,
-      joMake,
-        joMakeRelease,
-          joMakeReleaseVClx,
-          joMakeReleaseVCL,
-        joMakeDebug,
-          joMakeDebugVClx,
-          joMakeDebugVCL,
-        joCopyHppFiles,
-        joCheckHppFiles,
-      joPackages,
-        joVclPackage,
-        joClxPackage,
-        joDualPackages,
-        joCopyPackagesHppFiles,
-        joPdbCreate,
-        joMapCreate,
-          joJdbgCreate,
-          joJdbgInsert,
-          joMapDelete,
-        joExperts,
-          joExpertsDsgnPackages,
-          joExpertsDLL,
-          joExpertDebug,
-          joExpertAnalyzer,
-          joExpertFavorite,
-          joExpertRepository,
-          joExpertThreadNames,
-          joExpertUses,
-          joExpertSimdView,
-          joExpertVersionControl,
-      joExceptDlg,
-        joExceptDlgVCL,
-        joExceptDlgVCLSnd,
-        joExceptDlgCLX,
-      joHelp,
-        joHelpHlp,
-        joHelpChm,
-        joHelpHxS,
-        joHelpHxSPlugin,
-      joMakeDemos);
+    joDef,
+    joDefMath,
+    joDefDebug,
+    joDefEDI,
+    joDefPCRE,
+    joDefBZip2,
+    joDefUnicode,
+    joDefContainer,
+    joDefThreadSafe,
+    joDefDropObsoleteCode,
+    joDefUnitVersioning,
+    joDefMathPrecSingle,
+    joDefMathPrecDouble,
+    joDefMathPrecExtended,
+    joDefMathExtremeValues,
+    joDefHookDllExceptions,
+    joDefDebugNoBinary,
+    joDefDebugNoTD32,
+    joDefDebugNoMap,
+    joDefDebugNoExports,
+    joDefDebugNoSymbols,
+    joDefEDIWeakPackageUnits,
+    joDefPCREStaticLink,
+    joDefPCRELinkDLL,
+    joDefPCRELinkOnRequest,
+    joDefBZip2StaticLink,
+    joDefBZip2LinkDLL,
+    joDefBZip2LinkOnRequest,
+    joDefUnicodeSilentFailure,
+    joDefUnicodeRawData,
+    joDefUnicodeZLibData,
+    joDefUnicodeBZip2Data,
+    joDefContainerAnsiStr,
+    joDefContainerWideStr,
+    joDefContainerNoStr,
+    joEnvironment,
+    joEnvLibPath,
+    joEnvBrowsingPath,
+    joEnvDebugDCUPath,
+    joMake,
+    joMakeRelease,
+    joMakeReleaseVClx,
+    joMakeReleaseVCL,
+    joMakeDebug,
+    joMakeDebugVClx,
+    joMakeDebugVCL,
+    joCopyHppFiles,
+    joCheckHppFiles,
+    joPackages,
+    joVclPackage,
+    joClxPackage,
+    joDualPackages,
+    joCopyPackagesHppFiles,
+    joPdbCreate,
+    joMapCreate,
+    joJdbgCreate,
+    joJdbgInsert,
+    joMapDelete,
+    joExperts,
+    joExpertsDsgnPackages,
+    joExpertsDLL,
+    joExpertDebug,
+    joExpertAnalyzer,
+    joExpertFavorite,
+    joExpertRepository,
+    joExpertThreadNames,
+    joExpertUses,
+    joExpertSimdView,
+    joExpertVersionControl,
+    joExceptDlg,
+    joExceptDlgVCL,
+    joExceptDlgVCLSnd,
+    joExceptDlgCLX,
+    joHelp,
+    joHelpHlp,
+    joHelpChm,
+    joHelpHxS,
+    joHelpHxSPlugin,
+    joMakeDemos);
 
   TJclDistribution = class;
 
@@ -172,7 +172,7 @@ type
     function CompileExpert(const Name: string): Boolean;
     function DeleteExpert(const Option: TJclOption): Boolean;
     {$ENDIF MSWINDOWS}
-    
+
     function GetBplPath: string;
     function GetDcpPath: string;
     function GetOptionChecked(Option: TJclOption): Boolean; overload;
@@ -201,13 +201,14 @@ type
     property OptionChecked[Option: TJclOption]: Boolean read GetOptionChecked;
     property LogFileName: string read FLogFileName;
     property Silent: Boolean read FSilent write FSilent;
-    property RuntimeInstallation: Boolean read FRuntimeInstallation; // false for C#Builder 1, Delphi 8 and .net targets
+    property RuntimeInstallation: Boolean read FRuntimeInstallation;
+ // false for C#Builder 1, Delphi 8 and .net targets
 
     property IsProfileEnabled[Index: Integer]: Boolean read GetIsProfileEnabled;
     property ProfileTargets[Index: Integer]: TJclBorRADToolInstallation read GetProfilesTarget;
   end;
 
-  TJclDistribution = class (TInterfacedObject, IJediProduct)
+  TJclDistribution = class(TInterfacedObject, IJediProduct)
   private
     FJclPath: string;
     FJclBinDir: string;
@@ -333,102 +334,102 @@ resourcestring
   RsCaptionLibrary = 'JEDI Code Library';
 
   // Conditional features
-  RsCaptionDef                 = 'Conditional defines';
-  RsCaptionDefThreadSafe       = 'Enable thread safe code';
+  RsCaptionDef = 'Conditional defines';
+  RsCaptionDefThreadSafe = 'Enable thread safe code';
   RsCaptionDefDropObsoleteCode = 'Drop obsolete code';
-  RsCaptionDefUnitVersioning   = 'Include Unit Versioning';
+  RsCaptionDefUnitVersioning = 'Include Unit Versioning';
   // math options
-  RsCaptionDefMath              = 'Math options';
-  RsCaptionDefMathPrecSingle    = 'Single float precision';
-  RsCaptionDefMathPrecDouble    = 'Double float precision';
-  RsCaptionDefMathPrecExtended  = 'Extended float precision';
+  RsCaptionDefMath = 'Math options';
+  RsCaptionDefMathPrecSingle = 'Single float precision';
+  RsCaptionDefMathPrecDouble = 'Double float precision';
+  RsCaptionDefMathPrecExtended = 'Extended float precision';
   RsCaptionDefMathExtremeValues = 'Support for infinite and NaN';
   // debug options
-  RsCaptionDefDebug             = 'Debug and exception hooking options';
+  RsCaptionDefDebug = 'Debug and exception hooking options';
   RsCaptionDefHookDllExceptions = 'Hook exceptions in DLL';
-  RsCaptionDefDebugNoBinary     = 'No debug source from JEDI debug informations';
-  RsCaptionDefDebugNoTD32       = 'No debug source from TD32 debug symbols';
-  RsCaptionDefDebugNoMap        = 'No debug source from Map files';
-  RsCaptionDefDebugNoExports    = 'No debug source from function export table for libraries';
-  RsCaptionDefDebugNoSymbols    = 'No debug source from Microsoft debug symbols';
+  RsCaptionDefDebugNoBinary = 'No debug source from JEDI debug informations';
+  RsCaptionDefDebugNoTD32 = 'No debug source from TD32 debug symbols';
+  RsCaptionDefDebugNoMap = 'No debug source from Map files';
+  RsCaptionDefDebugNoExports = 'No debug source from function export table for libraries';
+  RsCaptionDefDebugNoSymbols = 'No debug source from Microsoft debug symbols';
   // EDI options
-  RsCaptionDefEDI                 = 'EDI options';
+  RsCaptionDefEDI = 'EDI options';
   RsCaptionDefEDIWeakPackageUnits = 'EDI weak package units';
   // PCRE options
-  RsCaptionDefPCRE              = 'PCRE options';
-  RsCaptionDefPCREStaticLink    = 'Static link to PCRE code';
-  RsCaptionDefPCRELinkDLL       = 'Static bind to pcre.dll';
+  RsCaptionDefPCRE = 'PCRE options';
+  RsCaptionDefPCREStaticLink = 'Static link to PCRE code';
+  RsCaptionDefPCRELinkDLL = 'Static bind to pcre.dll';
   RsCaptionDefPCRELinkOnRequest = 'Late bind to pcre.dll';
   // BZip2 options
-  RsCaptionDefBZip2              = 'BZip2 options';
-  RsCaptionDefBZip2StaticLink    = 'Static link to BZip2 code (experimental)';
-  RsCaptionDefBZip2LinkDLL       = 'Static bind to bzip2.dll';
+  RsCaptionDefBZip2 = 'BZip2 options';
+  RsCaptionDefBZip2StaticLink = 'Static link to BZip2 code (experimental)';
+  RsCaptionDefBZip2LinkDLL = 'Static bind to bzip2.dll';
   RsCaptionDefBZip2LinkOnRequest = 'Late bind to bzip2.dll';
   // Unicode options
-  RsCaptionDefUnicode              = 'Unicode options';
+  RsCaptionDefUnicode = 'Unicode options';
   RsCaptionDefUnicodeSilentFailure = 'Silent failure';
-  RsCaptionDefUnicodeRawData       = 'Uncompressed Unicode data';
-  RsCaptionDefUnicodeZLibData      = 'Compressed data using zlib';
-  RsCaptionDefUnicodeBZip2Data     = 'Compressed data using bzip2';
+  RsCaptionDefUnicodeRawData = 'Uncompressed Unicode data';
+  RsCaptionDefUnicodeZLibData = 'Compressed data using zlib';
+  RsCaptionDefUnicodeBZip2Data = 'Compressed data using bzip2';
   // Container options
-  RsCaptionDefContainer        = 'Container options';
+  RsCaptionDefContainer = 'Container options';
   RsCaptionDefContainerAnsiStr = 'Alias AnsiString containers to String containers';
   RsCaptionDefContainerWideStr = 'Alias WideString containers to String containers';
-  RsCaptionDefContainerNoStr   = 'Do not alias anything';
+  RsCaptionDefContainerNoStr = 'Do not alias anything';
 
   // post compilation
-  RsCaptionPdbCreate  = 'Create PDB debug information';
-  RsCaptionMapCreate  = 'Create MAP files';
+  RsCaptionPdbCreate = 'Create PDB debug information';
+  RsCaptionMapCreate = 'Create MAP files';
   RsCaptionJdbgCreate = 'Create JEDI Debug Informations';
   RsCaptionJdbgInsert = 'Insert JEDI Debug Informations in the libraries';
-  RsCaptionMapDelete  = 'Do not keep MAP files';
+  RsCaptionMapDelete = 'Do not keep MAP files';
 
   // environment
-  RsCaptionEnvironment     = 'Environment';
-  RsCaptionEnvLibPath      = 'Add JCL to IDE Library Path';
+  RsCaptionEnvironment = 'Environment';
+  RsCaptionEnvLibPath  = 'Add JCL to IDE Library Path';
   RsCaptionEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
   RsCaptionEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
 
   // make units
-  RsCaptionMake          = 'Make library units';
-  RsCaptionMakeRelease   = 'Release';
-  RsCaptionMakeDebug     = 'Debug';
-  RsCaptionMakeVClx      = 'Visual CLX';
-  RsCaptionMakeVCL       = 'Visual Component Library';
-  RsCaptionCopyHppFiles  = 'Copy HPP files to %s';
+  RsCaptionMake = 'Make library units';
+  RsCaptionMakeRelease = 'Release';
+  RsCaptionMakeDebug = 'Debug';
+  RsCaptionMakeVClx = 'Visual CLX';
+  RsCaptionMakeVCL = 'Visual Component Library';
+  RsCaptionCopyHppFiles = 'Copy HPP files to %s';
   RsCaptionCheckHppFiles = 'Check HPP files';
 
   // packages
-  RsCaptionPackages             = 'Packages';
-  RsCaptionVclPackage           = 'VCL Package';
-  RsCaptionClxPackage           = 'CLX package';
-  RsCaptionDualPackages         = 'Dual packages';
+  RsCaptionPackages = 'Packages';
+  RsCaptionVclPackage = 'VCL Package';
+  RsCaptionClxPackage = 'CLX package';
+  RsCaptionDualPackages = 'Dual packages';
   RsCaptionCopyPackagesHppFiles = 'Output HPP files to %s';
 
   // exception dialogs
-  RsCaptionExceptDlg       = 'Sample Exception Dialogs in the Object Repository';
-  RsCaptionExceptDlgVCL    = 'VCL Exception Dialog';
+  RsCaptionExceptDlg = 'Sample Exception Dialogs in the Object Repository';
+  RsCaptionExceptDlgVCL = 'VCL Exception Dialog';
   RsCaptionExceptDlgVCLSnd = 'VCL Exception Dialog with Send button';
-  RsCaptionExceptDlgCLX    = 'CLX Exception Dialog';
+  RsCaptionExceptDlgCLX = 'CLX Exception Dialog';
 
   // experts
-  RsCaptionExperts              = 'IDE experts';
-  RsCaptionExpertsDsgnPackages  = 'Design packages';
-  RsCaptionExpertsDLL           = 'DLL experts';
-  RsCaptionExpertDebug          = 'Debug Extension';
-  RsCaptionExpertAnalyzer       = 'Project Analyzer';
-  RsCaptionExpertFavorite       = 'Favorite combobox in Open/Save dialogs';
-  RsCaptionExpertRepository     = 'Exception dialog expert';
-  RsCaptionExpertThreadNames    = 'Displaying thread names in Thread Status window';
-  RsCaptionExpertUses           = 'Uses Wizard';
-  RsCaptionExpertSimdView       = 'Debug window for XMM registers';
+  RsCaptionExperts = 'IDE experts';
+  RsCaptionExpertsDsgnPackages = 'Design packages';
+  RsCaptionExpertsDLL = 'DLL experts';
+  RsCaptionExpertDebug = 'Debug Extension';
+  RsCaptionExpertAnalyzer = 'Project Analyzer';
+  RsCaptionExpertFavorite = 'Favorite combobox in Open/Save dialogs';
+  RsCaptionExpertRepository = 'Exception dialog expert';
+  RsCaptionExpertThreadNames = 'Displaying thread names in Thread Status window';
+  RsCaptionExpertUses = 'Uses Wizard';
+  RsCaptionExpertSimdView = 'Debug window for XMM registers';
   RsCaptionExpertVersionControl = 'Version control';
 
   // help
-  RsCaptionHelp          = 'Help files';
-  RsCaptionHelpHlp       = 'Add help file to IDE help system';
-  RsCaptionHelpChm       = 'Add HTML help to the Tools menu';
-  RsCaptionHelpHxS       = 'Register help 2.0 files';
+  RsCaptionHelp = 'Help files';
+  RsCaptionHelpHlp = 'Add help file to IDE help system';
+  RsCaptionHelpChm = 'Add HTML help to the Tools menu';
+  RsCaptionHelpHxS = 'Register help 2.0 files';
   RsCaptionHelpHxSPlugin = 'Plug help 2.0 files in the Borland help system';
 
   // demos
@@ -439,107 +440,113 @@ resourcestring
   RsHintLibrary = 'Select to install JCL for this target.';
 
   // conditional defines
-  RsHintDef                 = 'Enable or disable specific features to be compiled';
-  RsHintDefThreadSafe       = 'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
+  RsHintDef = 'Enable or disable specific features to be compiled';
+  RsHintDefThreadSafe =
+    'Conditionally some pieces of code to be thread safe, the ThreadSafe.txt file contains more informations about this feature';
   RsHintDefDropObsoleteCode = 'Do not compile deprecated code';
-  RsHintDefUnitVersioning   = 'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
+  RsHintDefUnitVersioning =
+    'Includes JCL Unit Versioning informations into each JCL unit (see also JclUnitVersioning.pas)';
   // math options
-  RsHintDefMath              = 'Math specific options (JclMath.pas)';
-  RsHintDefMathPrecSingle    = 'type Float = Single';
-  RsHintDefMathPrecDouble    = 'type Float = Double';
-  RsHintDefMathPrecExtended  = 'type Float = Extended';
+  RsHintDefMath = 'Math specific options (JclMath.pas)';
+  RsHintDefMathPrecSingle = 'type Float = Single';
+  RsHintDefMathPrecDouble = 'type Float = Double';
+  RsHintDefMathPrecExtended = 'type Float = Extended';
   RsHintDefMathExtremeValues = 'Exp en Power functions accept and return infinite and NaN';
   // Debug options
-  RsHintDefDebug             = 'Debug and exception hooking specific options (JclDebug.pas and JclHookExcept.pas)';
+  RsHintDefDebug = 'Debug and exception hooking specific options (JclDebug.pas and JclHookExcept.pas)';
   RsHintDefHookDllExceptions = 'Hook exceptions raised in DLL compiled with the JCL';
-  RsHintDefDebugNoBinary     = 'Disable support for JDBG files';
-  RsHintDefDebugNoMap        = 'Disable support for MAP files';
-  RsHintDefDebugNoTD32       = 'Disable support for TD32 informations';
-  RsHintDefDebugNoExports    = 'Disable support for export names of libraries';
-  RsHintDefDebugNoSymbols    = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
+  RsHintDefDebugNoBinary = 'Disable support for JDBG files';
+  RsHintDefDebugNoMap = 'Disable support for MAP files';
+  RsHintDefDebugNoTD32 = 'Disable support for TD32 informations';
+  RsHintDefDebugNoExports = 'Disable support for export names of libraries';
+  RsHintDefDebugNoSymbols = 'Disable support for Microsoft debug symbols (PDB and DBG files)';
   // EDI options
-  RsHintDefEDI                 = 'EDI specific options (JclEDI*.pas)';
+  RsHintDefEDI = 'EDI specific options (JclEDI*.pas)';
   RsHintDefEDIWeakPackageUnits = 'Mark EDI units as weak package units (check if you use the original EDI package)';
   // PCRE options
-  RsHintDefPCRE              = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
-  RsHintDefPCREStaticLink    = 'Code from PCRE is linked into JCL binaries';
-  RsHintDefPCRELinkDLL       = 'JCL binaries require pcre.dll to be present';
+  RsHintDefPCRE = 'PCRE specific options (pcre.pas and JclPCRE.pas)';
+  RsHintDefPCREStaticLink = 'Code from PCRE is linked into JCL binaries';
+  RsHintDefPCRELinkDLL = 'JCL binaries require pcre.dll to be present';
   RsHintDefPCRELinkOnRequest = 'JCL binaries require pcre.dll when calling PCRE functions';
   // BZip2 options
-  RsHintDefBZip2              = 'BZip2 specific options (bzip2.pas)';
-  RsHintDefBZip2StaticLink    = 'Code from BZip2 is linked into JCL binaries';
-  RsHintDefBZip2LinkDLL       = 'JCL binaries require bzip2.dll to be present';
+  RsHintDefBZip2 = 'BZip2 specific options (bzip2.pas)';
+  RsHintDefBZip2StaticLink = 'Code from BZip2 is linked into JCL binaries';
+  RsHintDefBZip2LinkDLL = 'JCL binaries require bzip2.dll to be present';
   RsHintDefBZip2LinkOnRequest = 'JCL binaries require bzip2.dll when calling PCRE functions';
   // Unicode options
-  RsHintDefUnicode              = 'Unicode specific option (JclUnicode.pas)';
-  RsHintDefUnicodeSilentFailure = 'Insert a replacement character if sequence is corrupted rather than raising an exception';
-  RsHintDefUnicodeRawData       = 'Link resource containing uncompressed Unicode data (bigger executable size)';
-  RsHintDefUnicodeZLibData      = 'Link resource containing Unicode data compressed with ZLib';
-  RsHintDefUnicodeBZip2Data     = 'Link resource containing Unicode data compressed with BZip2';
+  RsHintDefUnicode = 'Unicode specific option (JclUnicode.pas)';
+  RsHintDefUnicodeSilentFailure =
+    'Insert a replacement character if sequence is corrupted rather than raising an exception';
+  RsHintDefUnicodeRawData = 'Link resource containing uncompressed Unicode data (bigger executable size)';
+  RsHintDefUnicodeZLibData = 'Link resource containing Unicode data compressed with ZLib';
+  RsHintDefUnicodeBZip2Data = 'Link resource containing Unicode data compressed with BZip2';
   // Container options
-  RsHintDefContainer          = 'Container specific options';
-  RsHintDefContainerAnsiStr   = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
-  RsHintDefContainerWideStr   = 'Define TJclStr* containers as alias of TJclWideStr* containers';
-  RsHintDefContainerNoStr     = 'Do not define TJclStr* containers';
+  RsHintDefContainer = 'Container specific options';
+  RsHintDefContainerAnsiStr = 'Define TJclStr* containers as alias of TJclAnsiStr* containers';
+  RsHintDefContainerWideStr = 'Define TJclStr* containers as alias of TJclWideStr* containers';
+  RsHintDefContainerNoStr = 'Do not define TJclStr* containers';
 
   // post compilation
-  RsHintPdbCreate  = 'Create detailed debug information for libraries';
-  RsHintMapCreate  = 'Create detailed MAP files for each libraries';
+  RsHintPdbCreate = 'Create detailed debug information for libraries';
+  RsHintMapCreate = 'Create detailed MAP files for each libraries';
   RsHintJdbgCreate = 'Create JEDI Debug Informations from the MAP files';
   RsHintJdbgInsert = 'Insert JEDI Debug Informations into the libraries (only the BPL has to be redistributed)';
-  RsHintMapDelete  = 'The original MAP file is not kept once JEDI Debug Informations are generated';
+  RsHintMapDelete = 'The original MAP file is not kept once JEDI Debug Informations are generated';
 
   // environment
-  RsHintEnvironment     = 'Set selected environment items';
-  RsHintEnvLibPath      = 'Add JCL precompiled unit directories to library path';
+  RsHintEnvironment = 'Set selected environment items';
+  RsHintEnvLibPath  = 'Add JCL precompiled unit directories to library path';
   RsHintEnvBrowsingPath = 'Add JCL source directories to browsing path';
-  RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective' + AnsiLineBreak +
+  RsHintEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units by means of the respective'
+    + AnsiLineBreak +
     'Project Options|Compiler switch. See "Make library units/Debug" option below.';
 
   // make units
-  RsHintMake            = 'Generate .dcu and .dpu (Kylix only) files.' + AnsiLineBreak + 'Recommended.';
-  RsHintMakeRelease     = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
-  RsHintMakeReleaseVcl  = 'Make precompiled VCL units for release';
+  RsHintMake = 'Generate .dcu and .dpu (Kylix only) files.' + AnsiLineBreak + 'Recommended.';
+  RsHintMakeRelease = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
+  RsHintMakeReleaseVcl = 'Make precompiled VCL units for release';
   RsHintMakeReleaseVClx = 'Make precompiled Visual CLX units for release';
-  RsHintMakeDebug       = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' + AnsiLineBreak +
+  RsHintMakeDebug = 'Make precompiled units for debugging, i.e.optimization off, debug information included.' +
+    AnsiLineBreak +
     'When installed, available through Project Options|Compiler|Use Debug DCUs.';
-  RsHintMakeDebugVcl    = 'Make precompiled VCL units for debugging';
-  RsHintMakeDebugVClx   = 'Make precompiled Visual CLX units for debugging';
-  RsHintCopyHppFiles    = 'Copy .hpp files into C++Builder''s include path.';
-  RsHintCheckHppFiles   = 'Compile some C++ source files to verify JCL headers';
+  RsHintMakeDebugVcl = 'Make precompiled VCL units for debugging';
+  RsHintMakeDebugVClx = 'Make precompiled Visual CLX units for debugging';
+  RsHintCopyHppFiles = 'Copy .hpp files into C++Builder''s include path.';
+  RsHintCheckHppFiles = 'Compile some C++ source files to verify JCL headers';
 
   // packages
-  RsHintPackages             = 'Build and eventually install JCL runtime packages and optional IDE experts.';
-  RsHintVclPackage           = 'Build JCL runtime package containing VCL extensions';
-  RsHintClxPackage           = 'Build JCL runtime package containing Visual CLX extensions';
-  RsHintDualPackages         = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
+  RsHintPackages = 'Build and eventually install JCL runtime packages and optional IDE experts.';
+  RsHintVclPackage = 'Build JCL runtime package containing VCL extensions';
+  RsHintClxPackage = 'Build JCL runtime package containing Visual CLX extensions';
+  RsHintDualPackages = 'The same package introduce code for Delphi Win32 and C++Builder Win32';
   RsHintCopyPackagesHppFiles = 'Output .hpp files into C++Builder''s include path instead of ' +
     'the source paths.';
 
   // exception dialogs
-  RsHintExceptDlg       = 'Add selected Exception dialogs to the Object Repository.';
-  RsHintExceptDlgVCL    = 'Add VCL exception dialog to the Object Repository.';
+  RsHintExceptDlg = 'Add selected Exception dialogs to the Object Repository.';
+  RsHintExceptDlgVCL = 'Add VCL exception dialog to the Object Repository.';
   RsHintExceptDlgVCLSnd = 'Add VCL exception dialog with "Send Button" to the Object Repository.';
-  RsHintExceptDlgCLX    = 'Add CLX exception dialog (Windows only) to the Object Repository.';
+  RsHintExceptDlgCLX = 'Add CLX exception dialog (Windows only) to the Object Repository.';
 
   // experts
-  RsHintExperts              = 'Build and install selected IDE experts.';
-  RsHintExpertsDsgnPackages  = 'Design packages containing JCL experts';
-  RsHintExpertsDLL           = 'DLLs containing JCL experts';
-  RsHintExpertDebug          = 'Install IDE expert which assists to insert JCL Debug information into executable files.';
-  RsHintExpertAnalyzer       = 'Install IDE Project Analyzer.';
-  RsHintExpertFavorite       = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
-  RsHintExpertRepository     = 'Repository expert to easily create exception dialogs';
-  RsHintExpertThreadNames    = 'Display thread names in Thread Status window IDE extension.';
-  RsHintExpertUses           = 'Install IDE Uses Wizard.';
-  RsHintExpertSimdView       = 'Install a debug window of XMM registers (used by SSE instructions)';
+  RsHintExperts = 'Build and install selected IDE experts.';
+  RsHintExpertsDsgnPackages = 'Design packages containing JCL experts';
+  RsHintExpertsDLL = 'DLLs containing JCL experts';
+  RsHintExpertDebug =
+    'Install IDE expert which assists to insert JCL Debug information into executable files.';
+  RsHintExpertAnalyzer = 'Install IDE Project Analyzer.';
+  RsHintExpertFavorite = 'Install "Favorites" combobox in IDE Open/Save dialogs.';
+  RsHintExpertRepository = 'Repository expert to easily create exception dialogs';
+  RsHintExpertThreadNames = 'Display thread names in Thread Status window IDE extension.';
+  RsHintExpertUses = 'Install IDE Uses Wizard.';
+  RsHintExpertSimdView = 'Install a debug window of XMM registers (used by SSE instructions)';
   RsHintExpertVersionControl = 'Integration of TortoiseCVS and TortoiseSVN in the IDE';
 
   // help
-  RsHintHelp          = 'Install JCL help files.';
-  RsHintHelpHlp       = 'Customize Borland Open Help to include JCL help files.';
-  RsHintHelpChm       = 'Compiled help files won''t be merged with the IDE help';
-  RsHintHelpHxS       = 'Register Help 2.0 files';
+  RsHintHelp = 'Install JCL help files.';
+  RsHintHelpHlp = 'Customize Borland Open Help to include JCL help files.';
+  RsHintHelpChm = 'Compiled help files won''t be merged with the IDE help';
+  RsHintHelpHxS = 'Register Help 2.0 files';
   RsHintHelpHxSPlugin = 'Register Help 2.0 files as a plugin for the Borland.BDS* namespace';
 
   // demos
@@ -556,7 +563,8 @@ resourcestring
     'environment variable, otherwise JCL packages won''t be found by the IDE.' + sLineBreak +
     'Do you want the JCL installer to add it?' + sLineBreak +
     'You will have to reboot your computer and/or to close your session to validate this change';
-  RsHtmlHelp2Credentials = 'Registering HTML Help 2.0 files requires administrator privilege to be performed' + sLineBreak +
+  RsHtmlHelp2Credentials = 'Registering HTML Help 2.0 files requires administrator privilege to be performed' +
+    sLineBreak +
     'The RegHelper.exe utility will make this operation';
 
 type
@@ -569,86 +577,88 @@ type
 var
   OptionData: array[TJclOption] of TOptionRec =
     (
-      (Id: -1; Caption: RsCaptionLibrary; Hint: RsHintLibrary), // joLibrary
-      (Id: -1; Caption: RsCaptionDef; Hint: RsHintDef), // joDef
-      (Id: -1; Caption: RsCaptionDefMath; Hint: RsHintDefMath), // joDefMath
-      (Id: -1; Caption: RsCaptionDefDebug; Hint: RsHintDefDebug), // joDefDebug
-      (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
-      (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
-      (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
-      (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
-      (Id: -1; Caption: RsCaptionDefContainer; Hint: RsHintDefContainer), // joDefContainer
-      (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
-      (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
-      (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
-      (Id: -1; Caption: RsCaptionDefMathPrecSingle; Hint: RsHintDefMathPrecSingle), // ioDefMathPrecSingle
-      (Id: -1; Caption: RsCaptionDefMathPrecDouble; Hint: RsHintDefMathPrecDouble), // joDefMathPrecDouble
-      (Id: -1; Caption: RsCaptionDefMathPrecExtended; Hint: RsHintDefMathPrecExtended), // joDefMathPrecExtended
-      (Id: -1; Caption: RsCaptionDefMathExtremeValues; Hint: RsHintDefMathExtremeValues), // joDefMathExtremeValues
-      (Id: -1; Caption: RsCaptionDefHookDllExceptions; Hint: RsHintDefHookDllExceptions), // joDefHookDllExceptions
-      (Id: -1; Caption: RsCaptionDefDebugNoBinary; Hint: RsHintDefDebugNoBinary), // joDefDebugNoBinary
-      (Id: -1; Caption: RsCaptionDefDebugNoTD32; Hint: RsHintDefDebugNoTD32), // joDefDebugNoTD32
-      (Id: -1; Caption: RsCaptionDefDebugNoMap; Hint: RsHintDefDebugNoMap), // joDefDebugNoMap
-      (Id: -1; Caption: RsCaptionDefDebugNoExports; Hint: RsHintDefDebugNoExports), // joDefDebugNoExports
-      (Id: -1; Caption: RsCaptionDefDebugNoSymbols; Hint: RsHintDefDebugNoSymbols), // joDefDebugNoSymbols
-      (Id: -1; Caption: RsCaptionDefEDIWeakPackageUnits; Hint: RsHintDefEDIWeakPackageUnits), // joDefEDIWeakPackageUnits
-      (Id: -1; Caption: RsCaptionDefPCREStaticLink; Hint: RsHintDefPCREStaticLink), // joDefPCREStaticLink
-      (Id: -1; Caption: RsCaptionDefPCRELinkDLL; Hint: RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
-      (Id: -1; Caption: RsCaptionDefPCRELinkOnRequest; Hint: RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
-      (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
-      (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
-      (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
-      (Id: -1; Caption: RsCaptionDefUnicodeSilentFailure; Hint: RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
-      (Id: -1; Caption: RsCaptionDefUnicodeRawData; Hint: RsHintDefUnicodeRawData), // joDefUnicodeRawData
-      (Id: -1; Caption: RsCaptionDefUnicodeZLibData; Hint: RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
-      (Id: -1; Caption: RsCaptionDefUnicodeBZip2Data; Hint: RsHintDefUnicodeBZip2Data), // joDefUnicodeBZip2Data
-      (Id: -1; Caption: RsCaptionDefContainerAnsiStr; Hint: RsHintDefContainerAnsiStr), // joDefContainerAnsiStr
-      (Id: -1; Caption: RsCaptionDefContainerWideStr; Hint: RsHintDefContainerWideStr), // joDefContainerWideStr
-      (Id: -1; Caption: RsCaptionDefContainerNoStr; Hint: RsHintDefContainerNoStr), // joDefContainerNoStr
-      (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
-      (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
-      (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
-      (Id: -1; Caption: RsCaptionEnvDebugDCUPath; Hint: RsHintEnvDebugDCUPath), // joEnvDebugDCUPath
-      (Id: -1; Caption: RsCaptionMake; Hint: RsHintMake), // joMake
-      (Id: -1; Caption: RsCaptionMakeRelease; Hint: RsHintMakeRelease), // joMakeRelease
-      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeReleaseVClx), // joMakeReleaseVClx
-      (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeReleaseVCL), // joMakeReleaseVCL
-      (Id: -1; Caption: RsCaptionMakeDebug; Hint: RsHintMakeDebug), // joMakeDebug
-      (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeDebugVClx), // joMakeDebugVClx
-      (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeDebugVCL), // joMakeDebugVCL
-      (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
-      (Id: -1; Caption: RsCaptionCheckHppFiles; Hint: RsHintCheckHppFiles), // joCheckHppFiles
-      (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
-      (Id: -1; Caption: RsCaptionVclPackage; Hint: RsHintVclPackage), // joVclPackage
-      (Id: -1; Caption: RsCaptionClxPackage; Hint: RsHintClxPackage), // joClxPackage
-      (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
-      (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
-      (Id: -1; Caption: RsCaptionPdbCreate; Hint: RsHintPdbCreate), // joPdbCreate
-      (Id: -1; Caption: RsCaptionMapCreate; Hint: RsHintMapCreate), // joMapCreate
-      (Id: -1; Caption: RsCaptionJdbgCreate; Hint: RsHintJdbgCreate), // joJdbgCreate
-      (Id: -1; Caption: RsCaptionJdbgInsert; Hint: RsHintJdbgInsert), // joJdbgInsert
-      (Id: -1; Caption: RsCaptionMapDelete; Hint: RsHintMapDelete), // joMapDelete
-      (Id: -1; Caption: RsCaptionExperts; Hint: RsHintExperts), // joExperts
-      (Id: -1; Caption: RsCaptionExpertsDsgnPackages; Hint: RsHintExpertsDsgnPackages), // joExpertsDsgnPackages
-      (Id: -1; Caption: RsCaptionExpertsDLL; Hint: RsHintExpertsDLL), // joExpertsDLL
-      (Id: -1; Caption: RsCaptionExpertDebug; Hint: RsHintExpertDebug), // joExpertDebug
-      (Id: -1; Caption: RsCaptionExpertAnalyzer; Hint: RsHintExpertAnalyzer), // joExpertAnalyzer
-      (Id: -1; Caption: RsCaptionExpertFavorite; Hint: RsHintExpertFavorite), // joExpertFavorite
-      (Id: -1; Caption: RsCaptionExpertRepository; Hint: RsHintExpertRepository), // joExpertRepository
-      (Id: -1; Caption: RsCaptionExpertThreadNames; Hint: RsHintExpertThreadNames), // joExpertThreadNames
-      (Id: -1; Caption: RsCaptionExpertUses; Hint: RsHintExpertUses), // joExpertUses
-      (Id: -1; Caption: RsCaptionExpertSimdView; Hint: RsHintExpertSimdView), // joExpertSimdView
-      (Id: -1; Caption: RsCaptionExpertVersionControl; Hint: RsHintExpertVersionControl), // joExpertVersionControl
-      (Id: -1; Caption: RsCaptionExceptDlg; Hint: RsHintExceptDlg), // joExceptDlg
-      (Id: -1; Caption: RsCaptionExceptDlgVCL; Hint: RsHintExceptDlgVCL), // joExceptDlgVCL
-      (Id: -1; Caption: RsCaptionExceptDlgVCLSnd; Hint: RsHintExceptDlgVCLSnd), // joExceptDlgVCLSnd
-      (Id: -1; Caption: RsCaptionExceptDlgCLX; Hint: RsHintExceptDlgCLX), // joExceptDlgCLX
-      (Id: -1; Caption: RsCaptionHelp; Hint: RsHintHelp), // joHelp
-      (Id: -1; Caption: RsCaptionHelpHlp; Hint: RsHintHelpHlp), // joHelpHlp
-      (Id: -1; Caption: RsCaptionHelpChm; Hint: RsHintHelpChm), // joHelpChm
-      (Id: -1; Caption: RsCaptionHelpHxS; Hint: RsHintHelpHxS), // joHelpHxS
-      (Id: -1; Caption: RsCaptionHelpHxSPlugin; Hint: RsHintHelpHxSPlugin), // joHelpHxSPlugin
-      (Id: -1; Caption: RsCaptionMakeDemos; Hint: RsHintMakeDemos) // joMakeDemos
+    (Id: -1; Caption: RsCaptionLibrary; Hint: RsHintLibrary), // joLibrary
+    (Id: -1; Caption: RsCaptionDef; Hint: RsHintDef), // joDef
+    (Id: -1; Caption: RsCaptionDefMath; Hint: RsHintDefMath), // joDefMath
+    (Id: -1; Caption: RsCaptionDefDebug; Hint: RsHintDefDebug), // joDefDebug
+    (Id: -1; Caption: RsCaptionDefEDI; Hint: RsHintDefEDI), // joDefEDI
+    (Id: -1; Caption: RsCaptionDefPCRE; Hint: RsHintDefPCRE), // joDefPCRE
+    (Id: -1; Caption: RsCaptionDefBZip2; Hint: RsHintDefBZip2), // joDefBZip2
+    (Id: -1; Caption: RsCaptionDefUnicode; Hint: RsHintDefUnicode), // joDefUnicode
+    (Id: -1; Caption: RsCaptionDefContainer; Hint: RsHintDefContainer), // joDefContainer
+    (Id: -1; Caption: RsCaptionDefThreadSafe; Hint: RsHintDefThreadSafe), // joDefThreadSafe
+    (Id: -1; Caption: RsCaptionDefDropObsoleteCode; Hint: RsHintDefDropObsoleteCode), // joDefDropObsoleteCode
+    (Id: -1; Caption: RsCaptionDefUnitVersioning; Hint: RsHintDefUnitVersioning), // joDefUnitVersioning
+    (Id: -1; Caption: RsCaptionDefMathPrecSingle; Hint: RsHintDefMathPrecSingle), // ioDefMathPrecSingle
+    (Id: -1; Caption: RsCaptionDefMathPrecDouble; Hint: RsHintDefMathPrecDouble), // joDefMathPrecDouble
+    (Id: -1; Caption: RsCaptionDefMathPrecExtended; Hint: RsHintDefMathPrecExtended), // joDefMathPrecExtended
+    (Id: -1; Caption: RsCaptionDefMathExtremeValues; Hint: RsHintDefMathExtremeValues), // joDefMathExtremeValues
+    (Id: -1; Caption: RsCaptionDefHookDllExceptions; Hint: RsHintDefHookDllExceptions), // joDefHookDllExceptions
+    (Id: -1; Caption: RsCaptionDefDebugNoBinary; Hint: RsHintDefDebugNoBinary), // joDefDebugNoBinary
+    (Id: -1; Caption: RsCaptionDefDebugNoTD32; Hint: RsHintDefDebugNoTD32), // joDefDebugNoTD32
+    (Id: -1; Caption: RsCaptionDefDebugNoMap; Hint: RsHintDefDebugNoMap), // joDefDebugNoMap
+    (Id: -1; Caption: RsCaptionDefDebugNoExports; Hint: RsHintDefDebugNoExports), // joDefDebugNoExports
+    (Id: -1; Caption: RsCaptionDefDebugNoSymbols; Hint: RsHintDefDebugNoSymbols), // joDefDebugNoSymbols
+    (Id: -1; Caption: RsCaptionDefEDIWeakPackageUnits;
+    Hint: RsHintDefEDIWeakPackageUnits), // joDefEDIWeakPackageUnits
+    (Id: -1; Caption: RsCaptionDefPCREStaticLink; Hint: RsHintDefPCREStaticLink), // joDefPCREStaticLink
+    (Id: -1; Caption: RsCaptionDefPCRELinkDLL; Hint: RsHintDefPCRELinkDLL), // joDefPCRELinkDLL
+    (Id: -1; Caption: RsCaptionDefPCRELinkOnRequest; Hint: RsHintDefPCRELinkOnRequest), // joDefPCRELinkOnRequest
+    (Id: -1; Caption: RsCaptionDefBZip2StaticLink; Hint: RsHintDefBZip2StaticLink), // joDefBZip2StaticLink
+    (Id: -1; Caption: RsCaptionDefBZip2LinkDLL; Hint: RsHintDefBZip2LinkDLL), // joDefBZip2LinkDLL
+    (Id: -1; Caption: RsCaptionDefBZip2LinkOnRequest; Hint: RsHintDefBZip2LinkOnRequest), // joDefBZip2LinkOnRequest
+    (Id: -1; Caption: RsCaptionDefUnicodeSilentFailure;
+    Hint: RsHintDefUnicodeSilentFailure), // joDefUnicodeSilentFailure
+    (Id: -1; Caption: RsCaptionDefUnicodeRawData; Hint: RsHintDefUnicodeRawData), // joDefUnicodeRawData
+    (Id: -1; Caption: RsCaptionDefUnicodeZLibData; Hint: RsHintDefUnicodeZLibData), // joDefUnicodeZLibData
+    (Id: -1; Caption: RsCaptionDefUnicodeBZip2Data; Hint: RsHintDefUnicodeBZip2Data), // joDefUnicodeBZip2Data
+    (Id: -1; Caption: RsCaptionDefContainerAnsiStr; Hint: RsHintDefContainerAnsiStr), // joDefContainerAnsiStr
+    (Id: -1; Caption: RsCaptionDefContainerWideStr; Hint: RsHintDefContainerWideStr), // joDefContainerWideStr
+    (Id: -1; Caption: RsCaptionDefContainerNoStr; Hint: RsHintDefContainerNoStr), // joDefContainerNoStr
+    (Id: -1; Caption: RsCaptionEnvironment; Hint: RsHintEnvironment), // joEnvironment
+    (Id: -1; Caption: RsCaptionEnvLibPath; Hint: RsHintEnvLibPath), // joEnvLibPath
+    (Id: -1; Caption: RsCaptionEnvBrowsingPath; Hint: RsHintEnvBrowsingPath), // joEnvBrowsingPath
+    (Id: -1; Caption: RsCaptionEnvDebugDCUPath; Hint: RsHintEnvDebugDCUPath), // joEnvDebugDCUPath
+    (Id: -1; Caption: RsCaptionMake; Hint: RsHintMake), // joMake
+    (Id: -1; Caption: RsCaptionMakeRelease; Hint: RsHintMakeRelease), // joMakeRelease
+    (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeReleaseVClx), // joMakeReleaseVClx
+    (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeReleaseVCL), // joMakeReleaseVCL
+    (Id: -1; Caption: RsCaptionMakeDebug; Hint: RsHintMakeDebug), // joMakeDebug
+    (Id: -1; Caption: RsCaptionMakeVClx; Hint: RsHintMakeDebugVClx), // joMakeDebugVClx
+    (Id: -1; Caption: RsCaptionMakeVCL; Hint: RsHintMakeDebugVCL), // joMakeDebugVCL
+    (Id: -1; Caption: RsCaptionCopyHppFiles; Hint: RsHintCopyHppFiles), // joCopyHppFiles
+    (Id: -1; Caption: RsCaptionCheckHppFiles; Hint: RsHintCheckHppFiles), // joCheckHppFiles
+    (Id: -1; Caption: RsCaptionPackages; Hint: RsHintPackages), // joPackages
+    (Id: -1; Caption: RsCaptionVclPackage; Hint: RsHintVclPackage), // joVclPackage
+    (Id: -1; Caption: RsCaptionClxPackage; Hint: RsHintClxPackage), // joClxPackage
+    (Id: -1; Caption: RsCaptionDualPackages; Hint: RsHintDualPackages), // joDualPackages
+    (Id: -1; Caption: RsCaptionCopyPackagesHppFiles; Hint: RsHintCopyPackagesHppFiles), // joCopyPackagesHppFiles
+    (Id: -1; Caption: RsCaptionPdbCreate; Hint: RsHintPdbCreate), // joPdbCreate
+    (Id: -1; Caption: RsCaptionMapCreate; Hint: RsHintMapCreate), // joMapCreate
+    (Id: -1; Caption: RsCaptionJdbgCreate; Hint: RsHintJdbgCreate), // joJdbgCreate
+    (Id: -1; Caption: RsCaptionJdbgInsert; Hint: RsHintJdbgInsert), // joJdbgInsert
+    (Id: -1; Caption: RsCaptionMapDelete; Hint: RsHintMapDelete), // joMapDelete
+    (Id: -1; Caption: RsCaptionExperts; Hint: RsHintExperts), // joExperts
+    (Id: -1; Caption: RsCaptionExpertsDsgnPackages; Hint: RsHintExpertsDsgnPackages), // joExpertsDsgnPackages
+    (Id: -1; Caption: RsCaptionExpertsDLL; Hint: RsHintExpertsDLL), // joExpertsDLL
+    (Id: -1; Caption: RsCaptionExpertDebug; Hint: RsHintExpertDebug), // joExpertDebug
+    (Id: -1; Caption: RsCaptionExpertAnalyzer; Hint: RsHintExpertAnalyzer), // joExpertAnalyzer
+    (Id: -1; Caption: RsCaptionExpertFavorite; Hint: RsHintExpertFavorite), // joExpertFavorite
+    (Id: -1; Caption: RsCaptionExpertRepository; Hint: RsHintExpertRepository), // joExpertRepository
+    (Id: -1; Caption: RsCaptionExpertThreadNames; Hint: RsHintExpertThreadNames), // joExpertThreadNames
+    (Id: -1; Caption: RsCaptionExpertUses; Hint: RsHintExpertUses), // joExpertUses
+    (Id: -1; Caption: RsCaptionExpertSimdView; Hint: RsHintExpertSimdView), // joExpertSimdView
+    (Id: -1; Caption: RsCaptionExpertVersionControl; Hint: RsHintExpertVersionControl), // joExpertVersionControl
+    (Id: -1; Caption: RsCaptionExceptDlg; Hint: RsHintExceptDlg), // joExceptDlg
+    (Id: -1; Caption: RsCaptionExceptDlgVCL; Hint: RsHintExceptDlgVCL), // joExceptDlgVCL
+    (Id: -1; Caption: RsCaptionExceptDlgVCLSnd; Hint: RsHintExceptDlgVCLSnd), // joExceptDlgVCLSnd
+    (Id: -1; Caption: RsCaptionExceptDlgCLX; Hint: RsHintExceptDlgCLX), // joExceptDlgCLX
+    (Id: -1; Caption: RsCaptionHelp; Hint: RsHintHelp), // joHelp
+    (Id: -1; Caption: RsCaptionHelpHlp; Hint: RsHintHelpHlp), // joHelpHlp
+    (Id: -1; Caption: RsCaptionHelpChm; Hint: RsHintHelpChm), // joHelpChm
+    (Id: -1; Caption: RsCaptionHelpHxS; Hint: RsHintHelpHxS), // joHelpHxS
+    (Id: -1; Caption: RsCaptionHelpHxSPlugin; Hint: RsHintHelpHxSPlugin), // joHelpHxSPlugin
+    (Id: -1; Caption: RsCaptionMakeDemos; Hint: RsHintMakeDemos) // joMakeDemos
     );
 
 const
@@ -660,36 +670,37 @@ const
   VersionDirExp = '\%%s';
   {$ENDIF}
 
-  JclDpk     = 'Jcl';
-  JclVclDpk  = 'JclVcl';
+  JclDpk = 'Jcl';
+  JclVclDpk = 'JclVcl';
   JclVClxDpk = 'JclVClx';
   JediJclDpr = 'Jedi.Jcl';
 
-  JclExpertBase           = 'JclBaseExpert';
-  JclExpertDebug          = 'JclDebugExpert';
-  JclExpertAnalyzer       = 'JclProjectAnalysisExpert';
-  JclExpertFavorite       = 'JclFavoriteFoldersExpert';
-  JclExpertRepository     = 'JclRepositoryExpert';
-  JclExpertThrNames       = 'JclThreadNameExpert';
-  JclExpertUses           = 'JclUsesExpert';
-  JclExpertSimdView       = 'JclSIMDViewExpert';
+  JclExpertBase = 'JclBaseExpert';
+  JclExpertDebug = 'JclDebugExpert';
+  JclExpertAnalyzer = 'JclProjectAnalysisExpert';
+  JclExpertFavorite = 'JclFavoriteFoldersExpert';
+  JclExpertRepository = 'JclRepositoryExpert';
+  JclExpertThrNames = 'JclThreadNameExpert';
+  JclExpertUses = 'JclUsesExpert';
+  JclExpertSimdView = 'JclSIMDViewExpert';
   JclExpertVersionControl = 'JclVersionControlExpert';
 //  JclExpertBdsExpertDpr   = 'JclBdsExpert';
 
   ExpertPaths: array[joExperts..joExpertVersionControl] of string =
     (
-      JclExpertBase, '', '', JclExpertDebug, JclExpertAnalyzer,
-      JclExpertFavorite, JclExpertRepository, JclExpertThrNames,
-      JclExpertUses, JclExpertSimdView, JclExpertVersionControl
-    );            
+    JclExpertBase, '', '', JclExpertDebug, JclExpertAnalyzer,
+    JclExpertFavorite, JclExpertRepository, JclExpertThrNames,
+    JclExpertUses, JclExpertSimdView, JclExpertVersionControl
+    );
 
-  JclSrcDirWindows  = 'windows';
-  JclSrcDirUnix     = 'unix';
-  JclSrcDirVcl      = 'vcl';
-  JclSrcDirCommon   = 'common';
-  JclSrcDirVisClx   = 'visclx';
+  JclSrcDirWindows = 'windows';
+  JclSrcDirUnix    = 'unix';
+  JclSrcDirVcl     = 'vcl';
+  JclSrcDirCommon  = 'common';
+  JclSrcDirVisClx  = 'visclx';
 
-  BCBIncludePath = '%s' + DirSeparator + '%s' + DirSeparator + '$(BCB)' + DirDelimiter + 'include;$(BCB)' + DirDelimiter + 'include' + DirDelimiter + 'vcl';
+  BCBIncludePath = '%s' + DirSeparator + '%s' + DirSeparator + '$(BCB)' + DirDelimiter +
+    'include;$(BCB)' + DirDelimiter + 'include' + DirDelimiter + 'vcl';
   {$IFDEF MSWINDOWS}
   BCBObjectPath  = '%s;%s;$(BCB)\Lib\Obj';
   JclSourceDirs: array[0..3] of string = (JclSrcDirCommon, JclSrcDirWindows, JclSrcDirVcl, JclSrcDirVisClx);
@@ -700,33 +711,33 @@ const
   {$ENDIF UNIX}
 
   ExceptDlgPath = 'experts' + DirDelimiter + 'debug' + DirDelimiter + 'dialog' + DirDelimiter;
-  ExceptDlgClxFileName    = 'ClxExceptDlg.pas';
-  ExceptDlgVclFileName    = 'ExceptDlg.pas';
+  ExceptDlgClxFileName = 'ClxExceptDlg.pas';
+  ExceptDlgVclFileName = 'ExceptDlg.pas';
   ExceptDlgVclSndFileName = 'ExceptDlgMail.pas';
 
-  ExceptDlgClxName    = 'CLX Exception Dialog';
-  ExceptDlgVclName    = 'Exception Dialog';
+  ExceptDlgClxName = 'CLX Exception Dialog';
+  ExceptDlgVclName = 'Exception Dialog';
   ExceptDlgVclSndName = 'Exception Dialog with Send';
 
   ExceptDlgDescription = 'JCL Application exception dialog';
-  ExceptDlgAuthor      = 'Project JEDI';
-  ExceptDlgPage        = 'Dialogs';
+  ExceptDlgAuthor = 'Project JEDI';
+  ExceptDlgPage = 'Dialogs';
 
-  JclChmHelpFile    = 'help' + DirDelimiter + 'JCLHelp.chm';
-  JclHlpHelpFile    = 'help' + DirDelimiter + 'JCLHelp.hlp';
-  JclHxSHelpFile    = 'help' + DirDelimiter + 'JCLHelp.HxS';
+  JclChmHelpFile = 'help' + DirDelimiter + 'JCLHelp.chm';
+  JclHlpHelpFile = 'help' + DirDelimiter + 'JCLHelp.hlp';
+  JclHxSHelpFile = 'help' + DirDelimiter + 'JCLHelp.HxS';
 
-  Help2NameSpace         = 'Jedi.Jcl';
-  Help2Collection        = 'JCLHelp_COL_MASTER.HxC';
-  Help2Description       = 'JEDI Code Library';
-  Help2Identifier        = 'JCLHelp';
-  Help2LangId            = 1033;         // en/english
-  Help2HxSFile           = 'JCLHelp.HxS';
-  Help2HxIFile           = 'JCLHelp.HxI';
+  Help2NameSpace = 'Jedi.Jcl';
+  Help2Collection = 'JCLHelp_COL_MASTER.HxC';
+  Help2Description = 'JEDI Code Library';
+  Help2Identifier = 'JCLHelp';
+  Help2LangId    = 1033;         // en/english
+  Help2HxSFile   = 'JCLHelp.HxS';
+  Help2HxIFile   = 'JCLHelp.HxI';
 
-  JclHelpTitle      = 'JCL %d.%d Help';
-  JclHelpIndexName  = 'JEDI Code Library Reference';
-  HHFileName        = 'HH.EXE';
+  JclHelpTitle = 'JCL %d.%d Help';
+  JclHelpIndexName = 'JEDI Code Library Reference';
+  HHFileName   = 'HH.EXE';
 
   {$IFDEF VisualCLX}
   ReadmeFileName = 'Readme.html';
@@ -738,11 +749,11 @@ const
   EntriesFileName1      = '.svn' + DirDelimiter + 'entries';
   EntriesFileName2      = '_svn' + DirDelimiter + 'entries';
 
-  RsJclVersionMask     = 'JCL %d.%d %s %s %d';
-  RsJclVersionBuild    = 'Build';
+  RsJclVersionMask = 'JCL %d.%d %s %s %d';
+  RsJclVersionBuild = 'Build';
   RsJclVersionRevision = 'Revision';
-  RsJclVersionTesting  = 'Testing';
-  RsJclVersionRelease  = 'Release';
+  RsJclVersionTesting = 'Testing';
+  RsJclVersionRelease = 'Release';
 
   {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = 'packages\BCB.bmk';
@@ -758,17 +769,17 @@ const
   ProfilesSectionName = 'Profiles';
 
 resourcestring
-  RsInstallMessage                   = 'Installing %s...';
+  RsInstallMessage = 'Installing %s...';
   //RsStatusDetailMessage             = 'Installing %s for %s...';
-  RsUninstallMessage                = 'Removing %s...';
-  RsBuildingMessage                 = 'Building %s...';
+  RsUninstallMessage = 'Removing %s...';
+  RsBuildingMessage = 'Building %s...';
   //RsBuildingDemosMessage            = 'Building demo projects...';
   //RsBuildingDemosByTargetMessage    = 'Building demo projects by %s...';
-  RsCompilingMessage                = 'Compiling %s...';
+  RsCompilingMessage = 'Compiling %s...';
   //RsInstallFailed                   = 'Installation of %s failed, see %s for details.';
-  RsInvalidBplPath                  = 'Invalid BPL path "%s"';
-  RsInvalidDcpPath                  = 'Invalid DCP path "%s"';
-  RsLibDescriptor                   = '%s library %sunits for %s';
+  RsInvalidBplPath = 'Invalid BPL path "%s"';
+  RsInvalidDcpPath = 'Invalid DCP path "%s"';
+  RsLibDescriptor  = '%s library %sunits for %s';
 
 function FullPackageFileName(Target: TJclBorRADToolInstallation; const BaseName: string): string;
 const
@@ -828,9 +839,9 @@ begin
     //    LibDirMask := LibDirMask + '.x86';
     //  end;
     bp64bit:
-      begin
-        FTargetName := Format('%s %s', [FTargetName, Personality64Bit]);
-      end;
+    begin
+      FTargetName := Format('%s %s', [FTargetName, Personality64Bit]);
+    end;
   end;
 
   FLibReleaseDir := MakePath(Distribution.LibReleaseDirMask);
@@ -843,7 +854,7 @@ begin
 
   FProfilesTargets := TObjectList.Create;
   FProfilesTargets.Count := InstallCore.ProfilesManager.ProfileCount;
-  FProfilesTargets.OwnsObjects := False; 
+  FProfilesTargets.OwnsObjects := False;
 end;
 
 destructor TJclInstallation.Destroy;
@@ -871,7 +882,7 @@ end;
 function TJclInstallation.GetIsProfileEnabled(Index: Integer): Boolean;
 var
   AProfilesPage: IJediProfilesPage;
-  ASettings: IJediConfiguration;
+  ASettings:     IJediConfiguration;
 begin
   AProfilesPage := FDistribution.ProfilesPage;
   ASettings := InstallCore.Configuration;
@@ -915,7 +926,8 @@ begin
     RootKey := InstallCore.ProfilesManager.GetProfileKey(Index);
     if RootKey <> HKCU then
     begin
-      FProfilesTargets.Items[Index] := TJclBorRADToolInstallationClass(Target.ClassType).Create(Target.ConfigDataLocation, RootKey);
+      FProfilesTargets.Items[Index] := TJclBorRADToolInstallationClass(Target.ClassType).Create(
+        Target.ConfigDataLocation, RootKey);
       TJclBorRADToolInstallation(FProfilesTargets.Items[Index]).OutputCallback := Target.OutputCallback;
     end
     else
@@ -1099,7 +1111,7 @@ procedure TJclInstallation.Init;
       if (Target.VersionNumber >= 3) and (Distribution.JclHxSHelpFileName <> '') then
       begin
         AddOption(joHelp, [goChecked], Parent);
-        AddOption(johelpHxS, [goStandaloneParent,goChecked], joHelp);
+        AddOption(johelpHxS, [goStandaloneParent, goChecked], joHelp);
         AddOption(joHelpHxSPlugin, [goNoAutoCheck], joHelpHxS);
       end;
     end
@@ -1196,7 +1208,8 @@ procedure TJclInstallation.Init;
     if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber <= 2) then
       // design packages are not loaded by C#Builder 1 and Delphi 8
       AddOption(joExpertsDLL, [goRadioButton, goChecked], joExperts)
-    else if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
+    else
+    if (Target.RadToolKind = brBorlandDevStudio) and (Target.VersionNumber >= 3) then
       // expert DLLs are unstable on Delphi 2005 and BDS 2006
       // (problems while adding menu items in menu not loaded yet)
       AddOption(joExpertsDsgnPackages, [goRadioButton, goChecked], joExperts)
@@ -1275,10 +1288,10 @@ procedure TJclInstallation.Init;
         ADemoList := GetDemoList;
         if AConfiguration.SectionExists(FDemoSectionName) then
           for Index := 0 to ADemoList.Count - 1 do
-        begin
-          Id := Integer(ADemoList.Objects[Index]);
-          GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
-        end;
+          begin
+            Id := Integer(ADemoList.Objects[Index]);
+            GUIPage.OptionChecked[Id] := AConfiguration.OptionAsBool[FDemoSectionName, Id];
+          end;
       end;
 
       StoredValue := AConfiguration.OptionAsStringByName[TargetName, RsNameBPLPath];
@@ -1368,11 +1381,11 @@ end;
 function TJclInstallation.Install: Boolean;
 var
   AProfilesManager: IJediProfilesManager;
-  
+
   procedure WriteIntroduction;
   var
     Personality: TJclBorPersonality;
-    Index: Integer;
+    Index:       Integer;
   begin
     WriteLog(StrRepeat('=', 80));
     WriteLog(Distribution.Version);
@@ -1382,9 +1395,9 @@ var
     WriteLog('Installed personalities :');
     for Personality := Low(TJclBorPersonality) to High(TJclBorPersonality) do
       if Personality in Target.Personalities then
-    begin
-      WriteLog(JclBorPersonalityDescription[Personality]);
-    end;
+      begin
+        WriteLog(JclBorPersonalityDescription[Personality]);
+      end;
     WriteLog('');
     WriteLog(StrRepeat('=', 80));
     WriteLog('');
@@ -1419,7 +1432,8 @@ var
         Result := False;
         if not Assigned(GUI) then
           WriteLog(Format(RsInvalidBplPath, [GetBplPath]))
-        else if GUI.Dialog(Format(RsWarningCreatePath, ['BPL']), dtWarning, [drYes, drNo]) = drYes then
+        else
+        if GUI.Dialog(Format(RsWarningCreatePath, ['BPL']), dtWarning, [drYes, drNo]) = drYes then
         begin
           Result := ForceDirectories(GetBplPath);
           if not Result then
@@ -1431,7 +1445,8 @@ var
         Result := False;
         if not Assigned(GUI) then
           WriteLog(Format(RsInvalidDcpPath, [GetDcpPath]))
-        else if GUI.Dialog(Format(RsWarningCreatePath, ['DCP']), dtWarning, [drYes, drNo]) = drYes then
+        else
+        if GUI.Dialog(Format(RsWarningCreatePath, ['DCP']), dtWarning, [drYes, drNo]) = drYes then
         begin
           Result := ForceDirectories(GetDcpPath);
           if not Result then
@@ -1460,13 +1475,14 @@ var
       else
         CLRSuffix := '.net';
       TemplateFileName := PathAddSeparator(Distribution.JclSourceDir) + 'jcl.template.inc';
-      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir), Target.IDEVersionNumberStr, CLRSuffix]);
+      IncludeFileName := Format('%sjcl%s%s.inc', [PathAddSeparator(Distribution.JclSourceDir),
+        Target.IDEVersionNumberStr, CLRSuffix]);
       try
         IncludeFile := TStringList.Create;
         try
           IncludeFile.LoadFromFile(TemplateFileName);
           WriteLog(Format('Loaded template for include file %s', [TemplateFileName]));
-    
+
           for IndexLine := 0 to IncludeFile.Count - 1 do
           begin
             IncludeLine := IncludeFile.Strings[IndexLine];
@@ -1490,7 +1506,7 @@ var
                   IncludeLine := StringReplace(IncludeLine, NotDefineText, DefineText, [rfIgnoreCase]);
                 if (DefinePos < 0) and Defined then
                   IncludeLine := StringReplace(IncludeLine, DefineText, NotDefineText, [rfIgnoreCase]);
-    
+
                 IncludeFile.Strings[IndexLine] := IncludeLine;
               end;
             end;
@@ -1507,15 +1523,15 @@ var
 
   const
     DefineNames: array [joDefThreadSafe..joDefContainerNoStr] of string =
-      ( 'THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
-        'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
-        'MATH_EXT_EXTREMEVALUES',  'HOOK_DLL_EXCEPTIONS',
-        'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
-        'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
-        'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
-        'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
-        'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
-        'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR' );
+      ('THREADSAFE', 'DROP_OBSOLETE_CODE', 'UNITVERSIONING',
+      'MATH_SINGLE_PRECISION', 'MATH_DOUBLE_PRECISION', 'MATH_EXTENDED_PRECISION',
+      'MATH_EXT_EXTREMEVALUES', 'HOOK_DLL_EXCEPTIONS',
+      'DEBUG_NO_BINARY', 'DEBUG_NO_TD32', 'DEBUG_NO_MAP', 'DEBUG_NO_EXPORTS',
+      'DEBUG_NO_SYMBOLS', 'EDI_WEAK_PACKAGE_UNITS', 'PCRE_STATICLINK',
+      'PCRE_LINKDLL', 'PCRE_LINKONREQUEST', 'BZIP2_STATICLINK',
+      'BZIP2_LINKDLL', 'BZIP2_LINKONREQUEST', 'UNICODE_SILENT_FAILURE',
+      'UNICODE_RAW_DATA', 'UNICODE_ZLIB_DATA', 'UNICODE_BZIP2_DATA',
+      'CONTAINER_ANSISTR', 'CONTAINER_WIDESTR', 'CONTAINER_NOSTR');
   var
     Option: TJclOption;
     Defines: TStrings;
@@ -1527,11 +1543,11 @@ var
         MarkOptionBegin(joDef);
         for Option := Low(DefineNames) to High(DefineNames) do
           if OptionChecked[Option] then
-        begin
-          MarkOptionBegin(Option);
-          Defines.Add(DefineNames[Option]);
-          MarkOptionEnd(Option, True);
-        end;
+          begin
+            MarkOptionBegin(Option);
+            Defines.Add(DefineNames[Option]);
+            MarkOptionEnd(Option, True);
+          end;
         MarkOptionEnd(joDef, True);
       end;
       MarkOptionBegin(joMapCreate);
@@ -1571,11 +1587,12 @@ var
     if OptionChecked[joEnvironment] then
     begin
       MarkOptionBegin(joEnvironment);
-  
+
       if OptionChecked[joEnvLibPath] then
       begin
         MarkOptionBegin(joEnvLibPath);
-        Result := ATarget.AddToLibrarySearchPath(FLibReleaseDir) and ATarget.AddToLibrarySearchPath(Distribution.JclSourceDir);
+        Result := ATarget.AddToLibrarySearchPath(FLibReleaseDir) and
+          ATarget.AddToLibrarySearchPath(Distribution.JclSourceDir);
         if Result then
         begin
           WriteLog(Format('Added "%s;%s" to library search path.', [FLibReleaseDir, Distribution.JclSourceDir]));
@@ -1583,14 +1600,14 @@ var
           if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities)
             and OptionChecked[joDualPackages] then
             with TJclBDSInstallation(ATarget) do
-          begin
-            Result := AddToCppSearchPath(FLibReleaseDir) and AddToCppSearchPath(Distribution.JclSourceDir) and
-                      ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibReleaseDir));
-            if Result then
-              WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
-            else
-              WriteLog('Failed to add cpp search paths.');
-          end;
+            begin
+              Result := AddToCppSearchPath(FLibReleaseDir) and AddToCppSearchPath(Distribution.JclSourceDir) and
+                ((IDEVersionNumber < 5) or AddToCppLibraryPath(FLibReleaseDir));
+              if Result then
+                WriteLog(Format('Added "%s;%s" to cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
+              else
+                WriteLog('Failed to add cpp search paths.');
+            end;
           {$ENDIF MSWINDOWS}
           if ATarget.IsTurboExplorer then
           begin
@@ -1605,7 +1622,7 @@ var
           WriteLog('Failed to add library search paths.');
         MarkOptionEnd(joEnvLibPath, Result);
       end;
-  
+
       if Result and OptionChecked[joEnvBrowsingPath] then
       begin
         MarkOptionBegin(joEnvBrowsingPath);
@@ -1619,13 +1636,13 @@ var
             if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities)
               and OptionChecked[joDualPackages] then
               with TJclBDSInstallation(ATarget) do
-            begin
-              Result := AddToCppBrowsingPath(Distribution.JclSourcePath);
-              if Result then
-                WriteLog(Format('Added "%s" to cpp browsing path.', [Distribution.JclSourcePath]))
-              else
-                WriteLog('Failed to add cpp browsing paths.');
-            end;
+              begin
+                Result := AddToCppBrowsingPath(Distribution.JclSourcePath);
+                if Result then
+                  WriteLog(Format('Added "%s" to cpp browsing path.', [Distribution.JclSourcePath]))
+                else
+                  WriteLog('Failed to add cpp browsing paths.');
+              end;
             {$ENDIF MSWINDOWS}
           end
           else
@@ -1635,7 +1652,7 @@ var
           WriteLog('Failed to add library browsing path.');
         MarkOptionEnd(joEnvBrowsingPath, Result);
       end;
-  
+
       if Result and OptionChecked[joEnvDebugDCUPath] then
       begin
         MarkOptionBegin(joEnvDebugDCUPath);
@@ -1673,7 +1690,9 @@ var
         {$ENDIF ~MSWINDOWS}
         Target.BCC32.Options.Add('-w-par'); // warning
         Target.BCC32.Options.Add('-w-aus'); // warning
-        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%s%s%sinclude%s%s', [Distribution.JclPath, DirSeparator, Distribution.JclSourcePath, DirSeparator, Target.RootDir, DirDelimiter, DirSeparator, Target.VclIncludeDir]));
+        Target.BCC32.AddPathOption('I', Format('%sinclude%s%s%s%s%sinclude%s%s',
+          [Distribution.JclPath, DirSeparator, Distribution.JclSourcePath, DirSeparator, Target.RootDir,
+          DirDelimiter, DirSeparator, Target.VclIncludeDir]));
         Target.BCC32.Options.Add('-DTEST_COMMON');
         {$IFDEF MSWINDOWS}
         Target.BCC32.Options.Add('-DTEST_WINDOWS');
@@ -1687,7 +1706,7 @@ var
           Target.BCC32.Options.Add('-DTEST_VISCLX');
         Options := StringsToStr(Target.BCC32.Options, AnsiSpace);
         Result := Target.BCC32.Execute(Options + ' "jcl_a2z.cpp"')
-          and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"'); 
+          and Target.BCC32.Execute(Options + ' "jcl_z2a.cpp"');
       finally
         SetCurrentDir(SaveDir);
       end;
@@ -1820,7 +1839,8 @@ var
       PathEnvVar := RegReadStringDef(ATarget.RootKey, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
       PathListIncludeItems(PathEnvVar, RegReadStringDef(HKLM, RegHKLMEnvironmentVar, PathEnvironmentVar, ''));
       ExpandEnvironmentVar(PathEnvVar);
-      if (PathListItemIndex(PathEnvVar, GetBplPath) = -1) and (PathListItemIndex(PathEnvVar, PathAddSeparator(GetBplPath)) = -1)
+      if (PathListItemIndex(PathEnvVar, GetBplPath) = -1) and
+        (PathListItemIndex(PathEnvVar, PathAddSeparator(GetBplPath)) = -1)
         and Assigned(GUI) and (GUI.Dialog(RsWarningAddPathToEnvironment, dtWarning, [drYes, drNo]) = drYes) then
       begin
         PathEnvVar := RegReadStringDef(ATarget.RootKey, RegHKCUEnvironmentVar, PathEnvironmentVar, '');
@@ -1848,20 +1868,22 @@ var
         TJclBDSInstallation(Target).DualPackageInstallation := False;
       for Option := Low(ExpertPaths) to High(ExpertPaths) do
         if OptionChecked[Option] then
-      begin
-        MarkOptionBegin(Option);
-        if Option = joExpertsDsgnPackages then
+        begin
+          MarkOptionBegin(Option);
+          if Option = joExpertsDsgnPackages then
           // nothing, default value
-        else if Option = joExpertsDLL then
-          DLLExperts := OptionChecked[Option]
-        else if DLLExperts then
-          Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]))
-        else
-          Result := CompilePackage(FullPackageFileName(Target,ExpertPaths[Option]));
-        MarkOptionEnd(Option, Result);
-        if not Result then
-          Break;
-      end;
+          else
+          if Option = joExpertsDLL then
+            DLLExperts := OptionChecked[Option]
+          else
+          if DLLExperts then
+            Result := CompileExpert(FullLibraryFileName(Target, ExpertPaths[Option]))
+          else
+            Result := CompilePackage(FullPackageFileName(Target, ExpertPaths[Option]));
+          MarkOptionEnd(Option, Result);
+          if not Result then
+            Break;
+        end;
       MarkOptionEnd(joExperts, Result);
     end;
   end;
@@ -1882,26 +1904,28 @@ var
         TJclBDSInstallation(ATarget).DualPackageInstallation := False;
       for Option := Low(ExpertPaths) to High(ExpertPaths) do
         if OptionChecked[Option] then
-      begin
-        MarkOptionBegin(Option);
-        if Option = joExpertsDsgnPackages then
+        begin
+          MarkOptionBegin(Option);
+          if Option = joExpertsDsgnPackages then
           // nothing, default value
-        else if Option = joExpertsDLL then
-          DLLExperts := OptionChecked[Option]
-        else if DLLExperts then
-        begin
-          ProjectFileName := Distribution.JclPath + FullLibraryFileName(ATarget, ExpertPaths[Option]);
-          Result := ATarget.RegisterExpert(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
-        end
-        else
-        begin
-          ProjectFileName := Distribution.JclPath + FullPackageFileName(ATarget,ExpertPaths[Option]);
-          Result := ATarget.RegisterPackage(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
+          else
+          if Option = joExpertsDLL then
+            DLLExperts := OptionChecked[Option]
+          else
+          if DLLExperts then
+          begin
+            ProjectFileName := Distribution.JclPath + FullLibraryFileName(ATarget, ExpertPaths[Option]);
+            Result := ATarget.RegisterExpert(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
+          end
+          else
+          begin
+            ProjectFileName := Distribution.JclPath + FullPackageFileName(ATarget, ExpertPaths[Option]);
+            Result := ATarget.RegisterPackage(ProjectFileName, GetBplPath, PathExtractFileNameNoExt(ProjectFileName));
+          end;
+          MarkOptionEnd(Option, Result);
+          if not Result then
+            Break;
         end;
-        MarkOptionEnd(Option, Result);
-        if not Result then
-          Break;
-      end;
       MarkOptionEnd(joExperts, Result);
     end;
   end;
@@ -1909,8 +1933,8 @@ var
 
   function InstallRepository: Boolean;
     function AddDialogToRepository(const DialogName: string;
-      const DialogFileName: string; const DialogIconFileName: string;
-      const Designer: string): Boolean;
+    const DialogFileName: string; const DialogIconFileName: string;
+    const Designer: string): Boolean;
     begin
       Result := True;
       try
@@ -1962,8 +1986,8 @@ var
     function AddHelpToIdeTools: Boolean;
     var
       ToolsIndex: Integer;
-      HelpTitle: string;
-      IdeTool: TJclBorRADToolIdeTool;
+      HelpTitle:  string;
+      IdeTool:    TJclBorRADToolIdeTool;
     begin
       Result := True;
       try
@@ -2113,26 +2137,26 @@ begin
 
     WriteIntroduction;
     Result := CheckDirectories and SetStaticOptions and MakeUnits and CompilePackages and InstallRepository
-      and MakeDemos {$IFDEF MSWINDOWS}and CompileExperts and InstallHelpFiles{$ENDIF MSWINDOWS};
+      and MakeDemos {$IFDEF MSWINDOWS} and CompileExperts and InstallHelpFiles{$ENDIF MSWINDOWS};
     if Result then
     begin
       if AProfilesManager.MultipleProfileMode then
       begin
         for Index := 0 to AProfilesManager.ProfileCount - 1 do
           if IsProfileEnabled[Index] then
-        begin
-          ATarget := ProfileTargets[Index];
-          if ATarget.Valid then
           begin
-            WriteLog(StrPadRight(StrRepeat('=', 10) + InstallCore.ProfilesManager.ProfileNames[Index], 80, '='));
-            Result := Result and SetEnvironment(ATarget) and RegisterPackages(ATarget)
-              {$IFDEF MSWINDOWS}and RegisterExperts(ATarget){$ENDIF MSWINDOWS};
+            ATarget := ProfileTargets[Index];
+            if ATarget.Valid then
+            begin
+              WriteLog(StrPadRight(StrRepeat('=', 10) + InstallCore.ProfilesManager.ProfileNames[Index], 80, '='));
+              Result := Result and SetEnvironment(ATarget) and RegisterPackages(ATarget)
+              {$IFDEF MSWINDOWS} and RegisterExperts(ATarget){$ENDIF MSWINDOWS};
+            end;
           end;
-        end;
       end
       else
         Result := Result and SetEnvironment(Target) and RegisterPackages(Target)
-          {$IFDEF MSWINDOWS}and RegisterExperts(Target){$ENDIF MSWINDOWS};
+          {$IFDEF MSWINDOWS} and RegisterExperts(Target){$ENDIF MSWINDOWS};
     end;
 
     if not Result then
@@ -2187,20 +2211,21 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     //ioJclEnvLibPath
     if CLRVersion = '' then
     begin
-      if ATarget.RemoveFromLibrarySearchPath(FLibReleaseDir) and ATarget.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
+      if ATarget.RemoveFromLibrarySearchPath(FLibReleaseDir) and
+        ATarget.RemoveFromLibrarySearchPath(Distribution.JclSourceDir) then
         WriteLog(Format('Removed "%s;%s" from library search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
       else
         WriteLog('Failed to remove library search path.');
       {$IFDEF MSWINDOWS}
       if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities) then
         with TJclBDSInstallation(ATarget) do
-      begin
-        if RemoveFromCppSearchPath(FLibReleaseDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
-           ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibReleaseDir)) then
-          WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
-        else
-          WriteLog('Failed to remove cpp search path.');
-      end;
+        begin
+          if RemoveFromCppSearchPath(FLibReleaseDir) and RemoveFromCppSearchPath(Distribution.JclSourceDir) and
+            ((IDEVersionNumber < 5) or RemoveFromCppLibraryPath(FLibReleaseDir)) then
+            WriteLog(Format('Removed "%s;%s" from cpp search path.', [FLibReleaseDir, Distribution.JclSourceDir]))
+          else
+            WriteLog('Failed to remove cpp search path.');
+        end;
       {$ENDIF MSWINDOWS}
 
       //ioJclEnvBrowsingPath
@@ -2211,12 +2236,12 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       {$IFDEF MSWINDOWS}
       if (ATarget.RadToolKind = brBorlandDevStudio) and (bpBCBuilder32 in ATarget.Personalities) then
         with TJclBDSInstallation(ATarget) do
-      begin
-        if RemoveFromCppBrowsingPath(Distribution.JclSourcePath) then
-          WriteLog(Format('Removed "%s" from cpp browsing path.', [Distribution.JclSourcePath]))
-        else
-          WriteLog('Failed to remove cpp browsing path.');
-      end;
+        begin
+          if RemoveFromCppBrowsingPath(Distribution.JclSourcePath) then
+            WriteLog(Format('Removed "%s" from cpp browsing path.', [Distribution.JclSourcePath]))
+          else
+            WriteLog('Failed to remove cpp browsing path.');
+        end;
       {$ENDIF MSWINDOWS}
 
       //ioJclEnvDebugDCUPath
@@ -2229,7 +2254,7 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
     procedure RemoveFileMask(const Directory, Extension: string);
     var
       FileList: TStrings;
-      Index: Integer;
+      Index:    Integer;
     begin
       FileList := TStringList.Create;
       try
@@ -2267,11 +2292,14 @@ function TJclInstallation.Uninstall(AUninstallHelp: Boolean): Boolean;
       {$IFNDEF KYLIX}
       if ATarget.RadToolKind = brBorlandDevStudio then
       begin
-        (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
+        (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath,
+          Distribution.JclPath + FullPackageFileName(ATarget, JclDpk)));
         if RuntimeInstallation and ATarget.SupportsVisualCLX then
-          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk)));
+          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath,
+            Distribution.JclPath + FullPackageFileName(ATarget, JclVClxDpk)));
         if RuntimeInstallation and ATarget.SupportsVCL then
-          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath, Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
+          (ATarget as TJclBDSInstallation).CleanPackageCache(BinaryFileName(GetBPLPath,
+            Distribution.JclPath + FullPackageFileName(ATarget, JclVclDpk)));
       end;
       {$ENDIF KYLIX}
       //ioJclPackages
@@ -2425,19 +2453,19 @@ begin
     begin
       for Index := 0 to AProfilesManager.ProfileCount - 1 do
         if IsProfileEnabled[Index] then
-      begin
-        ATarget := ProfileTargets[Index];
-        if ATarget.Valid then
         begin
-          RemoveEnvironment(ATarget);
+          ATarget := ProfileTargets[Index];
+          if ATarget.Valid then
+          begin
+            RemoveEnvironment(ATarget);
           {$IFDEF MSWINDOWS}
-          if not Target.IsTurboExplorer then
-            UnregisterExperts(ATarget);
+            if not Target.IsTurboExplorer then
+              UnregisterExperts(ATarget);
           {$ENDIF MSWINDOWS}
-          if not Target.IsTurboExplorer then
-            UnregisterPackages(ATarget);
+            if not Target.IsTurboExplorer then
+              UnregisterPackages(ATarget);
+          end;
         end;
-      end;
     end
     else
     begin
@@ -2631,7 +2659,7 @@ var
 var
   UnitType, LibDescriptor, SaveDir, UnitOutputDir, Path, ExclusionFileName: string;
   Index, ExcIndex: Integer;
-  Exclusions: TStrings;
+  Exclusions:      TStrings;
 begin
   Result := True;
   if Debug then
@@ -2739,7 +2767,7 @@ begin
     Compiler.AddPathOption('I', Distribution.JclSourceDir);
     Compiler.AddPathOption('U', Distribution.JclSourcePath);
     Compiler.AddPathOption('R', Distribution.JclSourcePath);
-    
+
     SaveDir := GetCurrentDir;
     Result := SetCurrentDir(Path);
     {$IFDEF WIN32}
@@ -2816,7 +2844,8 @@ begin
     {$ENDIF ~KYLIX}
     Result := Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
   end
-  else if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
+  else
+  if IsBCBPackage(PackageFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
     ConfigureBpr2Mak(PackageFileName);
     {$IFDEF KYLIX}
@@ -2830,8 +2859,8 @@ begin
     // Note: it is put out to .bpl path to make life easier for JVCL
     DpkPackageFileName := ChangeFileExt(PackageFileName, SourceExtensionDelphiPackage);
     Result := ((not FileExists(DpkPackageFileName))
-               or Target.CompilePackage(DpkPackageFileName, GetBplPath, GetDcpPath))
-              and Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
+      or Target.CompilePackage(DpkPackageFileName, GetBplPath, GetDcpPath))
+      and Target.CompilePackage(PackageFileName, GetBplPath, GetDcpPath);
     {$ENDIF ~KYLIX}
   end
   else
@@ -2871,7 +2900,7 @@ end;
 function TJclInstallation.DeletePackage(const Name: string): Boolean;
 var
   PackageFileName: string;
-  BPLFileName: string;
+  BPLFileName:     string;
 begin
   WriteLog(Format('Deleting package %s.', [Name]));
   PackageFileName := Distribution.JclPath + Format(Name, [Target.VersionNumberStr]);
@@ -2884,11 +2913,14 @@ begin
   // delete DCP files that were created to bpl path (old behavior)
   Result := FileDelete(PathAddSeparator(GetBPLPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP) or Result;
   // delete DCP files that were created to target dcp path (old behavior)
-  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionDCP) or Result;
+  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) +
+    CompilerExtensionDCP) or Result;
   // delete BPI files that were created to target dcp path (old behavior)
-  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionBPI) or Result;
+  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) +
+    CompilerExtensionBPI) or Result;
   // delete LIB files that were created to target dcp path (old behaviour)
-  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) + CompilerExtensionLIB) or Result;
+  Result := FileDelete(PathAddSeparator(Target.DCPOutputPath) + PathExtractFileNameNoExt(Name) +
+    CompilerExtensionLIB) or Result;
 
   // TODO : evtl. remove .HPP Files
   if Result then
@@ -2905,7 +2937,7 @@ begin
   if clProj2Mak in Target.CommandLineTools then
   begin
     Target.Bpr2Mak.Options.Clear;
-    Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory,Distribution.JclPath + Bcb2MakTemplate));
+    Target.Bpr2Mak.Options.Add('-t' + ExtractRelativePath(PackageDirectory, Distribution.JclPath + Bcb2MakTemplate));
   end;
   {$IFDEF KYLIX}
   SetEnvironmentVar('OBJDIR', FLibReleaseDir);
@@ -2951,7 +2983,8 @@ begin
 
   if IsDelphiProject(ProjectFileName) and (bpDelphi32 in Target.Personalities) then
     Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath)
-  else if IsBCBProject(ProjectFileName) and (bpBCBuilder32 in Target.Personalities) then
+  else
+  if IsBCBProject(ProjectFileName) and (bpBCBuilder32 in Target.Personalities) then
   begin
     ConfigureBpr2Mak(ProjectFileName);
     // the compilation is done in 2 steps:
@@ -2998,19 +3031,19 @@ begin
 
           for Index := 0 to ExportFuncList.Count - 1 do
             if Pos(StrUpper(InternalEntryPoint), StrUpper(ExportFuncList.Items[Index].Name)) > 0 then
-          begin
-            WriteLog(Format('Internal entry point found %s', [ExportFuncList.Items[Index].Name]));
-            DEFFile := TStringList.Create;
-            try
-              DEFFile.Add('EXPORTS');
-              DEFFile.Add(Format('%s=%s', [WizardEntryPoint, ExportFuncList.Items[Index].Name]));
-              DEFFile.SaveToFile(ProjectDEFFileName);
-            finally
-              DEFFile.Free;
+            begin
+              WriteLog(Format('Internal entry point found %s', [ExportFuncList.Items[Index].Name]));
+              DEFFile := TStringList.Create;
+              try
+                DEFFile.Add('EXPORTS');
+                DEFFile.Add(Format('%s=%s', [WizardEntryPoint, ExportFuncList.Items[Index].Name]));
+                DEFFile.SaveToFile(ProjectDEFFileName);
+              finally
+                DEFFile.Free;
+              end;
+              Result := True;
+              Break;
             end;
-            Result := True;
-            Break;
-          end;
         end
         else
         begin
@@ -3024,7 +3057,8 @@ begin
       if Result and (not FirstCompilationOk) then
         // second compilation
         Result := Target.CompileProject(ProjectFileName, GetBplPath, GetDcpPath)
-      else if not Result then
+      else
+      if not Result then
         WriteLog('Internal entry point not found');
     end
     else
@@ -3045,10 +3079,10 @@ function TJclInstallation.DeleteExpert(const Option: TJclOption): Boolean;
   const
     OldExperts: array[joExpertDebug..joExpertVersionControl] of string =
       (
-        'JclDebugIde%s0.bpl', 'ProjectAnalyzer%s0.bpl',
-        'IdeOpenDlgFavorite%s0.bpl', 'JclRepositoryExpert',
-        'ThreadNameExpert%s0.bpl', 'JediUses%s0.bpl', 'JclSIMDView%s.bpl',
-        'JclVersionControl'
+      'JclDebugIde%s0.bpl', 'ProjectAnalyzer%s0.bpl',
+      'IdeOpenDlgFavorite%s0.bpl', 'JclRepositoryExpert',
+      'ThreadNameExpert%s0.bpl', 'JediUses%s0.bpl', 'JclSIMDView%s.bpl',
+      'JclVersionControl'
       );
 
   var
@@ -3057,10 +3091,10 @@ function TJclInstallation.DeleteExpert(const Option: TJclOption): Boolean;
     with Target do
       for I := Low(OldExperts) to High(OldExperts) do
         if BaseName = ExpertPaths[I] then
-    begin
-      Result := PathAddSeparator(GetBPLPath) + Format(OldExperts[I], [VersionNumberStr]);
-      Break;
-    end;
+        begin
+          Result := PathAddSeparator(GetBPLPath) + Format(OldExperts[I], [VersionNumberStr]);
+          Break;
+        end;
   end;
 
 var
@@ -3110,7 +3144,7 @@ function TJclInstallation.GetDemoList: TStringList;
     DemoExclusionList: TStrings;
     ExclusionFileName, FileName, RequiredList, RequiredItem: string;
     IndexExc, IndexDemo, SepPos, IndexReq: Integer;
-    ExcludeDemo: Boolean;
+    ExcludeDemo:       Boolean;
   begin
     DemoExclusionList := TStringList.Create;
     try
@@ -3147,8 +3181,9 @@ function TJclInstallation.GetDemoList: TStringList;
               ProcessExcludeFile(FileName)
             else
             begin
-              for IndexDemo := FDemoList.Count - 1  downto 0 do
-                if StrMatches(PathAddSeparator(Distribution.JclExamplesDir) + FileName, FDemoList.Strings[IndexDemo]) then
+              for IndexDemo := FDemoList.Count - 1 downto 0 do
+                if StrMatches(PathAddSeparator(Distribution.JclExamplesDir) + FileName,
+                  FDemoList.Strings[IndexDemo]) then
                   FDemoList.Delete(IndexDemo);
             end;
           end;
@@ -3234,7 +3269,8 @@ begin
   Settings := InstallCore.Configuration;
   if Assigned(Settings) and Assigned(FProfilesPage) then
     for I := 0 to InstallCore.ProfilesManager.ProfileCount - 1 do
-      Settings.OptionAsBoolByName[ProfilesSectionName, InstallCore.ProfilesManager.ProfileNames[I]] := FProfilesPage.IsProfileEnabled[I]; 
+      Settings.OptionAsBoolByName[ProfilesSectionName, InstallCore.ProfilesManager.ProfileNames[I]] :=
+        FProfilesPage.IsProfileEnabled[I];
   for I := 0 to TargetInstallCount - 1 do
     TargetInstalls[I].Close;
   FGUI := nil;
@@ -3277,15 +3313,15 @@ function TJclDistribution.CreateInstall(Target: TJclBorRADToolInstallation): Boo
     Result := Target.VersionNumber = 3;
     {$ELSE ~KYLIX}
     case Target.RadToolKind of
-      brDelphi :
+      brDelphi:
         Result := Target.VersionNumber in [5, 6, 7];
-      brCppBuilder :
+      brCppBuilder:
         Result := Target.VersionNumber in [5, 6];
-      brBorlandDevStudio :
+      brBorlandDevStudio:
         Result := ((Target.VersionNumber in [1, 2]) and (bpDelphi32 in Target.Personalities))
           or (Target.VersionNumber in [3, 4, 5]);
-      else
-        Result := False;
+    else
+      Result := False;
     end;
     Result := Result and (Target.Personalities * [bpDelphi32, bpBCBuilder32, bpDelphiNet32, bpDelphiNet64] <> []);
     {$ENDIF ~KYLIX}
@@ -3298,33 +3334,33 @@ var
   {$ENDIF MSWINDOWS}
 begin
   if Supported then
-  try
-    Inst := TJclInstallation.Create(Self, Target);
-    FTargetInstalls.Add(Inst);
+    try
+      Inst := TJclInstallation.Create(Self, Target);
+      FTargetInstalls.Add(Inst);
     {$IFDEF MSWINDOWS}
     // .net "virtual" targets
-    if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) and (not Target.IsTurboExplorer)
-      and (bpDelphiNet32 in Target.Personalities) then
-    begin
-      for Index := 0 to FCLRVersions.Count - 1 do
+      if (Target is TJclBDSInstallation) and (Target.IDEVersionNumber >= 3) and (not Target.IsTurboExplorer)
+        and (bpDelphiNet32 in Target.Personalities) then
       begin
-        CLRVersion := FCLRVersions.Names[Index];
-        if (CompareCLRVersions(CLRVersion, TJclBDSInstallation(Target).MaxDelphiCLRVersion) = 0)
-          and (CompareCLRVersions(CLRVersion, 'v1.1.2344') >= 0)  then // CLR 1.0 not supported by the JCL
+        for Index := 0 to FCLRVersions.Count - 1 do
         begin
-          Inst := TJclInstallation.Create(Self, Target, CLRVersion);
-          FTargetInstalls.Add(Inst);
+          CLRVersion := FCLRVersions.Names[Index];
+          if (CompareCLRVersions(CLRVersion, TJclBDSInstallation(Target).MaxDelphiCLRVersion) = 0)
+            and (CompareCLRVersions(CLRVersion, 'v1.1.2344') >= 0) then // CLR 1.0 not supported by the JCL
+          begin
+            Inst := TJclInstallation.Create(Self, Target, CLRVersion);
+            FTargetInstalls.Add(Inst);
           {if Target.VersionNumber >= 4 then
           begin
             Inst := TJclInstallation.Create(Self, Target, CLRVersion, bp64bit);
             FTargetInstalls.Add(Inst);
           end;}
+          end;
         end;
       end;
-    end;
     {$ENDIF MSWINDOWS}
-  except
-  end;
+    except
+    end;
   Result := True;
 end;
 
@@ -3357,7 +3393,7 @@ function TJclDistribution.GetVersion: string;
   var
     DailyFileName, SvnEntriesFileName, RevisionText: string;
     TextFile: TJclMappedTextReader;
-    Index: Integer;
+    Index:    Integer;
   begin
     Result := 0;
 
@@ -3424,7 +3460,7 @@ begin
   else
     Source := RsJclVersionRevision;
 
-  Result := Format(RsJclVersionMask, [JclVersionMajor, JclVersionMinor, StableText, Source, Revision])
+  Result := Format(RsJclVersionMask, [JclVersionMajor, JclVersionMinor, StableText, Source, Revision]);
 end;
 
 procedure TJclDistribution.Init;
@@ -3432,8 +3468,8 @@ procedure TJclDistribution.Init;
   var
     ExceptDialogsPath, InstallerFileName, ProfileName: string;
     ReadMePage: IJediReadMePage;
-    Index: Integer;
-    Settings: IJediConfiguration;
+    Index:      Integer;
+    Settings:   IJediConfiguration;
   begin
     InstallerFileName := ParamStr(0);
 
@@ -3490,11 +3526,11 @@ procedure TJclDistribution.Init;
         Settings := InstallCore.Configuration;
         if Settings <> nil then
           for Index := 0 to InstallCore.ProfilesManager.ProfileCount - 1 do
-        begin
-          ProfileName := InstallCore.ProfilesManager.ProfileNames[Index];
-          if Settings.ValueExists(ProfilesSectionName, ProfileName) then
-            FProfilesPage.IsProfileEnabled[Index] := Settings.OptionAsBoolByName[ProfilesSectionName, ProfileName];
-        end;
+          begin
+            ProfileName := InstallCore.ProfilesManager.ProfileNames[Index];
+            if Settings.ValueExists(ProfilesSectionName, ProfileName) then
+              FProfilesPage.IsProfileEnabled[Index] := Settings.OptionAsBoolByName[ProfilesSectionName, ProfileName];
+          end;
       end;
     end;
 
@@ -3608,14 +3644,14 @@ end;
 {$IFDEF MSWINDOWS}
 const
   // Reg Helper constant (chronological order)
-  RHCreateTransaction   = 1;
-  RHRegisterNameSpace   = 2;
-  RHRegisterFile        = 3;
-  RHPlugNameSpace       = 4;
-  RHUnplugNameSpace     = 5;
-  RHUnregisterFile      = 6;
+  RHCreateTransaction = 1;
+  RHRegisterNameSpace = 2;
+  RHRegisterFile      = 3;
+  RHPlugNameSpace     = 4;
+  RHUnplugNameSpace   = 5;
+  RHUnregisterFile    = 6;
   RHUnregisterNameSpace = 7;
-  RHCommitTransaction   = 8;
+  RHCommitTransaction = 8;
 
 procedure TJclDistribution.RegHelpClearCommands;
 begin
@@ -3722,7 +3758,8 @@ begin
         begin
           Result := False;
           if Assigned(GUI) then
-            GUI.Dialog('RegHelper raised an error while executing RegHelp command: ' + AnsiLineBreak + ProgramResult, dtError, [drCancel]);
+            GUI.Dialog('RegHelper raised an error while executing RegHelp command: ' +
+              AnsiLineBreak + ProgramResult, dtError, [drCancel]);
         end;
       end;
     finally
@@ -3770,7 +3807,8 @@ procedure TJclDistribution.RegHelpRegisterHelpFile(const NameSpace,
   Identifier: WideString; const LangId: Integer; const HxSFile,
   HxIFile: WideString);
 begin
-  RegHelpInternalAdd(RHRegisterFile, Format('%s;%s;%d;%s;%s', [NameSpace, Identifier, LangId, HxSFile, HxIFile]), False);
+  RegHelpInternalAdd(RHRegisterFile, Format('%s;%s;%d;%s;%s', [NameSpace, Identifier, LangId,
+    HxSFile, HxIFile]), False);
 end;
 
 procedure TJclDistribution.RegHelpRegisterNameSpace(const Name, Collection,

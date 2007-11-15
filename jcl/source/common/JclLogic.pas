@@ -259,35 +259,35 @@ function Min(const B1, B2: Int64): Int64; overload;
 const
   // Constants defining the number of bits in each Integer type
 
-  BitsPerNibble   = 4;
-  BitsPerByte     = 8;
+  BitsPerNibble = 4;
+  BitsPerByte = 8;
   BitsPerShortint = SizeOf(Shortint) * BitsPerByte;
   BitsPerSmallint = SizeOf(Smallint) * BitsPerByte;
-  BitsPerWord     = SizeOf(Word) * BitsPerByte;
-  BitsPerInteger  = SizeOf(Integer) * BitsPerByte;
+  BitsPerWord = SizeOf(Word) * BitsPerByte;
+  BitsPerInteger = SizeOf(Integer) * BitsPerByte;
   BitsPerCardinal = SizeOf(Cardinal) * BitsPerByte;
-  BitsPerInt64    = SizeOf(Int64) * BitsPerByte;
+  BitsPerInt64 = SizeOf(Int64) * BitsPerByte;
 
   // Constants defining the number of nibbles in each Integer type
 
-  NibblesPerByte     = BitsPerByte div BitsPerNibble;
+  NibblesPerByte = BitsPerByte div BitsPerNibble;
   NibblesPerShortint = SizeOf(Shortint) * NibblesPerByte;
   NibblesPerSmallint = SizeOf(Smallint) * NibblesPerByte;
-  NibblesPerWord     = SizeOf(Word) * NibblesPerByte;
-  NibblesPerInteger  = SizeOf(Integer) * NibblesPerByte;
+  NibblesPerWord = SizeOf(Word) * NibblesPerByte;
+  NibblesPerInteger = SizeOf(Integer) * NibblesPerByte;
   NibblesPerCardinal = SizeOf(Cardinal) * NibblesPerByte;
-  NibblesPerInt64    = SizeOf(Int64) * NibblesPerByte;
+  NibblesPerInt64 = SizeOf(Int64) * NibblesPerByte;
 
   // Constants defining a mask with all bits set for each Integer type
 
-  NibbleMask      = $F;
-  ByteMask        = Byte($FF);
-  ShortintMask    = Shortint($FF);
-  SmallintMask    = Smallint($FFFF);
-  WordMask        = Word($FFFF);
-  IntegerMask     = Integer($FFFFFFFF);
-  CardinalMask    = Cardinal($FFFFFFFF);
-  Int64Mask       = Int64($FFFFFFFFFFFFFFFF);
+  NibbleMask = $F;
+  ByteMask = Byte($FF);
+  ShortintMask = Shortint($FF);
+  SmallintMask = Smallint($FFFF);
+  WordMask = Word($FFFF);
+  IntegerMask = Integer($FFFFFFFF);
+  CardinalMask = Cardinal($FFFFFFFF);
+  Int64Mask = Int64($FFFFFFFFFFFFFFFF);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -398,39 +398,39 @@ end;
 // Bit manipulation
 function BitsHighest(X: Cardinal): Integer;
 {$IFDEF CLR}
-begin
-  for Result := 31 downto 0 do
-    if X and (1 shl Result) <> 0 then
-      Exit;
-  Result := -1;
-end;
+BEGIN
+  FOR RESULT := 31 DOWNTO 0 DO
+    IF X AND (1 SHL RESULT) <> 0 THEN
+      EXIT;
+  RESULT := -1;
+END;
 {$ELSE}
 asm
-  MOV     ECX, EAX
-  MOV     EAX, -1
-  BSR     EAX, ECX
-  JNZ     @@End
-  MOV     EAX, -1
-@@End:
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         BSR     EAX, ECX
+         JNZ     @@end
+         MOV     EAX, -1
+         @@end:
 end;
 {$ENDIF CLR}
 
 function BitsHighest(X: Integer): Integer;
 {$IFDEF CLR}
-begin
-  for Result := 31 downto 0 do
-    if X and (1 shl Result) <> 0 then
-      Exit;
-  Result := -1;
-end;
+BEGIN
+  FOR RESULT := 31 DOWNTO 0 DO
+    IF X AND (1 SHL RESULT) <> 0 THEN
+      EXIT;
+  RESULT := -1;
+END;
 {$ELSE}
 asm
-  MOV     ECX, EAX
-  MOV     EAX, -1
-  BSR     EAX, ECX
-  JNZ     @@End
-  MOV     EAX, -1
-@@End:
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         BSR     EAX, ECX
+         JNZ     @@end
+         MOV     EAX, -1
+         @@end:
 end;
 {$ENDIF CLR}
 
@@ -471,39 +471,39 @@ end;
 
 function BitsLowest(X: Cardinal): Integer;
 {$IFDEF CLR}
-begin
-  for Result := 0 to 31 do
-    if X and (1 shl Result) <> 0 then
-      Exit;
-  Result := -1;
-end;
+BEGIN
+  FOR RESULT := 0 TO 31 DO
+    IF X AND (1 SHL RESULT) <> 0 THEN
+      EXIT;
+  RESULT := -1;
+END;
 {$ELSE}
 asm
-  MOV     ECX, EAX
-  MOV     EAX, -1
-  BSF     EAX, ECX
-  JNZ     @@End
-  MOV     EAX, -1
-@@End:
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         BSF     EAX, ECX
+         JNZ     @@end
+         MOV     EAX, -1
+         @@end:
 end;
 {$ENDIF CLR}
 
 function BitsLowest(X: Integer): Integer;
 {$IFDEF CLR}
-begin
-  for Result := 0 to 31 do
-    if X and (1 shl Result) <> 0 then
-      Exit;
-  Result := -1;
-end;
+BEGIN
+  FOR RESULT := 0 TO 31 DO
+    IF X AND (1 SHL RESULT) <> 0 THEN
+      EXIT;
+  RESULT := -1;
+END;
 {$ELSE}
 asm
-  MOV     ECX, EAX
-  MOV     EAX, -1
-  BSF     EAX, ECX
-  JNZ     @@End
-  MOV     EAX, -1
-@@End:
+         MOV     ECX, EAX
+         MOV     EAX, -1
+         BSF     EAX, ECX
+         JNZ     @@end
+         MOV     EAX, -1
+         @@end:
 end;
 {$ENDIF CLR}
 
@@ -544,71 +544,71 @@ end;
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerByte - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERBYTE - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
-  BTR    EAX, EDX
+         AND     EDX, BITSPERBYTE - 1   // MODULO BITSPERBYTE
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function ClearBit(const Value: Shortint; const Bit: TBitRange): Shortint;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerShortint - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERSHORTINT - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerShortint - 1   // modulo BitsPerShortint
-  BTR    EAX, EDX
+         AND     EDX, BITSPERSHORTINT - 1   // MODULO BITSPERSHORTINT
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function ClearBit(const Value: Smallint; const Bit: TBitRange): Smallint;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerSmallint - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERSMALLINT - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerSmallint - 1   // modulo BitsPerSmallint
-  BTR    EAX, EDX
+         AND     EDX, BITSPERSMALLINT - 1   // MODULO BITSPERSMALLINT
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function ClearBit(const Value: Word; const Bit: TBitRange): Word;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerWord - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERWORD - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
-  BTR    EAX, EDX
+         AND     EDX, BITSPERWORD - 1   // MODULO BITSPERWORD
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerCardinal - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERCARDINAL - 1)));
+END;
 {$ELSE CLR}
 asm
-  BTR    EAX, EDX
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer;
 {$IFDEF CLR}
-begin
-  Result := Value and not (1 shl (Bit and (BitsPerInteger - 1)));
-end;
+BEGIN
+  RESULT := VALUE AND NOT (1 SHL (BIT AND (BITSPERINTEGER - 1)));
+END;
 {$ELSE CLR}
 asm
-  BTR    EAX, EDX
+         BTR     EAX, EDX
 end;
 {$ENDIF CLR}
 
@@ -649,7 +649,7 @@ end;
 {$ENDIF CLR}
 
 const
-  BitSetPerNibble: array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
+  BitSetPerNibble: array[0..15] of Byte = (0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4);
 
 function CountBitsSet(X: Cardinal): Integer;
 var
@@ -718,7 +718,7 @@ begin
   while Count > 0 do
   begin
     b := PByte(P)^;
-    
+
     // lower Nibble
     Inc(Result, BitSetPerNibble[b and $0F]);
     // upper Nibble
@@ -811,20 +811,20 @@ end;
 {$ELSE}
 function LRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
 asm
-  MOV CL, Count
-  ROL AL, CL
+         MOV     CL, COUNT
+         ROL     AL, CL
 end;
 
 function LRot(const Value: Word; const Count: TBitRange): Word; assembler;
 asm
-   MOV     CL, Count
-   ROL     AX, CL
+         MOV     CL, COUNT
+         ROL     AX, CL
 end;
 
 function LRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
-  MOV     CL, Count
-  ROL     EAX, CL
+         MOV     CL, COUNT
+         ROL     EAX, CL
 end;
 {$ENDIF CLR}
 
@@ -937,7 +937,7 @@ const
 function ReverseBits(P: Pointer; Count: Integer): Pointer;
 var
   P1, P2: PByte;
-  T: Byte;
+  T:      Byte;
 begin
   if (P <> nil) and (Count > 0) then
   begin
@@ -1003,114 +1003,114 @@ end;
 {$ELSE}
 function RRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
 asm
-  MOV     CL, Count
-  MOV     AL, Value
-  ROR     AL, CL
-  MOV     Result, AL
+         MOV     CL, COUNT
+         MOV     AL, VALUE
+         ROR     AL, CL
+         MOV     RESULT, AL
 end;
 
 function RRot(const Value: Word; const Count: TBitRange): Word; assembler;
 asm
-  MOV     CL, Count
-  MOV     AX, Value
-  ROR     AX, CL
-  MOV     Result, AX
+         MOV     CL, COUNT
+         MOV     AX, VALUE
+         ROR     AX, CL
+         MOV     RESULT, AX
 end;
 
 function RRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
-  MOV     CL, Count
-  MOV     EAX, Value
-  ROR     EAX, CL
-  MOV     Result, EAX
+         MOV     CL, COUNT
+         MOV     EAX, VALUE
+         ROR     EAX, CL
+         MOV     RESULT, EAX
 end;
 
 function Sar(const Value: Shortint; const Count: TBitRange): Shortint; assembler;
 asm
-  MOV     CL, DL
-  SAR     AL, CL
+         MOV     CL, DL
+         SAR     AL, CL
 end;
 
 function Sar(const Value: Smallint; const Count: TBitRange): Smallint; assembler;
 asm
-  MOV     CL, DL
-  SAR     AX, CL
+         MOV     CL, DL
+         SAR     AX, CL
 end;
 
 function Sar(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
-  MOV     CL, DL
-  SAR     EAX, CL
+         MOV     CL, DL
+         SAR     EAX, CL
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Byte; const Bit: TBitRange): Byte;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit and (BitsPerByte - 1)));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT AND (BITSPERBYTE - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerByte - 1   // modulo BitsPerByte
-  BTS    EAX, EDX
+         AND     EDX, BITSPERBYTE - 1   // MODULO BITSPERBYTE
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Shortint; const Bit: TBitRange): Shortint;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit and (BitsPerShortint - 1)));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT AND (BITSPERSHORTINT - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerShortInt - 1   // modulo BitsPerShortInt
-  BTS    EAX, EDX
+         AND     EDX, BITSPERSHORTINT - 1   // MODULO BITSPERSHORTINT
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Smallint; const Bit: TBitRange): Smallint;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit and (BitsPerSmallint - 1)));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT AND (BITSPERSMALLINT - 1)));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerSmallInt - 1   // modulo BitsPerSmallInt
-  BTS    EAX, EDX
+         AND     EDX, BITSPERSMALLINT - 1   // MODULO BITSPERSMALLINT
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Word; const Bit: TBitRange): Word;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit mod BitsPerWord));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT MOD BITSPERWORD));
+END;
 {$ELSE CLR}
 asm
-  AND    EDX, BitsPerWord - 1   // modulo BitsPerWord
-  BTS    EAX, EDX
+         AND     EDX, BITSPERWORD - 1   // MODULO BITSPERWORD
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit and (BitsPerCardinal - 1)));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT AND (BITSPERCARDINAL - 1)));
+END;
 {$ELSE CLR}
 asm
-  BTS    EAX, EDX
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer;
 {$IFDEF CLR}
-begin
-  Result := Value or (1 shl (Bit and (BitsPerInteger - 1)));
-end;
+BEGIN
+  RESULT := VALUE OR (1 SHL (BIT AND (BITSPERINTEGER - 1)));
+END;
 {$ELSE CLR}
 asm
-  BTS    EAX, EDX
+         BTS     EAX, EDX
 end;
 {$ENDIF CLR}
 
@@ -1449,61 +1449,61 @@ end;
 
 function ReverseBytes(Value: Word): Word;
 {$IFDEF CLR}
-begin
-  Result := ((Value and Word($FF00)) shr BitsPerByte) or ((Value and Word($00FF)) shl BitsPerByte);
-end;
+BEGIN
+  RESULT := ((VALUE AND WORD($FF00)) SHR BITSPERBYTE) OR ((VALUE AND WORD($00FF)) SHL BITSPERBYTE);
+END;
 {$ELSE CLR}
 asm
-  XCHG    AL, AH
+         XCHG    AL, AH
 end;
 {$ENDIF CLR}
 
 function ReverseBytes(Value: Smallint): Smallint;
 {$IFDEF CLR}
-begin
-  Result := ((Value and Smallint($FF00)) shr BitsPerByte) or ((Value and Smallint($00FF)) shl BitsPerByte);
-end;
+BEGIN
+  RESULT := ((VALUE AND SMALLINT($FF00)) SHR BITSPERBYTE) OR ((VALUE AND SMALLINT($00FF)) SHL BITSPERBYTE);
+END;
 {$ELSE CLR}
 asm
-  XCHG    AL, AH
+         XCHG    AL, AH
 end;
 {$ENDIF CLR}
 
 function ReverseBytes(Value: Integer): Integer;
 {$IFDEF CLR}
-var
-  I: Integer;
-begin
-  Result := Value and ByteMask;
-  Value := Value shr BitsPerByte;
-  for I := 0 to SizeOf(Integer) - 2  do
-  begin
-    Result := (Result shl BitsPerByte) or (Value and ByteMask);
-    Value := Value shr BitsPerByte;
-  end;
-end;
+VAR
+  I: INTEGER;
+BEGIN
+  RESULT := VALUE AND BYTEMASK;
+  VALUE := VALUE SHR BITSPERBYTE;
+  FOR I := 0 TO SIZEOF(INTEGER) - 2  DO
+  BEGIN
+    RESULT := (RESULT SHL BITSPERBYTE) OR (VALUE AND BYTEMASK);
+    VALUE := VALUE SHR BITSPERBYTE;
+  END;
+END;
 {$ELSE CLR}
 asm
-  BSWAP   EAX
+         BSWAP   EAX
 end;
 {$ENDIF CLR}
 
 function ReverseBytes(Value: Cardinal): Cardinal;
 {$IFDEF CLR}
-var
-  I: Integer;
-begin
-  Result := Value and ByteMask;
-  Value := Value shr BitsPerByte;
-  for I := 0 to SizeOf(Cardinal) - 2 do
-  begin
-    Result := (Result shl BitsPerByte) or (Value and ByteMask);
-    Value := Value shr BitsPerByte;
-  end;
-end;
+VAR
+  I: INTEGER;
+BEGIN
+  RESULT := VALUE AND BYTEMASK;
+  VALUE := VALUE SHR BITSPERBYTE;
+  FOR I := 0 TO SIZEOF(CARDINAL) - 2 DO
+  BEGIN
+    RESULT := (RESULT SHL BITSPERBYTE) OR (VALUE AND BYTEMASK);
+    VALUE := VALUE SHR BITSPERBYTE;
+  END;
+END;
 {$ELSE CLR}
 asm
-  BSWAP   EAX
+         BSWAP   EAX
 end;
 {$ENDIF CLR}
 
@@ -1524,7 +1524,7 @@ end;
 function ReverseBytes(P: Pointer; Count: Integer): Pointer;
 var
   P1, P2: PByte;
-  T: Byte;
+  T:      Byte;
 begin
   if (P <> nil) and (Count > 0) then
   begin

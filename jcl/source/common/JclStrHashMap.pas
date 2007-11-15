@@ -151,7 +151,8 @@ type
 function StrHash(const S: string): THashValue;
 function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 
@@ -221,7 +222,8 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string;
+  var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
@@ -407,7 +409,7 @@ type
 procedure NodeIterate_CollectNodes(AUserData: PUserData; ANode: PPHashNode);
 var
   PPCnn: PPCollectNodeNode;
-  PCnn: PCollectNodeNode;
+  PCnn:  PCollectNodeNode;
 begin
   PPCnn := PPCollectNodeNode(AUserData);
   New(PCnn);
@@ -608,7 +610,7 @@ begin
           until S^.Left = nil;
         { now, S = symmetric successor of Q }
         S^.Left := T^.Left;
-        R^.Left :=  S^.Right;
+        R^.Left := S^.Right;
         S^.Right := T^.Right;
         Q := S;
       end;
@@ -740,7 +742,7 @@ type
 procedure NodeIterate_BuildDataList(AUserData: Pointer; ANode: PPHashNode);
 var
   DP: PDataParam;
-  T: PListNode;
+  T:  PListNode;
 begin
   DP := PDataParam(AUserData);
   if DP.Data = ANode^^.Ptr then
@@ -755,7 +757,7 @@ end;
 procedure TStringHashMap.RemoveData(const P{: Pointer});
 var
   DP: TDataParam;
-  I: Integer;
+  I:  Integer;
   N, T: PListNode;
 begin
   DP.Data := Pointer(P);
@@ -890,4 +892,3 @@ finalization
   FreeAndNil(GlobalCaseSensitiveTraits);
 
 end.
-

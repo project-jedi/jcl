@@ -212,17 +212,17 @@ const
   BOM_MSB_FIRST = WideChar($FFFE);
 
 type
-  TSaveFormat = ( sfUTF16LSB, sfUTF16MSB, sfUTF8, sfAnsi );
+  TSaveFormat = (sfUTF16LSB, sfUTF16MSB, sfUTF8, sfAnsi);
 
 const
   sfUnicodeLSB = sfUTF16LSB;
   sfUnicodeMSB = sfUTF16MSB;
 
-  BOM_UTF16_LSB: array [0..1] of Byte = ($FF,$FE);
-  BOM_UTF16_MSB: array [0..1] of Byte = ($FE,$FF);
-  BOM_UTF8: array [0..2] of Byte = ($EF,$BB,$BF);
-  BOM_UTF32_LSB: array [0..3] of Byte = ($FF,$FE,$00,$00);
-  BOM_UTF32_MSB: array [0..3] of Byte = ($00,$00,$FE,$FF);
+  BOM_UTF16_LSB: array [0..1] of Byte = ($FF, $FE);
+  BOM_UTF16_MSB: array [0..1] of Byte = ($FE, $FF);
+  BOM_UTF8: array [0..2] of Byte = ($EF, $BB, $BF);
+  BOM_UTF32_LSB: array [0..3] of Byte = ($FF, $FE, $00, $00);
+  BOM_UTF32_MSB: array [0..3] of Byte = ($00, $00, $FE, $FF);
 //  BOM_UTF7_1: array [0..3] of Byte = ($2B,$2F,$76,$38);
 //  BOM_UTF7_2: array [0..3] of Byte = ($2B,$2F,$76,$39);
 //  BOM_UTF7_3: array [0..3] of Byte = ($2B,$2F,$76,$2B);
@@ -310,7 +310,7 @@ type
     ccMirroring,
     ccSpaceOther,
     ccAssigned               // means there is a definition in the Unicode standard
-  );
+    );
   TCharacterCategories = set of TCharacterCategory;
 
   // four forms of normalization are defined:
@@ -320,7 +320,7 @@ type
     nfD,    // canonical decomposition
     nfKC,   // compatibility decomposition followed by a canonical composition
     nfKD    // compatibility decomposition
-  );
+    );
 
   // used to hold information about the start and end
   // position of a unicodeblock.
@@ -488,7 +488,7 @@ type
     ubVariationSelectorsSupplement,
     ubSupplementaryPrivateUseAreaA,
     ubSupplementaryPrivateUseAreaB
-  );
+    );
 
   TUnicodeBlockData = record
     Range: TUnicodeBlockRange;
@@ -498,161 +498,161 @@ type
 
 const
   UnicodeBlockData: array [TUnicodeBlock] of TUnicodeBlockData =
-    ((Range:(RangeStart: $FFFFFFFF; RangeEnd: $0000); Name: 'No-block'),
-    (Range:(RangeStart: $0000; RangeEnd: $007F); Name: 'Basic Latin'),
-    (Range:(RangeStart: $0080; RangeEnd: $00FF); Name: 'Latin-1 Supplement'),
-    (Range:(RangeStart: $0100; RangeEnd: $017F); Name: 'Latin Extended-A'),
-    (Range:(RangeStart: $0180; RangeEnd: $024F); Name: 'Latin Extended-B'),
-    (Range:(RangeStart: $0250; RangeEnd: $02AF); Name: 'IPA Extensions'),
-    (Range:(RangeStart: $02B0; RangeEnd: $02FF); Name: 'Spacing Modifier Letters'),
-    (Range:(RangeStart: $0300; RangeEnd: $036F); Name: 'Combining Diacritical Marks'),
-    (Range:(RangeStart: $0370; RangeEnd: $03FF); Name: 'Greek and Coptic'),
-    (Range:(RangeStart: $0400; RangeEnd: $04FF); Name: 'Cyrillic'),
-    (Range:(RangeStart: $0500; RangeEnd: $052F); Name: 'Cyrillic Supplement'),
-    (Range:(RangeStart: $0530; RangeEnd: $058F); Name: 'Armenian'),
-    (Range:(RangeStart: $0590; RangeEnd: $05FF); Name: 'Hebrew'),
-    (Range:(RangeStart: $0600; RangeEnd: $06FF); Name: 'Arabic'),
-    (Range:(RangeStart: $0700; RangeEnd: $074F); Name: 'Syriac'),
-    (Range:(RangeStart: $0750; RangeEnd: $077F); Name: 'Arabic Supplement'),
-    (Range:(RangeStart: $0780; RangeEnd: $07BF); Name: 'Thaana'),
-    (Range:(RangeStart: $07C0; RangeEnd: $07FF); Name: 'NKo'),
-    (Range:(RangeStart: $0900; RangeEnd: $097F); Name: 'Devanagari'),
-    (Range:(RangeStart: $0980; RangeEnd: $09FF); Name: 'Bengali'),
-    (Range:(RangeStart: $0A00; RangeEnd: $0A7F); Name: 'Gurmukhi'),
-    (Range:(RangeStart: $0A80; RangeEnd: $0AFF); Name: 'Gujarati'),
-    (Range:(RangeStart: $0B00; RangeEnd: $0B7F); Name: 'Oriya'),
-    (Range:(RangeStart: $0B80; RangeEnd: $0BFF); Name: 'Tamil'),
-    (Range:(RangeStart: $0C00; RangeEnd: $0C7F); Name: 'Telugu'),
-    (Range:(RangeStart: $0C80; RangeEnd: $0CFF); Name: 'Kannada'),
-    (Range:(RangeStart: $0D00; RangeEnd: $0D7F); Name: 'Malayalam'),
-    (Range:(RangeStart: $0D80; RangeEnd: $0DFF); Name: 'Sinhala'),
-    (Range:(RangeStart: $0E00; RangeEnd: $0E7F); Name: 'Thai'),
-    (Range:(RangeStart: $0E80; RangeEnd: $0EFF); Name: 'Lao'),
-    (Range:(RangeStart: $0F00; RangeEnd: $0FFF); Name: 'Tibetan'),
-    (Range:(RangeStart: $1000; RangeEnd: $109F); Name: 'Myanmar'),
-    (Range:(RangeStart: $10A0; RangeEnd: $10FF); Name: 'Georgian'),
-    (Range:(RangeStart: $1100; RangeEnd: $11FF); Name: 'Hangul Jamo'),
-    (Range:(RangeStart: $1200; RangeEnd: $137F); Name: 'Ethiopic'),
-    (Range:(RangeStart: $1380; RangeEnd: $139F); Name: 'Ethiopic Supplement'),
-    (Range:(RangeStart: $13A0; RangeEnd: $13FF); Name: 'Cherokee'),
-    (Range:(RangeStart: $1400; RangeEnd: $167F); Name: 'Unified Canadian Aboriginal Syllabics'),
-    (Range:(RangeStart: $1680; RangeEnd: $169F); Name: 'Ogham'),
-    (Range:(RangeStart: $16A0; RangeEnd: $16FF); Name: 'Runic'),
-    (Range:(RangeStart: $1700; RangeEnd: $171F); Name: 'Tagalog'),
-    (Range:(RangeStart: $1720; RangeEnd: $173F); Name: 'Hanunoo'),
-    (Range:(RangeStart: $1740; RangeEnd: $175F); Name: 'Buhid'),
-    (Range:(RangeStart: $1760; RangeEnd: $177F); Name: 'Tagbanwa'),
-    (Range:(RangeStart: $1780; RangeEnd: $17FF); Name: 'Khmer'),
-    (Range:(RangeStart: $1800; RangeEnd: $18AF); Name: 'Mongolian'),
-    (Range:(RangeStart: $1900; RangeEnd: $194F); Name: 'Limbu'),
-    (Range:(RangeStart: $1950; RangeEnd: $197F); Name: 'Tai Le'),
-    (Range:(RangeStart: $1980; RangeEnd: $19DF); Name: 'New Tai Lue'),
-    (Range:(RangeStart: $19E0; RangeEnd: $19FF); Name: 'Khmer Symbols'),
-    (Range:(RangeStart: $1A00; RangeEnd: $1A1F); Name: 'Buginese'),
-    (Range:(RangeStart: $1B00; RangeEnd: $1B7F); Name: 'Balinese'),
-    (Range:(RangeStart: $1D00; RangeEnd: $1D7F); Name: 'Phonetic Extensions'),
-    (Range:(RangeStart: $1D80; RangeEnd: $1DBF); Name: 'Phonetic Extensions Supplement'),
-    (Range:(RangeStart: $1DC0; RangeEnd: $1DFF); Name: 'Combining Diacritical Marks Supplement'),
-    (Range:(RangeStart: $1E00; RangeEnd: $1EFF); Name: 'Latin Extended Additional'),
-    (Range:(RangeStart: $1F00; RangeEnd: $1FFF); Name: 'Greek Extended'),
-    (Range:(RangeStart: $2000; RangeEnd: $206F); Name: 'General Punctuation'),
-    (Range:(RangeStart: $2070; RangeEnd: $209F); Name: 'Superscripts and Subscripts'),
-    (Range:(RangeStart: $20A0; RangeEnd: $20CF); Name: 'Currency Symbols'),
-    (Range:(RangeStart: $20D0; RangeEnd: $20FF); Name: 'Combining Diacritical Marks for Symbols'),
-    (Range:(RangeStart: $2100; RangeEnd: $214F); Name: 'Letterlike Symbols'),
-    (Range:(RangeStart: $2150; RangeEnd: $218F); Name: 'Number Forms'),
-    (Range:(RangeStart: $2190; RangeEnd: $21FF); Name: 'Arrows'),
-    (Range:(RangeStart: $2200; RangeEnd: $22FF); Name: 'Mathematical Operators'),
-    (Range:(RangeStart: $2300; RangeEnd: $23FF); Name: 'Miscellaneous Technical'),
-    (Range:(RangeStart: $2400; RangeEnd: $243F); Name: 'Control Pictures'),
-    (Range:(RangeStart: $2440; RangeEnd: $245F); Name: 'Optical Character Recognition'),
-    (Range:(RangeStart: $2460; RangeEnd: $24FF); Name: 'Enclosed Alphanumerics'),
-    (Range:(RangeStart: $2500; RangeEnd: $257F); Name: 'Box Drawing'),
-    (Range:(RangeStart: $2580; RangeEnd: $259F); Name: 'Block Elements'),
-    (Range:(RangeStart: $25A0; RangeEnd: $25FF); Name: 'Geometric Shapes'),
-    (Range:(RangeStart: $2600; RangeEnd: $26FF); Name: 'Miscellaneous Symbols'),
-    (Range:(RangeStart: $2700; RangeEnd: $27BF); Name: 'Dingbats'),
-    (Range:(RangeStart: $27C0; RangeEnd: $27EF); Name: 'Miscellaneous Mathematical Symbols-A'),
-    (Range:(RangeStart: $27F0; RangeEnd: $27FF); Name: 'Supplemental Arrows-A'),
-    (Range:(RangeStart: $2800; RangeEnd: $28FF); Name: 'Braille Patterns'),
-    (Range:(RangeStart: $2900; RangeEnd: $297F); Name: 'Supplemental Arrows-B'),
-    (Range:(RangeStart: $2980; RangeEnd: $29FF); Name: 'Miscellaneous Mathematical Symbols-B'),
-    (Range:(RangeStart: $2A00; RangeEnd: $2AFF); Name: 'Supplemental Mathematical Operators'),
-    (Range:(RangeStart: $2B00; RangeEnd: $2BFF); Name: 'Miscellaneous Symbols and Arrows'),
-    (Range:(RangeStart: $2C00; RangeEnd: $2C5F); Name: 'Glagolitic'),
-    (Range:(RangeStart: $2C60; RangeEnd: $2C7F); Name: 'Latin Extended-C'),
-    (Range:(RangeStart: $2C80; RangeEnd: $2CFF); Name: 'Coptic'),
-    (Range:(RangeStart: $2D00; RangeEnd: $2D2F); Name: 'Georgian Supplement'),
-    (Range:(RangeStart: $2D30; RangeEnd: $2D7F); Name: 'Tifinagh'),
-    (Range:(RangeStart: $2D80; RangeEnd: $2DDF); Name: 'Ethiopic Extended'),
-    (Range:(RangeStart: $2E00; RangeEnd: $2E7F); Name: 'Supplemental Punctuation'),
-    (Range:(RangeStart: $2E80; RangeEnd: $2EFF); Name: 'CJK Radicals Supplement'),
-    (Range:(RangeStart: $2F00; RangeEnd: $2FDF); Name: 'Kangxi Radicals'),
-    (Range:(RangeStart: $2FF0; RangeEnd: $2FFF); Name: 'Ideographic Description Characters'),
-    (Range:(RangeStart: $3000; RangeEnd: $303F); Name: 'CJK Symbols and Punctuation'),
-    (Range:(RangeStart: $3040; RangeEnd: $309F); Name: 'Hiragana'),
-    (Range:(RangeStart: $30A0; RangeEnd: $30FF); Name: 'Katakana'),
-    (Range:(RangeStart: $3100; RangeEnd: $312F); Name: 'Bopomofo'),
-    (Range:(RangeStart: $3130; RangeEnd: $318F); Name: 'Hangul Compatibility Jamo'),
-    (Range:(RangeStart: $3190; RangeEnd: $319F); Name: 'Kanbun'),
-    (Range:(RangeStart: $31A0; RangeEnd: $31BF); Name: 'Bopomofo Extended'),
-    (Range:(RangeStart: $31C0; RangeEnd: $31EF); Name: 'CJK Strokes'),
-    (Range:(RangeStart: $31F0; RangeEnd: $31FF); Name: 'Katakana Phonetic Extensions'),
-    (Range:(RangeStart: $3200; RangeEnd: $32FF); Name: 'Enclosed CJK Letters and Months'),
-    (Range:(RangeStart: $3300; RangeEnd: $33FF); Name: 'CJK Compatibility'),
-    (Range:(RangeStart: $3400; RangeEnd: $4DBF); Name: 'CJK Unified Ideographs Extension A'),
-    (Range:(RangeStart: $4DC0; RangeEnd: $4DFF); Name: 'Yijing Hexagram Symbols'),
-    (Range:(RangeStart: $4E00; RangeEnd: $9FFF); Name: 'CJK Unified Ideographs'),
-    (Range:(RangeStart: $A000; RangeEnd: $A48F); Name: 'Yi Syllables'),
-    (Range:(RangeStart: $A490; RangeEnd: $A4CF); Name: 'Yi Radicals'),
-    (Range:(RangeStart: $A700; RangeEnd: $A71F); Name: 'Modifier Tone Letters'),
-    (Range:(RangeStart: $A720; RangeEnd: $A7FF); Name: 'Latin Extended-D'),
-    (Range:(RangeStart: $A800; RangeEnd: $A82F); Name: 'Syloti Nagri'),
-    (Range:(RangeStart: $A840; RangeEnd: $A87F); Name: 'Phags-pa'),
-    (Range:(RangeStart: $AC00; RangeEnd: $D7AF); Name: 'Hangul Syllables'),
-    (Range:(RangeStart: $D800; RangeEnd: $DB7F); Name: 'High Surrogates'),
-    (Range:(RangeStart: $DB80; RangeEnd: $DBFF); Name: 'High Private Use Surrogates'),
-    (Range:(RangeStart: $DC00; RangeEnd: $DFFF); Name: 'Low Surrogates'),
-    (Range:(RangeStart: $E000; RangeEnd: $F8FF); Name: 'Private Use Area'),
-    (Range:(RangeStart: $F900; RangeEnd: $FAFF); Name: 'CJK Compatibility Ideographs'),
-    (Range:(RangeStart: $FB00; RangeEnd: $FB4F); Name: 'Alphabetic Presentation Forms'),
-    (Range:(RangeStart: $FB50; RangeEnd: $FDFF); Name: 'Arabic Presentation Forms-A'),
-    (Range:(RangeStart: $FE00; RangeEnd: $FE0F); Name: 'Variation Selectors'),
-    (Range:(RangeStart: $FE10; RangeEnd: $FE1F); Name: 'Vertical Forms'),
-    (Range:(RangeStart: $FE20; RangeEnd: $FE2F); Name: 'Combining Half Marks'),
-    (Range:(RangeStart: $FE30; RangeEnd: $FE4F); Name: 'CJK Compatibility Forms'),
-    (Range:(RangeStart: $FE50; RangeEnd: $FE6F); Name: 'Small Form Variants'),
-    (Range:(RangeStart: $FE70; RangeEnd: $FEFF); Name: 'Arabic Presentation Forms-B'),
-    (Range:(RangeStart: $FF00; RangeEnd: $FFEF); Name: 'Halfwidth and Fullwidth Forms'),
-    (Range:(RangeStart: $FFF0; RangeEnd: $FFFF); Name: 'Specials'),
-    (Range:(RangeStart: $10000; RangeEnd: $1007F); Name: 'Linear B Syllabary'),
-    (Range:(RangeStart: $10080; RangeEnd: $100FF); Name: 'Linear B Ideograms'),
-    (Range:(RangeStart: $10100; RangeEnd: $1013F); Name: 'Aegean Numbers'),
-    (Range:(RangeStart: $10140; RangeEnd: $1018F); Name: 'Ancient Greek Numbers'),
-    (Range:(RangeStart: $10300; RangeEnd: $1032F); Name: 'Old Italic'),
-    (Range:(RangeStart: $10330; RangeEnd: $1034F); Name: 'Gothic'),
-    (Range:(RangeStart: $10380; RangeEnd: $1039F); Name: 'Ugaritic'),
-    (Range:(RangeStart: $103A0; RangeEnd: $103DF); Name: 'Old Persian'),
-    (Range:(RangeStart: $10400; RangeEnd: $1044F); Name: 'Deseret'),
-    (Range:(RangeStart: $10450; RangeEnd: $1047F); Name: 'Shavian'),
-    (Range:(RangeStart: $10480; RangeEnd: $104AF); Name: 'Osmanya'),
-    (Range:(RangeStart: $10800; RangeEnd: $1083F); Name: 'Cypriot Syllabary'),
-    (Range:(RangeStart: $10900; RangeEnd: $1091F); Name: 'Phoenician'),
-    (Range:(RangeStart: $10A00; RangeEnd: $10A5F); Name: 'Kharoshthi'),
-    (Range:(RangeStart: $12000; RangeEnd: $123FF); Name: 'Cuneiform'),
-    (Range:(RangeStart: $12400; RangeEnd: $1247F); Name: 'Cuneiform Numbers and Punctuation'),
-    (Range:(RangeStart: $1D000; RangeEnd: $1D0FF); Name: 'Byzantine Musical Symbols'),
-    (Range:(RangeStart: $1D100; RangeEnd: $1D1FF); Name: 'Musical Symbols'),
-    (Range:(RangeStart: $1D200; RangeEnd: $1D24F); Name: 'Ancient Greek Musical Notation'),
-    (Range:(RangeStart: $1D300; RangeEnd: $1D35F); Name: 'Tai Xuan Jing Symbols'),
-    (Range:(RangeStart: $1D360; RangeEnd: $1D37F); Name: 'Counting Rod Numerals'),
-    (Range:(RangeStart: $1D400; RangeEnd: $1D7FF); Name: 'Mathematical Alphanumeric Symbols'),
-    (Range:(RangeStart: $20000; RangeEnd: $2A6DF); Name: 'CJK Unified Ideographs Extension B'),
-    (Range:(RangeStart: $2F800; RangeEnd: $2FA1F); Name: 'CJK Compatibility Ideographs Supplement'),
-    (Range:(RangeStart: $E0000; RangeEnd: $E007F); Name: 'Tags'),
-    (Range:(RangeStart: $E0100; RangeEnd: $E01EF); Name: 'Variation Selectors Supplement'),
-    (Range:(RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
-    (Range:(RangeStart: $100000; RangeEnd: $10FFFF); Name: 'Supplementary Private Use Area-B'));
+    ((Range: (RangeStart: $FFFFFFFF; RangeEnd: $0000); Name: 'No-block'),
+    (Range: (RangeStart: $0000; RangeEnd: $007F); Name: 'Basic Latin'),
+    (Range: (RangeStart: $0080; RangeEnd: $00FF); Name: 'Latin-1 Supplement'),
+    (Range: (RangeStart: $0100; RangeEnd: $017F); Name: 'Latin Extended-A'),
+    (Range: (RangeStart: $0180; RangeEnd: $024F); Name: 'Latin Extended-B'),
+    (Range: (RangeStart: $0250; RangeEnd: $02AF); Name: 'IPA Extensions'),
+    (Range: (RangeStart: $02B0; RangeEnd: $02FF); Name: 'Spacing Modifier Letters'),
+    (Range: (RangeStart: $0300; RangeEnd: $036F); Name: 'Combining Diacritical Marks'),
+    (Range: (RangeStart: $0370; RangeEnd: $03FF); Name: 'Greek and Coptic'),
+    (Range: (RangeStart: $0400; RangeEnd: $04FF); Name: 'Cyrillic'),
+    (Range: (RangeStart: $0500; RangeEnd: $052F); Name: 'Cyrillic Supplement'),
+    (Range: (RangeStart: $0530; RangeEnd: $058F); Name: 'Armenian'),
+    (Range: (RangeStart: $0590; RangeEnd: $05FF); Name: 'Hebrew'),
+    (Range: (RangeStart: $0600; RangeEnd: $06FF); Name: 'Arabic'),
+    (Range: (RangeStart: $0700; RangeEnd: $074F); Name: 'Syriac'),
+    (Range: (RangeStart: $0750; RangeEnd: $077F); Name: 'Arabic Supplement'),
+    (Range: (RangeStart: $0780; RangeEnd: $07BF); Name: 'Thaana'),
+    (Range: (RangeStart: $07C0; RangeEnd: $07FF); Name: 'NKo'),
+    (Range: (RangeStart: $0900; RangeEnd: $097F); Name: 'Devanagari'),
+    (Range: (RangeStart: $0980; RangeEnd: $09FF); Name: 'Bengali'),
+    (Range: (RangeStart: $0A00; RangeEnd: $0A7F); Name: 'Gurmukhi'),
+    (Range: (RangeStart: $0A80; RangeEnd: $0AFF); Name: 'Gujarati'),
+    (Range: (RangeStart: $0B00; RangeEnd: $0B7F); Name: 'Oriya'),
+    (Range: (RangeStart: $0B80; RangeEnd: $0BFF); Name: 'Tamil'),
+    (Range: (RangeStart: $0C00; RangeEnd: $0C7F); Name: 'Telugu'),
+    (Range: (RangeStart: $0C80; RangeEnd: $0CFF); Name: 'Kannada'),
+    (Range: (RangeStart: $0D00; RangeEnd: $0D7F); Name: 'Malayalam'),
+    (Range: (RangeStart: $0D80; RangeEnd: $0DFF); Name: 'Sinhala'),
+    (Range: (RangeStart: $0E00; RangeEnd: $0E7F); Name: 'Thai'),
+    (Range: (RangeStart: $0E80; RangeEnd: $0EFF); Name: 'Lao'),
+    (Range: (RangeStart: $0F00; RangeEnd: $0FFF); Name: 'Tibetan'),
+    (Range: (RangeStart: $1000; RangeEnd: $109F); Name: 'Myanmar'),
+    (Range: (RangeStart: $10A0; RangeEnd: $10FF); Name: 'Georgian'),
+    (Range: (RangeStart: $1100; RangeEnd: $11FF); Name: 'Hangul Jamo'),
+    (Range: (RangeStart: $1200; RangeEnd: $137F); Name: 'Ethiopic'),
+    (Range: (RangeStart: $1380; RangeEnd: $139F); Name: 'Ethiopic Supplement'),
+    (Range: (RangeStart: $13A0; RangeEnd: $13FF); Name: 'Cherokee'),
+    (Range: (RangeStart: $1400; RangeEnd: $167F); Name: 'Unified Canadian Aboriginal Syllabics'),
+    (Range: (RangeStart: $1680; RangeEnd: $169F); Name: 'Ogham'),
+    (Range: (RangeStart: $16A0; RangeEnd: $16FF); Name: 'Runic'),
+    (Range: (RangeStart: $1700; RangeEnd: $171F); Name: 'Tagalog'),
+    (Range: (RangeStart: $1720; RangeEnd: $173F); Name: 'Hanunoo'),
+    (Range: (RangeStart: $1740; RangeEnd: $175F); Name: 'Buhid'),
+    (Range: (RangeStart: $1760; RangeEnd: $177F); Name: 'Tagbanwa'),
+    (Range: (RangeStart: $1780; RangeEnd: $17FF); Name: 'Khmer'),
+    (Range: (RangeStart: $1800; RangeEnd: $18AF); Name: 'Mongolian'),
+    (Range: (RangeStart: $1900; RangeEnd: $194F); Name: 'Limbu'),
+    (Range: (RangeStart: $1950; RangeEnd: $197F); Name: 'Tai Le'),
+    (Range: (RangeStart: $1980; RangeEnd: $19DF); Name: 'New Tai Lue'),
+    (Range: (RangeStart: $19E0; RangeEnd: $19FF); Name: 'Khmer Symbols'),
+    (Range: (RangeStart: $1A00; RangeEnd: $1A1F); Name: 'Buginese'),
+    (Range: (RangeStart: $1B00; RangeEnd: $1B7F); Name: 'Balinese'),
+    (Range: (RangeStart: $1D00; RangeEnd: $1D7F); Name: 'Phonetic Extensions'),
+    (Range: (RangeStart: $1D80; RangeEnd: $1DBF); Name: 'Phonetic Extensions Supplement'),
+    (Range: (RangeStart: $1DC0; RangeEnd: $1DFF); Name: 'Combining Diacritical Marks Supplement'),
+    (Range: (RangeStart: $1E00; RangeEnd: $1EFF); Name: 'Latin Extended Additional'),
+    (Range: (RangeStart: $1F00; RangeEnd: $1FFF); Name: 'Greek Extended'),
+    (Range: (RangeStart: $2000; RangeEnd: $206F); Name: 'General Punctuation'),
+    (Range: (RangeStart: $2070; RangeEnd: $209F); Name: 'Superscripts and Subscripts'),
+    (Range: (RangeStart: $20A0; RangeEnd: $20CF); Name: 'Currency Symbols'),
+    (Range: (RangeStart: $20D0; RangeEnd: $20FF); Name: 'Combining Diacritical Marks for Symbols'),
+    (Range: (RangeStart: $2100; RangeEnd: $214F); Name: 'Letterlike Symbols'),
+    (Range: (RangeStart: $2150; RangeEnd: $218F); Name: 'Number Forms'),
+    (Range: (RangeStart: $2190; RangeEnd: $21FF); Name: 'Arrows'),
+    (Range: (RangeStart: $2200; RangeEnd: $22FF); Name: 'Mathematical Operators'),
+    (Range: (RangeStart: $2300; RangeEnd: $23FF); Name: 'Miscellaneous Technical'),
+    (Range: (RangeStart: $2400; RangeEnd: $243F); Name: 'Control Pictures'),
+    (Range: (RangeStart: $2440; RangeEnd: $245F); Name: 'Optical Character Recognition'),
+    (Range: (RangeStart: $2460; RangeEnd: $24FF); Name: 'Enclosed Alphanumerics'),
+    (Range: (RangeStart: $2500; RangeEnd: $257F); Name: 'Box Drawing'),
+    (Range: (RangeStart: $2580; RangeEnd: $259F); Name: 'Block Elements'),
+    (Range: (RangeStart: $25A0; RangeEnd: $25FF); Name: 'Geometric Shapes'),
+    (Range: (RangeStart: $2600; RangeEnd: $26FF); Name: 'Miscellaneous Symbols'),
+    (Range: (RangeStart: $2700; RangeEnd: $27BF); Name: 'Dingbats'),
+    (Range: (RangeStart: $27C0; RangeEnd: $27EF); Name: 'Miscellaneous Mathematical Symbols-A'),
+    (Range: (RangeStart: $27F0; RangeEnd: $27FF); Name: 'Supplemental Arrows-A'),
+    (Range: (RangeStart: $2800; RangeEnd: $28FF); Name: 'Braille Patterns'),
+    (Range: (RangeStart: $2900; RangeEnd: $297F); Name: 'Supplemental Arrows-B'),
+    (Range: (RangeStart: $2980; RangeEnd: $29FF); Name: 'Miscellaneous Mathematical Symbols-B'),
+    (Range: (RangeStart: $2A00; RangeEnd: $2AFF); Name: 'Supplemental Mathematical Operators'),
+    (Range: (RangeStart: $2B00; RangeEnd: $2BFF); Name: 'Miscellaneous Symbols and Arrows'),
+    (Range: (RangeStart: $2C00; RangeEnd: $2C5F); Name: 'Glagolitic'),
+    (Range: (RangeStart: $2C60; RangeEnd: $2C7F); Name: 'Latin Extended-C'),
+    (Range: (RangeStart: $2C80; RangeEnd: $2CFF); Name: 'Coptic'),
+    (Range: (RangeStart: $2D00; RangeEnd: $2D2F); Name: 'Georgian Supplement'),
+    (Range: (RangeStart: $2D30; RangeEnd: $2D7F); Name: 'Tifinagh'),
+    (Range: (RangeStart: $2D80; RangeEnd: $2DDF); Name: 'Ethiopic Extended'),
+    (Range: (RangeStart: $2E00; RangeEnd: $2E7F); Name: 'Supplemental Punctuation'),
+    (Range: (RangeStart: $2E80; RangeEnd: $2EFF); Name: 'CJK Radicals Supplement'),
+    (Range: (RangeStart: $2F00; RangeEnd: $2FDF); Name: 'Kangxi Radicals'),
+    (Range: (RangeStart: $2FF0; RangeEnd: $2FFF); Name: 'Ideographic Description Characters'),
+    (Range: (RangeStart: $3000; RangeEnd: $303F); Name: 'CJK Symbols and Punctuation'),
+    (Range: (RangeStart: $3040; RangeEnd: $309F); Name: 'Hiragana'),
+    (Range: (RangeStart: $30A0; RangeEnd: $30FF); Name: 'Katakana'),
+    (Range: (RangeStart: $3100; RangeEnd: $312F); Name: 'Bopomofo'),
+    (Range: (RangeStart: $3130; RangeEnd: $318F); Name: 'Hangul Compatibility Jamo'),
+    (Range: (RangeStart: $3190; RangeEnd: $319F); Name: 'Kanbun'),
+    (Range: (RangeStart: $31A0; RangeEnd: $31BF); Name: 'Bopomofo Extended'),
+    (Range: (RangeStart: $31C0; RangeEnd: $31EF); Name: 'CJK Strokes'),
+    (Range: (RangeStart: $31F0; RangeEnd: $31FF); Name: 'Katakana Phonetic Extensions'),
+    (Range: (RangeStart: $3200; RangeEnd: $32FF); Name: 'Enclosed CJK Letters and Months'),
+    (Range: (RangeStart: $3300; RangeEnd: $33FF); Name: 'CJK Compatibility'),
+    (Range: (RangeStart: $3400; RangeEnd: $4DBF); Name: 'CJK Unified Ideographs Extension A'),
+    (Range: (RangeStart: $4DC0; RangeEnd: $4DFF); Name: 'Yijing Hexagram Symbols'),
+    (Range: (RangeStart: $4E00; RangeEnd: $9FFF); Name: 'CJK Unified Ideographs'),
+    (Range: (RangeStart: $A000; RangeEnd: $A48F); Name: 'Yi Syllables'),
+    (Range: (RangeStart: $A490; RangeEnd: $A4CF); Name: 'Yi Radicals'),
+    (Range: (RangeStart: $A700; RangeEnd: $A71F); Name: 'Modifier Tone Letters'),
+    (Range: (RangeStart: $A720; RangeEnd: $A7FF); Name: 'Latin Extended-D'),
+    (Range: (RangeStart: $A800; RangeEnd: $A82F); Name: 'Syloti Nagri'),
+    (Range: (RangeStart: $A840; RangeEnd: $A87F); Name: 'Phags-pa'),
+    (Range: (RangeStart: $AC00; RangeEnd: $D7AF); Name: 'Hangul Syllables'),
+    (Range: (RangeStart: $D800; RangeEnd: $DB7F); Name: 'High Surrogates'),
+    (Range: (RangeStart: $DB80; RangeEnd: $DBFF); Name: 'High Private Use Surrogates'),
+    (Range: (RangeStart: $DC00; RangeEnd: $DFFF); Name: 'Low Surrogates'),
+    (Range: (RangeStart: $E000; RangeEnd: $F8FF); Name: 'Private Use Area'),
+    (Range: (RangeStart: $F900; RangeEnd: $FAFF); Name: 'CJK Compatibility Ideographs'),
+    (Range: (RangeStart: $FB00; RangeEnd: $FB4F); Name: 'Alphabetic Presentation Forms'),
+    (Range: (RangeStart: $FB50; RangeEnd: $FDFF); Name: 'Arabic Presentation Forms-A'),
+    (Range: (RangeStart: $FE00; RangeEnd: $FE0F); Name: 'Variation Selectors'),
+    (Range: (RangeStart: $FE10; RangeEnd: $FE1F); Name: 'Vertical Forms'),
+    (Range: (RangeStart: $FE20; RangeEnd: $FE2F); Name: 'Combining Half Marks'),
+    (Range: (RangeStart: $FE30; RangeEnd: $FE4F); Name: 'CJK Compatibility Forms'),
+    (Range: (RangeStart: $FE50; RangeEnd: $FE6F); Name: 'Small Form Variants'),
+    (Range: (RangeStart: $FE70; RangeEnd: $FEFF); Name: 'Arabic Presentation Forms-B'),
+    (Range: (RangeStart: $FF00; RangeEnd: $FFEF); Name: 'Halfwidth and Fullwidth Forms'),
+    (Range: (RangeStart: $FFF0; RangeEnd: $FFFF); Name: 'Specials'),
+    (Range: (RangeStart: $10000; RangeEnd: $1007F); Name: 'Linear B Syllabary'),
+    (Range: (RangeStart: $10080; RangeEnd: $100FF); Name: 'Linear B Ideograms'),
+    (Range: (RangeStart: $10100; RangeEnd: $1013F); Name: 'Aegean Numbers'),
+    (Range: (RangeStart: $10140; RangeEnd: $1018F); Name: 'Ancient Greek Numbers'),
+    (Range: (RangeStart: $10300; RangeEnd: $1032F); Name: 'Old Italic'),
+    (Range: (RangeStart: $10330; RangeEnd: $1034F); Name: 'Gothic'),
+    (Range: (RangeStart: $10380; RangeEnd: $1039F); Name: 'Ugaritic'),
+    (Range: (RangeStart: $103A0; RangeEnd: $103DF); Name: 'Old Persian'),
+    (Range: (RangeStart: $10400; RangeEnd: $1044F); Name: 'Deseret'),
+    (Range: (RangeStart: $10450; RangeEnd: $1047F); Name: 'Shavian'),
+    (Range: (RangeStart: $10480; RangeEnd: $104AF); Name: 'Osmanya'),
+    (Range: (RangeStart: $10800; RangeEnd: $1083F); Name: 'Cypriot Syllabary'),
+    (Range: (RangeStart: $10900; RangeEnd: $1091F); Name: 'Phoenician'),
+    (Range: (RangeStart: $10A00; RangeEnd: $10A5F); Name: 'Kharoshthi'),
+    (Range: (RangeStart: $12000; RangeEnd: $123FF); Name: 'Cuneiform'),
+    (Range: (RangeStart: $12400; RangeEnd: $1247F); Name: 'Cuneiform Numbers and Punctuation'),
+    (Range: (RangeStart: $1D000; RangeEnd: $1D0FF); Name: 'Byzantine Musical Symbols'),
+    (Range: (RangeStart: $1D100; RangeEnd: $1D1FF); Name: 'Musical Symbols'),
+    (Range: (RangeStart: $1D200; RangeEnd: $1D24F); Name: 'Ancient Greek Musical Notation'),
+    (Range: (RangeStart: $1D300; RangeEnd: $1D35F); Name: 'Tai Xuan Jing Symbols'),
+    (Range: (RangeStart: $1D360; RangeEnd: $1D37F); Name: 'Counting Rod Numerals'),
+    (Range: (RangeStart: $1D400; RangeEnd: $1D7FF); Name: 'Mathematical Alphanumeric Symbols'),
+    (Range: (RangeStart: $20000; RangeEnd: $2A6DF); Name: 'CJK Unified Ideographs Extension B'),
+    (Range: (RangeStart: $2F800; RangeEnd: $2FA1F); Name: 'CJK Compatibility Ideographs Supplement'),
+    (Range: (RangeStart: $E0000; RangeEnd: $E007F); Name: 'Tags'),
+    (Range: (RangeStart: $E0100; RangeEnd: $E01EF); Name: 'Variation Selectors Supplement'),
+    (Range: (RangeStart: $F0000; RangeEnd: $FFFFF); Name: 'Supplementary Private Use Area-A'),
+    (Range: (RangeStart: $100000; RangeEnd: $10FFFF); Name: 'Supplementary Private Use Area-B'));
 
 type
   TWideStrings = class;
@@ -663,7 +663,7 @@ type
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
-  );
+    );
 
   TSearchFlags = set of TSearchFlag;
 
@@ -684,9 +684,11 @@ type
     procedure ClearResults; virtual;
     procedure DeleteResult(Index: Cardinal); virtual;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; virtual; abstract;
-    procedure FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; virtual; abstract;
+    procedure FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
+      overload; virtual; abstract;
     function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
-    function FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
+    function FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
+      overload; virtual; abstract;
     function FindAll(const Text: WideString): Boolean; overload; virtual; abstract;
     function FindAll(Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
     procedure GetResult(Index: Cardinal; var Start, Stop: Integer); virtual;
@@ -977,7 +979,7 @@ type
   // ANSI block but the save type is ANSI. On triggering the event the application
   // can change the property SaveUnicode as needed. This property is again checked
   // after the callback returns.
-  TConfirmConversionEvent = procedure (Sender: TWideStrings; var Allowed: Boolean) of object;
+  TConfirmConversionEvent = procedure(Sender: TWideStrings; var Allowed: Boolean) of object;
 
   TWideStrings = class(TPersistent)
   private
@@ -1133,7 +1135,7 @@ const
   SurrogateHighStart = UCS4($D800);
   SurrogateHighEnd = UCS4($DBFF);
   SurrogateLowStart = UCS4($DC00);
-  SurrogateLowEnd = UCS4($DFFF);
+  SurrogateLowEnd  = UCS4($DFFF);
 
 // functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
@@ -1351,11 +1353,12 @@ function UCS4CharCount(const S: TUCS4Array): Integer;
 // if UNICODE_SILENT_FAILURE is not defined and an invalid UTFX sequence is detected, an exception is raised
 // returns True on success and Value contains UCS4 character that was read
 function GetUCS4CharAt(const UTF8Str: AnsiString; Index: Integer; out Value: UCS4): Boolean; overload;
-function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean;
+  overload;
 function GetUCS4CharAt(const UCS4Str: TUCS4Array; Index: Integer; out Value: UCS4): Boolean; overload;
 
 type
-  TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
+  TCompareFunc = function(const W1, W2: WideString; Locale: LCID): Integer;
 
 var
   WideCompareText: TCompareFunc;
@@ -1426,10 +1429,10 @@ const
   {$ENDIF FPC}
   // some predefined sets to shorten parameter lists below and ease repeative usage
   ClassLetter = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccLetterModifier, ccLetterOther];
-  ClassSpace = [ccSeparatorSpace, ccSpaceOther];
+  ClassSpace  = [ccSeparatorSpace, ccSpaceOther];
   ClassPunctuation = [ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
     ccPunctuationOther, ccPunctuationInitialQuote, ccPunctuationFinalQuote];
-  ClassMark = [ccMarkNonSpacing, ccMarkSpacingCombining, ccMarkEnclosing];
+  ClassMark   = [ccMarkNonSpacing, ccMarkSpacingCombining, ccMarkEnclosing];
   ClassNumber = [ccNumberDecimalDigit, ccNumberLetter, ccNumberOther];
   ClassSymbol = [ccSymbolMath, ccSymbolCurrency, ccSymbolModifier, ccSymbolOther];
   ClassEuropeanNumber = [ccEuropeanNumber, ccEuropeanNumberSeparator, ccEuropeanNumberTerminator];
@@ -1508,7 +1511,7 @@ type
 var
   // character categories, stored in the system's swap file and mapped on demand
   CategoriesLoaded: Boolean;
-  Categories: array [Byte] of TCategoriesArray;
+  Categories:       array [Byte] of TCategoriesArray;
 
 procedure LoadCharacterCategories;
 // Loads the character categories data (as saved by the Unicode database extractor, see also
@@ -1599,14 +1602,14 @@ var
   // The organization is a sparse, two stage matrix.
   // SingletonMapping is to quickly return a single default mapping.
   CaseDataLoaded: Boolean;
-  CaseMapping: array [Byte] of TCaseArray;
+  CaseMapping:    array [Byte] of TCaseArray;
   SingletonMapping: TUCS4Array;
 
 procedure LoadCaseMappingData;
 var
   Stream: TStream;
   I, Code,
-  Size: Cardinal;
+  Size:   Cardinal;
   First, Second, Third: Byte;
 begin
   if not CaseDataLoaded then
@@ -1745,7 +1748,7 @@ const
 type
   TDecompositions = array of array of TUCS4Array;
   TDecompositionsArray = array [Byte] of TDecompositions;
-  
+
 var
   // list of decompositions, organized (again) as three stage matrix
   // Note: there are two tables, one for canonical decompositions and the other one
@@ -1758,7 +1761,7 @@ procedure LoadDecompositionData;
 var
   Stream: TStream;
   I, Code,
-  Size: Cardinal;
+  Size:   Cardinal;
   First, Second, Third: Byte;
 begin
   if not DecompositionsLoaded then
@@ -1896,13 +1899,13 @@ type
 var
   // canonical combining classes, again as two stage matrix
   CCCsLoaded: Boolean;
-  CCCs: array [Byte] of TClassArray;
+  CCCs:       array [Byte] of TClassArray;
 
 procedure LoadCombiningClassData;
 var
   Stream: TStream;
   I, J, K,
-  Size: Cardinal;
+  Size:   Cardinal;
   Buffer: TRangeArray;
   First, Second, Third: Byte;
 begin
@@ -1986,12 +1989,12 @@ var
   // array to hold the number equivalents for specific codes
   NumberCodes: array of TCodeIndex;
   // array of numbers used in NumberCodes
-  Numbers: array of TUcNumber;
+  Numbers:     array of TUcNumber;
 
 procedure LoadNumberData;
 var
   Stream: TStream;
-  Size: Cardinal;
+  Size:   Cardinal;
 begin
   // make sure no other code is currently modifying the global data area
   LoadInProgress.Enter;
@@ -2142,7 +2145,7 @@ begin
     else
     begin
       // back to the first element where Codes[0] = First
-      while (M > 0) and (Compositions[M-1].First = Codes[0]) do
+      while (M > 0) and (Compositions[M - 1].First = Codes[0]) do
         Dec(M);
 
       while (M <= High(Compositions)) and (Compositions[M].First = Codes[0]) do
@@ -2264,15 +2267,15 @@ begin
     else
       C2 := $FFFFFFFF;
     if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
-       (SurrogateLowStart <= C2) and (C2 <= $DDDD) then
+      (SurrogateLowStart <= C2) and (C2 <= $DDDD) then
       C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
 
     Sp := FSkipValues;
     for I := 0 to FSkipsUsed - 1 do
     begin
       if not (Boolean(C1 xor Sp.BMChar.UpCase) and
-              Boolean(C1 xor Sp.BMChar.LoCase) and
-              Boolean(C1 xor Sp.BMChar.TitleCase)) then
+        Boolean(C1 xor Sp.BMChar.LoCase) and
+        Boolean(C1 xor Sp.BMChar.TitleCase)) then
       begin
         if (TextEnd - TextStart) < Sp.SkipValues then
           Result := TextEnd - TextStart
@@ -2326,7 +2329,7 @@ begin
   else
     C2 := $FFFFFFFF;
   if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
-     (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) then
+    (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) then
   begin
     C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
     // Adjust the match end point to occur after the UTF-16 character.
@@ -2344,8 +2347,8 @@ begin
   // Early out if entire words need to be matched and the next character
   // in the search string is neither the string end nor a space character.
   if (sfWholeWordOnly in FFlags) and
-     not ((Start + 1)^ = WideNull) and
-     not UnicodeIsWhiteSpace(UCS4((Start + 1)^)) then
+    not ((Start + 1)^ = WideNull) and
+    not UnicodeIsWhiteSpace(UCS4((Start + 1)^)) then
     Exit;
 
   // compare backward
@@ -2367,7 +2370,7 @@ begin
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
-           (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
+          (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
         begin
           C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
           Dec(Start);
@@ -2391,7 +2394,7 @@ begin
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
-           (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
+          (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
         begin
           C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
           Dec(Start);
@@ -2416,9 +2419,9 @@ begin
 
     // handle the normal comparison cases
     if (Count > 0) and
-       (Boolean(C1 xor Cp.UpCase) and
-        Boolean(C1 xor Cp.LoCase) and
-        Boolean(C1 xor Cp.TitleCase)) then
+      (Boolean(C1 xor Cp.UpCase) and
+      Boolean(C1 xor Cp.LoCase) and
+      Boolean(C1 xor Cp.TitleCase)) then
       Exit;
 
     if C1 >= $10000 then
@@ -2438,7 +2441,7 @@ begin
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
-           (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
+          (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) then
         begin
           C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
           Dec(Start);
@@ -2452,8 +2455,8 @@ begin
   // So far the string matched. Now check its left border for a space character
   // if whole word only are allowed.
   if not (sfWholeWordOnly in FFlags) or
-     (Start <= Text) or
-     UnicodeIsWhiteSpace(UCS4((Start - 1)^)) then
+    (Start <= Text) or
+    UnicodeIsWhiteSpace(UCS4((Start - 1)^)) then
   begin
     // set the match start position
     MatchStart := Start - Text;
@@ -2497,7 +2500,7 @@ begin
       else
         C2 := $FFFFFFFF;
       if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
-         (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) then
+        (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) then
         C1 := $10000 + (((C1 and $03FF) shl 10) or (C2 and $03FF));
 
       // Make sure the HaveSpace flag is turned off if the character is not an
@@ -2610,8 +2613,8 @@ begin
 
       // set the new extra FSkipValues for the sentinel character
       if ((Cp.UpCase >= $10000) and
-          ((K + 2) <= SLen) or ((K + 1) <= SLen) and
-          (Cp.UpCase = Sentinel)) then
+        ((K + 2) <= SLen) or ((K + 1) <= SLen) and
+        (Cp.UpCase = Sentinel)) then
         FMD4 := SLen - K;
 
       // increase the actual index
@@ -2633,16 +2636,16 @@ var
 begin
   Result := False;
   if (FPattern <> nil) and (FPatternUsed > 0) and (Text <> nil) and
-     (TextLen > 0) and (TextLen >= FPatternLength) then
+    (TextLen > 0) and (TextLen >= FPatternLength) then
   begin
     Start := Text + FPatternLength - 1;
     Stop := Text + TextLen;
 
     // adjust the start point if it points to a low surrogate
     if (SurrogateLowStart <= UCS4(Start^)) and
-       (UCS4(Start^) <= SurrogateLowEnd) and
-       (SurrogateHighStart <= UCS4((Start - 1)^)) and
-       (UCS4((Start - 1)^) <= SurrogateHighEnd) then
+      (UCS4(Start^) <= SurrogateLowEnd) and
+      (SurrogateHighStart <= UCS4((Start - 1)^)) and
+      (UCS4((Start - 1)^) <= SurrogateHighEnd) then
       Dec(Start);
 
     while Start < Stop do
@@ -2653,10 +2656,10 @@ begin
           Break;
         Inc(Start, K);
         if (Start < Stop) and
-           (SurrogateLowStart <= UCS4(Start^)) and
-           (UCS4(Start^) <= SurrogateLowEnd) and
-           (SurrogateHighStart <= UCS4((Start - 1)^)) and
-           (UCS4((Start - 1)^) <= SurrogateHighEnd) then
+          (SurrogateLowStart <= UCS4(Start^)) and
+          (UCS4(Start^) <= SurrogateLowEnd) and
+          (SurrogateHighStart <= UCS4((Start - 1)^)) and
+          (UCS4((Start - 1)^) <= SurrogateHighEnd) then
           Dec(Start);
       until False;
 
@@ -2667,10 +2670,10 @@ begin
       end;
       Inc(Start, FMD4);
       if (Start < Stop) and
-         (SurrogateLowStart <= UCS4(Start^)) and
-         (UCS4(Start^) <= SurrogateLowEnd) and
-         (SurrogateHighStart <= UCS4((Start - 1)^)) and
-         (UCS4((Start - 1)^) <= SurrogateHighEnd) then
+        (SurrogateLowStart <= UCS4(Start^)) and
+        (UCS4(Start^) <= SurrogateLowEnd) and
+        (SurrogateHighStart <= UCS4((Start - 1)^)) and
+        (UCS4((Start - 1)^) <= SurrogateHighEnd) then
         Dec(Start);
     end;
   end;
@@ -2765,21 +2768,21 @@ const
 
   // symbol types for the DFA
   _URE_ANY_CHAR = 1;
-  _URE_CHAR = 2;
-  _URE_CCLASS = 3;
-  _URE_NCCLASS = 4;
+  _URE_CHAR     = 2;
+  _URE_CCLASS   = 3;
+  _URE_NCCLASS  = 4;
   _URE_BOL_ANCHOR = 5;
   _URE_EOL_ANCHOR = 6;
 
   // op codes for converting the NFA to a DFA
   _URE_SYMBOL = 10;
-  _URE_PAREN = 11;
-  _URE_QUEST = 12;
-  _URE_STAR = 13;
-  _URE_PLUS = 14;
-  _URE_ONE = 15;
-  _URE_AND = 16;
-  _URE_OR = 17;
+  _URE_PAREN  = 11;
+  _URE_QUEST  = 12;
+  _URE_STAR   = 13;
+  _URE_PLUS   = 14;
+  _URE_ONE    = 15;
+  _URE_AND    = 16;
+  _URE_OR     = 17;
 
   _URE_NOOP = $FFFF;
 
@@ -3012,7 +3015,7 @@ end;
 
 const
   CClassTrie: array [0..64] of TTrie = (
-    (Key: #$003A; Len: 1; Next:  1; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 1; Setup: 0; Categories: []),
     (Key: #$0061; Len: 9; Next: 10; Setup: 0; Categories: []),
     (Key: #$0063; Len: 8; Next: 19; Setup: 0; Categories: []),
     (Key: #$0064; Len: 7; Next: 24; Setup: 0; Categories: []),
@@ -3046,7 +3049,7 @@ const
     (Key: #$0070; Len: 1; Next: 32; Setup: 0; Categories: []),
     (Key: #$0068; Len: 1; Next: 33; Setup: 0; Categories: []),
     (Key: #$003A; Len: 1; Next: 34; Setup: 1; Categories: ClassMark + ClassNumber + ClassLetter + ClassPunctuation +
-      ClassSymbol),
+    ClassSymbol),
     (Key: #$006F; Len: 1; Next: 35; Setup: 0; Categories: []),
     (Key: #$0077; Len: 1; Next: 36; Setup: 0; Categories: []),
     (Key: #$0065; Len: 1; Next: 37; Setup: 0; Categories: []),
@@ -3058,7 +3061,7 @@ const
     (Key: #$006E; Len: 1; Next: 43; Setup: 0; Categories: []),
     (Key: #$0074; Len: 1; Next: 44; Setup: 0; Categories: []),
     (Key: #$003A; Len: 1; Next: 45; Setup: 1; Categories: ClassMark + ClassNumber + ClassLetter + ClassPunctuation +
-      ClassSymbol + [ccSeparatorSpace]),
+    ClassSymbol + [ccSeparatorSpace]),
     (Key: #$006E; Len: 1; Next: 46; Setup: 0; Categories: []),
     (Key: #$0063; Len: 1; Next: 47; Setup: 0; Categories: []),
     (Key: #$0074; Len: 1; Next: 48; Setup: 0; Categories: []),
@@ -3079,7 +3082,7 @@ const
     (Key: #$0069; Len: 1; Next: 63; Setup: 0; Categories: []),
     (Key: #$0074; Len: 1; Next: 64; Setup: 0; Categories: []),
     (Key: #$003A; Len: 1; Next: 65; Setup: 3; Categories: [])
-  );
+    );
 
 function TURESearch.PosixCCL(CP: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
 // Probe for one of the POSIX colon delimited character classes in the static trie.
@@ -3202,22 +3205,22 @@ begin
         'v':
           C := $0B;
         'p', 'P':
-          begin
-            Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
+        begin
+          Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
             // Invert the bit mask of the properties if this is a negated character class or if 'P' is used to specify
             // a list of character properties that should *not* match in a character class.
-            if C = Ord('P') then
-              Symbol.Categories := ClassAll - Symbol.Categories;
-            Continue;
-          end;
+          if C = Ord('P') then
+            Symbol.Categories := ClassAll - Symbol.Categories;
+          Continue;
+        end;
         'x', 'X', 'u', 'U':
-          begin
-            if (Run < ListEnd) and
-               ((Run^ >= '0') and (Run^ <= '9') or
-                (Run^ >= 'A') and (Run^ <= 'F') or
-                (Run^ >= 'a') and (Run^ <= 'f')) then
-              Inc(Run, MakeHexNumber(Run, ListEnd - Run, C));
-          end;
+        begin
+          if (Run < ListEnd) and
+            ((Run^ >= '0') and (Run^ <= '9') or
+            (Run^ >= 'A') and (Run^ <= 'F') or
+            (Run^ >= 'a') and (Run^ <= 'f')) then
+            Inc(Run, MakeHexNumber(Run, ListEnd - Run, C));
+        end;
       end;
     end
     else
@@ -3244,7 +3247,7 @@ begin
       if (C >= SurrogateLowStart) and (C <= SurrogateLowEnd) then
       begin
         // Construct the UTF16 character code.
-        C := $10000 + (((Last and $03FF) shl 10) or (C and $03FF))
+        C := $10000 + (((Last and $03FF) shl 10) or (C and $03FF));
       end
       else
       begin
@@ -3344,7 +3347,7 @@ begin
   end;
 
   if (SurrogateLowStart <= Code) and (Code <= SurrogateLowEnd) then
-    Result :=  Run - LeftState
+    Result := Run - LeftState
   else
     Result := 0;
 end;
@@ -3376,59 +3379,59 @@ begin
     Inc(Run);
     case UCS2(C) of
       'p', 'P':
-        begin
-          if UCS2(C) = 'p' then
-            Symbol.AType :=_URE_CCLASS
-          else
-            Symbol.AType :=_URE_NCCLASS;
-          Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
-        end;
+      begin
+        if UCS2(C) = 'p' then
+          Symbol.AType := _URE_CCLASS
+        else
+          Symbol.AType := _URE_NCCLASS;
+        Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
+      end;
       'a':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $07;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $07;
+      end;
       'b':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $08;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $08;
+      end;
       'f':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $0C;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $0C;
+      end;
       'n':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $0A;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $0A;
+      end;
       'r':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $0D;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $0D;
+      end;
       't':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $09;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $09;
+      end;
       'v':
-        begin
-          Symbol.AType := _URE_CHAR;
-          Symbol.Symbol.Chr := $0B;
-        end;
+      begin
+        Symbol.AType := _URE_CHAR;
+        Symbol.Symbol.Chr := $0B;
+      end;
     else
       case UCS2(C) of
         'x', 'X', 'u', 'U':
-          begin
+        begin
             // Collect between 1 and 4 digits representing an UCS2 code.
-            if (Run < ListEnd) and
-              ((Run^ >= '0') and (Run^ <= '9') or
-               (Run^ >= 'A') and (Run^ <= 'F') or
-               (Run^ >= 'a') and (Run^ <= 'f')) then
-              Inc(Run, MakeHexNumber(Run, ListEnd - Run, C));
-          end;
+          if (Run < ListEnd) and
+            ((Run^ >= '0') and (Run^ <= '9') or
+            (Run^ >= 'A') and (Run^ <= 'F') or
+            (Run^ >= 'a') and (Run^ <= 'f')) then
+            Inc(Run, MakeHexNumber(Run, ListEnd - Run, C));
+        end;
       end;
 
       // Simply add an escaped character here.
@@ -3472,12 +3475,12 @@ begin
   // If the symbol type happens to be a character and is a high surrogate, then
   // probe forward to see if it is followed by a low surrogate that needs to be added.
   if (Run < ListEnd) and
-     (Symbol.AType = _URE_CHAR) and
-     (SurrogateHighStart <= Symbol.Symbol.Chr) and
-     (Symbol.Symbol.Chr <= SurrogateHighEnd) then
+    (Symbol.AType = _URE_CHAR) and
+    (SurrogateHighStart <= Symbol.Symbol.Chr) and
+    (Symbol.Symbol.Chr <= SurrogateHighEnd) then
   begin
     if (SurrogateLowStart <= UCS4(Run^)) and
-       (UCS4(Run^) <= SurrogateLowEnd) then
+      (UCS4(Run^) <= SurrogateLowEnd) then
     begin
       Symbol.Symbol.Chr := $10000 + (((Symbol.Symbol.Chr and $03FF) shl 10) or (UCS4(Run^) and $03FF));
       Inc(Run);
@@ -3485,7 +3488,7 @@ begin
     else
     begin
       if (Run^ = '\') and (((Run + 1)^ = 'x') or ((Run + 1)^ = 'X') or
-         ((Run + 1)^ = 'u') or ((Run + 1)^ = 'U')) then
+        ((Run + 1)^ = 'u') or ((Run + 1)^ = 'U')) then
       begin
         Inc(Run, ProbeLowSurrogate(Run + 2, ListEnd - (Run + 2), C));
         if (SurrogateLowStart <= C) and (C <= SurrogateLowEnd) then
@@ -3529,7 +3532,7 @@ begin
       begin
         if (A.Symbol.CCL.RangesUsed > 0) and
           not CompareMem(@A.Symbol.CCL.Ranges[0], @B.Symbol.CCL.Ranges[0],
-            SizeOf(TUcRange) * A.Symbol.CCL.RangesUsed) then
+          SizeOf(TUcRange) * A.Symbol.CCL.RangesUsed) then
           Result := True;;
       end;
     end
@@ -3592,8 +3595,8 @@ begin
     for I := 0 to ExpressionsUsed - 1 do
     begin
       if (Expressions[I].AType = AType) and
-         (Expressions[I].LHS = LHS) and
-         (Expressions[I].RHS = RHS) then
+        (Expressions[I].LHS = LHS) and
+        (Expressions[I].RHS = RHS) then
       begin
         Result := I;
         Exit;
@@ -3661,16 +3664,16 @@ begin
       '(':
         Push(_URE_PAREN);
       ')': // check for the case of too many close parentheses
+      begin
+        if Peek = _URE_NOOP then
         begin
-          if Peek = _URE_NOOP then
-          begin
-            FUREBuffer.Error := _URE_UNBALANCED_GROUP;
-            Break;
-          end;
-          CollectPendingOperations(State);
-          // remove the _URE_PAREN off the stack
-          Pop;
+          FUREBuffer.Error := _URE_UNBALANCED_GROUP;
+          Break;
         end;
+        CollectPendingOperations(State);
+          // remove the _URE_PAREN off the stack
+        Pop;
+      end;
       '*':
         State := MakeExpression(_URE_STAR, State, _URE_NOOP);
       '+':
@@ -3678,17 +3681,41 @@ begin
       '?':
         State := MakeExpression(_URE_QUEST, State, _URE_NOOP);
       '|':
-        begin
-          CollectPendingOperations(State);
-          Push(State);
-          Push(_URE_OR);
-        end;
+      begin
+        CollectPendingOperations(State);
+        Push(State);
+        Push(_URE_OR);
+      end;
       '{': // expressions of the form {m, n}
-        begin
-          C := #0;
-          M := 0;
-          N := 0;
+      begin
+        C := #0;
+        M := 0;
+        N := 0;
           // get first number
+        while UnicodeIsWhiteSpace(UCS4(Head^)) do
+          Inc(Head);
+        S := '';
+        while Head^ in [WideChar('0')..WideChar('9')] do
+        begin
+          S := S + Head^;
+          Inc(Head);
+        end;
+        if S <> '' then
+          M := StrToInt(S);
+
+        while UnicodeIsWhiteSpace(UCS4(Head^)) do
+          Inc(Head);
+        if (Head^ <> ',') and (Head^ <> '}') then
+        begin
+          FUREBuffer.Error := _URE_INVALID_RANGE;
+          Break;
+        end;
+
+          // check for an upper limit
+        if Head^ <> '}' then
+        begin
+          Inc(Head);
+            // get second number
           while UnicodeIsWhiteSpace(UCS4(Head^)) do
             Inc(Head);
           S := '';
@@ -3698,132 +3725,108 @@ begin
             Inc(Head);
           end;
           if S <> '' then
-            M := StrToInt(S);
+            N := StrToInt(S);
+        end
+        else
+          N := M;
 
-          while UnicodeIsWhiteSpace(UCS4(Head^)) do
-            Inc(Head);
-          if (Head^ <> ',') and (Head^ <> '}') then
+        if Head^ <> '}' then
+        begin
+          FUREBuffer.Error := _URE_RANGE_OPEN;
+          Break;
+        end
+        else
+          Inc(Head);
+
+          // N = 0 means unlimited number of occurences
+        if N = 0 then
+        begin
+          case M of
+            0: // {,} {0,}  {0, 0} mean the same as the star operator
+              State := MakeExpression(_URE_STAR, State, _URE_NOOP);
+            1: // {1,} {1, 0} mean the same as the plus operator
+              State := MakeExpression(_URE_PLUS, State, _URE_NOOP);
+          else
+          begin
+                // encapsulate the expanded branches as would they be in parenthesis
+                // in order to avoid unwanted concatenation with pending operations/symbols
+            Push(_URE_PAREN);
+                // {m,} {m, 0} mean M fixed occurences plus star operator
+                // make E^m...
+            for I := 1 to M - 1 do
+            begin
+              Push(State);
+              Push(_URE_AND);
+            end;
+                // ...and repeat the last symbol one or more times
+            State := MakeExpression(_URE_PLUS, State, _URE_NOOP);
+            CollectPendingOperations(State);
+            Pop;
+          end;
+          end;
+        end
+        else
+        begin
+            // check proper range limits
+          if M > N then
           begin
             FUREBuffer.Error := _URE_INVALID_RANGE;
             Break;
           end;
 
-          // check for an upper limit
-          if Head^ <> '}' then
-          begin
-            Inc(Head);
-            // get second number
-            while UnicodeIsWhiteSpace(UCS4(Head^)) do
-              Inc(Head);
-            S := '';
-            while Head^ in [WideChar('0')..WideChar('9')] do
-            begin
-              S := S + Head^;
-              Inc(Head);
-            end;
-            if S <> '' then
-              N := StrToInt(S);
-          end
-          else
-            N := M;
-
-          if Head^ <> '}' then
-          begin
-            FUREBuffer.Error := _URE_RANGE_OPEN;
-            Break;
-          end
-          else
-            Inc(Head);
-
-          // N = 0 means unlimited number of occurences
-          if N = 0 then
-          begin
-            case M of
-              0: // {,} {0,}  {0, 0} mean the same as the star operator
-                State := MakeExpression(_URE_STAR, State, _URE_NOOP);
-              1: // {1,} {1, 0} mean the same as the plus operator
-                State := MakeExpression(_URE_PLUS, State, _URE_NOOP);
-            else
-              begin
-                // encapsulate the expanded branches as would they be in parenthesis
-                // in order to avoid unwanted concatenation with pending operations/symbols
-                Push(_URE_PAREN);
-                // {m,} {m, 0} mean M fixed occurences plus star operator
-                // make E^m...
-                for I := 1 to M - 1 do
-                begin
-                  Push(State);
-                  Push(_URE_AND);
-                end;
-                // ...and repeat the last symbol one or more times
-                State := MakeExpression(_URE_PLUS, State, _URE_NOOP);
-                CollectPendingOperations(State);
-                Pop;
-              end;
-            end;
-          end
-          else
-          begin
-            // check proper range limits
-            if M > N then
-            begin
-              FUREBuffer.Error := _URE_INVALID_RANGE;
-              Break;
-            end;
-
             // check special case {0, 1} (which corresponds to the ? operator)
-            if (M = 0) and (N = 1) then
-              State := MakeExpression(_URE_QUEST, State, _URE_NOOP)
-            else
-            begin
+          if (M = 0) and (N = 1) then
+            State := MakeExpression(_URE_QUEST, State, _URE_NOOP)
+          else
+          begin
               // handle the general case by expanding {m, n} into the equivalent
               // expression E^m | E^(m + 1) | ... | E^n
 
               // encapsulate the expanded branches as would they be in parenthesis
               // in order to avoid unwanted concatenation with pending operations/symbols
-              Push(_URE_PAREN);
+            Push(_URE_PAREN);
               // keep initial state as this is the one all alternatives start from
-              LastState := State;
+            LastState := State;
 
               // Consider the special case M = 0 first. Because there's no construct
               // to enter a pure epsilon-transition into the expression array I
               // work around with the question mark operator to describe the first
               // and second branch alternative.
-              if M = 0 then
-              begin
-                State := MakeExpression(_URE_QUEST, State, _URE_NOOP);
-                Inc(M, 2);
+            if M = 0 then
+            begin
+              State := MakeExpression(_URE_QUEST, State, _URE_NOOP);
+              Inc(M, 2);
                 // Mark the pending OR operation (there must always follow at
                 // least on more alternative because the special case {0, 1} has
                 // already been handled).
+              Push(State);
+              Push(_URE_OR);
+            end;
+
+            while M <= N do
+            begin
+              State := LastState;
+                // create E^M
+              for I := 1 to Integer(M) - 1 do
+              begin
+                Push(State);
+                Push(_URE_AND);
+              end;
+                // finish the branch and mark it as pending OR operation if it
+                // isn't the last one
+              CollectPendingOperations(State);
+              if M < N then
+              begin
                 Push(State);
                 Push(_URE_OR);
               end;
-
-              while M <= N do
-              begin
-                State := LastState;
-                // create E^M
-                for I := 1 to Integer(M) - 1 do
-                begin
-                  Push(State);
-                  Push(_URE_AND);
-                end;
-                // finish the branch and mark it as pending OR operation if it
-                // isn't the last one
-                CollectPendingOperations(State);
-                if M < N then
-                begin
-                  Push(State);
-                  Push(_URE_OR);
-                end;
-                Inc(M);
-              end;
-              // remove the _URE_PAREN off the stack
-              Pop;
+              Inc(M);
             end;
+              // remove the _URE_PAREN off the stack
+            Pop;
           end;
         end;
+      end;
     else
       Dec(Head);
       Symbol := MakeSymbol(Head, Tail - Head, Used);
@@ -3832,7 +3835,7 @@ begin
     end;
 
     if (C <> '(') and (C <> '|') and (C <> '{') and (Head < Tail) and
-       (not IsSpecial(Word(Head^)) or (Head^ = '(')) then
+      (not IsSpecial(Word(Head^)) or (Head^ = '(')) then
     begin
       Push(State);
       Push(_URE_AND);
@@ -3902,8 +3905,8 @@ begin
   for I := 0 to FUREBuffer.States.StatesUsed - 1 do
   begin
     if (FUREBuffer.States.States[I].StateList.ListUsed = Length(NewStates)) and
-       CompareMem(@NewStates[0], @FUREBuffer.States.States[I].StateList.List[0],
-         SizeOf(Cardinal) * Length(NewStates)) then
+      CompareMem(@NewStates[0], @FUREBuffer.States.States[I].StateList.List[0],
+      SizeOf(Cardinal) * Length(NewStates)) then
     begin
       Found := True;
       Break;
@@ -3977,92 +3980,92 @@ begin
         begin
           case Expressions[State].AType of
             _URE_SYMBOL:
-              begin
-                ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
-                AddSymbolState(Expressions[State].LHS, ns1);
-                Inc(Symbols);
-                Evaluating := False;
-              end;
+            begin
+              ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
+              AddSymbolState(Expressions[State].LHS, ns1);
+              Inc(Symbols);
+              Evaluating := False;
+            end;
             _URE_ONE:
-              begin
-                Accepting := True;
-                Evaluating := False;
-              end;
+            begin
+              Accepting := True;
+              Evaluating := False;
+            end;
             _URE_QUEST:
-              begin
-                s1 := Expressions[State].LHS;
-                ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
-                State := MakeExpression(_URE_OR, ns1, s1);
-              end;
+            begin
+              s1 := Expressions[State].LHS;
+              ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
+              State := MakeExpression(_URE_OR, ns1, s1);
+            end;
             _URE_PLUS:
-              begin
-                s1 := Expressions[State].LHS;
-                ns1 := MakeExpression(_URE_STAR, s1, _URE_NOOP);
-                State := MakeExpression(_URE_AND, s1, ns1);
-              end;
+            begin
+              s1 := Expressions[State].LHS;
+              ns1 := MakeExpression(_URE_STAR, s1, _URE_NOOP);
+              State := MakeExpression(_URE_AND, s1, ns1);
+            end;
             _URE_STAR:
-              begin
-                s1 := Expressions[State].LHS;
-                ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
-                ns2 := MakeExpression(_URE_PLUS, s1, _URE_NOOP);
-                State := MakeExpression(_URE_OR, ns1, ns2);
-              end;
+            begin
+              s1 := Expressions[State].LHS;
+              ns1 := MakeExpression(_URE_ONE, _URE_NOOP, _URE_NOOP);
+              ns2 := MakeExpression(_URE_PLUS, s1, _URE_NOOP);
+              State := MakeExpression(_URE_OR, ns1, ns2);
+            end;
             _URE_OR:
-              begin
-                s1 := Expressions[State].LHS;
-                s2 := Expressions[State].RHS;
-                Push(s1);
-                Push(s2);
-                Evaluating := False;
-              end;
+            begin
+              s1 := Expressions[State].LHS;
+              s2 := Expressions[State].RHS;
+              Push(s1);
+              Push(s2);
+              Evaluating := False;
+            end;
             _URE_AND:
-              begin
-                s1 := Expressions[State].LHS;
-                s2 := Expressions[State].RHS;
-                case Expressions[s1].AType of
-                  _URE_SYMBOL:
-                    begin
-                      AddSymbolState(Expressions[s1].LHS, s2);
-                      Inc(Symbols);
-                      Evaluating := False;
-                    end;
-                  _URE_ONE:
-                    State := s2;
-                  _URE_QUEST:
-                    begin
-                      ns1 := Expressions[s1].LHS;
-                      ns2 := MakeExpression(_URE_AND, ns1, s2);
-                      State := MakeExpression(_URE_OR, s2, ns2);
-                    end;
-                  _URE_PLUS:
-                    begin
-                      ns1 := Expressions[s1].LHS;
-                      ns2 := MakeExpression(_URE_OR, s2, State);
-                      State := MakeExpression(_URE_AND, ns1, ns2);
-                    end;
-                  _URE_STAR:
-                    begin
-                      ns1 := Expressions[s1].LHS;
-                      ns2 := MakeExpression(_URE_AND, ns1, State);
-                      State := MakeExpression(_URE_OR, s2, ns2);
-                    end;
-                  _URE_OR:
-                    begin
-                      ns1 := Expressions[s1].LHS;
-                      ns2 := Expressions[s1].RHS;
-                      ns1 := MakeExpression(_URE_AND, ns1, s2);
-                      ns2 := MakeExpression(_URE_AND, ns2, s2);
-                      State := MakeExpression(_URE_OR, ns1, ns2);
-                    end;
-                  _URE_AND:
-                    begin
-                      ns1 := Expressions[s1].LHS;
-                      ns2 := Expressions[s1].RHS;
-                      ns2 := MakeExpression(_URE_AND, ns2, s2);
-                      State := MakeExpression(_URE_AND, ns1, ns2);
-                    end;
+            begin
+              s1 := Expressions[State].LHS;
+              s2 := Expressions[State].RHS;
+              case Expressions[s1].AType of
+                _URE_SYMBOL:
+                begin
+                  AddSymbolState(Expressions[s1].LHS, s2);
+                  Inc(Symbols);
+                  Evaluating := False;
+                end;
+                _URE_ONE:
+                  State := s2;
+                _URE_QUEST:
+                begin
+                  ns1 := Expressions[s1].LHS;
+                  ns2 := MakeExpression(_URE_AND, ns1, s2);
+                  State := MakeExpression(_URE_OR, s2, ns2);
+                end;
+                _URE_PLUS:
+                begin
+                  ns1 := Expressions[s1].LHS;
+                  ns2 := MakeExpression(_URE_OR, s2, State);
+                  State := MakeExpression(_URE_AND, ns1, ns2);
+                end;
+                _URE_STAR:
+                begin
+                  ns1 := Expressions[s1].LHS;
+                  ns2 := MakeExpression(_URE_AND, ns1, State);
+                  State := MakeExpression(_URE_OR, s2, ns2);
+                end;
+                _URE_OR:
+                begin
+                  ns1 := Expressions[s1].LHS;
+                  ns2 := Expressions[s1].RHS;
+                  ns1 := MakeExpression(_URE_AND, ns1, s2);
+                  ns2 := MakeExpression(_URE_AND, ns2, s2);
+                  State := MakeExpression(_URE_OR, ns1, ns2);
+                end;
+                _URE_AND:
+                begin
+                  ns1 := Expressions[s1].LHS;
+                  ns2 := Expressions[s1].RHS;
+                  ns2 := MakeExpression(_URE_AND, ns2, s2);
+                  State := MakeExpression(_URE_AND, ns1, ns2);
                 end;
               end;
+            end;
           end;
         end;
         Inc(J);
@@ -4130,7 +4133,7 @@ begin
     with FUREBuffer.EquivalentList do
     begin
       while (I < EquivalentsUsed) and
-            ((Equivalents[I].Left <> L) or (Equivalents[I].Right <> R)) do
+        ((Equivalents[I].Left <> L) or (Equivalents[I].Right <> R)) do
         Inc(I);
 
       if I >= EquivalentsUsed then
@@ -4151,7 +4154,7 @@ procedure TURESearch.MergeEquivalents;
 var
   I, J, K,
   Equal: Integer;
-  Done: Boolean;
+  Done:  Boolean;
   State1, State2,
   LeftState,
   RightState: PUcState;
@@ -4178,7 +4181,7 @@ begin
             RightState := @FUREBuffer.States.States[FUREBuffer.EquivalentList.Equivalents[Equal].Right];
 
             if (LeftState.Accepting <> RightState.Accepting) or
-               (LeftState.TransitionsUsed <> RightState.TransitionsUsed) then
+              (LeftState.TransitionsUsed <> RightState.TransitionsUsed) then
             begin
               Done := True;
               Break;
@@ -4186,7 +4189,7 @@ begin
 
             K := 0;
             while (K < LeftState.TransitionsUsed) and
-                  (LeftState.Transitions[K].LHS = RightState.Transitions[K].LHS) do
+              (LeftState.Transitions[K].LHS = RightState.Transitions[K].LHS) do
               Inc(K);
 
             if K < LeftState.TransitionsUsed then
@@ -4271,8 +4274,8 @@ procedure TURESearch.CompileURE(RE: PWideChar; RELength: Cardinal; Casefold: Boo
 var
   I, J: Integer;
   State: Cardinal;
-  Run: PUcState;
-  TP: Integer;
+  Run:  PUcState;
+  TP:   Integer;
 
   procedure UREError(Text: string; RE: PWideChar);
   var
@@ -4390,7 +4393,7 @@ begin
     for I := 0 to SymbolTable.SymbolsUsed - 1 do
     begin
       if (SymbolTable.Symbols[I].AType = _URE_CCLASS) or
-         (SymbolTable.Symbols[I].AType = _URE_NCCLASS) then
+        (SymbolTable.Symbols[I].AType = _URE_NCCLASS) then
         SymbolTable.Symbols[I].Symbol.CCL.Ranges := nil;
     end;
 
@@ -4420,11 +4423,11 @@ var
   Matched,
   Found: Boolean;
   Start, Stop: Integer;
-  C: UCS4;
+  C:    UCS4;
   Run, Tail, lp: PUCS2;
   LastState: PDFAState;
   Symbol: PUcSymbolTableEntry;
-  Rp: PUcRange;
+  Rp:   PUcRange;
 begin
   Result := False;
   if Text <> nil then
@@ -4454,8 +4457,8 @@ begin
       // Check to see if this is a high surrogate that should be combined with a
       // following low surrogate.
       if (Run < Tail) and
-         (SurrogateHighStart <= C) and (C <= SurrogateHighEnd) and
-         (SurrogateLowStart <= UCS4(Run^)) and (UCS4(Run^) <= SurrogateLowEnd) then
+        (SurrogateHighStart <= C) and (C <= SurrogateHighEnd) and
+        (SurrogateLowStart <= UCS4(Run^)) and (UCS4(Run^) <= SurrogateLowEnd) then
       begin
         C := $10000 + (((C and $03FF) shl 10) or (UCS4(Run^) and $03FF));
         Inc(Run);
@@ -4482,7 +4485,7 @@ begin
         case Symbol.AType of
           _URE_ANY_CHAR:
             if ((Flags and URE_DONT_MATCHES_SEPARATORS) <> 0) or
-               not IsSeparator(C) then
+              not IsSeparator(C) then
               Matched := True;
           _URE_CHAR:
             if C = Symbol.Symbol.Chr then
@@ -4545,7 +4548,8 @@ begin
           else
             Stop := Run - Text;
 
-          LastState := @FDFA.StateList.States[FDFA.TransitionList.Transitions[LastState.StartTransition + I].NextState];
+          LastState := @FDFA.StateList.States[FDFA.TransitionList.Transitions[LastState.StartTransition +
+            I].NextState];
 
           // If the match was an EOL anchor, adjust the pointer past the separator
           // that caused the match. The correct match position has been recorded
@@ -4600,10 +4604,12 @@ begin
             begin
               if Found then
                 Break;
-              Symbol := @FDFA.SymbolTable.Symbols[FDFA.TransitionList.Transitions[LastState.StartTransition + I].Symbol];
-              if Symbol.AType =_URE_EOL_ANCHOR then
+              Symbol := @FDFA.SymbolTable.Symbols[FDFA.TransitionList.Transitions[LastState.StartTransition +
+                I].Symbol];
+              if Symbol.AType = _URE_EOL_ANCHOR then
               begin
-                LastState := @FDFA.StateList.States[FDFA.TransitionList.Transitions[LastState.StartTransition + I].NextState];
+                LastState := @FDFA.StateList.States[FDFA.TransitionList.Transitions[LastState.StartTransition +
+                  I].NextState];
                 if LastState.Accepting then
                 begin
                   Stop := Run - Text;
@@ -4883,7 +4889,7 @@ procedure TWideStrings.DefineProperties(Filer: TFiler);
     begin
       Result := True;
       if Filer.Ancestor is TWideStrings then
-        Result := not Equals(TWideStrings(Filer.Ancestor))
+        Result := not Equals(TWideStrings(Filer.Ancestor));
     end
     else
       Result := Count > 0;
@@ -4929,7 +4935,7 @@ procedure TWideStrings.Error(const Msg: string; Data: Integer);
 
   function ReturnAddr: Pointer;
   asm
-          MOV     EAX, [EBP + 4]
+           MOV     EAX, [EBP + 4]
   end;
 
 begin
@@ -5010,8 +5016,8 @@ var
   Size,
   Count,
   SepSize: Integer;
-  P: PWideChar;
-  S: WideString;
+  P:       PWideChar;
+  S:       WideString;
 begin
   Count := GetCount;
   SepSize := Length(Separators);
@@ -5143,7 +5149,7 @@ begin
     Loaded := False;
 
     Size := Stream.Size - Stream.Position;
-    BytesRead := Stream.Read(ByteOrderMask[0],SizeOf(ByteOrderMask));
+    BytesRead := Stream.Read(ByteOrderMask[0], SizeOf(ByteOrderMask));
 
     // UTF16 LSB = Unicode LSB
     if (BytesRead >= 2) and (ByteOrderMask[0] = BOM_UTF16_LSB[0])
@@ -5151,9 +5157,9 @@ begin
     begin
       FSaveFormat := sfUTF16LSB;
       SetLength(SW, (Size - 2) div SizeOf(WideChar));
-      Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
-      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
-      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
+      Assert((Size and 1) <> 1, 'Number of chars must be a multiple of 2');
+      System.Move(ByteOrderMask[2], SW[1], BytesRead - 2); // max 4 bytes = 2 widechars
+      Stream.Read(SW[3], Size - BytesRead); // first 2 chars were copied by System.Move
       SetText(SW);
       Loaded := True;
     end;
@@ -5164,9 +5170,9 @@ begin
     begin
       FSaveFormat := sfUTF16MSB;
       SetLength(SW, (Size - 2) div SizeOf(WideChar));
-      Assert((Size and 1) <> 1,'Number of chars must be a multiple of 2');
-      System.Move(ByteOrderMask[2],SW[1],BytesRead-2); // max 4 bytes = 2 widechars
-      Stream.Read(SW[3], Size-BytesRead); // first 2 chars were copied by System.Move
+      Assert((Size and 1) <> 1, 'Number of chars must be a multiple of 2');
+      System.Move(ByteOrderMask[2], SW[1], BytesRead - 2); // max 4 bytes = 2 widechars
+      Stream.Read(SW[3], Size - BytesRead); // first 2 chars were copied by System.Move
       StrSwapByteOrder(PWideChar(SW));
       SetText(SW);
       Loaded := True;
@@ -5177,9 +5183,9 @@ begin
       and (ByteOrderMask[1] = BOM_UTF8[1]) and (ByteOrderMask[2] = BOM_UTF8[2]) then
     begin
       FSaveFormat := sfUTF8;
-      SetLength(SA, (Size-3) div SizeOf(Char));
-      System.Move(ByteOrderMask[3],SA[1],BytesRead-3); // max 3 bytes = 3 chars
-      Stream.Read(SA[4], Size-BytesRead); // first 3 chars were copied by System.Move
+      SetLength(SA, (Size - 3) div SizeOf(Char));
+      System.Move(ByteOrderMask[3], SA[1], BytesRead - 3); // max 3 bytes = 3 chars
+      Stream.Read(SA[4], Size - BytesRead); // first 3 chars were copied by System.Move
       SW := UTF8ToWideString(SA);
       SetText(SW);
       Loaded := True;
@@ -5190,8 +5196,8 @@ begin
     begin
       FSaveFormat := sfAnsi;
       SetLength(SA, Size div SizeOf(Char));
-      System.Move(ByteOrderMask[0],SA[1],BytesRead); // max 6 bytes = 6 chars
-      Stream.Read(SA[7], Size-BytesRead); // first 6 chars were copied by System.Move
+      System.Move(ByteOrderMask[0], SA[1], BytesRead); // max 6 bytes = 6 chars
+      Stream.Read(SA[7], Size - BytesRead); // first 6 chars were copied by System.Move
       SetText(SA);
     end;
   finally
@@ -5277,32 +5283,32 @@ begin
   begin
     // only save if allowed
     case SaveFormat of
-      sfUTF16LSB :
-        begin
-          Stream.WriteBuffer(BOM_UTF16_LSB[0],SizeOf(BOM_UTF16_LSB));
-          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
-          FSaved := True;
-        end;
-      sfUTF16MSB :
-        begin
-          Stream.WriteBuffer(BOM_UTF16_MSB[0],SizeOf(BOM_UTF16_MSB));
-          StrSwapByteOrder(PWideChar(SW));
-          Stream.WriteBuffer(SW[1],Length(SW)*SizeOf(UTF16));
-          FSaved := True;
-        end;
-      sfUTF8 :
-        begin
-          Stream.WriteBuffer(BOM_UTF8[0],SizeOf(BOM_UTF8));
-          SA := WideStringToUTF8(SW);
-          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(UTF8));
-          FSaved := True;
-        end;
-      sfAnsi :
-        begin
-          SA := WideStringToStringEx(SW,CodePageFromLocale(FLanguage));
-          Stream.WriteBuffer(SA[1],Length(SA)*SizeOf(Char));
-          FSaved := True;
-        end;
+      sfUTF16LSB:
+      begin
+        Stream.WriteBuffer(BOM_UTF16_LSB[0], SizeOf(BOM_UTF16_LSB));
+        Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(UTF16));
+        FSaved := True;
+      end;
+      sfUTF16MSB:
+      begin
+        Stream.WriteBuffer(BOM_UTF16_MSB[0], SizeOf(BOM_UTF16_MSB));
+        StrSwapByteOrder(PWideChar(SW));
+        Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(UTF16));
+        FSaved := True;
+      end;
+      sfUTF8:
+      begin
+        Stream.WriteBuffer(BOM_UTF8[0], SizeOf(BOM_UTF8));
+        SA := WideStringToUTF8(SW);
+        Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(UTF8));
+        FSaved := True;
+      end;
+      sfAnsi:
+      begin
+        SA := WideStringToStringEx(SW, CodePageFromLocale(FLanguage));
+        Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(Char));
+        FSaved := True;
+      end;
     end;
   end;
 end;
@@ -5315,7 +5321,7 @@ end;
 procedure TWideStrings.SetCommaText(const Value: WideString);
 var
   P, P1: PWideChar;
-  S: WideString;
+  S:     WideString;
 begin
   BeginUpdate;
   try
@@ -5330,7 +5336,7 @@ begin
       else
       begin
         P1 := P;
-        while (P^ > WideSpace) and (P^ <> ',') do 
+        while (P^ > WideSpace) and (P^ <> ',') do
           Inc(P);
         SetString(S, P1, P - P1);
       end;
@@ -5354,7 +5360,7 @@ procedure TWideStrings.SetText(const Value: WideString);
 var
   Head,
   Tail: PWideChar;
-  S: WideString;
+  S:    WideString;
 begin
   BeginUpdate;
   try
@@ -5403,7 +5409,7 @@ end;
 
 procedure TWideStrings.SetValue(const Name, Value: WideString);
 var
-  I : Integer;
+  I: Integer;
 begin
   I := IndexOfName(Name);
   if Value <> '' then
@@ -5542,7 +5548,7 @@ begin
     I := (L + H) shr 1;
     C := WideCompareText(FList[I].FString, NormString, FLanguage);
     if C < 0 then
-      L := I+1
+      L := I + 1
     else
     begin
       H := I - 1;
@@ -5623,8 +5629,8 @@ begin
   if not Sorted then
     Result := inherited IndexOf(S)
   else
-    if not Find(S, Result) then
-      Result := -1;
+  if not Find(S, Result) then
+    Result := -1;
 end;
 
 procedure TWideStringList.Insert(Index: Integer; const S: WideString);
@@ -5640,7 +5646,7 @@ end;
 procedure TWideStringList.SetListString(Index: Integer; const S: WideString);
 var
   Len: Integer;
-  A: TDynWideCharArray;
+  A:   TDynWideCharArray;
 begin
   with FList[Index] do
   begin
@@ -5721,7 +5727,7 @@ end;
 procedure TWideStringList.QuickSort(L, R: Integer);
 var
   I, J: Integer;
-  P: WideString;
+  P:    WideString;
 begin
   repeat
     I := L;
@@ -5790,146 +5796,146 @@ end;
 //----------------- functions for null terminated strings ------------------------------------------
 
 function StrLenW(Str: PWideChar): Cardinal;
-// returns number of characters in a string excluding the null terminator
+// RETURNS NUMBER OF CHARACTERS IN A STRING EXCLUDING THE NULL TERMINATOR
 asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       MOV     EAX, 0FFFFFFFEH
-       SUB     EAX, ECX
-       MOV     EDI, EDX
+         MOV     EDX, EDI
+         MOV     EDI, EAX
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         MOV     EAX, 0FFFFFFFEH
+         SUB     EAX, ECX
+         MOV     EDI, EDX
 end;
 
 function StrEndW(Str: PWideChar): PWideChar;
-// returns a pointer to the end of a null terminated string
+// RETURNS A POINTER TO THE END OF A NULL TERMINATED STRING
 asm
-       MOV     EDX, EDI
-       MOV     EDI, EAX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       LEA     EAX, [EDI - 2]
-       MOV     EDI, EDX
+         MOV     EDX, EDI
+         MOV     EDI, EAX
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         LEA     EAX, [EDI - 2]
+         MOV     EDI, EDX
 end;
 
 function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
-// Copies the specified number of characters to the destination string and returns Dest
-// also as result. Dest must have enough room to store at least Count characters.
+// COPIES THE SPECIFIED NUMBER OF CHARACTERS TO THE DESTINATION STRING AND RETURNS DEST
+// ALSO AS RESULT. DEST MUST HAVE ENOUGH ROOM TO STORE AT LEAST COUNT CHARACTERS.
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EDX
-       MOV     EDI, EAX
-       MOV     EDX, ECX
-       CMP     EDI, ESI
-       JG      @@1
-       JE      @@2
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       JMP     @@2
-@@1:
-       LEA     ESI, [ESI + 2 * ECX - 2]
-       LEA     EDI, [EDI + 2 * ECX - 2]
-       STD
-       AND     ECX, 1
-       REP     MOVSW
-       SUB     EDI, 2
-       SUB     ESI, 2
-       MOV     ECX, EDX
-       SHR     ECX, 1
-       REP     MOVSD
-       CLD
-@@2:
-       POP EDI
-       POP ESI
+         PUSH    ESI
+         PUSH    EDI
+         MOV     ESI, EDX
+         MOV     EDI, EAX
+         MOV     EDX, ECX
+         CMP     EDI, ESI
+         JG      @@1
+         JE      @@2
+         SHR     ECX, 1
+         REP     MOVSD
+         MOV     ECX, EDX
+         AND     ECX, 1
+         REP     MOVSW
+         JMP     @@2
+         @@1:
+         LEA     ESI, [ESI + 2 * ECX - 2]
+         LEA     EDI, [EDI + 2 * ECX - 2]
+         STD
+         AND     ECX, 1
+         REP     MOVSW
+         SUB     EDI, 2
+         SUB     ESI, 2
+         MOV     ECX, EDX
+         SHR     ECX, 1
+         REP     MOVSD
+         CLD
+         @@2:
+         POP     EDI
+         POP     ESI
 end;
 
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
-// copies Source to Dest and returns Dest
+// COPIES SOURCE TO DEST AND RETURNS DEST
 asm
-       PUSH    EDI
-       PUSH    ESI
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, ECX
-       MOV     EAX, EDI
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       POP     ESI
-       POP     EDI
+         PUSH    EDI
+         PUSH    ESI
+         MOV     ESI, EAX
+         MOV     EDI, EDX
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         NOT     ECX
+         MOV     EDI, ESI
+         MOV     ESI, EDX
+         MOV     EDX, ECX
+         MOV     EAX, EDI
+         SHR     ECX, 1
+         REP     MOVSD
+         MOV     ECX, EDX
+         AND     ECX, 1
+         REP     MOVSW
+         POP     ESI
+         POP     EDI
 
 end;
 
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
-// copies Source to Dest and returns a pointer to the null character ending the string
+// COPIES SOURCE TO DEST AND RETURNS A POINTER TO THE NULL CHARACTER ENDING THE STRING
 asm
-       PUSH    EDI
-       PUSH    ESI
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, ECX
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EDX
-       AND     ECX, 1
-       REP     MOVSW
-       LEA     EAX, [EDI - 2]
-       POP     ESI
-       POP     EDI
+         PUSH    EDI
+         PUSH    ESI
+         MOV     ESI, EAX
+         MOV     EDI, EDX
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         NOT     ECX
+         MOV     EDI, ESI
+         MOV     ESI, EDX
+         MOV     EDX, ECX
+         SHR     ECX, 1
+         REP     MOVSD
+         MOV     ECX, EDX
+         AND     ECX, 1
+         REP     MOVSW
+         LEA     EAX, [EDI - 2]
+         POP     ESI
+         POP     EDI
 
 end;
 
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-// copies a specified maximum number of characters from Source to Dest
+// COPIES A SPECIFIED MAXIMUM NUMBER OF CHARACTERS FROM SOURCE TO DEST
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       MOV     ESI, EAX
-       MOV     EDI, EDX
-       MOV     EBX, ECX
-       XOR     AX, AX
-       TEST    ECX, ECX
-       JZ      @@1
-       REPNE   SCASW
-       JNE     @@1
-       INC     ECX
-@@1:
-       SUB     EBX, ECX
-       MOV     EDI, ESI
-       MOV     ESI, EDX
-       MOV     EDX, EDI
-       MOV     ECX, EBX
-       SHR     ECX, 1
-       REP     MOVSD
-       MOV     ECX, EBX
-       AND     ECX, 1
-       REP     MOVSW
-       STOSW
-       MOV     EAX, EDX
-       POP     EBX
-       POP     ESI
-       POP     EDI
+         PUSH    EDI
+         PUSH    ESI
+         PUSH    EBX
+         MOV     ESI, EAX
+         MOV     EDI, EDX
+         MOV     EBX, ECX
+         XOR     AX, AX
+         TEST    ECX, ECX
+         JZ      @@1
+         REPNE   SCASW
+         JNE     @@1
+         INC     ECX
+         @@1:
+         SUB     EBX, ECX
+         MOV     EDI, ESI
+         MOV     ESI, EDX
+         MOV     EDX, EDI
+         MOV     ECX, EBX
+         SHR     ECX, 1
+         REP     MOVSD
+         MOV     ECX, EBX
+         AND     ECX, 1
+         REP     MOVSW
+         STOSW
+         MOV     EAX, EDX
+         POP     EBX
+         POP     ESI
+         POP     EDI
 end;
 
 function StrPCopyWW(Dest: PWideChar; const Source: WideString): PWideChar;
@@ -5952,21 +5958,21 @@ begin
 end;
 
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
-// copies characters from a Pascal-style string into a null-terminated wide string
+// COPIES CHARACTERS FROM A PASCAL-STYLE STRING INTO A NULL-TERMINATED WIDE STRING
 asm
-       PUSH EDI
-       PUSH ESI
-       MOV EDI, EAX
-       MOV ESI, EDX
-       MOV EDX, EAX
-       XOR AX, AX
-@@1:   LODSB
-       STOSW
-       DEC ECX
-       JNZ @@1
-       MOV EAX, EDX
-       POP ESI
-       POP EDI
+         PUSH    EDI
+         PUSH    ESI
+         MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDX, EAX
+         XOR     AX, AX
+         @@1:   LODSB
+         STOSW
+         DEC     ECX
+         JNZ     @@1
+         MOV     EAX, EDX
+         POP     ESI
+         POP     EDI
 end;
 
 function StrCatW(Dest: PWideChar; const Source: PWideChar): PWideChar;
@@ -5980,26 +5986,26 @@ end;
 
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       MOV     EDI, Dest
-       MOV     ESI, Source
-       MOV     EBX, MaxLen
-       SHL     EBX, 1
-       CALL    StrEndW
-       MOV     ECX, EDI
-       ADD     ECX, EBX
-       SUB     ECX, EAX
-       JBE     @@1
-       MOV     EDX, ESI
-       SHR     ECX, 1
-       CALL    StrLCopyW
-@@1:
-       MOV     EAX, EDI
-       POP     EBX
-       POP     ESI
-       POP     EDI
+         PUSH    EDI
+         PUSH    ESI
+         PUSH    EBX
+         MOV     EDI, DEST
+         MOV     ESI, SOURCE
+         MOV     EBX, MAXLEN
+         SHL     EBX, 1
+         CALL    STRENDW
+         MOV     ECX, EDI
+         ADD     ECX, EBX
+         SUB     ECX, EAX
+         JBE     @@1
+         MOV     EDX, ESI
+         SHR     ECX, 1
+         CALL    STRLCOPYW
+         @@1:
+         MOV     EAX, EDI
+         POP     EBX
+         POP     ESI
+         POP     EDI
 end;
 
 const
@@ -6008,7 +6014,7 @@ const
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     $2000, $F800, $F800, $F800, $F800
-  );
+    );
 
 function StrCompW(const Str1, Str2: PWideChar): Integer;
 // Binary comparation of Str1 and Str2 with surrogate fix-up.
@@ -6032,7 +6038,7 @@ begin
 
     // now C1 and C2 are in UTF-32-compatible order
     Result := Integer(C1) - Integer(C2);
-    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+    if (Result <> 0) or (C1 = 0) or (C2 = 0) then
       Break;
     Inc(Run1);
     Inc(Run2);
@@ -6064,7 +6070,7 @@ begin
     Folded1 := Folded1 + WideCaseFolding(S1^);
     Inc(S1);
   end;
-  
+
   Folded2 := '';
   while S2^ <> #0 do
   begin
@@ -6082,7 +6088,7 @@ begin
 
     // now C1 and C2 are in UTF-32-compatible order
     Result := Integer(C1) - Integer(C2);
-    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+    if (Result <> 0) or (C1 = 0) or (C2 = 0) then
       Break;
     Inc(Run1);
     Inc(Run2);
@@ -6136,7 +6142,7 @@ begin
       { TODO : surrogates take up 2 words and are counted twice here, count them only once }
       Result := Integer(C1) - Integer(C2);
       Dec(MaxLen);
-      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+      if (Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
         Break;
       Inc(Run1);
       Inc(Run2);
@@ -6167,7 +6173,7 @@ begin
       { TODO : surrogates take up 2 words and are counted twice here, count them only once }
       Result := Integer(C1) - Integer(C2);
       Dec(MaxLen);
-      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+      if (Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
         Break;
       Inc(S1);
       Inc(S2);
@@ -6224,22 +6230,22 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
-        PUSH    EDI
-        PUSH    EAX
-        MOV     EDI, Str
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        POP     EDI
-        MOV     AX, Chr
-        REPNE   SCASW
-        MOV     EAX, 0
-        JNE     @@1
-        MOV     EAX, EDI
-        SUB     EAX, 2
-@@1:
-        POP     EDI
+         PUSH    EDI
+         PUSH    EAX
+         MOV     EDI, STR
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         NOT     ECX
+         POP     EDI
+         MOV     AX, CHR
+         REPNE   SCASW
+         MOV     EAX, 0
+         JNE     @@1
+         MOV     EAX, EDI
+         SUB     EAX, 2
+         @@1:
+         POP     EDI
 end;
 
 // Returns a pointer to first occurrence of a specified character in a string
@@ -6253,90 +6259,90 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
-       TEST    EAX, EAX
-       JZ      @@Exit        // get out if the string is nil or StrLen is 0
-       JCXZ    @@Exit
-@@Loop:
-       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
-       JE      @@Exit        // than REP SCASW
-       ADD     EAX, 2
-       DEC     ECX
-       JNZ     @@Loop
-       XOR     EAX, EAX
-@@Exit:
+         TEST    EAX, EAX
+         JZ      @@EXIT        // GET OUT IF THE STRING IS NIL OR STRLEN IS 0
+         JCXZ    @@EXIT
+         @@LOOP:
+         CMP     [EAX], DX     // THIS UNROLLED LOOP IS ACTUALLY FASTER ON MODERN PROCESSORS
+         JE      @@EXIT        // THAN REP SCASW
+         ADD     EAX, 2
+         DEC     ECX
+         JNZ     @@LOOP
+         XOR     EAX, EAX
+         @@EXIT:
 end;
 
 // returns a pointer to the last occurance of Chr in Str
 
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
-       PUSH    EDI
-       MOV     EDI, Str
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       STD
-       SUB     EDI, 2
-       MOV     AX, Chr
-       REPNE   SCASW
-       MOV     EAX, 0
-       JNE     @@1
-       MOV     EAX, EDI
-       ADD     EAX, 2
-@@1:
-       CLD
-       POP     EDI
+         PUSH    EDI
+         MOV     EDI, STR
+         MOV     ECX, 0FFFFFFFFH
+         XOR     AX, AX
+         REPNE   SCASW
+         NOT     ECX
+         STD
+         SUB     EDI, 2
+         MOV     AX, CHR
+         REPNE   SCASW
+         MOV     EAX, 0
+         JNE     @@1
+         MOV     EAX, EDI
+         ADD     EAX, 2
+         @@1:
+         CLD
+         POP     EDI
 end;
 
 // returns a pointer to the first occurance of SubStr in Str
 
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
 asm
-       PUSH    EDI
-       PUSH    ESI
-       PUSH    EBX
-       OR      EAX, EAX
-       JZ      @@2
-       OR      EDX, EDX
-       JZ      @@2
-       MOV     EBX, EAX
-       MOV     EDI, EDX
-       XOR     AX, AX
-       MOV     ECX, 0FFFFFFFFH
-       REPNE   SCASW
-       NOT     ECX
-       DEC     ECX
-       JZ      @@2
-       MOV     ESI, ECX
-       MOV     EDI, EBX
-       MOV     ECX, 0FFFFFFFFH
-       REPNE   SCASW
-       NOT     ECX
-       SUB     ECX, ESI
-       JBE     @@2
-       MOV     EDI, EBX
-       LEA     EBX, [ESI - 1]
-@@1:
-       MOV     ESI, EDX
-       LODSW
-       REPNE   SCASW
-       JNE     @@2
-       MOV     EAX, ECX
-       PUSH    EDI
-       MOV     ECX, EBX
-       REPE    CMPSW
-       POP     EDI
-       MOV     ECX, EAX
-       JNE     @@1
-       LEA     EAX, [EDI - 2]
-       JMP     @@3
-@@2:
-       XOR     EAX, EAX
-@@3:
-       POP     EBX
-       POP     ESI
-       POP     EDI
+         PUSH    EDI
+         PUSH    ESI
+         PUSH    EBX
+         OR      EAX, EAX
+         JZ      @@2
+         OR      EDX, EDX
+         JZ      @@2
+         MOV     EBX, EAX
+         MOV     EDI, EDX
+         XOR     AX, AX
+         MOV     ECX, 0FFFFFFFFH
+         REPNE   SCASW
+         NOT     ECX
+         DEC     ECX
+         JZ      @@2
+         MOV     ESI, ECX
+         MOV     EDI, EBX
+         MOV     ECX, 0FFFFFFFFH
+         REPNE   SCASW
+         NOT     ECX
+         SUB     ECX, ESI
+         JBE     @@2
+         MOV     EDI, EBX
+         LEA     EBX, [ESI - 1]
+         @@1:
+         MOV     ESI, EDX
+         LODSW
+         REPNE   SCASW
+         JNE     @@2
+         MOV     EAX, ECX
+         PUSH    EDI
+         MOV     ECX, EBX
+         REPE    CMPSW
+         POP     EDI
+         MOV     ECX, EAX
+         JNE     @@1
+         LEA     EAX, [EDI - 2]
+         JMP     @@3
+         @@2:
+         XOR     EAX, EAX
+         @@3:
+         POP     EBX
+         POP     ESI
+         POP     EDI
 end;
 
 function StrAllocW(WideSize: Cardinal): PWideChar;
@@ -6406,21 +6412,21 @@ end;
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EAX
-       MOV     EDI, ESI
-       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
-@@1:
-       LODSW
-       OR      EAX, EAX
-       JZ      @@2
-       XCHG    AL, AH
-       STOSW
-       JMP     @@1
-@@2:
-       POP     EDI
-       POP     ESI
+         PUSH    ESI
+         PUSH    EDI
+         MOV     ESI, EAX
+         MOV     EDI, ESI
+         XOR     EAX, EAX // CLEAR HIGH ORDER BYTE TO BE ABLE TO USE 32BIT OPERAND BELOW
+         @@1:
+         LODSW
+         OR      EAX, EAX
+         JZ      @@2
+         XCHG    AL, AH
+         STOSW
+         JMP     @@1
+         @@2:
+         POP     EDI
+         POP     ESI
 end;
 
 function WideAdjustLineBreaks(const S: WideString): WideString;
@@ -6440,19 +6446,19 @@ begin
   begin
     case Source^ of
       WideLineFeed:
-        begin
-          Dest^ := WideLineSeparator;
-          Inc(Dest);
-          Inc(Source);
-        end;
+      begin
+        Dest^ := WideLineSeparator;
+        Inc(Dest);
+        Inc(Source);
+      end;
       WideCarriageReturn:
-        begin
-          Dest^ := WideLineSeparator;
-          Inc(Dest);
+      begin
+        Dest^ := WideLineSeparator;
+        Inc(Dest);
+        Inc(Source);
+        if Source^ = WideLineFeed then
           Inc(Source);
-          if Source^ = WideLineFeed then
-            Inc(Source);
-        end;
+      end;
     else
       Dest^ := Source^;
       Inc(Dest);
@@ -6615,46 +6621,46 @@ end;
 
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
 asm
-       TEST    EAX,EAX        // make sure we are not null
-       JZ      @@StrIsNil
-       DEC     ECX            // make index zero based
-       JL      @@IdxIsSmall
-       PUSH    EBX
-       PUSH    EDI
-       MOV     EDI, EAX       // EDI := S
-       XOR     EAX, EAX
-       MOV     AX, DX         // AX := Ch
-       MOV     EDX, [EDI - 4] // EDX := Length(S) * 2
-       SHR     EDX, 1         // EDX := EDX div 2
-       MOV     EBX, EDX       // save the length to calc. result
-       SUB     EDX, ECX       // EDX = EDX - Index = # of chars to scan
-       JLE     @@IdxIsBig
-       SHL     ECX, 1         // two bytes per char
-       ADD     EDI, ECX       // point to index'th char
-       MOV     ECX, EDX       // loop counter
-       REPNE   SCASW
-       JNE     @@NoMatch
-       MOV     EAX, EBX       // result := saved length -
-       SUB     EAX, ECX       // loop counter value
-       POP     EDI
-       POP     EBX
-       RET
-@@IdxIsBig:
-@@NoMatch:
-       XOR     EAX,EAX
-       POP     EDI
-       POP     EBX
-       RET
-@@IdxIsSmall:
-       XOR     EAX, EAX
-@@StrIsNil:
+         TEST    EAX,EAX        // MAKE SURE WE ARE NOT NULL
+         JZ      @@STRISNIL
+         DEC     ECX            // MAKE INDEX ZERO BASED
+         JL      @@IDXISSMALL
+         PUSH    EBX
+         PUSH    EDI
+         MOV     EDI, EAX       // EDI := S
+         XOR     EAX, EAX
+         MOV     AX, DX         // AX := CH
+         MOV     EDX, [EDI - 4] // EDX := LENGTH(S) * 2
+         SHR     EDX, 1         // EDX := EDX DIV 2
+         MOV     EBX, EDX       // SAVE THE LENGTH TO CALC. RESULT
+         SUB     EDX, ECX       // EDX = EDX - INDEX = # OF CHARS TO SCAN
+         JLE     @@IDXISBIG
+         SHL     ECX, 1         // TWO BYTES PER CHAR
+         ADD     EDI, ECX       // POINT TO INDEX'TH CHAR
+         MOV     ECX, EDX       // LOOP COUNTER
+         REPNE   SCASW
+         JNE     @@NOMATCH
+         MOV     EAX, EBX       // RESULT := SAVED LENGTH -
+         SUB     EAX, ECX       // LOOP COUNTER VALUE
+         POP     EDI
+         POP     EBX
+         RET
+         @@IDXISBIG:
+         @@NOMATCH:
+         XOR     EAX,EAX
+         POP     EDI
+         POP     EBX
+         RET
+         @@IDXISSMALL:
+         XOR     EAX, EAX
+         @@STRISNIL:
 end;
 
 function WideComposeHangul(const Source: WideString): WideString;
 var
   Len: Integer;
   Ch, Last: WideChar;
-  I: Integer;
+  I:   Integer;
   LIndex, VIndex,
   SIndex, TIndex: Integer;
 begin
@@ -6786,7 +6792,7 @@ begin
       // A swap is presumed to be rare (and a double-swap very rare),
       // so don't worry about efficiency here.
       if (CurrentClass > LastClass) and (LastClass > 0) then
-      begin                                        
+      begin
         // swap characters
         Temp := S[I];
         S[I] := S[I + 1];
@@ -6806,7 +6812,7 @@ procedure GetDecompositions(Compatible: Boolean; Code: UCS4; var Buffer: TUCS4Ar
 // helper function to recursively decompose a code point
 var
   Decomp: TUCS4Array;
-  I: Integer;
+  I:      Integer;
 begin
   Decomp := UnicodeDecompose(Code, Compatible);
   if Assigned(Decomp) then
@@ -6827,7 +6833,7 @@ function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
 var
   I, J: Integer;
   Decomp: TUCS4Array;
-begin  
+begin
   Result := '';
   Decomp := nil;
 
@@ -7292,7 +7298,7 @@ end;
 function UnicodeIsHan(C: UCS4): Boolean;
 // Is the character a Han ideograph?
 begin
-  Result := ((C >= $4E00) and (C <= $9FFF))  or ((C >= $F900) and (C <= $FAFF));
+  Result := ((C >= $4E00) and (C <= $9FFF)) or ((C >= $F900) and (C <= $FAFF));
 end;
 
 function UnicodeIsHangul(C: UCS4): Boolean;
@@ -7314,7 +7320,7 @@ var
   CP: Cardinal;
   CSI: TCharsetInfo;
 begin
-  CP:= CodePageFromLocale(Language);
+  CP := CodePageFromLocale(Language);
   Result := TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
   if Result then
     FontCharset := CSI.ciCharset;
@@ -7399,7 +7405,7 @@ function CompareTextWin95(const W1, W2: WideString; Locale: LCID): Integer;
 // comparation function, returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
 var
   S1, S2: string;
-  CP: Integer;
+  CP:     Integer;
   L1, L2: Integer;
 begin
   L1 := Length(W1);
@@ -7446,7 +7452,7 @@ end;
 
 function TranslateString(const S: string; CP1, CP2: Word): string;
 begin
-  Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
+  Result := WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
 end;
 
 //----------------- conversion routines ------------------------------------------------------------
@@ -7460,19 +7466,19 @@ procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardin
 // Target in EDX
 // Count in ECX
 asm
-       JECXZ   @@Finish           // go out if there is nothing to do (ECX = 0)
-       PUSH    ESI
-       MOV     ESI, EAX
-       XOR     EAX, EAX
-@@1:
-       MOV     AL, [ESI]
-       INC     ESI
-       MOV     [EDX], AX
-       ADD     EDX, 2
-       DEC     ECX
-       JNZ     @@1
-       POP     ESI
-@@Finish:
+         JECXZ   @@FINISH           // GO OUT IF THERE IS NOTHING TO DO (ECX = 0)
+         PUSH    ESI
+         MOV     ESI, EAX
+         XOR     EAX, EAX
+         @@1:
+         MOV     AL, [ESI]
+         INC     ESI
+         MOV     [EDX], AX
+         ADD     EDX, 2
+         DEC     ECX
+         JNZ     @@1
+         POP     ESI
+         @@FINISH:
 end;
 
 const
@@ -7483,17 +7489,17 @@ const
 
   OffsetsFromUTF8: array [0..5] of UCS4 =
     ($00000000, $00003080, $000E2080,
-     $03C82080, $FA082080, $82082080);
+    $03C82080, $FA082080, $82082080);
 
   BytesFromUTF8: array [0..255] of Byte =
-   (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5);
+    (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5);
 
   FirstByteMark: array [0..6] of Byte =
     ($00, $00, $C0, $E0, $F0, $F8, $FC);
@@ -7532,7 +7538,7 @@ end;
 function UTF8GetNextChar(const S: AnsiString; var StrPos: Integer): UCS4;
 var
   StrLength: Integer;
-  ChNext: UCS4;
+  ChNext:    UCS4;
 begin
   StrLength := Length(S);
 
@@ -7545,160 +7551,160 @@ begin
         // 1 byte to read
         Inc(StrPos);
       $C0..$DF:
-        begin
+      begin
           // 2 bytes to read
-          if StrPos >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $1F) shl 6) or (ChNext and $3F);
-          Inc(StrPos, 2);
+        if StrPos >= StrLength then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
         end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result and $1F) shl 6) or (ChNext and $3F);
+        Inc(StrPos, 2);
+      end;
       $E0..$EF:
-        begin
+      begin
           // 3 bytes to read
-          if (StrPos + 1) >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $0F) shl 12) or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 3);
+        if (StrPos + 1) >= StrLength then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
         end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result and $0F) shl 12) or ((ChNext and $3F) shl 6);
+        ChNext := UCS4(S[StrPos + 2]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 2, Result);
+          Exit;
+        end;
+        Result := Result or (ChNext and $3F);
+        Inc(StrPos, 3);
+      end;
       $F0..$F7:
-        begin
+      begin
           // 4 bytes to read
-          if (StrPos + 2) >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $07) shl 18) or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 4);
+        if (StrPos + 2) >= StrLength then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
         end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result and $07) shl 18) or ((ChNext and $3F) shl 12);
+        ChNext := UCS4(S[StrPos + 2]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 2, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 6);
+        ChNext := UCS4(S[StrPos + 3]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 3, Result);
+          Exit;
+        end;
+        Result := Result or (ChNext and $3F);
+        Inc(StrPos, 4);
+      end;
       $F8..$FB:
-        begin
+      begin
           // 5 bytes to read
-          if (StrPos + 3) >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $03) shl 24) or ((ChNext and $3F) shl 18);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 4]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 4, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 5);
-        end;
-      $FC..$FD:
+        if (StrPos + 3) >= StrLength then
         begin
-          // 6 bytes to read
-          if (StrPos + 4) >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result and $01) shl 30) or ((ChNext and $3F) shl 24);
-          ChNext := UCS4(S[StrPos + 2]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 2, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 18);
-          ChNext := UCS4(S[StrPos + 3]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 3, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 12);
-          ChNext := UCS4(S[StrPos + 4]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 4, Result);
-            Exit;
-          end;
-          Result := Result or ((ChNext and $3F) shl 6);
-          ChNext := UCS4(S[StrPos + 5]);
-          if (ChNext and $C0) <> $80 then
-          begin
-            FlagInvalidSequence(StrPos, 5, Result);
-            Exit;
-          end;
-          Result := Result or (ChNext and $3F);
-          Inc(StrPos, 6);
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
         end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result and $03) shl 24) or ((ChNext and $3F) shl 18);
+        ChNext := UCS4(S[StrPos + 2]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 2, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 12);
+        ChNext := UCS4(S[StrPos + 3]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 3, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 6);
+        ChNext := UCS4(S[StrPos + 4]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 4, Result);
+          Exit;
+        end;
+        Result := Result or (ChNext and $3F);
+        Inc(StrPos, 5);
+      end;
+      $FC..$FD:
+      begin
+          // 6 bytes to read
+        if (StrPos + 4) >= StrLength then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result and $01) shl 30) or ((ChNext and $3F) shl 24);
+        ChNext := UCS4(S[StrPos + 2]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 2, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 18);
+        ChNext := UCS4(S[StrPos + 3]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 3, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 12);
+        ChNext := UCS4(S[StrPos + 4]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 4, Result);
+          Exit;
+        end;
+        Result := Result or ((ChNext and $3F) shl 6);
+        ChNext := UCS4(S[StrPos + 5]);
+        if (ChNext and $C0) <> $80 then
+        begin
+          FlagInvalidSequence(StrPos, 5, Result);
+          Exit;
+        end;
+        Result := Result or (ChNext and $3F);
+        Inc(StrPos, 6);
+      end;
     else
       FlagInvalidSequence(StrPos, 1, Result);
       Exit;
@@ -7926,7 +7932,7 @@ end;
 function UTF16GetNextChar(const S: WideString; var StrPos: Integer): UCS4;
 var
   StrLength: Integer;
-  ChNext: UCS4;
+  ChNext:    UCS4;
 begin
   StrLength := Length(S);
 
@@ -7936,22 +7942,22 @@ begin
 
     case Result of
       SurrogateHighStart..SurrogateHighEnd:
-        begin
+      begin
           // 2 bytes to read
-          if StrPos >= StrLength then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          ChNext := UCS4(S[StrPos + 1]);
-          if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
-          begin
-            FlagInvalidSequence(StrPos, 1, Result);
-            Exit;
-          end;
-          Result := ((Result - SurrogateHighStart) shl HalfShift) +  (ChNext - SurrogateLowStart) + HalfBase;
-          Inc(StrPos, 2);
+        if StrPos >= StrLength then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
         end;
+        ChNext := UCS4(S[StrPos + 1]);
+        if (ChNext < SurrogateLowStart) or (ChNext > SurrogateLowEnd) then
+        begin
+          FlagInvalidSequence(StrPos, 1, Result);
+          Exit;
+        end;
+        Result := ((Result - SurrogateHighStart) shl HalfShift) + (ChNext - SurrogateLowStart) + HalfBase;
+        Inc(StrPos, 2);
+      end;
       SurrogateLowStart..SurrogateLowEnd:
         FlagInvalidSequence(StrPos, 1, Result);
     else
@@ -7973,7 +7979,7 @@ end;
 function UTF16GetPreviousChar(const S: WideString; var StrPos: Integer): UCS4;
 var
   StrLength: Integer;
-  ChPrev: UCS4;
+  ChPrev:    UCS4;
 begin
   StrLength := Length(S);
 
@@ -7985,22 +7991,22 @@ begin
       SurrogateHighStart..SurrogateHighEnd:
         FlagInvalidSequence(StrPos, -1, Result);
       SurrogateLowStart..SurrogateLowEnd:
-        begin
+      begin
           // 2 bytes to read
-          if StrPos <= 2 then
-          begin
-            FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          ChPrev := UCS4(S[StrPos - 2]);
-          if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
-          begin
-            FlagInvalidSequence(StrPos, -1, Result);
-            Exit;
-          end;
-          Result := ((ChPrev - SurrogateHighStart) shl HalfShift) +  (Result - SurrogateLowStart) + HalfBase;
-          Dec(StrPos, 2);
+        if StrPos <= 2 then
+        begin
+          FlagInvalidSequence(StrPos, -1, Result);
+          Exit;
         end;
+        ChPrev := UCS4(S[StrPos - 2]);
+        if (ChPrev < SurrogateHighStart) or (ChPrev > SurrogateHighEnd) then
+        begin
+          FlagInvalidSequence(StrPos, -1, Result);
+          Exit;
+        end;
+        Result := ((ChPrev - SurrogateHighStart) shl HalfShift) + (Result - SurrogateLowStart) + HalfBase;
+        Dec(StrPos, 2);
+      end;
     else
       // 1 byte to read
       Dec(StrPos);
@@ -8021,7 +8027,7 @@ end;
 function UTF16SkipChars(const S: WideString; var StrPos: Integer; var NbSeq: Integer): Boolean;
 var
   StrLength, Index: Integer;
-  Ch, ChNext: UCS4;
+  Ch, ChNext:       UCS4;
 begin
   Result := True;
   StrLength := Length(S);
@@ -8031,7 +8037,7 @@ begin
     while (Index < NbSeq) and (StrPos > 0) do
     begin
       Ch := UCS4(S[StrPos]);
-  
+
       case Ch of
         SurrogateHighStart..SurrogateHighEnd:
           // 2 bytes to skip
@@ -8495,7 +8501,8 @@ begin
   end;
 end;
 
-function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean; overload;
+function GetUCS4CharAt(const WideStr: WideString; Index: Integer; out Value: UCS4; IsUTF16: Boolean = False): Boolean;
+  overload;
 var
   StrPos: Integer;
 begin

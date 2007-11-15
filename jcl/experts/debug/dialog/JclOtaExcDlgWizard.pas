@@ -55,14 +55,14 @@ implementation
 {$R *.dfm}
 
 uses
-  JclOtaResources, 
+  JclOtaResources,
   JclOtaExcDlgFileFrame, JclOtaExcDlgFormFrame,
   JclOtaExcDlgSystemFrame, JclOtaExcDlgTraceFrame, JclOtaExcDlgIgnoreFrame;
 
 function ExcDlgWizard(var AParams: TJclOtaExcDlgParams): Boolean;
 var
   OwnsParams: Boolean;
-  AForm: TJclOtaExcDlgForm;
+  AForm:      TJclOtaExcDlgForm;
 begin
   Result := False;
   OwnsParams := False;

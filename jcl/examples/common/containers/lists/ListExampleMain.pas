@@ -133,7 +133,7 @@ var
   MyArray: IJclIntfArray;
   MyObject: IIntfMyObject;
   It: IJclIntfIterator;
-  I: Integer;
+  I:  Integer;
 begin
   memResult.Lines.Clear;
   List := TJclIntfArrayList.Create(DefaultContainerCapacity);
@@ -202,8 +202,8 @@ procedure TMainForm.btnIntfVectorClick(Sender: TObject);
 var
   List: IJclIntfList;
   MyObject: IIntfMyObject;
-  It: IJclIntfIterator;
-  I: Integer;
+  It:   IJclIntfIterator;
+  I:    Integer;
 begin
   memResult.Lines.Clear;
   List := TJclIntfVector.Create(DefaultContainerCapacity);
@@ -241,7 +241,7 @@ procedure TMainForm.btnArrayListClick(Sender: TObject);
 var
   List: IJclList;
   MyObject: TMyObject;
-  It: IJclIterator;
+  It:   IJclIterator;
 begin
   memResult.Lines.Clear;
   List := TJclArrayList.Create(DefaultContainerCapacity, True);
@@ -275,7 +275,7 @@ procedure TMainForm.btnLinkedListClick(Sender: TObject);
 var
   List: IJclList;
   MyObject: TMyObject;
-  It: IJclIterator;
+  It:   IJclIterator;
 begin
   memResult.Lines.Clear;
   List := TJclLinkedList.Create(nil, True);
@@ -303,8 +303,8 @@ procedure TMainForm.btnVectorClick(Sender: TObject);
 var
   List: IJclList;
   MyObject: TMyObject;
-  It: IJclIterator;
-  I: Integer;
+  It:   IJclIterator;
+  I:    Integer;
 begin
   memResult.Lines.Clear;
   List := TJclVector.Create(DefaultContainerCapacity, True);
@@ -360,8 +360,8 @@ var
   List, Sub: IJclAnsiStrList;
   MyArray: IJclAnsiStrArray;
   It: IJclAnsiStrIterator;
-  I: Integer;
-  S: string;
+  I:  Integer;
+  S:  string;
 begin
   memResult.Lines.Clear;
   List := TJclAnsiStrArrayList.Create(DefaultContainerCapacity);
@@ -394,8 +394,8 @@ var
   List, Sub: IJclWideStrList;
   MyArray: IJclWideStrArray;
   It: IJclWideStrIterator;
-  I: Integer;
-  S: string;
+  I:  Integer;
+  S:  string;
 begin
   memResult.Lines.Clear;
   List := TJclWideStrArrayList.Create(DefaultContainerCapacity);
@@ -504,9 +504,9 @@ end;
 procedure TMainForm.btnAnsiStrVectorClick(Sender: TObject);
 var
   List: IJclAnsiStrList;
-  S: string;
-  It: IJclAnsiStrIterator;
-  I: Integer;
+  S:    string;
+  It:   IJclAnsiStrIterator;
+  I:    Integer;
 begin
   memResult.Lines.Clear;
   List := TJclAnsiStrVector.Create(DefaultContainerCapacity);
@@ -539,9 +539,9 @@ end;
 procedure TMainForm.btnWideStrVectorClick(Sender: TObject);
 var
   List: IJclWideStrList;
-  S: string;
-  It: IJclWideStrIterator;
-  I: Integer;
+  S:    string;
+  It:   IJclWideStrIterator;
+  I:    Integer;
 begin
   memResult.Lines.Clear;
   List := TJclWideStrVector.Create(DefaultContainerCapacity);
@@ -572,4 +572,3 @@ begin
 end;
 
 end.
-

@@ -120,7 +120,8 @@ type
   end;
 
   TJclAnsiStrBinaryTree = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer, IJclAnsiStrComparer,
     IJclAnsiStrCollection, IJclAnsiStrTree)
   private
     FMaxDepth: Integer;
@@ -177,7 +178,8 @@ type
   end;
 
   TJclWideStrBinaryTree = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer, IJclWideStrComparer,
     IJclWideStrCollection, IJclWideStrTree)
   private
     FMaxDepth: Integer;
@@ -241,7 +243,8 @@ type
   end;
 
   TJclSingleBinaryTree = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer, IJclSingleComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclSingleContainer,
+    IJclSingleEqualityComparer, IJclSingleComparer,
     IJclSingleCollection, IJclSingleTree)
   private
     FMaxDepth: Integer;
@@ -298,7 +301,8 @@ type
   end;
 
   TJclDoubleBinaryTree = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer, IJclDoubleComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclDoubleContainer,
+    IJclDoubleEqualityComparer, IJclDoubleComparer,
     IJclDoubleCollection, IJclDoubleTree)
   private
     FMaxDepth: Integer;
@@ -355,7 +359,8 @@ type
   end;
 
   TJclExtendedBinaryTree = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer, IJclExtendedComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclExtendedContainer,
+    IJclExtendedEqualityComparer, IJclExtendedComparer,
     IJclExtendedCollection, IJclExtendedTree)
   private
     FMaxDepth: Integer;
@@ -886,13 +891,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -906,10 +911,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -923,10 +928,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -965,16 +970,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -994,16 +999,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1025,17 +1030,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1101,7 +1106,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -1313,13 +1318,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1333,10 +1338,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1350,10 +1355,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1392,16 +1397,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1421,16 +1426,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1452,17 +1457,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1528,7 +1533,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -1740,13 +1745,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1760,10 +1765,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1777,10 +1782,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1819,16 +1824,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1848,16 +1853,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := '';
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := '';
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1879,17 +1884,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1955,7 +1960,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -2167,13 +2172,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2187,10 +2192,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2204,10 +2209,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2246,16 +2251,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2275,16 +2280,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2306,17 +2311,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2382,7 +2387,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -2594,13 +2599,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2614,10 +2619,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2631,10 +2636,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2673,16 +2678,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2702,16 +2707,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2733,17 +2738,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2809,7 +2814,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -3021,13 +3026,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3041,10 +3046,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3058,10 +3063,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3100,16 +3105,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3129,16 +3134,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0.0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0.0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3160,17 +3165,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3236,7 +3241,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -3448,13 +3453,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3468,10 +3473,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3485,10 +3490,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3527,16 +3532,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3556,16 +3561,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3587,17 +3592,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3663,7 +3668,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -3875,13 +3880,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3895,10 +3900,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3912,10 +3917,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3954,16 +3959,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3983,16 +3988,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4014,17 +4019,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4090,7 +4095,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -4302,13 +4307,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4322,10 +4327,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4339,10 +4344,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4381,16 +4386,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4410,16 +4415,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := 0;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := 0;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4441,17 +4446,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4517,7 +4522,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -4730,13 +4735,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4750,10 +4755,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4767,10 +4772,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4809,16 +4814,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4838,16 +4843,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4869,17 +4874,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4945,7 +4950,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -5158,13 +5163,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  CheckValid;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5178,10 +5183,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetNextCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetNextCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5195,10 +5200,10 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      Result := GetPreviousCursor <> nil
-    else
-      Result := FCursor <> nil;
+  if Valid then
+    Result := GetPreviousCursor <> nil
+  else
+    Result := FCursor <> nil;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5237,16 +5242,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetNextCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetNextCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5266,16 +5271,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    if Valid then
-      FCursor := GetPreviousCursor
-    else
-      Valid := True;
-    Result := nil;
-    if FCursor <> nil then
-      Result := FCursor.Value
-    else
-    if not FOwnList.ReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  if Valid then
+    FCursor := GetPreviousCursor
+  else
+    Valid := True;
+  Result := nil;
+  if FCursor <> nil then
+    Result := FCursor.Value
+  else
+  if not FOwnList.ReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5297,17 +5302,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    CheckValid;
-    Valid := False;
-    OldCursor := FCursor;
-    if OldCursor <> nil then
-    begin
-      repeat
-        FCursor := GetNextCursor;
-      until (FCursor = nil) or FOwnList.RemoveSingleElement
-        or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
-      FOwnList.Remove(OldCursor.Value);
-    end;
+  CheckValid;
+  Valid := False;
+  OldCursor := FCursor;
+  if OldCursor <> nil then
+  begin
+    repeat
+      FCursor := GetNextCursor;
+    until (FCursor = nil) or FOwnList.RemoveSingleElement
+      or (not FEqualityComparer.ItemsEqual(OldCursor.Value, FCursor.Value));
+    FOwnList.Remove(OldCursor.Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5373,7 +5378,7 @@ begin
     Exit;
   LastRet := Result;
   Result := Result.Parent;
-  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil)  then
+  if (Result <> nil) and (Result.Left <> LastRet) and (Result.Left <> nil) then
     // come from Right
   begin
     Result := Result.Left;
@@ -5978,49 +5983,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AInterface, nil) then
+  if FAllowDefaultElements or not ItemsEqual(AInterface, nil) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AInterface, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclIntfBinaryNode.Create;
-        NewNode.Value := AInterface;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AInterface, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclIntfBinaryNode.Create;
+      NewNode.Value := AInterface;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6036,13 +6041,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6112,51 +6117,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeObject(Current.Value);
-      Current.Free;
+    FreeObject(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6173,22 +6178,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AInterface);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AInterface);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6204,12 +6209,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6231,20 +6236,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6260,32 +6265,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderIntfItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderIntfItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderIntfItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderIntfItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderIntfItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderIntfItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6334,32 +6339,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderIntfItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderIntfItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderIntfItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderIntfItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderIntfItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderIntfItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6391,7 +6396,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclIntfBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -6452,120 +6457,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AInterface in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AInterface, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AInterface, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeObject(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeObject(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6581,13 +6586,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6603,14 +6608,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6661,49 +6666,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AString, '') then
+  if FAllowDefaultElements or not ItemsEqual(AString, '') then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclAnsiStrBinaryNode.Create;
-        NewNode.Value := AString;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AString, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclAnsiStrBinaryNode.Create;
+      NewNode.Value := AString;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6719,13 +6724,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6795,51 +6800,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeString(Current.Value);
-      Current.Free;
+    FreeString(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6856,22 +6861,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AString);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AString);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6887,12 +6892,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6914,20 +6919,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6943,32 +6948,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderAnsiStrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderAnsiStrItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7017,32 +7022,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderAnsiStrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderAnsiStrItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7074,7 +7079,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclAnsiStrBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -7135,120 +7140,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AString in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AString, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeString(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeString(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7264,13 +7269,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7286,14 +7291,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7344,49 +7349,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AString, '') then
+  if FAllowDefaultElements or not ItemsEqual(AString, '') then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclWideStrBinaryNode.Create;
-        NewNode.Value := AString;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AString, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclWideStrBinaryNode.Create;
+      NewNode.Value := AString;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7402,13 +7407,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7478,51 +7483,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeString(Current.Value);
-      Current.Free;
+    FreeString(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7539,22 +7544,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AString);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AString);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7570,12 +7575,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7597,20 +7602,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7626,32 +7631,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderWideStrItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderWideStrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderWideStrItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderWideStrItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderWideStrItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderWideStrItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7700,32 +7705,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderWideStrItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderWideStrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderWideStrItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderWideStrItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderWideStrItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderWideStrItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7757,7 +7762,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclWideStrBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -7818,120 +7823,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AString in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AString, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AString, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeString(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeString(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7947,13 +7952,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7969,14 +7974,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8027,49 +8032,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclSingleBinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclSingleBinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8085,13 +8090,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8161,51 +8166,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeSingle(Current.Value);
-      Current.Free;
+    FreeSingle(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8222,22 +8227,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8253,12 +8258,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8280,20 +8285,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8309,32 +8314,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderSingleItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderSingleItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderSingleItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderSingleItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderSingleItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderSingleItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8383,32 +8388,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderSingleItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderSingleItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderSingleItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderSingleItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderSingleItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderSingleItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8440,7 +8445,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclSingleBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -8501,120 +8506,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeSingle(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeSingle(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8630,13 +8635,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8652,14 +8657,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8710,49 +8715,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclDoubleBinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclDoubleBinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8768,13 +8773,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8844,51 +8849,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeDouble(Current.Value);
-      Current.Free;
+    FreeDouble(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8905,22 +8910,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8936,12 +8941,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8963,20 +8968,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8992,32 +8997,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderDoubleItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderDoubleItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderDoubleItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderDoubleItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderDoubleItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderDoubleItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9066,32 +9071,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderDoubleItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderDoubleItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderDoubleItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderDoubleItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderDoubleItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderDoubleItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9123,7 +9128,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclDoubleBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -9184,120 +9189,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeDouble(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeDouble(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9313,13 +9318,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9335,14 +9340,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9393,49 +9398,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0.0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclExtendedBinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclExtendedBinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9451,13 +9456,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9527,51 +9532,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeExtended(Current.Value);
-      Current.Free;
+    FreeExtended(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9588,22 +9593,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9619,12 +9624,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9646,20 +9651,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9675,32 +9680,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderExtendedItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderExtendedItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderExtendedItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderExtendedItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderExtendedItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderExtendedItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9749,32 +9754,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderExtendedItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderExtendedItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderExtendedItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderExtendedItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderExtendedItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderExtendedItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9806,7 +9811,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclExtendedBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -9867,120 +9872,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeExtended(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeExtended(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9996,13 +10001,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10018,14 +10023,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10076,49 +10081,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclIntegerBinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclIntegerBinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10134,13 +10139,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10210,51 +10215,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeInteger(Current.Value);
-      Current.Free;
+    FreeInteger(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10271,22 +10276,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10302,12 +10307,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10329,20 +10334,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10358,32 +10363,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderIntegerItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderIntegerItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderIntegerItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderIntegerItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderIntegerItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderIntegerItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10432,32 +10437,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderIntegerItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderIntegerItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderIntegerItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderIntegerItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderIntegerItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderIntegerItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10489,7 +10494,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclIntegerBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -10550,120 +10555,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeInteger(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeInteger(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10679,13 +10684,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10701,14 +10706,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10759,49 +10764,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclCardinalBinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclCardinalBinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10817,13 +10822,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10893,51 +10898,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeCardinal(Current.Value);
-      Current.Free;
+    FreeCardinal(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10954,22 +10959,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10985,12 +10990,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11012,20 +11017,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11041,32 +11046,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderCardinalItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderCardinalItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderCardinalItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderCardinalItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderCardinalItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderCardinalItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11115,32 +11120,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderCardinalItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderCardinalItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderCardinalItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderCardinalItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderCardinalItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderCardinalItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11172,7 +11177,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclCardinalBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -11233,120 +11238,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeCardinal(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeCardinal(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11362,13 +11367,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11384,14 +11389,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11442,49 +11447,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  if FAllowDefaultElements or not ItemsEqual(AValue, 0) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclInt64BinaryNode.Create;
-        NewNode.Value := AValue;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclInt64BinaryNode.Create;
+      NewNode.Value := AValue;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11500,13 +11505,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11576,51 +11581,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeInt64(Current.Value);
-      Current.Free;
+    FreeInt64(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11637,22 +11642,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AValue);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AValue);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11668,12 +11673,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11695,20 +11700,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11724,32 +11729,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderInt64Itr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderInt64Itr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderInt64Itr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderInt64Itr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderInt64Itr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderInt64Itr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11798,32 +11803,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderInt64Itr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderInt64Itr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderInt64Itr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderInt64Itr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderInt64Itr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderInt64Itr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11855,7 +11860,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclInt64BinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -11916,120 +11921,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AValue in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AValue, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AValue, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeInt64(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeInt64(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12045,13 +12050,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12067,14 +12072,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12126,49 +12131,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(APtr, nil) then
+  if FAllowDefaultElements or not ItemsEqual(APtr, nil) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(APtr, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclPtrBinaryNode.Create;
-        NewNode.Value := APtr;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(APtr, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclPtrBinaryNode.Create;
+      NewNode.Value := APtr;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12184,13 +12189,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12260,51 +12265,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreePointer(Current.Value);
-      Current.Free;
+    FreePointer(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12321,22 +12326,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, APtr);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, APtr);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12352,12 +12357,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12379,20 +12384,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12408,32 +12413,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderPtrItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderPtrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderPtrItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderPtrItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderPtrItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderPtrItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12482,32 +12487,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderPtrItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderPtrItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderPtrItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderPtrItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderPtrItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderPtrItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12539,7 +12544,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclPtrBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -12600,120 +12605,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate APtr in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(APtr, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(APtr, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreePointer(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreePointer(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12729,13 +12734,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12751,14 +12756,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12810,49 +12815,49 @@ begin
   try
   {$ENDIF THREADSAFE}
     // Insert into right place
-    if FAllowDefaultElements or not ItemsEqual(AObject, nil) then
+  if FAllowDefaultElements or not ItemsEqual(AObject, nil) then
+  begin
+    Save := nil;
+    Current := FRoot;
+    Comp := 1;
+    Depth := 0;
+    while Current <> nil do
     begin
-      Save := nil;
-      Current := FRoot;
-      Comp := 1;
-      Depth := 0;
-      while Current <> nil do
-      begin
-        Inc(Depth);
-        Save := Current;
-        Comp := ItemsCompare(AObject, Current.Value);
-        if Comp < 0 then
-          Current := Current.Left
-        else
-        if Comp > 0 then
-          Current := Current.Right
-        else
-          Break;
-      end;
-      if (Comp <> 0) or CheckDuplicate then
-      begin
-        NewNode := TJclBinaryNode.Create;
-        NewNode.Value := AObject;
-        NewNode.Parent := Save;
-        if Save = nil then
-          FRoot := NewNode
-        else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
-          Save.Left := NewNode
-        else
-          Save.Right := NewNode;
-        Inc(FSize);
-        Inc(Depth);
-        if Depth > FMaxDepth then
-          FMaxDepth := Depth;
-        Result := True;
-        AutoPack;
-      end
+      Inc(Depth);
+      Save := Current;
+      Comp := ItemsCompare(AObject, Current.Value);
+      if Comp < 0 then
+        Current := Current.Left
       else
-        Result := False;
+      if Comp > 0 then
+        Current := Current.Right
+      else
+        Break;
+    end;
+    if (Comp <> 0) or CheckDuplicate then
+    begin
+      NewNode := TJclBinaryNode.Create;
+      NewNode.Value := AObject;
+      NewNode.Parent := Save;
+      if Save = nil then
+        FRoot := NewNode
+      else
+      if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        Save.Left := NewNode
+      else
+        Save.Right := NewNode;
+      Inc(FSize);
+      Inc(Depth);
+      if Depth > FMaxDepth then
+        FMaxDepth := Depth;
+      Result := True;
+      AutoPack;
     end
     else
       Result := False;
+  end
+  else
+    Result := False;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12868,13 +12873,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Add(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Add(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12944,51 +12949,51 @@ begin
   try
   {$ENDIF THREADSAFE}
     // postorder
-    Current := FRoot;
-    if Current = nil then
-      Exit;
+  Current := FRoot;
+  if Current = nil then
+    Exit;
     // find first in post-order
-    while (Current.Left <> nil) or (Current.Right <> nil) do
-    begin
-      if Current.Left <> nil then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+  while (Current.Left <> nil) or (Current.Right <> nil) do
+  begin
+    if Current.Left <> nil then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
     // for all items in the tree in post-order
-    repeat
-      Parent := Current.Parent;
+  repeat
+    Parent := Current.Parent;
       // remove reference
-      if Parent <> nil then
-      begin
-        if Parent.Left = Current then
-          Parent.Left := nil
-        else
-        if Parent.Right = Current then
-          Parent.Right := nil;
-      end;
+    if Parent <> nil then
+    begin
+      if Parent.Left = Current then
+        Parent.Left := nil
+      else
+      if Parent.Right = Current then
+        Parent.Right := nil;
+    end;
 
       // free item
-      FreeObject(Current.Value);
-      Current.Free;
+    FreeObject(Current.Value);
+    Current.Free;
 
       // find next item
-      Current := Parent;
-      if (Current <> nil) and (Current.Right <> nil) then
+    Current := Parent;
+    if (Current <> nil) and (Current.Right <> nil) then
+    begin
+      Current := Current.Right;
+      while (Current.Left <> nil) or (Current.Right <> nil) do
       begin
-        Current := Current.Right;
-        while (Current.Left <> nil) or (Current.Right <> nil) do
-        begin
-          if Current.Left <> nil then
-            Current := Current.Left
-          else
-            Current := Current.Right;
-        end;
+        if Current.Left <> nil then
+          Current := Current.Left
+        else
+          Current := Current.Right;
       end;
-    until Current = nil;
-    FRoot := nil;
-    FSize := 0;
-    FMaxDepth := 0;
+    end;
+  until Current = nil;
+  FRoot := nil;
+  FSize := 0;
+  FMaxDepth := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13005,22 +13010,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Current := FRoot;
-    while Current <> nil do
+  Result := False;
+  Current := FRoot;
+  while Current <> nil do
+  begin
+    Comp := ItemsCompare(Current.Value, AObject);
+    if Comp = 0 then
     begin
-      Comp := ItemsCompare(Current.Value, AObject);
-      if Comp = 0 then
-      begin
-        Result := True;
-        Break;
-      end
-      else
-      if Comp > 0 then
-        Current := Current.Left
-      else
-        Current := Current.Right;
-    end;
+      Result := True;
+      Break;
+    end
+    else
+    if Comp > 0 then
+      Current := Current.Left
+    else
+      Current := Current.Right;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13036,12 +13041,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := True;
-    if ACollection = nil then
-      Exit;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := True;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13063,20 +13068,20 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    ItSelf := First;
-    while ItSelf.HasNext do
-      if not ItemsEqual(ItSelf.Next, It.Next) then
-      begin
-        Result := False;
-        Break;
-      end;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  ItSelf := First;
+  while ItSelf.HasNext do
+    if not ItemsEqual(ItSelf.Next, It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13092,32 +13097,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case GetTraverseOrder of
-      toPreOrder:
-        Result := TPreOrderItr.Create(Self, Start, False);
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Left <> nil do
-              Start := Start.Left;
-          Result := TInOrderItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Left <> nil then
-              Start := Start.Left
-            else
-              Start := Start.Right;
-          end;
-          Result := TPostOrderItr.Create(Self, Start, False);
-        end;
-    else
-      Result := nil;
+  Start := FRoot;
+  case GetTraverseOrder of
+    toPreOrder:
+      Result := TPreOrderItr.Create(Self, Start, False);
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Left <> nil do
+          Start := Start.Left;
+      Result := TInOrderItr.Create(Self, Start, False);
     end;
+    toPostOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
+        begin
+          if Start.Left <> nil then
+            Start := Start.Left
+          else
+            Start := Start.Right;
+        end;
+      Result := TPostOrderItr.Create(Self, Start, False);
+    end;
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13166,32 +13171,32 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Start := FRoot;
-    case FTraverseOrder of
-      toPreOrder:
+  Start := FRoot;
+  case FTraverseOrder of
+    toPreOrder:
+    begin
+      if Start <> nil then
+        while (Start.Left <> nil) or (Start.Right <> nil) do
         begin
-          if Start <> nil then
-            while (Start.Left <> nil) or (Start.Right <> nil) do
-          begin
-            if Start.Right <> nil then
-              Start := Start.Right
-            else
-              Start := Start.Left;
-          end;
-          Result := TPreOrderItr.Create(Self, Start, False);
+          if Start.Right <> nil then
+            Start := Start.Right
+          else
+            Start := Start.Left;
         end;
-      toOrder:
-        begin
-          if Start <> nil then
-            while Start.Right <> nil do
-              Start := Start.Right;
-          Result := TInOrderItr.Create(Self, Start, False);
-        end;
-      toPostOrder:
-        Result := TPostOrderItr.Create(Self, Start, False);
-    else
-      Result := nil;
+      Result := TPreOrderItr.Create(Self, Start, False);
     end;
+    toOrder:
+    begin
+      if Start <> nil then
+        while Start.Right <> nil do
+          Start := Start.Right;
+      Result := TInOrderItr.Create(Self, Start, False);
+    end;
+    toPostOrder:
+      Result := TPostOrderItr.Create(Self, Start, False);
+  else
+    Result := nil;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13223,7 +13228,7 @@ type
 var
   LeafArray: TLeafArray;
   ANode, BNode: TJclBinaryNode;
-  Index: Integer;
+  Index:     Integer;
 begin
   SetLength(Leafarray, FSize);
   try
@@ -13284,120 +13289,120 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
+  Result := False;
     // locate AObject in the tree
-    Current := FRoot;
-    repeat
-      while Current <> nil do
-      begin
-        Comp := ItemsCompare(AObject, Current.Value);
-        if Comp = 0 then
-          Break
-        else
-        if Comp < 0 then
-         Current := Current.Left
-        else
-          Current := Current.Right;
-      end;
-      if Current = nil then
-        Break;
-      Result := True;
+  Current := FRoot;
+  repeat
+    while Current <> nil do
+    begin
+      Comp := ItemsCompare(AObject, Current.Value);
+      if Comp = 0 then
+        Break
+      else
+      if Comp < 0 then
+        Current := Current.Left
+      else
+        Current := Current.Right;
+    end;
+    if Current = nil then
+      Break;
+    Result := True;
       // Remove Current from tree
-      if (Current.Left = nil) and (Current.Right <> nil) then
-      begin
+    if (Current.Left = nil) and (Current.Right <> nil) then
+    begin
         // remove references to Current
-        Current.Right.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Right
-          else
-            Current.Parent.Right := Current.Right;
-        end
+      Current.Right.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Right
         else
-          // fix root
-          FRoot := Current.Right;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+          Current.Parent.Right := Current.Right;
       end
       else
-      if (Current.Left <> nil) and (Current.Right = nil) then
-      begin
-        // remove references to Current
-        Current.Left.Parent := Current.Parent;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Current.Left
-          else
-            Current.Parent.Right := Current.Left;
-        end
-        else
           // fix root
-          FRoot := Current.Left;
-        Successor := Current.Parent;
-        if Successor = nil then
-          Successor := FRoot;
+        FRoot := Current.Right;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right = nil) then
+    begin
+        // remove references to Current
+      Current.Left.Parent := Current.Parent;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Current.Left
+        else
+          Current.Parent.Right := Current.Left;
       end
       else
-      if (Current.Left <> nil) and (Current.Right <> nil) then
-      begin
+          // fix root
+        FRoot := Current.Left;
+      Successor := Current.Parent;
+      if Successor = nil then
+        Successor := FRoot;
+    end
+    else
+    if (Current.Left <> nil) and (Current.Right <> nil) then
+    begin
         // find the successor in tree
-        Successor := Current.Right;
-        while Successor.Left <> nil do
-          Successor := Successor.Left;
+      Successor := Current.Right;
+      while Successor.Left <> nil do
+        Successor := Successor.Left;
 
-        if Successor <> Current.Right then
-        begin
+      if Successor <> Current.Right then
+      begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
-          if Successor.Right <> nil then
-            Successor.Right.Parent := Successor.Parent;
-          Successor.Right := Current.Right;
-        end;
+        if Successor.Parent.Left = Successor then
+          Successor.Parent.Left := Successor.Right
+        else
+          Successor.Parent.Right := Successor.Right;
+        if Successor.Right <> nil then
+          Successor.Right.Parent := Successor.Parent;
+        Successor.Right := Current.Right;
+      end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
-        Successor.Left := Current.Left;
-        if Current.Parent <> nil then
-        begin
-          if Current.Parent.Left = Current then
-            Current.Parent.Left := Successor
-          else
-            Current.Parent.Right := Successor;
-        end
+      Successor.Parent := Current.Parent;
+      Successor.Left := Current.Left;
+      if Current.Parent <> nil then
+      begin
+        if Current.Parent.Left = Current then
+          Current.Parent.Left := Successor
         else
-          // fix root
-          FRoot := Successor;
-        Successor := Current.Parent;
-        if Successor <> nil then
-          Successor := FRoot;
+          Current.Parent.Right := Successor;
       end
       else
-      begin
+          // fix root
+        FRoot := Successor;
+      Successor := Current.Parent;
+      if Successor <> nil then
+        Successor := FRoot;
+    end
+    else
+    begin
         // (Current.Left = nil) and (Current.Right = nil)
-        Successor := Current.Parent;
-        if Successor <> nil then
-        begin
+      Successor := Current.Parent;
+      if Successor <> nil then
+      begin
           // remove references from parent
-          if Successor.Left = Current then
-            Successor.Left := nil
-          else
-            Successor.Right := nil;
-        end
+        if Successor.Left = Current then
+          Successor.Left := nil
         else
-          FRoot := nil;
-      end;
-      FreeObject(Current.Value);
-      Current.Free;
-      Dec(FSize);
-      Current := Successor;
-    until FRemoveSingleElement or (Current = nil);
-    AutoPack;
+          Successor.Right := nil;
+      end
+      else
+        FRoot := nil;
+    end;
+    FreeObject(Current.Value);
+    Current.Free;
+    Dec(FSize);
+    Current := Successor;
+  until FRemoveSingleElement or (Current = nil);
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13413,13 +13418,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13435,14 +13440,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := First;
-    while It.HasNext do
-      if not ACollection.Contains(It.Next) then
-        It.Remove;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := First;
+  while It.HasNext do
+    if not ACollection.Contains(It.Next) then
+      It.Remove;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14226,4 +14231,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

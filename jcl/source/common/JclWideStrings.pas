@@ -76,10 +76,10 @@ const
 
 type
   TWideFileOptionsType =
-   (
+    (
     foAnsiFile,  // loads/writes an ANSI file
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
-   );
+    );
   TWideFileOptions = set of TWideFileOptionsType;
 
   TSearchFlag = (
@@ -88,7 +88,7 @@ type
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
-  );
+    );
   TSearchFlags = set of TSearchFlag;
 
   TWStrings = class;
@@ -427,7 +427,7 @@ end;
 function StrCompW(const Str1, Str2: PWideChar): Integer;
 var
   NullWide: WideChar;
-  SA, SB: PWideChar;
+  SA, SB:   PWideChar;
 begin
   Result := 0;
   if Str1 = Str2 then // "equal" and "nil" case
@@ -453,7 +453,7 @@ end;
 function StrLCompW(const Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 var
   NullWide: WideChar;
-  SA, SB: PWideChar;
+  SA, SB:   PWideChar;
 begin
   Result := 0;
   if Str1 = Str2 then // "equal" and "nil" case
@@ -659,21 +659,21 @@ end;
 
 procedure StrSwapByteOrder(Str: PWideChar);
 asm
-       PUSH    ESI
-       PUSH    EDI
-       MOV     ESI, EAX
-       MOV     EDI, ESI
-       XOR     EAX, EAX // clear high order byte to be able to use 32bit operand below
-@@1:
-       LODSW
-       OR      EAX, EAX
-       JZ      @@2
-       XCHG    AL, AH
-       STOSW
-       JMP     @@1
-@@2:
-       POP     EDI
-       POP     ESI
+         PUSH    ESI
+         PUSH    EDI
+         MOV     ESI, EAX
+         MOV     EDI, ESI
+         XOR     EAX, EAX // CLEAR HIGH ORDER BYTE TO BE ABLE TO USE 32BIT OPERAND BELOW
+         @@1:
+         LODSW
+         OR      EAX, EAX
+         JZ      @@2
+         XCHG    AL, AH
+         STOSW
+         JMP     @@1
+         @@2:
+         POP     EDI
+         POP     ESI
 end;
 
 function StrNScanW(const Str1, Str2: PWideChar): Integer;
@@ -730,17 +730,17 @@ end;
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
-       TEST    EAX, EAX
-       JZ      @@Exit        // get out if the string is nil or StrLen is 0
-       JCXZ    @@Exit
-@@Loop:
-       CMP     [EAX], DX     // this unrolled loop is actually faster on modern processors
-       JE      @@Exit        // than REP SCASW
-       ADD     EAX, 2
-       DEC     ECX
-       JNZ     @@Loop
-       XOR     EAX, EAX
-@@Exit:
+         TEST    EAX, EAX
+         JZ      @@EXIT        // GET OUT IF THE STRING IS NIL OR STRLEN IS 0
+         JCXZ    @@EXIT
+         @@LOOP:
+         CMP     [EAX], DX     // THIS UNROLLED LOOP IS ACTUALLY FASTER ON MODERN PROCESSORS
+         JE      @@EXIT        // THAN REP SCASW
+         ADD     EAX, 2
+         DEC     ECX
+         JNZ     @@LOOP
+         XOR     EAX, EAX
+         @@EXIT:
 end;
 
 function StrBufSizeW(const Str: PWideChar): Cardinal;
@@ -767,21 +767,21 @@ begin
 end;
 
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
-// copies characters from a Pascal-style string into a null-terminated wide string
+// COPIES CHARACTERS FROM A PASCAL-STYLE STRING INTO A NULL-TERMINATED WIDE STRING
 asm
-       PUSH EDI
-       PUSH ESI
-       MOV EDI, EAX
-       MOV ESI, EDX
-       MOV EDX, EAX
-       XOR AX, AX
-@@1:   LODSB
-       STOSW
-       DEC ECX
-       JNZ @@1
-       MOV EAX, EDX
-       POP ESI
-       POP EDI
+         PUSH    EDI
+         PUSH    ESI
+         MOV     EDI, EAX
+         MOV     ESI, EDX
+         MOV     EDX, EAX
+         XOR     AX, AX
+         @@1:   LODSB
+         STOSW
+         DEC     ECX
+         JNZ     @@1
+         MOV     EAX, EDX
+         POP     ESI
+         POP     EDI
 end;
 
 //=== WideString functions ===================================================
@@ -964,7 +964,7 @@ end;
 procedure WideReverseInPlace(var S: WideString);
 var
   P1, P2: PWideChar;
-  C: WideChar;
+  C:      WideChar;
 begin
   // WideString are ref counted starting from COMPILER6_UP (Linux only)
   {$IFDEF COMPILER6_UP}
@@ -1237,7 +1237,7 @@ procedure TWStrings.DefineProperties(Filer: TFiler);
     begin
       Result := True;
       if Filer.Ancestor is TWStrings then
-        Result := not Equals(TWStrings(Filer.Ancestor))
+        Result := not Equals(TWStrings(Filer.Ancestor));
     end
     else
       Result := Count > 0;
@@ -1492,7 +1492,7 @@ procedure TWStrings.LoadFromStream(Stream: TStream;
 var
   AnsiS: AnsiString;
   WideS: WideString;
-  WC: WideChar;
+  WC:    WideChar;
 begin
   BeginUpdate;
   try
@@ -1577,7 +1577,7 @@ procedure TWStrings.SaveToStream(Stream: TStream; WideFileOptions: TWideFileOpti
 var
   AnsiS: AnsiString;
   WideS: WideString;
-  WC: WideChar;
+  WC:    WideChar;
 begin
   if foAnsiFile in WideFileOptions then
   begin
@@ -1614,7 +1614,7 @@ procedure TWStrings.SetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar;
   const Value: WideString);
 var
   P, P1: PWideChar;
-  S: WideString;
+  S:     WideString;
 
   procedure IgnoreWhiteSpace(var P: PWideChar);
   begin
@@ -1750,7 +1750,7 @@ var
 begin
   Writer.WriteListBegin;
   for I := 0 to Count - 1 do
-     Writer.WriteWideString(GetP(I)^);
+    Writer.WriteWideString(GetP(I)^);
   Writer.WriteListEnd;
 end;
 

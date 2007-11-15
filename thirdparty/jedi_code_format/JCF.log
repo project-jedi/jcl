@@ -1,0 +1,1601 @@
+Processing directory P:\Delphi\JCL-format\jcl\
+Processing directory P:\Delphi\JCL-format\jcl\bin\
+Processing directory P:\Delphi\JCL-format\jcl\devtools\
+Processing directory P:\Delphi\JCL-format\jcl\docs\
+Processing directory P:\Delphi\JCL-format\jcl\docs\cps_files\
+Processing directory P:\Delphi\JCL-format\jcl\docs\styles\
+Processing directory P:\Delphi\JCL-format\jcl\examples\
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\algorithms\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\algorithms\AlgorithmsExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnApplyGenerateClick near line 76 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 90 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnApplyClick near line 100 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnFindGenerateClick near line 113 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnFindClick near line 127 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnCountGenerateClick near line 140 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnCountClick near line 155 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnCopyGenerateClick near line 165 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnCopyClick near line 180 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnReverseGenerateClick near line 194 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnReverseClick near line 208 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnSortGenerateClick near line 219 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnSortClick near line 234 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\hashing\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\hashing\HashingExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfIntfHashMapClick near line 117 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrIntfHashMapClick near line 139 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrIntfHashMapClick near line 158 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnHashMapClick near line 177 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfHashSetClick near line 203 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnHashSetClick near line 222 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfArraySetClick near line 241 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnArraySetClick near line 260 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrAnsiStrHashMapClick near line 283 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrWideStrHashMapClick near line 303 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrHashMapClick near line 323 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrHashMapClick near line 347 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrHashSetClick near line 371 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrHashSetClick near line 386 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrArraySetClick near line 401 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrArraySetClick near line 421 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\lists\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\lists\ListExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfArrayListClick near line 130 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfLinkedListClick near line 171 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfVectorClick near line 201 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnArrayListClick near line 240 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnLinkedListClick near line 274 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnVectorClick near line 302 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnMyObjectListClick near line 343 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrArrayListClick near line 358 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrArrayListClick near line 392 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrLinkedListClick near line 458 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrLinkedListClick near line 481 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrVectorClick near line 504 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrVectorClick near line 539 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\lists\MyObjectList.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\performance\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\performance\ContainerPerformanceMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 63 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnAllTestClick near line 85 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnListClick near line 107 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclArrayListClick near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclLinkedListClick near line 117 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclVectorClick near line 122 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnBucketListClick near line 127 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclHashMapClick near line 132 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnHashedStringListClick near line 137 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclAnsiStrAnsiStrHashMapClick near line 142 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.mnJclWideStrWideStrHashMapClick near line 147 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Click near line 152 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\performance\ContainerPerformanceTests.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\containers\trees\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\containers\trees\TreeExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnIntfArrayTreeClick near line 72 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnArrayTreeClick near line 107 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnAnsiStrBinaryTreeClick near line 127 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnWideStrBinaryTreeClick near line 147 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\expreval\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\expreval\ExprEvalExampleLogic.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\expreval\ExprEvalExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 41 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 50 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.EnterButtonClick near line 55 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FuncListClick near line 60 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\expreval\QExprEvalExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 39 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 45 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.EnterButtonClick near line 50 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FuncListClick near line 55 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\filesearch\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\filesearch\QFileSearchDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.FormCreate near line 81 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.FormDestroy near line 100 col 1
+Parameter ID is not used near PROCEDURE in procedure TFileSearchForm.TaskDone near line 140 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.StartBtnClick near line 156 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.StopBtnClick near line 193 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.FileListColumnClick near line 198 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.UpdateIncludeHiddenSubDirs near line 234 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.IncludeHiddenSubDirsClick near line 249 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.DetailsBtnClick near line 256 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileSearchForm.SaveBtnClick near line 264 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\graphics\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\graphics\QClipLineDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 48 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormPaint near line 59 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Timer1Timer near line 87 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\graphics\StretchGraphicDemoMain.pas
+Parameter Attr is not used near FUNCTION in function IsGraphicFile near line 179 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.FormCreate near line 184 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.FormDestroy near line 224 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.ExitApp near line 230 col 1
+Parameter ID is not used near PROCEDURE in procedure TStretchDemoForm.FileSearchTerminated near line 263 col 1
+Parameter Aborted is not used near PROCEDURE in procedure TStretchDemoForm.FileSearchTerminated near line 263 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.OpenFile near line 310 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.PrevFile near line 379 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.NextFile near line 386 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.FileListViewClick near line 407 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.FormKeyDown near line 412 col 1
+Parameter Shift is not used near PROCEDURE in procedure TStretchDemoForm.FormKeyDown near line 412 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.StretchedPageShow near line 434 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.StretchedPageResize near line 445 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.PageControlChanging near line 464 col 1
+Parameter AllowChange is not used near PROCEDURE in procedure TStretchDemoForm.PageControlChanging near line 464 col 1
+Parameter Sender is not used near PROCEDURE in procedure TStretchDemoForm.FileListViewKeyDown near line 498 col 1
+Parameter Shift is not used near PROCEDURE in procedure TStretchDemoForm.FileListViewKeyDown near line 498 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\multimedia\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\multimedia\MidiOutExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.FormCreate near line 90 col 1
+Parameter Shift is not used near PROCEDURE in procedure TKeyboard.KeyMouseDown near line 126 col 1
+Parameter X is not used near PROCEDURE in procedure TKeyboard.KeyMouseDown near line 126 col 1
+Parameter Y is not used near PROCEDURE in procedure TKeyboard.KeyMouseDown near line 126 col 1
+Parameter Shift is not used near PROCEDURE in procedure TKeyboard.KeyMouseUp near line 136 col 1
+Parameter X is not used near PROCEDURE in procedure TKeyboard.KeyMouseUp near line 136 col 1
+Parameter Y is not used near PROCEDURE in procedure TKeyboard.KeyMouseUp near line 136 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.MidiProgramNumChange near line 145 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.TuningItemClick near line 150 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.PitchBenderChange near line 160 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.ModWheelChange near line 165 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.btnAllNotesOffClick near line 181 col 1
+Parameter Sender is not used near PROCEDURE in procedure TKeyboard.cbMidiOutSelectChange near line 186 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\multimedia\MidiOutExampleTuningDlg.pas
+Parameter Sender is not used near PROCEDURE in procedure TTuningDialog.MIDIKeyChange near line 75 col 1
+Parameter Sender is not used near PROCEDURE in procedure TTuningDialog.MIDIFreqChange near line 81 col 1
+Parameter Sender is not used near PROCEDURE in procedure TTuningDialog.FreqHertzChange near line 100 col 1
+Parameter Sender is not used near PROCEDURE in procedure TTuningDialog.MIDIFreqExit near line 160 col 1
+Parameter Sender is not used near PROCEDURE in procedure TTuningDialog.FreqHertzExit near line 165 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\numformat\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\numformat\QNumFormatExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 63 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 74 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.EvalBtnClick near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.RandBtnClick near line 117 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ValueEditChange near line 124 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.BlockSizeEditChanged near line 129 col 1
+Parameter NewValue is not used near PROCEDURE in procedure TMainForm.BlockSizeEditChanged near line 129 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.BlockSeparatorSelectorChange near line 138 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.PrecisionEditChanged near line 147 col 1
+Parameter NewValue is not used near PROCEDURE in procedure TMainForm.PrecisionEditChanged near line 147 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.cbShowPlusSignClick near line 156 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ExpDivisionEditChanged near line 165 col 1
+Parameter NewValue is not used near PROCEDURE in procedure TMainForm.ExpDivisionEditChanged near line 165 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.WidthEditChanged near line 175 col 1
+Parameter NewValue is not used near PROCEDURE in procedure TMainForm.WidthEditChanged near line 175 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.cbZeroPaddingClick near line 184 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.MultiplierSelectorChange near line 196 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FractionDigitsEditChanged near line 205 col 1
+Parameter NewValue is not used near PROCEDURE in procedure TMainForm.FractionDigitsEditChanged near line 205 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\pcre\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\pcre\PCREDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acOpenExecute near line 67 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acFindExecute near line 73 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acFindNextExecute near line 83 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.edRegExprChange near line 163 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormDestroy near line 168 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormCreate near line 173 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\pcre\QPCREDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acOpenExecute near line 64 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acFindExecute near line 70 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acFindNextExecute near line 80 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.edRegExprChange near line 160 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormDestroy near line 165 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\rtti\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\rtti\QRTTIDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button1Click near line 90 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button2Click near line 158 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button3Click near line 221 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button4Click near line 283 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\rtti\RTTIDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button1Click near line 89 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button2Click near line 157 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button3Click near line 220 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button4Click near line 282 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\sysinfo\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\sysinfo\QEnvironmentExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 30 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.EnvironmentGridSetEditText near line 35 col 1
+Parameter ACol is not used near PROCEDURE in procedure TForm1.EnvironmentGridSetEditText near line 35 col 1
+Parameter Value is not used near PROCEDURE in procedure TForm1.EnvironmentGridSetEditText near line 35 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.RefreshBtnClick near line 47 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\textreader\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\textreader\TextReaderDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 40 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 45 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.TextListViewData near line 78 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OpenBtnClick near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ReadLnBtnClick near line 94 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\common\unitversioning\
+Formatting file P:\Delphi\JCL-format\jcl\examples\common\unitversioning\UnitVersioningTestMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.FormCreate near line 79 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.FormDestroy near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnTestFindMethodsClick near line 103 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnTestDummyProviderClick near line 181 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnTestGetLocationInfoStrClick near line 197 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnShowUVContentClick near line 206 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnLoadDLLClick near line 239 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmUnitVersioningTestMain.btnInsertSectionClick near line 249 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\dotnet\
+Processing directory P:\Delphi\JCL-format\jcl\examples\dotnet\JCLNetDemo\
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\appinst\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\appinst\AppInstDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 67 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.SwitchBtnClick near line 90 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.MsgBtnClick near line 95 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.SendBtnClick near line 105 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Memo1Change near line 146 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\appinst\SingleInstDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.DialogBtnClick near line 29 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\asuser\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\asuser\CreateProcAsUserDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnAddEnvStringClick near line 49 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnClearEnvStringsClick near line 54 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnRemoveEnvStringClick near line 59 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnCreateProcAsUserClick near line 68 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnCreateProcAsUserExClick near line 74 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\clr\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoAbstractFrame.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoBlobForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmBlobs.lstBlobsSelectItem near line 52 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmBlobs.lstBlobsData near line 61 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoCLRFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmCLR.lstResourcesSelectItem near line 48 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoGuidForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmGuid.lstGuidsData near line 47 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormCreate near line 72 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormDestroy near line 78 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actFileExitExecute near line 100 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actHelpAboutExecute near line 105 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actFileOpenExecute near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.PCChange near line 138 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actViewStreamDataExecute near line 155 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actFileDumpExecute near line 180 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoMetaDataFrame.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoStringsForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmStrings.lstStringsData near line 47 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoTableForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmTable.lstTablesSelectItem near line 133 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmTable.btnDumpILClick near line 625 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\clr\ClrDemoUserStringsForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmUserStrings.lstStringsData near line 47 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\framestrack\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\framestrack\FramesTrackDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 117 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button6Click near line 128 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\reportconverter\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\reportconverter\formConverter.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmConverter.btnConvertClick near line 67 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmConverter.btnReportFileClick near line 184 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmConverter.btnMapFileClick near line 190 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\sourceloc\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\sourceloc\SourceLocDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 47 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.CallerBtnClick near line 73 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.AddrBtnClick near line 78 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.StackBtnClick near line 86 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.TraceLocBtnClick near line 109 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.ProcBtnClick near line 114 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.ModuleBtnClick near line 119 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Button1Click near line 47 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Button2Click near line 52 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Button3Click near line 62 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Button4Click near line 67 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ApplicationEventsException near line 76 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDLLsComLibrary_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDLLsComUnit.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDLLsDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 56 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.StaticLibError1BtnClick near line 61 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.StaticLibError2BtnClick near line 66 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ComObjErr1BtnClick near line 71 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ComObjErr2BtnClick near line 79 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.LoadLibBtnClick near line 87 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FreeLibBtnClick near line 95 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DynamicLibError1BtnClick near line 102 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DynamicLibError2BtnClick near line 112 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDLLsDynamicUnit.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\stacktrack\StackTrackDLLsStaticUnit.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\debug\threadexcept\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\debug\threadexcept\ThreadExceptDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 119 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.CreateThreadBtnClick near line 136 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ListThreadsBtnClick near line 146 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\About.pas
+Parameter Sender is not used near PROCEDURE in procedure TAboutBox.FormCreate near line 102 col 1
+Parameter Sender is not used near PROCEDURE in procedure TAboutBox.FormShow near line 119 col 1
+Parameter Sender is not used near PROCEDURE in procedure TAboutBox.IconPaintBoxPaint near line 153 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\D6MdiMsgFix.pas
+Parameter AOwner is not used near CONSTRUCTOR in constructor TFixApplicationEvents.Create near line 72 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\FindDlg.pas
+Parameter Sender is not used near PROCEDURE in procedure TFindTextForm.FindBtnClick near line 185 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\SHDocVw_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\common\ToolsUtils.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\dependencyviewer\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\dependencyviewer\DependViewMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 175 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Open1Execute near line 180 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 193 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 201 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OnActiveFormChange near line 207 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SelectAll1Execute near line 220 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Win32Help1Update near line 256 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Win32Help1Execute near line 262 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.About1Execute near line 267 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpPe1Update near line 282 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpPe1Execute near line 288 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SendMail1Execute near line 295 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Find1Execute near line 305 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormShow near line 315 col 1
+Parameter Message is not used near PROCEDURE in procedure TMainForm.UMCheckParamStr near line 320 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\dependencyviewer\FileViewer.pas
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.FormCreate near line 173 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.FormDestroy near line 192 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.FormClose near line 202 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ExportListViewData near line 403 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ImportListViewData near line 417 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ExportListViewColumnClick near line 452 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ImportListViewColumnClick near line 458 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.DependencyTreeViewChange near line 550 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.DependencyTreeViewDeletion near line 556 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ModulesListViewInfoTip near line 637 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ExportListViewDblClick near line 672 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFileViewerChild.ModulesListViewDblClick near line 677 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeDump.pas
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.FormCreate near line 258 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.FormClose near line 280 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.SectionTreeViewExpanding near line 397 col 1
+Parameter AllowExpansion is not used near PROCEDURE in procedure TPeDumpChild.SectionTreeViewExpanding near line 397 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.SectionTreeViewChange near line 464 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.DirectoryListViewData near line 519 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ImportListViewColumnClick near line 580 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ImportListViewData near line 617 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.FormDestroy near line 646 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ExportListViewData near line 651 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ExportListViewColumnClick near line 665 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.SectionTreeViewDblClick near line 677 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.SectionListViewData near line 682 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ResourceListViewData near line 714 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ResourceDirListViewData near line 754 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.RelocListViewData near line 779 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.DebugListViewData near line 807 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeDumpChild.ImportListViewDblClick near line 819 col 1
+Parameter State is not used near PROCEDURE in procedure TPeDumpChild.DirectoryListViewCustomDrawItem near line 824 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TPeDumpChild.DirectoryListViewCustomDrawItem near line 824 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeGenDef.pas
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.FormClose near line 230 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.FormCreate near line 236 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.FormDestroy near line 241 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.FunctionsListViewData near line 265 col 1
+Parameter State is not used near PROCEDURE in procedure TPeGenDefChild.FunctionsListViewCustomDrawItem near line 285 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TPeGenDefChild.FunctionsListViewCustomDrawItem near line 285 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.PageControl1Change near line 315 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeGenDefChild.WrapCheckBoxClick near line 324 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeResource.pas
+Parameter StripCrLf is not used near PROCEDURE in procedure TPeResAccelerator.FillStrings near line 904 col 1
+Parameter AResImage is not used near CONSTRUCTOR in constructor TPeResRCData.Create near line 1221 col 1
+Parameter AResourceItem is not used near CONSTRUCTOR in constructor TPeResRCData.Create near line 1221 col 1
+Parameter L is not used near FUNCTION in function DialogProc near line 1293 col 3
+Parameter StripCrLf is not used near PROCEDURE in procedure TPeResVersion.FillStrings near line 1428 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeResView.pas
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.FormCreate near line 179 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.FormDestroy near line 195 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.FormClose near line 202 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.ResourceTreeViewChange near line 235 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.DirListViewData near line 246 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.HexDumpListViewData near line 257 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.StringsListViewData near line 324 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.GraphDrawGridDrawCell near line 381 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.AviPlay1Execute near line 468 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.AviStop1Execute near line 476 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.Animate1Stop near line 482 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.StringsListViewSelectItem near line 488 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.Animate1Open near line 495 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.Animate1Close near line 502 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.AviBkColor1Execute near line 507 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.ResourceTreeViewExpanding near line 644 col 1
+Parameter AllowExpansion is not used near PROCEDURE in procedure TPeResViewChild.ResourceTreeViewExpanding near line 644 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeResViewChild.DialogTestBtnClick near line 704 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeSearch.pas
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.FormClose near line 87 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.SearchDone near line 99 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.SearchFound near line 106 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.SearchProcessFile near line 127 col 1
+Parameter Process is not used near PROCEDURE in procedure TPeSearchChild.SearchProcessFile near line 127 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.StartBtnClick near line 156 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.StopBtnClick near line 161 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.FormCreate near line 166 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.SelectDirBtnClick near line 174 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.FuncNameEditChange near line 215 col 1
+Parameter Sender is not used near PROCEDURE in procedure TPeSearchChild.ResultListViewDblClick near line 228 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeViewerControl.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeViewerMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 200 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FileOpen1Execute near line 216 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 229 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 236 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OnActiveFormChange near line 243 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.InvokeHelp1Execute near line 293 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Save1Execute near line 298 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OpenLibrary1Execute near line 339 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OpenLibrary1Update near line 353 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Copy1Execute near line 377 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SelectAll1Execute near line 395 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.GroupImports1Execute near line 416 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Search1Execute near line 425 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ViewResources1Execute near line 441 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ViewResDetails1Execute near line 485 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ViewResHex1Execute near line 506 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.About1Execute near line 522 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SendMail1Execute near line 527 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ShowUnitGen1Execute near line 538 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormShow near line 552 col 1
+Parameter Message is not used near PROCEDURE in procedure TMainForm.UMCheckParamStr near line 557 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.UnmangleNames1Execute near line 599 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Find1Execute near line 619 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\peviewer\PeViewer_TLB.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\resfix\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\resfix\ResFixMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 118 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 123 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Description1Execute near line 128 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.About1Execute near line 133 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Open1Execute near line 138 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.ResListViewCustomDrawItem near line 249 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.ResListViewCustomDrawItem near line 249 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SendMail1Execute near line 256 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\screenjpg\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\screenjpg\Main.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 145 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 167 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 175 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OpenFile1Execute near line 205 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.RatioComboBoxChange near line 226 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SaveFile1Execute near line 232 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Paste1Execute near line 237 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Paste1Update near line 248 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SaveFile1Update near line 253 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.About1Execute near line 273 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCloseQuery near line 278 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\ChangePriority.pas
+Parameter Sender is not used near PROCEDURE in procedure TChangePriorityDlg.FormCreate near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TChangePriorityDlg.OKBtnClick near line 97 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\Global.pas
+Parameter Sender is not used near PROCEDURE in procedure TGlobalModule.DataModuleCreate near line 118 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\HeapDump.pas
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.HeapListViewColumnClick near line 223 col 1
+Parameter Data is not used near PROCEDURE in procedure THeapDumpForm.HeapListViewCompare near line 229 col 1
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.StatusBarResize near line 249 col 1
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.Refresh1Execute near line 297 col 1
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.HeapEntryListViewData near line 302 col 1
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.HeapEntryListViewSelectItem near line 323 col 1
+Parameter Sender is not used near PROCEDURE in procedure THeapDumpForm.HeapListViewSelectItem near line 330 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\Main.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 256 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 276 col 1
+Parameter Data is not used near PROCEDURE in procedure TMainForm.ProcessListViewCompare near line 621 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ProcessListViewColumnClick near line 627 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ProcessListViewEnter near line 633 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 638 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.BeepOnChange1Execute near line 643 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.HotTrack1Execute near line 649 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.InfoTip1Execute near line 658 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.CheckImageBase1Execute near line 667 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Terminate1Execute near line 676 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Refresh1Execute near line 684 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.About1Execute near line 689 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ChangePriority1Execute near line 694 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SaveToFile1Execute near line 716 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FileProperties1Update near line 729 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FileProperties1Execute near line 735 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Copy1Execute near line 783 col 1
+Parameter Msg is not used near PROCEDURE in procedure TMainForm.UMActivateMainForm near line 805 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.StatusBarResize near line 810 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpHeap1Execute near line 816 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpMemory1Execute near line 831 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ProcessListViewSelectItem near line 849 col 1
+Parameter Item is not used near PROCEDURE in procedure TMainForm.ModulesListViewSelectItem near line 860 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ProcessListViewInfoTip near line 867 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ModulesListViewInfoTip near line 873 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.ModulesListViewCustomDrawItem near line 920 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.ModulesListViewCustomDrawItem near line 920 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpModules1Execute near line 927 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpPE1Update near line 934 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ProcessListViewDblClick near line 939 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DumpPE1Execute near line 944 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SendMail1Execute near line 949 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\MemoryDump.pas
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.FormCreate near line 185 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.FormDestroy near line 191 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.Refresh1Execute near line 359 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.PagesListViewSelectItem near line 432 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.PagesListViewData near line 448 col 1
+Parameter State is not used near PROCEDURE in procedure TMemoryDumpForm.PagesListViewCustomDrawItem near line 468 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMemoryDumpForm.PagesListViewCustomDrawItem near line 468 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.MemoryTreeViewChange near line 475 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.MemoryTreeViewGetSelectedIndex near line 488 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.ViewAsText1Execute near line 494 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMemoryDumpForm.SaveData1Execute near line 508 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\ModulesDump.pas
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.FormClose near line 186 col 1
+Parameter Action is not used near PROCEDURE in procedure TModulesDumpForm.FormClose near line 186 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.FormShow near line 192 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.Refresh1Execute near line 203 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.ModulesListViewColumnClick near line 208 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.ModulesListViewCompare near line 214 col 1
+Parameter Data is not used near PROCEDURE in procedure TModulesDumpForm.ModulesListViewCompare near line 214 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.FileProp1Update near line 220 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.FileProp1Execute near line 225 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.ModulesListViewInfoTip near line 230 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.DumpPe1Execute near line 236 col 1
+Parameter Sender is not used near PROCEDURE in procedure TModulesDumpForm.DumpPe1Update near line 241 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\delphitools\toolhelpview\ViewTemplate.pas
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.FormClose near line 80 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.FormShow near line 86 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.TextLabels1Execute near line 91 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.SelectAll1Execute near line 119 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.Copy1Execute near line 124 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.SaveToFile1Execute near line 129 col 1
+Parameter Msg is not used near PROCEDURE in procedure TViewForm.UMBuild near line 134 col 1
+Parameter Sender is not used near PROCEDURE in procedure TViewForm.Find1Execute near line 151 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\edisdk\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\edisdk\EDICOMExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button1Click near line 30 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.Button2Click near line 58 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\edisdk\EDISDK_TLB.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\edisdk\comserver\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\edisdk\comserver\EDISDK_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\edisdk\comserver\JclEDICOM_ANSIX12.pas
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\edisdk\vb5\
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\filesummary\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\filesummary\FileSummaryDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TFormMain.FileListBox1Change near line 32 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\fileversion\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\fileversion\VerInfoDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FileListBox1Change near line 40 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\lanman\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\lanman\LanManDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnAddUserClick near line 65 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.cboSIDChange near line 81 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 108 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnDeleteUserClick near line 113 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnAddGroupClick near line 118 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.btnDeleteGroupClick near line 126 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\locales\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\locales\LocalesDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 75 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.LocalesRadioGroupClick near line 130 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.LocalesListViewSelectItem near line 186 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.UpdateKeybLayouts near line 192 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ActivateBtnClick near line 210 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.KeyblayoutsListBoxClick near line 216 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.LocalesListViewCustomDrawSubItem near line 222 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.LocalesListViewCustomDrawSubItem near line 222 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.AvailableLayoutsListViewChange near line 258 col 1
+Parameter Item is not used near PROCEDURE in procedure TMainForm.AvailableLayoutsListViewChange near line 258 col 1
+Parameter Change is not used near PROCEDURE in procedure TMainForm.AvailableLayoutsListViewChange near line 258 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.LoadBtnClick near line 264 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.UnloadBtnClick near line 269 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.PrevBtnClick near line 275 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.NextBtnClick near line 280 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.AvailableLayoutsListViewCustomDrawItem near line 285 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.AvailableLayoutsListViewCustomDrawItem near line 285 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\mapi\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\mapi\MapiDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 112 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 120 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.ClientsListViewSelectItem near line 125 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.AutomaticRadioBtnClick near line 140 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.ClientsListViewCustomDrawItem near line 154 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.ClientsListViewCustomDrawItem near line 154 col 1
+Parameter State is not used near PROCEDURE in procedure TMainForm.ProfilesListViewCustomDrawItem near line 161 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.ProfilesListViewCustomDrawItem near line 161 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SendBtnClick near line 168 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.AttachmentBtnClick near line 190 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\mapi\ReadMailDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 39 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 45 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.HeadersListViewSelectItem near line 110 col 1
+Parameter State is not used near PROCEDURE in procedure TForm1.HeadersListViewCustomDrawItem near line 117 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TForm1.HeadersListViewCustomDrawItem near line 117 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\multimedia\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\multimedia\MultimediaDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 82 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 93 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.DefaultDriveCheckBoxClick near line 201 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.OpenDriveBtnClick near line 214 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.CloseDriveBtnClick near line 224 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.MediaPresentBtnClick near line 234 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.AudioInfoBtnClick near line 244 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TMainForm.MixerTreeViewCustomDrawItem near line 513 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.MixerTreeViewChange near line 537 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SpeakersMuteCheckBoxClick near line 542 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.SaveMixerBtnClick near line 547 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\ntfs\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\ntfs\JEDISoftLinks_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\ntfs\SoftLinkDragDropHandler.pas
+Parameter hKeyProgID is not used near FUNCTION in function TDirDropContextMenu.SEIInitialize near line 63 col 1
+Parameter idCmdLast is not used near FUNCTION in function TDirDropContextMenu.QueryContextMenu near line 128 col 1
+Parameter pwReserved is not used near FUNCTION in function TDirDropContextMenu.GetCommandString near line 173 col 1
+Parameter cchMax is not used near FUNCTION in function TDirDropContextMenu.GetCommandString near line 173 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\ntservice\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\ntservice\NtSvcDemoDependent.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\ntservice\NtSvcDemoGroups.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmServiceGroups.treeServicesDblClick near line 68 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\ntservice\NtSvcDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormCreate near line 115 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormDestroy near line 130 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.lstSvcData near line 179 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actViewRefreshExecute near line 196 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.lstSvcColumnClick near line 201 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actFileExitExecute near line 237 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actFileConnectExecute near line 242 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actHelpAboutExecute near line 260 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actControlStartExecute near line 267 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actControlStopExecute near line 273 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actControlPauseExecute near line 279 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actControlContinueExecute near line 285 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actControlDeleteExecute near line 317 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actViewDependentExecute near line 333 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.actViewGroupsExecute near line 346 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.lstSvcInfoTip near line 357 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.ApplicationHint near line 411 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\peimage\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\peimage\ApiHookDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.HookBtnClick near line 52 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.UnhookBtnClick near line 61 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.BeepBtnClick near line 72 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\peimage\PeFuncDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.OpenBtnClick near line 86 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\peimage\UnmangleNameDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 114 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 120 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.OpenBtnClick near line 125 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.ListView1Data near line 160 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\registry\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\registry\RegistryDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.tvKeysExpanding near line 102 col 1
+Parameter AllowExpansion is not used near PROCEDURE in procedure TForm1.tvKeysExpanding near line 102 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 147 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.tvKeysChange near line 152 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\structstorage\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\structstorage\HexDump.pas
+Parameter Message is not used near PROCEDURE in procedure THexDump.CMFontChanged near line 146 col 1
+Parameter Message is not used near PROCEDURE in procedure THexDump.WMSize near line 170 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\structstorage\PropsFrm.pas
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\structstorage\StructStorageExampleMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoDeletion near line 315 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoCollapsed near line 333 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoExpanded near line 339 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormCreate near line 378 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acOpenExecute near line 402 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acExitExecute near line 411 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acAddFolderExecute near line 416 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acAddFileExecute near line 456 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acDeleteExecute near line 494 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acAboutExecute near line 506 col 1
+Parameter Action is not used near PROCEDURE in procedure TfrmMain.alMainUpdate near line 545 col 1
+Parameter Handled is not used near PROCEDURE in procedure TfrmMain.alMainUpdate near line 545 col 1
+Parameter lParamSort is not used near FUNCTION in function TreeSort near line 567 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acSaveDataExecute near line 699 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoChange near line 719 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoEditing near line 727 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acRenameExecute near line 747 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoEdited near line 806 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acRefreshExecute near line 850 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acPropertiesExecute near line 855 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormShow near line 873 col 1
+Parameter Msg is not used near PROCEDURE in procedure TfrmMain.WmShowAbout near line 878 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acTransactedExecute near line 883 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.tvDocInfoDblClick near line 893 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acNewExecute near line 899 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acSaveExecute near line 907 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.acSaveAsExecute near line 929 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\sysinfo\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\sysinfo\SysInfoDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 166 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormShow near line 171 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnOkClick near line 176 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.btnUpdateClick near line 307 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\tasks\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\tasks\TaskDemoDataModule.pas
+Parameter Sender is not used near PROCEDURE in procedure TDM.DataModuleCreate near line 55 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.DataModuleDestroy near line 70 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskPropExecute near line 85 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskAddExecute near line 92 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskDeleteExecute near line 122 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskRefreshExecute near line 129 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskRunExecute near line 136 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actTaskStopExecute near line 141 col 1
+Parameter Sender is not used near PROCEDURE in procedure TDM.actFileExitExecute near line 158 col 1
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\tasks\TaskDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormCreate near line 75 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.FormDestroy near line 86 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.OnRefresh near line 144 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.WebBrowserDocumentComplete near line 149 col 1
+Parameter URL is not used near PROCEDURE in procedure TfrmMain.WebBrowserDocumentComplete near line 149 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.lstTasksSelectItem near line 160 col 1
+Parameter Sender is not used near PROCEDURE in procedure TfrmMain.ppTaskInfoHTMLTag near line 167 col 1
+Parameter Tag is not used near PROCEDURE in procedure TfrmMain.ppTaskInfoHTMLTag near line 167 col 1
+Parameter TagParams is not used near PROCEDURE in procedure TfrmMain.ppTaskInfoHTMLTag near line 167 col 1
+Processing directory P:\Delphi\JCL-format\jcl\examples\windows\widestring\
+Formatting file P:\Delphi\JCL-format\jcl\examples\windows\widestring\WideStringDemoMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TForm1.SearchButtonClick near line 114 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.ConvertButtonClick near line 128 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormCreate near line 160 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.FormDestroy near line 170 col 1
+Parameter Sender is not used near PROCEDURE in procedure TForm1.OpenwithNotepad1Click near line 176 col 1
+Parameter ID is not used near PROCEDURE in procedure TForm1.TaskDone near line 184 col 1
+Parameter Aborted is not used near PROCEDURE in procedure TForm1.TaskDone near line 184 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\
+Processing directory P:\Delphi\JCL-format\jcl\experts\common\
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaActionConfigureSheet.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaActionConfigureFrame.ButtonRestoreClick near line 65 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaActionConfigureFrame.HotKeyShortcutExit near line 111 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaActionConfigureFrame.ListViewActionsSelectItem near line 123 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaConfigurationForm.pas
+Parameter PageName is not used near FUNCTION in function TJclOtaOptionsForm.Execute near line 167 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaOptionsForm.FormCreate near line 192 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaOptionsForm.FormDestroy near line 207 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaOptionsForm.LabelHomePageClick near line 216 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaOptionsForm.TreeViewCategoriesChange near line 221 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaConsts.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaExceptionForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclExpertExceptionForm.FormCreate near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclExpertExceptionForm.LabelURLClick near line 92 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaResources.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaUtils.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOTAExpertBase.ConfigurationActionExecute near line 513 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaWizardForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclWizardForm.ActionFinishExecute near line 92 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclWizardForm.ActionNextExecute near line 106 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclWizardForm.ActionPreviousExecute near line 120 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclWizardForm.FormCreate near line 162 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\common\JclOtaWizardFrame.pas
+Parameter Direction is not used near PROCEDURE in procedure TJclWizardFrame.PageActivated near line 81 col 1
+Parameter Direction is not used near PROCEDURE in procedure TJclWizardFrame.PageDesactivated near line 86 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\JclDebugThread.pas
+Parameter IncludeClassName is not used near PROCEDURE in procedure RegisterThread near line 121 col 1
+Parameter IncludeClassName is not used near PROCEDURE in procedure ChangeThreadName near line 145 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\converter\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\converter\JclDebugIdeConfigFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugIdeConfigFrame.CheckBoxEnableExpertClick near line 63 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\converter\JclDebugIdeImpl.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 154 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugExtension.InsertDataExecute near line 450 col 1
+Parameter Succeeded is not used near PROCEDURE in procedure TIdeNotifier.AfterCompile near line 602 col 1
+Parameter Project is not used near PROCEDURE in procedure TIdeNotifier.BeforeCompile near line 634 col 1
+Parameter Cancel is not used near PROCEDURE in procedure TIdeNotifier.BeforeCompile near line 634 col 1
+Parameter NotifyCode is not used near PROCEDURE in procedure TIdeNotifier.FileNotification near line 638 col 1
+Parameter FileName is not used near PROCEDURE in procedure TIdeNotifier.FileNotification near line 638 col 1
+Parameter Cancel is not used near PROCEDURE in procedure TIdeNotifier.FileNotification near line 638 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\converter\JclDebugIdeResult.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugResultForm.FormResize near line 141 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugResultForm.FormCreate near line 167 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugResultForm.FormDestroy near line 181 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclDebugResultForm.FormKeyDown near line 195 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\dialog\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\ClxExceptDlg.pas
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.DetailsBtnClick near line 497 col 1
+Parameter Sender is not used near CLASS in procedure TExceptionDialog.ExceptionHandler near line 518 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormCreate near line 552 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormDestroy near line 562 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormKeyDown near line 569 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormResize near line 580 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormShow near line 587 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\ExceptDlg.Delphi32.pas
+Exception TEParseError  Expected identifer
+Near Unknown punctuation % near line 26 col 6
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\ExceptDlg.pas
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.DetailsBtnClick near line 403 col 1
+Parameter Sender is not used near CLASS in procedure TExceptionDialog.ExceptionHandler near line 410 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormCreate near line 455 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormDestroy near line 465 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormKeyDown near line 472 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormPaint near line 483 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormResize near line 491 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialog.FormShow near line 498 col 1
+Parameter Message is not used near PROCEDURE in procedure TExceptionDialog.UMCreateDetails near line 611 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\ExceptDlgMail.pas
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.SendBtnClick near line 243 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.DetailsBtnClick near line 423 col 1
+Parameter Sender is not used near CLASS in procedure TExceptionDialogMail.ExceptionHandler near line 430 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormCreate near line 475 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormDestroy near line 485 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormKeyDown near line 492 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormPaint near line 503 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormResize near line 511 col 1
+Parameter Sender is not used near PROCEDURE in procedure TExceptionDialogMail.FormShow near line 518 col 1
+Parameter Message is not used near PROCEDURE in procedure TExceptionDialogMail.UMCreateDetails near line 631 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgFileFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgFilePage.ButtonFileBrowseClick near line 97 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgFilePage.ComboBoxLanguageClick near line 136 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgFormFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgFormPage.CheckBoxMailClick near line 74 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgIgnoreFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgIgnorePage.CheckBoxTraceAllExceptionsClick near line 68 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgRepository.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgSystemFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgSystemPage.CheckBoxLogFileClick near line 75 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgTraceFrame.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgTracePage.CheckBoxClick near line 110 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOtaExcDlgTracePage.CheckBoxStackListClick near line 115 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaExcDlgWizard.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaRepositoryReg.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 174 col 1
+Parameter Personality is not used near PROCEDURE in procedure TJclExcDlgDelphiExpert.DoExecute near line 314 col 1
+Parameter Personality is not used near PROCEDURE in procedure TJclExcDlgCBuilderExpert.DoExecute near line 350 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaRepositoryUtils.pas
+Parameter Personality is not used near PROCEDURE in procedure TJclOTARepositoryExpert.DoExecute near line 229 col 1
+Parameter FormEditor is not used near PROCEDURE in procedure TJclOtaFormCreator.FormCreated near line 413 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\dialog\JclOtaTemplates.pas
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\simdview\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\simdview\JclSIMDCpuInfo.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\simdview\JclSIMDModifyForm.pas
+Parameter Msg is not used near PROCEDURE in procedure TJclSIMDModifyFrm.WMModifyContinue near line 387 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDModifyFrm.ButtonOKClick near line 513 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\simdview\JclSIMDUtils.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\simdview\JclSIMDView.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 169 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDWizard.SIMDActionExecute near line 213 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDWizard.FormDestroy near line 362 col 1
+Parameter Breakpoint is not used near PROCEDURE in procedure TJclDebuggerNotifier.BreakpointAdded near line 450 col 1
+Parameter Breakpoint is not used near PROCEDURE in procedure TJclDebuggerNotifier.BreakpointDeleted near line 455 col 1
+Parameter CanModify is not used near PROCEDURE in procedure TJclDebuggerNotifier.EvaluteComplete near line 460 col 1
+Parameter ResultAddress is not used near PROCEDURE in procedure TJclDebuggerNotifier.EvaluteComplete near line 460 col 1
+Parameter ResultSize is not used near PROCEDURE in procedure TJclDebuggerNotifier.EvaluteComplete near line 460 col 1
+Parameter ExprStr is not used near PROCEDURE in procedure TJclDebuggerNotifier.ModifyComplete near line 500 col 1
+Parameter ResultStr is not used near PROCEDURE in procedure TJclDebuggerNotifier.ModifyComplete near line 500 col 1
+Parameter ReturnCode is not used near PROCEDURE in procedure TJclDebuggerNotifier.ModifyComplete near line 500 col 1
+Parameter ProcessModule is not used near PROCEDURE in procedure TJclDebuggerNotifier.ProcessModuleCreated near line 564 col 1
+Parameter ProcessModule is not used near PROCEDURE in procedure TJclDebuggerNotifier.ProcessModuleDestroyed near line 570 col 1
+Parameter Reason is not used near PROCEDURE in procedure TJclDebuggerNotifier.ThreadNotify near line 619 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\simdview\JclSIMDViewForm.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.FormCreate near line 597 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.FormDestroy near line 629 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.MenuItemCpuInfoClick near line 640 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.ActionStayOnTopExecute near line 715 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.ActionModifyExecute near line 758 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.ActionEmptyExecute near line 835 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.ActionEmptyAllExecute near line 878 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclSIMDViewFrm.ActionComplementExecute near line 910 col 1
+Parameter Shift is not used near PROCEDURE in procedure TJclSIMDViewFrm.ListBoxesMouseDown near line 936 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\threadnames\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\threadnames\JclIdeThreadStatus.pas
+Parameter IncludeClassName is not used near PROCEDURE in procedure RegisterThread near line 137 col 1
+Parameter IncludeClassName is not used near PROCEDURE in procedure ChangeThreadName near line 161 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\threadnames\ThreadExpertSharedNames.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\threadnames\ThreadExpertUnit.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 143 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclThreadsExpert.ListViewChange near line 225 col 1
+Parameter Breakpoint is not used near PROCEDURE in procedure TDebuggerNotifier.BreakpointAdded near line 300 col 1
+Parameter Breakpoint is not used near PROCEDURE in procedure TDebuggerNotifier.BreakpointDeleted near line 304 col 1
+Parameter Process is not used near PROCEDURE in procedure TDebuggerNotifier.ProcessCreated near line 308 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\debug\tools\
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\tools\MapToJdbgMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 84 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 117 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Open1Execute near line 122 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Convert1Execute near line 158 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Convert1Update near line 224 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\debug\tools\TlbToMapMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 219 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 224 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Exit1Execute near line 229 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.Open1Execute near line 234 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.MethodsListViewData near line 320 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\favfolders\
+Formatting file P:\Delphi\JCL-format\jcl\experts\favfolders\IdeOpenDlgFavoriteUnit.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 100 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOpenDialogsFavoriteExpert.DialogClose near line 130 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclOpenDialogsFavoriteExpert.DialogShow near line 136 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\favfolders\OpenDlgFavAdapter.pas
+Parameter Sender is not used near PROCEDURE in procedure TFavOpenDialog.AddButtonClick near line 241 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFavOpenDialog.FavoriteComboBoxClick near line 349 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\projectanalyzer\
+Formatting file P:\Delphi\JCL-format\jcl\experts\projectanalyzer\ProjAnalyzerFrm.pas
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.FormCreate near line 271 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.FormDestroy near line 291 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.OnMapSegmentEvent near line 448 col 1
+Parameter Address is not used near PROCEDURE in procedure TProjectAnalyzerForm.OnMapSegmentEvent near line 448 col 1
+Parameter Data is not used near PROCEDURE in procedure TProjectAnalyzerForm.UnitListViewCompare near line 487 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.ActionShowDetailsExecute near line 493 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.ActionShowSummaryExecute near line 508 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.ActionShowDfmsExecute near line 523 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.TextLabelsItemClick near line 538 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.ActionCopyExecute near line 546 col 1
+Parameter Sender is not used near PROCEDURE in procedure TProjectAnalyzerForm.ActionSaveExecute near line 589 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\projectanalyzer\ProjAnalyzerImpl.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 103 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclProjectAnalyzerExpert.ActionExecute near line 141 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclProjectAnalyzerExpert.ActionUpdate near line 216 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\useswizard\
+Formatting file P:\Delphi\JCL-format\jcl\experts\useswizard\JCLOptionsFrame.pas
+Parameter Value is not used near PROCEDURE in procedure TFrameJclOptions.SetActive near line 96 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFrameJclOptions.ButtonIniFileClick near line 111 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\useswizard\JclParseUses.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\useswizard\JclUsesDialog.pas
+Parameter Sender is not used near PROCEDURE in procedure TFormUsesConfirm.ButtonOKClick near line 123 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFormUsesConfirm.TreeViewChangesKeyPress near line 147 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFormUsesConfirm.TreeViewChangesMouseDown near line 172 col 1
+Parameter Button is not used near PROCEDURE in procedure TFormUsesConfirm.TreeViewChangesMouseDown near line 172 col 1
+Parameter Shift is not used near PROCEDURE in procedure TFormUsesConfirm.TreeViewChangesMouseDown near line 172 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\useswizard\JCLUsesWizard.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 156 col 1
+Parameter Succeeded is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.AfterCompile near line 345 col 1
+Parameter Project is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.BeforeCompile near line 350 col 1
+Parameter IsCodeInsight is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.BeforeCompile near line 350 col 1
+Parameter Cancel is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.BeforeCompile near line 350 col 1
+Parameter Project is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.BeforeCompile near line 356 col 1
+Parameter Cancel is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.BeforeCompile near line 356 col 1
+Parameter NotifyCode is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.FileNotification near line 368 col 1
+Parameter FileName is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.FileNotification near line 368 col 1
+Parameter Cancel is not used near PROCEDURE in procedure TJCLUsesWizardNotifier.FileNotification near line 368 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJCLUsesWizard.AppIdle near line 403 col 1
+Parameter Done is not used near PROCEDURE in procedure TJCLUsesWizard.AppIdle near line 403 col 1
+Processing directory P:\Delphi\JCL-format\jcl\experts\versioncontrol\
+Formatting file P:\Delphi\JCL-format\jcl\experts\versioncontrol\JclVersionCtrlCommonOptions.pas
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionDeleteItemExecute near line 149 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionMoveItemDownExecute near line 175 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionMoveItemUpExecute near line 196 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionNewActionExecute near line 215 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionNewSubMenuExecute near line 230 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionNewSeparatorExecute near line 257 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.ActionRenameItemExecute near line 278 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEdited near line 548 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionCtrlOptionsFrame.TreeViewMenuEditing near line 558 col 1
+Formatting file P:\Delphi\JCL-format\jcl\experts\versioncontrol\JclVersionCtrlCVSImpl.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\versioncontrol\JclVersionCtrlSVNImpl.pas
+Formatting file P:\Delphi\JCL-format\jcl\experts\versioncontrol\VersionControlImpl.pas
+Parameter RegisterProc is not used near FUNCTION in function JCLWizardInit near line 421 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclVersionControlExpert.IDEVersionCtrlMenuClick near line 1400 col 1
+Parameter FileName is not used near FUNCTION in function TJclVersionControlPlugin.ExecuteAction near line 1931 col 1
+Parameter Action is not used near FUNCTION in function TJclVersionControlPlugin.ExecuteAction near line 1931 col 1
+Parameter FileName is not used near FUNCTION in function TJclVersionControlPlugin.GetFileActions near line 1942 col 1
+Parameter Action is not used near FUNCTION in function TJclVersionControlPlugin.GetIcon near line 1953 col 1
+Parameter SdBxName is not used near FUNCTION in function TJclVersionControlPlugin.GetSandboxActions near line 1964 col 1
+Parameter FileName is not used near FUNCTION in function TJclVersionControlSystemPlugin.GetFileActions near line 2015 col 1
+Parameter SdBxName is not used near FUNCTION in function TJclVersionControlSystemPlugin.GetSandboxActions near line 2043 col 1
+Processing directory P:\Delphi\JCL-format\jcl\include\
+Processing directory P:\Delphi\JCL-format\jcl\install\
+Formatting file P:\Delphi\JCL-format\jcl\install\JclInstall.pas
+Parameter AGUIPage is not used near CONSTRUCTOR in constructor TJclInstallation.Create near line 814 col 1
+Parameter Designer is not used near FUNCTION in function AddDialogToRepository near line 1935 col 5
+Formatting file P:\Delphi\JCL-format\jcl\install\JediInstall.pas
+Formatting file P:\Delphi\JCL-format\jcl\install\JediInstallConfigIni.pas
+Formatting file P:\Delphi\JCL-format\jcl\install\JediProfiles.pas
+Formatting file P:\Delphi\JCL-format\jcl\install\JediRegInfo.pas
+Processing directory P:\Delphi\JCL-format\jcl\install\build\
+Processing directory P:\Delphi\JCL-format\jcl\install\ClxGui\
+Processing directory P:\Delphi\JCL-format\jcl\install\HeaderTest\
+Processing directory P:\Delphi\JCL-format\jcl\install\prototypes\
+Formatting file P:\Delphi\JCL-format\jcl\install\prototypes\JediGUIInstall.pas
+Parameter C is not used near PROCEDURE in procedure UpdateRadioButton near line 323 col 3
+Parameter Sender is not used near PROCEDURE in procedure TInstallFrame.SplitterCanResize near line 417 col 1
+Parameter State is not used near PROCEDURE in procedure TInstallFrame.TreeViewCustomDrawItem near line 428 col 1
+Parameter DefaultDraw is not used near PROCEDURE in procedure TInstallFrame.TreeViewCustomDrawItem near line 428 col 1
+Parameter Shift is not used near PROCEDURE in procedure TInstallFrame.TreeViewMouseDown near line 485 col 1
+Formatting file P:\Delphi\JCL-format\jcl\install\prototypes\JediGUIMain.pas
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.HandleException near line 171 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormCreate near line 183 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormDestroy near line 202 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.FormShow near line 207 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.QuitBtnClick near line 264 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.InstallBtnClick near line 269 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.UninstallBtnClick near line 287 col 1
+Parameter Message is not used near PROCEDURE in procedure TMainForm.WMAfterShow near line 305 col 1
+Parameter Sender is not used near PROCEDURE in procedure TMainForm.JediImageClick near line 314 col 1
+Formatting file P:\Delphi\JCL-format\jcl\install\prototypes\JediGUIReadme.pas
+Parameter Sender is not used near PROCEDURE in procedure TReadmeFrame.ReadmePaneDblClick near line 99 col 1
+Parameter ScreenX is not used near FUNCTION in function TReadmeFrame.GetHintAtPos near line 112 col 1
+Parameter ScreenY is not used near FUNCTION in function TReadmeFrame.GetHintAtPos near line 112 col 1
+Processing directory P:\Delphi\JCL-format\jcl\install\VclGui\
+Formatting file P:\Delphi\JCL-format\jcl\install\VclGui\FrmCompile.pas
+Parameter Sender is not used near PROCEDURE in procedure TFormCompile.BtnOkClick near line 134 col 1
+Parameter Sender is not used near PROCEDURE in procedure TFormCompile.FormCloseQuery near line 286 col 1
+Formatting file P:\Delphi\JCL-format\jcl\install\VclGui\JediGUIProfiles.pas
+Parameter ScreenX is not used near FUNCTION in function TProfilesFrame.GetHintAtPos near line 83 col 1
+Parameter ScreenY is not used near FUNCTION in function TProfilesFrame.GetHintAtPos near line 83 col 1
+Processing directory P:\Delphi\JCL-format\jcl\lib\
+Processing directory P:\Delphi\JCL-format\jcl\lib\c5\
+Processing directory P:\Delphi\JCL-format\jcl\lib\c5\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\c6\
+Processing directory P:\Delphi\JCL-format\jcl\lib\c6\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\cs1\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d10\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d10\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d10.net\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d10.net\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d11\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d11\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d11.net\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d11.net\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d5\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d5\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d6\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d6\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d7\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d7\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d8\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d9\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d9\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d9.net\
+Processing directory P:\Delphi\JCL-format\jcl\lib\d9.net\debug\
+Processing directory P:\Delphi\JCL-format\jcl\lib\k3\
+Processing directory P:\Delphi\JCL-format\jcl\lib\k3\debug\
+Processing directory P:\Delphi\JCL-format\jcl\packages\
+Processing directory P:\Delphi\JCL-format\jcl\packages\c5\
+Processing directory P:\Delphi\JCL-format\jcl\packages\c6\
+Processing directory P:\Delphi\JCL-format\jcl\packages\cs1\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d10\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d10.net\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d11\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d11.net\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d5\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d6\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d7\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d8\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d9\
+Processing directory P:\Delphi\JCL-format\jcl\packages\d9.net\
+Processing directory P:\Delphi\JCL-format\jcl\packages\k3\
+Processing directory P:\Delphi\JCL-format\jcl\packages\xml\
+Processing directory P:\Delphi\JCL-format\jcl\source\
+Processing directory P:\Delphi\JCL-format\jcl\source\common\
+Formatting file P:\Delphi\JCL-format\jcl\source\common\bzip2.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\Jcl8087.pas
+Parameter ClearExceptions is not used near FUNCTION in function Get8087StatusWord near line 122 col 1
+Parameter Control is not used near FUNCTION in function Set8087ControlWord near line 159 col 1
+Parameter Exceptions is not used near FUNCTION in function SetMasked8087Exceptions near line 203 col 1
+Parameter ClearBefore is not used near FUNCTION in function SetMasked8087Exceptions near line 203 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclAbstractContainers.pas
+Parameter ALockDelegate is not used near CONSTRUCTOR in constructor TJclAbstractLockable.Create near line 477 col 1
+Parameter Dest is not used near PROCEDURE in procedure TJclAbstractContainerBase.AssignDataTo near line 589 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclAlgorithms.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclAnsiStrings.pas
+Parameter Str is not used near PROCEDURE in procedure StrCase near line 549 col 1
+Parameter Offset is not used near PROCEDURE in procedure StrCase near line 549 col 1
+Parameter S is not used near PROCEDURE in procedure StrCaseBuff near line 649 col 1
+Parameter Offset is not used near PROCEDURE in procedure StrCaseBuff near line 649 col 1
+Parameter Str is not used near FUNCTION in function StrEndW near line 722 col 1
+Parameter S is not used near PROCEDURE in procedure StrLowerInPlace near line 1085 col 1
+Parameter S is not used near PROCEDURE in procedure StrLowerBuff near line 1101 col 1
+Parameter S is not used near PROCEDURE in procedure StrUpperInPlace near line 1788 col 1
+Parameter S is not used near PROCEDURE in procedure StrUpperBuff near line 1802 col 1
+Parameter S is not used near FUNCTION in function StrLen near line 1882 col 1
+Parameter S1 is not used near FUNCTION in function StrCompare near line 2015 col 1
+Parameter S2 is not used near FUNCTION in function StrCompare near line 2015 col 1
+Parameter S1 is not used near FUNCTION in function StrCompareRange near line 2162 col 1
+Parameter S2 is not used near FUNCTION in function StrCompareRange near line 2162 col 1
+Parameter Index is not used near FUNCTION in function StrCompareRange near line 2162 col 1
+Parameter Substr is not used near FUNCTION in function StrFind near line 2293 col 1
+Parameter S is not used near FUNCTION in function StrFind near line 2293 col 1
+Parameter Index is not used near FUNCTION in function StrFind near line 2293 col 1
+Parameter Substr is not used near FUNCTION in function StrMatch near line 2531 col 1
+Parameter S is not used near FUNCTION in function StrMatch near line 2531 col 1
+Parameter Index is not used near FUNCTION in function StrMatch near line 2531 col 1
+Parameter Substr is not used near FUNCTION in function StrSearch near line 2897 col 1
+Parameter S is not used near FUNCTION in function StrSearch near line 2897 col 1
+Parameter Index is not used near FUNCTION in function StrSearch near line 2897 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclArrayLists.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclArraySets.pas
+Parameter Index is not used near PROCEDURE in procedure TJclIntfArraySet.Insert near line 543 col 1
+Parameter AInterface is not used near PROCEDURE in procedure TJclIntfArraySet.Insert near line 543 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclAnsiStrArraySet.Insert near line 674 col 1
+Parameter AString is not used near PROCEDURE in procedure TJclAnsiStrArraySet.Insert near line 674 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclWideStrArraySet.Insert near line 805 col 1
+Parameter AString is not used near PROCEDURE in procedure TJclWideStrArraySet.Insert near line 805 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclSingleArraySet.Insert near line 936 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclSingleArraySet.Insert near line 936 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclDoubleArraySet.Insert near line 1067 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclDoubleArraySet.Insert near line 1067 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclExtendedArraySet.Insert near line 1198 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclExtendedArraySet.Insert near line 1198 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclIntegerArraySet.Insert near line 1329 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclIntegerArraySet.Insert near line 1329 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclCardinalArraySet.Insert near line 1460 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclCardinalArraySet.Insert near line 1460 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclInt64ArraySet.Insert near line 1591 col 1
+Parameter AValue is not used near PROCEDURE in procedure TJclInt64ArraySet.Insert near line 1591 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclPtrArraySet.Insert near line 1723 col 1
+Parameter APtr is not used near PROCEDURE in procedure TJclPtrArraySet.Insert near line 1723 col 1
+Parameter Index is not used near PROCEDURE in procedure TJclArraySet.Insert near line 1855 col 1
+Parameter AObject is not used near PROCEDURE in procedure TJclArraySet.Insert near line 1855 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclBase.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclBinaryTrees.pas
+Parameter AInterface is not used near FUNCTION in function TIntfItr.Insert near line 942 col 1
+Parameter AInterface is not used near PROCEDURE in procedure TIntfItr.SetObject near line 1051 col 1
+Parameter AString is not used near FUNCTION in function TAnsiStrItr.Insert near line 1369 col 1
+Parameter AString is not used near PROCEDURE in procedure TAnsiStrItr.SetString near line 1478 col 1
+Parameter AString is not used near FUNCTION in function TWideStrItr.Insert near line 1796 col 1
+Parameter AString is not used near PROCEDURE in procedure TWideStrItr.SetString near line 1905 col 1
+Parameter AValue is not used near FUNCTION in function TSingleItr.Insert near line 2223 col 1
+Parameter AValue is not used near PROCEDURE in procedure TSingleItr.SetValue near line 2332 col 1
+Parameter AValue is not used near FUNCTION in function TDoubleItr.Insert near line 2650 col 1
+Parameter AValue is not used near PROCEDURE in procedure TDoubleItr.SetValue near line 2759 col 1
+Parameter AValue is not used near FUNCTION in function TExtendedItr.Insert near line 3077 col 1
+Parameter AValue is not used near PROCEDURE in procedure TExtendedItr.SetValue near line 3186 col 1
+Parameter AValue is not used near FUNCTION in function TIntegerItr.Insert near line 3504 col 1
+Parameter AValue is not used near PROCEDURE in procedure TIntegerItr.SetValue near line 3613 col 1
+Parameter AValue is not used near FUNCTION in function TCardinalItr.Insert near line 3931 col 1
+Parameter AValue is not used near PROCEDURE in procedure TCardinalItr.SetValue near line 4040 col 1
+Parameter AValue is not used near FUNCTION in function TInt64Itr.Insert near line 4358 col 1
+Parameter AValue is not used near PROCEDURE in procedure TInt64Itr.SetValue near line 4467 col 1
+Parameter APtr is not used near FUNCTION in function TPtrItr.Insert near line 4786 col 1
+Parameter APtr is not used near PROCEDURE in procedure TPtrItr.SetPtr near line 4895 col 1
+Parameter AObject is not used near FUNCTION in function TItr.Insert near line 5214 col 1
+Parameter AObject is not used near PROCEDURE in procedure TItr.SetObject near line 5323 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclIntfBinaryTree.SetCapacity near line 6626 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclAnsiStrBinaryTree.SetCapacity near line 7309 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclWideStrBinaryTree.SetCapacity near line 7992 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclSingleBinaryTree.SetCapacity near line 8675 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclDoubleBinaryTree.SetCapacity near line 9358 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclExtendedBinaryTree.SetCapacity near line 10041 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclIntegerBinaryTree.SetCapacity near line 10724 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclCardinalBinaryTree.SetCapacity near line 11407 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclInt64BinaryTree.SetCapacity near line 12090 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclPtrBinaryTree.SetCapacity near line 12774 col 1
+Parameter Value is not used near PROCEDURE in procedure TJclBinaryTree.SetCapacity near line 13458 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclBorlandTools.pas
+Parameter DCPPath is not used near FUNCTION in function TJclBorRADToolInstallation.CompileBCBPackage near line 3290 col 1
+Parameter DcpSearchPath is not used near FUNCTION in function TJclBorRADToolInstallation.CompileBCBProject near line 3327 col 1
+Parameter Version is not used near CLASS in function TJclBorRADToolInstallation.GetLatestUpdatePackForVersion near line 3644 col 1
+Parameter CLRVersion is not used near FUNCTION in function TJclBDSInstallation.CompileDelphiDotNetProject near line 4815 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclComplex.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclCompression.pas
+Parameter Stream is not used near CONSTRUCTOR in constructor TJclCompressionStream.Create near line 435 col 1
+Parameter Buffer is not used near FUNCTION in function TJclCompressionStream.Read near line 448 col 1
+Parameter Count is not used near FUNCTION in function TJclCompressionStream.Read near line 448 col 1
+Parameter Buffer is not used near FUNCTION in function TJclCompressionStream.Write near line 453 col 1
+Parameter Count is not used near FUNCTION in function TJclCompressionStream.Write near line 453 col 1
+Parameter Offset is not used near FUNCTION in function TJclCompressionStream.Seek near line 458 col 1
+Parameter Origin is not used near FUNCTION in function TJclCompressionStream.Seek near line 458 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclGZIPCompressionStream.ZLibStreamProgress near line 969 col 1
+Parameter Sender is not used near FUNCTION in function TJclGZIPDecompressionStream.ReadCompressedData near line 1170 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclGZIPDecompressionStream.ZLibStreamProgress near line 1215 col 1
+Parameter CompressionLevel is not used near CONSTRUCTOR in constructor TJclBZIP2CompressionStream.Create near line 1252 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclContainerIntf.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclCounter.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclDateTime.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDI.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDISEF.pas
+Parameter ELMSList is not used near PROCEDURE in procedure InternalParseCOMSDataOfCOMSDefinition near line 1210 col 1
+Parameter SEFFile is not used near PROCEDURE in procedure ParseSetsDataOfSETSDefinition near line 1789 col 1
+Parameter NewParent is not used near FUNCTION in function TEDISEFLoop.Clone near line 3462 col 1
+Parameter NewParent is not used near FUNCTION in function TEDISEFTable.Clone near line 3633 col 1
+Parameter NewParent is not used near FUNCTION in function TEDISEFSet.Clone near line 3738 col 1
+Parameter Parent is not used near CONSTRUCTOR in constructor TEDISEFFile.Create near line 3945 col 1
+Parameter NewParent is not used near FUNCTION in function TEDISEFFile.Clone near line 4027 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDITranslators.pas
+Parameter OwnerLoopId is not used near PROCEDURE in procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet near line 206 col 1
+Parameter ParentLoopId is not used near PROCEDURE in procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet near line 206 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDIXML.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDI_ANSIX12.pas
+Parameter Parent is not used near CONSTRUCTOR in constructor TEDIFile.Create near line 1920 col 1
+Parameter TSDocument is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter LoopStack is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter DataSegment is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter SpecSegment is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter DataIndex is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter SpecIndex is not used near PROCEDURE in procedure TEDITransactionSetDocument.ValidateData near line 3202 col 1
+Parameter SegmentId is not used near PROCEDURE in procedure TEDITransactionSetDocument.AddLoopToDoc near line 3270 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDI_ANSIX12_Ext.pas
+Parameter TSDocument is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter LoopStack is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter DataSegment is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter SpecSegment is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter DataIndex is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter SpecIndex is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.ValidateData near line 208 col 1
+Parameter SegmentId is not used near PROCEDURE in procedure TEDI_ANSIX12_Document.AddLoopToDoc near line 236 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDI_UNEDIFACT.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclEDI_UNEDIFACT_Ext.pas
+Parameter TSDocument is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter LoopStack is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter DataSegment is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter SpecSegment is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter DataIndex is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter SpecIndex is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.ValidateData near line 212 col 1
+Parameter SegmentId is not used near PROCEDURE in procedure TEDI_UNEDIFACT_Document.AddLoopToDoc near line 237 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclExprEval.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclFileUtils.pas
+Parameter Size is not used near PROCEDURE in procedure ProcessVarInfo near line 4737 col 3
+Parameter Reader is not used near PROCEDURE in procedure TJclFileAttributeMask.ReadVolumeID near line 5477 col 1
+Parameter Directory is not used near PROCEDURE in procedure TEnumFileThread.AsyncProcessFile near line 5682 col 1
+Parameter Directory is not used near PROCEDURE in procedure TEnumFileThread.SyncProcessFile near line 5689 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclHashMaps.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclHashSets.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclIniFiles.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclLinkedLists.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclLogic.pas
+Parameter X is not used near FUNCTION in function BitsHighest near line 399 col 1
+Parameter X is not used near FUNCTION in function BitsHighest near line 418 col 1
+Parameter X is not used near FUNCTION in function BitsLowest near line 472 col 1
+Parameter X is not used near FUNCTION in function BitsLowest near line 491 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 545 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 545 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 557 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 557 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 569 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 569 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 581 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 581 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 593 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 593 col 1
+Parameter Value is not used near FUNCTION in function ClearBit near line 604 col 1
+Parameter Bit is not used near FUNCTION in function ClearBit near line 604 col 1
+Parameter Value is not used near FUNCTION in function LRot near line 812 col 1
+Parameter Value is not used near FUNCTION in function LRot near line 818 col 1
+Parameter Value is not used near FUNCTION in function LRot near line 824 col 1
+Parameter Value is not used near FUNCTION in function Sar near line 1028 col 1
+Parameter Count is not used near FUNCTION in function Sar near line 1028 col 1
+Parameter Value is not used near FUNCTION in function Sar near line 1034 col 1
+Parameter Count is not used near FUNCTION in function Sar near line 1034 col 1
+Parameter Value is not used near FUNCTION in function Sar near line 1040 col 1
+Parameter Count is not used near FUNCTION in function Sar near line 1040 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1047 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1047 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1059 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1059 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1071 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1071 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1083 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1083 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1095 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1095 col 1
+Parameter Value is not used near FUNCTION in function SetBit near line 1106 col 1
+Parameter Bit is not used near FUNCTION in function SetBit near line 1106 col 1
+Parameter Value is not used near FUNCTION in function ReverseBytes near line 1450 col 1
+Parameter Value is not used near FUNCTION in function ReverseBytes near line 1461 col 1
+Parameter Value is not used near FUNCTION in function ReverseBytes near line 1472 col 1
+Parameter Value is not used near FUNCTION in function ReverseBytes near line 1491 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclMath.pas
+Parameter Dummy is not used near CONSTRUCTOR in constructor EJclNaNSignal.Create near line 3268 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclMIDI.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclMime.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclPCRE.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclQueues.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclResources.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclRTTI.pas
+Parameter AnObj is not used near FUNCTION in function JclIsClass near line 2981 col 1
+Parameter AClass is not used near FUNCTION in function JclIsClass near line 2981 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclSchedule.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclSimpleXml.pas
+Parameter Level is not used near PROCEDURE in procedure TJclSimpleXMLElemDocType.SaveToStream near line 3048 col 1
+Parameter AName is not used near PROCEDURE in procedure TJclSimpleHashTable.AddObject near line 3312 col 1
+Parameter AObject is not used near PROCEDURE in procedure TJclSimpleHashTable.AddObject near line 3312 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclSortedMaps.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStacks.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStatistics.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStreams.pas
+Parameter Offset is not used near FUNCTION in function TJclStream.Seek near line 585 col 1
+Parameter Origin is not used near FUNCTION in function TJclStream.Seek near line 585 col 1
+Parameter NewSize is not used near PROCEDURE in procedure TJclStream.SetSize near line 598 col 1
+Parameter Rights is not used near CONSTRUCTOR in constructor TJclFileStream.Create near line 682 col 1
+Parameter NewSize is not used near PROCEDURE in procedure TJclEmptyStream.SetSize near line 739 col 1
+Parameter Buffer is not used near FUNCTION in function TJclEmptyStream.Read near line 747 col 1
+Parameter Count is not used near FUNCTION in function TJclEmptyStream.Read near line 747 col 1
+Parameter Buffer is not used near FUNCTION in function TJclEmptyStream.Write near line 757 col 1
+Parameter Count is not used near FUNCTION in function TJclEmptyStream.Write near line 757 col 1
+Parameter Origin is not used near FUNCTION in function TJclEmptyStream.Seek near line 764 col 1
+Parameter Buffer is not used near FUNCTION in function TJclNullStream.Write near line 818 col 1
+Parameter Offset is not used near FUNCTION in function TJclMultiplexStream.Seek near line 1025 col 1
+Parameter Origin is not used near FUNCTION in function TJclMultiplexStream.Seek near line 1025 col 1
+Parameter NewSize is not used near PROCEDURE in procedure TJclMultiplexStream.SetSize near line 1045 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStrHashMap.pas
+Parameter AUserData is not used near FUNCTION in function Iterate_FreeObjects near line 225 col 1
+Parameter AStr is not used near FUNCTION in function Iterate_FreeObjects near line 225 col 1
+Parameter AUserData is not used near FUNCTION in function Iterate_Dispose near line 233 col 1
+Parameter AStr is not used near FUNCTION in function Iterate_Dispose near line 233 col 1
+Parameter AUserData is not used near FUNCTION in function Iterate_FreeMem near line 244 col 1
+Parameter AStr is not used near FUNCTION in function Iterate_FreeMem near line 244 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStringLists.pas
+Parameter List is not used near FUNCTION in function LocalSort near line 1108 col 3
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclStrings.pas
+Parameter Str is not used near PROCEDURE in procedure StrCase near line 632 col 1
+Parameter Offset is not used near PROCEDURE in procedure StrCase near line 632 col 1
+Parameter S is not used near PROCEDURE in procedure StrCaseBuff near line 732 col 1
+Parameter Offset is not used near PROCEDURE in procedure StrCaseBuff near line 732 col 1
+Parameter Str is not used near FUNCTION in function StrEndW near line 805 col 1
+Parameter S is not used near PROCEDURE in procedure StrLowerInPlace near line 1170 col 1
+Parameter S is not used near PROCEDURE in procedure StrLowerBuff near line 1186 col 1
+Parameter S is not used near PROCEDURE in procedure StrUpperInPlace near line 1912 col 1
+Parameter S is not used near PROCEDURE in procedure StrUpperBuff near line 1926 col 1
+Parameter S is not used near FUNCTION in function StrLen near line 2008 col 1
+Parameter S1 is not used near FUNCTION in function StrCompare near line 2158 col 1
+Parameter S2 is not used near FUNCTION in function StrCompare near line 2158 col 1
+Parameter S1 is not used near FUNCTION in function StrCompareRange near line 2305 col 1
+Parameter S2 is not used near FUNCTION in function StrCompareRange near line 2305 col 1
+Parameter Index is not used near FUNCTION in function StrCompareRange near line 2305 col 1
+Parameter Substr is not used near FUNCTION in function StrFind near line 2426 col 1
+Parameter S is not used near FUNCTION in function StrFind near line 2426 col 1
+Parameter Index is not used near FUNCTION in function StrFind near line 2426 col 1
+Parameter Substr is not used near FUNCTION in function StrMatch near line 2671 col 1
+Parameter S is not used near FUNCTION in function StrMatch near line 2671 col 1
+Parameter Index is not used near FUNCTION in function StrMatch near line 2671 col 1
+Parameter Substr is not used near FUNCTION in function StrSearch near line 3054 col 1
+Parameter S is not used near FUNCTION in function StrSearch near line 3054 col 1
+Parameter Index is not used near FUNCTION in function StrSearch near line 3054 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclSysInfo.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclSysUtils.pas
+Parameter Buffer is not used near FUNCTION in function TJclReferenceMemoryStream.Write near line 1470 col 1
+Parameter Count is not used near FUNCTION in function TJclReferenceMemoryStream.Write near line 1470 col 1
+Parameter AClass is not used near FUNCTION in function GetDynamicMethodCount near line 1687 col 1
+Parameter AClass is not used near FUNCTION in function GetDynamicIndexList near line 1696 col 1
+Parameter AClass is not used near FUNCTION in function GetDynamicAddressList near line 1702 col 1
+Parameter AClass is not used near FUNCTION in function HasDynamicMethod near line 1711 col 1
+Parameter Index is not used near FUNCTION in function HasDynamicMethod near line 1711 col 1
+Parameter AClass is not used near FUNCTION in function GetDynamicMethod near line 1746 col 1
+Parameter Index is not used near FUNCTION in function GetDynamicMethod near line 1746 col 1
+Parameter AClass is not used near FUNCTION in function GetInitTable near line 1754 col 1
+Parameter AClass is not used near FUNCTION in function GetFieldTable near line 1759 col 1
+Parameter AClass is not used near FUNCTION in function GetMethodTable near line 1764 col 1
+Parameter AClass is not used near FUNCTION in function GetClassParent near line 1793 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclUnitConv.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclUnitVersioning.pas
+Parameter Instance is not used near PROCEDURE in procedure TCustomUnitVersioningProvider.LoadModuleUnitVersioningInfo near line 373 col 1
+Parameter Instance is not used near PROCEDURE in procedure TCustomUnitVersioningProvider.ReleaseModuleUnitVersioningInfo near line 378 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclUnitVersioningProviders.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclValidation.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclVectors.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\common\JclWideStrings.pas
+Parameter Str is not used near PROCEDURE in procedure StrSwapByteOrder near line 660 col 1
+Parameter Str is not used near FUNCTION in function StrScanW near line 731 col 1
+Parameter Chr is not used near FUNCTION in function StrScanW near line 731 col 1
+Parameter StrLen is not used near FUNCTION in function StrScanW near line 731 col 1
+Parameter Dest is not used near FUNCTION in function StrPLCopyW near line 769 col 1
+Parameter Source is not used near FUNCTION in function StrPLCopyW near line 769 col 1
+Parameter MaxLen is not used near FUNCTION in function StrPLCopyW near line 769 col 1
+Parameter Index is not used near FUNCTION in function TWStrings.GetObject near line 1381 col 1
+Parameter Index is not used near PROCEDURE in procedure TWStrings.InsertObject near line 1473 col 1
+Parameter S is not used near PROCEDURE in procedure TWStrings.InsertObject near line 1473 col 1
+Parameter AObject is not used near PROCEDURE in procedure TWStrings.InsertObject near line 1473 col 1
+Parameter NewCapacity is not used near PROCEDURE in procedure TWStrings.SetCapacity near line 1599 col 1
+Parameter Updating is not used near PROCEDURE in procedure TWStrings.SetUpdateState near line 1711 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\common\pcre.pas
+Parameter Value is not used near PROCEDURE in procedure InitPCREFuncPtrs near line 1066 col 1
+Processing directory P:\Delphi\JCL-format\jcl\source\prototypes\
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\Hardlinks.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclArrayLists.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclArraySets.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclBinaryTrees.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclGraphics.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclGraphUtils.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclHashMaps.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclHashSets.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclLinkedLists.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclQGraphics.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclQGraphUtils.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclQueues.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclSortedMaps.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclStacks.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclVectors.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\JclWin32.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\zlibh.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\_Graphics.pas
+Parameter DummyForBCB is not used near CONSTRUCTOR in constructor TJclRegion.CreateRect near line 2312 col 1
+Parameter DummyForBCB is not used near CONSTRUCTOR in constructor TJclRegion.CreateRect near line 2317 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\prototypes\_GraphUtils.pas
+Parameter Src is not used near PROCEDURE in procedure _BlendLine near line 616 col 1
+Parameter Dst is not used near PROCEDURE in procedure _BlendLine near line 616 col 1
+Parameter Count is not used near PROCEDURE in procedure _BlendLine near line 616 col 1
+Parameter X is not used near FUNCTION in function M_CombineReg near line 752 col 1
+Parameter Y is not used near FUNCTION in function M_CombineReg near line 752 col 1
+Parameter W is not used near FUNCTION in function M_CombineReg near line 752 col 1
+Parameter F is not used near FUNCTION in function M_BlendReg near line 793 col 1
+Parameter B is not used near FUNCTION in function M_BlendReg near line 793 col 1
+Parameter F is not used near FUNCTION in function M_BlendRegEx near line 834 col 1
+Parameter B is not used near FUNCTION in function M_BlendRegEx near line 834 col 1
+Parameter M is not used near FUNCTION in function M_BlendRegEx near line 834 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLine near line 888 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLine near line 888 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLine near line 888 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLineEx near line 945 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLineEx near line 945 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLineEx near line 945 col 1
+Processing directory P:\Delphi\JCL-format\jcl\source\prototypes\containers\
+Processing directory P:\Delphi\JCL-format\jcl\source\prototypes\supplement\
+Processing directory P:\Delphi\JCL-format\jcl\source\prototypes\win32api\
+Processing directory P:\Delphi\JCL-format\jcl\source\unix\
+Formatting file P:\Delphi\JCL-format\jcl\source\unix\zlibh.pas
+Processing directory P:\Delphi\JCL-format\jcl\source\vcl\
+Formatting file P:\Delphi\JCL-format\jcl\source\vcl\JclFont.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\vcl\JclGraphics.pas
+Parameter DummyForBCB is not used near CONSTRUCTOR in constructor TJclRegion.CreateRect near line 2256 col 1
+Parameter DummyForBCB is not used near CONSTRUCTOR in constructor TJclRegion.CreateRect near line 2261 col 1
+Parameter Sender is not used near PROCEDURE in procedure TJclBitmap32.FontChanged near line 4214 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\vcl\JclGraphUtils.pas
+Parameter Src is not used near PROCEDURE in procedure _BlendLine near line 586 col 1
+Parameter Dst is not used near PROCEDURE in procedure _BlendLine near line 586 col 1
+Parameter Count is not used near PROCEDURE in procedure _BlendLine near line 586 col 1
+Parameter X is not used near FUNCTION in function M_CombineReg near line 722 col 1
+Parameter Y is not used near FUNCTION in function M_CombineReg near line 722 col 1
+Parameter W is not used near FUNCTION in function M_CombineReg near line 722 col 1
+Parameter F is not used near FUNCTION in function M_BlendReg near line 763 col 1
+Parameter B is not used near FUNCTION in function M_BlendReg near line 763 col 1
+Parameter F is not used near FUNCTION in function M_BlendRegEx near line 804 col 1
+Parameter B is not used near FUNCTION in function M_BlendRegEx near line 804 col 1
+Parameter M is not used near FUNCTION in function M_BlendRegEx near line 804 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLine near line 858 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLine near line 858 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLine near line 858 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLineEx near line 915 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLineEx near line 915 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLineEx near line 915 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\vcl\JclPrint.pas
+Processing directory P:\Delphi\JCL-format\jcl\source\visclx\
+Formatting file P:\Delphi\JCL-format\jcl\source\visclx\JclQGraphics.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\visclx\JclQGraphUtils.pas
+Parameter Src is not used near PROCEDURE in procedure _BlendLine near line 561 col 1
+Parameter Dst is not used near PROCEDURE in procedure _BlendLine near line 561 col 1
+Parameter Count is not used near PROCEDURE in procedure _BlendLine near line 561 col 1
+Parameter X is not used near FUNCTION in function M_CombineReg near line 697 col 1
+Parameter Y is not used near FUNCTION in function M_CombineReg near line 697 col 1
+Parameter W is not used near FUNCTION in function M_CombineReg near line 697 col 1
+Parameter F is not used near FUNCTION in function M_BlendReg near line 738 col 1
+Parameter B is not used near FUNCTION in function M_BlendReg near line 738 col 1
+Parameter F is not used near FUNCTION in function M_BlendRegEx near line 779 col 1
+Parameter B is not used near FUNCTION in function M_BlendRegEx near line 779 col 1
+Parameter M is not used near FUNCTION in function M_BlendRegEx near line 779 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLine near line 833 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLine near line 833 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLine near line 833 col 1
+Parameter Src is not used near PROCEDURE in procedure M_BlendLineEx near line 890 col 1
+Parameter Dst is not used near PROCEDURE in procedure M_BlendLineEx near line 890 col 1
+Parameter Count is not used near PROCEDURE in procedure M_BlendLineEx near line 890 col 1
+Processing directory P:\Delphi\JCL-format\jcl\source\windows\
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\Hardlinks.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclAppInst.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclCIL.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclCLR.pas
+Parameter WideIndex is not used near FUNCTION in function TJclClrTable.GetCodedIndexTag near line 1083 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclCOM.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclConsole.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclDebug.pas
+Parameter UnitName is not used near PROCEDURE in procedure TJclMapScanner.LineNumberUnitItem near line 1549 col 1
+Parameter Address is not used near PROCEDURE in procedure TJclMapScanner.PublicsByNameItem near line 1608 col 1
+Parameter Name is not used near PROCEDURE in procedure TJclMapScanner.PublicsByNameItem near line 1608 col 1
+Parameter GroupName is not used near PROCEDURE in procedure TJclMapScanner.SegmentItem near line 1661 col 1
+Parameter ExceptObj is not used near PROCEDURE in procedure DoExceptionStackTrace near line 3846 col 1
+Parameter Context is not used near FUNCTION in function GetThreadFs near line 3935 col 1
+Parameter Proc is not used near FUNCTION in function SearchForStackPtrManipulation near line 4211 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclDotNet.pas
+Parameter AssemblyName is not used near CONSTRUCTOR in constructor TJclClrObject.Create near line 1107 col 1
+Parameter NamespaceName is not used near CONSTRUCTOR in constructor TJclClrObject.Create near line 1107 col 1
+Parameter ClassName is not used near CONSTRUCTOR in constructor TJclClrObject.Create near line 1107 col 1
+Parameter Parameters is not used near CONSTRUCTOR in constructor TJclClrObject.Create near line 1107 col 1
+Parameter NewInstance is not used near CONSTRUCTOR in constructor TJclClrObject.Create near line 1113 col 1
+Parameter Name is not used near FUNCTION in function TJclClrObject.GetField near line 1119 col 1
+Parameter Name is not used near FUNCTION in function TJclClrObject.GetProperty near line 1125 col 1
+Parameter Name is not used near FUNCTION in function TJclClrObject.GetMethod near line 1131 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclHookExcept.pas
+Parameter ModulesList is not used near FUNCTION in function JclHookedExceptModulesList near line 530 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclLANMan.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclLocales.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclMapi.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclMetadata.pas
+Parameter OptILTable is not used near PROCEDURE in procedure TJclClrMethodBody.AddOptILTable near line 3573 col 1
+Parameter Size is not used near PROCEDURE in procedure TJclClrMethodBody.AddOptILTable near line 3573 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclMiscel.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclMsdosSys.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclMultimedia.pas
+Parameter Msg is not used near PROCEDURE in procedure MmTimerCallback near line 381 col 1
+Parameter dw1 is not used near PROCEDURE in procedure MmTimerCallback near line 381 col 1
+Parameter dw2 is not used near PROCEDURE in procedure MmTimerCallback near line 381 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclNTFS.pas
+Parameter ResetExisting is not used near FUNCTION in function TJclFileSummary.CreatePropertySet near line 1608 col 1
+Parameter Name is not used near PROCEDURE in procedure TJclFilePropertySet.SetPropertyName near line 2093 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclPeImage.pas
+Parameter Buffer is not used near FUNCTION in function TJclPeResourceRawStream.Write near line 2471 col 1
+Parameter Count is not used near FUNCTION in function TJclPeResourceRawStream.Write near line 2471 col 1
+Parameter Buffer is not used near FUNCTION in function TJclPeSectionStream.Write near line 5967 col 1
+Parameter Count is not used near FUNCTION in function TJclPeSectionStream.Write near line 5967 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclRegistry.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclSecurity.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclShell.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclStructStorage.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclSvcCtrl.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclSynch.pas
+Parameter Target is not used near FUNCTION in function LockedAdd near line 419 col 1
+Parameter Value is not used near FUNCTION in function LockedAdd near line 419 col 1
+Parameter Target is not used near FUNCTION in function LockedCompareExchange near line 427 col 1
+Parameter Exch is not used near FUNCTION in function LockedCompareExchange near line 427 col 1
+Parameter Comp is not used near FUNCTION in function LockedCompareExchange near line 427 col 1
+Parameter Target is not used near FUNCTION in function LockedCompareExchange near line 433 col 1
+Parameter Exch is not used near FUNCTION in function LockedCompareExchange near line 433 col 1
+Parameter Comp is not used near FUNCTION in function LockedCompareExchange near line 433 col 1
+Parameter Target is not used near FUNCTION in function LockedDec near line 439 col 1
+Parameter Target is not used near FUNCTION in function LockedExchange near line 447 col 1
+Parameter Value is not used near FUNCTION in function LockedExchange near line 447 col 1
+Parameter Target is not used near FUNCTION in function LockedExchangeAdd near line 454 col 1
+Parameter Value is not used near FUNCTION in function LockedExchangeAdd near line 454 col 1
+Parameter Target is not used near FUNCTION in function LockedExchangeDec near line 461 col 1
+Parameter Target is not used near FUNCTION in function LockedExchangeInc near line 468 col 1
+Parameter Target is not used near FUNCTION in function LockedExchangeSub near line 475 col 1
+Parameter Value is not used near FUNCTION in function LockedExchangeSub near line 475 col 1
+Parameter Target is not used near FUNCTION in function LockedInc near line 483 col 1
+Parameter Target is not used near FUNCTION in function LockedSub near line 491 col 1
+Parameter Value is not used near FUNCTION in function LockedSub near line 491 col 1
+Parameter Resume is not used near FUNCTION in function TJclWaitableTimer.SetTimer near line 808 col 1
+Parameter Resume is not used near FUNCTION in function TJclWaitableTimer.SetTimerApc near line 818 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclTask.pas
+Parameter Pages is not used near FUNCTION in function TJclScheduledTask.ShowPage near line 895 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclTD32.pas
+Parameter Size is not used near PROCEDURE in procedure TJclTD32InfoParser.AnalyseNames near line 1168 col 1
+Parameter Size is not used near PROCEDURE in procedure TJclTD32InfoParser.AnalyseModules near line 1350 col 1
+Parameter Size is not used near PROCEDURE in procedure TJclTD32InfoParser.AnalyseSourceModules near line 1355 col 1
+Parameter pSubsection is not used near PROCEDURE in procedure TJclTD32InfoParser.AnalyseUnknownSubSection near line 1372 col 1
+Parameter Size is not used near PROCEDURE in procedure TJclTD32InfoParser.AnalyseUnknownSubSection near line 1372 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclUnicode.pas
+Parameter TextLen is not used near FUNCTION in function TURESearch.FindFirst near line 4676 col 1
+Parameter Index is not used near FUNCTION in function TWideStrings.GetObject near line 5007 col 1
+Parameter WithBOM is not used near PROCEDURE in procedure TWideStrings.SaveToStream near line 5249 col 1
+Parameter NewCapacity is not used near PROCEDURE in procedure TWideStrings.SetCapacity near line 5316 col 1
+Parameter Updating is not used near PROCEDURE in procedure TWideStrings.SetUpdateState near line 5390 col 1
+Parameter Str is not used near FUNCTION in function StrLenW near line 5798 col 1
+Parameter Str is not used near FUNCTION in function StrEndW near line 5811 col 1
+Parameter Dest is not used near FUNCTION in function StrMoveW near line 5823 col 1
+Parameter Source is not used near FUNCTION in function StrMoveW near line 5823 col 1
+Parameter Count is not used near FUNCTION in function StrMoveW near line 5823 col 1
+Parameter Dest is not used near FUNCTION in function StrCopyW near line 5858 col 1
+Parameter Source is not used near FUNCTION in function StrCopyW near line 5858 col 1
+Parameter Dest is not used near FUNCTION in function StrECopyW near line 5883 col 1
+Parameter Source is not used near FUNCTION in function StrECopyW near line 5883 col 1
+Parameter Dest is not used near FUNCTION in function StrLCopyW near line 5908 col 1
+Parameter Source is not used near FUNCTION in function StrLCopyW near line 5908 col 1
+Parameter MaxLen is not used near FUNCTION in function StrLCopyW near line 5908 col 1
+Parameter Dest is not used near FUNCTION in function StrPLCopyW near line 5960 col 1
+Parameter Source is not used near FUNCTION in function StrPLCopyW near line 5960 col 1
+Parameter MaxLen is not used near FUNCTION in function StrPLCopyW near line 5960 col 1
+Parameter Str is not used near FUNCTION in function StrScanW near line 6260 col 1
+Parameter Chr is not used near FUNCTION in function StrScanW near line 6260 col 1
+Parameter StrLen is not used near FUNCTION in function StrScanW near line 6260 col 1
+Parameter Str is not used near FUNCTION in function StrPosW near line 6300 col 1
+Parameter SubStr is not used near FUNCTION in function StrPosW near line 6300 col 1
+Parameter Str is not used near PROCEDURE in procedure StrSwapByteOrder near line 6413 col 1
+Parameter S is not used near FUNCTION in function WideCharPos near line 6622 col 1
+Parameter Ch is not used near FUNCTION in function WideCharPos near line 6622 col 1
+Parameter Index is not used near FUNCTION in function WideCharPos near line 6622 col 1
+Parameter Source is not used near PROCEDURE in procedure ExpandANSIString near line 7464 col 1
+Parameter Target is not used near PROCEDURE in procedure ExpandANSIString near line 7464 col 1
+Parameter Count is not used near PROCEDURE in procedure ExpandANSIString near line 7464 col 1
+Parameter Increment is not used near PROCEDURE in procedure FlagInvalidSequence near line 7507 col 1
+Parameter Ch is not used near PROCEDURE in procedure FlagInvalidSequence near line 7507 col 1
+Parameter Increment is not used near PROCEDURE in procedure FlagInvalidSequence near line 7526 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclWideFormat.pas
+Parameter Dividend is not used near FUNCTION in function ModDiv32 near line 458 col 1
+Parameter Divisor is not used near FUNCTION in function ModDiv32 near line 458 col 1
+Parameter Quotient is not used near FUNCTION in function ModDiv32 near line 458 col 1
+Parameter Dividend is not used near FUNCTION in function ModDiv64 near line 487 col 1
+Parameter Divisor is not used near FUNCTION in function ModDiv64 near line 487 col 1
+Parameter Quotient is not used near FUNCTION in function ModDiv64 near line 487 col 1
+Parameter Cls is not used near FUNCTION in function GetPClassName near line 530 col 1
+Parameter Buffer is not used near FUNCTION in function PrepareString near line 765 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclWin32.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclWin32Ex.pas
+Parameter hObjectToWaitOn is not used near FUNCTION in function JclSignalObjectAndWait near line 211 col 1
+Parameter lpTimerName is not used near FUNCTION in function JclCreateWaitableTimer near line 269 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\JclWinMIDI.pas
+Parameter Channel is not used near FUNCTION in function TMidiOut.GetChannelVolume near line 246 col 1
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\mscoree_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\mscorlib_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\MSHelpServices_TLB.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\MSTask.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\Snmp.pas
+Formatting file P:\Delphi\JCL-format\jcl\source\windows\zlibh.pas
+Processing directory P:\Delphi\JCL-format\jcl\source\windows\obj\
+Processing directory P:\Delphi\JCL-format\jcl\source\windows\obj\bzip2\
+Processing directory P:\Delphi\JCL-format\jcl\source\windows\obj\pcre\
+Processing directory P:\Delphi\JCL-format\jcl\source\windows\obj\zlib\
+Finished processing 271 files

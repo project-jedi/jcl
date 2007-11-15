@@ -201,7 +201,7 @@ procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
 var
   R, C: Integer;
   ColWidths: array of Word;
-  S: string;
+  S:    string;
 
   procedure AddLine;
   begin
@@ -248,13 +248,13 @@ begin
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
-        with Items[R] do
-        begin
-          S := MakeCellStr(Caption, 0);
-          for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-            S := S + MakeCellStr(SubItems[C], C + 1);
-          AddLine;
-        end;
+          with Items[R] do
+          begin
+            S := MakeCellStr(Caption, 0);
+            for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
+              S := S + MakeCellStr(SubItems[C], C + 1);
+            AddLine;
+          end;
     finally
       Strings.EndUpdate;
     end;
@@ -277,9 +277,9 @@ begin
   FUnitsSum.Duplicates := dupIgnore;
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
-            Settings.LoadInteger(JclTop, Top),
-            Settings.LoadInteger(JclWidth, Width),
-            Settings.LoadInteger(JclHeight, Height));
+    Settings.LoadInteger(JclTop, Top),
+    Settings.LoadInteger(JclWidth, Width),
+    Settings.LoadInteger(JclHeight, Height));
 
   FView := TProjectAnalyserView(Settings.LoadInteger(AnalyzerViewName, Integer(pavDetails)));
 
@@ -307,7 +307,7 @@ end;
 procedure TProjectAnalyzerForm.SetFileName(const FileName, MapFileName: TFileName; const ProjectName: string);
 var
   MapParser: TJclMapParser;
-  BorImage: TJclPeBorImage;
+  BorImage:  TJclPeBorImage;
   PackagesList: TStringList;
   I, U, C, ResourcesSize: Integer;
   ShortPackageName: string;
@@ -364,8 +364,8 @@ begin
       ShowDetails;
     pavSummary:
       ShowSummary;
-    else
-      ShowDfms;
+  else
+    ShowDfms;
   end;
 end;
 
@@ -462,10 +462,10 @@ begin
   FUnits[C].Group := ClassName;
   case ClassName1 of
     'B':
-      begin
-        Inc(FBssSize, Length);
-        Length := 0;
-      end;
+    begin
+      Inc(FBssSize, Length);
+      Length := 0;
+    end;
     'C':
       Inc(FCodeSize, Length);
     'D':
@@ -573,7 +573,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;

@@ -60,7 +60,7 @@ implementation
 {$R ProjAnalyzerIcon.res}
 
 uses
-  JclDebug, JclFileUtils, JclOtaConsts, 
+  JclDebug, JclFileUtils, JclOtaConsts,
   JclOtaResources;
 
 procedure Register;
@@ -101,8 +101,8 @@ begin
 end;
 
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
-    RegisterProc: TWizardRegisterProc;
-    var TerminateProc: TWizardTerminateProc): Boolean stdcall;
+  RegisterProc: TWizardRegisterProc;
+  var TerminateProc: TWizardTerminateProc): Boolean stdcall;
 var
   OTAWizardServices: IOTAWizardServices;
 begin
@@ -141,11 +141,11 @@ end;
 procedure TJclProjectAnalyzerExpert.ActionExecute(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
-  BuildOK, Succ: Boolean;
-  ProjOptions: IOTAProjectOptions;
-  SaveMapFile: Variant;
+  BuildOK, Succ:     Boolean;
+  ProjOptions:       IOTAProjectOptions;
+  SaveMapFile:       Variant;
   OutputDirectory, ProjectFileName, MapFileName, ExecutableFileName: string;
-  ProjectName: string;
+  ProjectName:       string;
 begin
   try
     TempActiveProject := ActiveProject;
@@ -159,7 +159,7 @@ begin
     ProjOptions := TempActiveProject.ProjectOptions;
     if not Assigned(ProjOptions) then
       raise EJclExpertException.CreateTrace(RsENoProjectOptions);
-      
+
     OutputDirectory := GetOutputDirectory(TempActiveProject);
     MapFileName := GetMapFileName(TempActiveProject);
 
@@ -216,7 +216,7 @@ end;
 procedure TJclProjectAnalyzerExpert.ActionUpdate(Sender: TObject);
 var
   TempActiveProject: IOTAProject;
-  ProjectName: string;
+  ProjectName:       string;
 begin
   try
     TempActiveProject := ActiveProject;

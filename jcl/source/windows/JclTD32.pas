@@ -142,7 +142,7 @@ uses
 
 const
   Borland32BitSymbolFileSignatureForDelphi = $39304246; // 'FB09'
-  Borland32BitSymbolFileSignatureForBCB    = $41304246; // 'FB0A'
+  Borland32BitSymbolFileSignatureForBCB = $41304246; // 'FB0A'
 
 type
   { Signature structure }
@@ -154,14 +154,14 @@ type
 
 const
   { Subsection Types }
-  SUBSECTION_TYPE_MODULE         = $120;
-  SUBSECTION_TYPE_TYPES          = $121;
-  SUBSECTION_TYPE_SYMBOLS        = $124;
-  SUBSECTION_TYPE_ALIGN_SYMBOLS  = $125;
-  SUBSECTION_TYPE_SOURCE_MODULE  = $127;
+  SUBSECTION_TYPE_MODULE = $120;
+  SUBSECTION_TYPE_TYPES  = $121;
+  SUBSECTION_TYPE_SYMBOLS = $124;
+  SUBSECTION_TYPE_ALIGN_SYMBOLS = $125;
+  SUBSECTION_TYPE_SOURCE_MODULE = $127;
   SUBSECTION_TYPE_GLOBAL_SYMBOLS = $129;
-  SUBSECTION_TYPE_GLOBAL_TYPES   = $12B;
-  SUBSECTION_TYPE_NAMES          = $130;
+  SUBSECTION_TYPE_GLOBAL_TYPES = $12B;
+  SUBSECTION_TYPE_NAMES  = $130;
 
 type
   { Subsection directory header structure }
@@ -381,41 +381,41 @@ type
 
 const
   { Symbol type defines }
-  SYMBOL_TYPE_COMPILE        = $0001; // Compile flags symbol
-  SYMBOL_TYPE_REGISTER       = $0002; // Register variable
-  SYMBOL_TYPE_CONST          = $0003; // Constant symbol
-  SYMBOL_TYPE_UDT            = $0004; // User-defined Type
-  SYMBOL_TYPE_SSEARCH        = $0005; // Start search
-  SYMBOL_TYPE_END            = $0006; // End block, procedure, with, or thunk
-  SYMBOL_TYPE_SKIP           = $0007; // Skip - Reserve symbol space
-  SYMBOL_TYPE_CVRESERVE      = $0008; // Reserved for Code View internal use
-  SYMBOL_TYPE_OBJNAME        = $0009; // Specify name of object file
+  SYMBOL_TYPE_COMPILE = $0001; // Compile flags symbol
+  SYMBOL_TYPE_REGISTER = $0002; // Register variable
+  SYMBOL_TYPE_CONST = $0003; // Constant symbol
+  SYMBOL_TYPE_UDT = $0004; // User-defined Type
+  SYMBOL_TYPE_SSEARCH = $0005; // Start search
+  SYMBOL_TYPE_END = $0006; // End block, procedure, with, or thunk
+  SYMBOL_TYPE_SKIP = $0007; // Skip - Reserve symbol space
+  SYMBOL_TYPE_CVRESERVE = $0008; // Reserved for Code View internal use
+  SYMBOL_TYPE_OBJNAME = $0009; // Specify name of object file
 
-  SYMBOL_TYPE_BPREL16        = $0100; // BP relative 16:16
-  SYMBOL_TYPE_LDATA16        = $0101; // Local data 16:16
-  SYMBOL_TYPE_GDATA16        = $0102; // Global data 16:16
-  SYMBOL_TYPE_PUB16          = $0103; // Public symbol 16:16
-  SYMBOL_TYPE_LPROC16        = $0104; // Local procedure start 16:16
-  SYMBOL_TYPE_GPROC16        = $0105; // Global procedure start 16:16
-  SYMBOL_TYPE_THUNK16        = $0106; // Thunk start 16:16
-  SYMBOL_TYPE_BLOCK16        = $0107; // Block start 16:16
-  SYMBOL_TYPE_WITH16         = $0108; // With start 16:16
-  SYMBOL_TYPE_LABEL16        = $0109; // Code label 16:16
-  SYMBOL_TYPE_CEXMODEL16     = $010A; // Change execution model 16:16
-  SYMBOL_TYPE_VFTPATH16      = $010B; // Virtual function table path descriptor 16:16
+  SYMBOL_TYPE_BPREL16 = $0100; // BP relative 16:16
+  SYMBOL_TYPE_LDATA16 = $0101; // Local data 16:16
+  SYMBOL_TYPE_GDATA16 = $0102; // Global data 16:16
+  SYMBOL_TYPE_PUB16 = $0103; // Public symbol 16:16
+  SYMBOL_TYPE_LPROC16 = $0104; // Local procedure start 16:16
+  SYMBOL_TYPE_GPROC16 = $0105; // Global procedure start 16:16
+  SYMBOL_TYPE_THUNK16 = $0106; // Thunk start 16:16
+  SYMBOL_TYPE_BLOCK16 = $0107; // Block start 16:16
+  SYMBOL_TYPE_WITH16 = $0108; // With start 16:16
+  SYMBOL_TYPE_LABEL16 = $0109; // Code label 16:16
+  SYMBOL_TYPE_CEXMODEL16 = $010A; // Change execution model 16:16
+  SYMBOL_TYPE_VFTPATH16 = $010B; // Virtual function table path descriptor 16:16
 
-  SYMBOL_TYPE_BPREL32        = $0200; // BP relative 16:32
-  SYMBOL_TYPE_LDATA32        = $0201; // Local data 16:32
-  SYMBOL_TYPE_GDATA32        = $0202; // Global data 16:32
-  SYMBOL_TYPE_PUB32          = $0203; // Public symbol 16:32
-  SYMBOL_TYPE_LPROC32        = $0204; // Local procedure start 16:32
-  SYMBOL_TYPE_GPROC32        = $0205; // Global procedure start 16:32
-  SYMBOL_TYPE_THUNK32        = $0206; // Thunk start 16:32
-  SYMBOL_TYPE_BLOCK32        = $0207; // Block start 16:32
-  SYMBOL_TYPE_WITH32         = $0208; // With start 16:32
-  SYMBOL_TYPE_LABEL32        = $0209; // Label 16:32
-  SYMBOL_TYPE_CEXMODEL32     = $020A; // Change execution model 16:32
-  SYMBOL_TYPE_VFTPATH32      = $020B; // Virtual function table path descriptor 16:32
+  SYMBOL_TYPE_BPREL32 = $0200; // BP relative 16:32
+  SYMBOL_TYPE_LDATA32 = $0201; // Local data 16:32
+  SYMBOL_TYPE_GDATA32 = $0202; // Global data 16:32
+  SYMBOL_TYPE_PUB32 = $0203; // Public symbol 16:32
+  SYMBOL_TYPE_LPROC32 = $0204; // Local procedure start 16:32
+  SYMBOL_TYPE_GPROC32 = $0205; // Global procedure start 16:32
+  SYMBOL_TYPE_THUNK32 = $0206; // Thunk start 16:32
+  SYMBOL_TYPE_BLOCK32 = $0207; // Block start 16:32
+  SYMBOL_TYPE_WITH32 = $0208; // With start 16:32
+  SYMBOL_TYPE_LABEL32 = $0209; // Label 16:32
+  SYMBOL_TYPE_CEXMODEL32 = $020A; // Change execution model 16:32
+  SYMBOL_TYPE_VFTPATH32 = $020B; // Virtual function table path descriptor 16:32
 
 {*******************************************************************************
 
@@ -531,21 +531,21 @@ type
     SymbolType: Word;
     case Word of
       SYMBOL_TYPE_LPROC32, SYMBOL_TYPE_GPROC32:
-        (Proc: TSymbolProcInfo);
+      (Proc: TSymbolProcInfo);
       SYMBOL_TYPE_OBJNAME:
-        (ObjName: TSymbolObjNameInfo);
+      (ObjName: TSymbolObjNameInfo);
       SYMBOL_TYPE_LDATA32, SYMBOL_TYPE_GDATA32, SYMBOL_TYPE_PUB32:
-        (Data: TSymbolDataInfo);
+      (Data: TSymbolDataInfo);
       SYMBOL_TYPE_WITH32:
-        (With32: TSymbolWithInfo);
+      (With32: TSymbolWithInfo);
       SYMBOL_TYPE_LABEL32:
-        (Label32: TSymbolLabelInfo);
+      (Label32: TSymbolLabelInfo);
       SYMBOL_TYPE_CONST:
-        (Constant: TSymbolConstantInfo);
+      (Constant: TSymbolConstantInfo);
       SYMBOL_TYPE_UDT:
-        (Udt: TSymbolUdtInfo);
+      (Udt: TSymbolUdtInfo);
       SYMBOL_TYPE_VFTPATH32:
-        (VftPath: TSymbolVftPathInfo);
+      (VftPath: TSymbolVftPathInfo);
   end;
 
   PSymbolInfos = ^TSymbolInfos;
@@ -969,7 +969,7 @@ begin
       if (I > 1) and (Line[I - 1].Offset < AAddr) and (AAddr < Offset) then
       begin
         Result := True;
-        ALine := Line[I-1];
+        ALine := Line[I - 1];
         Exit;
       end;
     end;
@@ -1168,7 +1168,7 @@ end;
 procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWORD);
 var
   I, Count, Len: Integer;
-  pszName: PChar;
+  pszName:       PChar;
 begin
   Count := PDWORD(pSubsection)^;
   pszName := PChar(DWORD(pSubsection) + SizeOf(DWORD));
@@ -1190,79 +1190,79 @@ end;
 
 const
   // Leaf indices for type records that can be referenced from symbols
-  LF_MODIFIER  = $0001;
-  LF_POINTER   = $0002;
-  LF_ARRAY     = $0003;
-  LF_CLASS     = $0004;
+  LF_MODIFIER = $0001;
+  LF_POINTER  = $0002;
+  LF_ARRAY    = $0003;
+  LF_CLASS    = $0004;
   LF_STRUCTURE = $0005;
-  LF_UNION     = $0006;
-  LF_ENUM      = $0007;
+  LF_UNION    = $0006;
+  LF_ENUM     = $0007;
   LF_PROCEDURE = $0008;
   LF_MFUNCTION = $0009;
-  LF_VTSHAPE   = $000a;
-  LF_COBOL0    = $000b;
-  LF_COBOL1    = $000c;
-  LF_BARRAY    = $000d;
-  LF_LABEL     = $000e;
-  LF_NULL      = $000f;
-  LF_NOTTRAN   = $0010;
-  LF_DIMARRAY  = $0011;
-  LF_VFTPATH   = $0012;
+  LF_VTSHAPE  = $000a;
+  LF_COBOL0   = $000b;
+  LF_COBOL1   = $000c;
+  LF_BARRAY   = $000d;
+  LF_LABEL    = $000e;
+  LF_NULL     = $000f;
+  LF_NOTTRAN  = $0010;
+  LF_DIMARRAY = $0011;
+  LF_VFTPATH  = $0012;
 
   // Leaf indices for type records that can be referenced from other type records
-  LF_SKIP       = $0200;
-  LF_ARGLIST    = $0201;
-  LF_DEFARG     = $0202;
-  LF_LIST       = $0203;
-  LF_FIELDLIST  = $0204;
-  LF_DERIVED    = $0205;
-  LF_BITFIELD   = $0206;
+  LF_SKIP = $0200;
+  LF_ARGLIST = $0201;
+  LF_DEFARG = $0202;
+  LF_LIST = $0203;
+  LF_FIELDLIST = $0204;
+  LF_DERIVED = $0205;
+  LF_BITFIELD = $0206;
   LF_METHODLIST = $0207;
-  LF_DIMCONU    = $0208;
-  LF_DIMCONLU   = $0209;
-  LF_DIMVARU    = $020a;
-  LF_DIMVARLU   = $020b;
-  LF_REFSYM     = $020c;
+  LF_DIMCONU = $0208;
+  LF_DIMCONLU = $0209;
+  LF_DIMVARU = $020a;
+  LF_DIMVARLU = $020b;
+  LF_REFSYM = $020c;
 
   // Leaf indices for fields of complex lists:
-  LF_BCLASS     = $0400;
-  LF_VBCLASS    = $0401;
-  LF_IVBCLASS   = $0402;
-  LF_ENUMERATE  = $0403;
-  LF_FRIENDFCN  = $0404;
-  LF_INDEX      = $0405;
-  LF_MEMBER     = $0406;
-  LF_STMEMBER   = $0407;
-  LF_METHOD     = $0408;
-  LF_NESTTYPE   = $0409;
-  LF_VFUNCTAB   = $040a;
-  LF_FRIENDCLS  = $040b;
+  LF_BCLASS = $0400;
+  LF_VBCLASS = $0401;
+  LF_IVBCLASS = $0402;
+  LF_ENUMERATE = $0403;
+  LF_FRIENDFCN = $0404;
+  LF_INDEX  = $0405;
+  LF_MEMBER = $0406;
+  LF_STMEMBER = $0407;
+  LF_METHOD = $0408;
+  LF_NESTTYPE = $0409;
+  LF_VFUNCTAB = $040a;
+  LF_FRIENDCLS = $040b;
 
   // Leaf indices for numeric fields of symbols and type records:
-  LF_NUMERIC    = $8000;
-  LF_CHAR       = $8001;
-  LF_SHORT      = $8002;
-  LF_USHORT     = $8003;
-  LF_LONG       = $8004;
-  LF_ULONG      = $8005;
-  LF_REAL32     = $8006;
-  LF_REAL64     = $8007;
-  LF_REAL80     = $8008;
-  LF_REAL128    = $8009;
-  LF_QUADWORD   = $800a;
-  LF_UQUADWORD  = $800b;
-  LF_REAL48     = $800c;
+  LF_NUMERIC = $8000;
+  LF_CHAR    = $8001;
+  LF_SHORT   = $8002;
+  LF_USHORT  = $8003;
+  LF_LONG    = $8004;
+  LF_ULONG   = $8005;
+  LF_REAL32  = $8006;
+  LF_REAL64  = $8007;
+  LF_REAL80  = $8008;
+  LF_REAL128 = $8009;
+  LF_QUADWORD = $800a;
+  LF_UQUADWORD = $800b;
+  LF_REAL48  = $800c;
 
-  LF_PAD0  = $f0;
-  LF_PAD1  = $f1;
-  LF_PAD2  = $f2;
-  LF_PAD3  = $f3;
-  LF_PAD4  = $f4;
-  LF_PAD5  = $f5;
-  LF_PAD6  = $f6;
-  LF_PAD7  = $f7;
-  LF_PAD8  = $f8;
-  LF_PAD9  = $f9;
+  LF_PAD0 = $f0;
+  LF_PAD1 = $f1;
+  LF_PAD2 = $f2;
+  LF_PAD3 = $f3;
+  LF_PAD4 = $f4;
+  LF_PAD5 = $f5;
+  LF_PAD6 = $f6;
+  LF_PAD7 = $f7;
+  LF_PAD8 = $f8;
+  LF_PAD9 = $f9;
   LF_PAD10 = $fa;
   LF_PAD11 = $fb;
   LF_PAD12 = $fc;
@@ -1281,10 +1281,10 @@ type
   end;
 
 const
-  TID_VOID   = $00;       // Unknown or no type
-  TID_LSTR   = $01;       // Basic Literal string
-  TID_DSTR   = $02;       // Basic Dynamic string
-  TID_PSTR   = $03;       // Pascal style string
+  TID_VOID = $00;       // Unknown or no type
+  TID_LSTR = $01;       // Basic Literal string
+  TID_DSTR = $02;       // Basic Dynamic string
+  TID_PSTR = $03;       // Pascal style string
 
 procedure TJclTD32InfoParser.AnalyseGlobalTypes(const pTypes: Pointer; const Size: DWORD);
 var
@@ -1302,7 +1302,7 @@ end;
 procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
   Offset: DWORD;
-  pInfo: PSymbolInfo;
+  pInfo:  PSymbolInfo;
   Symbol: TJclSymbolInfo;
 begin
   Offset := DWORD(@pSymbols.Symbols[0]) - DWORD(pSymbols);
@@ -1311,15 +1311,15 @@ begin
     pInfo := PSymbolInfo(DWORD(pSymbols) + Offset);
     case pInfo.SymbolType of
       SYMBOL_TYPE_LPROC32:
-        begin
-          Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
-          FProcSymbols.Add(Symbol);
-        end;
+      begin
+        Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
+        FProcSymbols.Add(Symbol);
+      end;
       SYMBOL_TYPE_GPROC32:
-        begin
-          Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
-          FProcSymbols.Add(Symbol);
-        end;
+      begin
+        Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
+        FProcSymbols.Add(Symbol);
+      end;
       SYMBOL_TYPE_OBJNAME:
         Symbol := TJclObjNameSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_LDATA32:
@@ -1431,16 +1431,16 @@ var
 begin
   if ValidData then
     for I := 0 to ModuleCount - 1 do
-    with Modules[I] do
-      for J := 0 to SegmentCount - 1 do
-      begin
-        if (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
+      with Modules[I] do
+        for J := 0 to SegmentCount - 1 do
         begin
-          Result := True;
-          AMod := Modules[I];
-          Exit;
+          if (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
+          begin
+            Result := True;
+            AMod := Modules[I];
+            Exit;
+          end;
         end;
-      end;
   Result := False;
   AMod := nil;
 end;
@@ -1452,15 +1452,15 @@ var
 begin
   if ValidData then
     for I := 0 to SourceModuleCount - 1 do
-    with SourceModules[I] do
-      for J := 0 to SegmentCount - 1 do
-        with Segment[J] do
-          if (StartOffset <= AAddr) and (AAddr < EndOffset) then
-          begin
-            Result := True;
-            ASrcMod := SourceModules[I];
-            Exit;
-          end;
+      with SourceModules[I] do
+        for J := 0 to SegmentCount - 1 do
+          with Segment[J] do
+            if (StartOffset <= AAddr) and (AAddr < EndOffset) then
+            begin
+              Result := True;
+              ASrcMod := SourceModules[I];
+              Exit;
+            end;
   ASrcMod := nil;
   Result := False;
 end;
@@ -1512,7 +1512,7 @@ end;
 
 function TJclTD32InfoParser.LfaToVa(Lfa: DWORD): Pointer;
 begin
-  Result := Pointer(DWORD(FBase) + Lfa)
+  Result := Pointer(DWORD(FBase) + Lfa);
 end;
 
 //=== { TJclTD32InfoScanner } ================================================
@@ -1527,7 +1527,7 @@ end;
 function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer;
 var
   ASrcMod: TJclSourceModuleInfo;
-  ALine: TJclLineInfo;
+  ALine:   TJclLineInfo;
 begin
   if FindSourceModule(AAddr, ASrcMod) and ASrcMod.FindLine(AAddr, ALine) then
   begin
@@ -1670,7 +1670,7 @@ end;
 function TJclPeBorTD32Image.IsDebugInfoInTds(var DataStream: TCustomMemoryStream): Boolean;
 var
   TdsFileName: TFileName;
-  TempStream: TCustomMemoryStream;
+  TempStream:  TCustomMemoryStream;
 begin
   Result := False;
   DataStream := nil;

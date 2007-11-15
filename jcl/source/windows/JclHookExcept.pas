@@ -61,13 +61,16 @@ type
 
   TJclExceptNotifyPriority = (npNormal, npFirstChain);
 
-function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
-function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProcEx; Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
-function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
+function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc;
+  Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
+function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProcEx;
+  Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
+function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod;
+  Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProc): Boolean; overload;
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProcEx): Boolean; overload;
-function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean;  overload;
+function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean; overload;
 
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 
@@ -128,9 +131,9 @@ type
 
 var
   ExceptionsHooked: Boolean;
-  Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
-    nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
-  SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
+  Kernel32_RaiseException: procedure(dwExceptionCode, dwExceptionFlags,
+  nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
+  SysUtils_ExceptObjProc: function(P: PExceptionRecord): Exception;
   Notifiers: TThreadList;
 
 {$IFDEF HOOK_DLL_EXCEPTIONS}
@@ -228,7 +231,7 @@ end;
 
 function GetEBP: Pointer;
 asm
-        MOV     EAX, EBP
+         MOV     EAX, EBP
 end;
 
 {$STACKFRAMES ON}
@@ -246,23 +249,23 @@ begin
     NewResultExc := nil;
     try
       with Notifiers.LockList do
-      try
-        if Count = 1 then
-        begin
-          with TNotifierItem(Items[0]) do
-            DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
-        end
-        else
-        begin
-          for Priorities := High(Priorities) downto Low(Priorities) do
-            for I := 0 to Count - 1 do
-              with TNotifierItem(Items[I]) do
-                if Priority = Priorities then
-                  DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+        try
+          if Count = 1 then
+          begin
+            with TNotifierItem(Items[0]) do
+              DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+          end
+          else
+          begin
+            for Priorities := High(Priorities) downto Low(Priorities) do
+              for I := 0 to Count - 1 do
+                with TNotifierItem(Items[I]) do
+                  if Priority = Priorities then
+                    DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+          end;
+        finally
+          Notifiers.UnlockList;
         end;
-      finally
-        Notifiers.UnlockList;
-      end;
     finally
       Recursive := False;
     end;
@@ -277,7 +280,7 @@ const
   {$ELSE}
   cDelphiException = $0EEDFADE;
   {$ENDIF DELPHI2}
-  cNonContinuable = 1;
+  cNonContinuable  = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
     (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
@@ -316,11 +319,11 @@ begin
   Result := Assigned(NotifyProc);
   if Result then
     with Notifiers.LockList do
-    try
-      Add(TNotifierItem.Create(NotifyProc, Priority));
-    finally
-      Notifiers.UnlockList;
-    end;
+      try
+        Add(TNotifierItem.Create(NotifyProc, Priority));
+      finally
+        Notifiers.UnlockList;
+      end;
 end;
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProcEx; Priority: TJclExceptNotifyPriority): Boolean;
@@ -328,11 +331,11 @@ begin
   Result := Assigned(NotifyProc);
   if Result then
     with Notifiers.LockList do
-    try
-      Add(TNotifierItem.Create(NotifyProc, Priority));
-    finally
-      Notifiers.UnlockList;
-    end;
+      try
+        Add(TNotifierItem.Create(NotifyProc, Priority));
+      finally
+        Notifiers.UnlockList;
+      end;
 end;
 
 function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority): Boolean;
@@ -340,11 +343,11 @@ begin
   Result := Assigned(NotifyMethod);
   if Result then
     with Notifiers.LockList do
-    try
-      Add(TNotifierItem.Create(NotifyMethod, Priority));
-    finally
-      Notifiers.UnlockList;
-    end;
+      try
+        Add(TNotifierItem.Create(NotifyMethod, Priority));
+      finally
+        Notifiers.UnlockList;
+      end;
 end;
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProc): Boolean;
@@ -355,20 +358,20 @@ begin
   Result := Assigned(NotifyProc);
   if Result then
     with Notifiers.LockList do
-    try
-      for I := 0 to Count - 1 do
-      begin
-        O := TNotifierItem(Items[I]);
-        if @O.FNotifyProc = @NotifyProc then
+      try
+        for I := 0 to Count - 1 do
         begin
-          O.Free;
-          Items[I] := nil;
+          O := TNotifierItem(Items[I]);
+          if @O.FNotifyProc = @NotifyProc then
+          begin
+            O.Free;
+            Items[I] := nil;
+          end;
         end;
+        Pack;
+      finally
+        Notifiers.UnlockList;
       end;
-      Pack;
-    finally
-      Notifiers.UnlockList;
-    end;
 end;
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProcEx): Boolean;
@@ -379,20 +382,20 @@ begin
   Result := Assigned(NotifyProc);
   if Result then
     with Notifiers.LockList do
-    try
-      for I := 0 to Count - 1 do
-      begin
-        O := TNotifierItem(Items[I]);
-        if @O.FNotifyProcEx = @NotifyProc then
+      try
+        for I := 0 to Count - 1 do
         begin
-          O.Free;
-          Items[I] := nil;
+          O := TNotifierItem(Items[I]);
+          if @O.FNotifyProcEx = @NotifyProc then
+          begin
+            O.Free;
+            Items[I] := nil;
+          end;
         end;
+        Pack;
+      finally
+        Notifiers.UnlockList;
       end;
-      Pack;
-    finally
-      Notifiers.UnlockList;
-    end;
 end;
 
 function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean;
@@ -403,21 +406,21 @@ begin
   Result := Assigned(NotifyMethod);
   if Result then
     with Notifiers.LockList do
-    try
-      for I := 0 to Count - 1 do
-      begin
-        O := TNotifierItem(Items[I]);
-        if (TMethod(O.FNotifyMethod).Code = TMethod(NotifyMethod).Code) and
-          (TMethod(O.FNotifyMethod).Data = TMethod(NotifyMethod).Data) then
+      try
+        for I := 0 to Count - 1 do
         begin
-          O.Free;
-          Items[I] := nil;
+          O := TNotifierItem(Items[I]);
+          if (TMethod(O.FNotifyMethod).Code = TMethod(NotifyMethod).Code) and
+            (TMethod(O.FNotifyMethod).Data = TMethod(NotifyMethod).Data) then
+          begin
+            O.Free;
+            Items[I] := nil;
+          end;
         end;
+        Pack;
+      finally
+        Notifiers.UnlockList;
       end;
-      Pack;
-    finally
-      Notifiers.UnlockList;
-    end;
 end;
 
 procedure JclReplaceExceptObj(NewExceptObj: Exception);

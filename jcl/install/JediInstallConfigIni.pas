@@ -46,7 +46,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     // IJediConfiguration
     function GetSections: TStringArray;
     function GetOptions(const Section: string): TOptionArray;
@@ -106,7 +106,7 @@ var
   AFileName: string;
 begin
   inherited Create;
-  
+
   AFileName := '';
 
   if not GetEnvironmentVar('JCL_INSTALL_INI', AFileName) then
@@ -165,8 +165,8 @@ end;
 function TJediConfigIni.GetOptions(const Section: string): TOptionArray;
 var
   Values: TStrings;
-  Index: Integer;
-  Name: string;
+  Index:  Integer;
+  Name:   string;
 begin
   Values := TStringList.Create;
   try
@@ -186,7 +186,7 @@ end;
 function TJediConfigIni.GetSections: TStringArray;
 var
   Sections: TStrings;
-  Index: Integer;
+  Index:    Integer;
 begin
   Sections := TStringList.Create;
   try
@@ -241,6 +241,6 @@ end;
 
 initialization
 
-InstallCore.ConfigurationCreator := CreateConfigIni;
+  InstallCore.ConfigurationCreator := CreateConfigIni;
 
 end.

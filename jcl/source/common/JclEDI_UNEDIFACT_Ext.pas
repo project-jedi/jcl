@@ -123,7 +123,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDIMessage := AEDIMessage;
-  FEDISEFSet := SEFSet;  
+  FEDISEFSet := SEFSet;
   FEDIMessageSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -139,7 +139,7 @@ end;
 procedure TEDI_UNEDIFACT_Document.FormatDocument;
 var
   I, J: Integer;
-  LSR: TEDILoopStackRecord;
+  LSR:  TEDILoopStackRecord;
   DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment;
 begin
@@ -226,9 +226,9 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
-      raise EJclEDIError.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsEDIError058,
+      raise EJclEDIError.CreateResFmt({$IFNDEF CLR} @{$ENDIF}RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
-         IntToStr(DataSegment.GetIndexPositionFromParent)]);
+        IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.EDIDataObject[I].SpecPointer := SpecSegment.Elements[I];
     // ToDo: Assign SubElement Specs
   end;

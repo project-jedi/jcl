@@ -56,7 +56,7 @@ type
     le131, le132, le133, le134, le135, le136, le137, le138, le139, le140,
     le141, le142, le143, le144, le145, le146, le147, le148, le149, le150,
     le151, le152, le153, le154, le155, le156, le157, le158, le159, le160);
-    
+
   TLargeSet = set of TLargeEnum;
   TLargeSubEnum = le019 .. le150;
   TLargeSubSet = set of TLargeSubEnum;
@@ -84,7 +84,7 @@ type
 var
   MyEnum: PTypeInfo;
   MySubRange: PTypeInfo;
-  MySet: PTypeInfo;
+  MySet:  PTypeInfo;
   MyCutLowerEnum: PTypeInfo;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -159,7 +159,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 var
   Writer: IJclInfoWriter;
   LargeSubSet: TLargeSubSet;
-  GUID: TGUID;
+  GUID:   TGUID;
 
 begin
   mmResult.Lines.Clear;
@@ -169,18 +169,25 @@ begin
   try
     Writer.Writeln('StrToSet with string=''[le019..le023, le033, le045..le049]''');
     JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, '[le019..le023, le033, le045..le049]');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
+      ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
+      ''', with WantRanges=False');
     Writer.Writeln('');
     Writer.Writeln('StrToSet with string=''''');
     JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, '');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
+      ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
+      ''', with WantRanges=False');
     Writer.Writeln('');
     Writer.Writeln('StrToSet with string=''le019    ..    le023,le033     , le045 ..           le049           ''');
-    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet, 'le019    ..    le023,le033     , le045 ..           le049           ');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) + ''', with WantRanges=True');
-    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) + ''', with WantRanges=False');
+    JclStrToSet(TypeInfo(TLargeSubSet), LargeSubSet,
+      'le019    ..    le023,le033     , le045 ..           le049           ');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, True) +
+      ''', with WantRanges=True');
+    Writer.Writeln('SetToStr of StrToSet = ''' + JclSetToStr(TypeInfo(TLargeSubSet), LargeSubSet, True, False) +
+      ''', with WantRanges=False');
     Writer.Writeln('');
   finally
     Writer.Outdent;
@@ -200,7 +207,8 @@ begin
   Writer.Indent;
   try
     Writer.Writeln('TypedIntToStr: ' + JclTypedIntToStr(crArrow, TypeInfo(TCursor)));
-    Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('crArrow', TypeInfo(TCursor))) + ' (should be ' + IntToStr(crArrow) + ')');
+    Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('crArrow', TypeInfo(TCursor))) +
+      ' (should be ' + IntToStr(crArrow) + ')');
     Writer.Writeln('');
     Writer.Writeln('TypedIntToStr: ' + JclTypedIntToStr(1, TypeInfo(TCursor)));
     Writer.Writeln('StrToTypedInt: ' + IntToStr(JclStrToTypedInt('1', TypeInfo(TCursor))) + ' (should be 1)');

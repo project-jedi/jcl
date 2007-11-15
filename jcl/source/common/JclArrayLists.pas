@@ -56,8 +56,8 @@ uses
 type
 
   TJclIntfArrayList = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
-     IJclIntfCollection, IJclIntfList, IJclIntfArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntfEqualityComparer,
+    IJclIntfCollection, IJclIntfList, IJclIntfArray)
   private
     FElementData: JclBase.TDynIInterfaceArray;
   protected
@@ -101,8 +101,9 @@ type
 
 
   TJclAnsiStrArrayList = class(TJclAnsiStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
-     IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrFlatContainer, IJclAnsiStrEqualityComparer,
+    IJclAnsiStrCollection, IJclAnsiStrList, IJclAnsiStrArray)
   private
     FElementData: JclBase.TDynAnsiStringArray;
   protected
@@ -146,8 +147,9 @@ type
 
 
   TJclWideStrArrayList = class(TJclWideStrAbstractCollection, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
-     IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrFlatContainer, IJclWideStrEqualityComparer,
+    IJclWideStrCollection, IJclWideStrList, IJclWideStrArray)
   private
     FElementData: JclBase.TDynWideStringArray;
   protected
@@ -198,8 +200,9 @@ type
 
 
   TJclSingleArrayList = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
-     IJclSingleCollection, IJclSingleList, IJclSingleArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer,
+    IJclSingleEqualityComparer,
+    IJclSingleCollection, IJclSingleList, IJclSingleArray)
   private
     FElementData: JclBase.TDynSingleArray;
   protected
@@ -243,8 +246,9 @@ type
 
 
   TJclDoubleArrayList = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
-     IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer,
+    IJclDoubleEqualityComparer,
+    IJclDoubleCollection, IJclDoubleList, IJclDoubleArray)
   private
     FElementData: JclBase.TDynDoubleArray;
   protected
@@ -288,8 +292,9 @@ type
 
 
   TJclExtendedArrayList = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
-     IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
+    IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclExtendedCollection, IJclExtendedList, IJclExtendedArray)
   private
     FElementData: JclBase.TDynExtendedArray;
   protected
@@ -343,8 +348,8 @@ type
 
 
   TJclIntegerArrayList = class(TJclIntegerAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
-     IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclIntegerEqualityComparer,
+    IJclIntegerCollection, IJclIntegerList, IJclIntegerArray)
   private
     FElementData: JclBase.TDynIntegerArray;
   protected
@@ -388,8 +393,8 @@ type
 
 
   TJclCardinalArrayList = class(TJclCardinalAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
-     IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclCardinalEqualityComparer,
+    IJclCardinalCollection, IJclCardinalList, IJclCardinalArray)
   private
     FElementData: JclBase.TDynCardinalArray;
   protected
@@ -433,8 +438,8 @@ type
 
 
   TJclInt64ArrayList = class(TJclInt64AbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
-     IJclInt64Collection, IJclInt64List, IJclInt64Array)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclInt64EqualityComparer,
+    IJclInt64Collection, IJclInt64List, IJclInt64Array)
   private
     FElementData: JclBase.TDynInt64Array;
   protected
@@ -479,8 +484,8 @@ type
   {$IFNDEF CLR}
 
   TJclPtrArrayList = class(TJclPtrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
-     IJclPtrCollection, IJclPtrList, IJclPtrArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclPtrEqualityComparer,
+    IJclPtrCollection, IJclPtrList, IJclPtrArray)
   private
     FElementData: JclBase.TDynPointerArray;
   protected
@@ -525,8 +530,9 @@ type
 
 
   TJclArrayList = class(TJclAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner, IJclEqualityComparer,
-     IJclCollection, IJclList, IJclArray)
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclObjectOwner,
+    IJclEqualityComparer,
+    IJclCollection, IJclList, IJclArray)
   private
     FElementData: JclBase.TDynObjectArray;
   protected
@@ -2512,29 +2518,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AInterface, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AInterface, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AInterface;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AInterface;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2553,39 +2559,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2621,10 +2627,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeObject(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeObject(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2640,13 +2646,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AInterface) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AInterface) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2662,13 +2668,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2688,16 +2694,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeObject(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeObject(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2714,16 +2720,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2749,12 +2755,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := nil;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2770,13 +2776,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AInterface) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AInterface) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2790,35 +2796,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AInterface, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AInterface, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AInterface;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AInterface;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2834,16 +2840,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2869,13 +2875,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AInterface) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AInterface) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2891,19 +2897,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AInterface) then
-      begin
-        FreeObject(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AInterface) then
+    begin
+      FreeObject(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2919,13 +2925,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2941,13 +2947,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2961,13 +2967,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2984,26 +2990,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AInterface, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AInterface) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AInterface) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeObject(FElementData[Index]);
-        FElementData[Index] := AInterface;
-      end;
+      FreeObject(FElementData[Index]);
+      FElementData[Index] := AInterface;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3025,12 +3031,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclIntfList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclIntfList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3076,29 +3082,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AString, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AString;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AString;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3117,39 +3123,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3185,10 +3191,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeString(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeString(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3204,13 +3210,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3226,13 +3232,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3252,16 +3258,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeString(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeString(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3278,16 +3284,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3313,12 +3319,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := '';
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3334,13 +3340,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3354,35 +3360,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AString, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AString;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AString;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3398,16 +3404,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3433,13 +3439,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3455,19 +3461,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        FreeString(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      FreeString(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3483,13 +3489,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3505,13 +3511,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3525,13 +3531,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3548,26 +3554,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AString) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AString) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeString(FElementData[Index]);
-        FElementData[Index] := AString;
-      end;
+      FreeString(FElementData[Index]);
+      FElementData[Index] := AString;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3589,12 +3595,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclAnsiStrList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclAnsiStrList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3640,29 +3646,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AString, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AString;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AString;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3681,39 +3687,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, '');
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3749,10 +3755,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeString(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeString(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3768,13 +3774,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3790,13 +3796,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3816,16 +3822,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeString(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeString(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3842,16 +3848,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3877,12 +3883,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := '';
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3898,13 +3904,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3918,35 +3924,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AString, '');
+  Result := FAllowDefaultElements or not ItemsEqual(AString, '');
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AString, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AString, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AString;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AString;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3962,16 +3968,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3997,13 +4003,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4019,19 +4025,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AString) then
-      begin
-        FreeString(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AString) then
+    begin
+      FreeString(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4047,13 +4053,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4069,13 +4075,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4089,13 +4095,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4112,26 +4118,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AString, '');
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AString) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AString) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeString(FElementData[Index]);
-        FElementData[Index] := AString;
-      end;
+      FreeString(FElementData[Index]);
+      FElementData[Index] := AString;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4153,12 +4159,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclWideStrList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclWideStrList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4204,29 +4210,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4245,39 +4251,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4313,10 +4319,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeSingle(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeSingle(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4332,13 +4338,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4354,13 +4360,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4380,16 +4386,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeSingle(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeSingle(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4406,16 +4412,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4441,12 +4447,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0.0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4462,13 +4468,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4482,35 +4488,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4526,16 +4532,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4561,13 +4567,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4583,19 +4589,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeSingle(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeSingle(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4611,13 +4617,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4633,13 +4639,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4653,13 +4659,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4676,26 +4682,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeSingle(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeSingle(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4717,12 +4723,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclSingleList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclSingleList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4768,29 +4774,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4809,39 +4815,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4877,10 +4883,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeDouble(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeDouble(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4896,13 +4902,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4918,13 +4924,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4944,16 +4950,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeDouble(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeDouble(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4970,16 +4976,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5005,12 +5011,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0.0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5026,13 +5032,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5046,35 +5052,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5090,16 +5096,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5125,13 +5131,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5147,19 +5153,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeDouble(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeDouble(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5175,13 +5181,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5197,13 +5203,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5217,13 +5223,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5240,26 +5246,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeDouble(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeDouble(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5281,12 +5287,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclDoubleList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclDoubleList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5332,29 +5338,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5373,39 +5379,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0.0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5441,10 +5447,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeExtended(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeExtended(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5460,13 +5466,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5482,13 +5488,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5508,16 +5514,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeExtended(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeExtended(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5534,16 +5540,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5569,12 +5575,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0.0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5590,13 +5596,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5610,35 +5616,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5654,16 +5660,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5689,13 +5695,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5711,19 +5717,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeExtended(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeExtended(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5739,13 +5745,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5761,13 +5767,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5781,13 +5787,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5804,26 +5810,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0.0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeExtended(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeExtended(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5845,12 +5851,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclExtendedList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclExtendedList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5896,29 +5902,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5937,39 +5943,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6005,10 +6011,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeInteger(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeInteger(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6024,13 +6030,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6046,13 +6052,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6072,16 +6078,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeInteger(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeInteger(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6098,16 +6104,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6133,12 +6139,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6154,13 +6160,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6174,35 +6180,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6218,16 +6224,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6253,13 +6259,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6275,19 +6281,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeInteger(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeInteger(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6303,13 +6309,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6325,13 +6331,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6345,13 +6351,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6368,26 +6374,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeInteger(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeInteger(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6409,12 +6415,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclIntegerList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclIntegerList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6460,29 +6466,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6501,39 +6507,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6569,10 +6575,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeCardinal(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeCardinal(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6588,13 +6594,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6610,13 +6616,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6636,16 +6642,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeCardinal(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeCardinal(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6662,16 +6668,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6697,12 +6703,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6718,13 +6724,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6738,35 +6744,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6782,16 +6788,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6817,13 +6823,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6839,19 +6845,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeCardinal(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeCardinal(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6867,13 +6873,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6889,13 +6895,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6909,13 +6915,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6932,26 +6938,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeCardinal(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeCardinal(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6973,12 +6979,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclCardinalList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclCardinalList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7024,29 +7030,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AValue;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7065,39 +7071,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, 0);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7133,10 +7139,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeInt64(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeInt64(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7152,13 +7158,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7174,13 +7180,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7200,16 +7206,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeInt64(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeInt64(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7226,16 +7232,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7261,12 +7267,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := 0;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7282,13 +7288,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7302,35 +7308,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  Result := FAllowDefaultElements or not ItemsEqual(AValue, 0);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AValue, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AValue, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AValue;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AValue;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7346,16 +7352,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7381,13 +7387,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7403,19 +7409,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AValue) then
-      begin
-        FreeInt64(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AValue) then
+    begin
+      FreeInt64(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7431,13 +7437,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7453,13 +7459,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7473,13 +7479,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7496,26 +7502,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AValue, 0);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AValue) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AValue) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeInt64(FElementData[Index]);
-        FElementData[Index] := AValue;
-      end;
+      FreeInt64(FElementData[Index]);
+      FElementData[Index] := AValue;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7537,12 +7543,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclInt64List;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclInt64List;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7589,29 +7595,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(APtr, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(APtr, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := APtr;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := APtr;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7630,39 +7636,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7698,10 +7704,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreePointer(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreePointer(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7717,13 +7723,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], APtr) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], APtr) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7739,13 +7745,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7765,16 +7771,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreePointer(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreePointer(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7791,16 +7797,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7826,12 +7832,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := nil;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7847,13 +7853,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], APtr) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], APtr) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7867,35 +7873,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(APtr, nil);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(APtr, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(APtr, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := APtr;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := APtr;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7911,16 +7917,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7946,13 +7952,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], APtr) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], APtr) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7968,19 +7974,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], APtr) then
-      begin
-        FreePointer(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], APtr) then
+    begin
+      FreePointer(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7996,13 +8002,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8018,13 +8024,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8038,13 +8044,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8061,26 +8067,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(APtr, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], APtr) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], APtr) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreePointer(FElementData[Index]);
-        FElementData[Index] := APtr;
-      end;
+      FreePointer(FElementData[Index]);
+      FElementData[Index] := APtr;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8102,12 +8108,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclPtrList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclPtrList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8154,29 +8160,29 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AObject, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
+
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AObject, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          FElementData[FSize] := AObject;
-          Inc(FSize);
-        end;
+        FElementData[FSize] := AObject;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8195,39 +8201,39 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-    begin
-      Item := It.Next;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    Item := It.Next;
       // (rom) inlining Add() gives about 5 percent performance increase
-      AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    AddItem := FAllowDefaultElements or not ItemsEqual(Item, nil);
+    if AddItem then
+    begin
+      if FDuplicates <> dupAccept then
+        for Index := 0 to FSize - 1 do
+          if ItemsEqual(Item, FElementData[Index]) then
+          begin
+            AddItem := CheckDuplicate;
+            Break;
+          end;
       if AddItem then
       begin
-        if FDuplicates <> dupAccept then
-          for Index := 0 to FSize - 1 do
-            if ItemsEqual(Item, FElementData[Index]) then
-            begin
-              AddItem := CheckDuplicate;
-              Break;
-            end;
+        if FSize = FCapacity then
+          AutoGrow;
+        AddItem := FSize < FCapacity;
         if AddItem then
         begin
-          if FSize = FCapacity then
-            AutoGrow;
-          AddItem := FSize < FCapacity;
-          if AddItem then
-          begin
-            FElementData[FSize] := Item;
-            Inc(FSize);
-          end;
+          FElementData[FSize] := Item;
+          Inc(FSize);
         end;
       end;
-      Result := Result and AddItem;
     end;
+    Result := Result and AddItem;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8263,10 +8269,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeObject(FElementData[I]);
-    FSize := 0;
-    AutoPack;
+  for I := 0 to FSize - 1 do
+    FreeObject(FElementData[I]);
+  FSize := 0;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8282,13 +8288,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AObject) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AObject) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8304,13 +8310,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while Result and It.HasNext do
-      Result := Contains(It.Next);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8330,16 +8336,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index >= 0) and (Index < FSize) then
-    begin
-      Result := FreeObject(FElementData[Index]);
-      if Index < (FSize - 1) then
-        JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
-      Dec(FSize);
-      AutoPack;
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if (Index >= 0) and (Index < FSize) then
+  begin
+    Result := FreeObject(FElementData[Index]);
+    if Index < (FSize - 1) then
+      JclBase.MoveArray(FElementData, Index + 1, Index, FSize - Index - 1);
+    Dec(FSize);
+    AutoPack;
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8356,16 +8362,16 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  if FSize <> ACollection.Size then
+    Exit;
+  It := ACollection.First;
+  for I := 0 to FSize - 1 do
+    if not ItemsEqual(FElementData[I], It.Next) then
       Exit;
-    if FSize <> ACollection.Size then
-      Exit;
-    It := ACollection.First;
-    for I := 0 to FSize - 1 do
-      if not ItemsEqual(FElementData[I], It.Next) then
-        Exit;
-    Result := True;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8391,12 +8397,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if (Index >= 0) or (Index < FSize) then
-      Result := FElementData[Index]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create(IntToStr(Index));
+  Result := nil;
+  if (Index >= 0) or (Index < FSize) then
+    Result := FElementData[Index]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create(IntToStr(Index));
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8412,13 +8418,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElementData[I], AObject) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElementData[I], AObject) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8432,35 +8438,35 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  Result := FAllowDefaultElements or not ItemsEqual(AObject, nil);
 
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+
+  if Result then
+  begin
+    if FDuplicates <> dupAccept then
+      for Index := 0 to FSize - 1 do
+        if ItemsEqual(AObject, FElementData[Index]) then
+        begin
+          Result := CheckDuplicate;
+          Break;
+        end;
 
     if Result then
     begin
-      if FDuplicates <> dupAccept then
-        for Index := 0 to FSize - 1 do
-          if ItemsEqual(AObject, FElementData[Index]) then
-          begin
-            Result := CheckDuplicate;
-            Break;
-          end;
-
+      if FSize = FCapacity then
+        AutoGrow;
+      Result := FSize < FCapacity;
       if Result then
       begin
-        if FSize = FCapacity then
-          AutoGrow;
-        Result := FSize < FCapacity;
-        if Result then
-        begin
-          if Index < FSize then
-            JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
-          FElementData[Index] := AObject;
-          Inc(FSize);
-        end;
+        if Index < FSize then
+          JclBase.MoveArray(FElementData, Index, Index + 1, FSize - Index);
+        FElementData[Index] := AObject;
+        Inc(FSize);
       end;
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8476,16 +8482,16 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if (Index < 0) or (Index > FSize) then
-      raise EJclOutOfBoundsError.Create;
-    if ACollection = nil then
-      Exit;
+  Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EJclOutOfBoundsError.Create;
+  if ACollection = nil then
+    Exit;
 
-    Result := True;
-    It := ACollection.Last;
-    while It.HasPrevious do
-      Result := Insert(Index, It.Previous) and Result;
+  Result := True;
+  It := ACollection.Last;
+  while It.HasPrevious do
+    Result := Insert(Index, It.Previous) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8511,13 +8517,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := -1;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AObject) then
-      begin
-        Result := I;
-        Break;
-      end;
+  Result := -1;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AObject) then
+    begin
+      Result := I;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8533,19 +8539,19 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := FSize - 1 downto 0 do
-      if ItemsEqual(FElementData[I], AObject) then
-      begin
-        FreeObject(FElementData[I]);
-        if I < (FSize - 1) then
-          JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
-        Dec(FSize);
-        Result := True;
-        if FRemoveSingleElement then
-          Break;
-      end;
-    AutoPack;
+  Result := False;
+  for I := FSize - 1 downto 0 do
+    if ItemsEqual(FElementData[I], AObject) then
+    begin
+      FreeObject(FElementData[I]);
+      if I < (FSize - 1) then
+        JclBase.MoveArray(FElementData, I + 1, I, FSize - I - 1);
+      Dec(FSize);
+      Result := True;
+      if FRemoveSingleElement then
+        Break;
+    end;
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8561,13 +8567,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    It := ACollection.First;
-    while It.HasNext do
-      Result := Remove(It.Next) and Result;
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  It := ACollection.First;
+  while It.HasNext do
+    Result := Remove(It.Next) and Result;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8583,13 +8589,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if ACollection = nil then
-      Exit;
-    Result := True;
-    for I := FSize - 1 downto 0 do
-      if not ACollection.Contains(FElementData[I]) then
-        Delete(I);
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  Result := True;
+  for I := FSize - 1 downto 0 do
+    if not ACollection.Contains(FElementData[I]) then
+      Delete(I);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8603,13 +8609,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value >= FSize then
-    begin
-      SetLength(FElementData, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOutOfBoundsError.Create;
+  if Value >= FSize then
+  begin
+    SetLength(FElementData, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8626,26 +8632,26 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if (Index < 0) or (Index >= FSize) then
-      raise EJclOutOfBoundsError.Create;
-    ReplaceItem := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if (Index < 0) or (Index >= FSize) then
+    raise EJclOutOfBoundsError.Create;
+  ReplaceItem := FAllowDefaultElements or not ItemsEqual(AObject, nil);
+  if ReplaceItem then
+  begin
+    if FDuplicates <> dupAccept then
+      for I := 0 to FSize - 1 do
+        if ItemsEqual(FElementData[I], AObject) then
+        begin
+          ReplaceItem := CheckDuplicate;
+          Break;
+        end;
     if ReplaceItem then
     begin
-      if FDuplicates <> dupAccept then
-        for I := 0 to FSize - 1 do
-          if ItemsEqual(FElementData[I], AObject) then
-          begin
-            ReplaceItem := CheckDuplicate;
-            Break;
-          end;
-      if ReplaceItem then
-      begin
-        FreeObject(FElementData[Index]);
-        FElementData[Index] := AObject;
-      end;
+      FreeObject(FElementData[Index]);
+      FElementData[Index] := AObject;
     end;
-    if not ReplaceItem then
-      Delete(Index);
+  end;
+  if not ReplaceItem then
+    Delete(Index);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8667,12 +8673,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Last := First + Count - 1;
-    if Last >= FSize then
-      Last := FSize - 1;
-    Result := CreateEmptyContainer as IJclList;
-    for I := First to Last do
-      Result.Add(FElementData[I]);
+  Last := First + Count - 1;
+  if Last >= FSize then
+    Last := FSize - 1;
+  Result := CreateEmptyContainer as IJclList;
+  for I := First to Last do
+    Result.Add(FElementData[I]);
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9336,4 +9342,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

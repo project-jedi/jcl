@@ -74,7 +74,7 @@ type
     function GetIgnoredExceptionsCount: Integer;
   public
     constructor Create; reintroduce;
-    destructor Destroy; override; 
+    destructor Destroy; override;
   published
     // file options
     property Languages: TJclBorPersonalities read FLanguages write FLanguages;

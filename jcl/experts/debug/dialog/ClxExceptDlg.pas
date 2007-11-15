@@ -38,11 +38,11 @@ uses
 const
   QEventType_UMCreateDetails = QEventType(Integer(QEventType_ClxUser) + $01);
 
-  ReportToLogEnabled   = $00000001; // TExceptionDialog.Tag property
+  ReportToLogEnabled = $00000001; // TExceptionDialog.Tag property
   DisableTextScrollbar = $00000002; // TExceptionDialog.Tag property
 
 type
-  TSimpleExceptionLog = class (TObject)
+  TSimpleExceptionLog = class(TObject)
   private
     FLogFileHandle: THandle;
     FLogFileName: string;
@@ -138,7 +138,7 @@ resourcestring
   RsProcessor = 'Processor: %s, %s, %d MHz %s%s';
   RsScreenRes = 'Display  : %dx%d pixels, %d bpp';
   RsActiveControl = 'Active Controls hierarchy:';
-  RsThread = 'Thread: %s';
+  RsThread   = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
 
 var
@@ -186,7 +186,7 @@ end;
 
 function HookTApplicationHandleException: Boolean;
 const
-  CallOffset      = $86;
+  CallOffset = $86;
   CallOffsetDebug = $63;
 type
   PCALLInstruction = ^TCALLInstruction;
@@ -197,7 +197,7 @@ type
 var
   TApplicationHandleExceptionAddr, SysUtilsShowExceptionAddr: Pointer;
   CALLInstruction: TCALLInstruction;
-  CallAddress: Pointer;
+  CallAddress:     Pointer;
   OldProtect, Dummy: DWORD;
 
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
@@ -209,13 +209,15 @@ var
       if Result then
       begin
         if IsCompiledWithPackages then
-          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) + Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
+          Result := PeMapImgResolvePackageThunk(Pointer(Integer(CallAddress) +
+            Integer(PCALLInstruction(CallAddress)^.Address) + SizeOf(CALLInstruction))) = SysUtilsShowExceptionAddr
         else
-          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) - Integer(CallAddress) - SizeOf(CALLInstruction);
+          Result := PCALLInstruction(CallAddress)^.Address = Integer(SysUtilsShowExceptionAddr) -
+            Integer(CallAddress) - SizeOf(CALLInstruction);
       end;
     except
       Result := False;
-    end;    
+    end;
   end;
 
 begin
@@ -226,14 +228,14 @@ begin
   begin
     Result := VirtualProtect(CallAddress, sizeof(CallInstruction), PAGE_EXECUTE_READWRITE, OldProtect);
     if Result then
-    try
-      CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
-      PCALLInstruction(CallAddress)^ := CALLInstruction;
-      if Result then
-        FlushInstructionCache(GetCurrentProcess, CallAddress, SizeOf(CALLInstruction));
-    finally
-      VirtualProtect(CallAddress, sizeof(CallInstruction), OldProtect, Dummy);
-    end;
+      try
+        CALLInstruction.Address := Integer(@HookShowException) - Integer(CallAddress) - SizeOf(CALLInstruction);
+        PCALLInstruction(CallAddress)^ := CALLInstruction;
+        if Result then
+          FlushInstructionCache(GetCurrentProcess, CallAddress, SizeOf(CALLInstruction));
+      finally
+        VirtualProtect(CallAddress, sizeof(CallInstruction), OldProtect, Dummy);
+      end;
   end;
 end;
 
@@ -339,7 +341,7 @@ procedure TSimpleExceptionLog.WriteStamp(SeparatorLen: Integer);
 begin
   if SeparatorLen = 0 then
     SeparatorLen := 100;
-  SeparatorLen := Max(SeparatorLen, 20);  
+  SeparatorLen := Max(SeparatorLen, 20);
   OpenLog;
   if not FLogWasEmpty then
     Write(AnsiCrLf);
@@ -409,10 +411,10 @@ const
   FDIVText: array[Boolean] of PChar = (' [FDIV Bug]', '');
 var
   SL: TStringList;
-  I: Integer;
+  I:  Integer;
   ModuleName: TFileName;
   CpuInfo: TCpuInfo;
-  C: TWinControl;
+  C:  TWinControl;
   NtHeaders: PImageNtHeaders;
   ModuleBase: Cardinal;
   ImageBaseStr: string;
@@ -461,13 +463,13 @@ begin
           ImageBaseStr := StrRepeat(' ', 11);
         if VersionResourceAvailable(ModuleName) then
           with TJclFileVersionInfo.Create(ModuleName) do
-          try
-            DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
-            if FileDescription <> '' then
-              DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
-          finally
-            Free;
-          end
+            try
+              DetailsMemo.Lines.Add(ImageBaseStr + BinFileVersion + ' - ' + FileVersion);
+              if FileDescription <> '' then
+                DetailsMemo.Lines.Add(StrRepeat(' ', 11) + FileDescription);
+            finally
+              Free;
+            end
         else
           DetailsMemo.Lines.Add(ImageBaseStr + RsMissingVersionInfo);
       end;
@@ -708,7 +710,7 @@ begin
       TextLabel.ScrollBars := ssVertical
     else
       TextLabel.ScrollBars := ssNone;
-   end;
+  end;
 end;
 
 //==================================================================================================

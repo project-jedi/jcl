@@ -135,7 +135,8 @@ type
   TJclAnsiStrIntfBucketArray = array of TJclAnsiStrIntfBucket;
 
   TJclAnsiStrIntfHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclAnsiStrIntfMap)
   private
     FBuckets: TJclAnsiStrIntfBucketArray;
@@ -193,7 +194,8 @@ type
   TJclIntfAnsiStrBucketArray = array of TJclIntfAnsiStrBucket;
 
   TJclIntfAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclIntfAnsiStrMap)
   private
     FBuckets: TJclIntfAnsiStrBucketArray;
@@ -252,7 +254,8 @@ type
   TJclAnsiStrAnsiStrBucketArray = array of TJclAnsiStrAnsiStrBucket;
 
   TJclAnsiStrAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer,
     IJclAnsiStrAnsiStrMap)
   private
     FBuckets: TJclAnsiStrAnsiStrBucketArray;
@@ -310,7 +313,8 @@ type
   TJclWideStrIntfBucketArray = array of TJclWideStrIntfBucket;
 
   TJclWideStrIntfHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclWideStrIntfMap)
   private
     FBuckets: TJclWideStrIntfBucketArray;
@@ -368,7 +372,8 @@ type
   TJclIntfWideStrBucketArray = array of TJclIntfWideStrBucket;
 
   TJclIntfWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclIntfWideStrMap)
   private
     FBuckets: TJclIntfWideStrBucketArray;
@@ -427,7 +432,8 @@ type
   TJclWideStrWideStrBucketArray = array of TJclWideStrWideStrBucket;
 
   TJclWideStrWideStrHashMap = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer,
     IJclWideStrWideStrMap)
   private
     FBuckets: TJclWideStrWideStrBucketArray;
@@ -1802,7 +1808,8 @@ type
   TJclAnsiStrBucketArray = array of TJclAnsiStrBucket;
 
   TJclAnsiStrHashMap = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclValueOwner,
     IJclAnsiStrMap)
   private
     FBuckets: TJclAnsiStrBucketArray;
@@ -1864,7 +1871,8 @@ type
   TJclWideStrBucketArray = array of TJclWideStrBucket;
 
   TJclWideStrHashMap = class(TJclwideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclValueOwner,
+    IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclValueOwner,
     IJclWideStrMap)
   private
     FBuckets: TJclWideStrBucketArray;
@@ -2629,23 +2637,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -2676,20 +2684,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2706,15 +2714,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2731,18 +2739,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2765,25 +2773,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2815,19 +2823,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2872,22 +2880,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2909,14 +2917,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3003,17 +3011,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3051,14 +3059,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3070,43 +3078,43 @@ procedure TJclIntfIntfHashMap.PutValue(const Key: IInterface; const Value: IInte
 var
   Index: Integer;
   Bucket: TJclIntfIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3117,29 +3125,29 @@ end;
 function TJclIntfIntfHashMap.Remove(const Key: IInterface): IInterface;
 var
   Bucket: TJclIntfIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3153,13 +3161,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3181,14 +3189,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3233,23 +3241,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclAnsiStrIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclAnsiStrIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -3280,20 +3288,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3310,15 +3318,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3335,18 +3343,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3369,25 +3377,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3419,19 +3427,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3472,22 +3480,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3509,14 +3517,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3603,17 +3611,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3651,14 +3659,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3670,43 +3678,43 @@ procedure TJclAnsiStrIntfHashMap.PutValue(const Key: AnsiString; const Value: II
 var
   Index: Integer;
   Bucket: TJclAnsiStrIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclAnsiStrIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclAnsiStrIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3717,29 +3725,29 @@ end;
 function TJclAnsiStrIntfHashMap.Remove(const Key: AnsiString): IInterface;
 var
   Bucket: TJclAnsiStrIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3753,13 +3761,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3781,14 +3789,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3833,23 +3841,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfAnsiStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfAnsiStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -3880,20 +3888,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -3910,15 +3918,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3935,18 +3943,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3969,25 +3977,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4019,19 +4027,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4076,22 +4084,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4113,14 +4121,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4207,17 +4215,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4255,14 +4263,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4274,43 +4282,43 @@ procedure TJclIntfAnsiStrHashMap.PutValue(const Key: IInterface; const Value: An
 var
   Index: Integer;
   Bucket: TJclIntfAnsiStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfAnsiStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfAnsiStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4321,29 +4329,29 @@ end;
 function TJclIntfAnsiStrHashMap.Remove(const Key: IInterface): AnsiString;
 var
   Bucket: TJclIntfAnsiStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4357,13 +4365,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4385,14 +4393,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclAnsiStrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4437,23 +4445,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclAnsiStrAnsiStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclAnsiStrAnsiStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -4484,20 +4492,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4514,15 +4522,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4539,18 +4547,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4573,25 +4581,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4623,19 +4631,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4676,22 +4684,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4713,14 +4721,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4728,7 +4736,8 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrAnsiStrHashMap.MoveArray(var List: TJclAnsiStrAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclAnsiStrAnsiStrHashMap.MoveArray(var List: TJclAnsiStrAnsiStrEntryArray;
+  FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -4807,17 +4816,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4855,14 +4864,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4874,43 +4883,43 @@ procedure TJclAnsiStrAnsiStrHashMap.PutValue(const Key: AnsiString; const Value:
 var
   Index: Integer;
   Bucket: TJclAnsiStrAnsiStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclAnsiStrAnsiStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclAnsiStrAnsiStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4921,29 +4930,29 @@ end;
 function TJclAnsiStrAnsiStrHashMap.Remove(const Key: AnsiString): AnsiString;
 var
   Bucket: TJclAnsiStrAnsiStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4957,13 +4966,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -4985,14 +4994,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclAnsiStrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5037,23 +5046,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclWideStrIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclWideStrIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -5084,20 +5093,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5114,15 +5123,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5139,18 +5148,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5173,25 +5182,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5223,19 +5232,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5276,22 +5285,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5313,14 +5322,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclWideStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5407,17 +5416,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5455,14 +5464,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5474,43 +5483,43 @@ procedure TJclWideStrIntfHashMap.PutValue(const Key: WideString; const Value: II
 var
   Index: Integer;
   Bucket: TJclWideStrIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclWideStrIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclWideStrIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5521,29 +5530,29 @@ end;
 function TJclWideStrIntfHashMap.Remove(const Key: WideString): IInterface;
 var
   Bucket: TJclWideStrIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5557,13 +5566,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5585,14 +5594,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5637,23 +5646,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfWideStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfWideStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -5684,20 +5693,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -5714,15 +5723,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5739,18 +5748,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5773,25 +5782,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5823,19 +5832,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5880,22 +5889,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5917,14 +5926,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6011,17 +6020,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6059,14 +6068,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6078,43 +6087,43 @@ procedure TJclIntfWideStrHashMap.PutValue(const Key: IInterface; const Value: Wi
 var
   Index: Integer;
   Bucket: TJclIntfWideStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, '')) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfWideStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfWideStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6125,29 +6134,29 @@ end;
 function TJclIntfWideStrHashMap.Remove(const Key: IInterface): WideString;
 var
   Bucket: TJclIntfWideStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6161,13 +6170,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6189,14 +6198,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclWideStrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6241,23 +6250,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclWideStrWideStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclWideStrWideStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -6288,20 +6297,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6318,15 +6327,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6343,18 +6352,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6377,25 +6386,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6427,19 +6436,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6480,22 +6489,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6517,14 +6526,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclWideStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6532,7 +6541,8 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrWideStrHashMap.MoveArray(var List: TJclWideStrWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclWideStrWideStrHashMap.MoveArray(var List: TJclWideStrWideStrEntryArray;
+  FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -6611,17 +6621,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6659,14 +6669,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6678,43 +6688,43 @@ procedure TJclWideStrWideStrHashMap.PutValue(const Key: WideString; const Value:
 var
   Index: Integer;
   Bucket: TJclWideStrWideStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, '')) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclWideStrWideStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclWideStrWideStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6725,29 +6735,29 @@ end;
 function TJclWideStrWideStrHashMap.Remove(const Key: WideString): WideString;
 var
   Bucket: TJclWideStrWideStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := '';
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6761,13 +6771,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6789,14 +6799,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclWideStrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6841,23 +6851,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclSingleIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclSingleIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -6888,20 +6898,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -6918,15 +6928,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6943,18 +6953,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -6977,25 +6987,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7027,19 +7037,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7080,22 +7090,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7117,14 +7127,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclSingleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7211,17 +7221,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7259,14 +7269,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7278,43 +7288,43 @@ procedure TJclSingleIntfHashMap.PutValue(const Key: Single; const Value: IInterf
 var
   Index: Integer;
   Bucket: TJclSingleIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclSingleIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclSingleIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7325,29 +7335,29 @@ end;
 function TJclSingleIntfHashMap.Remove(const Key: Single): IInterface;
 var
   Bucket: TJclSingleIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7361,13 +7371,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7389,14 +7399,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7441,23 +7451,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfSingleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfSingleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -7488,20 +7498,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7518,15 +7528,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7543,18 +7553,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7577,25 +7587,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7627,19 +7637,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7684,22 +7694,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7721,14 +7731,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -7815,17 +7825,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7863,14 +7873,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7882,43 +7892,43 @@ procedure TJclIntfSingleHashMap.PutValue(const Key: IInterface; const Value: Sin
 var
   Index: Integer;
   Bucket: TJclIntfSingleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfSingleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfSingleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7929,29 +7939,29 @@ end;
 function TJclIntfSingleHashMap.Remove(const Key: IInterface): Single;
 var
   Bucket: TJclIntfSingleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7965,13 +7975,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -7993,14 +8003,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclSingleArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8045,23 +8055,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclSingleSingleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclSingleSingleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -8092,20 +8102,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8122,15 +8132,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8147,18 +8157,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8181,25 +8191,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8231,19 +8241,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8284,22 +8294,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8321,14 +8331,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclSingleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8415,17 +8425,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8463,14 +8473,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8482,43 +8492,43 @@ procedure TJclSingleSingleHashMap.PutValue(const Key: Single; const Value: Singl
 var
   Index: Integer;
   Bucket: TJclSingleSingleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclSingleSingleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclSingleSingleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8529,29 +8539,29 @@ end;
 function TJclSingleSingleHashMap.Remove(const Key: Single): Single;
 var
   Bucket: TJclSingleSingleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8565,13 +8575,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8593,14 +8603,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclSingleArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8645,23 +8655,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclDoubleIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclDoubleIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -8692,20 +8702,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -8722,15 +8732,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8747,18 +8757,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8781,25 +8791,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8831,19 +8841,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8884,22 +8894,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -8921,14 +8931,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclDoubleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9015,17 +9025,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9063,14 +9073,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9082,43 +9092,43 @@ procedure TJclDoubleIntfHashMap.PutValue(const Key: Double; const Value: IInterf
 var
   Index: Integer;
   Bucket: TJclDoubleIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclDoubleIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclDoubleIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9129,29 +9139,29 @@ end;
 function TJclDoubleIntfHashMap.Remove(const Key: Double): IInterface;
 var
   Bucket: TJclDoubleIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9165,13 +9175,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9193,14 +9203,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9245,23 +9255,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfDoubleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfDoubleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -9292,20 +9302,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9322,15 +9332,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9347,18 +9357,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9381,25 +9391,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9431,19 +9441,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9488,22 +9498,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9525,14 +9535,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9619,17 +9629,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9667,14 +9677,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9686,43 +9696,43 @@ procedure TJclIntfDoubleHashMap.PutValue(const Key: IInterface; const Value: Dou
 var
   Index: Integer;
   Bucket: TJclIntfDoubleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfDoubleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfDoubleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9733,29 +9743,29 @@ end;
 function TJclIntfDoubleHashMap.Remove(const Key: IInterface): Double;
 var
   Bucket: TJclIntfDoubleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9769,13 +9779,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9797,14 +9807,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclDoubleArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9849,23 +9859,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclDoubleDoubleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclDoubleDoubleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -9896,20 +9906,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -9926,15 +9936,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9951,18 +9961,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -9985,25 +9995,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10035,19 +10045,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10088,22 +10098,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10125,14 +10135,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclDoubleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10219,17 +10229,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10267,14 +10277,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10286,43 +10296,43 @@ procedure TJclDoubleDoubleHashMap.PutValue(const Key: Double; const Value: Doubl
 var
   Index: Integer;
   Bucket: TJclDoubleDoubleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclDoubleDoubleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclDoubleDoubleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10333,29 +10343,29 @@ end;
 function TJclDoubleDoubleHashMap.Remove(const Key: Double): Double;
 var
   Bucket: TJclDoubleDoubleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10369,13 +10379,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10397,14 +10407,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclDoubleArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10449,23 +10459,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclExtendedIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclExtendedIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -10496,20 +10506,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10526,15 +10536,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10551,18 +10561,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10585,25 +10595,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10635,19 +10645,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10688,22 +10698,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10725,14 +10735,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclExtendedArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -10819,17 +10829,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10867,14 +10877,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10886,43 +10896,43 @@ procedure TJclExtendedIntfHashMap.PutValue(const Key: Extended; const Value: IIn
 var
   Index: Integer;
   Bucket: TJclExtendedIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclExtendedIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclExtendedIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10933,29 +10943,29 @@ end;
 function TJclExtendedIntfHashMap.Remove(const Key: Extended): IInterface;
 var
   Bucket: TJclExtendedIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10969,13 +10979,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -10997,14 +11007,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11049,23 +11059,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfExtendedBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfExtendedBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -11096,20 +11106,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11126,15 +11136,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11151,18 +11161,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11185,25 +11195,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11235,19 +11245,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11292,22 +11302,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11329,14 +11339,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11423,17 +11433,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11471,14 +11481,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11490,43 +11500,43 @@ procedure TJclIntfExtendedHashMap.PutValue(const Key: IInterface; const Value: E
 var
   Index: Integer;
   Bucket: TJclIntfExtendedBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfExtendedBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfExtendedBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11537,29 +11547,29 @@ end;
 function TJclIntfExtendedHashMap.Remove(const Key: IInterface): Extended;
 var
   Bucket: TJclIntfExtendedBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11573,13 +11583,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11601,14 +11611,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclExtendedArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11653,23 +11663,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclExtendedExtendedBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclExtendedExtendedBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -11700,20 +11710,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -11730,15 +11740,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11755,18 +11765,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11789,25 +11799,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11839,19 +11849,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11892,22 +11902,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11929,14 +11939,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclExtendedArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -11944,7 +11954,8 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedExtendedHashMap.MoveArray(var List: TJclExtendedExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclExtendedExtendedHashMap.MoveArray(var List: TJclExtendedExtendedEntryArray;
+  FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -12023,17 +12034,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12071,14 +12082,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12090,43 +12101,43 @@ procedure TJclExtendedExtendedHashMap.PutValue(const Key: Extended; const Value:
 var
   Index: Integer;
   Bucket: TJclExtendedExtendedBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, 0.0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclExtendedExtendedBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclExtendedExtendedBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12137,29 +12148,29 @@ end;
 function TJclExtendedExtendedHashMap.Remove(const Key: Extended): Extended;
 var
   Bucket: TJclExtendedExtendedBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0.0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12173,13 +12184,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12201,14 +12212,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclExtendedArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12253,23 +12264,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntegerIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntegerIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -12300,20 +12311,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12330,15 +12341,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12355,18 +12366,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12389,25 +12400,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12439,19 +12450,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12492,22 +12503,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12529,14 +12540,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntegerArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12623,17 +12634,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12671,14 +12682,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12690,43 +12701,43 @@ procedure TJclIntegerIntfHashMap.PutValue(Key: Integer; const Value: IInterface)
 var
   Index: Integer;
   Bucket: TJclIntegerIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntegerIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntegerIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12737,29 +12748,29 @@ end;
 function TJclIntegerIntfHashMap.Remove(Key: Integer): IInterface;
 var
   Bucket: TJclIntegerIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12773,13 +12784,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12801,14 +12812,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12853,23 +12864,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfIntegerBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfIntegerBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -12900,20 +12911,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -12930,15 +12941,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12955,18 +12966,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -12989,25 +13000,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13039,19 +13050,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13096,22 +13107,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13133,14 +13144,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13227,17 +13238,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13275,14 +13286,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13294,43 +13305,43 @@ procedure TJclIntfIntegerHashMap.PutValue(const Key: IInterface; Value: Integer)
 var
   Index: Integer;
   Bucket: TJclIntfIntegerBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfIntegerBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfIntegerBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13341,29 +13352,29 @@ end;
 function TJclIntfIntegerHashMap.Remove(const Key: IInterface): Integer;
 var
   Bucket: TJclIntfIntegerBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13377,13 +13388,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13405,14 +13416,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntegerArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13457,23 +13468,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntegerIntegerBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntegerIntegerBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -13504,20 +13515,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13534,15 +13545,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13559,18 +13570,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13593,25 +13604,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13643,19 +13654,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13696,22 +13707,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13733,14 +13744,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntegerArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -13748,7 +13759,8 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntegerHashMap.MoveArray(var List: TJclIntegerIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclIntegerIntegerHashMap.MoveArray(var List: TJclIntegerIntegerEntryArray;
+  FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -13827,17 +13839,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13875,14 +13887,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13894,43 +13906,43 @@ procedure TJclIntegerIntegerHashMap.PutValue(Key: Integer; Value: Integer);
 var
   Index: Integer;
   Bucket: TJclIntegerIntegerBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntegerIntegerBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntegerIntegerBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13941,29 +13953,29 @@ end;
 function TJclIntegerIntegerHashMap.Remove(Key: Integer): Integer;
 var
   Bucket: TJclIntegerIntegerBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -13977,13 +13989,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14005,14 +14017,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntegerArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14057,23 +14069,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclCardinalIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclCardinalIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -14104,20 +14116,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14134,15 +14146,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14159,18 +14171,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14193,25 +14205,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14243,19 +14255,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14296,22 +14308,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14333,14 +14345,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclCardinalArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14427,17 +14439,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14475,14 +14487,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14494,43 +14506,43 @@ procedure TJclCardinalIntfHashMap.PutValue(Key: Cardinal; const Value: IInterfac
 var
   Index: Integer;
   Bucket: TJclCardinalIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclCardinalIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclCardinalIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14541,29 +14553,29 @@ end;
 function TJclCardinalIntfHashMap.Remove(Key: Cardinal): IInterface;
 var
   Bucket: TJclCardinalIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14577,13 +14589,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14605,14 +14617,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14657,23 +14669,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfCardinalBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfCardinalBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -14704,20 +14716,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -14734,15 +14746,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14759,18 +14771,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14793,25 +14805,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14843,19 +14855,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14900,22 +14912,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -14937,14 +14949,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15031,17 +15043,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15079,14 +15091,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15098,43 +15110,43 @@ procedure TJclIntfCardinalHashMap.PutValue(const Key: IInterface; Value: Cardina
 var
   Index: Integer;
   Bucket: TJclIntfCardinalBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfCardinalBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfCardinalBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15145,29 +15157,29 @@ end;
 function TJclIntfCardinalHashMap.Remove(const Key: IInterface): Cardinal;
 var
   Bucket: TJclIntfCardinalBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15181,13 +15193,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15209,14 +15221,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclCardinalArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15261,23 +15273,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclCardinalCardinalBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclCardinalCardinalBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -15308,20 +15320,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15338,15 +15350,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15363,18 +15375,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15397,25 +15409,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15447,19 +15459,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15500,22 +15512,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15537,14 +15549,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclCardinalArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15552,7 +15564,8 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalCardinalHashMap.MoveArray(var List: TJclCardinalCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
+procedure TJclCardinalCardinalHashMap.MoveArray(var List: TJclCardinalCardinalEntryArray;
+  FromIndex, ToIndex, Count: Integer);
 {$IFDEF CLR}
 var
   I: Integer;
@@ -15631,17 +15644,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15679,14 +15692,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15698,43 +15711,43 @@ procedure TJclCardinalCardinalHashMap.PutValue(Key: Cardinal; Value: Cardinal);
 var
   Index: Integer;
   Bucket: TJclCardinalCardinalBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclCardinalCardinalBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclCardinalCardinalBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15745,29 +15758,29 @@ end;
 function TJclCardinalCardinalHashMap.Remove(Key: Cardinal): Cardinal;
 var
   Bucket: TJclCardinalCardinalBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15781,13 +15794,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15809,14 +15822,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclCardinalArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15861,23 +15874,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclInt64IntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclInt64IntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -15908,20 +15921,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -15938,15 +15951,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15963,18 +15976,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -15997,25 +16010,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16047,19 +16060,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16100,22 +16113,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16137,14 +16150,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclInt64ArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16231,17 +16244,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16279,14 +16292,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16298,43 +16311,43 @@ procedure TJclInt64IntfHashMap.PutValue(const Key: Int64; const Value: IInterfac
 var
   Index: Integer;
   Bucket: TJclInt64IntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclInt64IntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclInt64IntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16345,29 +16358,29 @@ end;
 function TJclInt64IntfHashMap.Remove(const Key: Int64): IInterface;
 var
   Bucket: TJclInt64IntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16381,13 +16394,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16409,14 +16422,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16461,23 +16474,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfInt64Bucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfInt64Bucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -16508,20 +16521,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16538,15 +16551,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16563,18 +16576,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16597,25 +16610,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16647,19 +16660,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16704,22 +16717,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16741,14 +16754,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -16835,17 +16848,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16883,14 +16896,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16902,43 +16915,43 @@ procedure TJclIntfInt64HashMap.PutValue(const Key: IInterface; const Value: Int6
 var
   Index: Integer;
   Bucket: TJclIntfInt64Bucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfInt64Bucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfInt64Bucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16949,29 +16962,29 @@ end;
 function TJclIntfInt64HashMap.Remove(const Key: IInterface): Int64;
 var
   Bucket: TJclIntfInt64Bucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -16985,13 +16998,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17013,14 +17026,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclInt64ArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17065,23 +17078,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclInt64Int64Bucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclInt64Int64Bucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -17112,20 +17125,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17142,15 +17155,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17167,18 +17180,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17201,25 +17214,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17251,19 +17264,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17304,22 +17317,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17341,14 +17354,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclInt64ArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17435,17 +17448,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17483,14 +17496,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17502,43 +17515,43 @@ procedure TJclInt64Int64HashMap.PutValue(const Key: Int64; const Value: Int64);
 var
   Index: Integer;
   Bucket: TJclInt64Int64Bucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, 0)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclInt64Int64Bucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclInt64Int64Bucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17549,29 +17562,29 @@ end;
 function TJclInt64Int64HashMap.Remove(const Key: Int64): Int64;
 var
   Bucket: TJclInt64Int64Bucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := 0;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17585,13 +17598,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17613,14 +17626,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclInt64ArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17666,23 +17679,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclPtrIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclPtrIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -17713,20 +17726,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -17743,15 +17756,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17768,18 +17781,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17802,25 +17815,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17852,19 +17865,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17905,22 +17918,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -17942,14 +17955,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclPtrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18036,17 +18049,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18084,14 +18097,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18103,43 +18116,43 @@ procedure TJclPtrIntfHashMap.PutValue(Key: Pointer; const Value: IInterface);
 var
   Index: Integer;
   Bucket: TJclPtrIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclPtrIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclPtrIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18150,29 +18163,29 @@ end;
 function TJclPtrIntfHashMap.Remove(Key: Pointer): IInterface;
 var
   Bucket: TJclPtrIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18186,13 +18199,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18214,14 +18227,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclIntfArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18266,23 +18279,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfPtrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfPtrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -18313,20 +18326,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18343,15 +18356,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18368,18 +18381,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18402,25 +18415,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18452,19 +18465,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18509,22 +18522,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18546,14 +18559,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18640,17 +18653,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18688,14 +18701,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18707,43 +18720,43 @@ procedure TJclIntfPtrHashMap.PutValue(const Key: IInterface; Value: Pointer);
 var
   Index: Integer;
   Bucket: TJclIntfPtrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfPtrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfPtrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18754,29 +18767,29 @@ end;
 function TJclIntfPtrHashMap.Remove(const Key: IInterface): Pointer;
 var
   Bucket: TJclIntfPtrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18790,13 +18803,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18818,14 +18831,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclPtrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18870,23 +18883,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclPtrPtrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclPtrPtrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -18917,20 +18930,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -18947,15 +18960,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -18972,18 +18985,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19006,25 +19019,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19056,19 +19069,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19109,22 +19122,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19146,14 +19159,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclPtrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19240,17 +19253,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19288,14 +19301,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19307,43 +19320,43 @@ procedure TJclPtrPtrHashMap.PutValue(Key: Pointer; Value: Pointer);
 var
   Index: Integer;
   Bucket: TJclPtrPtrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclPtrPtrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclPtrPtrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19354,29 +19367,29 @@ end;
 function TJclPtrPtrHashMap.Remove(Key: Pointer): Pointer;
 var
   Bucket: TJclPtrPtrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19390,13 +19403,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19418,14 +19431,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArrayList.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclPtrArrayList.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19472,23 +19485,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntfBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntfBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -19519,20 +19532,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19549,15 +19562,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19574,18 +19587,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19608,25 +19621,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19670,19 +19683,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19727,22 +19740,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19764,14 +19777,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntfArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntfArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -19858,17 +19871,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19906,14 +19919,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19925,43 +19938,43 @@ procedure TJclIntfHashMap.PutValue(const Key: IInterface; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclIntfBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntfBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntfBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -19972,29 +19985,29 @@ end;
 function TJclIntfHashMap.Remove(const Key: IInterface): TObject;
 var
   Bucket: TJclIntfBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20008,13 +20021,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20036,14 +20049,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20089,23 +20102,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclAnsiStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclAnsiStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -20136,20 +20149,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20166,15 +20179,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20191,18 +20204,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20225,25 +20238,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20287,19 +20300,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20340,22 +20353,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20377,14 +20390,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclAnsiStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclAnsiStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20471,17 +20484,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20519,14 +20532,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20538,43 +20551,43 @@ procedure TJclAnsiStrHashMap.PutValue(const Key: AnsiString; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclAnsiStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclAnsiStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclAnsiStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20585,29 +20598,29 @@ end;
 function TJclAnsiStrHashMap.Remove(const Key: AnsiString): TObject;
 var
   Bucket: TJclAnsiStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20621,13 +20634,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20649,14 +20662,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20702,23 +20715,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclWideStrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclWideStrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -20749,20 +20762,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -20779,15 +20792,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20804,18 +20817,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20838,25 +20851,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20900,19 +20913,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20953,22 +20966,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := '';
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := '';
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -20990,14 +21003,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclWideStrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclWideStrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21084,17 +21097,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21132,14 +21145,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21151,43 +21164,43 @@ procedure TJclWideStrHashMap.PutValue(const Key: WideString; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclWideStrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, '') and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclWideStrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclWideStrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21198,29 +21211,29 @@ end;
 function TJclWideStrHashMap.Remove(const Key: WideString): TObject;
 var
   Bucket: TJclWideStrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21234,13 +21247,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21262,14 +21275,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21315,23 +21328,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclSingleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclSingleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -21362,20 +21375,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21392,15 +21405,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21417,18 +21430,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21451,25 +21464,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21513,19 +21526,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21566,22 +21579,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21603,14 +21616,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclSingleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclSingleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21697,17 +21710,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21745,14 +21758,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21764,43 +21777,43 @@ procedure TJclSingleHashMap.PutValue(const Key: Single; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclSingleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclSingleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclSingleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21811,29 +21824,29 @@ end;
 function TJclSingleHashMap.Remove(const Key: Single): TObject;
 var
   Bucket: TJclSingleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21847,13 +21860,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -21875,14 +21888,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -21928,23 +21941,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclDoubleBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclDoubleBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -21975,20 +21988,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22005,15 +22018,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22030,18 +22043,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22064,25 +22077,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22126,19 +22139,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22179,22 +22192,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22216,14 +22229,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclDoubleArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclDoubleArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22310,17 +22323,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22358,14 +22371,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22377,43 +22390,43 @@ procedure TJclDoubleHashMap.PutValue(const Key: Double; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclDoubleBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclDoubleBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclDoubleBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22424,29 +22437,29 @@ end;
 function TJclDoubleHashMap.Remove(const Key: Double): TObject;
 var
   Bucket: TJclDoubleBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22460,13 +22473,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22488,14 +22501,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22541,23 +22554,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclExtendedBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclExtendedBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -22588,20 +22601,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22618,15 +22631,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22643,18 +22656,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22677,25 +22690,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22739,19 +22752,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22792,22 +22805,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0.0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0.0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22829,14 +22842,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclExtendedArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclExtendedArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -22923,17 +22936,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22971,14 +22984,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -22990,43 +23003,43 @@ procedure TJclExtendedHashMap.PutValue(const Key: Extended; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclExtendedBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0.0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclExtendedBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclExtendedBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23037,29 +23050,29 @@ end;
 function TJclExtendedHashMap.Remove(const Key: Extended): TObject;
 var
   Bucket: TJclExtendedBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23073,13 +23086,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23101,14 +23114,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23154,23 +23167,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclIntegerBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclIntegerBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -23201,20 +23214,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23231,15 +23244,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23256,18 +23269,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23290,25 +23303,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23352,19 +23365,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23405,22 +23418,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23442,14 +23455,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclIntegerArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclIntegerArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23536,17 +23549,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23584,14 +23597,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23603,43 +23616,43 @@ procedure TJclIntegerHashMap.PutValue(Key: Integer; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclIntegerBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclIntegerBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclIntegerBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23650,29 +23663,29 @@ end;
 function TJclIntegerHashMap.Remove(Key: Integer): TObject;
 var
   Bucket: TJclIntegerBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23686,13 +23699,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23714,14 +23727,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23767,23 +23780,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclCardinalBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclCardinalBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -23814,20 +23827,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -23844,15 +23857,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23869,18 +23882,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23903,25 +23916,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -23965,19 +23978,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24018,22 +24031,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24055,14 +24068,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclCardinalArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclCardinalArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24149,17 +24162,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24197,14 +24210,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24216,43 +24229,43 @@ procedure TJclCardinalHashMap.PutValue(Key: Cardinal; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclCardinalBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclCardinalBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclCardinalBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24263,29 +24276,29 @@ end;
 function TJclCardinalHashMap.Remove(Key: Cardinal): TObject;
 var
   Bucket: TJclCardinalBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24299,13 +24312,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24327,14 +24340,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24380,23 +24393,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclInt64Bucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclInt64Bucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -24427,20 +24440,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24457,15 +24470,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24482,18 +24495,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24516,25 +24529,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24578,19 +24591,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24631,22 +24644,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := 0;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := 0;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24668,14 +24681,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclInt64ArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclInt64ArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24762,17 +24775,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24810,14 +24823,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24829,43 +24842,43 @@ procedure TJclInt64HashMap.PutValue(const Key: Int64; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclInt64Bucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, 0) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclInt64Bucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclInt64Bucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24876,29 +24889,29 @@ end;
 function TJclInt64HashMap.Remove(const Key: Int64): TObject;
 var
   Bucket: TJclInt64Bucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24912,13 +24925,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -24940,14 +24953,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -24994,23 +25007,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclPtrBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclPtrBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -25041,20 +25054,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25071,15 +25084,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25096,18 +25109,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25130,25 +25143,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25192,19 +25205,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25245,22 +25258,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25282,14 +25295,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclPtrArraySet.Create(FSize);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclPtrArraySet.Create(FSize);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25376,17 +25389,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25424,14 +25437,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25443,43 +25456,43 @@ procedure TJclPtrHashMap.PutValue(Key: Pointer; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclPtrBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclPtrBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclPtrBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25490,29 +25503,29 @@ end;
 function TJclPtrHashMap.Remove(Key: Pointer): TObject;
 var
   Bucket: TJclPtrBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25526,13 +25539,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25554,14 +25567,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25609,23 +25622,23 @@ begin
     ReadLock;
     try
     {$ENDIF THREADSAFE}
-      ADest.Clear;
-      for I := 0 to FCapacity - 1 do
+    ADest.Clear;
+    for I := 0 to FCapacity - 1 do
+    begin
+      SelfBucket := FBuckets[I];
+      if SelfBucket <> nil then
       begin
-        SelfBucket := FBuckets[I];
-        if SelfBucket <> nil then
+        NewBucket := TJclBucket.Create;
+        SetLength(NewBucket.Entries, SelfBucket.Size);
+        for J := 0 to SelfBucket.Size - 1 do
         begin
-          NewBucket := TJclBucket.Create;
-          SetLength(NewBucket.Entries, SelfBucket.Size);
-          for J := 0 to SelfBucket.Size - 1 do
-          begin
-            NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
-            NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
-          end;
-          NewBucket.Size := SelfBucket.Size;
-          ADest.FBuckets[I] := NewBucket;
+          NewBucket.Entries[J].Key := SelfBucket.Entries[J].Key;
+          NewBucket.Entries[J].Value := SelfBucket.Entries[J].Value;
         end;
+        NewBucket.Size := SelfBucket.Size;
+        ADest.FBuckets[I] := NewBucket;
       end;
+    end;
     {$IFDEF THREADSAFE}
     finally
       ReadUnlock;
@@ -25656,20 +25669,20 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
       begin
-        for J := 0 to Bucket.Size - 1 do
-        begin
-          FreeKey(Bucket.Entries[J].Key);
-          FreeValue(Bucket.Entries[J].Value);
-        end;
-        FreeAndNil(FBuckets[I]);
+        FreeKey(Bucket.Entries[J].Key);
+        FreeValue(Bucket.Entries[J].Value);
       end;
+      FreeAndNil(FBuckets[I]);
     end;
-    FSize := 0;
+  end;
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -25686,15 +25699,15 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := True;
-          Break;
-        end;
+  Result := False;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := True;
+        Break;
+      end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25711,18 +25724,18 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := True;
-            Break;
-          end;
-    end;
+  Result := False;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := True;
+          Break;
+        end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25745,25 +25758,25 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    if AMap = nil then
-      Exit;
-    if FSize <> AMap.Size then
-      Exit;
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          if AMap.ContainsKey(Bucket.Entries[J].Key) then
-          begin
-            if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
-              Exit;
-          end
-          else
+  Result := False;
+  if AMap = nil then
+    Exit;
+  if FSize <> AMap.Size then
+    Exit;
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        if AMap.ContainsKey(Bucket.Entries[J].Key) then
+        begin
+          if not ValuesEqual(AMap.GetValue(Bucket.Entries[J].Key), Bucket.Entries[J].Value) then
             Exit;
-    end;
-    Result := True;
+        end
+        else
+          Exit;
+  end;
+  Result := True;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25819,19 +25832,19 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := Bucket.Entries[I].Value;
-          Found := True;
-          Break;
-        end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := Bucket.Entries[I].Value;
+        Found := True;
+        Break;
+      end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25876,22 +25889,22 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Found := False;
-    Result := nil;
-    for J := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[J];
-      if Bucket <> nil then
-        for I := 0 to Bucket.Size - 1 do
-          if ValuesEqual(Bucket.Entries[I].Value, Value) then
-          begin
-            Result := Bucket.Entries[I].Key;
-            Found := True;
-            Break;
-          end;
-    end;
-    if (not Found) and (not FReturnDefaultElements) then
-      raise EJclNoSuchElementError.Create('');
+  Found := False;
+  Result := nil;
+  for J := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[J];
+    if Bucket <> nil then
+      for I := 0 to Bucket.Size - 1 do
+        if ValuesEqual(Bucket.Entries[I].Value, Value) then
+        begin
+          Result := Bucket.Entries[I].Key;
+          Found := True;
+          Break;
+        end;
+  end;
+  if (not Found) and (not FReturnDefaultElements) then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -25913,14 +25926,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArraySet.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Key);
-    end;
+  Result := TJclArraySet.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Key);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -26007,17 +26020,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FCapacity - 1 do
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
     begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-      begin
-        if Bucket.Size > 0 then
-          SetLength(Bucket.Entries, Bucket.Size)
-        else
-          FreeAndNil(FBuckets[I]);
-      end;
+      if Bucket.Size > 0 then
+        SetLength(Bucket.Entries, Bucket.Size)
+      else
+        FreeAndNil(FBuckets[I]);
     end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26055,14 +26068,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if AMap = nil then
-      Exit;
-    It := AMap.KeySet.First;
-    while It.HasNext do
-    begin
-      Key := It.Next;
-      PutValue(Key, AMap.GetValue(Key));
-    end;
+  if AMap = nil then
+    Exit;
+  It := AMap.KeySet.First;
+  while It.HasNext do
+  begin
+    Key := It.Next;
+    PutValue(Key, AMap.GetValue(Key));
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26074,43 +26087,43 @@ procedure TJclHashMap.PutValue(Key: TObject; Value: TObject);
 var
   Index: Integer;
   Bucket: TJclBucket;
-  I: Integer;
+  I:     Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  if FAllowDefaultElements or (not KeysEqual(Key, nil) and not ValuesEqual(Value, nil)) then
+  begin
+    Index := FHashFunction(Hash(Key), FCapacity);
+    Bucket := FBuckets[Index];
+    if Bucket <> nil then
     begin
-      Index := FHashFunction(Hash(Key), FCapacity);
-      Bucket := FBuckets[Index];
-      if Bucket <> nil then
-      begin
-        for I := 0 to Bucket.Size - 1 do
-          if KeysEqual(Bucket.Entries[I].Key, Key) then
-          begin
-            FreeValue(Bucket.Entries[I].Value);
-            Bucket.Entries[I].Value := Value;
-            Exit;
-          end;
-      end
-      else
-      begin
-        Bucket := TJclBucket.Create;
-        SetLength(Bucket.Entries, 1);
-        FBuckets[Index] := Bucket;
-      end;
-
-      if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
-      if Bucket.Size < Length(Bucket.Entries) then
-      begin
-        Bucket.Entries[Bucket.Size].Key := Key;
-        Bucket.Entries[Bucket.Size].Value := Value;
-        Inc(Bucket.Size);
-        Inc(FSize);
-      end;
+      for I := 0 to Bucket.Size - 1 do
+        if KeysEqual(Bucket.Entries[I].Key, Key) then
+        begin
+          FreeValue(Bucket.Entries[I].Value);
+          Bucket.Entries[I].Value := Value;
+          Exit;
+        end;
+    end
+    else
+    begin
+      Bucket := TJclBucket.Create;
+      SetLength(Bucket.Entries, 1);
+      FBuckets[Index] := Bucket;
     end;
+
+    if Bucket.Size = Length(Bucket.Entries) then
+      GrowEntries(Bucket);
+    if Bucket.Size < Length(Bucket.Entries) then
+    begin
+      Bucket.Entries[Bucket.Size].Key := Key;
+      Bucket.Entries[Bucket.Size].Value := Value;
+      Inc(Bucket.Size);
+      Inc(FSize);
+    end;
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26121,29 +26134,29 @@ end;
 function TJclHashMap.Remove(Key: TObject): TObject;
 var
   Bucket: TJclBucket;
-  I: Integer;
+  I:      Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
-    if Bucket <> nil then
-    begin
-      for I := 0 to Bucket.Size - 1 do
-        if KeysEqual(Bucket.Entries[I].Key, Key) then
-        begin
-          Result := FreeValue(Bucket.Entries[I].Value);
-          FreeKey(Bucket.Entries[I].Key);
-          if I < Length(Bucket.Entries) - 1 then
-            MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
-          Dec(Bucket.Size);
-          Dec(FSize);
-          Break;
-        end;
-      PackEntries(Bucket);
-    end;
+  Result := nil;
+  Bucket := FBuckets[FHashFunction(Hash(Key), FCapacity)];
+  if Bucket <> nil then
+  begin
+    for I := 0 to Bucket.Size - 1 do
+      if KeysEqual(Bucket.Entries[I].Key, Key) then
+      begin
+        Result := FreeValue(Bucket.Entries[I].Value);
+        FreeKey(Bucket.Entries[I].Key);
+        if I < Length(Bucket.Entries) - 1 then
+          MoveArray(Bucket.Entries, I + 1, I, Bucket.Size - I - 1);
+        Dec(Bucket.Size);
+        Dec(FSize);
+        Break;
+      end;
+    PackEntries(Bucket);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26157,13 +26170,13 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = 0 then
-    begin
-      SetLength(FBuckets, Value);
-      inherited SetCapacity(Value);
-    end
-    else
-      raise EJclOperationNotSupportedError.Create;
+  if FSize = 0 then
+  begin
+    SetLength(FBuckets, Value);
+    inherited SetCapacity(Value);
+  end
+  else
+    raise EJclOperationNotSupportedError.Create;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -26185,14 +26198,14 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := TJclArrayList.Create(FSize, False);
-    for I := 0 to FCapacity - 1 do
-    begin
-      Bucket := FBuckets[I];
-      if Bucket <> nil then
-        for J := 0 to Bucket.Size - 1 do
-          Result.Add(Bucket.Entries[J].Value);
-    end;
+  Result := TJclArrayList.Create(FSize, False);
+  for I := 0 to FCapacity - 1 do
+  begin
+    Bucket := FBuckets[I];
+    if Bucket <> nil then
+      for J := 0 to Bucket.Size - 1 do
+        Result.Add(Bucket.Entries[J].Value);
+  end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -26995,4 +27008,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

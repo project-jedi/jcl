@@ -79,10 +79,10 @@ function ShutDownDialog(const MachineName, DialogMessage: string; TimeOut: DWORD
 function AbortShutDown: Boolean; overload;
 function AbortShutDown(const MachineName: string): Boolean; overload;
 
-type                                              
+type
   TJclAllowedPowerOperation = (apoHibernate, apoShutdown, apoSuspend);
   TJclAllowedPowerOperations = set of TJclAllowedPowerOperation;
-  
+
 function GetAllowedPowerOperations: TJclAllowedPowerOperations;
 
 // CreateProcAsUser
@@ -133,7 +133,7 @@ function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: st
 var
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
-  SecAtrrs: TSecurityAttributes;
+  SecAtrrs:    TSecurityAttributes;
   hInputFile, hOutputFile: THandle;
 begin
   Result := False;
@@ -329,7 +329,7 @@ begin
     try
       Result := EnableProcessPrivilege(True, PrivilegeName)
         and InitiateSystemShutdown(PChar(MachineName), PChar(DialogMessage),
-          TimeOut, Force, Reboot);
+        TimeOut, Force, Reboot);
     finally
       EnableProcessPrivilege(OldShutdownPrivilege, PrivilegeName);
     end;
@@ -440,7 +440,7 @@ begin
   end;
 
   // Step 3: give the new user access to the current WindowStation and Desktop
-  hWindowStation:= GetProcessWindowStation;
+  hWindowStation := GetProcessWindowStation;
   WinStaName := GetUserObjectName(hWindowStation);
   if WinStaName = '' then
     WinStaName := CreateProcDEFWINSTATION;
@@ -467,10 +467,10 @@ begin
   FillChar(StartUpInfo, SizeOf(StartUpInfo), #0);
   with StartUpInfo do
   begin
-    cb:= SizeOf(StartUpInfo);
-    lpTitle:= PChar(ConsoleTitle);
+    cb := SizeOf(StartUpInfo);
+    lpTitle := PChar(ConsoleTitle);
     Help := WinStaName + '\' + DeskTopName;
-    lpDesktop:= PChar(Help);
+    lpDesktop := PChar(Help);
   end;
 
   // Step 5: create the child process
@@ -486,11 +486,11 @@ begin
       ERROR_PRIVILEGE_NOT_HELD:
         raise EJclCreateProcessError.CreateResFmt(@RsCreateProcPrivilegesMissing,
           [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
-           GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
+          GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
         raise EJclCreateProcessError.CreateResFmt(@RsCreateProcCommandNotFound, [CommandLine]);
-      else
-        raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
+    else
+      raise EJclCreateProcessError.CreateRes(@RsCreateProcFailed);
     end;
   end;
 

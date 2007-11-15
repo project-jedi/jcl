@@ -82,7 +82,8 @@ type
 
 
   TJclAnsiStrStack = class(TJclAnsiStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclAnsiStrContainer, IJclAnsiStrEqualityComparer,
     IJclAnsiStrStack)
   private
     FElements: JclBase.TDynAnsiStringArray;
@@ -108,7 +109,8 @@ type
 
 
   TJclWideStrStack = class(TJclWideStrAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer, IJclWideStrContainer, IJclWideStrEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclStrContainer,
+    IJclWideStrContainer, IJclWideStrEqualityComparer,
     IJclWideStrStack)
   private
     FElements: JclBase.TDynWideStringArray;
@@ -141,7 +143,8 @@ type
 
 
   TJclSingleStack = class(TJclSingleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer, IJclSingleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclSingleContainer,
+    IJclSingleEqualityComparer,
     IJclSingleStack)
   private
     FElements: JclBase.TDynSingleArray;
@@ -167,7 +170,8 @@ type
 
 
   TJclDoubleStack = class(TJclDoubleAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer, IJclDoubleEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclDoubleContainer,
+    IJclDoubleEqualityComparer,
     IJclDoubleStack)
   private
     FElements: JclBase.TDynDoubleArray;
@@ -193,7 +197,8 @@ type
 
 
   TJclExtendedStack = class(TJclExtendedAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
-    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer, IJclExtendedEqualityComparer,
+    IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclExtendedContainer,
+    IJclExtendedEqualityComparer,
     IJclExtendedStack)
   private
     FElements: JclBase.TDynExtendedArray;
@@ -467,7 +472,7 @@ end;
 procedure TJclIntfStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntfStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntfStack then
@@ -489,9 +494,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeObject(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeObject(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -507,13 +512,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AInterface) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AInterface) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -538,12 +543,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -557,17 +562,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := nil;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := nil;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := nil;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -581,14 +586,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AInterface;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AInterface;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -602,10 +607,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -636,7 +641,7 @@ end;
 procedure TJclAnsiStrStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclAnsiStrStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclAnsiStrStack then
@@ -658,9 +663,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeString(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeString(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -676,13 +681,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AString) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -707,12 +712,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -726,17 +731,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := '';
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := '';
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := '';
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -750,14 +755,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AString;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AString;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -771,10 +776,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -805,7 +810,7 @@ end;
 procedure TJclWideStrStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclWideStrStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclWideStrStack then
@@ -827,9 +832,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeString(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeString(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -845,13 +850,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AString) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AString) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -876,12 +881,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := '';
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -895,17 +900,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := '';
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := '';
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := '';
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := '';
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -919,14 +924,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AString;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AString;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -940,10 +945,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -974,7 +979,7 @@ end;
 procedure TJclSingleStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclSingleStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclSingleStack then
@@ -996,9 +1001,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeSingle(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeSingle(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1014,13 +1019,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1045,12 +1050,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1064,17 +1069,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0.0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0.0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0.0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1088,14 +1093,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1109,10 +1114,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1143,7 +1148,7 @@ end;
 procedure TJclDoubleStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclDoubleStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclDoubleStack then
@@ -1165,9 +1170,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeDouble(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeDouble(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1183,13 +1188,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1214,12 +1219,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1233,17 +1238,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0.0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0.0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0.0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1257,14 +1262,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1278,10 +1283,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1312,7 +1317,7 @@ end;
 procedure TJclExtendedStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclExtendedStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclExtendedStack then
@@ -1334,9 +1339,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeExtended(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeExtended(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1352,13 +1357,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1383,12 +1388,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0.0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1402,17 +1407,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0.0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0.0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0.0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0.0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1426,14 +1431,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1447,10 +1452,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1481,7 +1486,7 @@ end;
 procedure TJclIntegerStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclIntegerStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclIntegerStack then
@@ -1503,9 +1508,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeInteger(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeInteger(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1521,13 +1526,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1552,12 +1557,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1571,17 +1576,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1595,14 +1600,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1616,10 +1621,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1650,7 +1655,7 @@ end;
 procedure TJclCardinalStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclCardinalStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclCardinalStack then
@@ -1672,9 +1677,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeCardinal(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeCardinal(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1690,13 +1695,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1721,12 +1726,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1740,17 +1745,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1764,14 +1769,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1785,10 +1790,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1819,7 +1824,7 @@ end;
 procedure TJclInt64Stack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclInt64Stack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclInt64Stack then
@@ -1841,9 +1846,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeInt64(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeInt64(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1859,13 +1864,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AValue) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AValue) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1890,12 +1895,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := 0;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1909,17 +1914,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := 0;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := 0;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := 0;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := 0;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1933,14 +1938,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AValue;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AValue;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1954,10 +1959,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -1989,7 +1994,7 @@ end;
 procedure TJclPtrStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclPtrStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclPtrStack then
@@ -2011,9 +2016,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreePointer(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreePointer(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2029,13 +2034,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], APtr) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], APtr) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2060,12 +2065,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2079,17 +2084,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := nil;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := nil;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := nil;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2103,14 +2108,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := APtr;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := APtr;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2124,10 +2129,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2159,7 +2164,7 @@ end;
 procedure TJclStack.AssignDataTo(Dest: TJclAbstractContainerBase);
 var
   ADest: TJclStack;
-  I: Integer;
+  I:     Integer;
 begin
   inherited AssignDataTo(Dest);
   if Dest is TJclStack then
@@ -2181,9 +2186,9 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    for I := 0 to FSize - 1 do
-      FreeObject(FElements[I]);
-    FSize := 0;
+  for I := 0 to FSize - 1 do
+    FreeObject(FElements[I]);
+  FSize := 0;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2199,13 +2204,13 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := False;
-    for I := 0 to FSize - 1 do
-      if ItemsEqual(FElements[I], AObject) then
-      begin
-        Result := True;
-        Break;
-      end;
+  Result := False;
+  for I := 0 to FSize - 1 do
+    if ItemsEqual(FElements[I], AObject) then
+    begin
+      Result := True;
+      Break;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2230,12 +2235,12 @@ begin
   ReadLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-      Result := FElements[FSize - 1]
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
+  Result := nil;
+  if FSize > 0 then
+    Result := FElements[FSize - 1]
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2249,17 +2254,17 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    Result := nil;
-    if FSize > 0 then
-    begin
-      Dec(FSize);
-      Result := FElements[FSize];
-      FElements[FSize] := nil;
-    end
-    else
-    if not FReturnDefaultElements then
-      raise EJclNoSuchElementError.Create('');
-    AutoPack;
+  Result := nil;
+  if FSize > 0 then
+  begin
+    Dec(FSize);
+    Result := FElements[FSize];
+    FElements[FSize] := nil;
+  end
+  else
+  if not FReturnDefaultElements then
+    raise EJclNoSuchElementError.Create('');
+  AutoPack;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2273,14 +2278,14 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if FSize = FCapacity then
-      AutoGrow;
-    Result := FSize < FCapacity;
-    if Result then
-    begin
-      FElements[FSize] := AObject;
-      Inc(FSize);
-    end;
+  if FSize = FCapacity then
+    AutoGrow;
+  Result := FSize < FCapacity;
+  if Result then
+  begin
+    FElements[FSize] := AObject;
+    Inc(FSize);
+  end;
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;
@@ -2294,10 +2299,10 @@ begin
   WriteLock;
   try
   {$ENDIF THREADSAFE}
-    if Value < FSize then
-      raise EJclOutOfBoundsError.Create;
-    SetLength(FElements, Value);
-    inherited SetCapacity(Value);
+  if Value < FSize then
+    raise EJclOutOfBoundsError.Create;
+  SetLength(FElements, Value);
+  inherited SetCapacity(Value);
   {$IFDEF THREADSAFE}
   finally
     WriteUnlock;

@@ -69,7 +69,8 @@ begin
   Params.Style := params.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     Params.WndParent := Screen.ActiveForm.Handle
-  else if Assigned (Application.MainForm) then
+  else
+  if Assigned(Application.MainForm) then
     Params.WndParent := Application.MainForm.Handle
   else
     Params.WndParent := Application.Handle;
@@ -110,10 +111,10 @@ begin
       if (AExceptionObj is EJclExpertException) then
         with EJclExpertException(AExceptionObj) do
           if Assigned(StackInfo) then
-      begin
-        StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
-        Exit;
-      end;
+          begin
+            StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
+            Exit;
+          end;
 {$ENDIF MSWINDOWS}
     end;
 

@@ -119,7 +119,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDITransactionSet := TransactionSet;
-  FEDISEFSet := SEFSet; 
+  FEDISEFSet := SEFSet;
   FEDITransactionSetSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -135,7 +135,7 @@ end;
 procedure TEDI_ANSIX12_Document.FormatDocument;
 var
   I, J: Integer;
-  LSR: TEDILoopStackRecord;
+  LSR:  TEDILoopStackRecord;
   DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment;
 begin
@@ -228,7 +228,7 @@ begin
       raise EJclEDIError.CreateResFmt(@RsEDIError058,
       {$ENDIF CLR}
         [IntToStr(I), DataSegment.SegmentId,
-         IntToStr(DataSegment.GetIndexPositionFromParent)]);
+        IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];
   end;
 end;

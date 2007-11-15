@@ -58,7 +58,7 @@ type
   {$ENDIF COMPILER5}
 
   EJclStreamError = class(EJclError);
-  
+
   // abstraction layer to support Delphi 5 and C++Builder 5 streams
   // 64 bit version of overloaded functions are introduced
   TJclStream = class(TStream)
@@ -426,7 +426,7 @@ function StreamSeek(Stream: TStream; const Offset: Int64;
 function StreamCopy(Source: TStream; Dest: TStream; BufferSize: Integer = 4096): Int64;
 
 // compares 2 streams for differencies
-function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+function CompareStreams(A, B: TStream; BufferSize: Integer = 4096): Boolean;
 // compares 2 files for differencies (calling CompareStreams)
 function CompareFiles(const FileA, FileB: TFileName; BufferSize: Integer = 4096): Boolean;
 
@@ -500,7 +500,7 @@ begin
   end;
 end;
 
-function CompareStreams(A, B : TStream; BufferSize: Integer = 4096): Boolean;
+function CompareStreams(A, B: TStream; BufferSize: Integer = 4096): Boolean;
 var
   BufferA, BufferB: array of Byte;
   ByteCountA, ByteCountB: Integer;
@@ -638,10 +638,10 @@ const
 type
   TLarge = record
     case Boolean of
-    False:
-     (OffsetLo: Longint;
-      OffsetHi: Longint);
-    True:
+      False:
+      (OffsetLo: Longint;
+        OffsetHi: Longint);
+      True:
       (Offset64: Int64);
   end;
 var
@@ -1237,7 +1237,7 @@ end;
 function TJclBufferedStream.ReadFromBuffer(var Buffer; Count, Start: Longint): Longint;
 var
   BufPos: Longint;
-  P: PChar;
+  P:      PChar;
 begin
   Result := Count;
   BufPos := FPosition - FBufferStart;
@@ -1303,7 +1303,7 @@ end;
 function TJclBufferedStream.WriteToBuffer(const Buffer; Count, Start: Longint): Longint;
 var
   BufPos: Longint;
-  P: PChar;
+  P:      PChar;
 begin
   Result := Count;
   BufPos := FPosition - FBufferStart;
@@ -1646,43 +1646,44 @@ function TJclScopedStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
   case Origin of
     soBeginning:
-      begin
-        if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
-          Result := -1            // low and high bound check
-        else
-          Result := StreamSeek(ParentStream, StartPos + Offset, soBeginning) - StartPos;
-      end;
+    begin
+      if (Offset < 0) or ((MaxSize >= 0) and (Offset > MaxSize)) then
+        Result := -1            // low and high bound check
+      else
+        Result := StreamSeek(ParentStream, StartPos + Offset, soBeginning) - StartPos;
+    end;
     soCurrent:
-      begin
-        if Offset = 0 then
-          Result := FCurrentPos   // speeding the Position property up
-        else if ((FCurrentPos + Offset) < 0) or ((MaxSize >= 0)
-          and ((FCurrentPos + Offset) > MaxSize)) then
-          Result := -1            // low and high bound check
-        else
-          Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
-      end;
+    begin
+      if Offset = 0 then
+        Result := FCurrentPos   // speeding the Position property up
+      else
+      if ((FCurrentPos + Offset) < 0) or ((MaxSize >= 0)
+        and ((FCurrentPos + Offset) > MaxSize)) then
+        Result := -1            // low and high bound check
+      else
+        Result := StreamSeek(ParentStream, Offset, soCurrent) - StartPos;
+    end;
     soEnd:
+    begin
+      if (MaxSize >= 0) then
       begin
-        if (MaxSize >= 0) then
-        begin
-          if (Offset > 0) or (MaxSize < -Offset) then // low and high bound check
-            Result := -1
-          else
-            Result := StreamSeek(ParentStream, StartPos + MaxSize + Offset, soBeginning) - StartPos;
-        end
+        if (Offset > 0) or (MaxSize < -Offset) then // low and high bound check
+          Result := -1
         else
+          Result := StreamSeek(ParentStream, StartPos + MaxSize + Offset, soBeginning) - StartPos;
+      end
+      else
+      begin
+        Result := StreamSeek(ParentStream, Offset, soEnd);
+        if (Result <> -1) and (Result < StartPos) then // low bound check
         begin
-          Result := StreamSeek(ParentStream, Offset, soEnd);
-          if (Result <> -1) and (Result < StartPos) then // low bound check
-          begin
-            Result := -1;
-            StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
-          end;
+          Result := -1;
+          StreamSeek(ParentStream, StartPos + FCurrentPos, soBeginning);
         end;
       end;
-    else
-      Result := -1;
+    end;
+  else
+    Result := -1;
   end;
   if Result <> -1 then
     FCurrentPos := Result;

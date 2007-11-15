@@ -70,9 +70,9 @@ const
   IID_IMarshal: TGUID = '{00000003-0000-0000-C000-000000000046}';
   CLASS_ComCallUnmarshal: TGUID = '{3F281000-E95A-11D2-886B-00C04F869F04}';
   IID_ISequentialStream: TGUID = '{0C733A30-2A1C-11CE-ADE5-00AA0044773D}';
-  IID_IStream: TGUID = '{0000000C-0000-0000-C000-000000000046}';
+  IID_IStream: TGUID  = '{0000000C-0000-0000-C000-000000000046}';
   IID_ICorRuntimeHost: TGUID = '{CB2F6722-AB3A-11D2-9C40-00C04FA30A3E}';
-  IID_IGCHost: TGUID = '{FAC34F6E-0DCD-47B5-8021-531BC5ECCA63}';
+  IID_IGCHost: TGUID  = '{FAC34F6E-0DCD-47B5-8021-531BC5ECCA63}';
   IID_ICorConfiguration: TGUID = '{5C2B07A5-1E98-11D3-872F-00C04F79ED0D}';
   IID_IGCThreadControl: TGUID = '{F31D1788-C397-4725-87A5-6AF3472C2791}';
   IID_IGCHostControl: TGUID = '{5513D564-8374-4CB9-AED9-0083F4160A1D}';
@@ -220,13 +220,13 @@ type
 // *********************************************************************//
   IMarshal = interface(IUnknown)
     ['{00000003-0000-0000-C000-000000000046}']
-    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pCid: TGUID): HResult; stdcall;
-    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord; 
-                               var pvDestContext: Pointer; mshlflags: LongWord; out pSize: LongWord): HResult; stdcall;
-    function MarshalInterface(var pstm: ISequentialStream; var riid: TGUID; var pv: Pointer; 
-                              dwDestContext: LongWord; var pvDestContext: Pointer; 
-                              mshlflags: LongWord): HResult; stdcall;
+    function GetUnmarshalClass(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord;
+      var pvDestContext: Pointer; mshlflags: LongWord; out pCid: TGUID): HResult; stdcall;
+    function GetMarshalSizeMax(var riid: TGUID; var pv: Pointer; dwDestContext: LongWord;
+      var pvDestContext: Pointer; mshlflags: LongWord; out pSize: LongWord): HResult; stdcall;
+    function MarshalInterface(var pstm: ISequentialStream; var riid: TGUID; var pv: Pointer;
+      dwDestContext: LongWord; var pvDestContext: Pointer;
+      mshlflags: LongWord): HResult; stdcall;
     function UnmarshalInterface(const pstm: ISequentialStream; var riid: TGUID; out ppv: Pointer): HResult; stdcall;
     function ReleaseMarshalData(const pstm: ISequentialStream): HResult; stdcall;
     function DisconnectObject(dwReserved: LongWord): HResult; stdcall;
@@ -252,14 +252,15 @@ type
 // *********************************************************************//
   IStream = interface(ISequentialStream)
     ['{0000000C-0000-0000-C000-000000000046}']
-    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
-    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; 
-                        out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
+    function Seek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord; out plibNewPosition: _ULARGE_INTEGER): HResult;
+      stdcall;
+    function RemoteSeek(dlibMove: _LARGE_INTEGER; dwOrigin: LongWord;
+      out plibNewPosition: _ULARGE_INTEGER): HResult; stdcall;
     function SetSize(libNewSize: _ULARGE_INTEGER): HResult; stdcall;
-    function CopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
-                    out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
-    function RemoteCopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER; 
-                          out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
+    function CopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER;
+      out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
+    function RemoteCopyTo(const pstm: ISequentialStream; cb: _ULARGE_INTEGER;
+      out pcbRead: _ULARGE_INTEGER; out pcbWritten: _ULARGE_INTEGER): HResult; stdcall;
     function Commit(grfCommitFlags: LongWord): HResult; stdcall;
     function Revert: HResult; stdcall;
     function LockRegion(libOffset: _ULARGE_INTEGER; cb: _ULARGE_INTEGER; dwLockType: LongWord): HResult; stdcall;
@@ -285,14 +286,14 @@ type
     function GetConfiguration(out pConfiguration: ICorConfiguration): HResult; stdcall;
     function Start: HResult; stdcall;
     function Stop: HResult; stdcall;
-    function CreateDomain(pwzFriendlyName: PWideChar; const pIdentityArray: IUnknown; 
-                          out pAppDomain: IUnknown): HResult; stdcall;
+    function CreateDomain(pwzFriendlyName: PWideChar; const pIdentityArray: IUnknown;
+      out pAppDomain: IUnknown): HResult; stdcall;
     function GetDefaultDomain(out pAppDomain: IUnknown): HResult; stdcall;
     function EnumDomains(out hEnum: Pointer): HResult; stdcall;
     function NextDomain(hEnum: Pointer; out pAppDomain: IUnknown): HResult; stdcall;
     function CloseEnum(hEnum: Pointer): HResult; stdcall;
-    function CreateDomainEx(pwzFriendlyName: PWideChar; const pSetup: IUnknown; 
-                            const pEvidence: IUnknown; out pAppDomain: IUnknown): HResult; stdcall;
+    function CreateDomainEx(pwzFriendlyName: PWideChar; const pSetup: IUnknown;
+      const pEvidence: IUnknown; out pAppDomain: IUnknown): HResult; stdcall;
     function CreateDomainSetup(out pAppDomainSetup: IUnknown): HResult; stdcall;
     function CreateEvidence(out pEvidence: IUnknown): HResult; stdcall;
     function UnloadDomain(const pAppDomain: IUnknown): HResult; stdcall;
@@ -345,8 +346,8 @@ type
 // *********************************************************************//
   IGCHostControl = interface(IUnknown)
     ['{5513D564-8374-4CB9-AED9-0083F4160A1D}']
-    function RequestVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR; 
-                                    var psztNewMaxVirtualMemMB: ULONG_PTR): HResult; stdcall;
+    function RequestVirtualMemLimit(sztMaxVirtualMemMB: ULONG_PTR;
+      var psztNewMaxVirtualMemMB: ULONG_PTR): HResult; stdcall;
   end;
 
 // *********************************************************************//
@@ -368,11 +369,11 @@ type
 // *********************************************************************//
   IValidator = interface(IUnknown)
     ['{63DF8730-DC81-4062-84A2-1FF943F59FAC}']
-    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown; ulFlags: LongWord; 
-                      ulMaxError: LongWord; Token: LongWord; fileName: PWideChar; var pe: Byte; 
-                      ulSize: LongWord): HResult; stdcall;
-    function FormatEventInfo(hVECode: HResult; Context: tag_VerError; msg: PWideChar; 
-                             ulMaxLength: LongWord; psa: PSafeArray): HResult; stdcall;
+    function Validate(const veh: IVEHandler; const pAppDomain: IUnknown; ulFlags: LongWord;
+      ulMaxError: LongWord; Token: LongWord; fileName: PWideChar; var pe: Byte;
+      ulSize: LongWord): HResult; stdcall;
+    function FormatEventInfo(hVECode: HResult; Context: tag_VerError; msg: PWideChar;
+      ulMaxLength: LongWord; psa: PSafeArray): HResult; stdcall;
   end;
 
 // *********************************************************************//

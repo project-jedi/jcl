@@ -30,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclWinMidi;
+unit JclWinMIDI;
 
 {$I jcl.inc}
 {$I windowsonly.inc}
@@ -46,7 +46,7 @@ uses
 
 type
   TStereoChannel = (scLeft, scRight);
-  
+
   // MIDI Out
   IJclWinMidiOut = interface(IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
@@ -107,7 +107,7 @@ end;
 
 function GetMidiInErrorMessage(const ErrorCode: MMRESULT): string;
 begin
-  SetLength(Result, MAXERRORLENGTH-1);
+  SetLength(Result, MAXERRORLENGTH - 1);
   if midiInGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) = MMSYSERR_NOERROR then
     StrResetLength(Result)
   else
@@ -116,7 +116,7 @@ end;
 
 function GetMidiOutErrorMessage(const ErrorCode: MMRESULT): string;
 begin
-  SetLength(Result, MAXERRORLENGTH-1);
+  SetLength(Result, MAXERRORLENGTH - 1);
   if midiOutGetErrorText(ErrorCode, @Result[1], MAXERRORLENGTH) = MMSYSERR_NOERROR then
     StrResetLength(Result)
   else
@@ -226,10 +226,10 @@ procedure TMidiOut.DoSendMessage(const Data: array of Byte);
 var
   I: Integer;
   Msg: packed record
-  case Integer of
-    0:
+    case Integer of
+      0:
       (Bytes: array [0..2] of Byte);
-    1:
+      1:
       (DWord: LongWord);
   end;
 begin

@@ -191,7 +191,7 @@ var
   AStack: TJclStackInfoList;
 begin
   MemoStack.Lines.Clear;
-  
+
   if CheckBoxAllThreads.Checked then
     MemoStack.Lines.Add('Main thread stack trace');
 

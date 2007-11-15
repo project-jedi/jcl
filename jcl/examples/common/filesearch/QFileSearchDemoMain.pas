@@ -124,7 +124,7 @@ begin
   with ListItem do
   begin
     Caption := Directory + FileInfo.Name;
-    Str(GetSizeOfFile(FileInfo):13, S);
+    Str(GetSizeOfFile(FileInfo): 13, S);
     SubItems.Add(S);
     SubItems.Add(FormatDateTime(' yyyy-mm-dd hh:nn:ss ', FileDateToDateTime(FileInfo.Time)));
     SubItems.Add(FileAttributesStr(FileInfo));
@@ -171,7 +171,7 @@ begin
   FFileEnumerator.FileSizeMax := StrToInt64(edFileSizeMax.Text);
   FFileEnumerator.IncludeSubDirectories := IncludeSubDirectories.Checked;
   FFileEnumerator.IncludeHiddenSubDirectories := IncludeHiddenSubDirs.Checked;
-  FFileEnumerator.CaseSensitiveSearch := not cbCaseInsensitiveSearch.Checked; 
+  FFileEnumerator.CaseSensitiveSearch := not cbCaseInsensitiveSearch.Checked;
   FDirCount := 0;
 
   StartBtn.Enabled := False;
@@ -250,7 +250,7 @@ procedure TFileSearchForm.IncludeHiddenSubDirsClick(Sender: TObject);
 begin
   if not IncludeSubDirectories.Checked then
     if IncludeHiddenSubDirs.State = cbChecked then
-        IncludeHiddenSubDirs.State := cbUnchecked;
+      IncludeHiddenSubDirs.State := cbUnchecked;
 end;
 
 procedure TFileSearchForm.DetailsBtnClick(Sender: TObject);
@@ -267,14 +267,13 @@ var
 begin
   if SaveDialog.Execute then
     with TStringList.Create do
-    try
-      for I := 0 to FileList.Items.Count - 1 do
-        Add(FileList.Items[I].Caption);
-      SaveToFile(SaveDialog.FileName);
-    finally
-      Free;
-    end;
+      try
+        for I := 0 to FileList.Items.Count - 1 do
+          Add(FileList.Items[I].Caption);
+        SaveToFile(SaveDialog.FileName);
+      finally
+        Free;
+      end;
 end;
 
 end.
-

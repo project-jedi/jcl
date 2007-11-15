@@ -197,31 +197,31 @@ const
   JCL_GZIP_CM_DEFLATE = 8; // Zlib classic
 
   // Flags field : extra fields for the header
-  JCL_GZIP_FLAG_TEXT    = $01; // file is probably ASCII text
-  JCL_GZIP_FLAG_CRC     = $02; // a CRC16 for the header is present
-  JCL_GZIP_FLAG_EXTRA   = $04; // extra fields present
-  JCL_GZIP_FLAG_NAME    = $08; // original file name is present
+  JCL_GZIP_FLAG_TEXT = $01; // file is probably ASCII text
+  JCL_GZIP_FLAG_CRC  = $02; // a CRC16 for the header is present
+  JCL_GZIP_FLAG_EXTRA = $04; // extra fields present
+  JCL_GZIP_FLAG_NAME = $08; // original file name is present
   JCL_GZIP_FLAG_COMMENT = $10; // comment is present
 
   // ExtraFlags field : compression level
-  JCL_GZIP_EFLAG_MAX  = 2; // compressor used maximum compression
+  JCL_GZIP_EFLAG_MAX = 2; // compressor used maximum compression
   JCL_GZIP_EFLAG_FAST = 4; // compressor used fastest compression
 
   // OS field : file system
-  JCL_GZIP_OS_FAT     = 0; // FAT filesystem (MS-DOS, OS/2, NT/Win32)
-  JCL_GZIP_OS_AMIGA   = 1; // Amiga
-  JCL_GZIP_OS_VMS     = 2; // VMS (or OpenVMS)
-  JCL_GZIP_OS_UNIX    = 3; // Unix
-  JCL_GZIP_OS_VM      = 4; // VM/CMS
-  JCL_GZIP_OS_ATARI   = 5; // Atari TOS
-  JCL_GZIP_OS_HPFS    = 6; // HPFS filesystem (OS/2, NT)
-  JCL_GZIP_OS_MAC     = 7; // Macintosh
-  JCL_GZIP_OS_Z       = 8; // Z-System
-  JCL_GZIP_OS_CPM     = 9; // CP/M
-  JCL_GZIP_OS_TOPS    = 10; // TOPS-20
-  JCL_GZIP_OS_NTFS    = 11; // NTFS filesystem (NT)
-  JCL_GZIP_OS_QDOS    = 12; // QDOS
-  JCL_GZIP_OS_ACORN   = 13; // Acorn RISCOS
+  JCL_GZIP_OS_FAT = 0; // FAT filesystem (MS-DOS, OS/2, NT/Win32)
+  JCL_GZIP_OS_AMIGA = 1; // Amiga
+  JCL_GZIP_OS_VMS = 2; // VMS (or OpenVMS)
+  JCL_GZIP_OS_UNIX = 3; // Unix
+  JCL_GZIP_OS_VM = 4; // VM/CMS
+  JCL_GZIP_OS_ATARI = 5; // Atari TOS
+  JCL_GZIP_OS_HPFS = 6; // HPFS filesystem (OS/2, NT)
+  JCL_GZIP_OS_MAC = 7; // Macintosh
+  JCL_GZIP_OS_Z = 8; // Z-System
+  JCL_GZIP_OS_CPM = 9; // CP/M
+  JCL_GZIP_OS_TOPS = 10; // TOPS-20
+  JCL_GZIP_OS_NTFS = 11; // NTFS filesystem (NT)
+  JCL_GZIP_OS_QDOS = 12; // QDOS
+  JCL_GZIP_OS_ACORN = 13; // Acorn RISCOS
   JCL_GZIP_OS_UNKNOWN = 255; // unknown
 
 type
@@ -872,7 +872,7 @@ end;
 procedure TJclGZIPCompressionStream.WriteHeader;
 const
   FatSystemToByte: array[TJclGZIPFatSystem] of Byte =
-  (JCL_GZIP_OS_FAT, JCL_GZIP_OS_AMIGA, JCL_GZIP_OS_VMS, JCL_GZIP_OS_UNIX,
+    (JCL_GZIP_OS_FAT, JCL_GZIP_OS_AMIGA, JCL_GZIP_OS_VMS, JCL_GZIP_OS_UNIX,
     JCL_GZIP_OS_VM, JCL_GZIP_OS_ATARI, JCL_GZIP_OS_HPFS, JCL_GZIP_OS_MAC,
     JCL_GZIP_OS_Z, JCL_GZIP_OS_CPM, JCL_GZIP_OS_TOPS, JCL_GZIP_OS_NTFS,
     JCL_GZIP_OS_QDOS, JCL_GZIP_OS_ACORN, JCL_GZIP_OS_UNKNOWN, JCL_GZIP_OS_UNKNOWN);
@@ -1071,7 +1071,7 @@ end;
 function TJclGZIPDecompressionStream.GetFatSystem: TJclGZIPFatSystem;
 const
   ByteToFatSystem: array[JCL_GZIP_OS_FAT..JCL_GZIP_OS_ACORN] of TJclGZIPFatSystem =
-  (gfsFat, gfsAmiga, gfsVMS, gfsUnix, gfsVM, gfsAtari, gfsHPFS, gfsMac, gfsZ,
+    (gfsFat, gfsAmiga, gfsVMS, gfsUnix, gfsVM, gfsAtari, gfsHPFS, gfsMac, gfsZ,
     gfsCPM, gfsTOPS, gfsNTFS, gfsQDOS, gfsAcorn);
 begin
   case FHeader.OS of
@@ -1190,7 +1190,7 @@ begin
   BufferAddr := @Char(Buffer);
   Move(FFooter, Buffer, SizeOf(FFooter));
   Result := FStream.Read(BufferAddr[SizeOf(FFooter)], Count - SizeOf(FFooter))
-  + FStream.Read(FFooter, SizeOf(FFooter));
+    + FStream.Read(FFooter, SizeOf(FFooter));
 
   if Result < Count then
   begin
@@ -1259,11 +1259,11 @@ begin
   Assert(FBufferSize > 0);
 
   // Initialize ZLib StreamRecord
-  BZLibRecord.bzalloc   := nil; // Use build-in memory allocation functionality
-  BZLibRecord.bzfree    := nil;
-  BZLibRecord.next_in   := nil;
-  BZLibRecord.avail_in  := 0;
-  BZLibRecord.next_out  := FBuffer;
+  BZLibRecord.bzalloc := nil; // Use build-in memory allocation functionality
+  BZLibRecord.bzfree := nil;
+  BZLibRecord.next_in := nil;
+  BZLibRecord.avail_in := 0;
+  BZLibRecord.next_out := FBuffer;
   BZLibRecord.avail_out := FBufferSize;
 
   FDeflateInitialized := False;
@@ -1312,13 +1312,13 @@ end;
 
 function TJclBZIP2CompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-   if (Offset = 0) and (Origin = soCurrent) then
+  if (Offset = 0) and (Origin = soCurrent) then
     Result := (BZLibRecord.total_in_hi32 shl 32) or BZLibRecord.total_in_lo32
-   else
-   if (Offset = 0) and (Origin = soBeginning) and (BZLibRecord.total_in_lo32 = 0) then
-       Result := 0
-   else
-     Result := inherited Seek(Offset, Origin);
+  else
+  if (Offset = 0) and (Origin = soBeginning) and (BZLibRecord.total_in_lo32 = 0) then
+    Result := 0
+  else
+    Result := inherited Seek(Offset, Origin);
 end;
 
 procedure TJclBZIP2CompressionStream.SetCompressionLevel(const Value: Integer);
@@ -1365,13 +1365,13 @@ begin
   LoadBZip2;
 
   // Initialize ZLib StreamRecord
-  BZLibRecord.bzalloc   := nil; // Use build-in memory allocation functionality
-  BZLibRecord.bzfree    := nil;
-  BZLibRecord.opaque    := nil;
-  BZLibRecord.next_in   := nil;
-  BZLibRecord.state     := nil;
-  BZLibRecord.avail_in  := 0;
-  BZLibRecord.next_out  := FBuffer;
+  BZLibRecord.bzalloc := nil; // Use build-in memory allocation functionality
+  BZLibRecord.bzfree := nil;
+  BZLibRecord.opaque := nil;
+  BZLibRecord.next_in := nil;
+  BZLibRecord.state := nil;
+  BZLibRecord.avail_in := 0;
+  BZLibRecord.next_out := FBuffer;
   BZLibRecord.avail_out := FBufferSize;
 
   FInflateInitialized := False;
@@ -1416,7 +1416,7 @@ begin
       BZIP2LibCheck(BZ2_bzDecompress(BZLibRecord));
       Result := Count;
       Dec(Result, BZLibRecord.avail_out);
-    end
+    end;
   end;
 
   Result := Count;
@@ -1424,10 +1424,10 @@ end;
 
 function TJclBZIP2DecompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-   if (Offset = 0) and (Origin = soCurrent) then
+  if (Offset = 0) and (Origin = soCurrent) then
     Result := (BZLibRecord.total_out_hi32 shl 32) or BZLibRecord.total_out_lo32
-   else
-     Result := inherited Seek(Offset, Origin);
+  else
+    Result := inherited Seek(Offset, Origin);
 end;
 
 procedure InternalCompress(SourceStream: TStream; CompressStream: TJclCompressStream;
@@ -1591,7 +1591,7 @@ function BZip2File(SourceFile, DestinationFile: string; CompressionLevel: Intege
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   BZip2Stream: TJclBZIP2CompressionStream;
-  DestStream: TFileStream;
+  DestStream:  TFileStream;
   SourceStream: TFileStream;
 begin
   Result := False;
@@ -1627,7 +1627,7 @@ function UnBZip2File(SourceFile, DestinationFile: string;
   ProgressCallback: TJclCompressStreamProgressCallback; UserData: Pointer): Boolean;
 var
   BZip2Stream: TJclBZIP2DecompressionStream;
-  DestStream: TFileStream;
+  DestStream:  TFileStream;
   SourceStream: TFileStream;
 begin
   Result := False;
@@ -1644,7 +1644,7 @@ begin
       }
       BZip2Stream := TJclBZIP2DecompressionStream.Create(SourceStream);
       try
-        InternalDecompress(SourceStream, DestStream,  BZip2Stream, ProgressCallback, UserData);
+        InternalDecompress(SourceStream, DestStream, BZip2Stream, ProgressCallback, UserData);
       finally
         BZip2Stream.Free;
       end;
@@ -1666,4 +1666,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

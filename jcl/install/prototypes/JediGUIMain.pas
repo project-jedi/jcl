@@ -87,7 +87,7 @@ type
     FAutoUninstall: Boolean;
     procedure HandleException(Sender: TObject; E: Exception);
     procedure SetFrameIcon(Sender: TObject; const FileName: string);
-    procedure WMAfterShow(var Message: TMessage); Message WM_AFTERSHOW;
+    procedure WMAfterShow(var Message: TMessage); message WM_AFTERSHOW;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -144,7 +144,7 @@ uses
   {$ENDIF ~VisualCLX}
 
 const
-  DelphiJediURL     = 'http://www.delphi-jedi.org/';
+  DelphiJediURL = 'http://www.delphi-jedi.org/';
 
 function CreateMainForm: IJediInstallGUI;
 var
@@ -230,7 +230,7 @@ procedure TMainForm.SetFrameIcon(Sender: TObject; const FileName: string);
 var
   IconHandle: HICON;
   ModuleHandle: THandle;
-  ATabSheet: TTabSheet;
+  ATabSheet:  TTabSheet;
 {$ENDIF MSWINDOWS}
 begin
   {$IFDEF MSWINDOWS}
@@ -245,19 +245,19 @@ begin
   begin
     ModuleHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
     if ModuleHandle <> 0 then
-    try
-      IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
-        LR_LOADTRANSPARENT);
-    finally
-      FreeLibrary(ModuleHandle);
-    end;
+      try
+        IconHandle := LoadImage(ModuleHandle, 'MAINICON', IMAGE_ICON, ImageList.Width, ImageList.Height,
+          LR_LOADTRANSPARENT);
+      finally
+        FreeLibrary(ModuleHandle);
+      end;
   end;
   if IconHandle <> 0 then
-  try
-    ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
-  finally
-    DestroyIcon(IconHandle);
-  end;
+    try
+      ATabSheet.ImageIndex := ImageList_AddIcon(ImageList.Handle, IconHandle);
+    finally
+      DestroyIcon(IconHandle);
+    end;
   {$ENDIF MSWINDOWS}
 end;
 
@@ -327,7 +327,7 @@ const
   DlgResult: array[TDialogResponse] of Word = (mrYes, mrNo, mrOK, mrCancel);
 var
   Buttons: TMsgDlgButtons;
-  Res: Integer;
+  Res:     Integer;
   OldCursor: TCursor;
   DialogResponse: TDialogResponse;
 begin
@@ -335,10 +335,10 @@ begin
   begin
     for DialogResponse := Low(TDialogResponse) to High(TDialogResponse) do
       if DialogResponse in Options then
-    begin
-      Result := DialogResponse;
-      Exit;
-    end;
+      begin
+        Result := DialogResponse;
+        Exit;
+      end;
   end;
   OldCursor := Screen.Cursor;
   try
@@ -359,7 +359,7 @@ end;
 function TMainForm.CreateReadmePage: IJediReadmePage;
 var
   AReadmeFrame: TReadmeFrame;
-  ATabSheet: TTabSheet;
+  ATabSheet:    TTabSheet;
 begin
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
@@ -377,7 +377,7 @@ end;
 function TMainForm.CreateInstallPage: IJediInstallPage;
 var
   AInstallFrame: TInstallFrame;
-  ATabSheet: TTabSheet;
+  ATabSheet:     TTabSheet;
 begin
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
@@ -397,7 +397,7 @@ end;
 function TMainForm.CreateProfilesPage: IJediProfilesPage;
 var
   AProfilesFrame: TProfilesFrame;
-  ATabSheet: TTabSheet;
+  ATabSheet:      TTabSheet;
 begin
   ATabSheet := TTabSheet.Create(Self);
   ATabSheet.PageControl := ProductsPageControl;
@@ -520,6 +520,6 @@ end;
 
 initialization
 
-InstallCore.InstallGUICreator := CreateMainForm;
+  InstallCore.InstallGUICreator := CreateMainForm;
 
 end.
