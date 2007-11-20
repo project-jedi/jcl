@@ -1,1 +1,0 @@
-The source code of CompInstall.dll is in the JVCL InnoSetup directory.
