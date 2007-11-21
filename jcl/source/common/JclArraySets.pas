@@ -373,20 +373,13 @@ type
   TJclArraySetF<T> = class(TJclArraySet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclSet<T>)
-  private
-    FCompare: TCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    function ItemsCompare(const A, B: T): Integer; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const ACompare: TCompare<T>; ACapacity: Integer; AOwnsItems: Boolean); overload;
     constructor Create(const ACompare: TCompare<T>; const ACollection: IJclCollection<T>; AOwnsItems: Boolean); overload;
-
-    property Compare: TCompare<T> read FCompare write FCompare;
   end;
 
   // I = Items can compare themselves to others
@@ -2018,16 +2011,18 @@ end;
 
 function TJclArraySetE<T>.ItemsCompare(const A, B: T): Integer;
 begin
-  if Comparer = nil then
-    raise EJclNoComparerError.Create;
-  Result := Comparer.Compare(A, B);
+  if Comparer <> nil then
+    Result := Comparer.Compare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
 end;
 
 function TJclArraySetE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if Comparer = nil then
-    raise EJclNoComparerError.Create;
-  Result := Comparer.Compare(A, B) = 0;
+  if Comparer <> nil then
+    Result := Comparer.Compare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclArraySetF<T> } ===================================================
@@ -2035,41 +2030,20 @@ end;
 constructor TJclArraySetF<T>.Create(const ACompare: TCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
 begin
   inherited Create(ACapacity, AOwnsItems);
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 constructor TJclArraySetF<T>.Create(const ACompare: TCompare<T>; const ACollection: IJclCollection<T>;
   AOwnsItems: Boolean);
 begin
   inherited Create(ACollection, AOwnsItems);
-  FCompare := ACompare;
-end;
-
-procedure TJclArraySetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclArraySetF<T> then
-    TJclArraySetF<T>(Dest).FCompare := Compare;
+  SetCompare(ACompare);
 end;
 
 function TJclArraySetF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclArraySetF<T>.Create(Compare, Size, False);
   AssignPropertiesTo(Result);
-end;
-
-function TJclArraySetF<T>.ItemsCompare(const A, B: T): Integer;
-begin
-  if not Assigned(Compare) then
-    raise EJclNoComparerError.Create;
-  Result := Compare(A, B);
-end;
-
-function TJclArraySetF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(Compare) then
-    raise EJclNoComparerError.Create;
-  Result := Compare(A, B) = 0;
 end;
 
 //=== { TJclArraySetI<T> } ===================================================
@@ -2082,12 +2056,21 @@ end;
 
 function TJclArraySetI<T>.ItemsCompare(const A, B: T): Integer;
 begin
-  Result := A.CompareTo(B);
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := A.CompareTo(B);
 end;
 
 function TJclArraySetI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.CompareTo(B) = 0;
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.CompareTo(B) = 0;
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

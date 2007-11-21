@@ -56,11 +56,10 @@ type
   // Result must be in 0..Range-1
   TJclHashFunction = function(Key, Range: Integer): Integer;
 
-(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,IInterface,TJclIntfIntfEntry,TJclIntfIntfEntryArray,TJclIntfIntfBucket,TJclIntfIntfBucketArray,TJclIntfIntfHashMap,TJclAbstractContainerBase,IJclIntfIntfMap,IJclIntfSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLHASHMAPINT(IInterface,IInterface,TJclIntfIntfEntry,TJclIntfIntfEntryArray,TJclIntfIntfBucket,TJclIntfIntfBucketArray,TJclIntfIntfHashMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: IInterface): IInterface;
-    function Hash(const AInterface: IInterface): Integer;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: IInterface): Boolean;,,,,const Key: IInterface,const Value: IInterface)*)
 
@@ -75,7 +74,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: AnsiString): AnsiString;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: AnsiString): Boolean;,,,,const Key: IInterface,const Value: AnsiString)*)
 
@@ -97,7 +96,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: WideString): WideString;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: WideString): Boolean;,,,,const Key: IInterface,const Value: WideString)*)
 
@@ -130,7 +129,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Single): Single;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: Single): Boolean;,,,,const Key: IInterface,const Value: Single)*)
 
@@ -152,7 +151,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Double): Double;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: Double): Boolean;,,,,const Key: IInterface,const Value: Double)*)
 
@@ -174,7 +173,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Extended): Extended;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: Extended): Boolean;,,,,const Key: IInterface,const Value: Extended)*)
 
@@ -212,7 +211,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Integer): Integer;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: Integer): Boolean;,,,,const Key: IInterface,Value: Integer)*)
 
@@ -234,7 +233,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Cardinal): Cardinal;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: Cardinal): Boolean;,,,,const Key: IInterface,Value: Cardinal)*)
 
@@ -256,7 +255,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Int64): Int64;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(const A\, B: Int64): Boolean;,,,,const Key: IInterface,const Value: Int64)*)
 
@@ -279,7 +278,7 @@ type
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: Pointer): Pointer;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: Pointer): Boolean;,,,,const Key: IInterface,Value: Pointer)*)
 
@@ -298,7 +297,7 @@ type
     function GetOwnsValues: Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
-    function Hash(const AInterface: IInterface): Integer;
+    function Hash(const AInterface: IInterface): Integer; reintroduce;
     function KeysEqual(const A\, B: IInterface): Boolean;
     function ValuesEqual(A\, B: TObject): Boolean;,
     property OwnsValues: Boolean read FOwnsValues;,,; AOwnsValues: Boolean,const Key: IInterface,Value: TObject)*)
@@ -580,22 +579,17 @@ end;
 }
 {$JPPDEFINEMACRO GETOWNSKEYS}
 {$JPPDEFINEMACRO GETOWNSVALUES}
-{$JPPDEFINEMACRO HASH
-function TJclIntfIntfHashMap.Hash(const AInterface: IInterface): Integer;
-begin
-  Result := Integer(AInterface);
-end;
-}
+{$JPPDEFINEMACRO HASH}
 {$JPPDEFINEMACRO KEYSEQUAL
 function TJclIntfIntfHashMap.KeysEqual(const A, B: IInterface): Boolean;
 begin
-  Result := Integer(A) = Integer(B);
+  Result := ItemsEqual(A, B);
 end;
 }
 {$JPPDEFINEMACRO VALUESEQUAL
 function TJclIntfIntfHashMap.ValuesEqual(const A, B: IInterface): Boolean;
 begin
-  Result := Integer(A) = Integer(B);
+  Result := ItemsEqual(A, B);
 end;
 }
 {$JPPEXPANDMACRO JCLHASHMAPIMP(TJclIntfIntfHashMap,TJclIntfIntfEntryArray,TJclIntfIntfBucket,IJclIntfIntfMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const Key: IInterface,IInterface,nil,const Value: IInterface,IInterface,nil)}

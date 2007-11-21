@@ -75,35 +75,39 @@ type
   {$ENDIF ~CLR}
   TApplyFunction = function(AObject: TObject): TObject;
 
-  // Pointer functions for comparator
-  TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
-  TAnsiStrCompare = function(const Obj, Obj2: AnsiString): Integer;
-  TWideStrCompare = function(const Obj, Obj2: WideString): Integer;
-  {$IFDEF CONTAINER_ANSISTR}
-  TStrCompare = TAnsiStrCompare;
-  {$ENDIF CONTAINER_ANSISTR}
-  {$IFDEF CONTAINER_WIDESTR}
-  TStrCompare = TWideStrCompare;
-  {$ENDIF CONTAINER_WIDESTR}
-  TSingleCompare = function(const Obj1, Obj2: Single): Integer;
-  TDoubleCompare = function(const Obj1, Obj2: Double): Integer;
-  TExtendedCompare = function(const Obj1, Obj2: Extended): Integer;
-  {$IFDEF MATH_SINGLE_PRECISION}
-  TFloatCompare = TSingleCompare;
-  {$ENDIF MATH_SINGLE_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  TFloatCompare = TDoubleCompare;
-  {$ENDIF MATH_DOUBLE_PRECISION}
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  TFloatCompare = TExtendedCompare;
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  TIntegerCompare = function(Obj1, Obj2: Integer): Integer;
-  TCardinalCompare = function(Obj1, Obj2: Cardinal): Integer;
-  TInt64Compare = function(const Obj1, Obj2: Int64): Integer;
+// Apply algorithms
+procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
+procedure Apply(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrApplyFunction); overload;
+procedure Apply(const First: IJclWideStrIterator; Count: Integer; F: TWideStrApplyFunction); overload;
+procedure Apply(const First: IJclSingleIterator; Count: Integer; F: TSingleApplyFunction); overload;
+procedure Apply(const First: IJclDoubleIterator; Count: Integer; F: TDoubleApplyFunction); overload;
+procedure Apply(const First: IJclExtendedIterator; Count: Integer; F: TExtendedApplyFunction); overload;
+procedure Apply(const First: IJclIntegerIterator; Count: Integer; F: TIntegerApplyFunction); overload;
+procedure Apply(const First: IJclCardinalIterator; Count: Integer; F: TCardinalApplyFunction); overload;
+procedure Apply(const First: IJclInt64Iterator; Count: Integer; F: TInt64ApplyFunction); overload;
+{$IFNDEF CLR}
+procedure Apply(const First: IJclPtrIterator; Count: Integer; F: TPtrApplyFunction); overload;
+{$ENDIF ~CLR}
+procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
+
+type
+  TIntfCompare = JclBase.TIntfCompare;
+  TAnsiStrCompare = JclBase.TAnsiStrCompare;
+  TWideStrCompare = JclBase.TWideStrCompare;
+  {$IFNDEF CONTAINER_NOSTR}
+  TStrCompare = JclBase.TStrCompare;
+  {$ENDIF ~CONTAINER_NOSTR}
+  TSingleCompare = JclBase.TSingleCompare;
+  TDoubleCompare = JclBase.TDoubleCompare;
+  TExtendedCompare = JclBase.TExtendedCompare;
+  TFloatCompare = JclBase.TFloatCompare;
+  TIntegerCompare = JclBase.TIntegerCompare;
+  TCardinalCompare = JclBase.TCardinalCompare;
+  TInt64Compare = JclBase.TInt64Compare;
   {$IFNDEF CLR}
-  TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
+  TPtrCompare = JclBase.TPtrCompare;
   {$ENDIF ~CLR}
-  TCompare = function(Obj1, Obj2: TObject): Integer;
+  TCompare = JclBase.TCompare;
 
 // Compare functions
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
@@ -124,72 +128,137 @@ function SimpleCompare(Obj1, Obj2: TObject): Integer;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 
-// Apply algorithms
-procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
-procedure Apply(const First: IJclAnsiStrIterator; Count: Integer; F: TAnsiStrApplyFunction); overload;
-procedure Apply(const First: IJclWideStrIterator; Count: Integer; F: TWideStrApplyFunction); overload;
-procedure Apply(const First: IJclSingleIterator; Count: Integer; F: TSingleApplyFunction); overload;
-procedure Apply(const First: IJclDoubleIterator; Count: Integer; F: TDoubleApplyFunction); overload;
-procedure Apply(const First: IJclExtendedIterator; Count: Integer; F: TExtendedApplyFunction); overload;
-procedure Apply(const First: IJclIntegerIterator; Count: Integer; F: TIntegerApplyFunction); overload;
-procedure Apply(const First: IJclCardinalIterator; Count: Integer; F: TCardinalApplyFunction); overload;
-procedure Apply(const First: IJclInt64Iterator; Count: Integer; F: TInt64ApplyFunction); overload;
+type
+  TIntfEqualityCompare = JclBase.TIntfEqualityCompare;
+  TAnsiStrEqualityCompare = JclBase.TAnsiStrEqualityCompare;
+  TWideStrEqualityCompare = JclBase.TWideStrEqualityCompare;
+  {$IFNDEF CONTAINER_NOSTR}
+  TStrEqualityCompare = JclBase.TStrEqualityCompare;
+  {$ENDIF ~CONTAINER_NOSTR}
+  TSingleEqualityCompare = JclBase.TSingleEqualityCompare;
+  TDoubleEqualityCompare = JclBase.TDoubleEqualityCompare;
+  TExtendedEqualityCompare = JclBase.TExtendedEqualityCompare;
+  TFloatEqualityCompare = JclBase.TFloatEqualityCompare;
+  TIntegerEqualityCompare = JclBase.TIntegerEqualityCompare;
+  TCardinalEqualityCompare = JclBase.TCardinalEqualityCompare;
+  TInt64EqualityCompare = JclBase.TInt64EqualityCompare;
+  {$IFNDEF CLR}
+  TPtrEqualityCompare = JclBase.TPtrEqualityCompare;
+  {$ENDIF ~CLR}
+  TEqualityCompare = JclBase.TEqualityCompare;
+
+// Compare functions for equality
+function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
+function AnsiStrSimpleEqualityCompare(const Obj1, Obj2: AnsiString): Boolean;
+function WideStrSimpleEqualityCompare(const Obj1, Obj2: WideString): Boolean;
+function StrSimpleEqualityCompare(const Obj1, Obj2: string): Boolean;
+function SingleSimpleEqualityCompare(const Obj1, Obj2: Single): Boolean;
+function DoubleSimpleEqualityCompare(const Obj1, Obj2: Double): Boolean;
+function ExtendedSimpleEqualityCompare(const Obj1, Obj2: Extended): Boolean;
+function FloatSimpleEqualityCompare(const Obj1, Obj2: Float): Boolean;
+function IntegerSimpleEqualityCompare(Obj1, Obj2: Integer): Boolean;
+function CardinalSimpleEqualityCompare(Obj1, Obj2: Cardinal): Boolean;
+function Int64SimpleEqualityCompare(const Obj1, Obj2: Int64): Boolean;
 {$IFNDEF CLR}
-procedure Apply(const First: IJclPtrIterator; Count: Integer; F: TPtrApplyFunction); overload;
+function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
 {$ENDIF ~CLR}
-procedure Apply(const First: IJclIterator; Count: Integer; F: TApplyFunction); overload;
+function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
 
 // Find algorithms
 function Find(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface;
   AComparator: TIntfCompare): IJclIntfIterator; overload;
+function Find(const First: IJclIntfIterator; Count: Integer; const AInterface: IInterface;
+  AEqualityComparator: TIntfEqualityCompare): IJclIntfIterator; overload;
 function Find(const First: IJclAnsiStrIterator; Count: Integer; const AString: string;
   AComparator: TAnsiStrCompare): IJclAnsiStrIterator; overload;
+function Find(const First: IJclAnsiStrIterator; Count: Integer; const AString: string;
+  AEqualityComparator: TAnsiStrEqualityCompare): IJclAnsiStrIterator; overload;
 function Find(const First: IJclWideStrIterator; Count: Integer; const AString: string;
   AComparator: TWideStrCompare): IJclWideStrIterator; overload;
+function Find(const First: IJclWideStrIterator; Count: Integer; const AString: string;
+  AEqualityComparator: TWideStrEqualityCompare): IJclWideStrIterator; overload;
 function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
   AComparator: TSingleCompare): IJclSingleIterator; overload;
+function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
+  AEqualityComparator: TSingleEqualityCompare): IJclSingleIterator; overload;
 function Find(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
   AComparator: TDoubleCompare): IJclDoubleIterator; overload;
+function Find(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
+  AEqualityComparator: TDoubleEqualityCompare): IJclDoubleIterator; overload;
 function Find(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
   AComparator: TExtendedCompare): IJclExtendedIterator; overload;
+function Find(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
+  AEqualityComparator: TExtendedEqualityCompare): IJclExtendedIterator; overload;
 function Find(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
   AComparator: TIntegerCompare): IJclIntegerIterator; overload;
+function Find(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
+  AEqualityComparator: TIntegerEqualityCompare): IJclIntegerIterator; overload;
 function Find(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
   AComparator: TCardinalCompare): IJclCardinalIterator; overload;
+function Find(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
+  AEqualityComparator: TCardinalEqualityCompare): IJclCardinalIterator; overload;
 function Find(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
   AComparator: TInt64Compare): IJclInt64Iterator; overload;
+function Find(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
+  AEqualityComparator: TInt64EqualityCompare): IJclInt64Iterator; overload;
 {$IFNDEF CLR}
 function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
   AComparator: TPtrCompare): IJclPtrIterator; overload;
+function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
+  AEqualityComparator: TPtrEqualityCompare): IJclPtrIterator; overload;
 {$ENDIF ~CLR}
 function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): IJclIterator; overload;
+function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
+  AEqualityComparator: TEqualityCompare): IJclIterator; overload;
 
 // CountObject algorithms
 function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer; overload;
-  function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
+function CountObject(const First: IJclIntfIterator; Count: Integer;
+  const AInterface: IInterface; AEqualityComparator: TIntfEqualityCompare): Integer; overload;
+function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
   const AString: AnsiString; AComparator: TAnsiStrCompare): Integer; overload;
+function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
+  const AString: AnsiString; AEqualityComparator: TAnsiStrEqualityCompare): Integer; overload;
 function CountObject(const First: IJclWideStrIterator; Count: Integer;
   const AString: WideString; AComparator: TWideStrCompare): Integer; overload;
+function CountObject(const First: IJclWideStrIterator; Count: Integer;
+  const AString: WideString; AEqualityComparator: TWideStrEqualityCompare): Integer; overload;
 function CountObject(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
   AComparator: TSingleCompare): Integer; overload;
+function CountObject(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
+  AEqualityComparator: TSingleEqualityCompare): Integer; overload;
 function CountObject(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
   AComparator: TDoubleCompare): Integer; overload;
+function CountObject(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
+  AEqualityComparator: TDoubleEqualityCompare): Integer; overload;
 function CountObject(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
   AComparator: TExtendedCompare): Integer; overload;
+function CountObject(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
+  AEqualityComparator: TExtendedEqualityCompare): Integer; overload;
 function CountObject(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
   AComparator: TIntegerCompare): Integer; overload;
+function CountObject(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
+  AEqualityComparator: TIntegerEqualityCompare): Integer; overload;
 function CountObject(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
   AComparator: TCardinalCompare): Integer; overload;
+function CountObject(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
+  AEqualityComparator: TCardinalEqualityCompare): Integer; overload;
 function CountObject(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
   AComparator: TInt64Compare): Integer; overload;
+function CountObject(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
+  AEqualityComparator: TInt64EqualityCompare): Integer; overload;
 {$IFNDEF CLR}
 function CountObject(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
   AComparator: TPtrCompare): Integer; overload;
+function CountObject(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
+  AEqualityComparator: TPtrEqualityCompare): Integer; overload;
 {$ENDIF ~CLR}
 function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): Integer; overload;
+function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
+  AEqualityComparator: TEqualityCompare): Integer; overload;
 
 // Copy algorithms
 procedure Copy(const First: IJclIntfIterator; Count: Integer;
@@ -331,8 +400,6 @@ procedure Sort(const AList: IJclList; First, Last: Integer; AComparator: TCompar
 {$IFDEF SUPPORTS_GENERICS}
 type
   TApplyFunction<T> = function(AItem: T): T;
-  TCompare<T> = function(Obj1, Obj2: T): Integer;
-  TEqualityCompare<T> = function(Obj1, Obj2: T): Boolean;
   THash<T> = function(AItem: T): Integer;
   TSortProc<T> = procedure(const AList: IJclList<T>; L, R: Integer; AComparator: TCompare<T>);
 
@@ -376,10 +443,10 @@ uses
 
 function IntfSimpleCompare(const Obj1, Obj2: IInterface): Integer;
 begin
-  if Cardinal(Obj1) < Cardinal(Obj2) then
+  if Integer(Obj1) < Integer(Obj2) then
     Result := -1
   else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
+  if Integer(Obj1) > Integer(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -400,9 +467,9 @@ end;
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 begin
   case SizeOf(Obj1[1]) of
-    1:
+    SizeOf(AnsiChar):
       Result := CompareStr(Obj1, Obj2);
-    2:
+    SizeOf(WideChar):
       Result := WideCompareStr(Obj1, Obj2);
   else
     raise EJclOperationNotSupportedError.Create;
@@ -501,10 +568,10 @@ end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if Cardinal(Obj1) < Cardinal(Obj2) then
+  if Integer(Obj1) < Integer(Obj2) then
     Result := -1
   else
-  if Cardinal(Obj1) > Cardinal(Obj2) then
+  if Integer(Obj1) > Integer(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -519,6 +586,82 @@ begin
     Result := 1
   else
     Result := 0;
+end;
+
+function IntfSimpleEqualityCompare(const Obj1, Obj2: IInterface): Boolean;
+begin
+  Result := Integer(Obj1) = Integer(Obj2);
+end;
+
+function AnsiStrSimpleEqualityCompare(const Obj1, Obj2: AnsiString): Boolean;
+begin
+  // (rom) changed to case sensitive compare
+  Result := CompareStr(Obj1, Obj2) = 0;
+end;
+
+function WideStrSimpleEqualityCompare(const Obj1, Obj2: WideString): Boolean;
+begin
+  // (rom) changed to case sensitive compare
+  Result := WideCompareStr(Obj1, Obj2) = 0;
+end;
+
+function StrSimpleEqualityCompare(const Obj1, Obj2: string): Boolean;
+begin
+  case SizeOf(Obj1[1]) of
+    SizeOf(AnsiChar):
+      Result := CompareStr(Obj1, Obj2) = 0;
+    SizeOf(WideChar):
+      Result := WideCompareStr(Obj1, Obj2) = 0;
+  else
+    raise EJclOperationNotSupportedError.Create;
+  end;
+end;
+
+function SingleSimpleEqualityCompare(const Obj1, Obj2: Single): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function DoubleSimpleEqualityCompare(const Obj1, Obj2: Double): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function ExtendedSimpleEqualityCompare(const Obj1, Obj2: Extended): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function FloatSimpleEqualityCompare(const Obj1, Obj2: Float): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function IntegerSimpleEqualityCompare(Obj1, Obj2: Integer): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function CardinalSimpleEqualityCompare(Obj1, Obj2: Cardinal): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+function Int64SimpleEqualityCompare(const Obj1, Obj2: Int64): Boolean;
+begin
+  Result := Obj1 = Obj2;
+end;
+
+{$IFNDEF CLR}
+function PtrSimpleEqualityCompare(Obj1, Obj2: Pointer): Boolean;
+begin
+  Result := Integer(Obj1) = Integer(Obj2);
+end;
+{$ENDIF ~CLR}
+
+function SimpleEqualityCompare(Obj1, Obj2: TObject): Boolean;
+begin
+  Result := Integer(Obj1) = Integer(Obj2);
 end;
 
 procedure Apply(const First: IJclIntfIterator; Count: Integer; F: TIntfApplyFunction);
@@ -663,6 +806,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclIntfIterator; Count: Integer;
+  const AInterface: IInterface; AEqualityComparator: TIntfEqualityCompare): IJclIntfIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AInterface) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 function Find(const First: IJclAnsiStrIterator; Count: Integer;
   const AString: string; AComparator: TAnsiStrCompare): IJclAnsiStrIterator;
 var
@@ -673,6 +835,25 @@ begin
     if First.HasNext then
     begin
       if AComparator(First.Next, AString) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclAnsiStrIterator; Count: Integer;
+  const AString: string; AEqualityComparator: TAnsiStrEqualityCompare): IJclAnsiStrIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AString) then
       begin
         Result := First;
         Break;
@@ -701,6 +882,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclWideStrIterator; Count: Integer;
+  const AString: string; AEqualityComparator: TWideStrEqualityCompare): IJclWideStrIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AString) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
   AComparator: TSingleCompare): IJclSingleIterator;
 var
@@ -711,6 +911,25 @@ begin
     if First.HasNext then
     begin
       if AComparator(First.Next, AValue) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
+  AEqualityComparator: TSingleEqualityCompare): IJclSingleIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
       begin
         Result := First;
         Break;
@@ -739,6 +958,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
+  AEqualityComparator: TDoubleEqualityCompare): IJclDoubleIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 function Find(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
   AComparator: TExtendedCompare): IJclExtendedIterator;
 var
@@ -749,6 +987,25 @@ begin
     if First.HasNext then
     begin
       if AComparator(First.Next, AValue) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
+  AEqualityComparator: TExtendedEqualityCompare): IJclExtendedIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
       begin
         Result := First;
         Break;
@@ -777,6 +1034,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
+  AEqualityComparator: TIntegerEqualityCompare): IJclIntegerIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 function Find(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
   AComparator: TCardinalCompare): IJclCardinalIterator;
 var
@@ -787,6 +1063,25 @@ begin
     if First.HasNext then
     begin
       if AComparator(First.Next, AValue) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
+  AEqualityComparator: TCardinalEqualityCompare): IJclCardinalIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
       begin
         Result := First;
         Break;
@@ -815,6 +1110,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
+  AEqualityComparator: TInt64EqualityCompare): IJclInt64Iterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AValue) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 {$IFNDEF CLR}
 function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
   AComparator: TPtrCompare): IJclPtrIterator;
@@ -826,6 +1140,25 @@ begin
     if First.HasNext then
     begin
       if AComparator(First.Next, APtr) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
+function Find(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
+  AEqualityComparator: TPtrEqualityCompare): IJclPtrIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, APtr) then
       begin
         Result := First;
         Break;
@@ -855,6 +1188,25 @@ begin
       Break;
 end;
 
+function Find(const First: IJclIterator; Count: Integer; AObject: TObject;
+  AEqualityComparator: TEqualityCompare): IJclIterator;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+    begin
+      if AEqualityComparator(First.Next, AObject) then
+      begin
+        Result := First;
+        Break;
+      end;
+    end
+    else
+      Break;
+end;
+
 function CountObject(const First: IJclIntfIterator; Count: Integer;
   const AInterface: IInterface; AComparator: TIntfCompare): Integer;
 var
@@ -864,6 +1216,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AInterface) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclIntfIterator; Count: Integer;
+  const AInterface: IInterface; AEqualityComparator: TIntfEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AInterface)))
     else
       Break;
 end;
@@ -881,6 +1246,19 @@ begin
       Break;
 end;
 
+function CountObject(const First: IJclAnsiStrIterator; Count: Integer;
+  const AString: AnsiString; AEqualityComparator: TAnsiStrEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AString)))
+    else
+      Break;
+end;
+
 function CountObject(const First: IJclWideStrIterator; Count: Integer;
   const AString: WideString; AComparator: TWideStrCompare): Integer;
 var
@@ -890,6 +1268,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AString) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclWideStrIterator; Count: Integer;
+  const AString: WideString; AEqualityComparator: TWideStrEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AString)))
     else
       Break;
 end;
@@ -907,6 +1298,19 @@ begin
       Break;
 end;
 
+function CountObject(const First: IJclSingleIterator; Count: Integer; const AValue: Single;
+  AEqualityComparator: TSingleEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
+    else
+      Break;
+end;
+
 function CountObject(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
   AComparator: TDoubleCompare): Integer;
 var
@@ -916,6 +1320,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AValue) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclDoubleIterator; Count: Integer; const AValue: Double;
+  AEqualityComparator: TDoubleEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
     else
       Break;
 end;
@@ -933,6 +1350,19 @@ begin
       Break;
 end;
 
+function CountObject(const First: IJclExtendedIterator; Count: Integer; const AValue: Extended;
+  AEqualityComparator: TExtendedEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
+    else
+      Break;
+end;
+
 function CountObject(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
   AComparator: TIntegerCompare): Integer;
 var
@@ -942,6 +1372,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AValue) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclIntegerIterator; Count: Integer; AValue: Integer;
+  AEqualityComparator: TIntegerEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
     else
       Break;
 end;
@@ -959,6 +1402,19 @@ begin
       Break;
 end;
 
+function CountObject(const First: IJclCardinalIterator; Count: Integer; AValue: Cardinal;
+  AEqualityComparator: TCardinalEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
+    else
+      Break;
+end;
+
 function CountObject(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
   AComparator: TInt64Compare): Integer;
 var
@@ -968,6 +1424,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AValue) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclInt64Iterator; Count: Integer; const AValue: Int64;
+  AEqualityComparator: TInt64EqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AValue)))
     else
       Break;
 end;
@@ -985,6 +1454,19 @@ begin
     else
       Break;
 end;
+
+function CountObject(const First: IJclPtrIterator; Count: Integer; APtr: Pointer;
+  AEqualityComparator: TPtrEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, APtr)))
+    else
+      Break;
+end;
 {$ENDIF ~CLR}
 
 function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
@@ -996,6 +1478,19 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+    else
+      Break;
+end;
+
+function CountObject(const First: IJclIterator; Count: Integer; AObject: TObject;
+  AEqualityComparator: TEqualityCompare): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
+      Inc(Result, Ord(AEqualityComparator(First.Next, AObject)))
     else
       Break;
 end;

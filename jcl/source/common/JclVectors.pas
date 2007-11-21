@@ -638,17 +638,12 @@ type
   TJclVectorF<T> = class(TJclVector<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer,
     IJclCollection<T>, IJclList<T>, IJclArray<T>, IJclItemOwner<T>)
-  private
-    FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
-    property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = Items can compare themselves to an other for equality
@@ -8556,9 +8551,10 @@ end;
 
 function TJclVectorE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if EqualityComparer = nil then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityComparer.Equals(A, B);
+  if EqualityComparer <> nil then
+    Result := EqualityComparer.Equals(A, B)
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclVectorF<T> } =====================================================
@@ -8567,27 +8563,13 @@ constructor TJclVectorF<T>.Create(const AEqualityCompare: TEqualityCompare<T>; A
   AOwnsItems: Boolean);
 begin
   inherited Create(ACapacity, AOwnsItems);
-  FEqualityCompare := AEqualityCompare;
-end;
-
-procedure TJclVectorF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclVectorF<T> then
-    TJclVectorF<T>(Dest).FEqualityCompare := FEqualityCompare;
+  SetEqualityCompare(AEqualityCompare);
 end;
 
 function TJclVectorF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclVectorF<T>.Create(EqualityCompare, FSize, False);
   AssignPropertiesTo(Result);
-end;
-
-function TJclVectorF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(EqualityCompare) then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityCompare(A, B);
 end;
 
 //=== { TJclVectorI<T> } =====================================================
@@ -8600,7 +8582,13 @@ end;
 
 function TJclVectorI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.Equals(B);
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.Equals(B);
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

@@ -251,6 +251,96 @@ type
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
 
+type
+  TIntfCompare = function(const Obj1, Obj2: IInterface): Integer;
+  TAnsiStrCompare = function(const Obj, Obj2: AnsiString): Integer;
+  TWideStrCompare = function(const Obj, Obj2: WideString): Integer;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrCompare = TAnsiStrCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrCompare = TWideStrCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleCompare = function(const Obj1, Obj2: Single): Integer;
+  TDoubleCompare = function(const Obj1, Obj2: Double): Integer;
+  TExtendedCompare = function(const Obj1, Obj2: Extended): Integer;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatCompare = TSingleCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatCompare = TDoubleCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatCompare = TExtendedCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerCompare = function(Obj1, Obj2: Integer): Integer;
+  TCardinalCompare = function(Obj1, Obj2: Cardinal): Integer;
+  TInt64Compare = function(const Obj1, Obj2: Int64): Integer;
+  {$IFNDEF CLR}
+  TPtrCompare = function(Obj1, Obj2: Pointer): Integer;
+  {$ENDIF ~CLR}
+  TCompare = function(Obj1, Obj2: TObject): Integer;
+
+type
+  TIntfEqualityCompare = function(const Obj1, Obj2: IInterface): Boolean;
+  TAnsiStrEqualityCompare = function(const Obj, Obj2: AnsiString): Boolean;
+  TWideStrEqualityCompare = function(const Obj, Obj2: WideString): Boolean;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrEqualityCompare = TAnsiStrEqualityCompare;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrEqualityCompare = TWideStrEqualityCompare;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleEqualityCompare = function(const Obj1, Obj2: Single): Boolean;
+  TDoubleEqualityCompare = function(const Obj1, Obj2: Double): Boolean;
+  TExtendedEqualityCompare = function(const Obj1, Obj2: Extended): Boolean;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatEqualityCompare = TSingleEqualityCompare;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatEqualityCompare = TDoubleEqualityCompare;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatEqualityCompare = TExtendedEqualityCompare;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerEqualityCompare = function(Obj1, Obj2: Integer): Boolean;
+  TCardinalEqualityCompare = function(Obj1, Obj2: Cardinal): Boolean;
+  TInt64EqualityCompare = function(const Obj1, Obj2: Int64): Boolean;
+  {$IFNDEF CLR}
+  TPtrEqualityCompare = function(Obj1, Obj2: Pointer): Boolean;
+  {$ENDIF ~CLR}
+  TEqualityCompare = function(Obj1, Obj2: TObject): Boolean;
+
+type
+  TIntfHashConvert = function(const AInterface: IInterface): Integer;
+  TAnsiStrHashConvert = function(const AString: AnsiString): Integer;
+  TWideStrHashConvert = function(const AString: WideString): Integer;
+  {$IFDEF CONTAINER_ANSISTR}
+  TStrHashConvert = TAnsiStrHashConvert;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  TStrHashConvert = TWideStrHashConvert;
+  {$ENDIF CONTAINER_WIDESTR}
+  TSingleHashConvert = function(const AValue: Single): Integer;
+  TDoubleHashConvert = function(const AValue: Double): Integer;
+  TExtendedHashConvert = function(const AValue: Extended): Integer;
+  {$IFDEF MATH_SINGLE_PRECISION}
+  TFloatHashConvert = TSingleHashConvert;
+  {$ENDIF MATH_SINGLE_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  TFloatHashConvert = TDoubleHashConvert;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  TFloatHashConvert = TExtendedHashConvert;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  TIntegerHashConvert = function(AValue: Integer): Integer;
+  TCardinalHashConvert = function(AValue: Cardinal): Integer;
+  TInt64HashConvert = function(const AValue: Int64): Integer;
+  {$IFNDEF CLR}
+  TPtrHashConvert = function(APtr: Pointer): Integer;
+  {$ENDIF ~CLR}
+  THashConvert = function(AObject: TObject): Integer;
+
 procedure MoveArray(var List: TDynIInterfaceArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFNDEF CLR}
 procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Integer); overload;
@@ -319,6 +409,10 @@ function Addr32ToAddr64(const Value: TJclAddr32): TJclAddr64;
 
 {$IFDEF SUPPORTS_GENERICS}
 type
+  TCompare<T> = function(const Obj1, Obj2: T): Integer;
+  TEqualityCompare<T> = function(const Obj1, Obj2: T): Boolean;
+  THashConvert<T> = function(const AItem: T): Integer;
+
   TEquatable<T: class> = class(TObject, IEquatable<T>, IEqualityComparer<T>)
   public
     { IEquatable<T> }
@@ -328,7 +422,7 @@ type
     function GetHashCode2(Obj: T): Integer;
     function IEqualityComparer<T>.GetHashCode = GetHashCode2;
   end;
-   
+
   TJclBase<T> = class
   public
     type

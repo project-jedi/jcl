@@ -158,17 +158,26 @@ type
 
   IJclIntfEqualityComparer = interface
     ['{5CC2DF51-BE56-4D02-A171-31BAAC097632}']
+    function GetEqualityCompare: TIntfEqualityCompare;
+    procedure SetEqualityCompare(Value: TIntfEqualityCompare);
     function ItemsEqual(const A, B: IInterface): Boolean;
+    property EqualityCompare: TIntfEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclAnsiStrEqualityComparer = interface
     ['{E3DB9016-F0D0-4CE0-B156-4C5DCA47FD3B}']
+    function GetEqualityCompare: TAnsiStrEqualityCompare;
+    procedure SetEqualityCompare(Value: TAnsiStrEqualityCompare);
     function ItemsEqual(const A, B: AnsiString): Boolean;
+    property EqualityCompare: TAnsiStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclWideStrEqualityComparer = interface
     ['{2E5696C9-8374-4347-9DC9-B3722F47F5FB}']
+    function GetEqualityCompare: TWideStrEqualityCompare;
+    procedure SetEqualityCompare(Value: TWideStrEqualityCompare);
     function ItemsEqual(const A, B: WideString): Boolean;
+    property EqualityCompare: TWideStrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -180,17 +189,26 @@ type
 
   IJclSingleEqualityComparer = interface
     ['{4835BC5B-1A87-4864-BFE1-778F3BAF26B1}']
+    function GetEqualityCompare: TSingleEqualityCompare;
+    procedure SetEqualityCompare(Value: TSingleEqualityCompare);
     function ItemsEqual(const A, B: Single): Boolean;
+    property EqualityCompare: TSingleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclDoubleEqualityComparer = interface
     ['{15F0A9F0-D5DC-4978-8CDB-53B6E510262C}']
+    function GetEqualityCompare: TDoubleEqualityCompare;
+    procedure SetEqualityCompare(Value: TDoubleEqualityCompare);
     function ItemsEqual(const A, B: Double): Boolean;
+    property EqualityCompare: TDoubleEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclExtendedEqualityComparer = interface
     ['{149883D5-4138-4570-8C5C-99F186B7E646}']
+    function GetEqualityCompare: TExtendedEqualityCompare;
+    procedure SetEqualityCompare(Value: TExtendedEqualityCompare);
     function ItemsEqual(const A, B: Extended): Boolean;
+    property EqualityCompare: TExtendedEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -205,51 +223,78 @@ type
 
   IJclIntegerEqualityComparer = interface
     ['{AABC35E6-A779-4A44-B748-27BFCB34FDFB}']
+    function GetEqualityCompare: TIntegerEqualityCompare;
+    procedure SetEqualityCompare(Value: TIntegerEqualityCompare);
     function ItemsEqual(A, B: Integer): Boolean;
+    property EqualityCompare: TIntegerEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclCardinalEqualityComparer = interface
     ['{B2DECF81-6ECE-4D9F-80E1-C8C884DB407C}']
+    function GetEqualityCompare: TCardinalEqualityCompare;
+    procedure SetEqualityCompare(Value: TCardinalEqualityCompare);
     function ItemsEqual(A, B: Cardinal): Boolean;
+    property EqualityCompare: TCardinalEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   IJclInt64EqualityComparer = interface
     ['{8B2825E2-0C81-42BA-AC0D-104344CE7E56}']
+    function GetEqualityCompare: TInt64EqualityCompare;
+    procedure SetEqualityCompare(Value: TInt64EqualityCompare);
     function ItemsEqual(const A, B: Int64): Boolean;
+    property EqualityCompare: TInt64EqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   {$IFNDEF CLR}
   IJclPtrEqualityComparer = interface
     ['{C6B7CBF9-ECD9-4D70-85CC-4E2367A1D806}']
+    function GetEqualityCompare: TPtrEqualityCompare;
+    procedure SetEqualityCompare(Value: TPtrEqualityCompare);
     function ItemsEqual(A, B: Pointer): Boolean;
+    property EqualityCompare: TPtrEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
   {$ENDIF ~CLR}
 
   IJclEqualityComparer = interface
     ['{82C67986-8365-44AB-8D56-7B0CF4F6B918}']
+    function GetEqualityCompare: TEqualityCompare;
+    procedure SetEqualityCompare(Value: TEqualityCompare);
     function ItemsEqual(A, B: TObject): Boolean;
+    property EqualityCompare: TEqualityCompare read GetEqualityCompare write SetEqualityCompare;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclEqualityComparer<T> = interface
     ['{4AF79AD6-D9F4-424B-BEAA-68857F9222B4}']
+    function GetEqualityCompare: TEqualityCompare<T>;
+    procedure SetEqualityCompare(Value: TEqualityCompare<T>);
     function ItemsEqual(const A, B: T): Boolean;
+    property EqualityCompare: TEqualityCompare<T> read GetEqualityCompare write SetEqualityCompare;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfComparer = interface
     ['{EB41B843-184B-420D-B5DA-27D055B4CD55}']
+    function GetCompare: TIntfCompare;
+    procedure SetCompare(Value: TIntfCompare);
     function ItemsCompare(const A, B: IInterface): Integer;
+    property Compare: TIntfCompare read GetCompare write SetCompare;
   end;
 
   IJclAnsiStrComparer = interface
     ['{09063CBB-9226-4734-B2A0-A178C2343176}']
+    function GetCompare: TAnsiStrCompare;
+    procedure SetCompare(Value: TAnsiStrCompare);
     function ItemsCompare(const A, B: AnsiString): Integer;
+    property Compare: TAnsiStrCompare read GetCompare write SetCompare;
   end;
 
   IJclWideStrComparer = interface
     ['{7A24AEDA-25B1-4E73-B2E9-5D74011E4C9C}']
+    function GetCompare: TWideStrCompare;
+    procedure SetCompare(Value: TWideStrCompare);
     function ItemsCompare(const A, B: WideString): Integer;
+    property Compare: TWideStrCompare read GetCompare write SetCompare;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -261,17 +306,26 @@ type
 
   IJclSingleComparer = interface
     ['{008225CE-075E-4450-B9DE-9863CB6D347C}']
+    function GetCompare: TSingleCompare;
+    procedure SetCompare(Value: TSingleCompare);
     function ItemsCompare(const A, B: Single): Integer;
+    property Compare: TSingleCompare read GetCompare write SetCompare;
   end;
 
   IJclDoubleComparer = interface
     ['{BC245D7F-7EB9-43D0-81B4-EE215486A5AA}']
+    function GetCompare: TDoubleCompare;
+    procedure SetCompare(Value: TDoubleCompare);
     function ItemsCompare(const A, B: Double): Integer;
+    property Compare: TDoubleCompare read GetCompare write SetCompare;
   end;
 
   IJclExtendedComparer = interface
     ['{92657C66-C18D-4BF8-A538-A3B0140320BB}']
+    function GetCompare: TExtendedCompare;
+    procedure SetCompare(Value: TExtendedCompare);
     function ItemsCompare(const A, B: Extended): Integer;
+    property Compare: TExtendedCompare read GetCompare write SetCompare;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -286,51 +340,78 @@ type
 
   IJclIntegerComparer = interface
     ['{362C3A6A-CBC1-4D5F-8652-158913DC9865}']
+    function GetCompare: TIntegerCompare;
+    procedure SetCompare(Value: TIntegerCompare);
     function ItemsCompare(A, B: Integer): Integer;
+    property Compare: TIntegerCompare read GetCompare write SetCompare;
   end;
 
   IJclCardinalComparer = interface
     ['{56E44725-00B9-4530-8CC2-72DCA9171EE0}']
+    function GetCompare: TCardinalCompare;
+    procedure SetCompare(Value: TCardinalCompare);
     function ItemsCompare(A, B: Cardinal): Integer;
+    property Compare: TCardinalCompare read GetCompare write SetCompare;
   end;
 
   IJclInt64Comparer = interface
     ['{87C935BF-3A42-4F1F-A474-9C823939EE1C}']
+    function GetCompare: TInt64Compare;
+    procedure SetCompare(Value: TInt64Compare);
     function ItemsCompare(const A, B: Int64): Integer;
+    property Compare: TInt64Compare read GetCompare write SetCompare;
   end;
 
   {$IFNDEF CLR}
   IJclPtrComparer = interface
     ['{85557D4C-A036-477E-BA73-B5EEF43A8696}']
+    function GetCompare: TPtrCompare;
+    procedure SetCompare(Value: TPtrCompare);
     function ItemsCompare(A, B: Pointer): Integer;
+    property Compare: TPtrCompare read GetCompare write SetCompare;
   end;
   {$ENDIF ~CLR}
 
   IJclComparer = interface
     ['{7B376028-56DC-4C4A-86A9-1AC19E3EDF75}']
+    function GetCompare: TCompare;
+    procedure SetCompare(Value: TCompare);
     function ItemsCompare(A, B: TObject): Integer;
+    property Compare: TCompare read GetCompare write SetCompare;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclComparer<T> = interface
     ['{830AFC8C-AA06-46F5-AABD-8EB46B2A9986}']
+    function GetCompare: TCompare<T>;
+    procedure SetCompare(Value: TCompare<T>);
     function ItemsCompare(const A, B: T): Integer;
+    property Compare: TCompare<T> read GetCompare write SetCompare;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
   IJclIntfHashConverter = interface
     ['{7BAA0791-3B45-4D0F-9CD8-D13B81694786}']
+    function GetHashConvert: TIntfHashConvert;
+    procedure SetHashConvert(Value: TIntfHashConvert);
     function Hash(const AInterface: IInterface): Integer;
+    property HashConvert: TIntfHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclAnsiStrHashConverter = interface
     ['{9841014E-8A31-4C79-8AD5-EB03C4E85533}']
+    function GetHashConvert: TAnsiStrHashConvert;
+    procedure SetHashConvert(Value: TAnsiStrHashConvert);
     function Hash(const AString: AnsiString): Integer;
+    property HashConvert: TAnsiStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclWideStrHashConverter = interface
     ['{2584118F-19AE-443E-939B-0DB18BCD0117}']
+    function GetHashConvert: TWideStrHashConvert;
+    procedure SetHashConvert(Value: TWideStrHashConvert);
     function Hash(const AString: WideString): Integer;
+    property HashConvert: TWideStrHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -342,17 +423,26 @@ type
 
   IJclSingleHashConverter = interface
     ['{20F0E481-F1D2-48B6-A95D-FBB56AF119F5}']
+    function GetHashConvert: TSingleHashConvert;
+    procedure SetHashConvert(Value: TSingleHashConvert);
     function Hash(const AValue: Single): Integer;
+    property HashConvert: TSingleHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclDoubleHashConverter = interface
     ['{193A2881-535B-4AF4-B0C3-6845A2800F80}']
+    function GetHashConvert: TDoubleHashConvert;
+    procedure SetHashConvert(Value: TDoubleHashConvert);
     function Hash(const AValue: Double): Integer;
+    property HashConvert: TDoubleHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclExtendedHashConverter = interface
     ['{77CECDB9-2774-4FDC-8E5A-A80325626434}']
+    function GetHashConvert: TExtendedHashConvert;
+    procedure SetHashConvert(Value: TExtendedHashConvert);
     function Hash(const AValue: Extended): Integer;
+    property HashConvert: TExtendedHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -367,35 +457,53 @@ type
 
   IJclIntegerHashConverter = interface
     ['{92C540B2-C16C-47E4-995A-644BE71878B1}']
+    function GetHashConvert: TIntegerHashConvert;
+    procedure SetHashConvert(Value: TIntegerHashConvert);
     function Hash(AValue: Integer): Integer;
+    property HashConvert: TIntegerHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclCardinalHashConverter = interface
     ['{2DF04C8A-16B8-4712-BC5D-AD35014EC9F7}']
+    function GetHashConvert: TCardinalHashConvert;
+    procedure SetHashConvert(Value: TCardinalHashConvert);
     function Hash(AValue: Cardinal): Integer;
+    property HashConvert: TCardinalHashConvert read GetHashConvert write SetHashConvert;
   end;
 
   IJclInt64HashConverter = interface
     ['{96CF2A71-9185-4E26-B283-457ABC3584E7}']
+    function GetHashConvert: TInt64HashConvert;
+    procedure SetHashConvert(Value: TInt64HashConvert);
     function Hash(const AValue: Int64): Integer;
+    property HashConvert: TInt64HashConvert read GetHashConvert write SetHashConvert;
   end;
 
   {$IFNDEF CLR}
   IJclPtrHashConverter = interface
     ['{D704CC67-CFED-44E6-9504-65D5E468FCAF}']
+    function GetHashConvert: TPtrHashConvert;
+    procedure SetHashConvert(Value: TPtrHashConvert);
     function Hash(Ptr: Pointer): Integer;
+    property HashConvert: TPtrHashConvert read GetHashConvert write SetHashConvert;
   end;
   {$ENDIF ~CLR}
 
   IJclHashConverter = interface
     ['{2D0DD6F4-162E-41D6-8A34-489E7EACABCD}']
+    function GetHashConvert: THashConvert;
+    procedure SetHashConvert(Value: THashConvert);
     function Hash(AObject: TObject): Integer;
+    property HashConvert: THashConvert read GetHashConvert write SetHashConvert;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclHashConverter<T> = interface
     ['{300AEA0E-7433-4C3E-99A6-E533212ACF42}']
+    function GetHashConvert: THashConvert<T>;
+    procedure SetHashConvert(Value: THashConvert<T>);
     function Hash(const AItem: T): Integer;
+    property HashConvert: THashConvert<T> read GetHashConvert write SetHashConvert;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 

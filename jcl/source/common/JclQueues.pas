@@ -442,18 +442,12 @@ type
   // F = function to compare items for equality
   TJclQueueF<T> = class(TJclQueue<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclGrowable, IJclContainer, IJclQueue<T>, IJclItemOwner<T>)
-  private
-    FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(AEqualityCompare: TEqualityCompare<T>; ACapacity: Integer; AOwnsItems: Boolean);
-
-    property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = items can compare themselves to an other
@@ -3563,9 +3557,10 @@ end;
 
 function TJclQueueE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if EqualityComparer = nil then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityComparer.Equals(A, B);
+  if EqualityComparer <> nil then
+    Result := EqualityComparer.Equals(A, B)
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclQueueF<T> } ======================================================
@@ -3574,27 +3569,13 @@ constructor TJclQueueF<T>.Create(AEqualityCompare: TEqualityCompare<T>;
   ACapacity: Integer; AOwnsItems: Boolean);
 begin
   inherited Create(ACapacity, AOwnsItems);
-  FEqualityCompare := AEqualityCompare;
-end;
-
-procedure TJclQueueF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclQueueF<T> then
-    TJclQueueF<T>(Dest).FEqualityCompare := FEqualityCompare;
+  SetEqualityCompare(AEqualityCompare);
 end;
 
 function TJclQueueF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclQueueF<T>.Create(EqualityCompare, Size + 1, False);
   AssignPropertiesTo(Result);
-end;
-
-function TJclQueueF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(EqualityCompare) then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityCompare(A, B);
 end;
 
 //=== { TJclQueueI<T> } ======================================================
@@ -3607,7 +3588,13 @@ end;
 
 function TJclQueueI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.Equals(B);
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.Equals(B);
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

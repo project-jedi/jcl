@@ -62,7 +62,7 @@ type
 
   TJclIntfIntfEntryArray = array of TJclIntfIntfEntry;
 
-  TJclIntfIntfSortedMap = class(TJclAbstractContainerBase, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TJclIntfIntfSortedMap = class(TJclIntfAbstractContainer, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclGrowable, IJclPackable, IJclContainer,
     IJclIntfIntfMap, IJclIntfIntfSortedMap)
   private
@@ -2574,13 +2574,7 @@ end;
 
 function TJclIntfIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
 begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+  Result := ItemsCompare(A, B);
 end;
 
 function TJclIntfIntfSortedMap.KeySet: IJclIntfSet;
@@ -2889,13 +2883,7 @@ end;
 
 function TJclIntfIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+  Result := ItemsCompare(A, B);
 end;
 
 
@@ -5531,6 +5519,8 @@ begin
   Value := '';
 end;
 
+
+
 function TJclIntfWideStrSortedMap.GetValue(const Key: IInterface): WideString;
 var
   Index: Integer;
@@ -6139,6 +6129,7 @@ begin
   Result := Value;
   Value := '';
 end;
+
 
 
 function TJclWideStrWideStrSortedMap.GetValue(const Key: WideString): WideString;

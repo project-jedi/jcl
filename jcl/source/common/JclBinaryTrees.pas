@@ -69,7 +69,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclIntfBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TIntfCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -99,15 +98,10 @@ type
     { IJclIntfTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclIntfComparer }
-    function ItemsCompare(const A, B: IInterface): Integer;
-    { IJclIntfEqualityComparer }
-    function ItemsEqual(const A, B: IInterface): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TIntfCompare);
     destructor Destroy; override;
-    property Compare: TIntfCompare read FCompare write FCompare;
   end;
 
 
@@ -126,7 +120,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclAnsiStrBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TAnsiStrCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -156,15 +149,10 @@ type
     { IJclAnsiStrTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclAnsiStrComparer }
-    function ItemsCompare(const A, B: AnsiString): Integer;
-    { IJclAnsiStrEqualityComparer }
-    function ItemsEqual(const A, B: AnsiString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TAnsiStrCompare);
     destructor Destroy; override;
-    property Compare: TAnsiStrCompare read FCompare write FCompare;
   end;
 
 
@@ -183,7 +171,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclWideStrBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TWideStrCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -213,15 +200,10 @@ type
     { IJclWideStrTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclWideStrComparer }
-    function ItemsCompare(const A, B: WideString): Integer;
-    { IJclWideStrEqualityComparer }
-    function ItemsEqual(const A, B: WideString): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TWideStrCompare);
     destructor Destroy; override;
-    property Compare: TWideStrCompare read FCompare write FCompare;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -247,7 +229,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclSingleBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TSingleCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -277,15 +258,10 @@ type
     { IJclSingleTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclSingleComparer }
-    function ItemsCompare(const A, B: Single): Integer;
-    { IJclSingleEqualityComparer }
-    function ItemsEqual(const A, B: Single): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TSingleCompare);
     destructor Destroy; override;
-    property Compare: TSingleCompare read FCompare write FCompare;
   end;
 
 
@@ -304,7 +280,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclDoubleBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TDoubleCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -334,15 +309,10 @@ type
     { IJclDoubleTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclDoubleComparer }
-    function ItemsCompare(const A, B: Double): Integer;
-    { IJclDoubleEqualityComparer }
-    function ItemsEqual(const A, B: Double): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TDoubleCompare);
     destructor Destroy; override;
-    property Compare: TDoubleCompare read FCompare write FCompare;
   end;
 
 
@@ -361,7 +331,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclExtendedBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TExtendedCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -391,15 +360,10 @@ type
     { IJclExtendedTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclExtendedComparer }
-    function ItemsCompare(const A, B: Extended): Integer;
-    { IJclExtendedEqualityComparer }
-    function ItemsEqual(const A, B: Extended): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TExtendedCompare);
     destructor Destroy; override;
-    property Compare: TExtendedCompare read FCompare write FCompare;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -428,7 +392,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclIntegerBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TIntegerCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -458,15 +421,10 @@ type
     { IJclIntegerTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclIntegerComparer }
-    function ItemsCompare(A, B: Integer): Integer;
-    { IJclIntegerEqualityComparer }
-    function ItemsEqual(A, B: Integer): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TIntegerCompare);
     destructor Destroy; override;
-    property Compare: TIntegerCompare read FCompare write FCompare;
   end;
 
 
@@ -485,7 +443,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclCardinalBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TCardinalCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -515,15 +472,10 @@ type
     { IJclCardinalTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclCardinalComparer }
-    function ItemsCompare(A, B: Cardinal): Integer;
-    { IJclCardinalEqualityComparer }
-    function ItemsEqual(A, B: Cardinal): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TCardinalCompare);
     destructor Destroy; override;
-    property Compare: TCardinalCompare read FCompare write FCompare;
   end;
 
 
@@ -542,7 +494,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclInt64BinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TInt64Compare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -572,15 +523,10 @@ type
     { IJclInt64Tree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclInt64Comparer }
-    function ItemsCompare(const A, B: Int64): Integer;
-    { IJclInt64EqualityComparer }
-    function ItemsEqual(const A, B: Int64): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TInt64Compare);
     destructor Destroy; override;
-    property Compare: TInt64Compare read FCompare write FCompare;
   end;
 
   {$IFNDEF CLR}
@@ -600,7 +546,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclPtrBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TPtrCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -630,15 +575,10 @@ type
     { IJclPtrTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclPtrComparer }
-    function ItemsCompare(A, B: Pointer): Integer;
-    { IJclPtrEqualityComparer }
-    function ItemsEqual(A, B: Pointer): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TPtrCompare);
     destructor Destroy; override;
-    property Compare: TPtrCompare read FCompare write FCompare;
   end;
   {$ENDIF ~CLR}
 
@@ -658,7 +598,6 @@ type
     FMaxDepth: Integer;
     FRoot: TJclBinaryNode;
     FTraverseOrder: TJclTraverseOrder;
-    FCompare: TCompare;
   protected
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
@@ -688,15 +627,10 @@ type
     { IJclTree }
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
-    { IJclComparer }
-    function ItemsCompare(A, B: TObject): Integer;
-    { IJclEqualityComparer }
-    function ItemsEqual(A, B: TObject): Boolean;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TCompare; AOwnsObjects: Boolean);
     destructor Destroy; override;
-    property Compare: TCompare read FCompare write FCompare;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -774,20 +708,12 @@ type
   TJclBinaryTreeF<T> = class(TJclBinaryTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclContainer, IJclItemOwner<T>, IJclEqualityComparer<T>, IJclComparer<T>,
     IJclCollection<T>, IJclTree<T>)
-  private
-    FCompare: TCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    { IJclComparer<T> }
-    function ItemsCompare(const A, B: T): Integer; override;
-    { IJclEqualityComparer<T> }
-    function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(ACompare: TCompare<T>; AOwnsItems: Boolean);
-    property Compare: TCompare<T> read FCompare write FCompare;
   end;
 
   // I = Items can compare themselves to an other
@@ -5959,7 +5885,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclIntfBinaryTree.Destroy;
@@ -6219,7 +6145,7 @@ end;
 
 function TJclIntfBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntfBinaryTree.Create(FCompare);
+  Result := TJclIntfBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -6308,22 +6234,6 @@ end;
 function TJclIntfBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclIntfBinaryTree.ItemsCompare(const A, B: IInterface): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclIntfBinaryTree.ItemsEqual(const A, B: IInterface): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclIntfBinaryTree.Last: IJclIntfIterator;
@@ -6642,7 +6552,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclAnsiStrBinaryTree.Destroy;
@@ -6902,7 +6812,7 @@ end;
 
 function TJclAnsiStrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclAnsiStrBinaryTree.Create(FCompare);
+  Result := TJclAnsiStrBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -6991,22 +6901,6 @@ end;
 function TJclAnsiStrBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclAnsiStrBinaryTree.ItemsCompare(const A, B: AnsiString): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclAnsiStrBinaryTree.ItemsEqual(const A, B: AnsiString): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclAnsiStrBinaryTree.Last: IJclAnsiStrIterator;
@@ -7325,7 +7219,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclWideStrBinaryTree.Destroy;
@@ -7585,7 +7479,7 @@ end;
 
 function TJclWideStrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclWideStrBinaryTree.Create(FCompare);
+  Result := TJclWideStrBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -7674,22 +7568,6 @@ end;
 function TJclWideStrBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclWideStrBinaryTree.ItemsCompare(const A, B: WideString): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclWideStrBinaryTree.ItemsEqual(const A, B: WideString): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclWideStrBinaryTree.Last: IJclWideStrIterator;
@@ -8008,7 +7886,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclSingleBinaryTree.Destroy;
@@ -8268,7 +8146,7 @@ end;
 
 function TJclSingleBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclSingleBinaryTree.Create(FCompare);
+  Result := TJclSingleBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -8357,22 +8235,6 @@ end;
 function TJclSingleBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclSingleBinaryTree.ItemsCompare(const A, B: Single): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclSingleBinaryTree.ItemsEqual(const A, B: Single): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclSingleBinaryTree.Last: IJclSingleIterator;
@@ -8691,7 +8553,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclDoubleBinaryTree.Destroy;
@@ -8951,7 +8813,7 @@ end;
 
 function TJclDoubleBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclDoubleBinaryTree.Create(FCompare);
+  Result := TJclDoubleBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -9040,22 +8902,6 @@ end;
 function TJclDoubleBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclDoubleBinaryTree.ItemsCompare(const A, B: Double): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclDoubleBinaryTree.ItemsEqual(const A, B: Double): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclDoubleBinaryTree.Last: IJclDoubleIterator;
@@ -9374,7 +9220,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclExtendedBinaryTree.Destroy;
@@ -9634,7 +9480,7 @@ end;
 
 function TJclExtendedBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclExtendedBinaryTree.Create(FCompare);
+  Result := TJclExtendedBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -9723,22 +9569,6 @@ end;
 function TJclExtendedBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclExtendedBinaryTree.ItemsCompare(const A, B: Extended): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclExtendedBinaryTree.ItemsEqual(const A, B: Extended): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclExtendedBinaryTree.Last: IJclExtendedIterator;
@@ -10057,7 +9887,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclIntegerBinaryTree.Destroy;
@@ -10317,7 +10147,7 @@ end;
 
 function TJclIntegerBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclIntegerBinaryTree.Create(FCompare);
+  Result := TJclIntegerBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -10406,22 +10236,6 @@ end;
 function TJclIntegerBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclIntegerBinaryTree.ItemsCompare(A, B: Integer): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclIntegerBinaryTree.ItemsEqual(A, B: Integer): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclIntegerBinaryTree.Last: IJclIntegerIterator;
@@ -10740,7 +10554,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclCardinalBinaryTree.Destroy;
@@ -11000,7 +10814,7 @@ end;
 
 function TJclCardinalBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclCardinalBinaryTree.Create(FCompare);
+  Result := TJclCardinalBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -11089,22 +10903,6 @@ end;
 function TJclCardinalBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclCardinalBinaryTree.ItemsCompare(A, B: Cardinal): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclCardinalBinaryTree.ItemsEqual(A, B: Cardinal): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclCardinalBinaryTree.Last: IJclCardinalIterator;
@@ -11423,7 +11221,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclInt64BinaryTree.Destroy;
@@ -11683,7 +11481,7 @@ end;
 
 function TJclInt64BinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclInt64BinaryTree.Create(FCompare);
+  Result := TJclInt64BinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -11772,22 +11570,6 @@ end;
 function TJclInt64BinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclInt64BinaryTree.ItemsCompare(const A, B: Int64): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclInt64BinaryTree.ItemsEqual(const A, B: Int64): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclInt64BinaryTree.Last: IJclInt64Iterator;
@@ -12107,7 +11889,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclPtrBinaryTree.Destroy;
@@ -12367,7 +12149,7 @@ end;
 
 function TJclPtrBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclPtrBinaryTree.Create(FCompare);
+  Result := TJclPtrBinaryTree.Create(Compare);
   AssignPropertiesTo(Result);
 end;
 
@@ -12456,22 +12238,6 @@ end;
 function TJclPtrBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclPtrBinaryTree.ItemsCompare(A, B: Pointer): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclPtrBinaryTree.ItemsEqual(A, B: Pointer): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclPtrBinaryTree.Last: IJclPtrIterator;
@@ -12791,7 +12557,7 @@ begin
   FTraverseOrder := toOrder;
   FMaxDepth := 0;
   FAutoPackParameter := 2;
-  FCompare := ACompare;
+  SetCompare(ACompare);
 end;
 
 destructor TJclBinaryTree.Destroy;
@@ -13051,7 +12817,7 @@ end;
 
 function TJclBinaryTree.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
-  Result := TJclBinaryTree.Create(FCompare, False);
+  Result := TJclBinaryTree.Create(Compare, False);
   AssignPropertiesTo(Result);
 end;
 
@@ -13140,22 +12906,6 @@ end;
 function TJclBinaryTree.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
-end;
-
-function TJclBinaryTree.ItemsCompare(A, B: TObject): Integer;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B)
-  else
-    Result := inherited ItemsCompare(A, B);
-end;
-
-function TJclBinaryTree.ItemsEqual(A, B: TObject): Boolean;
-begin
-  if Assigned(FCompare) then
-    Result := FCompare(A, B) = 0
-  else
-    Result := inherited ItemsEqual(A, B);
 end;
 
 function TJclBinaryTree.Last: IJclIterator;
@@ -13733,6 +13483,7 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+
 function TJclBinaryTree<T>.Equals(const ACollection: IJclCollection<T>): Boolean;
 var
   It, ItSelf: IJclIterator<T>;
@@ -14150,16 +13901,18 @@ end;
 
 function TJclBinaryTreeE<T>.ItemsCompare(const A, B: T): Integer;
 begin
-  if Comparer = nil then
-    raise EJclNoComparerError.Create;
-  Result := Comparer.Compare(A, B);
+  if Comparer <> nil then
+    Result := Comparer.Compare(A, B)
+  else
+    Result := inherited ItemsCompare(A, B);
 end;
 
 function TJclBinaryTreeE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if Comparer = nil then
-    raise EJclNoComparerError.Create;
-  Result := Comparer.Compare(A, B) = 0;
+  if Comparer <> nil then
+    Result := Comparer.Compare(A, B) = 0
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclBinaryTreeF<T> } =================================================
@@ -14167,34 +13920,13 @@ end;
 constructor TJclBinaryTreeF<T>.Create(ACompare: TCompare<T>; AOwnsItems: Boolean);
 begin
   inherited Create(AOwnsItems);
-  FCompare := ACompare;
-end;
-
-procedure TJclBinaryTreeF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclBinaryTreeF<T> then
-    TJclBinaryTreeF<T>(Dest).FCompare := FCompare;
+  SetCompare(ACompare);
 end;
 
 function TJclBinaryTreeF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclBinaryTreeF<T>.Create(Compare, False);
   AssignPropertiesTo(Result);
-end;
-
-function TJclBinaryTreeF<T>.ItemsCompare(const A, B: T): Integer;
-begin
-  if not Assigned(Compare) then
-    raise EJclNoComparerError.Create;
-  Result := Compare(A, B);
-end;
-
-function TJclBinaryTreeF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(Compare) then
-    raise EJclNoComparerError.Create;
-  Result := Compare(A, B) = 0;
 end;
 
 //=== { TJclBinaryTreeI<T> } =================================================
@@ -14207,12 +13939,21 @@ end;
 
 function TJclBinaryTreeI<T>.ItemsCompare(const A, B: T): Integer;
 begin
-  Result := A.CompareTo(B);
+  if Assigned(FCompare) then
+    Result := FCompare(A, B)
+  else
+    Result := A.CompareTo(B);
 end;
 
 function TJclBinaryTreeI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.CompareTo(B) = 0;
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.CompareTo(B) = 0;
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

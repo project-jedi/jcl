@@ -792,20 +792,14 @@ type
   TJclHashSetF<T> = class(TJclHashSet<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclPackable, IJclContainer, IJclCollection<T>, IJclSet<T>,
     IJclItemOwner<T>, IJclEqualityComparer<T>)
-  private
-    FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AEqualityCompare: TEqualityCompare<T>; const AMap: IJclMap<T, TRefUnique>); overload;
     constructor Create(const AEqualityCompare: TEqualityCompare<T>; const AHash: THash<T>; const ACompare: TCompare<T>;
       ACapacity: Integer; AOwnsItems: Boolean); overload;
-
-    property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = Items can compare themselves to an other
@@ -4625,14 +4619,15 @@ end;
 
 function TJclHashSetE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if EqualityComparer = nil then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityComparer.Equals(A, B);
+  if EqualityComparer <> nil then
+    Result := EqualityComparer.Equals(A, B)
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclHashSetF<T> } ====================================================
 
-function EqualityCompareEqObjects(Obj1, Obj2: TRefUnique): Boolean;
+function EqualityCompareEqObjects(const Obj1, Obj2: TRefUnique): Boolean;
 begin
   Result := Obj1 = Obj2;
 end;
@@ -4640,20 +4635,13 @@ end;
 constructor TJclHashSetF<T>.Create(const AEqualityCompare: TEqualityCompare<T>; const AMap: IJclMap<T, TRefUnique>);
 begin
   inherited Create(AMap);
-  FEqualityCompare := AEqualityCompare;
+  SetEqualityCompare(AEqualityCompare);
 end;
 
 constructor TJclHashSetF<T>.Create(const AEqualityCompare: TEqualityCompare<T>; const AHash: THash<T>; const ACompare: TCompare<T>;
   ACapacity: Integer; AOwnsItems: Boolean);
 begin
   Create(AEqualityCompare, TJclHashMapF<T, TRefUnique>.Create(AEqualityCompare, AHash, EqualityCompareEqObjects, ACompare, ACapacity, AOwnsItems, False));
-end;
-
-procedure TJclHashSetF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclHashSetF<T> then
-    TJclHashSetF<T>(Dest).FEqualityCompare := FEqualityCompare;
 end;
 
 function TJclHashSetF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
@@ -4664,13 +4652,6 @@ begin
   AMap.Clear;
   Result := TJclHashSetF<T>.Create(FEqualityCompare, AMap);
   AssignPropertiesTo(Result);
-end;
-
-function TJclHashSetF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(EqualityCompare) then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityCompare(A, B);
 end;
 
 //=== { TJclHashSetI<T> } ====================================================
@@ -4697,7 +4678,13 @@ end;
 
 function TJclHashSetI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.Equals(B);
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.Equals(B);
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

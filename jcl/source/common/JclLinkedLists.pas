@@ -696,18 +696,13 @@ type
   TJclLinkedListF<T> = class(TJclLinkedList<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable, IJclContainer, IJclCollection<T>, IJclList<T>, IJclEqualityComparer<T>,
     IJclItemOwner<T>)
-  private
-    FEqualityCompare: TEqualityCompare<T>;
   protected
-    procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
-    function ItemsEqual(const A, B: T): Boolean; override;
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     { IJclIntfCloneable }
     function IJclIntfCloneable.Clone = IntfClone;
   public
     constructor Create(const AEqualityCompare: TEqualityCompare<T>; const ACollection: IJclCollection<T>;
       AOwnsItems: Boolean);
-    property EqualityCompare: TEqualityCompare<T> read FEqualityCompare write FEqualityCompare;
   end;
 
   // I = Items can compare themselves to an other
@@ -13474,9 +13469,10 @@ end;
 
 function TJclLinkedListE<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  if EqualityComparer = nil then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityComparer.Equals(A, B);
+  if EqualityComparer <> nil then
+    Result := EqualityComparer.Equals(A, B)
+  else
+    Result := inherited ItemsEqual(A, B);
 end;
 
 //=== { TJclLinkedListF<T> } =================================================
@@ -13485,27 +13481,13 @@ constructor TJclLinkedListF<T>.Create(const AEqualityCompare: TEqualityCompare<T
   const ACollection: IJclCollection<T>; AOwnsItems: Boolean);
 begin
   inherited Create(ACollection, AOwnsItems);
-  FEqualityCompare := AEqualityCompare;
-end;
-
-procedure TJclLinkedListF<T>.AssignPropertiesTo(Dest: TJclAbstractContainerBase);
-begin
-  inherited AssignPropertiesTo(Dest);
-  if Dest is TJclLinkedListF<T> then
-    TJclLinkedListF<T>(Dest).FEqualityCompare := FEqualityCompare;
+  SetEqualityCompare(AEqualityCompare);
 end;
 
 function TJclLinkedListF<T>.CreateEmptyContainer: TJclAbstractContainerBase;
 begin
   Result := TJclLinkedListF<T>.Create(EqualityCompare, nil, False);
   AssignPropertiesTo(Result);
-end;
-
-function TJclLinkedListF<T>.ItemsEqual(const A, B: T): Boolean;
-begin
-  if not Assigned(EqualityCompare) then
-    raise EJclNoEqualityComparerError.Create;
-  Result := EqualityCompare(A, B);
 end;
 
 //=== { TJclLinkedListI<T> } =================================================
@@ -13518,7 +13500,13 @@ end;
 
 function TJclLinkedListI<T>.ItemsEqual(const A, B: T): Boolean;
 begin
-  Result := A.Equals(B);
+  if Assigned(FEqualityCompare) then
+    Result := FEqualityCompare(A, B)
+  else
+  if Assigned(FCompare) then
+    Result := FCompare(A, B) = 0
+  else
+    Result := A.Equals(B);
 end;
 
 {$ENDIF SUPPORTS_GENERICS}

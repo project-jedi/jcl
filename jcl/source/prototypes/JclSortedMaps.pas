@@ -51,7 +51,7 @@ uses
 
 {$I containers\JclSortedMaps.imp}
 type
-(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,IInterface,TJclIntfIntfEntry,TJclIntfIntfEntryArray,TJclIntfIntfSortedMap,TJclAbstractContainerBase,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfCollection,,,
+(*$JPPEXPANDMACRO JCLSORTEDMAPINT(IInterface,IInterface,TJclIntfIntfEntry,TJclIntfIntfEntryArray,TJclIntfIntfSortedMap,TJclIntfAbstractContainer,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfCollection,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
     function FreeKey(var Key: IInterface): IInterface;
     function FreeValue(var Value: IInterface): IInterface;
@@ -547,25 +547,13 @@ end;
 {$JPPDEFINEMACRO KEYSCOMPARE
 function TJclIntfIntfSortedMap.KeysCompare(const A, B: IInterface): Integer;
 begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+  Result := ItemsCompare(A, B);
 end;
 }
 {$JPPDEFINEMACRO VALUESCOMPARE
 function TJclIntfIntfSortedMap.ValuesCompare(const A, B: IInterface): Integer;
 begin
-  if Integer(A) > Integer(B) then
-    Result := 1
-  else
-  if Integer(A) < Integer(B) then
-    Result := -1
-  else
-    Result := 0;
+  Result := ItemsCompare(A, B);
 end;
 }
 {$JPPEXPANDMACRO JCLSORTEDMAPIMP(TJclIntfIntfSortedMap,TJclIntfIntfEntry,IJclIntfIntfMap,IJclIntfIntfSortedMap,IJclIntfSet,IJclIntfIterator,IJclIntfCollection,,,,const Key: IInterface,IInterface,nil,const Value: IInterface,IInterface,nil,const ToKey: IInterface,const FromKey\, ToKey: IInterface,const FromKey: IInterface)}
