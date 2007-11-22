@@ -787,7 +787,7 @@ uses
 //=== { TIntfItr } ===========================================================
 
 type
-  TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, IJclIntfTreeIterator)
+  TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, IJclIntfTreeIterator, IJclIntfBinaryTreeIterator)
   protected
     FCursor: TJclIntfBinaryNode;
     FOwnList: IJclIntfCollection;
@@ -812,12 +812,22 @@ type
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfTreeIterator }
-    function HasParent: Boolean;
-    function Parent: IInterface;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AInterface: IInterface): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): IInterface;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AInterface: IInterface): Integer;
+    function InsertChild(Index: Integer; const AInterface: IInterface): Boolean;
+    function Parent: IInterface;
+    procedure SetChild(Index: Integer; const AInterface: IInterface);
+    { IJclIntfBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: IInterface;
+    function Right: IInterface;
   public
     constructor Create(const OwnList: IJclIntfCollection; Start: TJclIntfBinaryNode; AValid: Boolean);
   end;
@@ -835,6 +845,11 @@ begin
   Result := FOwnList.Add(AInterface);
 end;
 
+function TIntfItr.AddChild(const AInterface: IInterface): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TIntfItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TIntfItr;
@@ -849,7 +864,7 @@ begin
   end;
 end;
 
-function TIntfItr.ChildCount: Integer;
+function TIntfItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -868,6 +883,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TIntfItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TIntfItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TIntfItr.GetChild(Index: Integer): IInterface;
@@ -939,6 +964,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntfItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntfItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -987,6 +1026,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntfItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntfItr.IndexOfChild(const AInterface: IInterface): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -1018,6 +1071,32 @@ end;
 function TIntfItr.Insert(const AInterface: IInterface): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntfItr.InsertChild(Index: Integer; const AInterface: IInterface): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntfItr.Left: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -1143,6 +1222,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TIntfItr.Right: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TIntfItr.SetChild(Index: Integer; const AInterface: IInterface);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TIntfItr.SetObject(const AInterface: IInterface);
@@ -1354,7 +1459,7 @@ end;
 //=== { TAnsiStrItr } ===========================================================
 
 type
-  TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator)
+  TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, IJclAnsiStrBinaryTreeIterator)
   protected
     FCursor: TJclAnsiStrBinaryNode;
     FOwnList: IJclAnsiStrCollection;
@@ -1379,12 +1484,22 @@ type
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrTreeIterator }
-    function HasParent: Boolean;
-    function Parent: AnsiString;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AString: AnsiString): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): AnsiString;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AString: AnsiString): Integer;
+    function InsertChild(Index: Integer; const AString: AnsiString): Boolean;
+    function Parent: AnsiString;
+    procedure SetChild(Index: Integer; const AString: AnsiString);
+    { IJclAnsiStrBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: AnsiString;
+    function Right: AnsiString;
   public
     constructor Create(const OwnList: IJclAnsiStrCollection; Start: TJclAnsiStrBinaryNode; AValid: Boolean);
   end;
@@ -1402,6 +1517,11 @@ begin
   Result := FOwnList.Add(AString);
 end;
 
+function TAnsiStrItr.AddChild(const AString: AnsiString): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TAnsiStrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TAnsiStrItr;
@@ -1416,7 +1536,7 @@ begin
   end;
 end;
 
-function TAnsiStrItr.ChildCount: Integer;
+function TAnsiStrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -1435,6 +1555,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TAnsiStrItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TAnsiStrItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TAnsiStrItr.GetChild(Index: Integer): AnsiString;
@@ -1506,6 +1636,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TAnsiStrItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TAnsiStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -1554,6 +1698,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TAnsiStrItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TAnsiStrItr.IndexOfChild(const AString: AnsiString): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -1585,6 +1743,32 @@ end;
 function TAnsiStrItr.Insert(const AString: AnsiString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TAnsiStrItr.InsertChild(Index: Integer; const AString: AnsiString): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TAnsiStrItr.Left: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -1710,6 +1894,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TAnsiStrItr.Right: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TAnsiStrItr.SetChild(Index: Integer; const AString: AnsiString);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TAnsiStrItr.SetString(const AString: AnsiString);
@@ -1921,7 +2131,7 @@ end;
 //=== { TWideStrItr } ===========================================================
 
 type
-  TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, IJclWideStrTreeIterator)
+  TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, IJclWideStrTreeIterator, IJclWideStrBinaryTreeIterator)
   protected
     FCursor: TJclWideStrBinaryNode;
     FOwnList: IJclWideStrCollection;
@@ -1946,12 +2156,22 @@ type
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrTreeIterator }
-    function HasParent: Boolean;
-    function Parent: WideString;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AString: WideString): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): WideString;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AString: WideString): Integer;
+    function InsertChild(Index: Integer; const AString: WideString): Boolean;
+    function Parent: WideString;
+    procedure SetChild(Index: Integer; const AString: WideString);
+    { IJclWideStrBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: WideString;
+    function Right: WideString;
   public
     constructor Create(const OwnList: IJclWideStrCollection; Start: TJclWideStrBinaryNode; AValid: Boolean);
   end;
@@ -1969,6 +2189,11 @@ begin
   Result := FOwnList.Add(AString);
 end;
 
+function TWideStrItr.AddChild(const AString: WideString): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TWideStrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TWideStrItr;
@@ -1983,7 +2208,7 @@ begin
   end;
 end;
 
-function TWideStrItr.ChildCount: Integer;
+function TWideStrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -2002,6 +2227,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TWideStrItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TWideStrItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TWideStrItr.GetChild(Index: Integer): WideString;
@@ -2073,6 +2308,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TWideStrItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TWideStrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2121,6 +2370,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TWideStrItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TWideStrItr.IndexOfChild(const AString: WideString): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -2152,6 +2415,32 @@ end;
 function TWideStrItr.Insert(const AString: WideString): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TWideStrItr.InsertChild(Index: Integer; const AString: WideString): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TWideStrItr.Left: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -2277,6 +2566,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TWideStrItr.Right: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TWideStrItr.SetChild(Index: Integer; const AString: WideString);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TWideStrItr.SetString(const AString: WideString);
@@ -2488,7 +2803,7 @@ end;
 //=== { TSingleItr } ===========================================================
 
 type
-  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, IJclSingleTreeIterator)
+  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, IJclSingleTreeIterator, IJclSingleBinaryTreeIterator)
   protected
     FCursor: TJclSingleBinaryNode;
     FOwnList: IJclSingleCollection;
@@ -2513,12 +2828,22 @@ type
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclSingleTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Single;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Single): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Single;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Single): Integer;
+    function InsertChild(Index: Integer; const AValue: Single): Boolean;
+    function Parent: Single;
+    procedure SetChild(Index: Integer; const AValue: Single);
+    { IJclSingleBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Single;
+    function Right: Single;
   public
     constructor Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
   end;
@@ -2536,6 +2861,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TSingleItr.AddChild(const AValue: Single): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TSingleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TSingleItr;
@@ -2550,7 +2880,7 @@ begin
   end;
 end;
 
-function TSingleItr.ChildCount: Integer;
+function TSingleItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -2569,6 +2899,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TSingleItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TSingleItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TSingleItr.GetChild(Index: Integer): Single;
@@ -2640,6 +2980,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TSingleItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TSingleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2688,6 +3042,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TSingleItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TSingleItr.IndexOfChild(const AValue: Single): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -2719,6 +3087,32 @@ end;
 function TSingleItr.Insert(const AValue: Single): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.InsertChild(Index: Integer; const AValue: Single): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.Left: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -2844,6 +3238,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.Right: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TSingleItr.SetChild(Index: Integer; const AValue: Single);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TSingleItr.SetValue(const AValue: Single);
@@ -3055,7 +3475,7 @@ end;
 //=== { TDoubleItr } ===========================================================
 
 type
-  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, IJclDoubleTreeIterator)
+  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, IJclDoubleTreeIterator, IJclDoubleBinaryTreeIterator)
   protected
     FCursor: TJclDoubleBinaryNode;
     FOwnList: IJclDoubleCollection;
@@ -3080,12 +3500,22 @@ type
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclDoubleTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Double;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Double): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Double;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Double): Integer;
+    function InsertChild(Index: Integer; const AValue: Double): Boolean;
+    function Parent: Double;
+    procedure SetChild(Index: Integer; const AValue: Double);
+    { IJclDoubleBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Double;
+    function Right: Double;
   public
     constructor Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
   end;
@@ -3103,6 +3533,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TDoubleItr.AddChild(const AValue: Double): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TDoubleItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TDoubleItr;
@@ -3117,7 +3552,7 @@ begin
   end;
 end;
 
-function TDoubleItr.ChildCount: Integer;
+function TDoubleItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -3136,6 +3571,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TDoubleItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TDoubleItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TDoubleItr.GetChild(Index: Integer): Double;
@@ -3207,6 +3652,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TDoubleItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TDoubleItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3255,6 +3714,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TDoubleItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TDoubleItr.IndexOfChild(const AValue: Double): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -3286,6 +3759,32 @@ end;
 function TDoubleItr.Insert(const AValue: Double): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.InsertChild(Index: Integer; const AValue: Double): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.Left: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -3411,6 +3910,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.Right: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TDoubleItr.SetChild(Index: Integer; const AValue: Double);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TDoubleItr.SetValue(const AValue: Double);
@@ -3622,7 +4147,7 @@ end;
 //=== { TExtendedItr } ===========================================================
 
 type
-  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, IJclExtendedTreeIterator)
+  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, IJclExtendedTreeIterator, IJclExtendedBinaryTreeIterator)
   protected
     FCursor: TJclExtendedBinaryNode;
     FOwnList: IJclExtendedCollection;
@@ -3647,12 +4172,22 @@ type
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclExtendedTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Extended;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Extended): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Extended;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Extended): Integer;
+    function InsertChild(Index: Integer; const AValue: Extended): Boolean;
+    function Parent: Extended;
+    procedure SetChild(Index: Integer; const AValue: Extended);
+    { IJclExtendedBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Extended;
+    function Right: Extended;
   public
     constructor Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
   end;
@@ -3670,6 +4205,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TExtendedItr.AddChild(const AValue: Extended): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TExtendedItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TExtendedItr;
@@ -3684,7 +4224,7 @@ begin
   end;
 end;
 
-function TExtendedItr.ChildCount: Integer;
+function TExtendedItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -3703,6 +4243,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TExtendedItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TExtendedItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TExtendedItr.GetChild(Index: Integer): Extended;
@@ -3774,6 +4324,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TExtendedItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TExtendedItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3822,6 +4386,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TExtendedItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TExtendedItr.IndexOfChild(const AValue: Extended): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -3853,6 +4431,32 @@ end;
 function TExtendedItr.Insert(const AValue: Extended): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.InsertChild(Index: Integer; const AValue: Extended): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.Left: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -3978,6 +4582,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.Right: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TExtendedItr.SetChild(Index: Integer; const AValue: Extended);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TExtendedItr.SetValue(const AValue: Extended);
@@ -4189,7 +4819,7 @@ end;
 //=== { TIntegerItr } ===========================================================
 
 type
-  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, IJclIntegerTreeIterator)
+  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, IJclIntegerTreeIterator, IJclIntegerBinaryTreeIterator)
   protected
     FCursor: TJclIntegerBinaryNode;
     FOwnList: IJclIntegerCollection;
@@ -4214,12 +4844,22 @@ type
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntegerTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Integer;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AValue: Integer): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Integer;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AValue: Integer): Integer;
+    function InsertChild(Index: Integer; AValue: Integer): Boolean;
+    function Parent: Integer;
+    procedure SetChild(Index: Integer; AValue: Integer);
+    { IJclIntegerBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Integer;
+    function Right: Integer;
   public
     constructor Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
   end;
@@ -4237,6 +4877,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TIntegerItr.AddChild(AValue: Integer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TIntegerItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TIntegerItr;
@@ -4251,7 +4896,7 @@ begin
   end;
 end;
 
-function TIntegerItr.ChildCount: Integer;
+function TIntegerItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -4270,6 +4915,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TIntegerItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TIntegerItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TIntegerItr.GetChild(Index: Integer): Integer;
@@ -4341,6 +4996,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntegerItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntegerItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4389,6 +5058,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntegerItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntegerItr.IndexOfChild(AValue: Integer): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -4420,6 +5103,32 @@ end;
 function TIntegerItr.Insert(AValue: Integer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.InsertChild(Index: Integer; AValue: Integer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.Left: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -4545,6 +5254,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.Right: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TIntegerItr.SetChild(Index: Integer; AValue: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TIntegerItr.SetValue(AValue: Integer);
@@ -4756,7 +5491,7 @@ end;
 //=== { TCardinalItr } ===========================================================
 
 type
-  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, IJclCardinalTreeIterator)
+  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, IJclCardinalTreeIterator, IJclCardinalBinaryTreeIterator)
   protected
     FCursor: TJclCardinalBinaryNode;
     FOwnList: IJclCardinalCollection;
@@ -4781,12 +5516,22 @@ type
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclCardinalTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Cardinal;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AValue: Cardinal): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Cardinal;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AValue: Cardinal): Integer;
+    function InsertChild(Index: Integer; AValue: Cardinal): Boolean;
+    function Parent: Cardinal;
+    procedure SetChild(Index: Integer; AValue: Cardinal);
+    { IJclCardinalBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Cardinal;
+    function Right: Cardinal;
   public
     constructor Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
   end;
@@ -4804,6 +5549,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TCardinalItr.AddChild(AValue: Cardinal): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TCardinalItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TCardinalItr;
@@ -4818,7 +5568,7 @@ begin
   end;
 end;
 
-function TCardinalItr.ChildCount: Integer;
+function TCardinalItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -4837,6 +5587,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TCardinalItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TCardinalItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TCardinalItr.GetChild(Index: Integer): Cardinal;
@@ -4908,6 +5668,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TCardinalItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TCardinalItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4956,6 +5730,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TCardinalItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TCardinalItr.IndexOfChild(AValue: Cardinal): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -4987,6 +5775,32 @@ end;
 function TCardinalItr.Insert(AValue: Cardinal): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.InsertChild(Index: Integer; AValue: Cardinal): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.Left: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -5112,6 +5926,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.Right: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TCardinalItr.SetChild(Index: Integer; AValue: Cardinal);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TCardinalItr.SetValue(AValue: Cardinal);
@@ -5323,7 +6163,7 @@ end;
 //=== { TInt64Itr } ===========================================================
 
 type
-  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, IJclInt64TreeIterator)
+  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, IJclInt64TreeIterator, IJclInt64BinaryTreeIterator)
   protected
     FCursor: TJclInt64BinaryNode;
     FOwnList: IJclInt64Collection;
@@ -5348,12 +6188,22 @@ type
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclInt64TreeIterator }
-    function HasParent: Boolean;
-    function Parent: Int64;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Int64): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Int64;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Int64): Integer;
+    function InsertChild(Index: Integer; const AValue: Int64): Boolean;
+    function Parent: Int64;
+    procedure SetChild(Index: Integer; const AValue: Int64);
+    { IJclInt64BinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Int64;
+    function Right: Int64;
   public
     constructor Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
   end;
@@ -5371,6 +6221,11 @@ begin
   Result := FOwnList.Add(AValue);
 end;
 
+function TInt64Itr.AddChild(const AValue: Int64): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TInt64Itr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TInt64Itr;
@@ -5385,7 +6240,7 @@ begin
   end;
 end;
 
-function TInt64Itr.ChildCount: Integer;
+function TInt64Itr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -5404,6 +6259,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TInt64Itr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TInt64Itr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TInt64Itr.GetChild(Index: Integer): Int64;
@@ -5475,6 +6340,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TInt64Itr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TInt64Itr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5523,6 +6402,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TInt64Itr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TInt64Itr.IndexOfChild(const AValue: Int64): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -5554,6 +6447,32 @@ end;
 function TInt64Itr.Insert(const AValue: Int64): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.InsertChild(Index: Integer; const AValue: Int64): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.Left: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -5679,6 +6598,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.Right: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TInt64Itr.SetChild(Index: Integer; const AValue: Int64);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TInt64Itr.SetValue(const AValue: Int64);
@@ -5891,7 +6836,7 @@ end;
 //=== { TPtrItr } ===========================================================
 
 type
-  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, IJclPtrTreeIterator)
+  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, IJclPtrTreeIterator, IJclPtrBinaryTreeIterator)
   protected
     FCursor: TJclPtrBinaryNode;
     FOwnList: IJclPtrCollection;
@@ -5916,12 +6861,22 @@ type
     property Current: Pointer read GetPtr;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclPtrTreeIterator }
-    function HasParent: Boolean;
-    function Parent: Pointer;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(APtr: Pointer): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Pointer;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(APtr: Pointer): Integer;
+    function InsertChild(Index: Integer; APtr: Pointer): Boolean;
+    function Parent: Pointer;
+    procedure SetChild(Index: Integer; APtr: Pointer);
+    { IJclPtrBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Pointer;
+    function Right: Pointer;
   public
     constructor Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
   end;
@@ -5939,6 +6894,11 @@ begin
   Result := FOwnList.Add(APtr);
 end;
 
+function TPtrItr.AddChild(APtr: Pointer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TPtrItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TPtrItr;
@@ -5953,7 +6913,7 @@ begin
   end;
 end;
 
-function TPtrItr.ChildCount: Integer;
+function TPtrItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -5972,6 +6932,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TPtrItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TPtrItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TPtrItr.GetChild(Index: Integer): Pointer;
@@ -6043,6 +7013,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TPtrItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TPtrItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -6091,6 +7075,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TPtrItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TPtrItr.IndexOfChild(APtr: Pointer): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -6122,6 +7120,32 @@ end;
 function TPtrItr.Insert(APtr: Pointer): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.InsertChild(Index: Integer; APtr: Pointer): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.Left: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -6247,6 +7271,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.Right: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TPtrItr.SetChild(Index: Integer; APtr: Pointer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TPtrItr.SetPtr(APtr: Pointer);
@@ -6459,7 +7509,7 @@ end;
 //=== { TItr } ===========================================================
 
 type
-  TItr = class(TJclAbstractIterator, IJclIterator, IJclTreeIterator)
+  TItr = class(TJclAbstractIterator, IJclIterator, IJclTreeIterator, IJclBinaryTreeIterator)
   protected
     FCursor: TJclBinaryNode;
     FOwnList: IJclCollection;
@@ -6484,12 +7534,22 @@ type
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclTreeIterator }
-    function HasParent: Boolean;
-    function Parent: TObject;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AObject: TObject): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): TObject;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AObject: TObject): Integer;
+    function InsertChild(Index: Integer; AObject: TObject): Boolean;
+    function Parent: TObject;
+    procedure SetChild(Index: Integer; AObject: TObject);
+    { IJclBinaryTreeIterator }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: TObject;
+    function Right: TObject;
   public
     constructor Create(const OwnList: IJclCollection; Start: TJclBinaryNode; AValid: Boolean);
   end;
@@ -6507,6 +7567,11 @@ begin
   Result := FOwnList.Add(AObject);
 end;
 
+function TItr.AddChild(AObject: TObject): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TItr.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TItr;
@@ -6521,7 +7586,7 @@ begin
   end;
 end;
 
-function TItr.ChildCount: Integer;
+function TItr.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -6540,6 +7605,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TItr.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TItr.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TItr.GetChild(Index: Integer): TObject;
@@ -6611,6 +7686,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -6659,6 +7748,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr.IndexOfChild(AObject: TObject): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -6690,6 +7793,32 @@ end;
 function TItr.Insert(AObject: TObject): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr.InsertChild(Index: Integer; AObject: TObject): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr.Left: TObject;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -6815,6 +7944,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TItr.Right: TObject;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TItr.SetChild(Index: Integer; AObject: TObject);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TItr.SetObject(AObject: TObject);
@@ -7027,7 +8182,7 @@ end;
 //=== { TItr<T> } ===========================================================
 
 type
-  TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, IJclTreeIterator<T>)
+  TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, IJclTreeIterator<T>, IJclBinaryTreeIterator<T>)
   protected
     FCursor: TJclBinaryNode<T>;
     FOwnList: IJclCollection<T>;
@@ -7052,12 +8207,22 @@ type
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclTreeIterator<T> }
-    function HasParent: Boolean;
-    function Parent: T;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AItem: T): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): T;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AItem: T): Integer;
+    function InsertChild(Index: Integer; const AItem: T): Boolean;
+    function Parent: T;
+    procedure SetChild(Index: Integer; const AItem: T);
+    { IJclBinaryTreeIterator<T> }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: T;
+    function Right: T;
   public
     constructor Create(const OwnList: IJclCollection<T>; Start: TJclBinaryNode<T>; AValid: Boolean);
   end;
@@ -7075,6 +8240,11 @@ begin
   Result := FOwnList.Add(AItem);
 end;
 
+function TItr<T>.AddChild(const AItem: T): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure TItr<T>.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: TItr<T>;
@@ -7089,7 +8259,7 @@ begin
   end;
 end;
 
-function TItr<T>.ChildCount: Integer;
+function TItr<T>.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -7108,6 +8278,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure TItr<T>.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure TItr<T>.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function TItr<T>.GetChild(Index: Integer): T;
@@ -7179,6 +8359,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr<T>.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr<T>.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -7227,6 +8421,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr<T>.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr<T>.IndexOfChild(const AItem: T): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -7258,6 +8466,32 @@ end;
 function TItr<T>.Insert(const AItem: T): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr<T>.InsertChild(Index: Integer; const AItem: T): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr<T>.Left: T;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -7383,6 +8617,32 @@ begin
     WriteUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+function TItr<T>.Right: T;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure TItr<T>.SetChild(Index: Integer; const AItem: T);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 procedure TItr<T>.SetItem(const AItem: T);

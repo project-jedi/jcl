@@ -859,32 +859,50 @@ type
 
   IJclIntfTreeIterator = interface(IJclIntfIterator)
     ['{C97379BF-C6A9-4A90-9D7A-152E9BAD314F}']
-    function HasParent: Boolean;
-    function Parent: IInterface;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AInterface: IInterface): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): IInterface;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AInterface: IInterface): Integer;
+    function InsertChild(Index: Integer; const AInterface: IInterface): Boolean;
+    function Parent: IInterface;
+    procedure SetChild(Index: Integer; const AInterface: IInterface);
+    property Children[Index: Integer]: IInterface read GetChild write SetChild;
   end;
 
   IJclAnsiStrTreeIterator = interface(IJclAnsiStrIterator)
     ['{66BC5C76-758C-4E72-ABF1-EB02CF851C6D}']
-    function HasParent: Boolean;
-    function Parent: AnsiString;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AString: AnsiString): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): AnsiString;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AString: AnsiString): Integer;
+    function InsertChild(Index: Integer; const AString: AnsiString): Boolean;
+    function Parent: AnsiString;
+    procedure SetChild(Index: Integer; const AString: AnsiString);
+    property Children[Index: Integer]: AnsiString read GetChild write SetChild;
   end;
 
   IJclWideStrTreeIterator = interface(IJclWideStrIterator)
     ['{B3168A3B-5A90-4ABF-855F-3D2B3AB6EE7F}']
-    function HasParent: Boolean;
-    function Parent: WideString;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AString: WideString): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): WideString;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AString: WideString): Integer;
+    function InsertChild(Index: Integer; const AString: WideString): Boolean;
+    function Parent: WideString;
+    procedure SetChild(Index: Integer; const AString: WideString);
+    property Children[Index: Integer]: WideString read GetChild write SetChild;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -896,32 +914,50 @@ type
 
   IJclSingleTreeIterator = interface(IJclSingleIterator)
     ['{17BFDE9D-DBF7-4DC8-AC74-919C717B4726}']
-    function HasParent: Boolean;
-    function Parent: Single;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Single): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Single;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Single): Integer;
+    function InsertChild(Index: Integer; const AValue: Single): Boolean;
+    function Parent: Single;
+    procedure SetChild(Index: Integer; const AValue: Single);
+    property Children[Index: Integer]: Single read GetChild write SetChild;
   end;
 
   IJclDoubleTreeIterator = interface(IJclDoubleIterator)
     ['{EB39B84E-D3C5-496E-A521-B8BF24579252}']
-    function HasParent: Boolean;
-    function Parent: Double;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Double): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Double;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Double): Integer;
+    function InsertChild(Index: Integer; const AValue: Double): Boolean;
+    function Parent: Double;
+    procedure SetChild(Index: Integer; const AValue: Double);
+    property Children[Index: Integer]: Double read GetChild write SetChild;
   end;
 
   IJclExtendedTreeIterator = interface(IJclExtendedIterator)
     ['{1B40A544-FC5D-454C-8E42-CE17B015E65C}']
-    function HasParent: Boolean;
-    function Parent: Extended;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Extended): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Extended;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Extended): Integer;
+    function InsertChild(Index: Integer; const AValue: Extended): Boolean;
+    function Parent: Extended;
+    procedure SetChild(Index: Integer; const AValue: Extended);
+    property Children[Index: Integer]: Extended read GetChild write SetChild;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -936,65 +972,218 @@ type
 
   IJclIntegerTreeIterator = interface(IJclIntegerIterator)
     ['{88EDC5C5-CA41-41AF-9838-AA19D07E69F5}']
-    function HasParent: Boolean;
-    function Parent: Integer;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AValue: Integer): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Integer;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AValue: Integer): Integer;
+    function InsertChild(Index: Integer; AValue: Integer): Boolean;
+    function Parent: Integer;
+    procedure SetChild(Index: Integer; AValue: Integer);
+    property Children[Index: Integer]: Integer read GetChild write SetChild;
   end;
 
   IJclCardinalTreeIterator = interface(IJclCardinalIterator)
     ['{FDBF493F-F79D-46EB-A59D-7193B6E6A860}']
-    function HasParent: Boolean;
-    function Parent: Cardinal;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AValue: Cardinal): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Cardinal;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AValue: Cardinal): Integer;
+    function InsertChild(Index: Integer; AValue: Cardinal): Boolean;
+    function Parent: Cardinal;
+    procedure SetChild(Index: Integer; AValue: Cardinal);
+    property Children[Index: Integer]: Cardinal read GetChild write SetChild;
   end;
 
   IJclInt64TreeIterator = interface(IJclInt64Iterator)
     ['{C5A5E504-E19B-43AC-90B9-E4B8984BFA23}']
-    function HasParent: Boolean;
-    function Parent: Int64;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AValue: Int64): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Int64;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AValue: Int64): Integer;
+    function InsertChild(Index: Integer; const AValue: Int64): Boolean;
+    function Parent: Int64;
+    procedure SetChild(Index: Integer; const AValue: Int64);
+    property Children[Index: Integer]: Int64 read GetChild write SetChild;
   end;
 
   {$IFNDEF CLR}
   IJclPtrTreeIterator = interface(IJclPtrIterator)
     ['{ED4C08E6-60FC-4ED3-BD19-E6605B9BD943}']
-    function HasParent: Boolean;
-    function Parent: Pointer;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(APtr: Pointer): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): Pointer;
-    function IndexOfChild(Ptr: Pointer): Integer;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
+    function IndexOfChild(APtr: Pointer): Integer;
+    function InsertChild(Index: Integer; APtr: Pointer): Boolean;
+    function Parent: Pointer;
+    procedure SetChild(Index: Integer; APtr: Pointer);
+    property Children[Index: Integer]: Pointer read GetChild write SetChild;
   end;
   {$ENDIF ~CLR}
 
   IJclTreeIterator = interface(IJclIterator)
     ['{8B4863B0-B6B9-426E-B5B8-7AF71D264237}']
-    function HasParent: Boolean;
-    function Parent: TObject;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(AObject: TObject): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): TObject;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(AObject: TObject): Integer;
+    function InsertChild(Index: Integer; AObject: TObject): Boolean;
+    function Parent: TObject;
+    procedure SetChild(Index: Integer; AObject: TObject);
+    property Children[Index: Integer]: TObject read GetChild write SetChild;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclTreeIterator<T> = interface(IJclIterator<T>)
     ['{29A06DA4-D93A-40A5-8581-0FE85BC8384B}']
-    function HasParent: Boolean;
-    function Parent: T;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    function AddChild(const AItem: T): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): T;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(const AItem: T): Integer;
+    function InsertChild(Index: Integer; const AItem: T): Boolean;
+    function Parent: T;
+    procedure SetChild(Index: Integer; const AItem: T);
+    property Children[Index: Integer]: T read GetChild write SetChild;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
+  IJclIntfBinaryTreeIterator = interface(IJclIntfTreeIterator)
+    ['{8BE874B2-0075-4EE0-8F49-665FC894D923}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: IInterface;
+    function Right: IInterface;
+  end;
+
+  IJclAnsiStrBinaryTreeIterator = interface(IJclAnsiStrTreeIterator)
+    ['{34A4A300-042C-43A9-AC23-8FC1B76BFB25}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: AnsiString;
+    function Right: AnsiString;
+  end;
+
+  IJclWideStrBinaryTreeIterator = interface(IJclWideStrTreeIterator)
+    ['{17C08EB9-6880-469E-878A-8F5EBFE905B1}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: WideString;
+    function Right: WideString;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrBinaryTreeIterator = IJclAnsiStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrBinaryTreeIterator = IJclWideStrBinaryTreeIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+
+  IJclSingleBinaryTreeIterator = interface(IJclSingleTreeIterator)
+    ['{BC6FFB13-FA1C-4077-8273-F25A3119168B}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Single;
+    function Right: Single;
+  end;
+
+  IJclDoubleBinaryTreeIterator = interface(IJclDoubleTreeIterator)
+    ['{CE48083C-D60C-4315-BC14-8CE77AC3269E}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Double;
+    function Right: Double;
+  end;
+
+  IJclExtendedBinaryTreeIterator = interface(IJclExtendedTreeIterator)
+    ['{8A9FAE2A-5EF5-4165-8E8D-51F2102A4580}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Extended;
+    function Right: Extended;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatBinaryTreeIterator = IJclExtendedBinaryTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatBinaryTreeIterator = IJclDoubleBinaryTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatBinaryTreeIterator = IJclSingleBinaryTreeIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+  IJclIntegerBinaryTreeIterator = interface(IJclIntegerTreeIterator)
+    ['{FE2BF57D-D10D-4B0C-903D-BB61700FBA0A}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Integer;
+    function Right: Integer;
+  end;
+
+  IJclCardinalBinaryTreeIterator = interface(IJclCardinalTreeIterator)
+    ['{AAA358F5-95A1-480F-8E2A-09028BA6C397}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Cardinal;
+    function Right: Cardinal;
+  end;
+
+  IJclInt64BinaryTreeIterator = interface(IJclInt64TreeIterator)
+    ['{5605E164-5CDD-40B1-9323-DE1CB584E289}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Int64;
+    function Right: Int64;
+  end;
+
+  {$IFNDEF CLR}
+  IJclPtrBinaryTreeIterator = interface(IJclPtrTreeIterator)
+    ['{75D3DF0D-C491-43F7-B078-E658197E8051}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: Pointer;
+    function Right: Pointer;
+  end;
+  {$ENDIF ~CLR}
+
+  IJclBinaryTreeIterator = interface(IJclTreeIterator)
+    ['{821DE28D-631C-4F23-A0B2-CC0F35B4C64D}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: TObject;
+    function Right: TObject;
+  end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclBinaryTreeIterator<T> = interface(IJclTreeIterator<T>)
+    ['{0CF5B0FC-C644-458C-BF48-2E093DAFEC26}']
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: T;
+    function Right: T;
   end;
   {$ENDIF SUPPORTS_GENERICS}
 

@@ -53,12 +53,12 @@
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;*)
 (*$JPPDEFINEMACRO JCLBINARYTREEITR(BASEITRCLASSNAME, PREORDERITRCLASSNAME, INORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
-  STDITRINTERFACENAME, TREEITRINTERFACENAME, COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
+  STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME, COLLECTIONINTERFACENAME, EQUALITYCOMPARERINTERFACENAME,
   NODETYPENAME, PARAMETERDECLARATION, PARAMETERTYPE, PARAMETERNAME, DEFAULTVALUE, GETTERNAME, SETTERNAME, RELEASERNAME)
 //=== { BASEITRCLASSNAME } ===========================================================
 
 type
-  BASEITRCLASSNAME = class(TJclAbstractIterator, STDITRINTERFACENAME, TREEITRINTERFACENAME)
+  BASEITRCLASSNAME = class(TJclAbstractIterator, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, BINTREEITRINTERFACENAME)
   protected
     FCursor: NODETYPENAME;
     FOwnList: COLLECTIONINTERFACENAME;
@@ -82,13 +82,23 @@ type
     function MoveNext: Boolean;
     property Current: PARAMETERTYPE read GETTERNAME;
     {$ENDIF SUPPORTS_FOR_IN}
-    { TREEITRINTERFACENAME }
-    function HasParent: Boolean;
-    function Parent: PARAMETERTYPE;
-    function ChildCount: Integer;
-    function HasChild(Index: Integer): Boolean;
+    { STDTREEITRINTERFACENAME }
+    function AddChild(PARAMETERDECLARATION): Boolean;
+    function ChildrenCount: Integer;
+    procedure ClearChildren;
+    procedure DeleteChild(Index: Integer);
     function GetChild(Index: Integer): PARAMETERTYPE;
+    function HasChild(Index: Integer): Boolean;
+    function HasParent: Boolean;
     function IndexOfChild(PARAMETERDECLARATION): Integer;
+    function InsertChild(Index: Integer; PARAMETERDECLARATION): Boolean;
+    function Parent: PARAMETERTYPE;
+    procedure SetChild(Index: Integer; PARAMETERDECLARATION);
+    { BINTREEITRINTERFACENAME }
+    function HasLeft: Boolean;
+    function HasRight: Boolean;
+    function Left: PARAMETERTYPE;
+    function Right: PARAMETERTYPE;
   public
     constructor Create(const OwnList: COLLECTIONINTERFACENAME; Start: NODETYPENAME; AValid: Boolean);
   end;
@@ -106,6 +116,11 @@ begin
   Result := FOwnList.Add(PARAMETERNAME);
 end;
 
+function BASEITRCLASSNAME.AddChild(PARAMETERDECLARATION): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure BASEITRCLASSNAME.AssignPropertiesTo(Dest: TJclAbstractIterator);
 var
   ADest: BASEITRCLASSNAME;
@@ -120,7 +135,7 @@ begin
   end;
 end;
 
-function BASEITRCLASSNAME.ChildCount: Integer;
+function BASEITRCLASSNAME.ChildrenCount: Integer;
 begin
   {$IFDEF THREADSAFE}
   ReadLock;
@@ -139,6 +154,16 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
+end;
+
+procedure BASEITRCLASSNAME.ClearChildren;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
+begin
+  raise EJclOperationNotSupportedError.Create;
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): PARAMETERTYPE;
@@ -210,6 +235,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function BASEITRCLASSNAME.HasLeft: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Left <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function BASEITRCLASSNAME.HasNext: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -258,6 +297,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function BASEITRCLASSNAME.HasRight: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Right <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function BASEITRCLASSNAME.IndexOfChild(PARAMETERDECLARATION): Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -289,6 +342,32 @@ end;
 function BASEITRCLASSNAME.Insert(PARAMETERDECLARATION): Boolean;
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function BASEITRCLASSNAME.InsertChild(Index: Integer; PARAMETERDECLARATION): Boolean;
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
+function BASEITRCLASSNAME.Left: PARAMETERTYPE;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := DEFAULTVALUE;
+    if FCursor <> nil then
+      FCursor := FCursor.Left;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 {$IFDEF SUPPORTS_FOR_IN}
@@ -416,6 +495,32 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function BASEITRCLASSNAME.Right: PARAMETERTYPE;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := DEFAULTVALUE;
+    if FCursor <> nil then
+      FCursor := FCursor.Right;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+procedure BASEITRCLASSNAME.SetChild(Index: Integer; PARAMETERDECLARATION);
+begin
+  raise EJclOperationNotSupportedError.Create;
+end;
+
 procedure BASEITRCLASSNAME.SETTERNAME(PARAMETERDECLARATION);
 begin
   raise EJclOperationNotSupportedError.Create;
@@ -424,7 +529,7 @@ end;
 //=== { PREORDERITRCLASSNAME } ===================================================
 
 type
-  PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  PREORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -491,7 +596,7 @@ end;
 //=== { INORDERITRCLASSNAME } ====================================================
 
 type
-  INORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  INORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -559,7 +664,7 @@ end;
 //=== { POSTORDERITRCLASSNAME } ==================================================
 
 type
-  POSTORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, TREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  POSTORDERITRCLASSNAME = class(BASEITRCLASSNAME, STDITRINTERFACENAME, STDTREEITRINTERFACENAME, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
