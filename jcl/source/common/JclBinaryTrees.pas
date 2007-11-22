@@ -96,12 +96,15 @@ type
     function GetEnumerator: IJclIntfIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntfTree }
+    function GetRoot: IJclIntfTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TIntfCompare);
     destructor Destroy; override;
+    property Root: IJclIntfTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -147,12 +150,15 @@ type
     function GetEnumerator: IJclAnsiStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclAnsiStrTree }
+    function GetRoot: IJclAnsiStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TAnsiStrCompare);
     destructor Destroy; override;
+    property Root: IJclAnsiStrTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -198,12 +204,15 @@ type
     function GetEnumerator: IJclWideStrIterator; override;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclWideStrTree }
+    function GetRoot: IJclWideStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TWideStrCompare);
     destructor Destroy; override;
+    property Root: IJclWideStrTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -256,12 +265,15 @@ type
     function GetEnumerator: IJclSingleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclSingleTree }
+    function GetRoot: IJclSingleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TSingleCompare);
     destructor Destroy; override;
+    property Root: IJclSingleTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -307,12 +319,15 @@ type
     function GetEnumerator: IJclDoubleIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclDoubleTree }
+    function GetRoot: IJclDoubleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TDoubleCompare);
     destructor Destroy; override;
+    property Root: IJclDoubleTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -358,12 +373,15 @@ type
     function GetEnumerator: IJclExtendedIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclExtendedTree }
+    function GetRoot: IJclExtendedTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TExtendedCompare);
     destructor Destroy; override;
+    property Root: IJclExtendedTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -419,12 +437,15 @@ type
     function GetEnumerator: IJclIntegerIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclIntegerTree }
+    function GetRoot: IJclIntegerTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TIntegerCompare);
     destructor Destroy; override;
+    property Root: IJclIntegerTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -470,12 +491,15 @@ type
     function GetEnumerator: IJclCardinalIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclCardinalTree }
+    function GetRoot: IJclCardinalTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TCardinalCompare);
     destructor Destroy; override;
+    property Root: IJclCardinalTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
 
@@ -521,12 +545,15 @@ type
     function GetEnumerator: IJclInt64Iterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclInt64Tree }
+    function GetRoot: IJclInt64TreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TInt64Compare);
     destructor Destroy; override;
+    property Root: IJclInt64TreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFNDEF CLR}
@@ -573,12 +600,15 @@ type
     function GetEnumerator: IJclPtrIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclPtrTree }
+    function GetRoot: IJclPtrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TPtrCompare);
     destructor Destroy; override;
+    property Root: IJclPtrTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
   {$ENDIF ~CLR}
 
@@ -625,12 +655,15 @@ type
     function GetEnumerator: IJclIterator;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclTree }
+    function GetRoot: IJclTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
     function CreateEmptyContainer: TJclAbstractContainerBase; override;
   public
     constructor Create(ACompare: TCompare; AOwnsObjects: Boolean);
     destructor Destroy; override;
+    property Root: IJclTreeIterator read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
@@ -677,11 +710,14 @@ type
     function GetEnumerator: IJclIterator<T>;
     {$ENDIF SUPPORTS_FOR_IN}
     { IJclTree<T> }
+    function GetRoot: IJclTreeIterator<T>;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
   public
     constructor Create(AOwnsItems: Boolean);
     destructor Destroy; override;
+    property Root: IJclTreeIterator<T> read GetRoot;
+    property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   // E = External helper to compare items
@@ -751,7 +787,7 @@ uses
 //=== { TIntfItr } ===========================================================
 
 type
-  TIntfItr = class(TJclAbstractIterator, IJclIntfIterator)
+  TIntfItr = class(TJclAbstractIterator, IJclIntfIterator, IJclIntfTreeIterator)
   protected
     FCursor: TJclIntfBinaryNode;
     FOwnList: IJclIntfCollection;
@@ -775,6 +811,13 @@ type
     function MoveNext: Boolean;
     property Current: IInterface read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntfTreeIterator }
+    function HasParent: Boolean;
+    function Parent: IInterface;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): IInterface;
+    function IndexOfChild(const AInterface: IInterface): Integer;
   public
     constructor Create(const OwnList: IJclIntfCollection; Start: TJclIntfBinaryNode; AValid: Boolean);
   end;
@@ -806,6 +849,56 @@ begin
   end;
 end;
 
+function TIntfItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntfItr.GetChild(Index: Integer): IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntfItr.GetObject: IInterface;
 begin
   {$IFDEF THREADSAFE}
@@ -819,6 +912,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntfItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -843,6 +956,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntfItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntfItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -853,6 +980,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntfItr.IndexOfChild(const AInterface: IInterface): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AInterface) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AInterface) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AInterface) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -912,6 +1067,27 @@ function TIntfItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntfItr.Parent: IInterface;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TIntfItr.Previous: IInterface;
@@ -977,7 +1153,7 @@ end;
 //=== { TPreOrderIntfItr } ===================================================
 
 type
-  TPreOrderIntfItr = class(TIntfItr, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1044,7 +1220,7 @@ end;
 //=== { TInOrderIntfItr } ====================================================
 
 type
-  TInOrderIntfItr = class(TIntfItr, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1112,7 +1288,7 @@ end;
 //=== { TPostOrderIntfItr } ==================================================
 
 type
-  TPostOrderIntfItr = class(TIntfItr, IJclIntfIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderIntfItr = class(TIntfItr, IJclIntfIterator, IJclIntfTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1178,7 +1354,7 @@ end;
 //=== { TAnsiStrItr } ===========================================================
 
 type
-  TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator)
+  TAnsiStrItr = class(TJclAbstractIterator, IJclAnsiStrIterator, IJclAnsiStrTreeIterator)
   protected
     FCursor: TJclAnsiStrBinaryNode;
     FOwnList: IJclAnsiStrCollection;
@@ -1202,6 +1378,13 @@ type
     function MoveNext: Boolean;
     property Current: AnsiString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclAnsiStrTreeIterator }
+    function HasParent: Boolean;
+    function Parent: AnsiString;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): AnsiString;
+    function IndexOfChild(const AString: AnsiString): Integer;
   public
     constructor Create(const OwnList: IJclAnsiStrCollection; Start: TJclAnsiStrBinaryNode; AValid: Boolean);
   end;
@@ -1233,6 +1416,56 @@ begin
   end;
 end;
 
+function TAnsiStrItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TAnsiStrItr.GetChild(Index: Integer): AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TAnsiStrItr.GetString: AnsiString;
 begin
   {$IFDEF THREADSAFE}
@@ -1246,6 +1479,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TAnsiStrItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1270,6 +1523,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TAnsiStrItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TAnsiStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -1280,6 +1547,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TAnsiStrItr.IndexOfChild(const AString: AnsiString): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AString) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AString) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AString) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1339,6 +1634,27 @@ function TAnsiStrItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TAnsiStrItr.Parent: AnsiString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TAnsiStrItr.Previous: AnsiString;
@@ -1404,7 +1720,7 @@ end;
 //=== { TPreOrderAnsiStrItr } ===================================================
 
 type
-  TPreOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1471,7 +1787,7 @@ end;
 //=== { TInOrderAnsiStrItr } ====================================================
 
 type
-  TInOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1539,7 +1855,7 @@ end;
 //=== { TPostOrderAnsiStrItr } ==================================================
 
 type
-  TPostOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderAnsiStrItr = class(TAnsiStrItr, IJclAnsiStrIterator, IJclAnsiStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1605,7 +1921,7 @@ end;
 //=== { TWideStrItr } ===========================================================
 
 type
-  TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator)
+  TWideStrItr = class(TJclAbstractIterator, IJclWideStrIterator, IJclWideStrTreeIterator)
   protected
     FCursor: TJclWideStrBinaryNode;
     FOwnList: IJclWideStrCollection;
@@ -1629,6 +1945,13 @@ type
     function MoveNext: Boolean;
     property Current: WideString read GetString;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclWideStrTreeIterator }
+    function HasParent: Boolean;
+    function Parent: WideString;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): WideString;
+    function IndexOfChild(const AString: WideString): Integer;
   public
     constructor Create(const OwnList: IJclWideStrCollection; Start: TJclWideStrBinaryNode; AValid: Boolean);
   end;
@@ -1660,6 +1983,56 @@ begin
   end;
 end;
 
+function TWideStrItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TWideStrItr.GetChild(Index: Integer): WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TWideStrItr.GetString: WideString;
 begin
   {$IFDEF THREADSAFE}
@@ -1673,6 +2046,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TWideStrItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1697,6 +2090,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TWideStrItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TWideStrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -1707,6 +2114,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TWideStrItr.IndexOfChild(const AString: WideString): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AString) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AString) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AString) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -1766,6 +2201,27 @@ function TWideStrItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TWideStrItr.Parent: WideString;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := '';
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TWideStrItr.Previous: WideString;
@@ -1831,7 +2287,7 @@ end;
 //=== { TPreOrderWideStrItr } ===================================================
 
 type
-  TPreOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1898,7 +2354,7 @@ end;
 //=== { TInOrderWideStrItr } ====================================================
 
 type
-  TInOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -1966,7 +2422,7 @@ end;
 //=== { TPostOrderWideStrItr } ==================================================
 
 type
-  TPostOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderWideStrItr = class(TWideStrItr, IJclWideStrIterator, IJclWideStrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2032,7 +2488,7 @@ end;
 //=== { TSingleItr } ===========================================================
 
 type
-  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator)
+  TSingleItr = class(TJclAbstractIterator, IJclSingleIterator, IJclSingleTreeIterator)
   protected
     FCursor: TJclSingleBinaryNode;
     FOwnList: IJclSingleCollection;
@@ -2056,6 +2512,13 @@ type
     function MoveNext: Boolean;
     property Current: Single read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclSingleTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Single;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Single;
+    function IndexOfChild(const AValue: Single): Integer;
   public
     constructor Create(const OwnList: IJclSingleCollection; Start: TJclSingleBinaryNode; AValid: Boolean);
   end;
@@ -2087,6 +2550,56 @@ begin
   end;
 end;
 
+function TSingleItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.GetChild(Index: Integer): Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TSingleItr.GetValue: Single;
 begin
   {$IFDEF THREADSAFE}
@@ -2100,6 +2613,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2124,6 +2657,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TSingleItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TSingleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2134,6 +2681,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TSingleItr.IndexOfChild(const AValue: Single): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2193,6 +2768,27 @@ function TSingleItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.Parent: Single;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TSingleItr.Previous: Single;
@@ -2258,7 +2854,7 @@ end;
 //=== { TPreOrderSingleItr } ===================================================
 
 type
-  TPreOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2325,7 +2921,7 @@ end;
 //=== { TInOrderSingleItr } ====================================================
 
 type
-  TInOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2393,7 +2989,7 @@ end;
 //=== { TPostOrderSingleItr } ==================================================
 
 type
-  TPostOrderSingleItr = class(TSingleItr, IJclSingleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderSingleItr = class(TSingleItr, IJclSingleIterator, IJclSingleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2459,7 +3055,7 @@ end;
 //=== { TDoubleItr } ===========================================================
 
 type
-  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator)
+  TDoubleItr = class(TJclAbstractIterator, IJclDoubleIterator, IJclDoubleTreeIterator)
   protected
     FCursor: TJclDoubleBinaryNode;
     FOwnList: IJclDoubleCollection;
@@ -2483,6 +3079,13 @@ type
     function MoveNext: Boolean;
     property Current: Double read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclDoubleTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Double;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Double;
+    function IndexOfChild(const AValue: Double): Integer;
   public
     constructor Create(const OwnList: IJclDoubleCollection; Start: TJclDoubleBinaryNode; AValid: Boolean);
   end;
@@ -2514,6 +3117,56 @@ begin
   end;
 end;
 
+function TDoubleItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.GetChild(Index: Integer): Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TDoubleItr.GetValue: Double;
 begin
   {$IFDEF THREADSAFE}
@@ -2527,6 +3180,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2551,6 +3224,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TDoubleItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TDoubleItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2561,6 +3248,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TDoubleItr.IndexOfChild(const AValue: Double): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2620,6 +3335,27 @@ function TDoubleItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.Parent: Double;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TDoubleItr.Previous: Double;
@@ -2685,7 +3421,7 @@ end;
 //=== { TPreOrderDoubleItr } ===================================================
 
 type
-  TPreOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2752,7 +3488,7 @@ end;
 //=== { TInOrderDoubleItr } ====================================================
 
 type
-  TInOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2820,7 +3556,7 @@ end;
 //=== { TPostOrderDoubleItr } ==================================================
 
 type
-  TPostOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderDoubleItr = class(TDoubleItr, IJclDoubleIterator, IJclDoubleTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -2886,7 +3622,7 @@ end;
 //=== { TExtendedItr } ===========================================================
 
 type
-  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator)
+  TExtendedItr = class(TJclAbstractIterator, IJclExtendedIterator, IJclExtendedTreeIterator)
   protected
     FCursor: TJclExtendedBinaryNode;
     FOwnList: IJclExtendedCollection;
@@ -2910,6 +3646,13 @@ type
     function MoveNext: Boolean;
     property Current: Extended read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclExtendedTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Extended;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Extended;
+    function IndexOfChild(const AValue: Extended): Integer;
   public
     constructor Create(const OwnList: IJclExtendedCollection; Start: TJclExtendedBinaryNode; AValid: Boolean);
   end;
@@ -2941,6 +3684,56 @@ begin
   end;
 end;
 
+function TExtendedItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.GetChild(Index: Integer): Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TExtendedItr.GetValue: Extended;
 begin
   {$IFDEF THREADSAFE}
@@ -2954,6 +3747,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -2978,6 +3791,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TExtendedItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TExtendedItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -2988,6 +3815,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TExtendedItr.IndexOfChild(const AValue: Extended): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3047,6 +3902,27 @@ function TExtendedItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.Parent: Extended;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0.0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TExtendedItr.Previous: Extended;
@@ -3112,7 +3988,7 @@ end;
 //=== { TPreOrderExtendedItr } ===================================================
 
 type
-  TPreOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3179,7 +4055,7 @@ end;
 //=== { TInOrderExtendedItr } ====================================================
 
 type
-  TInOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3247,7 +4123,7 @@ end;
 //=== { TPostOrderExtendedItr } ==================================================
 
 type
-  TPostOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderExtendedItr = class(TExtendedItr, IJclExtendedIterator, IJclExtendedTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3313,7 +4189,7 @@ end;
 //=== { TIntegerItr } ===========================================================
 
 type
-  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator)
+  TIntegerItr = class(TJclAbstractIterator, IJclIntegerIterator, IJclIntegerTreeIterator)
   protected
     FCursor: TJclIntegerBinaryNode;
     FOwnList: IJclIntegerCollection;
@@ -3337,6 +4213,13 @@ type
     function MoveNext: Boolean;
     property Current: Integer read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclIntegerTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Integer;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Integer;
+    function IndexOfChild(AValue: Integer): Integer;
   public
     constructor Create(const OwnList: IJclIntegerCollection; Start: TJclIntegerBinaryNode; AValid: Boolean);
   end;
@@ -3368,6 +4251,56 @@ begin
   end;
 end;
 
+function TIntegerItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.GetChild(Index: Integer): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntegerItr.GetValue: Integer;
 begin
   {$IFDEF THREADSAFE}
@@ -3381,6 +4314,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3405,6 +4358,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TIntegerItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TIntegerItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3415,6 +4382,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TIntegerItr.IndexOfChild(AValue: Integer): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3474,6 +4469,27 @@ function TIntegerItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.Parent: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TIntegerItr.Previous: Integer;
@@ -3539,7 +4555,7 @@ end;
 //=== { TPreOrderIntegerItr } ===================================================
 
 type
-  TPreOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3606,7 +4622,7 @@ end;
 //=== { TInOrderIntegerItr } ====================================================
 
 type
-  TInOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3674,7 +4690,7 @@ end;
 //=== { TPostOrderIntegerItr } ==================================================
 
 type
-  TPostOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderIntegerItr = class(TIntegerItr, IJclIntegerIterator, IJclIntegerTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -3740,7 +4756,7 @@ end;
 //=== { TCardinalItr } ===========================================================
 
 type
-  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator)
+  TCardinalItr = class(TJclAbstractIterator, IJclCardinalIterator, IJclCardinalTreeIterator)
   protected
     FCursor: TJclCardinalBinaryNode;
     FOwnList: IJclCardinalCollection;
@@ -3764,6 +4780,13 @@ type
     function MoveNext: Boolean;
     property Current: Cardinal read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclCardinalTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Cardinal;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Cardinal;
+    function IndexOfChild(AValue: Cardinal): Integer;
   public
     constructor Create(const OwnList: IJclCardinalCollection; Start: TJclCardinalBinaryNode; AValid: Boolean);
   end;
@@ -3795,6 +4818,56 @@ begin
   end;
 end;
 
+function TCardinalItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.GetChild(Index: Integer): Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TCardinalItr.GetValue: Cardinal;
 begin
   {$IFDEF THREADSAFE}
@@ -3808,6 +4881,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3832,6 +4925,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TCardinalItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TCardinalItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -3842,6 +4949,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TCardinalItr.IndexOfChild(AValue: Cardinal): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -3901,6 +5036,27 @@ function TCardinalItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.Parent: Cardinal;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TCardinalItr.Previous: Cardinal;
@@ -3966,7 +5122,7 @@ end;
 //=== { TPreOrderCardinalItr } ===================================================
 
 type
-  TPreOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4033,7 +5189,7 @@ end;
 //=== { TInOrderCardinalItr } ====================================================
 
 type
-  TInOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4101,7 +5257,7 @@ end;
 //=== { TPostOrderCardinalItr } ==================================================
 
 type
-  TPostOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderCardinalItr = class(TCardinalItr, IJclCardinalIterator, IJclCardinalTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4167,7 +5323,7 @@ end;
 //=== { TInt64Itr } ===========================================================
 
 type
-  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator)
+  TInt64Itr = class(TJclAbstractIterator, IJclInt64Iterator, IJclInt64TreeIterator)
   protected
     FCursor: TJclInt64BinaryNode;
     FOwnList: IJclInt64Collection;
@@ -4191,6 +5347,13 @@ type
     function MoveNext: Boolean;
     property Current: Int64 read GetValue;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclInt64TreeIterator }
+    function HasParent: Boolean;
+    function Parent: Int64;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Int64;
+    function IndexOfChild(const AValue: Int64): Integer;
   public
     constructor Create(const OwnList: IJclInt64Collection; Start: TJclInt64BinaryNode; AValid: Boolean);
   end;
@@ -4222,6 +5385,56 @@ begin
   end;
 end;
 
+function TInt64Itr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.GetChild(Index: Integer): Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TInt64Itr.GetValue: Int64;
 begin
   {$IFDEF THREADSAFE}
@@ -4235,6 +5448,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4259,6 +5492,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TInt64Itr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TInt64Itr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4269,6 +5516,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TInt64Itr.IndexOfChild(const AValue: Int64): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AValue) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AValue) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4328,6 +5603,27 @@ function TInt64Itr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.Parent: Int64;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TInt64Itr.Previous: Int64;
@@ -4393,7 +5689,7 @@ end;
 //=== { TPreOrderInt64Itr } ===================================================
 
 type
-  TPreOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4460,7 +5756,7 @@ end;
 //=== { TInOrderInt64Itr } ====================================================
 
 type
-  TInOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4528,7 +5824,7 @@ end;
 //=== { TPostOrderInt64Itr } ==================================================
 
 type
-  TPostOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderInt64Itr = class(TInt64Itr, IJclInt64Iterator, IJclInt64TreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4595,7 +5891,7 @@ end;
 //=== { TPtrItr } ===========================================================
 
 type
-  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator)
+  TPtrItr = class(TJclAbstractIterator, IJclPtrIterator, IJclPtrTreeIterator)
   protected
     FCursor: TJclPtrBinaryNode;
     FOwnList: IJclPtrCollection;
@@ -4619,6 +5915,13 @@ type
     function MoveNext: Boolean;
     property Current: Pointer read GetPtr;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclPtrTreeIterator }
+    function HasParent: Boolean;
+    function Parent: Pointer;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Pointer;
+    function IndexOfChild(APtr: Pointer): Integer;
   public
     constructor Create(const OwnList: IJclPtrCollection; Start: TJclPtrBinaryNode; AValid: Boolean);
   end;
@@ -4650,6 +5953,56 @@ begin
   end;
 end;
 
+function TPtrItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.GetChild(Index: Integer): Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TPtrItr.GetPtr: Pointer;
 begin
   {$IFDEF THREADSAFE}
@@ -4663,6 +6016,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4687,6 +6060,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TPtrItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TPtrItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -4697,6 +6084,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TPtrItr.IndexOfChild(APtr: Pointer): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, APtr) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, APtr) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, APtr) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -4756,6 +6171,27 @@ function TPtrItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.Parent: Pointer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TPtrItr.Previous: Pointer;
@@ -4821,7 +6257,7 @@ end;
 //=== { TPreOrderPtrItr } ===================================================
 
 type
-  TPreOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4888,7 +6324,7 @@ end;
 //=== { TInOrderPtrItr } ====================================================
 
 type
-  TInOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -4956,7 +6392,7 @@ end;
 //=== { TPostOrderPtrItr } ==================================================
 
 type
-  TPostOrderPtrItr = class(TPtrItr, IJclPtrIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderPtrItr = class(TPtrItr, IJclPtrIterator, IJclPtrTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5023,7 +6459,7 @@ end;
 //=== { TItr } ===========================================================
 
 type
-  TItr = class(TJclAbstractIterator, IJclIterator)
+  TItr = class(TJclAbstractIterator, IJclIterator, IJclTreeIterator)
   protected
     FCursor: TJclBinaryNode;
     FOwnList: IJclCollection;
@@ -5047,6 +6483,13 @@ type
     function MoveNext: Boolean;
     property Current: TObject read GetObject;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclTreeIterator }
+    function HasParent: Boolean;
+    function Parent: TObject;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): TObject;
+    function IndexOfChild(AObject: TObject): Integer;
   public
     constructor Create(const OwnList: IJclCollection; Start: TJclBinaryNode; AValid: Boolean);
   end;
@@ -5078,6 +6521,56 @@ begin
   end;
 end;
 
+function TItr.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr.GetChild(Index: Integer): TObject;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr.GetObject: TObject;
 begin
   {$IFDEF THREADSAFE}
@@ -5091,6 +6584,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5115,6 +6628,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5125,6 +6652,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr.IndexOfChild(AObject: TObject): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AObject) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AObject) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AObject) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5184,6 +6739,27 @@ function TItr.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr.Parent: TObject;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := nil;
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TItr.Previous: TObject;
@@ -5249,7 +6825,7 @@ end;
 //=== { TPreOrderItr } ===================================================
 
 type
-  TPreOrderItr = class(TItr, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5316,7 +6892,7 @@ end;
 //=== { TInOrderItr } ====================================================
 
 type
-  TInOrderItr = class(TItr, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5384,7 +6960,7 @@ end;
 //=== { TPostOrderItr } ==================================================
 
 type
-  TPostOrderItr = class(TItr, IJclIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderItr = class(TItr, IJclIterator, IJclTreeIterator, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5451,7 +7027,7 @@ end;
 //=== { TItr<T> } ===========================================================
 
 type
-  TItr<T> = class(TJclAbstractIterator, IJclIterator<T>)
+  TItr<T> = class(TJclAbstractIterator, IJclIterator<T>, IJclTreeIterator<T>)
   protected
     FCursor: TJclBinaryNode<T>;
     FOwnList: IJclCollection<T>;
@@ -5475,6 +7051,13 @@ type
     function MoveNext: Boolean;
     property Current: T read GetItem;
     {$ENDIF SUPPORTS_FOR_IN}
+    { IJclTreeIterator<T> }
+    function HasParent: Boolean;
+    function Parent: T;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): T;
+    function IndexOfChild(const AItem: T): Integer;
   public
     constructor Create(const OwnList: IJclCollection<T>; Start: TJclBinaryNode<T>; AValid: Boolean);
   end;
@@ -5506,6 +7089,56 @@ begin
   end;
 end;
 
+function TItr<T>.ChildCount: Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := 0;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+        Inc(Result);
+      if FCursor.Right <> nil then
+        Inc(Result);
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr<T>.GetChild(Index: Integer): T;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if (FCursor <> nil) and (Index = 0) and (FCursor.Left <> nil) then
+      FCursor := FCursor.Left
+    else
+    if (FCursor <> nil) and (Index = 0) then
+      FCursor := FCursor.Right
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      FCursor := FCursor.Right
+    else
+      FCursor := nil;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr<T>.GetItem: T;
 begin
   {$IFDEF THREADSAFE}
@@ -5519,6 +7152,26 @@ begin
     else
     if not FOwnList.ReturnDefaultElements then
       raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr<T>.HasChild(Index: Integer): Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    if (FCursor <> nil) and (Index = 0) then
+      Result := (FCursor.Left <> nil) or (FCursor.Right <> nil)
+    else
+    if (FCursor <> nil) and (Index = 1) then
+      Result := (FCursor.Left <> nil) and (FCursor.Right <> nil)
+    else
+      Result := False;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5543,6 +7196,20 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
+function TItr<T>.HasParent: Boolean;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := (FCursor <> nil) and (FCursor.Parent <> nil);
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TItr<T>.HasPrevious: Boolean;
 begin
   {$IFDEF THREADSAFE}
@@ -5553,6 +7220,34 @@ begin
       Result := GetPreviousCursor <> nil
     else
       Result := FCursor <> nil;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
+function TItr<T>.IndexOfChild(const AItem: T): Integer;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := -1;
+    if FCursor <> nil then
+    begin
+      if FCursor.Left <> nil then
+      begin
+        if FEqualityComparer.ItemsEqual(FCursor.Left.Value, AItem) then
+          Result := 0
+        else
+        if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AItem) then
+          Result := 1;
+      end
+      else
+      if (FCursor.Right <> nil) and FEqualityComparer.ItemsEqual(FCursor.Right.Value, AItem) then
+        Result := 0;
+    end;
   {$IFDEF THREADSAFE}
   finally
     ReadUnlock;
@@ -5612,6 +7307,27 @@ function TItr<T>.NextIndex: Integer;
 begin
   // No index
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr<T>.Parent: T;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    Result := Default(T);
+    if FCursor <> nil then
+      FCursor := FCursor.Parent;
+    if FCursor <> nil then
+      Result := FCursor.Value
+    else
+    if not FOwnList.ReturnDefaultElements then
+      raise EJclNoSuchElementError.Create('');
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
 end;
 
 function TItr<T>.Previous: T;
@@ -5677,7 +7393,7 @@ end;
 //=== { TPreOrderItr<T> } ===================================================
 
 type
-  TPreOrderItr<T> = class(TItr<T>, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPreOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5744,7 +7460,7 @@ end;
 //=== { TInOrderItr<T> } ====================================================
 
 type
-  TInOrderItr<T> = class(TItr<T>, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TInOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -5812,7 +7528,7 @@ end;
 //=== { TPostOrderItr<T> } ==================================================
 
 type
-  TPostOrderItr<T> = class(TItr<T>, IJclIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
+  TPostOrderItr<T> = class(TItr<T>, IJclIterator<T>, IJclTreeIterator<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}
     IJclIntfCloneable, IJclCloneable)
   protected
     function CreateEmptyIterator: TJclAbstractIterator; override;
@@ -6225,6 +7941,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntfBinaryTree.GetRoot: IJclIntfTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderIntfItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderIntfItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderIntfItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclIntfBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -6893,6 +8632,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclAnsiStrBinaryTree.GetRoot: IJclAnsiStrTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderAnsiStrItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderAnsiStrItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderAnsiStrItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclAnsiStrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -7559,6 +9321,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclWideStrBinaryTree.GetRoot: IJclWideStrTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderWideStrItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderWideStrItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderWideStrItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclWideStrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -8227,6 +10012,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclSingleBinaryTree.GetRoot: IJclSingleTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderSingleItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderSingleItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderSingleItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclSingleBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -8893,6 +10701,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclDoubleBinaryTree.GetRoot: IJclDoubleTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderDoubleItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderDoubleItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderDoubleItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclDoubleBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -9561,6 +11392,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclExtendedBinaryTree.GetRoot: IJclExtendedTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderExtendedItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderExtendedItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderExtendedItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclExtendedBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -10227,6 +12081,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclIntegerBinaryTree.GetRoot: IJclIntegerTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderIntegerItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderIntegerItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderIntegerItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclIntegerBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -10895,6 +12772,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclCardinalBinaryTree.GetRoot: IJclCardinalTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderCardinalItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderCardinalItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderCardinalItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclCardinalBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -11561,6 +13461,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclInt64BinaryTree.GetRoot: IJclInt64TreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderInt64Itr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderInt64Itr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderInt64Itr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclInt64BinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
@@ -12230,6 +14153,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclPtrBinaryTree.GetRoot: IJclPtrTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderPtrItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderPtrItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderPtrItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclPtrBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -12898,6 +14844,29 @@ begin
 end;
 {$ENDIF SUPPORTS_FOR_IN}
 
+function TJclBinaryTree.GetRoot: IJclTreeIterator;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderItr.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderItr.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderItr.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
+
 function TJclBinaryTree.GetTraverseOrder: TJclTraverseOrder;
 begin
   Result := FTraverseOrder;
@@ -13560,6 +15529,29 @@ begin
   Result := First;
 end;
 {$ENDIF SUPPORTS_FOR_IN}
+
+function TJclBinaryTree<T>.GetRoot: IJclTreeIterator<T>;
+begin
+  {$IFDEF THREADSAFE}
+  ReadLock;
+  try
+  {$ENDIF THREADSAFE}
+    case GetTraverseOrder of
+      toPreOrder:
+        Result := TPreOrderItr<T>.Create(Self, FRoot, False);
+      toOrder:
+        Result := TInOrderItr<T>.Create(Self, FRoot, False);
+      toPostOrder:
+        Result := TPostOrderItr<T>.Create(Self, FRoot, False);
+    else
+      Result := nil;
+    end;
+  {$IFDEF THREADSAFE}
+  finally
+    ReadUnlock;
+  end;
+  {$ENDIF THREADSAFE}
+end;
 
 function TJclBinaryTree<T>.GetTraverseOrder: TJclTraverseOrder;
 begin

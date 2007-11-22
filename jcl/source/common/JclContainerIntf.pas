@@ -857,6 +857,147 @@ type
   end;
   {$ENDIF SUPPORTS_GENERICS}
 
+  IJclIntfTreeIterator = interface(IJclIntfIterator)
+    ['{C97379BF-C6A9-4A90-9D7A-152E9BAD314F}']
+    function HasParent: Boolean;
+    function Parent: IInterface;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): IInterface;
+    function IndexOfChild(const AInterface: IInterface): Integer;
+  end;
+
+  IJclAnsiStrTreeIterator = interface(IJclAnsiStrIterator)
+    ['{66BC5C76-758C-4E72-ABF1-EB02CF851C6D}']
+    function HasParent: Boolean;
+    function Parent: AnsiString;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): AnsiString;
+    function IndexOfChild(const AString: AnsiString): Integer;
+  end;
+
+  IJclWideStrTreeIterator = interface(IJclWideStrIterator)
+    ['{B3168A3B-5A90-4ABF-855F-3D2B3AB6EE7F}']
+    function HasParent: Boolean;
+    function Parent: WideString;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): WideString;
+    function IndexOfChild(const AString: WideString): Integer;
+  end;
+
+  {$IFDEF CONTAINER_ANSISTR}
+  IJclStrTreeIterator = IJclAnsiStrTreeIterator;
+  {$ENDIF CONTAINER_ANSISTR}
+  {$IFDEF CONTAINER_WIDESTR}
+  IJclStrTreeIterator = IJclWideStrTreeIterator;
+  {$ENDIF CONTAINER_WIDESTR}
+
+  IJclSingleTreeIterator = interface(IJclSingleIterator)
+    ['{17BFDE9D-DBF7-4DC8-AC74-919C717B4726}']
+    function HasParent: Boolean;
+    function Parent: Single;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Single;
+    function IndexOfChild(const AValue: Single): Integer;
+  end;
+
+  IJclDoubleTreeIterator = interface(IJclDoubleIterator)
+    ['{EB39B84E-D3C5-496E-A521-B8BF24579252}']
+    function HasParent: Boolean;
+    function Parent: Double;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Double;
+    function IndexOfChild(const AValue: Double): Integer;
+  end;
+
+  IJclExtendedTreeIterator = interface(IJclExtendedIterator)
+    ['{1B40A544-FC5D-454C-8E42-CE17B015E65C}']
+    function HasParent: Boolean;
+    function Parent: Extended;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Extended;
+    function IndexOfChild(const AValue: Extended): Integer;
+  end;
+
+  {$IFDEF MATH_EXTENDED_PRECISION}
+  IJclFloatTreeIterator = IJclExtendedTreeIterator;
+  {$ENDIF MATH_EXTENDED_PRECISION}
+  {$IFDEF MATH_DOUBLE_PRECISION}
+  IJclFloatTreeIterator = IJclDoubleTreeIterator;
+  {$ENDIF MATH_DOUBLE_PRECISION}
+  {$IFDEF MATH_SINGLE_PRECISION}
+  IJclFloatTreeIterator = IJclSingleTreeIterator;
+  {$ENDIF MATH_SINGLE_PRECISION}
+
+  IJclIntegerTreeIterator = interface(IJclIntegerIterator)
+    ['{88EDC5C5-CA41-41AF-9838-AA19D07E69F5}']
+    function HasParent: Boolean;
+    function Parent: Integer;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Integer;
+    function IndexOfChild(AValue: Integer): Integer;
+  end;
+
+  IJclCardinalTreeIterator = interface(IJclCardinalIterator)
+    ['{FDBF493F-F79D-46EB-A59D-7193B6E6A860}']
+    function HasParent: Boolean;
+    function Parent: Cardinal;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Cardinal;
+    function IndexOfChild(AValue: Cardinal): Integer;
+  end;
+
+  IJclInt64TreeIterator = interface(IJclInt64Iterator)
+    ['{C5A5E504-E19B-43AC-90B9-E4B8984BFA23}']
+    function HasParent: Boolean;
+    function Parent: Int64;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Int64;
+    function IndexOfChild(const AValue: Int64): Integer;
+  end;
+
+  {$IFNDEF CLR}
+  IJclPtrTreeIterator = interface(IJclPtrIterator)
+    ['{ED4C08E6-60FC-4ED3-BD19-E6605B9BD943}']
+    function HasParent: Boolean;
+    function Parent: Pointer;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): Pointer;
+    function IndexOfChild(Ptr: Pointer): Integer;
+  end;
+  {$ENDIF ~CLR}
+
+  IJclTreeIterator = interface(IJclIterator)
+    ['{8B4863B0-B6B9-426E-B5B8-7AF71D264237}']
+    function HasParent: Boolean;
+    function Parent: TObject;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): TObject;
+    function IndexOfChild(AObject: TObject): Integer;
+  end;
+
+  {$IFDEF SUPPORTS_GENERICS}
+  IJclTreeIterator<T> = interface(IJclIterator<T>)
+    ['{29A06DA4-D93A-40A5-8581-0FE85BC8384B}']
+    function HasParent: Boolean;
+    function Parent: T;
+    function ChildCount: Integer;
+    function HasChild(Index: Integer): Boolean;
+    function GetChild(Index: Integer): T;
+    function IndexOfChild(const AItem: T): Integer;
+  end;
+  {$ENDIF SUPPORTS_GENERICS}
+
   IJclIntfCollection = interface(IJclContainer)
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
     function Add(const AInterface: IInterface): Boolean;
@@ -1545,22 +1686,28 @@ type
 
   IJclIntfTree = interface(IJclIntfCollection)
     ['{5A21688F-113D-41B4-A17C-54BDB0BD6559}']
+    function GetRoot: IJclIntfTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclIntfTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclAnsiStrTree = interface(IJclAnsiStrCollection)
     ['{1E1896C0-0497-47DF-83AF-A9422084636C}']
+    function GetRoot: IJclAnsiStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclAnsiStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclWideStrTree = interface(IJclWideStrCollection)
     ['{E325615A-7A20-4788-87FA-9051002CCD91}']
+    function GetRoot: IJclWideStrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclWideStrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
@@ -1573,22 +1720,28 @@ type
 
   IJclSingleTree = interface(IJclSingleCollection)
     ['{A90A51BC-EBD7-40D3-B0A0-C9987E7A83D0}']
+    function GetRoot: IJclSingleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclSingleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclDoubleTree = interface(IJclDoubleCollection)
     ['{69DA85B1-A0DD-407B-B5CF-5EB7C6D4B82D}']
+    function GetRoot: IJclDoubleTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclDoubleTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclExtendedTree = interface(IJclExtendedCollection)
     ['{9ACCCAFD-B617-43DC-AAF9-916BE324A17E}']
+    function GetRoot: IJclExtendedTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclExtendedTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
@@ -1604,46 +1757,58 @@ type
 
   IJclIntegerTree = interface(IJclIntegerCollection)
     ['{40A6F934-E5F3-4C74-AC02-227035C8C3C6}']
+    function GetRoot: IJclIntegerTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclIntegerTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclCardinalTree = interface(IJclCardinalCollection)
     ['{6C76C668-50C8-42A2-B72B-79BF102E270D}']
+    function GetRoot: IJclCardinalTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclCardinalTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IJclInt64Tree = interface(IJclInt64Collection)
     ['{1925B973-8B75-4A79-A993-DF2598FF19BE}']
+    function GetRoot: IJclInt64TreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclInt64TreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFNDEF CLR}
   IJclPtrTree = interface(IJclPtrCollection)
     ['{2C1ACA3E-3F23-4E3C-984D-151CF9776E14}']
+    function GetRoot: IJclPtrTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclPtrTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
   {$ENDIF ~CLR}
 
   IJclTree = interface(IJclCollection)
     ['{B0C658CC-FEF5-4178-A4C5-442C0DEDE207}']
+    function GetRoot: IJclTreeIterator;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclTreeIterator read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
   IJclTree<T> = interface(IJclCollection<T>)
     ['{3F963AB5-5A75-41F9-A21B-7E7FB541A459}']
+    function GetRoot: IJclTreeIterator<T>;
     function GetTraverseOrder: TJclTraverseOrder;
     procedure SetTraverseOrder(Value: TJclTraverseOrder);
+    property Root: IJclTreeIterator<T> read GetRoot;
     property TraverseOrder: TJclTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
   {$ENDIF SUPPORTS_GENERICS}
