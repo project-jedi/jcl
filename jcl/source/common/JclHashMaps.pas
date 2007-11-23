@@ -85,8 +85,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -143,8 +141,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclAnsiStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclAnsiStrIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclAnsiStrIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -201,8 +197,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfAnsiStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfAnsiStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -260,8 +254,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclAnsiStrAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclAnsiStrAnsiStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclAnsiStrAnsiStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -318,8 +310,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclWideStrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclWideStrIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclWideStrIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -376,8 +366,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfWideStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfWideStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -435,8 +423,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclWideStrWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclWideStrWideStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclWideStrWideStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -504,8 +490,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclSingleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclSingleIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclSingleIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -562,8 +546,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfSingleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfSingleBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfSingleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -621,8 +603,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclSingleSingleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclSingleSingleBucket); virtual;
-    procedure PackEntries(Bucket: TJclSingleSingleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -679,8 +659,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclDoubleIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclDoubleIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclDoubleIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -737,8 +715,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfDoubleBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfDoubleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -796,8 +772,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclDoubleDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclDoubleDoubleBucket); virtual;
-    procedure PackEntries(Bucket: TJclDoubleDoubleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -854,8 +828,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclExtendedIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclExtendedIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclExtendedIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -912,8 +884,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfExtendedBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfExtendedBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -971,8 +941,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclExtendedExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclExtendedExtendedBucket); virtual;
-    procedure PackEntries(Bucket: TJclExtendedExtendedBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1045,8 +1013,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntegerIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntegerIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntegerIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1103,8 +1069,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfIntegerBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfIntegerBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1162,8 +1126,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntegerIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntegerIntegerBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntegerIntegerBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1220,8 +1182,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclCardinalIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclCardinalIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclCardinalIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1278,8 +1238,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfCardinalBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfCardinalBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1337,8 +1295,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclCardinalCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclCardinalCardinalBucket); virtual;
-    procedure PackEntries(Bucket: TJclCardinalCardinalBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1395,8 +1351,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclInt64IntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclInt64IntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclInt64IntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1453,8 +1407,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfInt64EntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfInt64Bucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfInt64Bucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1512,8 +1464,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclInt64Int64EntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclInt64Int64Bucket); virtual;
-    procedure PackEntries(Bucket: TJclInt64Int64Bucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1571,8 +1521,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclPtrIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclPtrIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclPtrIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1629,8 +1577,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfPtrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfPtrBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfPtrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1688,8 +1634,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclPtrPtrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclPtrPtrBucket); virtual;
-    procedure PackEntries(Bucket: TJclPtrPtrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1748,8 +1692,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntfEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntfBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntfBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1811,8 +1753,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclAnsiStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclAnsiStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclAnsiStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1873,8 +1813,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclWideStrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclWideStrBucket); virtual;
-    procedure PackEntries(Bucket: TJclWideStrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -1942,8 +1880,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclSingleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclSingleBucket); virtual;
-    procedure PackEntries(Bucket: TJclSingleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2004,8 +1940,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclDoubleEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclDoubleBucket); virtual;
-    procedure PackEntries(Bucket: TJclDoubleBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2066,8 +2000,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclExtendedEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclExtendedBucket); virtual;
-    procedure PackEntries(Bucket: TJclExtendedBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2138,8 +2070,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclIntegerEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclIntegerBucket); virtual;
-    procedure PackEntries(Bucket: TJclIntegerBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2200,8 +2130,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclCardinalEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclCardinalBucket); virtual;
-    procedure PackEntries(Bucket: TJclCardinalBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2262,8 +2190,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclInt64EntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclInt64Bucket); virtual;
-    procedure PackEntries(Bucket: TJclInt64Bucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2325,8 +2251,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclPtrEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclPtrBucket); virtual;
-    procedure PackEntries(Bucket: TJclPtrBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2389,8 +2313,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclEntryArray; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclBucket); virtual;
-    procedure PackEntries(Bucket: TJclBucket); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2457,8 +2379,6 @@ type
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: TJclEntryArray<TKey,TValue>; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: TJclBucket<TKey,TValue>); virtual;
-    procedure PackEntries(Bucket: TJclBucket<TKey,TValue>); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -2834,23 +2754,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfHashMap.GrowEntries(Bucket: TJclIntfIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclIntfIntfHashMap.IsEmpty: Boolean;
 begin
@@ -3016,27 +2919,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntfHashMap.PackEntries(Bucket: TJclIntfIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfIntfHashMap.PutAll(const AMap: IJclIntfIntfMap);
 var
   It: IJclIntfIterator;
@@ -3093,7 +2975,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -3112,7 +2995,7 @@ end;
 function TJclIntfIntfHashMap.Remove(const Key: IInterface): IInterface;
 var
   Bucket: TJclIntfIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -3133,7 +3016,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -3434,23 +3320,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrIntfHashMap.GrowEntries(Bucket: TJclAnsiStrIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclAnsiStrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -3616,27 +3485,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrIntfHashMap.PackEntries(Bucket: TJclAnsiStrIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclAnsiStrIntfHashMap.PutAll(const AMap: IJclAnsiStrIntfMap);
 var
   It: IJclAnsiStrIterator;
@@ -3693,7 +3541,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -3712,7 +3561,7 @@ end;
 function TJclAnsiStrIntfHashMap.Remove(const Key: AnsiString): IInterface;
 var
   Bucket: TJclAnsiStrIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -3733,7 +3582,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -4002,8 +3854,6 @@ begin
   Value := '';
 end;
 
-
-
 function TJclIntfAnsiStrHashMap.GetValue(const Key: IInterface): AnsiString;
 var
   I: Integer;
@@ -4032,23 +3882,6 @@ begin
     ReadUnlock;
   end;
   {$ENDIF THREADSAFE}
-end;
-
-procedure TJclIntfAnsiStrHashMap.GrowEntries(Bucket: TJclIntfAnsiStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
 end;
 
 function TJclIntfAnsiStrHashMap.Hash(const AInterface: IInterface): Integer;
@@ -4220,27 +4053,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfAnsiStrHashMap.PackEntries(Bucket: TJclIntfAnsiStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfAnsiStrHashMap.PutAll(const AMap: IJclIntfAnsiStrMap);
 var
   It: IJclIntfIterator;
@@ -4297,7 +4109,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -4316,7 +4129,7 @@ end;
 function TJclIntfAnsiStrHashMap.Remove(const Key: IInterface): AnsiString;
 var
   Bucket: TJclIntfAnsiStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -4337,7 +4150,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -4606,8 +4422,6 @@ begin
   Value := '';
 end;
 
-
-
 function TJclAnsiStrAnsiStrHashMap.GetValue(const Key: AnsiString): AnsiString;
 var
   I: Integer;
@@ -4637,24 +4451,6 @@ begin
   end;
   {$ENDIF THREADSAFE}
 end;
-
-procedure TJclAnsiStrAnsiStrHashMap.GrowEntries(Bucket: TJclAnsiStrAnsiStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclAnsiStrAnsiStrHashMap.IsEmpty: Boolean;
 begin
@@ -4820,27 +4616,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrAnsiStrHashMap.PackEntries(Bucket: TJclAnsiStrAnsiStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclAnsiStrAnsiStrHashMap.PutAll(const AMap: IJclAnsiStrAnsiStrMap);
 var
   It: IJclAnsiStrIterator;
@@ -4897,7 +4672,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -4916,7 +4692,7 @@ end;
 function TJclAnsiStrAnsiStrHashMap.Remove(const Key: AnsiString): AnsiString;
 var
   Bucket: TJclAnsiStrAnsiStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -4937,7 +4713,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -5238,23 +5017,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrIntfHashMap.GrowEntries(Bucket: TJclWideStrIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclWideStrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -5420,27 +5182,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrIntfHashMap.PackEntries(Bucket: TJclWideStrIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclWideStrIntfHashMap.PutAll(const AMap: IJclWideStrIntfMap);
 var
   It: IJclWideStrIterator;
@@ -5497,7 +5238,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -5516,7 +5258,7 @@ end;
 function TJclWideStrIntfHashMap.Remove(const Key: WideString): IInterface;
 var
   Bucket: TJclWideStrIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -5537,7 +5279,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -5838,23 +5583,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfWideStrHashMap.GrowEntries(Bucket: TJclIntfWideStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfWideStrHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -6024,27 +5752,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfWideStrHashMap.PackEntries(Bucket: TJclIntfWideStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfWideStrHashMap.PutAll(const AMap: IJclIntfWideStrMap);
 var
   It: IJclIntfIterator;
@@ -6101,7 +5808,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -6120,7 +5828,7 @@ end;
 function TJclIntfWideStrHashMap.Remove(const Key: IInterface): WideString;
 var
   Bucket: TJclIntfWideStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -6141,7 +5849,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -6442,23 +6153,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrWideStrHashMap.GrowEntries(Bucket: TJclWideStrWideStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclWideStrWideStrHashMap.IsEmpty: Boolean;
 begin
@@ -6624,27 +6318,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrWideStrHashMap.PackEntries(Bucket: TJclWideStrWideStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclWideStrWideStrHashMap.PutAll(const AMap: IJclWideStrWideStrMap);
 var
   It: IJclWideStrIterator;
@@ -6701,7 +6374,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -6720,7 +6394,7 @@ end;
 function TJclWideStrWideStrHashMap.Remove(const Key: WideString): WideString;
 var
   Bucket: TJclWideStrWideStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -6741,7 +6415,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -7042,23 +6719,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleIntfHashMap.GrowEntries(Bucket: TJclSingleIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclSingleIntfHashMap.IsEmpty: Boolean;
 begin
@@ -7224,27 +6884,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleIntfHashMap.PackEntries(Bucket: TJclSingleIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclSingleIntfHashMap.PutAll(const AMap: IJclSingleIntfMap);
 var
   It: IJclSingleIterator;
@@ -7301,7 +6940,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -7320,7 +6960,7 @@ end;
 function TJclSingleIntfHashMap.Remove(const Key: Single): IInterface;
 var
   Bucket: TJclSingleIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -7341,7 +6981,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -7642,23 +7285,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfSingleHashMap.GrowEntries(Bucket: TJclIntfSingleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfSingleHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -7828,27 +7454,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfSingleHashMap.PackEntries(Bucket: TJclIntfSingleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfSingleHashMap.PutAll(const AMap: IJclIntfSingleMap);
 var
   It: IJclIntfIterator;
@@ -7905,7 +7510,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -7924,7 +7530,7 @@ end;
 function TJclIntfSingleHashMap.Remove(const Key: IInterface): Single;
 var
   Bucket: TJclIntfSingleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -7945,7 +7551,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -8246,23 +7855,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleSingleHashMap.GrowEntries(Bucket: TJclSingleSingleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclSingleSingleHashMap.IsEmpty: Boolean;
 begin
@@ -8428,27 +8020,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleSingleHashMap.PackEntries(Bucket: TJclSingleSingleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclSingleSingleHashMap.PutAll(const AMap: IJclSingleSingleMap);
 var
   It: IJclSingleIterator;
@@ -8505,7 +8076,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -8524,7 +8096,7 @@ end;
 function TJclSingleSingleHashMap.Remove(const Key: Single): Single;
 var
   Bucket: TJclSingleSingleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -8545,7 +8117,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -8846,23 +8421,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleIntfHashMap.GrowEntries(Bucket: TJclDoubleIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclDoubleIntfHashMap.IsEmpty: Boolean;
 begin
@@ -9028,27 +8586,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleIntfHashMap.PackEntries(Bucket: TJclDoubleIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclDoubleIntfHashMap.PutAll(const AMap: IJclDoubleIntfMap);
 var
   It: IJclDoubleIterator;
@@ -9105,7 +8642,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -9124,7 +8662,7 @@ end;
 function TJclDoubleIntfHashMap.Remove(const Key: Double): IInterface;
 var
   Bucket: TJclDoubleIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -9145,7 +8683,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -9446,23 +8987,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfDoubleHashMap.GrowEntries(Bucket: TJclIntfDoubleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfDoubleHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -9632,27 +9156,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfDoubleHashMap.PackEntries(Bucket: TJclIntfDoubleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfDoubleHashMap.PutAll(const AMap: IJclIntfDoubleMap);
 var
   It: IJclIntfIterator;
@@ -9709,7 +9212,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -9728,7 +9232,7 @@ end;
 function TJclIntfDoubleHashMap.Remove(const Key: IInterface): Double;
 var
   Bucket: TJclIntfDoubleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -9749,7 +9253,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -10050,23 +9557,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleDoubleHashMap.GrowEntries(Bucket: TJclDoubleDoubleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclDoubleDoubleHashMap.IsEmpty: Boolean;
 begin
@@ -10232,27 +9722,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleDoubleHashMap.PackEntries(Bucket: TJclDoubleDoubleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclDoubleDoubleHashMap.PutAll(const AMap: IJclDoubleDoubleMap);
 var
   It: IJclDoubleIterator;
@@ -10309,7 +9778,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -10328,7 +9798,7 @@ end;
 function TJclDoubleDoubleHashMap.Remove(const Key: Double): Double;
 var
   Bucket: TJclDoubleDoubleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -10349,7 +9819,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -10650,23 +10123,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedIntfHashMap.GrowEntries(Bucket: TJclExtendedIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclExtendedIntfHashMap.IsEmpty: Boolean;
 begin
@@ -10832,27 +10288,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedIntfHashMap.PackEntries(Bucket: TJclExtendedIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclExtendedIntfHashMap.PutAll(const AMap: IJclExtendedIntfMap);
 var
   It: IJclExtendedIterator;
@@ -10909,7 +10344,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -10928,7 +10364,7 @@ end;
 function TJclExtendedIntfHashMap.Remove(const Key: Extended): IInterface;
 var
   Bucket: TJclExtendedIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -10949,7 +10385,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -11250,23 +10689,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfExtendedHashMap.GrowEntries(Bucket: TJclIntfExtendedBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfExtendedHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -11436,27 +10858,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfExtendedHashMap.PackEntries(Bucket: TJclIntfExtendedBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfExtendedHashMap.PutAll(const AMap: IJclIntfExtendedMap);
 var
   It: IJclIntfIterator;
@@ -11513,7 +10914,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -11532,7 +10934,7 @@ end;
 function TJclIntfExtendedHashMap.Remove(const Key: IInterface): Extended;
 var
   Bucket: TJclIntfExtendedBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -11553,7 +10955,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -11854,23 +11259,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedExtendedHashMap.GrowEntries(Bucket: TJclExtendedExtendedBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclExtendedExtendedHashMap.IsEmpty: Boolean;
 begin
@@ -12036,27 +11424,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedExtendedHashMap.PackEntries(Bucket: TJclExtendedExtendedBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclExtendedExtendedHashMap.PutAll(const AMap: IJclExtendedExtendedMap);
 var
   It: IJclExtendedIterator;
@@ -12113,7 +11480,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -12132,7 +11500,7 @@ end;
 function TJclExtendedExtendedHashMap.Remove(const Key: Extended): Extended;
 var
   Bucket: TJclExtendedExtendedBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -12153,7 +11521,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -12454,23 +11825,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntfHashMap.GrowEntries(Bucket: TJclIntegerIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclIntegerIntfHashMap.IsEmpty: Boolean;
 begin
@@ -12636,27 +11990,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntfHashMap.PackEntries(Bucket: TJclIntegerIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntegerIntfHashMap.PutAll(const AMap: IJclIntegerIntfMap);
 var
   It: IJclIntegerIterator;
@@ -12713,7 +12046,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -12732,7 +12066,7 @@ end;
 function TJclIntegerIntfHashMap.Remove(Key: Integer): IInterface;
 var
   Bucket: TJclIntegerIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -12753,7 +12087,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -13054,23 +12391,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntegerHashMap.GrowEntries(Bucket: TJclIntfIntegerBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfIntegerHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -13240,27 +12560,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfIntegerHashMap.PackEntries(Bucket: TJclIntfIntegerBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfIntegerHashMap.PutAll(const AMap: IJclIntfIntegerMap);
 var
   It: IJclIntfIterator;
@@ -13317,7 +12616,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -13336,7 +12636,7 @@ end;
 function TJclIntfIntegerHashMap.Remove(const Key: IInterface): Integer;
 var
   Bucket: TJclIntfIntegerBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -13357,7 +12657,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -13658,23 +12961,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntegerHashMap.GrowEntries(Bucket: TJclIntegerIntegerBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclIntegerIntegerHashMap.IsEmpty: Boolean;
 begin
@@ -13840,27 +13126,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerIntegerHashMap.PackEntries(Bucket: TJclIntegerIntegerBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntegerIntegerHashMap.PutAll(const AMap: IJclIntegerIntegerMap);
 var
   It: IJclIntegerIterator;
@@ -13917,7 +13182,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -13936,7 +13202,7 @@ end;
 function TJclIntegerIntegerHashMap.Remove(Key: Integer): Integer;
 var
   Bucket: TJclIntegerIntegerBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -13957,7 +13223,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -14258,23 +13527,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalIntfHashMap.GrowEntries(Bucket: TJclCardinalIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclCardinalIntfHashMap.IsEmpty: Boolean;
 begin
@@ -14440,27 +13692,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalIntfHashMap.PackEntries(Bucket: TJclCardinalIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclCardinalIntfHashMap.PutAll(const AMap: IJclCardinalIntfMap);
 var
   It: IJclCardinalIterator;
@@ -14517,7 +13748,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -14536,7 +13768,7 @@ end;
 function TJclCardinalIntfHashMap.Remove(Key: Cardinal): IInterface;
 var
   Bucket: TJclCardinalIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -14557,7 +13789,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -14858,23 +14093,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfCardinalHashMap.GrowEntries(Bucket: TJclIntfCardinalBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfCardinalHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -15044,27 +14262,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfCardinalHashMap.PackEntries(Bucket: TJclIntfCardinalBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfCardinalHashMap.PutAll(const AMap: IJclIntfCardinalMap);
 var
   It: IJclIntfIterator;
@@ -15121,7 +14318,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -15140,7 +14338,7 @@ end;
 function TJclIntfCardinalHashMap.Remove(const Key: IInterface): Cardinal;
 var
   Bucket: TJclIntfCardinalBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -15161,7 +14359,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -15462,23 +14663,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalCardinalHashMap.GrowEntries(Bucket: TJclCardinalCardinalBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclCardinalCardinalHashMap.IsEmpty: Boolean;
 begin
@@ -15644,27 +14828,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalCardinalHashMap.PackEntries(Bucket: TJclCardinalCardinalBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclCardinalCardinalHashMap.PutAll(const AMap: IJclCardinalCardinalMap);
 var
   It: IJclCardinalIterator;
@@ -15721,7 +14884,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -15740,7 +14904,7 @@ end;
 function TJclCardinalCardinalHashMap.Remove(Key: Cardinal): Cardinal;
 var
   Bucket: TJclCardinalCardinalBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -15761,7 +14925,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -16062,23 +15229,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64IntfHashMap.GrowEntries(Bucket: TJclInt64IntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclInt64IntfHashMap.IsEmpty: Boolean;
 begin
@@ -16244,27 +15394,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64IntfHashMap.PackEntries(Bucket: TJclInt64IntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclInt64IntfHashMap.PutAll(const AMap: IJclInt64IntfMap);
 var
   It: IJclInt64Iterator;
@@ -16321,7 +15450,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -16340,7 +15470,7 @@ end;
 function TJclInt64IntfHashMap.Remove(const Key: Int64): IInterface;
 var
   Bucket: TJclInt64IntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -16361,7 +15491,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -16662,23 +15795,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfInt64HashMap.GrowEntries(Bucket: TJclIntfInt64Bucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfInt64HashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -16848,27 +15964,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfInt64HashMap.PackEntries(Bucket: TJclIntfInt64Bucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfInt64HashMap.PutAll(const AMap: IJclIntfInt64Map);
 var
   It: IJclIntfIterator;
@@ -16925,7 +16020,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -16944,7 +16040,7 @@ end;
 function TJclIntfInt64HashMap.Remove(const Key: IInterface): Int64;
 var
   Bucket: TJclIntfInt64Bucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -16965,7 +16061,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -17266,23 +16365,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64Int64HashMap.GrowEntries(Bucket: TJclInt64Int64Bucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclInt64Int64HashMap.IsEmpty: Boolean;
 begin
@@ -17448,27 +16530,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64Int64HashMap.PackEntries(Bucket: TJclInt64Int64Bucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclInt64Int64HashMap.PutAll(const AMap: IJclInt64Int64Map);
 var
   It: IJclInt64Iterator;
@@ -17525,7 +16586,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -17544,7 +16606,7 @@ end;
 function TJclInt64Int64HashMap.Remove(const Key: Int64): Int64;
 var
   Bucket: TJclInt64Int64Bucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -17565,7 +16627,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -17867,23 +16932,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrIntfHashMap.GrowEntries(Bucket: TJclPtrIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclPtrIntfHashMap.IsEmpty: Boolean;
 begin
@@ -18049,27 +17097,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrIntfHashMap.PackEntries(Bucket: TJclPtrIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclPtrIntfHashMap.PutAll(const AMap: IJclPtrIntfMap);
 var
   It: IJclPtrIterator;
@@ -18126,7 +17153,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -18145,7 +17173,7 @@ end;
 function TJclPtrIntfHashMap.Remove(Key: Pointer): IInterface;
 var
   Bucket: TJclPtrIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -18166,7 +17194,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -18467,23 +17498,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfPtrHashMap.GrowEntries(Bucket: TJclIntfPtrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfPtrHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -18653,27 +17667,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfPtrHashMap.PackEntries(Bucket: TJclIntfPtrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfPtrHashMap.PutAll(const AMap: IJclIntfPtrMap);
 var
   It: IJclIntfIterator;
@@ -18730,7 +17723,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -18749,7 +17743,7 @@ end;
 function TJclIntfPtrHashMap.Remove(const Key: IInterface): Pointer;
 var
   Bucket: TJclIntfPtrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -18770,7 +17764,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -19071,23 +18068,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrPtrHashMap.GrowEntries(Bucket: TJclPtrPtrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclPtrPtrHashMap.IsEmpty: Boolean;
 begin
@@ -19253,27 +18233,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrPtrHashMap.PackEntries(Bucket: TJclPtrPtrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclPtrPtrHashMap.PutAll(const AMap: IJclPtrPtrMap);
 var
   It: IJclPtrIterator;
@@ -19330,7 +18289,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -19349,7 +18309,7 @@ end;
 function TJclPtrPtrHashMap.Remove(Key: Pointer): Pointer;
 var
   Bucket: TJclPtrPtrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -19370,7 +18330,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -19685,23 +18648,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfHashMap.GrowEntries(Bucket: TJclIntfBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclIntfHashMap.Hash(const AInterface: IInterface): Integer;
 begin
   Result := Integer(AInterface);
@@ -19871,27 +18817,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntfHashMap.PackEntries(Bucket: TJclIntfBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntfHashMap.PutAll(const AMap: IJclIntfMap);
 var
   It: IJclIntfIterator;
@@ -19948,7 +18873,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -19967,7 +18893,7 @@ end;
 function TJclIntfHashMap.Remove(const Key: IInterface): TObject;
 var
   Bucket: TJclIntfBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -19988,7 +18914,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -20302,23 +19231,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrHashMap.GrowEntries(Bucket: TJclAnsiStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclAnsiStrHashMap.IsEmpty: Boolean;
 begin
@@ -20484,27 +19396,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclAnsiStrHashMap.PackEntries(Bucket: TJclAnsiStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclAnsiStrHashMap.PutAll(const AMap: IJclAnsiStrMap);
 var
   It: IJclAnsiStrIterator;
@@ -20561,7 +19452,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -20580,7 +19472,7 @@ end;
 function TJclAnsiStrHashMap.Remove(const Key: AnsiString): TObject;
 var
   Bucket: TJclAnsiStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -20601,7 +19493,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -20915,23 +19810,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrHashMap.GrowEntries(Bucket: TJclWideStrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclWideStrHashMap.IsEmpty: Boolean;
 begin
@@ -21097,27 +19975,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclWideStrHashMap.PackEntries(Bucket: TJclWideStrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclWideStrHashMap.PutAll(const AMap: IJclWideStrMap);
 var
   It: IJclWideStrIterator;
@@ -21174,7 +20031,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -21193,7 +20051,7 @@ end;
 function TJclWideStrHashMap.Remove(const Key: WideString): TObject;
 var
   Bucket: TJclWideStrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -21214,7 +20072,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -21528,23 +20389,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleHashMap.GrowEntries(Bucket: TJclSingleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclSingleHashMap.IsEmpty: Boolean;
 begin
@@ -21710,27 +20554,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclSingleHashMap.PackEntries(Bucket: TJclSingleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclSingleHashMap.PutAll(const AMap: IJclSingleMap);
 var
   It: IJclSingleIterator;
@@ -21787,7 +20610,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -21806,7 +20630,7 @@ end;
 function TJclSingleHashMap.Remove(const Key: Single): TObject;
 var
   Bucket: TJclSingleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -21827,7 +20651,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -22141,23 +20968,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleHashMap.GrowEntries(Bucket: TJclDoubleBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclDoubleHashMap.IsEmpty: Boolean;
 begin
@@ -22323,27 +21133,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclDoubleHashMap.PackEntries(Bucket: TJclDoubleBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclDoubleHashMap.PutAll(const AMap: IJclDoubleMap);
 var
   It: IJclDoubleIterator;
@@ -22400,7 +21189,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -22419,7 +21209,7 @@ end;
 function TJclDoubleHashMap.Remove(const Key: Double): TObject;
 var
   Bucket: TJclDoubleBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -22440,7 +21230,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -22754,23 +21547,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedHashMap.GrowEntries(Bucket: TJclExtendedBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclExtendedHashMap.IsEmpty: Boolean;
 begin
@@ -22936,27 +21712,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclExtendedHashMap.PackEntries(Bucket: TJclExtendedBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclExtendedHashMap.PutAll(const AMap: IJclExtendedMap);
 var
   It: IJclExtendedIterator;
@@ -23013,7 +21768,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -23032,7 +21788,7 @@ end;
 function TJclExtendedHashMap.Remove(const Key: Extended): TObject;
 var
   Bucket: TJclExtendedBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -23053,7 +21809,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -23367,23 +22126,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerHashMap.GrowEntries(Bucket: TJclIntegerBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclIntegerHashMap.IsEmpty: Boolean;
 begin
@@ -23549,27 +22291,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclIntegerHashMap.PackEntries(Bucket: TJclIntegerBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclIntegerHashMap.PutAll(const AMap: IJclIntegerMap);
 var
   It: IJclIntegerIterator;
@@ -23626,7 +22347,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -23645,7 +22367,7 @@ end;
 function TJclIntegerHashMap.Remove(Key: Integer): TObject;
 var
   Bucket: TJclIntegerBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -23666,7 +22388,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -23980,23 +22705,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalHashMap.GrowEntries(Bucket: TJclCardinalBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclCardinalHashMap.IsEmpty: Boolean;
 begin
@@ -24162,27 +22870,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclCardinalHashMap.PackEntries(Bucket: TJclCardinalBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclCardinalHashMap.PutAll(const AMap: IJclCardinalMap);
 var
   It: IJclCardinalIterator;
@@ -24239,7 +22926,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -24258,7 +22946,7 @@ end;
 function TJclCardinalHashMap.Remove(Key: Cardinal): TObject;
 var
   Bucket: TJclCardinalBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -24279,7 +22967,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -24593,23 +23284,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64HashMap.GrowEntries(Bucket: TJclInt64Bucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclInt64HashMap.IsEmpty: Boolean;
 begin
@@ -24775,27 +23449,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclInt64HashMap.PackEntries(Bucket: TJclInt64Bucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclInt64HashMap.PutAll(const AMap: IJclInt64Map);
 var
   It: IJclInt64Iterator;
@@ -24852,7 +23505,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -24871,7 +23525,7 @@ end;
 function TJclInt64HashMap.Remove(const Key: Int64): TObject;
 var
   Bucket: TJclInt64Bucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -24892,7 +23546,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -25207,23 +23864,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrHashMap.GrowEntries(Bucket: TJclPtrBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclPtrHashMap.IsEmpty: Boolean;
 begin
@@ -25389,27 +24029,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclPtrHashMap.PackEntries(Bucket: TJclPtrBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclPtrHashMap.PutAll(const AMap: IJclPtrMap);
 var
   It: IJclPtrIterator;
@@ -25466,7 +24085,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -25485,7 +24105,7 @@ end;
 function TJclPtrHashMap.Remove(Key: Pointer): TObject;
 var
   Bucket: TJclPtrBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -25506,7 +24126,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -25834,23 +24457,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap.GrowEntries(Bucket: TJclBucket);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 function TJclHashMap.Hash(AObject: TObject): Integer;
 begin
   Result := Integer(AObject);
@@ -26020,27 +24626,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap.PackEntries(Bucket: TJclBucket);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclHashMap.PutAll(const AMap: IJclMap);
 var
   It: IJclIterator;
@@ -26097,7 +24682,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -26116,7 +24702,7 @@ end;
 function TJclHashMap.Remove(Key: TObject): TObject;
 var
   Bucket: TJclBucket;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -26137,7 +24723,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
@@ -26461,23 +25050,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.GrowEntries(Bucket: TJclBucket<TKey, TValue>);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 
 function TJclHashMap<TKey, TValue>.IsEmpty: Boolean;
 begin
@@ -26639,27 +25211,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure TJclHashMap<TKey, TValue>.PackEntries(Bucket: TJclBucket<TKey, TValue>);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure TJclHashMap<TKey, TValue>.PutAll(const AMap: IJclMap<TKey, TValue>);
 var
   It: IJclIterator<TKey>;
@@ -26716,7 +25267,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -26735,7 +25287,7 @@ end;
 function TJclHashMap<TKey, TValue>.Remove(const Key: TKey): TValue;
 var
   Bucket: TJclBucket<TKey, TValue>;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -26756,7 +25308,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally

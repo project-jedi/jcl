@@ -536,6 +536,7 @@ type
 
   IJclPackable = interface
     ['{03802D2B-E0AB-4300-A777-0B8A2BD993DF}']
+    function CalcGrowCapacity(ACapacity, ASize: Integer): Integer;
     function GetAutoPackParameter: Integer;
     function GetAutoPackStrategy: TJclAutoPackStrategy;
     function GetCapacity: Integer;
@@ -559,6 +560,7 @@ type
 
   IJclGrowable = interface(IJclPackable)
     ['{C71E8586-5688-444C-9BDD-9969D988123B}']
+    function CalcPackCapacity(ACapacity, ASize: Integer): Integer;
     function GetAutoGrowParameter: Integer;
     function GetAutoGrowStrategy: TJclAutoGrowStrategy;
     procedure Grow;

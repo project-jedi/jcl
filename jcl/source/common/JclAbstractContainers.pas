@@ -122,6 +122,7 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
     // IJclGrowable is not in interface list because some descendants won't use this code
     { IJclGrowable }
+    function CalcGrowCapacity(ACapacity, ASize: Integer): Integer; virtual;
     function GetAutoGrowParameter: Integer; virtual;
     function GetAutoGrowStrategy: TJclAutoGrowStrategy; virtual;
     procedure Grow; virtual;
@@ -129,6 +130,7 @@ type
     procedure SetAutoGrowStrategy(Value: TJclAutoGrowStrategy); virtual;
     // IJclPackable is not in interface list because some descendants won't use this code
     { IJclPackable }
+    function CalcPackCapacity(ACapacity, ASize: Integer): Integer; virtual;
     function GetAutoPackParameter: Integer; virtual;
     function GetAutoPackStrategy: TJclAutoPackStrategy; virtual;
     function GetCapacity: Integer; virtual;
@@ -796,35 +798,60 @@ end;
 
 procedure TJclAbstractContainerBase.AutoGrow;
 begin
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      SetCapacity(FCapacity + 1);
-    agsProportional:
-      SetCapacity(FCapacity + FCapacity div FAutoGrowParameter);
-    agsIncremental:
-      SetCapacity(FCapacity + FAutoGrowParameter);
-  end;
+  SetCapacity(CalcGrowCapacity(FCapacity, FSize));
 end;
 
 procedure TJclAbstractContainerBase.AutoPack;
+begin
+  SetCapacity(CalcPackCapacity(FCapacity, FSize));
+end;
+
+function TJclAbstractContainerBase.CalcGrowCapacity(ACapacity, ASize: Integer): Integer;
+var
+  Increment: Integer;
+begin
+  Result := ACapacity;
+  if ASize = ACapacity then
+  begin
+    case FAutoGrowStrategy of
+      agsDisabled: ;
+      agsAgressive:
+        Result := ACapacity + 1;
+      agsProportional:
+        begin
+          Increment := ACapacity div FAutoGrowParameter;
+          if Increment = 0 then
+            Increment := 1;
+          Result := ACapacity + Increment;
+        end;
+      agsIncremental:
+        Result := ACapacity + FAutoGrowParameter;
+    end;
+  end;
+end;
+
+function TJclAbstractContainerBase.CalcPackCapacity(ACapacity, ASize: Integer): Integer;
 var
   Decrement: Integer;
 begin
-  case FAutoPackStrategy of
-    apsDisabled:
+  Result := ACapacity;
+  if ASize < ACapacity then
+  begin
+    case FAutoPackStrategy of
+      apsDisabled:
+        Decrement := 0;
+      apsAgressive:
+        Decrement := 1;
+      apsProportional:
+        Decrement := ACapacity div FAutoPackParameter;
+      apsIncremental:
+        Decrement := FAutoPackParameter;
+    else
       Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := FCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
+    end;
+    if (Decrement > 0) and ((ASize + Decrement) <= ACapacity) then
+      Result := ASize;
   end;
-  if (Decrement > 0) and ((FSize + Decrement) <= FCapacity) then
-    SetCapacity(FSize);
 end;
 
 function TJclAbstractContainerBase.CheckDuplicate: Boolean;
@@ -911,7 +938,7 @@ end;
 procedure TJclAbstractContainerBase.Grow;
 begin
   // override to customize
-  AutoGrow;
+  SetCapacity(CalcGrowCapacity(FCapacity, FSize));
 end;
 
 function TJclAbstractContainerBase.IntfClone: IInterface;
@@ -935,7 +962,7 @@ end;
 procedure TJclAbstractContainerBase.Pack;
 begin
   // override to customize
-  SetCapacity(FSize);
+  SetCapacity(CalcPackCapacity(FCapacity, FSize));
 end;
 
 procedure TJclAbstractContainerBase.SetAllowDefaultElements(Value: Boolean);

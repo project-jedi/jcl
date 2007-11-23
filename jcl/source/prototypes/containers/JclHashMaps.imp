@@ -27,8 +27,6 @@
     procedure AssignDataTo(Dest: TJclAbstractContainerBase); override;
     procedure AssignPropertiesTo(Dest: TJclAbstractContainerBase); override;
     procedure MoveArray(var List: ENTRYARRAYTYPENAME; FromIndex, ToIndex, Count: Integer);
-    procedure GrowEntries(Bucket: BUCKETTYPENAME); virtual;
-    procedure PackEntries(Bucket: BUCKETTYPENAME); virtual;
     { IJclPackable }
     procedure Pack; override;
     procedure SetCapacity(Value: Integer); override;
@@ -278,23 +276,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.GrowEntries(Bucket: BUCKETTYPENAME);
-var
-  BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoGrowStrategy of
-    agsDisabled: ;
-    agsAgressive:
-      Inc(BucketCapacity, 1);
-    agsProportional:
-      Inc(BucketCapacity, BucketCapacity div FAutoGrowParameter);
-    agsIncremental:
-      Inc(BucketCapacity, FAutoGrowParameter);
-  end;
-  SetLength(Bucket.Entries, BucketCapacity);
-end;
-
 {$JPPEXPANDMACRO HASH}
 function SELFCLASSNAME.IsEmpty: Boolean;
 begin
@@ -456,27 +437,6 @@ begin
   {$ENDIF THREADSAFE}
 end;
 
-procedure SELFCLASSNAME.PackEntries(Bucket: BUCKETTYPENAME);
-var
-  Decrement, BucketCapacity: Integer;
-begin
-  BucketCapacity := Length(Bucket.Entries);
-  case FAutoPackStrategy of
-    apsDisabled:
-      Decrement := 0;
-    apsAgressive:
-      Decrement := 1;
-    apsProportional:
-      Decrement := BucketCapacity div FAutoPackParameter;
-    apsIncremental:
-      Decrement := FAutoPackParameter;
-  else
-    Decrement := 0;
-  end;
-  if (Decrement > 0) and ((Bucket.Size + Decrement) <= BucketCapacity) then
-    SetLength(Bucket.Entries, Bucket.Size);
-end;
-
 procedure SELFCLASSNAME.PutAll(const AMap: MAPINTERFACENAME);
 var
   It: KEYITRINTERFACENAME;
@@ -533,7 +493,8 @@ begin
       end;
 
       if Bucket.Size = Length(Bucket.Entries) then
-        GrowEntries(Bucket);
+        SetLength(Bucket.Entries, CalcGrowCapacity(Bucket.Size, Bucket.Size));
+
       if Bucket.Size < Length(Bucket.Entries) then
       begin
         Bucket.Entries[Bucket.Size].Key := Key;
@@ -552,7 +513,7 @@ end;
 function SELFCLASSNAME.Remove(KEYPARAMETERDECLARATION): VALUETYPENAME;
 var
   Bucket: BUCKETTYPENAME;
-  I: Integer;
+  I, NewCapacity: Integer;
 begin
   {$IFDEF THREADSAFE}
   WriteLock;
@@ -573,7 +534,10 @@ begin
           Dec(FSize);
           Break;
         end;
-      PackEntries(Bucket);
+
+      NewCapacity := CalcPackCapacity(Length(Bucket.Entries), Bucket.Size);
+      if NewCapacity < Length(Bucket.Entries) then
+        SetLength(Bucket.Entries, NewCapacity);
     end;
   {$IFDEF THREADSAFE}
   finally
