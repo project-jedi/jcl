@@ -8897,6 +8897,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -8907,7 +8910,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -9587,6 +9590,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -9597,7 +9603,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -10277,6 +10283,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -10287,7 +10296,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -10967,6 +10976,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -10977,7 +10989,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -11657,6 +11669,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -11667,7 +11682,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -12347,6 +12362,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -12357,7 +12375,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -13037,6 +13055,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -13047,7 +13068,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -13727,6 +13748,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -13737,7 +13761,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -14417,6 +14441,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -14427,7 +14454,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -15108,6 +15135,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -15118,7 +15148,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -15799,6 +15829,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -15809,7 +15842,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
@@ -16490,6 +16523,9 @@ begin
         if Comp > 0 then
           Current := Current.Right
         else
+        if CheckDuplicate then
+          Current := Current.Left // arbitrary decision
+        else
           Break;
       end;
       if (Comp <> 0) or CheckDuplicate then
@@ -16500,7 +16536,7 @@ begin
         if Save = nil then
           FRoot := NewNode
         else
-        if ItemsCompare(NewNode.Value, Save.Value) < 0 then
+        if ItemsCompare(NewNode.Value, Save.Value) <= 0 then
           Save.Left := NewNode
         else
           Save.Right := NewNode;
