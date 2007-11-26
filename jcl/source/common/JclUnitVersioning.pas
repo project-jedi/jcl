@@ -480,7 +480,11 @@ begin
   for I := FModules.Count - 1 downto 0 do
   begin
     SetLength(Buffer, 1024);
+    {$IFDEF FPC}
+    if dlsym(Pointer(Modules[I].Instance), '_init') = nil then
+    {$ELSE}
     if GetModuleFileName(Modules[I].Instance, PChar(Buffer), 1024) = 0 then
+    {$ENDIF}
       // This module is no more in memory but has not unregistered itself so
       // unregister it here.
       UnregisterModule(Modules[I]);

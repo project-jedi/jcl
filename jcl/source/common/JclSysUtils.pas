@@ -132,7 +132,7 @@ function SharedAllocMem(const Name: string; Size: Cardinal;
 { SharedFreeMem releases the shared memory if it was the last reference. }
 function SharedFreeMem(var p{: Pointer}): Boolean;
 
-// Functions for the shared memory user 
+// Functions for the shared memory user
 
 { SharedOpenMem returns True if the shared memory was already allocated by
   SharedGetMem or SharedAllocMem. Otherwise it returns False.
@@ -951,7 +951,7 @@ begin
   {$IFDEF THREADSAFE}
   HandleListAccess := GetAccessToHandleList;
   {$ENDIF THREADSAFE}
-  
+
   // search for same name
   Iterate := MMFHandleList;
   while Iterate <> nil do
@@ -972,7 +972,7 @@ begin
   begin
     if Size = 0 then
       raise ESharedMemError.CreateResFmt(@RsInvalidMMFEmpty, [Name]);
-      
+
     Protect := PAGE_READWRITE;
     if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
        (DesiredAccess = FILE_MAP_COPY) then
@@ -1626,7 +1626,8 @@ var
 begin
   PatchAddress := Pointer(Integer(AClass) + Offset);
   if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
+      [SysErrorMessage({$IFDEF FPC}GetLastOSError{$ELSE}GetLastError{$ENDIF})]);
 
   if WrittenBytes <> SizeOf(Pointer) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
@@ -1782,7 +1783,8 @@ var
 begin
   PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
   if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
-    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+    raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError,
+      [SysErrorMessage({$IFDEF FPC}GetLastOSError{$ELSE}GetLastError{$ENDIF})]);
   if WrittenBytes <> SizeOf(Pointer) then
     raise EJclVMTError.CreateResFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
   // make sure that everything keeps working in a dual processor setting
@@ -2244,7 +2246,7 @@ begin
   end;
 
   FirstDigitPos := I + 1;
-  
+
   if HasSign then
     Result[I] := SignChar(Value)
   else

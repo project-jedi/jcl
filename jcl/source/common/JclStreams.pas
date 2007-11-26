@@ -660,7 +660,11 @@ function TJclHandleStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 const
   SeekOrigins: array [TSeekOrigin] of Cardinal = ( SEEK_SET {soBeginning}, SEEK_CUR {soCurrent}, SEEK_END {soEnd} );
 begin
+{$IFDEF KYLIX}
   Result := __lseek(Handle, Offset, SeekOrigins[Origin]);
+{$ELSE}
+  Result := lseek(Handle, Offset, SeekOrigins[Origin]);
+{$ENDIF}
 end;
 {$ENDIF LINUX}
 
@@ -682,21 +686,24 @@ end;
 constructor TJclFileStream.Create(const FileName: string; Mode: Word; Rights: Cardinal);
 var
   H: THandle;
-{$IFDEF KYLIX}
+{$IFDEF LINUX}
 const
-  INVALID_HANDLE_VALUE = 0;
-{$ENDIF KYLIX}
+  INVALID_HANDLE_VALUE = -1;
+{$ENDIF LINUX}
 begin
   if Mode = fmCreate then
   begin
+    {$IFDEF LINUX}
     {$IFDEF KYLIX}
     H := __open(PChar(FileName), O_CREAT or O_RDWR, FileAccessRights);
-    inherited Create(H);
     {$ELSE ~KYLIX}
+    H := open(PChar(FileName), O_CREAT or O_RDWR, $666);
+    {$ENDIF}
+    {$ELSE ~LINUX}
     H := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
       0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+    {$ENDIF ~LINUX}
     inherited Create(H);
-    {$ENDIF ~KYLIX}
     if Handle = INVALID_HANDLE_VALUE then
       {$IFDEF CLR}
       raise EJclStreamError.CreateFmt(RsStreamsCreateError, [FileName]);

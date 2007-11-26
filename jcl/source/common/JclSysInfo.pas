@@ -1434,7 +1434,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-{$IFDEF KYLIX}
+{$IFDEF LINUX}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
 var
   P: PPChar;
@@ -1458,7 +1458,7 @@ function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 begin
   Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
 end;
-{$ENDIF KYLIX}
+{$ENDIF LINUX}
 
 {$IFDEF MSWINDOWS}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;

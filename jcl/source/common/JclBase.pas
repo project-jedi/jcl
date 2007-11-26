@@ -347,12 +347,16 @@ procedure MoveArray(var List: TDynStringArray; FromIndex, ToIndex, Count: Intege
 procedure MoveArray(var List: TDynFloatArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynPointerArray; FromIndex, ToIndex, Count: Integer); overload;
 {$ENDIF ~CLR}
+{$IFNDEF FPC}
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
+{$ENDIF}
 procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynObjectArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynSingleArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynDoubleArray; FromIndex, ToIndex, Count: Integer); overload;
+{$IFNDEF FPC}
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
+{$ENDIF}
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynCardinalArray; FromIndex, ToIndex, Count: Integer); overload;
 procedure MoveArray(var List: TDynInt64Array; FromIndex, ToIndex, Count: Integer); overload;
@@ -579,6 +583,7 @@ begin
 end;
 {$ENDIF ~CLR}
 
+{$IFNDEF FPC}
 procedure MoveArray(var List: TDynAnsiStringArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
 var
@@ -636,6 +641,7 @@ begin
   end;
 end;
 {$ENDIF CLR}
+{$ENDIF FPC}
 
 procedure MoveArray(var List: TDynWideStringArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
@@ -869,6 +875,7 @@ begin
 end;
 {$ENDIF CLR}
 
+{$IFNDEF FPC}
 procedure MoveArray(var List: TDynExtendedArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}
 var
@@ -926,6 +933,7 @@ begin
   end;
 end;
 {$ENDIF CLR}
+{$ENDIF FPC}
 
 procedure MoveArray(var List: TDynIntegerArray; FromIndex, ToIndex, Count: Integer); overload;
 {$IFDEF CLR}

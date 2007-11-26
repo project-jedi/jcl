@@ -355,9 +355,9 @@ type
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     {$ENDIF CLR}
-    {$IFDEF COMPILER5}
+    {$IF defined(COMPILER5) OR defined(FPC)}
     function CompareStrings(const S1, S2: string): Integer; virtual;
-    {$ENDIF COMPILER5}
+    {$IFEND}
   public
     constructor Create;
     destructor Destroy; override;
@@ -1126,12 +1126,12 @@ begin
   Result := FSelfAsInterface;
 end;
 
-{$IFDEF COMPILER5}
+{$IF defined(COMPILER5) OR defined(FPC)}
 function TJclStringListImpl.CompareStrings(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareText(S1, S2);
 end;
-{$ENDIF COMPILER5}
+{$IFEND}
 
 function TJclStringListImpl.SortByName: IJclStringList;
 
