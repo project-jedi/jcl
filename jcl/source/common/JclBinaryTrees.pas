@@ -9635,18 +9635,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -10328,18 +10329,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -11021,18 +11023,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -11714,18 +11717,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -12407,18 +12411,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -13100,18 +13105,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -13793,18 +13799,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -14486,18 +14493,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -15179,18 +15187,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -15873,18 +15882,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -16567,18 +16577,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
@@ -17256,18 +17267,19 @@ begin
         if Successor <> Current.Right then
         begin
           // remove references to successor
-          if Successor.Parent.Left = Successor then
-            Successor.Parent.Left := Successor.Right
-          else
-            Successor.Parent.Right := Successor.Right;
+          Successor.Parent.Left := Successor.Right;
           if Successor.Right <> nil then
             Successor.Right.Parent := Successor.Parent;
           Successor.Right := Current.Right;
+          if Successor.Right <> nil then
+            Successor.Right.Parent := Successor;
         end;
 
         // insert successor in new position
-        Successor.Parent := Current.Parent;
         Successor.Left := Current.Left;
+        if Current.Left <> nil then
+          Current.Left.Parent := Successor;
+        Successor.Parent := Current.Parent;
         if Current.Parent <> nil then
         begin
           if Current.Parent.Left = Current then
