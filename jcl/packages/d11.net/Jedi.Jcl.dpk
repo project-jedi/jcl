@@ -28,8 +28,7 @@ package Jedi.Jcl;
 requires
   Borland.Delphi,
   Borland.Vcl,
-  System.Drawing,
-  Borland.VclRtl;
+  System.Drawing;
 
 contains
   JclAbstractContainers in '..\..\source\common\JclAbstractContainers.pas',
@@ -73,7 +72,8 @@ contains
   JclUnitConv in '..\..\source\common\JclUnitConv.pas',
   JclValidation in '..\..\source\common\JclValidation.pas',
   JclVectors in '..\..\source\common\JclVectors.pas',
-  JclSynch in '..\..\source\windows\JclSynch.pas';
+  JclSynch in '..\..\source\windows\JclSynch.pas',
+  JclTrees in '..\..\source\common\JclTrees.pas';
 
 [assembly: AssemblyDescription('')]
 [assembly: AssemblyConfiguration('')]

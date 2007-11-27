@@ -44,6 +44,7 @@ ContainersProt:	JclArrayLists.pas \
 		JclQueues.pas \
 		JclSortedMaps.pas \
 		JclStacks.pas \
+                JclTrees.pas \
 		JclVectors.pas
 
 Containers:	..\Common\JclArrayLists.pas \
@@ -55,6 +56,7 @@ Containers:	..\Common\JclArrayLists.pas \
 		..\Common\JclQueues.pas \
 		..\Common\JclSortedMaps.pas \
 		..\Common\JclStacks.pas \
+                ..\Common\JclTrees.pas \
 		..\Common\JclVectors.pas
 
 ..\vcl\JclGraphics.pas: \

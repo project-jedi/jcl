@@ -44,6 +44,7 @@
     <File Name="..\..\source\common\JclStrings.pas" Targets="JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclValidation.pas" Targets="JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclVectors.pas" Targets="JclDotNet" Formname="" Condition=""/>

@@ -64,6 +64,7 @@
     <File Name="..\..\source\common\JclStrings.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioningProviders.pas" Targets="JclDev" Formname="" Condition=""/>

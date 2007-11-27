@@ -52,6 +52,7 @@
       ..\..\lib\k3\JclStrings.obj
       ..\..\lib\k3\JclSysInfo.obj
       ..\..\lib\k3\JclSysUtils.obj
+      ..\..\lib\k3\JclTrees.obj
       ..\..\lib\k3\JclUnitConv.obj
       ..\..\lib\k3\JclUnitVersioning.obj
       ..\..\lib\k3\JclUnitVersioningProviders.obj
@@ -153,6 +154,7 @@
       <FILE FILENAME="../../source/common/JclStrings.pas" FORMNAME="" UNITNAME="JclStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclTrees.pas" FORMNAME="" UNITNAME="JclTrees" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitVersioning.pas" FORMNAME="" UNITNAME="JclUnitVersioning" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitVersioningProviders.pas" FORMNAME="" UNITNAME="JclUnitVersioningProviders" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

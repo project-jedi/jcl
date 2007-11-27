@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{42539ecc-f491-48a0-929a-5b8ff3a9fb1f}</ProjectGuid>
-    <MainSource>Jedi.Jcl.dpk</MainSource>
+    <ProjectGuid>{44DB645B-C167-410D-9334-38AF9F0C7913}</ProjectGuid>
+    <MainSource>Jedi.Jcl.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\5.0\Bpl\Jedi.Jcl.dll</DCC_DependencyCheckOutputName>
-    <DCC_UsePackage>Borland.VclRtl;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll;Borland.Vcl;Borland.Delphi</DCC_UsePackage>
+    <DCC_DependencyCheckOutputName>Jedi.Jcl.dll</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -16,109 +15,111 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_Define>RELEASE</DCC_Define>
+    <DCC_DcuOutput>..\..\lib\d11.net</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\lib\d11.net</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\lib\d11.net</DCC_HppOutput>
+    <DCC_DcpOutput>..\..\lib\d11.net</DCC_DcpOutput>
+    <DCC_UnitSearchPath>..\..\lib\d11.net;..\..\source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\lib\d11.net;..\..\source</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\lib\d11.net;..\..\source</DCC_ObjPath>
+    <DCC_IncludePath>..\..\lib\d11.net;..\..\source</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
     <DCC_DebugVN>True</DCC_DebugVN>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_Platform>x86</DCC_Platform>
-    <DCC_NameSpace>Borland.Vcl</DCC_NameSpace>
-    <DCC_UnitSearchPath>..\..\source;C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;$(BDSCOMMONDIR)\Bpl;C:\WINDOWS\assembly\GAC_MSIL\Borland.VclRtl\11.0.5000.9245__91d62ebb5b0d1b1b</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\source;C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;$(BDSCOMMONDIR)\Bpl;C:\WINDOWS\assembly\GAC_MSIL\Borland.VclRtl\11.0.5000.9245__91d62ebb5b0d1b1b</DCC_ResourcePath>
-    <DCC_IncludePath>..\..\source;C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;$(BDSCOMMONDIR)\Bpl;C:\WINDOWS\assembly\GAC_MSIL\Borland.VclRtl\11.0.5000.9245__91d62ebb5b0d1b1b</DCC_IncludePath>
     <DCC_DcuOutput>..\..\lib\d11.net</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\lib\d11.net</DCC_ObjOutput>
     <DCC_HppOutput>..\..\lib\d11.net</DCC_HppOutput>
     <DCC_DcpOutput>..\..\lib\d11.net</DCC_DcpOutput>
-    <DCC_SYMBOL_DEPRECATED>False</DCC_SYMBOL_DEPRECATED>
-    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-    <DCC_UNIT_DEPRECATED>False</DCC_UNIT_DEPRECATED>
-    <DCC_WIDECHAR_REDUCED>False</DCC_WIDECHAR_REDUCED>
+    <DCC_UnitSearchPath>..\..\lib\d11.net;..\..\source</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\lib\d11.net;..\..\source</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\lib\d11.net;..\..\source</DCC_ObjPath>
+    <DCC_IncludePath>..\..\lib\d11.net;..\..\source</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>DelphiDotNet.Personality</Borland.Personality>
-    <Borland.ProjectType>Package</Borland.ProjectType>
+    <Borland.ProjectType>Library</Borland.ProjectType>
     <BorlandProject>
-<BorlandProject><DelphiDotNet.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Package_Options><Package_Options Name="ImplicitBuild">False</Package_Options><Package_Options Name="DesigntimeOnly">False</Package_Options><Package_Options Name="RuntimeOnly">True</Package_Options></Package_Options><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Jedi.Jcl.dpk</Source></Source></DelphiDotNet.Personality></BorlandProject></BorlandProject>
+      <BorlandProject xmlns="">
+        <DelphiDotNet.Personality>
+          <Parameters>
+            <Parameters Name="UseLauncher">False</Parameters>
+            <Parameters Name="LoadAllSymbols">True</Parameters>
+            <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+          </Parameters>
+          <VersionInfo>
+            <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+            <VersionInfo Name="MajorVer">1</VersionInfo>
+            <VersionInfo Name="MinorVer">102</VersionInfo>
+            <VersionInfo Name="Release">0</VersionInfo>
+            <VersionInfo Name="Build">2726</VersionInfo>
+            <VersionInfo Name="Debug">False</VersionInfo>
+            <VersionInfo Name="PreRelease">False</VersionInfo>
+            <VersionInfo Name="Special">False</VersionInfo>
+            <VersionInfo Name="Private">False</VersionInfo>
+            <VersionInfo Name="DLL">True</VersionInfo>
+            <VersionInfo Name="Locale">1031</VersionInfo>
+            <VersionInfo Name="CodePage">1252</VersionInfo>
+          </VersionInfo>
+          <VersionInfoKeys>
+            <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+            <VersionInfoKeys Name="FileDescription">JEDI Code Library RTL package</VersionInfoKeys>
+            <VersionInfoKeys Name="FileVersion">1.102.0.2726</VersionInfoKeys>
+            <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
+            <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
+            <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+            <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl.dll</VersionInfoKeys>
+            <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
+            <VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
+            <VersionInfoKeys Name="Comments"></VersionInfoKeys>
+          </VersionInfoKeys>
+          <Source>
+            <Source Name="MainSource">Jedi.Jcl.dpr</Source>
+          </Source>
+        </DelphiDotNet.Personality>
+      </BorlandProject>
+    </BorlandProject>
   </ProjectExtensions>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup />
   <ItemGroup>
-    <Reference Include="$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll">
-      <AssemblyName>System.Drawing</AssemblyName>
-      <Version>2.0.0.0</Version>
-      <HintPath>$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll</HintPath>
-      <AssemblyTag>$(SystemRoot)\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll</AssemblyTag>
-      <LinkUnits>False</LinkUnits>
-    </Reference>
-    <Reference Include="C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Delphi.dll">
-      <AssemblyName>Borland.Delphi</AssemblyName>
-      <Version>11.0.5000.9245</Version>
-      <HintPath>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Delphi.dll</HintPath>
-      <AssemblyTag>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Delphi.dll</AssemblyTag>
-      <LinkUnits>False</LinkUnits>
-    </Reference>
-    <Reference Include="C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Vcl.dll">
-      <AssemblyName>Borland.Vcl</AssemblyName>
-      <Version>11.0.5000.9245</Version>
-      <HintPath>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Vcl.dll</HintPath>
-      <AssemblyTag>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Vcl.dll</AssemblyTag>
-      <LinkUnits>False</LinkUnits>
-    </Reference>
-    <Reference Include="C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.VclRtl.dll">
-      <AssemblyName>Borland.VclRtl</AssemblyName>
-      <Version>11.0.5000.9245</Version>
-      <HintPath>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.VclRtl.dll</HintPath>
-      <AssemblyTag>C:\Programme\Gemeinsame Dateien\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.VclRtl.dll</AssemblyTag>
-      <LinkUnits>False</LinkUnits>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <DelphiCompile Include="Jedi.Jcl.dpk">
+    <DelphiCompile Include="Jedi.Jcl.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\source\common\JclAbstractContainers.pas" />
-    <DCCReference Include="..\..\source\common\JclAlgorithms.pas" />
-    <DCCReference Include="..\..\source\common\JclAnsiStrings.pas" />
-    <DCCReference Include="..\..\source\common\JclArrayLists.pas" />
-    <DCCReference Include="..\..\source\common\JclArraySets.pas" />
-    <DCCReference Include="..\..\source\common\JclBase.pas" />
-    <DCCReference Include="..\..\source\common\JclBinaryTrees.pas" />
-    <DCCReference Include="..\..\source\common\JclComplex.pas" />
-    <DCCReference Include="..\..\source\common\JclContainerIntf.pas" />
-    <DCCReference Include="..\..\source\common\JclCounter.pas" />
-    <DCCReference Include="..\..\source\common\JclDateTime.pas" />
-    <DCCReference Include="..\..\source\common\JclEDI.pas" />
-    <DCCReference Include="..\..\source\common\JclEDISEF.pas" />
-    <DCCReference Include="..\..\source\common\JclEDITranslators.pas" />
-    <DCCReference Include="..\..\source\common\JclEDIXML.pas" />
-    <DCCReference Include="..\..\source\common\JclEDI_ANSIX12.pas" />
-    <DCCReference Include="..\..\source\common\JclEDI_ANSIX12_Ext.pas" />
-    <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT.pas" />
-    <DCCReference Include="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" />
-    <DCCReference Include="..\..\source\common\JclFileUtils.pas" />
-    <DCCReference Include="..\..\source\common\JclHashMaps.pas" />
-    <DCCReference Include="..\..\source\common\JclHashSets.pas" />
-    <DCCReference Include="..\..\source\common\JclIniFiles.pas" />
-    <DCCReference Include="..\..\source\common\JclLinkedLists.pas" />
-    <DCCReference Include="..\..\source\common\JclLogic.pas" />
-    <DCCReference Include="..\..\source\common\JclMath.pas" />
-    <DCCReference Include="..\..\source\common\JclMime.pas" />
-    <DCCReference Include="..\..\source\common\JclQueues.pas" />
-    <DCCReference Include="..\..\source\common\JclResources.pas" />
-    <DCCReference Include="..\..\source\common\JclRTTI.pas" />
-    <DCCReference Include="..\..\source\common\JclSimpleXml.pas" />
-    <DCCReference Include="..\..\source\common\JclStacks.pas" />
-    <DCCReference Include="..\..\source\common\JclStatistics.pas" />
-    <DCCReference Include="..\..\source\common\JclStreams.pas" />
-    <DCCReference Include="..\..\source\common\JclStringLists.pas" />
-    <DCCReference Include="..\..\source\common\JclStrings.pas" />
-    <DCCReference Include="..\..\source\common\JclSysInfo.pas" />
-    <DCCReference Include="..\..\source\common\JclSysUtils.pas" />
-    <DCCReference Include="..\..\source\common\JclUnitConv.pas" />
-    <DCCReference Include="..\..\source\common\JclValidation.pas" />
-    <DCCReference Include="..\..\source\common\JclVectors.pas" />
-    <DCCReference Include="..\..\source\windows\JclSynch.pas" />
+      <DCCReference Include="..\..\source\common\JclAbstractContainers.pas"/>
+      <DCCReference Include="..\..\source\common\JclAlgorithms.pas"/>
+      <DCCReference Include="..\..\source\common\JclAnsiStrings.pas"/>
+      <DCCReference Include="..\..\source\common\JclArrayLists.pas"/>
+      <DCCReference Include="..\..\source\common\JclArraySets.pas"/>
+      <DCCReference Include="..\..\source\common\JclBase.pas"/>
+      <DCCReference Include="..\..\source\common\JclBinaryTrees.pas"/>
+      <DCCReference Include="..\..\source\common\JclComplex.pas"/>
+      <DCCReference Include="..\..\source\common\JclContainerIntf.pas"/>
+      <DCCReference Include="..\..\source\common\JclDateTime.pas"/>
+      <DCCReference Include="..\..\source\common\JclFileUtils.pas"/>
+      <DCCReference Include="..\..\source\common\JclHashMaps.pas"/>
+      <DCCReference Include="..\..\source\common\JclHashSets.pas"/>
+      <DCCReference Include="..\..\source\common\JclIniFiles.pas"/>
+      <DCCReference Include="..\..\source\common\JclLinkedLists.pas"/>
+      <DCCReference Include="..\..\source\common\JclLogic.pas"/>
+      <DCCReference Include="..\..\source\common\JclMath.pas"/>
+      <DCCReference Include="..\..\source\common\JclMime.pas"/>
+      <DCCReference Include="..\..\source\common\JclQueues.pas"/>
+      <DCCReference Include="..\..\source\common\JclResources.pas"/>
+      <DCCReference Include="..\..\source\common\JclRTTI.pas"/>
+      <DCCReference Include="..\..\source\common\JclSortedMaps.pas"/>
+      <DCCReference Include="..\..\source\common\JclStacks.pas"/>
+      <DCCReference Include="..\..\source\common\JclStatistics.pas"/>
+      <DCCReference Include="..\..\source\common\JclStreams.pas"/>
+      <DCCReference Include="..\..\source\common\JclStrings.pas"/>
+      <DCCReference Include="..\..\source\common\JclSysInfo.pas"/>
+      <DCCReference Include="..\..\source\common\JclSysUtils.pas"/>
+      <DCCReference Include="..\..\source\common\JclTrees.pas"/>
+      <DCCReference Include="..\..\source\common\JclUnitConv.pas"/>
+      <DCCReference Include="..\..\source\common\JclValidation.pas"/>
+      <DCCReference Include="..\..\source\common\JclVectors.pas"/>
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

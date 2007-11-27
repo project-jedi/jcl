@@ -32,6 +32,7 @@ uses
   JclStrings in '..\..\source\common\JclStrings.pas' ,
   JclSysInfo in '..\..\source\common\JclSysInfo.pas' ,
   JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,
+  JclTrees in '..\..\source\common\JclTrees.pas' ,
   JclUnitConv in '..\..\source\common\JclUnitConv.pas' ,
   JclValidation in '..\..\source\common\JclValidation.pas' ,
   JclVectors in '..\..\source\common\JclVectors.pas' 

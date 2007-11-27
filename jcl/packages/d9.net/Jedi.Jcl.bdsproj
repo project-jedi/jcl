@@ -207,6 +207,7 @@
       <File FileName="..\..\source\common\JclStrings.pas" ContainerId="" ModuleName="JclStrings"/>
       <File FileName="..\..\source\common\JclSysInfo.pas" ContainerId="" ModuleName="JclSysInfo"/>
       <File FileName="..\..\source\common\JclSysUtils.pas" ContainerId="" ModuleName="JclSysUtils"/>
+      <File FileName="..\..\source\common\JclTrees.pas" ContainerId="" ModuleName="JclTrees"/>
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
       <File FileName="..\..\source\common\JclVectors.pas" ContainerId="" ModuleName="JclVectors"/>
