@@ -747,6 +747,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
+    function Equals(const AIterator: IJclIntfIterator): Boolean;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -797,6 +798,22 @@ end;
 function TIntfItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TIntfItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TIntfItr.Equals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TIntfItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TIntfItr then
+  begin
+    ItrObj := TIntfItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TIntfItr.GetObject: IInterface;
@@ -1024,6 +1041,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
+    function Equals(const AIterator: IJclAnsiStrIterator): Boolean;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1074,6 +1092,22 @@ end;
 function TAnsiStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TAnsiStrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TAnsiStrItr.Equals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TAnsiStrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TAnsiStrItr then
+  begin
+    ItrObj := TAnsiStrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TAnsiStrItr.GetString: AnsiString;
@@ -1301,6 +1335,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
+    function Equals(const AIterator: IJclWideStrIterator): Boolean;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1351,6 +1386,22 @@ end;
 function TWideStrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TWideStrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TWideStrItr.Equals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TWideStrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TWideStrItr then
+  begin
+    ItrObj := TWideStrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TWideStrItr.GetString: WideString;
@@ -1578,6 +1629,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
+    function Equals(const AIterator: IJclSingleIterator): Boolean;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1628,6 +1680,22 @@ end;
 function TSingleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TSingleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TSingleItr.Equals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TSingleItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TSingleItr then
+  begin
+    ItrObj := TSingleItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TSingleItr.GetValue: Single;
@@ -1855,6 +1923,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
+    function Equals(const AIterator: IJclDoubleIterator): Boolean;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1905,6 +1974,22 @@ end;
 function TDoubleItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TDoubleItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TDoubleItr.Equals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TDoubleItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TDoubleItr then
+  begin
+    ItrObj := TDoubleItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TDoubleItr.GetValue: Double;
@@ -2132,6 +2217,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
+    function Equals(const AIterator: IJclExtendedIterator): Boolean;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -2182,6 +2268,22 @@ end;
 function TExtendedItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TExtendedItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TExtendedItr.Equals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TExtendedItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TExtendedItr then
+  begin
+    ItrObj := TExtendedItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TExtendedItr.GetValue: Extended;
@@ -2409,6 +2511,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
+    function Equals(const AIterator: IJclIntegerIterator): Boolean;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -2459,6 +2562,22 @@ end;
 function TIntegerItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TIntegerItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TIntegerItr.Equals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TIntegerItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TIntegerItr then
+  begin
+    ItrObj := TIntegerItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TIntegerItr.GetValue: Integer;
@@ -2686,6 +2805,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
+    function Equals(const AIterator: IJclCardinalIterator): Boolean;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -2736,6 +2856,22 @@ end;
 function TCardinalItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TCardinalItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TCardinalItr.Equals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TCardinalItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TCardinalItr then
+  begin
+    ItrObj := TCardinalItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TCardinalItr.GetValue: Cardinal;
@@ -2963,6 +3099,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
+    function Equals(const AIterator: IJclInt64Iterator): Boolean;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -3013,6 +3150,22 @@ end;
 function TInt64Itr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TInt64Itr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TInt64Itr.Equals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TInt64Itr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TInt64Itr then
+  begin
+    ItrObj := TInt64Itr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TInt64Itr.GetValue: Int64;
@@ -3241,6 +3394,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclPtrIterator }
     function Add(AValue: Pointer): Boolean;
+    function Equals(const AIterator: IJclPtrIterator): Boolean;
     function GetPtr: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -3291,6 +3445,22 @@ end;
 function TPtrItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TPtrItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TPtrItr.Equals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TPtrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TPtrItr then
+  begin
+    ItrObj := TPtrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TPtrItr.GetPtr: Pointer;
@@ -3519,6 +3689,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
+    function Equals(const AIterator: IJclIterator): Boolean;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -3569,6 +3740,22 @@ end;
 function TItr.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TItr.Create(FOwnList, FCursor, Valid);
+end;
+
+function TItr.Equals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TItr then
+  begin
+    ItrObj := TItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TItr.GetObject: TObject;
@@ -3798,6 +3985,7 @@ type
     function CreateEmptyIterator: TJclAbstractIterator; override;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
+    function Equals(const AIterator: IJclIterator<T>): Boolean;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -3848,6 +4036,22 @@ end;
 function TItr<T>.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := TItr<T>.Create(FOwnList, FCursor, Valid);
+end;
+
+function TItr<T>.Equals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TItr<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TItr<T> then
+  begin
+    ItrObj := TItr<T>(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TItr<T>.GetItem: T;

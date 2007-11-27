@@ -797,6 +797,7 @@ type
     function GetPreviousCursor: TJclIntfBinaryNode; virtual; abstract;
     { IJclIntfIterator }
     function Add(const AInterface: IInterface): Boolean;
+    function Equals(const AIterator: IJclIntfIterator): Boolean;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -893,6 +894,22 @@ end;
 procedure TIntfItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntfItr.Equals(const AIterator: IJclIntfIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TIntfItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TIntfItr then
+  begin
+    ItrObj := TIntfItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TIntfItr.GetChild(Index: Integer): IInterface;
@@ -1469,6 +1486,7 @@ type
     function GetPreviousCursor: TJclAnsiStrBinaryNode; virtual; abstract;
     { IJclAnsiStrIterator }
     function Add(const AString: AnsiString): Boolean;
+    function Equals(const AIterator: IJclAnsiStrIterator): Boolean;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -1565,6 +1583,22 @@ end;
 procedure TAnsiStrItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TAnsiStrItr.Equals(const AIterator: IJclAnsiStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TAnsiStrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TAnsiStrItr then
+  begin
+    ItrObj := TAnsiStrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TAnsiStrItr.GetChild(Index: Integer): AnsiString;
@@ -2141,6 +2175,7 @@ type
     function GetPreviousCursor: TJclWideStrBinaryNode; virtual; abstract;
     { IJclWideStrIterator }
     function Add(const AString: WideString): Boolean;
+    function Equals(const AIterator: IJclWideStrIterator): Boolean;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -2237,6 +2272,22 @@ end;
 procedure TWideStrItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TWideStrItr.Equals(const AIterator: IJclWideStrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TWideStrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TWideStrItr then
+  begin
+    ItrObj := TWideStrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TWideStrItr.GetChild(Index: Integer): WideString;
@@ -2813,6 +2864,7 @@ type
     function GetPreviousCursor: TJclSingleBinaryNode; virtual; abstract;
     { IJclSingleIterator }
     function Add(const AValue: Single): Boolean;
+    function Equals(const AIterator: IJclSingleIterator): Boolean;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -2909,6 +2961,22 @@ end;
 procedure TSingleItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TSingleItr.Equals(const AIterator: IJclSingleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TSingleItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TSingleItr then
+  begin
+    ItrObj := TSingleItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TSingleItr.GetChild(Index: Integer): Single;
@@ -3485,6 +3553,7 @@ type
     function GetPreviousCursor: TJclDoubleBinaryNode; virtual; abstract;
     { IJclDoubleIterator }
     function Add(const AValue: Double): Boolean;
+    function Equals(const AIterator: IJclDoubleIterator): Boolean;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -3581,6 +3650,22 @@ end;
 procedure TDoubleItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TDoubleItr.Equals(const AIterator: IJclDoubleIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TDoubleItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TDoubleItr then
+  begin
+    ItrObj := TDoubleItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TDoubleItr.GetChild(Index: Integer): Double;
@@ -4157,6 +4242,7 @@ type
     function GetPreviousCursor: TJclExtendedBinaryNode; virtual; abstract;
     { IJclExtendedIterator }
     function Add(const AValue: Extended): Boolean;
+    function Equals(const AIterator: IJclExtendedIterator): Boolean;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -4253,6 +4339,22 @@ end;
 procedure TExtendedItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TExtendedItr.Equals(const AIterator: IJclExtendedIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TExtendedItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TExtendedItr then
+  begin
+    ItrObj := TExtendedItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TExtendedItr.GetChild(Index: Integer): Extended;
@@ -4829,6 +4931,7 @@ type
     function GetPreviousCursor: TJclIntegerBinaryNode; virtual; abstract;
     { IJclIntegerIterator }
     function Add(AValue: Integer): Boolean;
+    function Equals(const AIterator: IJclIntegerIterator): Boolean;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -4925,6 +5028,22 @@ end;
 procedure TIntegerItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TIntegerItr.Equals(const AIterator: IJclIntegerIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TIntegerItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TIntegerItr then
+  begin
+    ItrObj := TIntegerItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TIntegerItr.GetChild(Index: Integer): Integer;
@@ -5501,6 +5620,7 @@ type
     function GetPreviousCursor: TJclCardinalBinaryNode; virtual; abstract;
     { IJclCardinalIterator }
     function Add(AValue: Cardinal): Boolean;
+    function Equals(const AIterator: IJclCardinalIterator): Boolean;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -5597,6 +5717,22 @@ end;
 procedure TCardinalItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TCardinalItr.Equals(const AIterator: IJclCardinalIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TCardinalItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TCardinalItr then
+  begin
+    ItrObj := TCardinalItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TCardinalItr.GetChild(Index: Integer): Cardinal;
@@ -6173,6 +6309,7 @@ type
     function GetPreviousCursor: TJclInt64BinaryNode; virtual; abstract;
     { IJclInt64Iterator }
     function Add(const AValue: Int64): Boolean;
+    function Equals(const AIterator: IJclInt64Iterator): Boolean;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -6269,6 +6406,22 @@ end;
 procedure TInt64Itr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TInt64Itr.Equals(const AIterator: IJclInt64Iterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TInt64Itr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TInt64Itr then
+  begin
+    ItrObj := TInt64Itr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TInt64Itr.GetChild(Index: Integer): Int64;
@@ -6846,6 +6999,7 @@ type
     function GetPreviousCursor: TJclPtrBinaryNode; virtual; abstract;
     { IJclPtrIterator }
     function Add(APtr: Pointer): Boolean;
+    function Equals(const AIterator: IJclPtrIterator): Boolean;
     function GetPtr: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -6942,6 +7096,22 @@ end;
 procedure TPtrItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TPtrItr.Equals(const AIterator: IJclPtrIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TPtrItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TPtrItr then
+  begin
+    ItrObj := TPtrItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TPtrItr.GetChild(Index: Integer): Pointer;
@@ -7519,6 +7689,7 @@ type
     function GetPreviousCursor: TJclBinaryNode; virtual; abstract;
     { IJclIterator }
     function Add(AObject: TObject): Boolean;
+    function Equals(const AIterator: IJclIterator): Boolean;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -7615,6 +7786,22 @@ end;
 procedure TItr.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr.Equals(const AIterator: IJclIterator): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TItr;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TItr then
+  begin
+    ItrObj := TItr(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TItr.GetChild(Index: Integer): TObject;
@@ -8192,6 +8379,7 @@ type
     function GetPreviousCursor: TJclBinaryNode<T>; virtual; abstract;
     { IJclIterator<T> }
     function Add(const AItem: T): Boolean;
+    function Equals(const AIterator: IJclIterator<T>): Boolean;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -8288,6 +8476,22 @@ end;
 procedure TItr<T>.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function TItr<T>.Equals(const AIterator: IJclIterator<T>): Boolean;
+var
+  Obj: TObject;
+  ItrObj: TItr<T>;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is TItr<T> then
+  begin
+    ItrObj := TItr<T>(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function TItr<T>.GetChild(Index: Integer): T;

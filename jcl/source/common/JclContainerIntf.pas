@@ -613,6 +613,7 @@ type
   IJclIntfIterator = interface(IJclAbstractIterator)
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
     function Add(const AInterface: IInterface): Boolean;
+    function Equals(const AIterator: IJclIntfIterator): Boolean;
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -632,6 +633,7 @@ type
   IJclAnsiStrIterator = interface(IJclAbstractIterator)
     ['{D5D4B681-F902-49C7-B9E1-73007C9D64F0}']
     function Add(const AString: AnsiString): Boolean;
+    function Equals(const AIterator: IJclAnsiStrIterator): Boolean;
     function GetString: AnsiString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -651,6 +653,7 @@ type
   IJclWideStrIterator = interface(IJclAbstractIterator)
     ['{F03BC7D4-CCDA-4C4A-AF3A-E51FDCDE8ADE}']
     function Add(const AString: WideString): Boolean;
+    function Equals(const AIterator: IJclWideStrIterator): Boolean;
     function GetString: WideString;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -677,6 +680,7 @@ type
   IJclSingleIterator = interface(IJclAbstractIterator)
     ['{FD1124F8-CB2B-4AD7-B12D-C05702F4204B}']
     function Add(const AValue: Single): Boolean;
+    function Equals(const AIterator: IJclSingleIterator): Boolean;
     function GetValue: Single;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -696,6 +700,7 @@ type
   IJclDoubleIterator = interface(IJclAbstractIterator)
     ['{004C154A-281C-4DA7-BF64-F3EE80ACF640}']
     function Add(const AValue: Double): Boolean;
+    function Equals(const AIterator: IJclDoubleIterator): Boolean;
     function GetValue: Double;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -715,6 +720,7 @@ type
   IJclExtendedIterator = interface(IJclAbstractIterator)
     ['{B89877A5-DED4-4CD9-AB90-C7D062111DE0}']
     function Add(const AValue: Extended): Boolean;
+    function Equals(const AIterator: IJclExtendedIterator): Boolean;
     function GetValue: Extended;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -744,6 +750,7 @@ type
   IJclIntegerIterator = interface(IJclAbstractIterator)
     ['{1406A991-4574-48A1-83FE-2EDCA03908BE}']
     function Add(AValue: Integer): Boolean;
+    function Equals(const AIterator: IJclIntegerIterator): Boolean;
     function GetValue: Integer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -763,6 +770,7 @@ type
   IJclCardinalIterator = interface(IJclAbstractIterator)
     ['{72847A34-C8C4-4592-9447-CEB8161E33AD}']
     function Add(AValue: Cardinal): Boolean;
+    function Equals(const AIterator: IJclCardinalIterator): Boolean;
     function GetValue: Cardinal;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -782,6 +790,7 @@ type
   IJclInt64Iterator = interface(IJclAbstractIterator)
     ['{573E5A51-BF76-43D7-9F93-46305BED20A8}']
     function Add(const AValue: Int64): Boolean;
+    function Equals(const AIterator: IJclInt64Iterator): Boolean;
     function GetValue: Int64;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -802,6 +811,7 @@ type
   IJclPtrIterator = interface(IJclAbstractIterator)
     ['{62B5501C-07AA-4D00-A85B-713B39912CDF}']
     function Add(APtr: Pointer): Boolean;
+    function Equals(const AIterator: IJclPtrIterator): Boolean;
     function GetPtr: Pointer;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -822,6 +832,7 @@ type
   IJclIterator = interface(IJclAbstractIterator)
     ['{997DF9B7-9AA2-4239-8B94-14DFFD26D790}']
     function Add(AObject: TObject): Boolean;
+    function Equals(const AIterator: IJclIterator): Boolean;
     function GetObject: TObject;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -842,6 +853,7 @@ type
   IJclIterator<T> = interface(IJclAbstractIterator)
     ['{6E8547A4-5B5D-4831-8AE3-9C6D04071B11}']
     function Add(const AItem: T): Boolean;
+    function Equals(const AIterator: IJclIterator<T>): Boolean;
     function GetItem: T;
     function HasNext: Boolean;
     function HasPrevious: Boolean;

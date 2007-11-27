@@ -68,6 +68,7 @@ type
     function GetPreviousCursor: NODETYPENAME; virtual; abstract;
     { STDITRINTERFACENAME }
     function Add(PARAMETERDECLARATION): Boolean;
+    function Equals(const AIterator: STDITRINTERFACENAME): Boolean;
     function GETTERNAME: PARAMETERTYPE;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -164,6 +165,22 @@ end;
 procedure BASEITRCLASSNAME.DeleteChild(Index: Integer);
 begin
   raise EJclOperationNotSupportedError.Create;
+end;
+
+function BASEITRCLASSNAME.Equals(const AIterator: STDITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: BASEITRCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is BASEITRCLASSNAME then
+  begin
+    ItrObj := BASEITRCLASSNAME(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function BASEITRCLASSNAME.GetChild(Index: Integer): PARAMETERTYPE;

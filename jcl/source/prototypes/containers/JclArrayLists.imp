@@ -60,6 +60,7 @@ type
     function IJclIntfCloneable.Clone = IntfClone;
     { ITRINTERFACENAME }
     function Add(PARAMETERDECLARATION): Boolean;
+    function Equals(const AIterator: ITRINTERFACENAME): Boolean;
     function GETTERNAME: TYPENAME;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -106,6 +107,22 @@ end;
 function SELFCLASSNAME.CreateEmptyIterator: TJclAbstractIterator;
 begin
   Result := SELFCLASSNAME.Create(FOwnList, FCursor, Valid);
+end;
+
+function SELFCLASSNAME.Equals(const AIterator: ITRINTERFACENAME): Boolean;
+var
+  Obj: TObject;
+  ItrObj: SELFCLASSNAME;
+begin
+  Result := False;
+  if AIterator = nil then
+    Exit;
+  Obj := AIterator.GetIteratorReference;
+  if Obj is SELFCLASSNAME then
+  begin
+    ItrObj := SELFCLASSNAME(Obj);
+    Result := (FOwnList = ItrObj.FOwnList) and (FCursor = ItrObj.FCursor) and (Valid = ItrObj.Valid);
+  end;
 end;
 
 function SELFCLASSNAME.GETTERNAME: TYPENAME;
