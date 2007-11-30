@@ -201,6 +201,9 @@
 #include <JclSimpleXml.hpp>
 #endif TEST_COMMON
 #ifdef TEST_COMMON
+#include <JclSortedMaps.hpp>
+#endif TEST_COMMON
+#ifdef TEST_COMMON
 #include <JclStacks.hpp>
 #endif TEST_COMMON
 #ifdef TEST_COMMON
@@ -239,6 +242,9 @@
 #ifdef TEST_WINDOWS
 #include <JclTD32.hpp>
 #endif TEST_WINDOWS
+#ifdef TEST_COMMON
+#include <JclTrees.hpp>
+#endif TEST_COMMON
 #ifdef TEST_WINDOWS
 #include <JclUnicode.hpp>
 #endif TEST_WINDOWS
