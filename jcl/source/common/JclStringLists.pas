@@ -53,6 +53,14 @@ uses
   Classes, SysUtils,
   JclBase;
 
+{$DEFINE HAS_TSTRINGS_COMPARESTRINGS}
+{$IFDEF FPC}
+ {$UNDEF HAS_TSTRINGS_COMPARESTRINGS}
+{$ENDIF FPC}
+{$IFDEF COMPILER5}
+ {$UNDEF HAS_TSTRINGS_COMPARESTRINGS}
+{$ENDIF COMPILER5}
+
 type
   IJclStringList = interface;
 
@@ -355,9 +363,9 @@ type
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
     {$ENDIF CLR}
-    {$IF defined(COMPILER5) OR defined(FPC)}
+    {$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
     function CompareStrings(const S1, S2: string): Integer; virtual;
-    {$IFEND}
+    {$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
   public
     constructor Create;
     destructor Destroy; override;
@@ -1126,12 +1134,12 @@ begin
   Result := FSelfAsInterface;
 end;
 
-{$IF defined(COMPILER5) OR defined(FPC)}
+{$IFNDEF HAS_TSTRINGS_COMPARESTRINGS}
 function TJclStringListImpl.CompareStrings(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareText(S1, S2);
 end;
-{$IFEND}
+{$ENDIF ~HAS_TSTRINGS_COMPARESTRINGS}
 
 function TJclStringListImpl.SortByName: IJclStringList;
 
