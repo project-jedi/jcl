@@ -199,13 +199,15 @@
   BCB4         Defined when compiling with C++ Builder 4
   BCB5         Defined when compiling with C++ Builder 5
   BCB6         Defined when compiling with C++ Builder 6
-  BCB10        Defined when compiling with C++ Builder Personality of BDS 4.0
+  BCB10        Defined when compiling with C++ Builder Personality of BDS 4.0 (also known as C++Builder 2006)
+  BCB11        Defined when compiling with C++ Builder Personality of RAD Studio 2007 (also known as C++Builder 2007)
   BCB1_UP      Defined when compiling with C++ Builder 1 or higher
   BCB3_UP      Defined when compiling with C++ Builder 3 or higher
   BCB4_UP      Defined when compiling with C++ Builder 4 or higher
   BCB5_UP      Defined when compiling with C++ Builder 5 or higher
   BCB6_UP      Defined when compiling with C++ Builder 6 or higher
   BCB10_UP     Defined when compiling with C++ Builder Personality of BDS 4.0 or higher
+  BCB11_UP     Defined when compiling with C++ Builder Personality of RAD Studio 2007 or higher
 
 
 - Borland Developer Studio Versions
