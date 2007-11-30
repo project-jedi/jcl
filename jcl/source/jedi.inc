@@ -293,6 +293,19 @@
   RTL185_UP     Defined when compiling with Delphi for Win32 2007 or later
 
 
+- CLR Versions
+
+  Directive     Description
+  ------------------------------------------------------------------------------
+  CLR            Defined when compiling for .NET
+  CLR10          Defined when compiling for .NET 1.0 (may be overriden by FORCE_CLR10)
+  CLR10_UP       Defined when compiling for .NET 1.0 or later
+  CLR11          Defined when compiling for .NET 1.1 (may be overriden by FORCE_CLR11)
+  CLR11_UP       Defined when compiling for .NET 1.1 or later
+  CLR20          Defined when compiling for .NET 2.0 (may be overriden by FORCE_CLR20)
+  CLR20_UP       Defined when compiling for .NET 2.0 or later
+
+
 - Feature Directives
 
   The features directives are used to test if the compiler supports specific
@@ -504,6 +517,9 @@
     {$IFDEF VER160}
       {$DEFINE BDS2}
       {$DEFINE BDS}
+      {$IFDEF CLR}
+        {$DEFINE CLR10}
+      {$ENDIF CLR}
       {$DEFINE COMPILER8}
       {$DEFINE DELPHI8}
       {$DEFINE DELPHICOMPILER8}
@@ -514,6 +530,9 @@
     {$IFDEF VER170}
       {$DEFINE BDS3}
       {$DEFINE BDS}
+      {$IFDEF CLR}
+        {$DEFINE CLR11}
+      {$ENDIF CLR}
       {$DEFINE COMPILER9}
       {$DEFINE DELPHI9}
       {$DEFINE DELPHI2005} // synonym to DELPHI9
@@ -524,6 +543,9 @@
 
     {$IFDEF VER180}
       {$DEFINE BDS}
+      {$IFDEF CLR}
+        {$DEFINE CLR11}
+      {$ENDIF CLR}
       {$IFDEF VER185}
         {$DEFINE BDS5}
         {$DEFINE COMPILER11}
@@ -553,6 +575,9 @@
     {$IFDEF VER190} // Delphi.NET 2007
       {$DEFINE BDS}
       {$DEFINE BDS5}
+      {$IFDEF CLR}
+        {$DEFINE CLR20}
+      {$ENDIF CLR}
       {$DEFINE COMPILER11}
       {$DEFINE DELPHI11}
       {$DEFINE DELPHI2007} // synonym to DELPHI10
@@ -752,6 +777,45 @@
 {$IFDEF RTL100_UP} {$DEFINE RTL93_UP}  {$ENDIF}
 {$IFDEF RTL93_UP}  {$DEFINE RTL90_UP}  {$ENDIF}
 {$IFDEF RTL90_UP}  {$DEFINE RTL80_UP}  {$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ Check for CLR overrides of default detection                                 }
+{------------------------------------------------------------------------------}
+
+{$IFDEF CLR}
+  {$IFDEF FORCE_CLR10}
+    {$DEFINE CLR10}
+    {$UNDEF CLR11}
+    {$UNDEF CLR20}
+  {$ENDIF FORCE_CLR10}
+
+  {$IFDEF FORCE_CLR11}
+    {$UNDEF CLR10}
+    {$DEFINE CLR11}
+    {$UNDEF CLR20}
+  {$ENDIF FORCE_CLR11}
+
+  {$IFDEF FORCE_CLR20}
+    {$UNDEF CLR10}
+    {$UNDEF CLR11}
+    {$DEFINE CLR20}
+  {$ENDIF FORCE_CLR20}
+{$ENDIF CLR}
+
+{------------------------------------------------------------------------------}
+{ CLRX from CLRX_UP mappings                                                   }
+{------------------------------------------------------------------------------}
+
+{$IFDEF CLR10} {$DEFINE CLR10_UP} {$ENDIF}
+{$IFDEF CLR11} {$DEFINE CLR11_UP} {$ENDIF}
+{$IFDEF CLR20} {$DEFINE CLR20_UP} {$ENDIF}
+
+{------------------------------------------------------------------------------}
+{ CLRX_UP from CLRX_UP mappings                                                }
+{------------------------------------------------------------------------------}
+
+{$IFDEF CLR20_UP} {$DEFINE CLR11_UP} {$ENDIF}
+{$IFDEF CLR11_UP} {$DEFINE CLR10_UP} {$ENDIF}
 
 {------------------------------------------------------------------------------}
 
