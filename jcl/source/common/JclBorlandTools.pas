@@ -844,8 +844,7 @@ type
     function UnregisterPackage(const BinaryFileName: string): Boolean; override;
     function CleanPackageCache(const BinaryFileName: string): Boolean;
 
-    function CompileDelphiDotNetProject(const ProjectName, OutputDir: string;
-      PEFormat: TJclBorPlatform = bp32bit;
+    function CompileDelphiDotNetProject(const ProjectName, OutputDir: string; PEFormat: TJclBorPlatform = bp32bit;
       const CLRVersion: string = ''; const ExtraOptions: string = ''): Boolean;
 
     property DualPackageInstallation: Boolean read FDualPackageInstallation write SetDualPackageInstallation;
@@ -4820,9 +4819,12 @@ var
 begin
   if VersionNumber >= 2 then   // C#Builder 1 doesn't have any Delphi.net compiler
   begin
-    OutputString(Format(RsCompilingProject, [ProjectName]));
-
-    if not IsDelphiProject(ProjectName) then
+    if IsDelphiProject(ProjectName) then
+      OutputString(Format(RsCompilingProject, [ProjectName]))
+    else
+    if IsDelphiPackage(ProjectName) then
+      OutputString(Format(RsCompilingPackage, [ProjectName]))
+    else
       raise EJclBorRADException.CreateResFmt(@RsENotADelphiProject, [ProjectName]);
 
     PlatformOption := '';

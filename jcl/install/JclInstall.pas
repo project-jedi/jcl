@@ -663,7 +663,7 @@ const
   JclDpk     = 'Jcl';
   JclVclDpk  = 'JclVcl';
   JclVClxDpk = 'JclVClx';
-  JediJclDpr = 'Jedi.Jcl';
+  JediJclDpk = 'Jedi.Jcl';
 
   JclExpertBase           = 'JclBaseExpert';
   JclExpertDebug          = 'JclDebugExpert';
@@ -1799,7 +1799,7 @@ var
       {$IFDEF MSWINDOWS}
       else
         // CLR installation
-        Result := CompileCLRPackage(JediJclDpr);
+        Result := CompileCLRPackage(JediJclDpk);
       {$ENDIF MSWINDOWS}
     end;
   end;
@@ -2784,7 +2784,7 @@ var
   ProjectFileName: string;
 begin
   ProjectFileName := Format('%spackages%s%s.net%s%s%s', [PathAddSeparator(Distribution.JclPath),
-    DirDelimiter, Target.VersionNumberStr, DirDelimiter, Name, SourceExtensionDelphiProject]);
+    DirDelimiter, Target.VersionNumberStr, DirDelimiter, Name, SourceExtensionDelphiPackage]);
   WriteLog(Format('Compiling CLR package %s...', [ProjectFileName]));
 
   if Assigned(GUIPage) then

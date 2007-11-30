@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="Jcl" Design="0">
   <Description>JEDI Code Library RTL package</Description>
-  <GUID/>
+  <GUID>{44DB645B-C167-410D-9334-38AF9F0C7913}</GUID>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
   <C5Libs/>
@@ -15,61 +15,63 @@
     <Package Name="rtl" Targets="allLibSuffix" Condition=""/>
     <Package Name="vcl50" Targets="c5,d5" Condition=""/>
     <Package Name="vcljpg50" Targets="c5,d5" Condition=""/>
+    <Package Name="Borland.Delphi" Targets="JclDotNet" Condition=""/>
+    <Package Name="Borland.VclRtl" Targets="JclDotNet" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\common\bzip2.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\Jcl8087.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclBase.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAbstractContainers.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAlgorithms.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclAnsiStrings.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArrayLists.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclArraySets.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBase.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclBinaryTrees.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBorlandTools.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclComplex.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclComplex.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCompression.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclCounter.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclDateTime.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDISEF.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDIXML.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_ANSIX12_Ext.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclContainerIntf.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclCounter.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclDateTime.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDISEF.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDITranslators.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDIXML.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_ANSIX12.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_ANSIX12_Ext.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_UNEDIFACT.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclExprEval.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclFileUtils.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclHashMaps.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclHashSets.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclIniFiles.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclLogic.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMath.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclFileUtils.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashMaps.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclHashSets.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclIniFiles.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLinkedLists.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclLogic.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMath.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclMIDI.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclMime.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclMime.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclPCRE.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclQueues.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclResources.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSimpleXml.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclQueues.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclResources.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclRTTI.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSimpleXml.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSchedule.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStreams.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSortedMaps.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStacks.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStatistics.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStreams.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclStrHashMap.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclStrings.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclStrings.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysInfo.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclSysUtils.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclTrees.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclUnitConv.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioningProviders.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclValidation.pas" Targets="JclDev" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclVectors.pas" Targets="JclDev" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclValidation.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclVectors.pas" Targets="JclDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclWideStrings.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\common\pcre.pas" Targets="JclDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Hardlinks.pas" Targets="WinDev" Formname="" Condition=""/>
@@ -95,7 +97,7 @@
     <File Name="..\..\source\windows\JclShell.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclStructStorage.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclSvcCtrl.pas" Targets="WinDev" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclSynch.pas" Targets="WinDev" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclSynch.pas" Targets="WinDev,JclDotNet" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclTask.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclTD32.pas" Targets="WinDev" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclUnicode.pas" Targets="WinDev" Formname="" Condition=""/>

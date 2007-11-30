@@ -1,8 +1,8 @@
-Library Jedi.Jcl;
+Package Jedi.Jcl;
 
 uses
-  System.Reflection,
-  System.Runtime.InteropServices
+  Borland.Delphi,
+  Borland.VclRtl
   ,
   JclAbstractContainers in '..\..\source\common\JclAbstractContainers.pas' ,
   JclAlgorithms in '..\..\source\common\JclAlgorithms.pas' ,
@@ -13,7 +13,16 @@ uses
   JclBinaryTrees in '..\..\source\common\JclBinaryTrees.pas' ,
   JclComplex in '..\..\source\common\JclComplex.pas' ,
   JclContainerIntf in '..\..\source\common\JclContainerIntf.pas' ,
+  JclCounter in '..\..\source\common\JclCounter.pas' ,
   JclDateTime in '..\..\source\common\JclDateTime.pas' ,
+  JclEDI in '..\..\source\common\JclEDI.pas' ,
+  JclEDISEF in '..\..\source\common\JclEDISEF.pas' ,
+  JclEDITranslators in '..\..\source\common\JclEDITranslators.pas' ,
+  JclEDIXML in '..\..\source\common\JclEDIXML.pas' ,
+  JclEDI_ANSIX12 in '..\..\source\common\JclEDI_ANSIX12.pas' ,
+  JclEDI_ANSIX12_Ext in '..\..\source\common\JclEDI_ANSIX12_Ext.pas' ,
+  JclEDI_UNEDIFACT in '..\..\source\common\JclEDI_UNEDIFACT.pas' ,
+  JclEDI_UNEDIFACT_Ext in '..\..\source\common\JclEDI_UNEDIFACT_Ext.pas' ,
   JclFileUtils in '..\..\source\common\JclFileUtils.pas' ,
   JclHashMaps in '..\..\source\common\JclHashMaps.pas' ,
   JclHashSets in '..\..\source\common\JclHashSets.pas' ,
@@ -25,6 +34,7 @@ uses
   JclQueues in '..\..\source\common\JclQueues.pas' ,
   JclResources in '..\..\source\common\JclResources.pas' ,
   JclRTTI in '..\..\source\common\JclRTTI.pas' ,
+  JclSimpleXml in '..\..\source\common\JclSimpleXml.pas' ,
   JclSortedMaps in '..\..\source\common\JclSortedMaps.pas' ,
   JclStacks in '..\..\source\common\JclStacks.pas' ,
   JclStatistics in '..\..\source\common\JclStatistics.pas' ,
@@ -35,7 +45,8 @@ uses
   JclTrees in '..\..\source\common\JclTrees.pas' ,
   JclUnitConv in '..\..\source\common\JclUnitConv.pas' ,
   JclValidation in '..\..\source\common\JclValidation.pas' ,
-  JclVectors in '..\..\source\common\JclVectors.pas' 
+  JclVectors in '..\..\source\common\JclVectors.pas' ,
+  JclSynch in '..\..\source\windows\JclSynch.pas' 
   ;
 
 {$LIBSUFFIX '10'}

@@ -10,7 +10,7 @@
   </PersonalityInfo>
   <DelphiDotNet.Personality>
     <Source>
-      <Source Name="MainSource">Jedi.Jcl.dpr</Source>
+      <Source Name="MainSource">Jedi.Jcl.dpk</Source>
     </Source>
     <FileVersion>
       <FileVersion Name="Version">7.0</FileVersion>
@@ -160,7 +160,7 @@
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
       <VersionInfo Name="Private">False</VersionInfo>
-      <VersionInfo Name="DLL">True</VersionInfo>
+      <VersionInfo Name="DLL">False</VersionInfo>
       <VersionInfo Name="Locale">1031</VersionInfo>
       <VersionInfo Name="CodePage">1252</VersionInfo>
     </VersionInfo>
@@ -171,14 +171,14 @@
       <VersionInfoKeys Name="InternalName">Jedi.Jcl</VersionInfoKeys>
       <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl9.dll</VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename">Jedi.Jcl9.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
       <VersionInfoKeys Name="ProductVersion">1.102 Build 2726</VersionInfoKeys>
       <VersionInfoKeys Name="Comments"></VersionInfoKeys>
     </VersionInfoKeys>
     <FileList>
-      <File FileName="" ContainerId="" ModuleName="System.Reflection"/>
-      <File FileName="" ContainerId="" ModuleName="System.Runtime.InteropServices"/>
+      <File FileName="" ContainerId="" ModuleName="Borland.Delphi"/>
+      <File FileName="" ContainerId="" ModuleName="Borland.VclRtl"/>
       <File FileName="..\..\source\common\JclAbstractContainers.pas" ContainerId="" ModuleName="JclAbstractContainers"/>
       <File FileName="..\..\source\common\JclAlgorithms.pas" ContainerId="" ModuleName="JclAlgorithms"/>
       <File FileName="..\..\source\common\JclAnsiStrings.pas" ContainerId="" ModuleName="JclAnsiStrings"/>
@@ -188,7 +188,16 @@
       <File FileName="..\..\source\common\JclBinaryTrees.pas" ContainerId="" ModuleName="JclBinaryTrees"/>
       <File FileName="..\..\source\common\JclComplex.pas" ContainerId="" ModuleName="JclComplex"/>
       <File FileName="..\..\source\common\JclContainerIntf.pas" ContainerId="" ModuleName="JclContainerIntf"/>
+      <File FileName="..\..\source\common\JclCounter.pas" ContainerId="" ModuleName="JclCounter"/>
       <File FileName="..\..\source\common\JclDateTime.pas" ContainerId="" ModuleName="JclDateTime"/>
+      <File FileName="..\..\source\common\JclEDI.pas" ContainerId="" ModuleName="JclEDI"/>
+      <File FileName="..\..\source\common\JclEDISEF.pas" ContainerId="" ModuleName="JclEDISEF"/>
+      <File FileName="..\..\source\common\JclEDITranslators.pas" ContainerId="" ModuleName="JclEDITranslators"/>
+      <File FileName="..\..\source\common\JclEDIXML.pas" ContainerId="" ModuleName="JclEDIXML"/>
+      <File FileName="..\..\source\common\JclEDI_ANSIX12.pas" ContainerId="" ModuleName="JclEDI_ANSIX12"/>
+      <File FileName="..\..\source\common\JclEDI_ANSIX12_Ext.pas" ContainerId="" ModuleName="JclEDI_ANSIX12_Ext"/>
+      <File FileName="..\..\source\common\JclEDI_UNEDIFACT.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT"/>
+      <File FileName="..\..\source\common\JclEDI_UNEDIFACT_Ext.pas" ContainerId="" ModuleName="JclEDI_UNEDIFACT_Ext"/>
       <File FileName="..\..\source\common\JclFileUtils.pas" ContainerId="" ModuleName="JclFileUtils"/>
       <File FileName="..\..\source\common\JclHashMaps.pas" ContainerId="" ModuleName="JclHashMaps"/>
       <File FileName="..\..\source\common\JclHashSets.pas" ContainerId="" ModuleName="JclHashSets"/>
@@ -200,6 +209,7 @@
       <File FileName="..\..\source\common\JclQueues.pas" ContainerId="" ModuleName="JclQueues"/>
       <File FileName="..\..\source\common\JclResources.pas" ContainerId="" ModuleName="JclResources"/>
       <File FileName="..\..\source\common\JclRTTI.pas" ContainerId="" ModuleName="JclRTTI"/>
+      <File FileName="..\..\source\common\JclSimpleXml.pas" ContainerId="" ModuleName="JclSimpleXml"/>
       <File FileName="..\..\source\common\JclSortedMaps.pas" ContainerId="" ModuleName="JclSortedMaps"/>
       <File FileName="..\..\source\common\JclStacks.pas" ContainerId="" ModuleName="JclStacks"/>
       <File FileName="..\..\source\common\JclStatistics.pas" ContainerId="" ModuleName="JclStatistics"/>
@@ -211,6 +221,7 @@
       <File FileName="..\..\source\common\JclUnitConv.pas" ContainerId="" ModuleName="JclUnitConv"/>
       <File FileName="..\..\source\common\JclValidation.pas" ContainerId="" ModuleName="JclValidation"/>
       <File FileName="..\..\source\common\JclVectors.pas" ContainerId="" ModuleName="JclVectors"/>
+      <File FileName="..\..\source\windows\JclSynch.pas" ContainerId="" ModuleName="JclSynch"/>
     </FileList>
   </DelphiDotNet.Personality>
 </BorlandProject>
