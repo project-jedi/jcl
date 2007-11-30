@@ -91,8 +91,8 @@ type
 
   EJclEDIError = class(EJclError)
   public
-    constructor CreateID(ID: Integer);
-    constructor CreateIDFmt(ID: Integer; const Args: array of const);
+    constructor CreateID(ID: Cardinal);
+    constructor CreateIDFmt(ID: Cardinal; const Args: array of const);
   end;
 
   //  EDI Forward Class Declarations
@@ -537,7 +537,7 @@ end;
 
 //=== { EJclEDIError } =======================================================
 
-constructor EJclEDIError.CreateID(ID: Integer);
+constructor EJclEDIError.CreateID(ID: Cardinal);
 begin
   {$IFDEF CLR}
   Create(RsEDIErrors[ID]);
@@ -546,7 +546,7 @@ begin
   {$ENDIF ~CLR}
 end;
 
-constructor EJclEDIError.CreateIDFmt(ID: Integer; const Args: array of const);
+constructor EJclEDIError.CreateIDFmt(ID: Cardinal; const Args: array of const);
 begin
   {$IFDEF CLR}
   Create(Format(RsEDIErrors[ID], Args));
@@ -700,11 +700,7 @@ begin
   if IndexIsValid(Index) then
     FEDIDataObjects.Delete(Index)
   else
-    {$IFNDEF CLR}
-    raise EJclEDIError.CreateResFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
-    {$ELSE}
-    raise EJclEDIError.CreateFmt(RsEDIError010, [Self.ClassName, IntToStr(Index)]);
-    {$ENDIF ~CLR}
+    raise EJclEDIError.CreateIDFmt(10, [Self.ClassName, IntToStr(Index)]);
 end;
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
@@ -727,11 +723,7 @@ begin
     end;
   end
   else
-    {$IFNDEF CLR}
-    raise EJclEDIError.CreateResFmt(@RsEDIError011, [IntToStr(Index)]);
-    {$ELSE}
-    raise EJclEDIError.CreateFmt(RsEDIError011, [IntToStr(Index)]);
-    {$ENDIF ~CLR}
+    raise EJclEDIError.CreateIDFmt(11, [IntToStr(Index)]);
 end;
 
 destructor TEDIDataObjectGroup.Destroy;
@@ -748,15 +740,15 @@ begin
       if Index <= FEDIDataObjects.Count - 1 then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateFmt(RsEDIError006, [Self.ClassName, IntToStr(Index)]);
+          raise EJclEDIError.CreateIDFmt(6, [Self.ClassName, IntToStr(Index)]);
         Result := FEDIDataObjects[Index];
       end
       else
-        raise EJclEDIError.CreateFmt(RsEDIError005, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateIDFmt(5, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateFmt(RsEDIError004, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateIDFmt(4, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateFmt(RsEDIError003, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateIDFmt(3, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
@@ -832,11 +824,11 @@ begin
           FEDIDataObjects[Index].Parent := Self;
       end
       else
-        raise EJclEDIError.CreateFmt(RsEDIError009, [Self.ClassName, IntToStr(Index)])
+        raise EJclEDIError.CreateIDFmt(9, [Self.ClassName, IntToStr(Index)])
     else
-      raise EJclEDIError.CreateFmt(RsEDIError008, [Self.ClassName, IntToStr(Index)])
+      raise EJclEDIError.CreateIDFmt(8, [Self.ClassName, IntToStr(Index)])
   else
-    raise EJclEDIError.CreateFmt(RsEDIError007, [Self.ClassName, IntToStr(Index)]);
+    raise EJclEDIError.CreateIDFmt(7, [Self.ClassName, IntToStr(Index)]);
 end;
 
 function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
@@ -1513,11 +1505,7 @@ begin
       Result := Low(FStack);
   end
   else
-    {$IFNDEF CLR}
-    raise EJclEDIError.CreateResFmt(@RsEDIError057, [IntToStr(Index)]);
-    {$ELSE}
-    raise EJclEDIError.CreateFmt(RsEDIError057, [IntToStr(Index)]);
-    {$ENDIF ~CLR}
+    raise EJclEDIError.CreateIDFmt(57, [IntToStr(Index)]);
 end;
 
 function TEDILoopStack.GetSize: Integer;
@@ -1537,11 +1525,11 @@ begin
       if Index <= High(FStack) then
         Result := FStack[Index]
       else
-        raise EJclEDIError.CreateFmt(RsEDIError054, [IntToStr(Index)])
+        raise EJclEDIError.CreateIDFmt(54, [IntToStr(Index)])
     else
-      raise EJclEDIError.CreateFmt(RsEDIError055, [IntToStr(Index)])
+      raise EJclEDIError.CreateIDFmt(55, [IntToStr(Index)])
   else
-    raise EJclEDIError.CreateFmt(RsEDIError056, [IntToStr(Index)]);
+    raise EJclEDIError.CreateIDFmt(56, [IntToStr(Index)]);
 end;
 
 procedure TEDILoopStack.Pop(Index: Integer);

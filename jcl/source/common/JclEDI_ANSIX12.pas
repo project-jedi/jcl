@@ -748,11 +748,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError036);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError036);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(36);
   end;
 
   FData := FSegmentId;
@@ -805,11 +801,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError035);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError035);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(35);
   end;
   // Continue
   StartPos := 1;
@@ -1047,11 +1039,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError026);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError026);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(26);
   end;
 
   FData := FSTSegment.Assemble;
@@ -1108,11 +1096,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError025);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError025);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(25);
   end;
   // Find the first segment
   StartPos := 1;
@@ -1312,11 +1296,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError020);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError020);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(20);
   end;
   FData := FGSSegment.Assemble;
   FGSSegment.Data := '';
@@ -1371,11 +1351,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError019);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError019);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(19);
   end;
   // Find Functional Group Header Segment
   StartPos := 1;
@@ -1390,26 +1366,14 @@ begin
       FGSSegment.Disassemble;
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError021);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError021);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(21);
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError022);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError022);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(22);
   // Search for Transaction Set Header
   SearchResult := StrSearch(FDelimiters.SD + TSHSegmentId + FDelimiters.ED, FData, StartPos);
   if SearchResult <= 0 then
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError027);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError027);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(27);
   // Set next start position
   StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
   // Continue
@@ -1431,18 +1395,10 @@ begin
         FEDIDataObjects[I].Disassemble;
       end
       else
-        {$IFDEF CLR}
-        raise EJclEDIError.Create(RsEDIError028);
-        {$ELSE}
-        raise EJclEDIError.CreateRes(@RsEDIError028);
-        {$ENDIF CLR}
+        raise EJclEDIError.CreateID(28);
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError029);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError029);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(29);
     // Set the next start position
     StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
     //
@@ -1465,18 +1421,10 @@ begin
       FGESegment.Disassemble;
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError023);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError023);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(23);
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError024);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError024);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(24);
   FData := '';
   FState := ediDisassembled;
 end;
@@ -1632,11 +1580,7 @@ begin
   Result := '';
 
   if not Assigned(FDelimiters) then
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError013);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError013);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(13);
 
   FData := FISASegment.Assemble;
   FISASegment.Data := '';
@@ -1687,11 +1631,7 @@ begin
   DeleteFunctionalGroups;
 
   if not Assigned(FDelimiters) then
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError012);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError012);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(12);
 
   StartPos := 1;
   // Search for Interchange Control Header
@@ -1704,18 +1644,10 @@ begin
       FISASegment.Disassemble;
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError014);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError014);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(14);
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError015);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError015);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(15);
   // Search for Functional Group Header
   SearchResult := StrSearch(FDelimiters.SD + FGHSegmentId + FDelimiters.ED, FData, StartPos);
   // Check for TA1 Segment
@@ -1726,11 +1658,7 @@ begin
     SearchResult := I;
   end;
   if (SearchResult <= 0) and (not ProcessTA1) then
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError022);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError022);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(22);
   // Set next start positon
   StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
   // Continue
@@ -1754,18 +1682,10 @@ begin
           FEDIDataObjects[I].Disassemble;
         end
         else
-          {$IFDEF CLR}
-          raise EJclEDIError.Create(RsEDIError023);
-          {$ELSE}
-          raise EJclEDIError.CreateRes(@RsEDIError023);
-          {$ENDIF CLR}
+          raise EJclEDIError.CreateID(23);
       end
       else
-        {$IFDEF CLR}
-        raise EJclEDIError.Create(RsEDIError024);
-        {$ELSE}
-        raise EJclEDIError.CreateRes(@RsEDIError024);
-        {$ENDIF CLR}
+        raise EJclEDIError.CreateID(24);
       // Set next start positon
       StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
       // Verify the next record is a Functional Group Header
@@ -1812,18 +1732,10 @@ begin
       FIEASegment.Disassemble;
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError016);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError016);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(16);
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError017);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError017);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(17);
   FData := '';
   FState := ediDisassembled;
 end;
@@ -2042,11 +1954,7 @@ begin
         InternalDelimitersDetection(StartPos);
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError015);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError015);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(15);
   // Continue
   while (StartPos + Length(ICHSegmentId)) < Length(FData) do
   begin
@@ -2067,18 +1975,10 @@ begin
         FEDIDataObjects[I].Disassemble;
       end
       else
-        {$IFDEF CLR}
-        raise EJclEDIError.Create(RsEDIError016);
-        {$ELSE}
-        raise EJclEDIError.CreateRes(@RsEDIError016);
-        {$ENDIF CLR}
+        raise EJclEDIError.CreateID(16);
     end
     else
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError017);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError017);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(17);
     // Set next start position, Move past the delimiter
     StartPos := SearchResult + FDelimiters.SDLen;
     // Verify the next record is an Interchange Control Header
@@ -2096,11 +1996,7 @@ begin
       if foIgnoreGarbageAtEndOfFile in FEDIFileOptions then
         Break
       else
-        {$IFDEF CLR}
-        raise EJclEDIError.Create(RsEDIError018);
-        {$ELSE}
-        raise EJclEDIError.CreateRes(@RsEDIError018);
-        {$ENDIF CLR}
+        raise EJclEDIError.CreateID(18);
     end;
   end;
   FData := '';
@@ -2171,11 +2067,7 @@ begin
     end;
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError001);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError001);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(1);
 end;
 
 procedure TEDIFile.LoadFromFile(const FileName: string);
@@ -2209,11 +2101,7 @@ begin
     end;
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError002);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError002);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(2);
 end;
 
 procedure TEDIFile.SaveToFile;
@@ -2234,11 +2122,7 @@ begin
     end;
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError002);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError002);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(2);
 end;
 
 procedure TEDIFile.SetInterchangeControl(Index: Integer; Interchange: TEDIInterchangeControl);
@@ -2723,11 +2607,7 @@ begin
   begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
-      {$IFDEF CLR}
-      raise EJclEDIError.Create(RsEDIError035);
-      {$ELSE}
-      raise EJclEDIError.CreateRes(@RsEDIError035);
-      {$ENDIF CLR}
+      raise EJclEDIError.CreateID(35);
   end;
   SearchResult := StrSearch(FDelimiters.ED + FDelimiters.SS, FData, 1);
   if SearchResult <> 0 then
@@ -3237,12 +3117,7 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
-      {$IFDEF CLR}
-      raise EJclEDIError.CreateFmt(RsEDIError002,
-      {$ELSE}
-      raise EJclEDIError.CreateResFmt(@RsEDIError058,
-      {$ENDIF CLR}
-        [IntToStr(I), DataSegment.SegmentID,
+      raise EJclEDIError.CreateIDFmt(58, [IntToStr(I), DataSegment.SegmentID,
          IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Element[I];
   end;

@@ -4079,11 +4079,7 @@ begin
     end;
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError001);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError001);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(1);
 end;
 
 procedure TEDISEFFile.ParseTextSets;
@@ -4368,11 +4364,7 @@ begin
     end;
   end
   else
-    {$IFDEF CLR}
-    raise EJclEDIError.Create(RsEDIError002);
-    {$ELSE}
-    raise EJclEDIError.CreateRes(@RsEDIError002);
-    {$ENDIF CLR}
+    raise EJclEDIError.CreateID(2);
 end;
 
 procedure TEDISEFTable.Disassemble;
