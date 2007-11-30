@@ -1,15 +1,11 @@
-(*$JPPDEFINEMACRO JCLTREEINT(NODETYPENAME, NODEARRAYTYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME,
+(*$JPPDEFINEMACRO JCLTREEINT(NODETYPENAME, SELFCLASSNAME, ANCESTORCLASSNAME,
   EQUALITYCOMPARERINTERFACENAME, COLLECTIONINTERFACENAME, TREEINTERFACENAME, STDITRINTERFACENAME, TREEITRINTERFACENAME,
   INTERFACEADDITIONAL, PRIVATEADDITIONAL, PROTECTEDADDITIONAL, PUBLICADDITIONAL, COLLECTIONFLAGS, OWNERSHIPDECLARATION,
   PARAMETERTYPE, PARAMETERDECLARATION, DEFAULTVALUE)
-  NODETYPENAME = class;
-
-  NODEARRAYTYPENAME = array of NODETYPENAME;
-
   NODETYPENAME = class
   public
     Value: PARAMETERTYPE;
-    Children: NODEARRAYTYPENAME;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: NODETYPENAME;
     function IndexOfChild(AChild: NODETYPENAME): Integer;
@@ -226,7 +222,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -244,7 +240,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(NODETYPENAME(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -278,7 +274,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := DEFAULTVALUE;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := NODETYPENAME(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -602,7 +598,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := PARAMETERNAME
+      NODETYPENAME(FCursor.Children[Index]).Value := PARAMETERNAME
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -659,7 +655,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := NODETYPENAME(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -669,7 +665,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -689,7 +685,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function PREORDERITRCLASSNAME.GetPreviousCursor: NODETYPENAME;
@@ -704,9 +700,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := NODETYPENAME(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -740,9 +736,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := NODETYPENAME(Result.Children[0]);
   end;
 end;
 
@@ -758,9 +754,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := NODETYPENAME(Result.Children[0]);
   end;
 end;
 
@@ -772,7 +768,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := NODETYPENAME(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -783,7 +779,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := NODETYPENAME(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;*)
 (*$JPPDEFINEMACRO JCLTREEIMP(NODETYPENAME, SELFCLASSNAME, PREORDERITRCLASSNAME, POSTORDERITRCLASSNAME,
@@ -804,7 +800,7 @@ function NODETYPENAME.IndexOfValue(PARAMETERDECLARATION;
   const AEqualityComparer: EQUALITYCOMPARERINTERFACENAME): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, PARAMETERNAME) then
+    if AEqualityComparer.ItemsEqual(NODETYPENAME(Children[Result]).Value, PARAMETERNAME) then
       Exit;
   Result := -1;
 end;
@@ -902,7 +898,7 @@ procedure SELFCLASSNAME.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(NODETYPENAME(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: SELFCLASSNAME;
@@ -954,7 +950,7 @@ var
   Parent: NODETYPENAME;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(NODETYPENAME(ANode.Children[Index]));
   RELEASERNAME(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -985,7 +981,7 @@ function SELFCLASSNAME.Contains(PARAMETERDECLARATION): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], PARAMETERNAME);
+      Result := NodeContains(NODETYPENAME(ANode.Children[Index]), PARAMETERNAME);
       if Result then
         Break;
     end;
@@ -1073,7 +1069,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := NODETYPENAME(Start.Children[0]);
           Result := POSTORDERITRCLASSNAME.Create(Self, Start, False);
         end;
     else
@@ -1138,7 +1134,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := NODETYPENAME(Start.Children[Start.ChildrenCount - 1]);
           Result := PREORDERITRCLASSNAME.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -1160,7 +1156,7 @@ procedure SELFCLASSNAME.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(NODETYPENAME(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}

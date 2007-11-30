@@ -50,13 +50,13 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 {$I containers\JclTrees.imp}
 type
-{$JPPEXPANDMACRO JCLTREEINT(TJclIntfTreeNode,TJclIntfTreeNodeArray,TJclIntfTree,TJclIntfAbstractContainer,IJclIntfEqualityComparer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator,IJclIntfTreeIterator,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclIntfTreeNode,TJclIntfTree,TJclIntfAbstractContainer,IJclIntfEqualityComparer,IJclIntfCollection,IJclIntfTree,IJclIntfIterator,IJclIntfTreeIterator,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,IInterface,const AInterface: IInterface,nil)}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclAnsiStrTreeNode,TJclAnsiStrTreeNodeArray,TJclAnsiStrTree,TJclAnsiStrAbstractCollection,IJclAnsiStrEqualityComparer,IJclAnsiStrCollection,IJclAnsiStrTree,IJclAnsiStrIterator,IJclAnsiStrTreeIterator, IJclStrContainer\, IJclAnsiStrContainer\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclAnsiStrTreeNode,TJclAnsiStrTree,TJclAnsiStrAbstractCollection,IJclAnsiStrEqualityComparer,IJclAnsiStrCollection,IJclAnsiStrTree,IJclAnsiStrIterator,IJclAnsiStrTreeIterator, IJclStrContainer\, IJclAnsiStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,AnsiString,const AString: AnsiString,'')}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclWideStrTreeNode,TJclWideStrTreeNodeArray,TJclWideStrTree,TJclWideStrAbstractCollection,IJclWideStrEqualityComparer,IJclWideStrCollection,IJclWideStrTree,IJclWideStrIterator,IJclWideStrTreeIterator, IJclStrContainer\, IJclWideStrContainer\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclWideStrTreeNode,TJclWideStrTree,TJclWideStrAbstractCollection,IJclWideStrEqualityComparer,IJclWideStrCollection,IJclWideStrTree,IJclWideStrIterator,IJclWideStrTreeIterator, IJclStrContainer\, IJclWideStrContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,, override;,,WideString,const AString: WideString,'')}
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -66,13 +66,13 @@ type
   TJclStrTree = TJclWideStrTree;
   {$ENDIF CONTAINER_WIDESTR}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclSingleTreeNode,TJclSingleTreeNodeArray,TJclSingleTree,TJclSingleAbstractContainer,IJclSingleEqualityComparer,IJclSingleCollection,IJclSingleTree,IJclSingleIterator,IJclSingleTreeIterator, IJclSingleContainer\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclSingleTreeNode,TJclSingleTree,TJclSingleAbstractContainer,IJclSingleEqualityComparer,IJclSingleCollection,IJclSingleTree,IJclSingleIterator,IJclSingleTreeIterator, IJclSingleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Single,const AValue: Single,0.0)}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclDoubleTreeNode,TJclDoubleTreeNodeArray,TJclDoubleTree,TJclDoubleAbstractContainer,IJclDoubleEqualityComparer,IJclDoubleCollection,IJclDoubleTree,IJclDoubleIterator,IJclDoubleTreeIterator, IJclDoubleContainer\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclDoubleTreeNode,TJclDoubleTree,TJclDoubleAbstractContainer,IJclDoubleEqualityComparer,IJclDoubleCollection,IJclDoubleTree,IJclDoubleIterator,IJclDoubleTreeIterator, IJclDoubleContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Double,const AValue: Double,0.0)}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclExtendedTreeNode,TJclExtendedTreeNodeArray,TJclExtendedTree,TJclExtendedAbstractContainer,IJclExtendedEqualityComparer,IJclExtendedCollection,IJclExtendedTree,IJclExtendedIterator,IJclExtendedTreeIterator, IJclExtendedContainer\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclExtendedTreeNode,TJclExtendedTree,TJclExtendedAbstractContainer,IJclExtendedEqualityComparer,IJclExtendedCollection,IJclExtendedTree,IJclExtendedIterator,IJclExtendedTreeIterator, IJclExtendedContainer\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Extended,const AValue: Extended,0.0)}
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -85,25 +85,25 @@ type
   TJclFloatTree = TJclSingleTree;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclIntegerTreeNode,TJclIntegerTreeNodeArray,TJclIntegerTree,TJclIntegerAbstractContainer,IJclIntegerEqualityComparer,IJclIntegerCollection,IJclIntegerTree,IJclIntegerIterator,IJclIntegerTreeIterator,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclIntegerTreeNode,TJclIntegerTree,TJclIntegerAbstractContainer,IJclIntegerEqualityComparer,IJclIntegerCollection,IJclIntegerTree,IJclIntegerIterator,IJclIntegerTreeIterator,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Integer,AValue: Integer,0)}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclCardinalTreeNode,TJclCardinalTreeNodeArray,TJclCardinalTree,TJclCardinalAbstractContainer,IJclCardinalEqualityComparer,IJclCardinalCollection,IJclCardinalTree,IJclCardinalIterator,IJclCardinalTreeIterator,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclCardinalTreeNode,TJclCardinalTree,TJclCardinalAbstractContainer,IJclCardinalEqualityComparer,IJclCardinalCollection,IJclCardinalTree,IJclCardinalIterator,IJclCardinalTreeIterator,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Cardinal,AValue: Cardinal,0)}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclInt64TreeNode,TJclInt64TreeNodeArray,TJclInt64Tree,TJclInt64AbstractContainer,IJclInt64EqualityComparer,IJclInt64Collection,IJclInt64Tree,IJclInt64Iterator,IJclInt64TreeIterator,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclInt64TreeNode,TJclInt64Tree,TJclInt64AbstractContainer,IJclInt64EqualityComparer,IJclInt64Collection,IJclInt64Tree,IJclInt64Iterator,IJclInt64TreeIterator,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Int64,const AValue: Int64,0)}
 
 {$IFNDEF CLR}
-{$JPPEXPANDMACRO JCLTREEINT(TJclPtrTreeNode,TJclPtrTreeNodeArray,TJclPtrTree,TJclPtrAbstractContainer,IJclPtrEqualityComparer,IJclPtrCollection,IJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclPtrTreeNode,TJclPtrTree,TJclPtrAbstractContainer,IJclPtrEqualityComparer,IJclPtrCollection,IJclPtrTree,IJclPtrIterator,IJclPtrTreeIterator,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,,Pointer,APtr: Pointer,nil)}
 {$ENDIF ~CLR}
 
-{$JPPEXPANDMACRO JCLTREEINT(TJclTreeNode,TJclTreeNodeArray,TJclTree,TJclAbstractContainer,IJclEqualityComparer,IJclCollection,IJclTree,IJclIterator,IJclTreeIterator, IJclObjectOwner\,,,
+{$JPPEXPANDMACRO JCLTREEINT(TJclTreeNode,TJclTree,TJclAbstractContainer,IJclEqualityComparer,IJclCollection,IJclTree,IJclIterator,IJclTreeIterator, IJclObjectOwner\,,,
     function CreateEmptyContainer: TJclAbstractContainerBase; override;,,,AOwnsObjects: Boolean,TObject,AObject: TObject,nil)}
 
 {$IFDEF SUPPORTS_GENERICS}
-{$JPPEXPANDMACRO JCLTREEINT(TJclTreeNode<T>,TJclTreeNodeArray<T>,TJclTree<T>,TJclAbstractContainer<T>,IJclEqualityComparer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\,,,,,,AOwnsItems: Boolean,T,const AItem: T,Default(T))}
+{$JPPEXPANDMACRO JCLTREEINT(TJclTreeNode<T>,TJclTree<T>,TJclAbstractContainer<T>,IJclEqualityComparer<T>,IJclCollection<T>,IJclTree<T>,IJclIterator<T>,IJclTreeIterator<T>, IJclItemOwner<T>\,,,,,,AOwnsItems: Boolean,T,const AItem: T,Default(T))}
 
   // E = External helper to compare items for equality
   TJclTreeE<T> = class(TJclTree<T>, {$IFDEF THREADSAFE} IJclLockable, {$ENDIF THREADSAFE}

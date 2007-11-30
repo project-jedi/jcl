@@ -54,14 +54,10 @@ uses
   JclBase, JclAbstractContainers, JclContainerIntf;
 type
 
-  TJclIntfTreeNode = class;
-
-  TJclIntfTreeNodeArray = array of TJclIntfTreeNode;
-
   TJclIntfTreeNode = class
   public
     Value: IInterface;
-    Children: TJclIntfTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclIntfTreeNode;
     function IndexOfChild(AChild: TJclIntfTreeNode): Integer;
@@ -113,14 +109,10 @@ type
   end;
 
 
-  TJclAnsiStrTreeNode = class;
-
-  TJclAnsiStrTreeNodeArray = array of TJclAnsiStrTreeNode;
-
   TJclAnsiStrTreeNode = class
   public
     Value: AnsiString;
-    Children: TJclAnsiStrTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclAnsiStrTreeNode;
     function IndexOfChild(AChild: TJclAnsiStrTreeNode): Integer;
@@ -172,14 +164,10 @@ type
   end;
 
 
-  TJclWideStrTreeNode = class;
-
-  TJclWideStrTreeNodeArray = array of TJclWideStrTreeNode;
-
   TJclWideStrTreeNode = class
   public
     Value: WideString;
-    Children: TJclWideStrTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclWideStrTreeNode;
     function IndexOfChild(AChild: TJclWideStrTreeNode): Integer;
@@ -238,14 +226,10 @@ type
   {$ENDIF CONTAINER_WIDESTR}
 
 
-  TJclSingleTreeNode = class;
-
-  TJclSingleTreeNodeArray = array of TJclSingleTreeNode;
-
   TJclSingleTreeNode = class
   public
     Value: Single;
-    Children: TJclSingleTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclSingleTreeNode;
     function IndexOfChild(AChild: TJclSingleTreeNode): Integer;
@@ -297,14 +281,10 @@ type
   end;
 
 
-  TJclDoubleTreeNode = class;
-
-  TJclDoubleTreeNodeArray = array of TJclDoubleTreeNode;
-
   TJclDoubleTreeNode = class
   public
     Value: Double;
-    Children: TJclDoubleTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclDoubleTreeNode;
     function IndexOfChild(AChild: TJclDoubleTreeNode): Integer;
@@ -356,14 +336,10 @@ type
   end;
 
 
-  TJclExtendedTreeNode = class;
-
-  TJclExtendedTreeNodeArray = array of TJclExtendedTreeNode;
-
   TJclExtendedTreeNode = class
   public
     Value: Extended;
-    Children: TJclExtendedTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclExtendedTreeNode;
     function IndexOfChild(AChild: TJclExtendedTreeNode): Integer;
@@ -425,14 +401,10 @@ type
   {$ENDIF MATH_SINGLE_PRECISION}
 
 
-  TJclIntegerTreeNode = class;
-
-  TJclIntegerTreeNodeArray = array of TJclIntegerTreeNode;
-
   TJclIntegerTreeNode = class
   public
     Value: Integer;
-    Children: TJclIntegerTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclIntegerTreeNode;
     function IndexOfChild(AChild: TJclIntegerTreeNode): Integer;
@@ -484,14 +456,10 @@ type
   end;
 
 
-  TJclCardinalTreeNode = class;
-
-  TJclCardinalTreeNodeArray = array of TJclCardinalTreeNode;
-
   TJclCardinalTreeNode = class
   public
     Value: Cardinal;
-    Children: TJclCardinalTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclCardinalTreeNode;
     function IndexOfChild(AChild: TJclCardinalTreeNode): Integer;
@@ -543,14 +511,10 @@ type
   end;
 
 
-  TJclInt64TreeNode = class;
-
-  TJclInt64TreeNodeArray = array of TJclInt64TreeNode;
-
   TJclInt64TreeNode = class
   public
     Value: Int64;
-    Children: TJclInt64TreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclInt64TreeNode;
     function IndexOfChild(AChild: TJclInt64TreeNode): Integer;
@@ -603,14 +567,10 @@ type
 
 {$IFNDEF CLR}
 
-  TJclPtrTreeNode = class;
-
-  TJclPtrTreeNodeArray = array of TJclPtrTreeNode;
-
   TJclPtrTreeNode = class
   public
     Value: Pointer;
-    Children: TJclPtrTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclPtrTreeNode;
     function IndexOfChild(AChild: TJclPtrTreeNode): Integer;
@@ -663,14 +623,10 @@ type
 {$ENDIF ~CLR}
 
 
-  TJclTreeNode = class;
-
-  TJclTreeNodeArray = array of TJclTreeNode;
-
   TJclTreeNode = class
   public
     Value: TObject;
-    Children: TJclTreeNodeArray;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclTreeNode;
     function IndexOfChild(AChild: TJclTreeNode): Integer;
@@ -723,14 +679,10 @@ type
 
 {$IFDEF SUPPORTS_GENERICS}
 
-  TJclTreeNode<T> = class;
-
-  TJclTreeNodeArray<T> = array of TJclTreeNode<T>;
-
   TJclTreeNode<T> = class
   public
     Value: T;
-    Children: TJclTreeNodeArray<T>;
+    Children: TDynObjectArray;
     ChildrenCount: Integer;
     Parent: TJclTreeNode<T>;
     function IndexOfChild(AChild: TJclTreeNode<T>): Integer;
@@ -1004,7 +956,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -1022,7 +974,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclIntfTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -1056,7 +1008,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := nil;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclIntfTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -1380,7 +1332,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AInterface
+      TJclIntfTreeNode(FCursor.Children[Index]).Value := AInterface
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -1437,7 +1389,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclIntfTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -1447,7 +1399,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -1467,7 +1419,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderIntfItr.GetPreviousCursor: TJclIntfTreeNode;
@@ -1482,9 +1434,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclIntfTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -1518,9 +1470,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclIntfTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -1536,9 +1488,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclIntfTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -1550,7 +1502,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclIntfTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -1561,7 +1513,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclIntfTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -1730,7 +1682,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -1748,7 +1700,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclAnsiStrTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -1782,7 +1734,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := '';
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclAnsiStrTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -2106,7 +2058,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AString
+      TJclAnsiStrTreeNode(FCursor.Children[Index]).Value := AString
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -2163,7 +2115,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclAnsiStrTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -2173,7 +2125,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -2193,7 +2145,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderAnsiStrItr.GetPreviousCursor: TJclAnsiStrTreeNode;
@@ -2208,9 +2160,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclAnsiStrTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -2244,9 +2196,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclAnsiStrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -2262,9 +2214,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclAnsiStrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -2276,7 +2228,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclAnsiStrTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -2287,7 +2239,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclAnsiStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -2456,7 +2408,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -2474,7 +2426,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclWideStrTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -2508,7 +2460,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := '';
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclWideStrTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -2832,7 +2784,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AString
+      TJclWideStrTreeNode(FCursor.Children[Index]).Value := AString
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -2889,7 +2841,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclWideStrTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -2899,7 +2851,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -2919,7 +2871,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderWideStrItr.GetPreviousCursor: TJclWideStrTreeNode;
@@ -2934,9 +2886,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclWideStrTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -2970,9 +2922,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclWideStrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -2988,9 +2940,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclWideStrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -3002,7 +2954,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclWideStrTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -3013,7 +2965,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclWideStrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -3182,7 +3134,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -3200,7 +3152,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclSingleTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -3234,7 +3186,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0.0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclSingleTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -3558,7 +3510,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclSingleTreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -3615,7 +3567,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclSingleTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -3625,7 +3577,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -3645,7 +3597,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderSingleItr.GetPreviousCursor: TJclSingleTreeNode;
@@ -3660,9 +3612,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclSingleTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -3696,9 +3648,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclSingleTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -3714,9 +3666,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclSingleTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -3728,7 +3680,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclSingleTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -3739,7 +3691,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclSingleTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -3908,7 +3860,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -3926,7 +3878,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclDoubleTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -3960,7 +3912,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0.0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclDoubleTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -4284,7 +4236,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclDoubleTreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -4341,7 +4293,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclDoubleTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -4351,7 +4303,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -4371,7 +4323,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderDoubleItr.GetPreviousCursor: TJclDoubleTreeNode;
@@ -4386,9 +4338,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclDoubleTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -4422,9 +4374,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclDoubleTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -4440,9 +4392,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclDoubleTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -4454,7 +4406,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclDoubleTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -4465,7 +4417,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclDoubleTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -4634,7 +4586,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -4652,7 +4604,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclExtendedTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -4686,7 +4638,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0.0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclExtendedTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -5010,7 +4962,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclExtendedTreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -5067,7 +5019,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclExtendedTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -5077,7 +5029,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -5097,7 +5049,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderExtendedItr.GetPreviousCursor: TJclExtendedTreeNode;
@@ -5112,9 +5064,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclExtendedTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -5148,9 +5100,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclExtendedTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -5166,9 +5118,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclExtendedTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -5180,7 +5132,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclExtendedTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -5191,7 +5143,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclExtendedTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -5360,7 +5312,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -5378,7 +5330,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclIntegerTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -5412,7 +5364,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclIntegerTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -5736,7 +5688,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclIntegerTreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -5793,7 +5745,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclIntegerTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -5803,7 +5755,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -5823,7 +5775,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderIntegerItr.GetPreviousCursor: TJclIntegerTreeNode;
@@ -5838,9 +5790,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclIntegerTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -5874,9 +5826,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclIntegerTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -5892,9 +5844,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclIntegerTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -5906,7 +5858,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclIntegerTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -5917,7 +5869,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclIntegerTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -6086,7 +6038,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -6104,7 +6056,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclCardinalTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -6138,7 +6090,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclCardinalTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -6462,7 +6414,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclCardinalTreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -6519,7 +6471,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclCardinalTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -6529,7 +6481,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -6549,7 +6501,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderCardinalItr.GetPreviousCursor: TJclCardinalTreeNode;
@@ -6564,9 +6516,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclCardinalTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -6600,9 +6552,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclCardinalTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -6618,9 +6570,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclCardinalTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -6632,7 +6584,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclCardinalTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -6643,7 +6595,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclCardinalTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 
@@ -6812,7 +6764,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -6830,7 +6782,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclInt64TreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -6864,7 +6816,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := 0;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclInt64TreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -7188,7 +7140,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AValue
+      TJclInt64TreeNode(FCursor.Children[Index]).Value := AValue
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -7245,7 +7197,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclInt64TreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -7255,7 +7207,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -7275,7 +7227,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderInt64Itr.GetPreviousCursor: TJclInt64TreeNode;
@@ -7290,9 +7242,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclInt64TreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -7326,9 +7278,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclInt64TreeNode(Result.Children[0]);
   end;
 end;
 
@@ -7344,9 +7296,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclInt64TreeNode(Result.Children[0]);
   end;
 end;
 
@@ -7358,7 +7310,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclInt64TreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -7369,7 +7321,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclInt64TreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 {$IFNDEF CLR}
@@ -7539,7 +7491,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -7557,7 +7509,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclPtrTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -7591,7 +7543,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := nil;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclPtrTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -7915,7 +7867,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := APtr
+      TJclPtrTreeNode(FCursor.Children[Index]).Value := APtr
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -7972,7 +7924,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclPtrTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -7982,7 +7934,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -8002,7 +7954,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderPtrItr.GetPreviousCursor: TJclPtrTreeNode;
@@ -8017,9 +7969,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclPtrTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -8053,9 +8005,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclPtrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -8071,9 +8023,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclPtrTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -8085,7 +8037,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclPtrTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -8096,7 +8048,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclPtrTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 {$ENDIF ~CLR}
@@ -8266,7 +8218,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -8284,7 +8236,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclTreeNode(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -8318,7 +8270,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := nil;
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclTreeNode(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -8642,7 +8594,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AObject
+      TJclTreeNode(FCursor.Children[Index]).Value := AObject
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -8699,7 +8651,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclTreeNode(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -8709,7 +8661,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -8729,7 +8681,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderItr.GetPreviousCursor: TJclTreeNode;
@@ -8744,9 +8696,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclTreeNode(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -8780,9 +8732,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -8798,9 +8750,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclTreeNode(Result.Children[0]);
   end;
 end;
 
@@ -8812,7 +8764,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclTreeNode(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -8823,7 +8775,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclTreeNode(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 {$IFDEF SUPPORTS_GENERICS}
@@ -8993,7 +8945,7 @@ begin
     if FCursor <> nil then
     begin
       for Index := FCursor.ChildrenCount - 1 downto 0 do
-        FOwnTree.ClearNode(FCursor.Children[Index]);
+        FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]));
       SetLength(FCursor.Children, 0);
       FCursor.ChildrenCount := 0;
     end;
@@ -9011,7 +8963,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FOwnTree.ClearNode(FCursor.Children[Index])
+      FOwnTree.ClearNode(TJclTreeNode<T>(FCursor.Children[Index]))
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -9045,7 +8997,7 @@ begin
   {$ENDIF THREADSAFE}
     Result := Default(T);
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor := FCursor.Children[Index];
+      FCursor := TJclTreeNode<T>(FCursor.Children[Index]);
     if FCursor <> nil then
       Result := FCursor.Value
     else
@@ -9369,7 +9321,7 @@ begin
   try
   {$ENDIF THREADSAFE}
     if (FCursor <> nil) and (Index >= 0) and (Index < FCursor.ChildrenCount) then
-      FCursor.Children[Index].Value := AItem
+      TJclTreeNode<T>(FCursor.Children[Index]).Value := AItem
     else
       raise EJclOutOfBoundsError.Create;
   {$IFDEF THREADSAFE}
@@ -9426,7 +9378,7 @@ begin
     Exit;
   LastRet := Result;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[0]
+    Result := TJclTreeNode<T>(Result.Children[0])
   else
   begin
     Result := Result.Parent;
@@ -9436,7 +9388,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root = return successor
-      Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+      Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) + 1]);
   end;
 end;
 
@@ -9456,7 +9408,7 @@ begin
     Result := Result.Parent;
   end;
   if Result <> nil then // not root = return successor
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) + 1]);
 end;
 
 function TPreOrderItr<T>.GetPreviousCursor: TJclTreeNode<T>;
@@ -9471,9 +9423,9 @@ begin
   if (Result <> nil) and (Result.IndexOfChild(LastRet) > 0) then
     // come from Right
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+    Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) - 1]);
     while (Result.ChildrenCount > 0) do // descend down the tree
-      Result := Result.Children[Result.ChildrenCount - 1];
+      Result := TJclTreeNode<T>(Result.Children[Result.ChildrenCount - 1]);
   end;
 end;
 
@@ -9507,9 +9459,9 @@ begin
   Result := Result.Parent;
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclTreeNode<T>(Result.Children[0]);
   end;
 end;
 
@@ -9525,9 +9477,9 @@ begin
 
   if (Result <> nil) and (Result.IndexOfChild(LastRet) <> (Result.ChildrenCount - 1)) then
   begin
-    Result := Result.Children[Result.IndexOfChild(LastRet) + 1];
+    Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) + 1]);
     while Result.ChildrenCount > 0 do
-      Result := Result.Children[0];
+      Result := TJclTreeNode<T>(Result.Children[0]);
   end;
 end;
 
@@ -9539,7 +9491,7 @@ begin
   if Result = nil then
     Exit;
   if Result.ChildrenCount > 0 then
-    Result := Result.Children[Result.ChildrenCount - 1]
+    Result := TJclTreeNode<T>(Result.Children[Result.ChildrenCount - 1])
   else
   begin
     LastRet := Result;
@@ -9550,7 +9502,7 @@ begin
       Result := Result.Parent;
     end;
     if Result <> nil then // not root
-      Result := Result.Children[Result.IndexOfChild(LastRet) - 1];
+      Result := TJclTreeNode<T>(Result.Children[Result.IndexOfChild(LastRet) - 1]);
   end;
 end;
 {$ENDIF SUPPORTS_GENERICS}
@@ -9570,7 +9522,7 @@ function TJclIntfTreeNode.IndexOfValue(const AInterface: IInterface;
   const AEqualityComparer: IJclIntfEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AInterface) then
+    if AEqualityComparer.ItemsEqual(TJclIntfTreeNode(Children[Result]).Value, AInterface) then
       Exit;
   Result := -1;
 end;
@@ -9668,7 +9620,7 @@ procedure TJclIntfTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclIntfTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclIntfTree;
@@ -9720,7 +9672,7 @@ var
   Parent: TJclIntfTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclIntfTreeNode(ANode.Children[Index]));
   FreeObject(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -9751,7 +9703,7 @@ function TJclIntfTree.Contains(const AInterface: IInterface): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AInterface);
+      Result := NodeContains(TJclIntfTreeNode(ANode.Children[Index]), AInterface);
       if Result then
         Break;
     end;
@@ -9844,7 +9796,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclIntfTreeNode(Start.Children[0]);
           Result := TPostOrderIntfItr.Create(Self, Start, False);
         end;
     else
@@ -9909,7 +9861,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclIntfTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderIntfItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -9931,7 +9883,7 @@ procedure TJclIntfTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclIntfTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -10049,7 +10001,7 @@ function TJclAnsiStrTreeNode.IndexOfValue(const AString: AnsiString;
   const AEqualityComparer: IJclAnsiStrEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AString) then
+    if AEqualityComparer.ItemsEqual(TJclAnsiStrTreeNode(Children[Result]).Value, AString) then
       Exit;
   Result := -1;
 end;
@@ -10147,7 +10099,7 @@ procedure TJclAnsiStrTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclAnsiStrTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclAnsiStrTree;
@@ -10199,7 +10151,7 @@ var
   Parent: TJclAnsiStrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
   FreeString(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -10230,7 +10182,7 @@ function TJclAnsiStrTree.Contains(const AString: AnsiString): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AString);
+      Result := NodeContains(TJclAnsiStrTreeNode(ANode.Children[Index]), AString);
       if Result then
         Break;
     end;
@@ -10323,7 +10275,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclAnsiStrTreeNode(Start.Children[0]);
           Result := TPostOrderAnsiStrItr.Create(Self, Start, False);
         end;
     else
@@ -10388,7 +10340,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclAnsiStrTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderAnsiStrItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -10410,7 +10362,7 @@ procedure TJclAnsiStrTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclAnsiStrTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -10528,7 +10480,7 @@ function TJclWideStrTreeNode.IndexOfValue(const AString: WideString;
   const AEqualityComparer: IJclWideStrEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AString) then
+    if AEqualityComparer.ItemsEqual(TJclWideStrTreeNode(Children[Result]).Value, AString) then
       Exit;
   Result := -1;
 end;
@@ -10626,7 +10578,7 @@ procedure TJclWideStrTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclWideStrTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclWideStrTree;
@@ -10678,7 +10630,7 @@ var
   Parent: TJclWideStrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclWideStrTreeNode(ANode.Children[Index]));
   FreeString(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -10709,7 +10661,7 @@ function TJclWideStrTree.Contains(const AString: WideString): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AString);
+      Result := NodeContains(TJclWideStrTreeNode(ANode.Children[Index]), AString);
       if Result then
         Break;
     end;
@@ -10802,7 +10754,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclWideStrTreeNode(Start.Children[0]);
           Result := TPostOrderWideStrItr.Create(Self, Start, False);
         end;
     else
@@ -10867,7 +10819,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclWideStrTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderWideStrItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -10889,7 +10841,7 @@ procedure TJclWideStrTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclWideStrTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -11007,7 +10959,7 @@ function TJclSingleTreeNode.IndexOfValue(const AValue: Single;
   const AEqualityComparer: IJclSingleEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclSingleTreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -11105,7 +11057,7 @@ procedure TJclSingleTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclSingleTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclSingleTree;
@@ -11157,7 +11109,7 @@ var
   Parent: TJclSingleTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclSingleTreeNode(ANode.Children[Index]));
   FreeSingle(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -11188,7 +11140,7 @@ function TJclSingleTree.Contains(const AValue: Single): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclSingleTreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -11281,7 +11233,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclSingleTreeNode(Start.Children[0]);
           Result := TPostOrderSingleItr.Create(Self, Start, False);
         end;
     else
@@ -11346,7 +11298,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclSingleTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderSingleItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -11368,7 +11320,7 @@ procedure TJclSingleTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclSingleTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -11486,7 +11438,7 @@ function TJclDoubleTreeNode.IndexOfValue(const AValue: Double;
   const AEqualityComparer: IJclDoubleEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclDoubleTreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -11584,7 +11536,7 @@ procedure TJclDoubleTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclDoubleTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclDoubleTree;
@@ -11636,7 +11588,7 @@ var
   Parent: TJclDoubleTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclDoubleTreeNode(ANode.Children[Index]));
   FreeDouble(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -11667,7 +11619,7 @@ function TJclDoubleTree.Contains(const AValue: Double): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclDoubleTreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -11760,7 +11712,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclDoubleTreeNode(Start.Children[0]);
           Result := TPostOrderDoubleItr.Create(Self, Start, False);
         end;
     else
@@ -11825,7 +11777,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclDoubleTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderDoubleItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -11847,7 +11799,7 @@ procedure TJclDoubleTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclDoubleTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -11965,7 +11917,7 @@ function TJclExtendedTreeNode.IndexOfValue(const AValue: Extended;
   const AEqualityComparer: IJclExtendedEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclExtendedTreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -12063,7 +12015,7 @@ procedure TJclExtendedTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclExtendedTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclExtendedTree;
@@ -12115,7 +12067,7 @@ var
   Parent: TJclExtendedTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclExtendedTreeNode(ANode.Children[Index]));
   FreeExtended(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -12146,7 +12098,7 @@ function TJclExtendedTree.Contains(const AValue: Extended): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclExtendedTreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -12239,7 +12191,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclExtendedTreeNode(Start.Children[0]);
           Result := TPostOrderExtendedItr.Create(Self, Start, False);
         end;
     else
@@ -12304,7 +12256,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclExtendedTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderExtendedItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -12326,7 +12278,7 @@ procedure TJclExtendedTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclExtendedTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -12444,7 +12396,7 @@ function TJclIntegerTreeNode.IndexOfValue(AValue: Integer;
   const AEqualityComparer: IJclIntegerEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclIntegerTreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -12542,7 +12494,7 @@ procedure TJclIntegerTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclIntegerTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclIntegerTree;
@@ -12594,7 +12546,7 @@ var
   Parent: TJclIntegerTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclIntegerTreeNode(ANode.Children[Index]));
   FreeInteger(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -12625,7 +12577,7 @@ function TJclIntegerTree.Contains(AValue: Integer): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclIntegerTreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -12718,7 +12670,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclIntegerTreeNode(Start.Children[0]);
           Result := TPostOrderIntegerItr.Create(Self, Start, False);
         end;
     else
@@ -12783,7 +12735,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclIntegerTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderIntegerItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -12805,7 +12757,7 @@ procedure TJclIntegerTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclIntegerTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -12923,7 +12875,7 @@ function TJclCardinalTreeNode.IndexOfValue(AValue: Cardinal;
   const AEqualityComparer: IJclCardinalEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclCardinalTreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -13021,7 +12973,7 @@ procedure TJclCardinalTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclCardinalTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclCardinalTree;
@@ -13073,7 +13025,7 @@ var
   Parent: TJclCardinalTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclCardinalTreeNode(ANode.Children[Index]));
   FreeCardinal(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -13104,7 +13056,7 @@ function TJclCardinalTree.Contains(AValue: Cardinal): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclCardinalTreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -13197,7 +13149,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclCardinalTreeNode(Start.Children[0]);
           Result := TPostOrderCardinalItr.Create(Self, Start, False);
         end;
     else
@@ -13262,7 +13214,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclCardinalTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderCardinalItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -13284,7 +13236,7 @@ procedure TJclCardinalTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclCardinalTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -13402,7 +13354,7 @@ function TJclInt64TreeNode.IndexOfValue(const AValue: Int64;
   const AEqualityComparer: IJclInt64EqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AValue) then
+    if AEqualityComparer.ItemsEqual(TJclInt64TreeNode(Children[Result]).Value, AValue) then
       Exit;
   Result := -1;
 end;
@@ -13500,7 +13452,7 @@ procedure TJclInt64Tree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclInt64TreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclInt64Tree;
@@ -13552,7 +13504,7 @@ var
   Parent: TJclInt64TreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclInt64TreeNode(ANode.Children[Index]));
   FreeInt64(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -13583,7 +13535,7 @@ function TJclInt64Tree.Contains(const AValue: Int64): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AValue);
+      Result := NodeContains(TJclInt64TreeNode(ANode.Children[Index]), AValue);
       if Result then
         Break;
     end;
@@ -13676,7 +13628,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclInt64TreeNode(Start.Children[0]);
           Result := TPostOrderInt64Itr.Create(Self, Start, False);
         end;
     else
@@ -13741,7 +13693,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclInt64TreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderInt64Itr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -13763,7 +13715,7 @@ procedure TJclInt64Tree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclInt64TreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -13882,7 +13834,7 @@ function TJclPtrTreeNode.IndexOfValue(APtr: Pointer;
   const AEqualityComparer: IJclPtrEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, APtr) then
+    if AEqualityComparer.ItemsEqual(TJclPtrTreeNode(Children[Result]).Value, APtr) then
       Exit;
   Result := -1;
 end;
@@ -13980,7 +13932,7 @@ procedure TJclPtrTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclPtrTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclPtrTree;
@@ -14032,7 +13984,7 @@ var
   Parent: TJclPtrTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclPtrTreeNode(ANode.Children[Index]));
   FreePointer(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -14063,7 +14015,7 @@ function TJclPtrTree.Contains(APtr: Pointer): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], APtr);
+      Result := NodeContains(TJclPtrTreeNode(ANode.Children[Index]), APtr);
       if Result then
         Break;
     end;
@@ -14156,7 +14108,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclPtrTreeNode(Start.Children[0]);
           Result := TPostOrderPtrItr.Create(Self, Start, False);
         end;
     else
@@ -14221,7 +14173,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclPtrTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderPtrItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -14243,7 +14195,7 @@ procedure TJclPtrTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclPtrTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -14362,7 +14314,7 @@ function TJclTreeNode.IndexOfValue(AObject: TObject;
   const AEqualityComparer: IJclEqualityComparer): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AObject) then
+    if AEqualityComparer.ItemsEqual(TJclTreeNode(Children[Result]).Value, AObject) then
       Exit;
   Result := -1;
 end;
@@ -14460,7 +14412,7 @@ procedure TJclTree.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclTreeNode(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclTree;
@@ -14512,7 +14464,7 @@ var
   Parent: TJclTreeNode;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclTreeNode(ANode.Children[Index]));
   FreeObject(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -14543,7 +14495,7 @@ function TJclTree.Contains(AObject: TObject): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AObject);
+      Result := NodeContains(TJclTreeNode(ANode.Children[Index]), AObject);
       if Result then
         Break;
     end;
@@ -14636,7 +14588,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclTreeNode(Start.Children[0]);
           Result := TPostOrderItr.Create(Self, Start, False);
         end;
     else
@@ -14701,7 +14653,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclTreeNode(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderItr.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -14723,7 +14675,7 @@ procedure TJclTree.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclTreeNode(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
@@ -14842,7 +14794,7 @@ function TJclTreeNode<T>.IndexOfValue(const AItem: T;
   const AEqualityComparer: IJclEqualityComparer<T>): Integer;
 begin
   for Result := 0 to ChildrenCount - 1 do
-    if AEqualityComparer.ItemsEqual(Children[Result].Value, AItem) then
+    if AEqualityComparer.ItemsEqual(TJclTreeNode<T>(Children[Result]).Value, AItem) then
       Exit;
   Result := -1;
 end;
@@ -14940,7 +14892,7 @@ procedure TJclTree<T>.AssignDataTo(Dest: TJclAbstractContainerBase);
     SetLength(Result.Children, Node.ChildrenCount);
     Result.ChildrenCount := Node.ChildrenCount;
     for Index := 0 to Node.ChildrenCount - 1 do
-      Result.Children[Index] := CloneNode(Node.Children[Index], Result); // recursive call
+      Result.Children[Index] := CloneNode(TJclTreeNode<T>(Node.Children[Index]), Result); // recursive call
   end;
 var
   ADest: TJclTree<T>;
@@ -14992,7 +14944,7 @@ var
   Parent: TJclTreeNode<T>;
 begin
   for Index := ANode.ChildrenCount - 1 downto 0 do
-    ClearNode(ANode.Children[Index]);
+    ClearNode(TJclTreeNode<T>(ANode.Children[Index]));
   FreeItem(ANode.Value);
   Parent := ANode.Parent;
   if Parent <> nil then
@@ -15023,7 +14975,7 @@ function TJclTree<T>.Contains(const AItem: T): Boolean;
     if not Result then
       for Index := 0 to ANode.ChildrenCount - 1 do
     begin
-      Result := NodeContains(ANode.Children[Index], AItem);
+      Result := NodeContains(TJclTreeNode<T>(ANode.Children[Index]), AItem);
       if Result then
         Break;
     end;
@@ -15111,7 +15063,7 @@ begin
         begin
           if Start <> nil then
             while (Start.ChildrenCount > 0) do
-              Start := Start.Children[0];
+              Start := TJclTreeNode<T>(Start.Children[0]);
           Result := TPostOrderItr<T>.Create(Self, Start, False);
         end;
     else
@@ -15176,7 +15128,7 @@ begin
         begin
           if Start <> nil then
             while Start.ChildrenCount > 0 do
-              Start := Start.Children[Start.ChildrenCount - 1];
+              Start := TJclTreeNode<T>(Start.Children[Start.ChildrenCount - 1]);
           Result := TPreOrderItr<T>.Create(Self, Start, False);
         end;
       toPostOrder:
@@ -15198,7 +15150,7 @@ procedure TJclTree<T>.Pack;
   begin
     SetLength(ANode.Children, ANode.ChildrenCount);
     for Index := 0 to ANode.ChildrenCount - 1 do
-      PackNode(ANode.Children[Index]);
+      PackNode(TJclTreeNode<T>(ANode.Children[Index]));
   end;
 begin
   {$IFDEF THREADSAFE}
