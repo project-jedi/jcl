@@ -46,6 +46,13 @@ uses
   Classes,
   JclBase;
 
+{$IFDEF BCB6}
+{$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
+{$ENDIF BCB6}
+{$IFDEF BCB10}
+{$DEFINE BUGGY_DEFAULT_INDEXED_PROP}
+{$ENDIF BCB10}
+
 const
   DefaultContainerCapacity = 16;
 
@@ -2055,7 +2062,8 @@ type
     function Remove(const Key: AnsiString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: AnsiString]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: AnsiString]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclWideStrIntfMap = interface(IJclWideStrContainer)
@@ -2073,7 +2081,8 @@ type
     function Remove(const Key: WideString): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: WideString]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: WideString]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -2098,7 +2107,8 @@ type
     function Remove(const Key: IInterface): AnsiString;
     function Size: Integer;
     function Values: IJclAnsiStrCollection;
-    property Items[const Key: IInterface]: AnsiString read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: AnsiString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfWideStrMap = interface(IJclWideStrContainer)
@@ -2116,7 +2126,8 @@ type
     function Remove(const Key: IInterface): WideString;
     function Size: Integer;
     function Values: IJclWideStrCollection;
-    property Items[const Key: IInterface]: WideString read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: WideString read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -2188,7 +2199,8 @@ type
     function Remove(const Key: Single): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: Single]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: Single]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfSingleMap = interface(IJclSingleContainer)
@@ -2206,7 +2218,8 @@ type
     function Remove(const Key: IInterface): Single;
     function Size: Integer;
     function Values: IJclSingleCollection;
-    property Items[const Key: IInterface]: Single read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Single read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclSingleSingleMap = interface(IJclSingleContainer)
@@ -2242,7 +2255,8 @@ type
     function Remove(const Key: Double): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: Double]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: Double]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfDoubleMap = interface(IJclDoubleContainer)
@@ -2260,7 +2274,8 @@ type
     function Remove(const Key: IInterface): Double;
     function Size: Integer;
     function Values: IJclDoubleCollection;
-    property Items[const Key: IInterface]: Double read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Double read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclDoubleDoubleMap = interface(IJclDoubleContainer)
@@ -2296,7 +2311,8 @@ type
     function Remove(const Key: Extended): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: Extended]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: Extended]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfExtendedMap = interface(IJclExtendedContainer)
@@ -2314,7 +2330,8 @@ type
     function Remove(const Key: IInterface): Extended;
     function Size: Integer;
     function Values: IJclExtendedCollection;
-    property Items[const Key: IInterface]: Extended read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Extended read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclExtendedExtendedMap = interface(IJclExtendedContainer)
@@ -2366,7 +2383,8 @@ type
     function Remove(Key: Integer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[Key: Integer]: IInterface read GetValue write PutValue; default;
+    property Items[Key: Integer]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfIntegerMap = interface(IJclContainer)
@@ -2384,7 +2402,8 @@ type
     function Remove(const Key: IInterface): Integer;
     function Size: Integer;
     function Values: IJclIntegerCollection;
-    property Items[const Key: IInterface]: Integer read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Integer read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntegerIntegerMap = interface(IJclContainer)
@@ -2420,7 +2439,8 @@ type
     function Remove(Key: Cardinal): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[Key: Cardinal]: IInterface read GetValue write PutValue; default;
+    property Items[Key: Cardinal]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfCardinalMap = interface(IJclContainer)
@@ -2438,7 +2458,8 @@ type
     function Remove(const Key: IInterface): Cardinal;
     function Size: Integer;
     function Values: IJclCardinalCollection;
-    property Items[const Key: IInterface]: Cardinal read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Cardinal read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclCardinalCardinalMap = interface(IJclContainer)
@@ -2474,7 +2495,8 @@ type
     function Remove(const Key: Int64): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[const Key: Int64]: IInterface read GetValue write PutValue; default;
+    property Items[const Key: Int64]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfInt64Map = interface(IJclContainer)
@@ -2492,7 +2514,8 @@ type
     function Remove(const Key: IInterface): Int64;
     function Size: Integer;
     function Values: IJclInt64Collection;
-    property Items[const Key: IInterface]: Int64 read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Int64 read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclInt64Int64Map = interface(IJclContainer)
@@ -2529,7 +2552,8 @@ type
     function Remove(Key: Pointer): IInterface;
     function Size: Integer;
     function Values: IJclIntfCollection;
-    property Items[Key: Pointer]: IInterface read GetValue write PutValue; default;
+    property Items[Key: Pointer]: IInterface read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclIntfPtrMap = interface(IJclContainer)
@@ -2547,7 +2571,8 @@ type
     function Remove(const Key: IInterface): Pointer;
     function Size: Integer;
     function Values: IJclPtrCollection;
-    property Items[const Key: IInterface]: Pointer read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: Pointer read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclPtrPtrMap = interface(IJclContainer)
@@ -2585,7 +2610,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: IInterface]: TObject read GetValue write PutValue; default;
+    property Items[const Key: IInterface]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclAnsiStrMap = interface(IJclAnsiStrContainer)
@@ -2604,7 +2630,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: AnsiString]: TObject read GetValue write PutValue; default;
+    property Items[const Key: AnsiString]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclWideStrMap = interface(IJclWideStrContainer)
@@ -2623,7 +2650,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: WideString]: TObject read GetValue write PutValue; default;
+    property Items[const Key: WideString]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   {$IFDEF CONTAINER_ANSISTR}
@@ -2649,7 +2677,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: Single]: TObject read GetValue write PutValue; default;
+    property Items[const Key: Single]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclDoubleMap = interface(IJclDoubleContainer)
@@ -2668,7 +2697,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: Double]: TObject read GetValue write PutValue; default;
+    property Items[const Key: Double]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclExtendedMap = interface(IJclExtendedContainer)
@@ -2687,7 +2717,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: Extended]: TObject read GetValue write PutValue; default;
+    property Items[const Key: Extended]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -2716,7 +2747,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[Key: Integer]: TObject read GetValue write PutValue; default;
+    property Items[Key: Integer]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclCardinalMap = interface(IJclContainer)
@@ -2735,7 +2767,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[Key: Cardinal]: TObject read GetValue write PutValue; default;
+    property Items[Key: Cardinal]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   IJclInt64Map = interface(IJclContainer)
@@ -2754,7 +2787,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[const Key: Int64]: TObject read GetValue write PutValue; default;
+    property Items[const Key: Int64]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
 
   {$IFNDEF CLR}
@@ -2774,7 +2808,8 @@ type
     function Size: Integer;
     function Values: IJclCollection;
     //Daniele Teti
-    property Items[Key: Pointer]: TObject read GetValue write PutValue; default;
+    property Items[Key: Pointer]: TObject read GetValue write PutValue;
+      {$IFNDEF BUGGY_DEFAULT_INDEXED_PROP} default; {$ENDIF ~BUGGY_DEFAULT_INDEXED_PROP}
   end;
   {$ENDIF ~CLR}
 
